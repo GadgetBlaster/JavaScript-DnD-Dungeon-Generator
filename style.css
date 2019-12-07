@@ -1,0 +1,29 @@
+
+body {
+    margin: 20px;
+}
+
+form {
+    margin-bottom: 20px;
+}
+
+fieldset {
+    padding: 15px;
+    border: 1px solid #CCC;
+    margin: 20px 0;
+}
+
+legend {
+    padding: 0 8px;
+}
+
+label {
+    padding: 8px;
+    width: 110px;
+    display: inline-block;
+}
+
+button {
+    padding: 8px 20px;
+    border-radius: 4px;
+}
