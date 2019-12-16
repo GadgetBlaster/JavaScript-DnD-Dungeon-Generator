@@ -1,5 +1,5 @@
 
-import { knobs } from './knobs';
+import { knobs } from '../knobs';
 
 import {
     quantityZero,
@@ -10,7 +10,7 @@ import {
     quantitySeveral,
     quantityMany,
     quantityCountless,
-} from './quantity';
+} from '../quantity';
 
 import {
     conditionDecaying,
@@ -19,13 +19,13 @@ import {
     conditionAverage,
     conditionGood,
     conditionExquisite,
-} from './condition';
+} from '../condition';
 
 import {
     sizeMedium,
-} from './size';
+} from '../size';
 
-const getRoomDescription = (config) => {
+const getDescription = (config) => {
     let {
         itemQuantity,
         roomCondition,
@@ -83,9 +83,9 @@ const getContents = (config) => {
     }
 };
 
-export const getDescription = (config) => {
+export const getRoomDescription = (config) => {
     return [
-        getRoomDescription(config),
+        getDescription(config),
         getContents(config),
     ].filter(Boolean).join('. ') + '.';
 };

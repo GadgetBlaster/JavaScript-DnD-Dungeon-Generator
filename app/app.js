@@ -1,5 +1,6 @@
 
-import { getDescription } from './desc';
+import { getRoomDescription } from './room/description';
+import { getItems } from './room/items';
 
 import {
     actionGenerate,
@@ -12,9 +13,13 @@ const contentContainer = document.getElementById('content');
 
 const generateRoom = () => {
     let config = getFormData(knobContainer);
-    let desc   = getDescription(config);
 
-    contentContainer.innerHTML = desc;
+    let text = [
+        getRoomDescription(config),
+        getItems(config),
+    ];
+
+    contentContainer.innerHTML = '<p>' + text.join('</p><p>') + '</p>';
 };
 
 document.body.addEventListener('click', (e) => {
