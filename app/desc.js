@@ -1,43 +1,71 @@
 
-import {
-    knobs,
+import { knobs } from './knobs';
 
-    quantityNone,
+import {
+    quantityZero,
     quantityOne,
+    quantityCouple,
     quantityFew,
     quantityMany,
     quantityCountless,
+} from './quantity';
 
-    conditions,
-    sizes,
-    quantities,
-} from './knobs';
-
-const quantityVerbLookup = {
-    [quantityOne]:       'is',
-    [quantityFew]:       'are a',
-    [quantityMany]:      'are',
-    [quantityCountless]: 'are',
-};
+import {
+    conditionDecaying,
+    conditionBusted,
+    conditionPoor,
+    conditionAverage,
+    conditionGood,
+    conditionExquisite,
+} from './condition';
 
 const getRoomDescription = (config) => {
-    let beginning = 'A';
+    let {
+        itemQuantity,
+        roomCondition,
+        roomSize,
+    } = knobs;
 
-    let empty = config[knobs.itemQuantity] === quantityNone ? 'empty' : '';
+    let {
+        [itemQuantity]: quantity,
+        [roomCondition]: condition,
+        [roomSize]: size,
+    } = config;
 
-    return `A ${config[knobs.roomSize]} ${empty} room in ${config[knobs.roomCondition]} condition`;
+    let empty = quantity === quantityZero ? ' empty' : '';
+    let desc = `You enter a ${size}${empty} room`;
+
+    switch (condition) {
+        case conditionDecaying:
+        case conditionBusted:
+        case conditionPoor:
+        case conditionGood:
+            desc += ` in ${condition} condition`;
+    }
+
+    return desc;
 };
 
 const getContents = (config) => {
-    let quantity = config[knobs.itemQuantity];
+    let { itemQuantity } = knobs;
 
-    if (quantity === quantityNone) {
-        return;
+    let quantity = config[itemQuantity];
+
+    switch (quantity) {
+        case quantityZero:
+            return;
+        case quantityOne:
+            return 'The room is entirely empty except for a single item';
+        case quantityCouple:
+        case quantityFew:
+            return `There are a ${quantity} items in the room`;
+        case quantityMany:
+            return `The room is filled with many items.`;
+        case quantityCountless:
+            return `There are ${quantity} items littering the room`;
+        default:
+            return;
     }
-
-    let item = 'item' + (quantity === quantityOne ? '' : 's');
-
-    return `There ${quantityVerbLookup[quantity]} ${quantity} ${item} in ${config[knobs.itemCondition]} conditoin`;
 };
 
 export const getDescription = (config) => {

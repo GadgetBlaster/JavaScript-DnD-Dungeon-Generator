@@ -1,51 +1,11 @@
 
+import { conditions } from './condition';
+import { quantities } from './quantity';
+import { sizes } from './size';
+
 const typeSelect = 'select';
 
 export const valueRandom = 'random';
-
-export const conditionDecaying  = 'decaying';
-export const conditionBusted    = 'busted';
-export const conditionPoor      = 'poor';
-export const conditionAverage   = 'average';
-export const conditionGood      = 'good';
-export const conditionExquisite = 'exquisite';
-
-export const sizeTiny    = 'tiny';
-export const sizeSmall   = 'small';
-export const sizeMedium  = 'medium';
-export const sizeLarge   = 'large';
-export const sizeMassive = 'massive';
-
-export const quantityNone      = 'none';
-export const quantityOne       = 'one';
-export const quantityFew       = 'few';
-export const quantityMany      = 'many';
-export const quantityCountless = 'countless';
-
-export const conditions = [
-    conditionDecaying,
-    conditionBusted,
-    conditionPoor,
-    conditionAverage,
-    conditionGood,
-    conditionExquisite,
-];
-
-export const sizes = [
-    sizeTiny,
-    sizeSmall,
-    sizeMedium,
-    sizeLarge,
-    sizeMassive,
-];
-
-export const quantities = [
-    quantityNone,
-    quantityOne,
-    quantityFew,
-    quantityMany,
-    quantityCountless,
-];
 
 export const knobs = {
     roomCondition: 'RoomCondition',
