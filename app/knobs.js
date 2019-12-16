@@ -5,7 +5,7 @@ import { sizes } from './size';
 
 const typeSelect = 'select';
 
-export const valueRandom = 'random';
+export const random = 'random';
 
 export const knobs = {
     roomCondition: 'RoomCondition',

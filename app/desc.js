@@ -6,6 +6,8 @@ import {
     quantityOne,
     quantityCouple,
     quantityFew,
+    quantitySome,
+    quantitySeveral,
     quantityMany,
     quantityCountless,
 } from './quantity';
@@ -18,6 +20,10 @@ import {
     conditionGood,
     conditionExquisite,
 } from './condition';
+
+import {
+    sizeMedium,
+} from './size';
 
 const getRoomDescription = (config) => {
     let {
@@ -32,8 +38,13 @@ const getRoomDescription = (config) => {
         [roomSize]: size,
     } = config;
 
+
+    if (size === sizeMedium) {
+        size = 'medium sized';
+    }
+
     let empty = quantity === quantityZero ? ' empty' : '';
-    let desc = `You enter a ${size}${empty} room`;
+    let desc  = `You enter a ${size}${empty} room`;
 
     switch (condition) {
         case conditionDecaying:
@@ -41,6 +52,7 @@ const getRoomDescription = (config) => {
         case conditionPoor:
         case conditionGood:
             desc += ` in ${condition} condition`;
+            break;
     }
 
     return desc;
@@ -52,17 +64,20 @@ const getContents = (config) => {
     let quantity = config[itemQuantity];
 
     switch (quantity) {
-        case quantityZero:
-            return;
         case quantityOne:
             return 'The room is entirely empty except for a single item';
         case quantityCouple:
+            return `There are a couple of things in the room`;
         case quantityFew:
-            return `There are a ${quantity} items in the room`;
+            return `There are a few things in the room`;
+        case quantitySome:
+        case quantitySeveral:
+            return `There are ${quantity} things in the room`;
         case quantityMany:
-            return `The room is filled with many items.`;
+            return `The room is filled with many items`;
         case quantityCountless:
-            return `There are ${quantity} items littering the room`;
+            return `There are countless items littering the room`;
+        case quantityZero:
         default:
             return;
     }

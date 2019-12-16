@@ -1,5 +1,5 @@
 
-import { valueRandom } from './knobs';
+import { random } from './knobs';
 
 export const button = (label, action) => {
     return `
@@ -9,16 +9,14 @@ export const button = (label, action) => {
     `;
 };
 
-const option = (value) => {
-    return `<option>${value}</option>`;
-};
+const option = (value) => `<option>${value}</option>`;
 
 export const select = (label, name, values) => {
     let options = values.map((value) => {
         return option(value);
     });
 
-    options.unshift(option(valueRandom));
+    options.unshift(option(random));
 
     return `
         <label>${label}</label>
