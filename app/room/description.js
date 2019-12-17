@@ -1,5 +1,5 @@
 
-import { knobs } from '../knobs';
+import { knobs } from '/app/room/knobs';
 
 import {
     quantityZero,
@@ -10,7 +10,7 @@ import {
     quantitySeveral,
     quantityMany,
     quantityCountless,
-} from '../quantity';
+} from '/app/attribute/quantity';
 
 import {
     conditionDecaying,
@@ -19,11 +19,11 @@ import {
     conditionAverage,
     conditionGood,
     conditionExquisite,
-} from '../condition';
+} from '/app/attribute/condition';
 
 import {
     sizeMedium,
-} from '../size';
+} from '/app/attribute/size';
 
 const getDescription = (config) => {
     let {

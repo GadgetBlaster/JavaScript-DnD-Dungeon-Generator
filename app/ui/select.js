@@ -1,13 +1,5 @@
 
-import { random } from './knobs';
-
-export const button = (label, action) => {
-    return `
-        <button data-action="${action}">
-            ${label}
-        </button>
-    `;
-};
+import { random } from '/app/attribute/random';
 
 const option = (value) => `<option>${value}</option>`;
 

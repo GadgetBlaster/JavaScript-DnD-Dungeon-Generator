@@ -1,12 +1,12 @@
 
-import { getRoomDescription } from './room/description';
-import { getItems } from './room/items';
+import { getRoomDescription } from '/app/room/description';
+import { getItems } from '/app/room/items';
 
 import {
     actionGenerate,
     getFormData,
     knobUi,
-} from './form';
+} from '/app/ui/form';
 
 const knobContainer = document.getElementById('knobs');
 const contentContainer = document.getElementById('content');

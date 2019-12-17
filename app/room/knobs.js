@@ -1,11 +1,10 @@
 
-import { conditions } from './condition';
-import { quantities } from './quantity';
-import { sizes } from './size';
+import { conditions } from '/app/attribute/condition';
+import { quantities } from '/app/attribute/quantity';
+import { random } from '/app/attribute/random';
+import { sizes } from '/app/attribute/size';
 
 const typeSelect = 'select';
-
-export const random = 'random';
 
 export const knobs = {
     roomCondition: 'RoomCondition',

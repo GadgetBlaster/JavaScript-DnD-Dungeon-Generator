@@ -1,11 +1,13 @@
 
-import { knobConfig, random } from './knobs';
-import { select, button } from './ui';
-import { getRandomArrayItem } from './util';
+import { random } from '/app/attribute/random';
+
+import { getRandomArrayItem } from '/app/util';
+import { knobConfig } from '/app/room/knobs';
+
+import { button } from '/app/ui/button';
+import { select } from '/app/ui/select';
 
 export const actionGenerate = 'generate';
-
-const submitButton = button('Generate', actionGenerate);
 
 export const knobUi = knobConfig.map(({ label: groupLabel, options }) => {
     let fields = Object.keys(options).map((key) => {
@@ -20,13 +22,13 @@ export const knobUi = knobConfig.map(({ label: groupLabel, options }) => {
             ${fields}
         </fieldset>
     `;
-}).join('') + submitButton;
+}).join('') + button('Generate', actionGenerate);
 
 const getRandomSelectOption = (selectOptions) => {
     let options = [ ...selectOptions ].map(({ value }) => value !== random && value).filter(Boolean);
 
     return getRandomArrayItem(options);
-}
+};
 
 export const getFormData = (knobContainer) => {
     let fields = [ ...knobContainer.querySelectorAll('[name]') ];
