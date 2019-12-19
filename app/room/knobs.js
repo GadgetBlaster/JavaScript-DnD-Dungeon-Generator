@@ -1,10 +1,18 @@
 
+import { random } from '/app/utility/random';
+
 import { conditions } from '/app/attribute/condition';
 import { quantities } from '/app/attribute/quantity';
-import { random } from '/app/attribute/random';
 import { sizes } from '/app/attribute/size';
 
 const typeSelect = 'select';
+
+const getValues = (values) => {
+    return [
+        random,
+        ...values,
+    ];
+};
 
 export const knobs = {
     roomCondition: 'RoomCondition',
@@ -21,13 +29,13 @@ export const knobConfig = [
                 label:  'Room Condition',
                 name:   knobs.roomCondition,
                 type:   typeSelect,
-                values: conditions,
+                values: getValues(conditions),
             },
             size: {
                 label:  'Room Size',
                 name:   knobs.roomSize,
                 type:   typeSelect,
-                values: sizes,
+                values: getValues(sizes),
             },
         },
     },
@@ -38,13 +46,13 @@ export const knobConfig = [
                 label:  'Item Condition',
                 name:   knobs.itemCondition,
                 type:   typeSelect,
-                values: conditions,
+                values: getValues(conditions),
             },
             quantity: {
                 label:  'Item Quantity',
                 name:   knobs.itemQuantity,
                 type:   typeSelect,
-                values: quantities,
+                values: getValues(quantities),
             },
         },
     },

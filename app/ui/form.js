@@ -1,7 +1,9 @@
 
-import { random } from '/app/attribute/random';
+import {
+    random,
+    getRandomArrayItem,
+} from '/app/utility/random';
 
-import { getRandomArrayItem } from '/app/util';
 import { knobConfig } from '/app/room/knobs';
 
 import { button } from '/app/ui/button';
