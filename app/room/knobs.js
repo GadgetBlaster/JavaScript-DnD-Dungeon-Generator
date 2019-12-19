@@ -14,26 +14,19 @@ const getValues = (values) => {
     ];
 };
 
-export const knobs = {
-    roomCondition: 'RoomCondition',
-    roomSize:      'RoomSize',
-    itemCondition: 'ItemCondition',
-    itemQuantity:  'ItemQuantity',
-};
-
-export const knobConfig = [
+export const config = [
     {
         label: 'Room Options',
         options: {
             condition: {
                 label:  'Room Condition',
-                name:   knobs.roomCondition,
+                name:   'roomCondition',
                 type:   typeSelect,
                 values: getValues(conditions),
             },
             size: {
                 label:  'Room Size',
-                name:   knobs.roomSize,
+                name:   'roomSize',
                 type:   typeSelect,
                 values: getValues(sizes),
             },
@@ -44,13 +37,13 @@ export const knobConfig = [
         options: {
             condition: {
                 label:  'Item Condition',
-                name:   knobs.itemCondition,
+                name:   'itemCondition',
                 type:   typeSelect,
                 values: getValues(conditions),
             },
             quantity: {
                 label:  'Item Quantity',
-                name:   knobs.itemQuantity,
+                name:   'itemQuantity',
                 type:   typeSelect,
                 values: getValues(quantities),
             },

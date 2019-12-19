@@ -1,91 +1,62 @@
 
-import { knobs } from '/app/room/knobs';
+import { condition } from '/app/attribute/condition';
+import { quantity } from '/app/attribute/quantity';
+import { size } from '/app/attribute/size';
 
-import {
-    quantityZero,
-    quantityOne,
-    quantityCouple,
-    quantityFew,
-    quantitySome,
-    quantitySeveral,
-    quantityMany,
-    quantityCountless,
-} from '/app/attribute/quantity';
-
-import {
-    conditionDecaying,
-    conditionBusted,
-    conditionPoor,
-    conditionAverage,
-    conditionGood,
-    conditionExquisite,
-} from '/app/attribute/condition';
-
-import {
-    sizeMedium,
-} from '/app/attribute/size';
-
-const getDescription = (config) => {
+const getSizeDesc = (config) => {
     let {
         itemQuantity,
         roomCondition,
         roomSize,
-    } = knobs;
-
-    let {
-        [itemQuantity]: quantity,
-        [roomCondition]: condition,
-        [roomSize]: size,
     } = config;
 
-
-    if (size === sizeMedium) {
-        size = 'medium sized';
+    if (roomSize === size.medium) {
+        roomSize = 'medium sized';
     }
 
-    let empty = quantity === quantityZero ? ' empty' : '';
-    let desc  = `You enter a ${size}${empty} room`;
+    let empty = itemQuantity === quantity.zero ? ' empty' : '';
+    let desc  = `You enter a ${roomSize}${empty} room`;
 
-    switch (condition) {
-        case conditionDecaying:
-        case conditionBusted:
-        case conditionPoor:
-        case conditionGood:
-            desc += ` in ${condition} condition`;
+    switch (roomCondition) {
+        case condition.decaying:
+        case condition.busted:
+        case condition.poor:
+        case condition.good:
+            desc += ` in ${roomCondition} condition`;
             break;
     }
 
     return desc;
 };
 
-const getContents = (config) => {
-    let { itemQuantity } = knobs;
+const getContentsDesc = (config) => {
+    let { itemQuantity } = config;
 
-    let quantity = config[itemQuantity];
-
-    switch (quantity) {
-        case quantityOne:
+    switch (itemQuantity) {
+        case quantity.one:
             return 'The room is entirely empty except for a single item';
-        case quantityCouple:
+        case quantity.couple:
             return `There are a couple of things in the room`;
-        case quantityFew:
+        case quantity.few:
             return `There are a few things in the room`;
-        case quantitySome:
-        case quantitySeveral:
-            return `There are ${quantity} things in the room`;
-        case quantityMany:
-            return `The room is filled with many items`;
-        case quantityCountless:
-            return `There are countless items littering the room`;
-        case quantityZero:
+        case quantity.some:
+        case quantity.several:
+            return `There are ${itemQuantity} things in the room`;
+        case quantity.many:
+            return `The room is cluttered with items`;
+        case quantity.numerous:
+            return `There are numerous objects littering the room`;
+        case quantity.zero:
+            return;
         default:
+            console.error(`Undescribed item quantity: ${itemQuantity}`);
             return;
     }
 };
 
-export const getRoomDescription = (config) => {
+export const getDescription = (config) => {
     return [
-        getDescription(config),
-        getContents(config),
+        getSizeDesc(config),
+        getContentsDesc(config),
     ].filter(Boolean).join('. ') + '.';
 };

@@ -4,14 +4,14 @@ import {
     getRandomArrayItem,
 } from '/app/utility/random';
 
-import { knobConfig } from '/app/room/knobs';
+import { config as roomKnobs } from '/app/room/knobs';
 
 import { button } from '/app/ui/button';
 import { select } from '/app/ui/select';
 
 export const actionGenerate = 'generate';
 
-export const knobUi = knobConfig.map(({ label: groupLabel, options }) => {
+export const knobs = roomKnobs.map(({ label: groupLabel, options }) => {
     let fields = Object.keys(options).map((key) => {
         let { label, name, values } = options[key];
 

@@ -1,31 +1,37 @@
 
-export const quantityZero      = 'zero';
-export const quantityOne       = 'one';
-export const quantityCouple    = 'couple';
-export const quantityFew       = 'few';
-export const quantitySome      = 'some';
-export const quantitySeveral   = 'several';
-export const quantityMany      = 'many';
-export const quantityCountless = 'countless';
+import { lookup } from '/app/utility/config';
 
 export const quantities = [
-    quantityZero,
-    quantityOne,
-    quantityCouple,
-    quantityFew,
-    quantitySome,
-    quantitySeveral,
-    quantityMany,
-    quantityCountless,
+    'zero',
+    'one',
+    'couple',
+    'few',
+    'some',
+    'several',
+    'many',
+    'numerous',
 ];
 
-export const quantityRanges = {
-    quantityZero: 0,
-    quantityOne: 1,
-    quantityCouple: 2,
-    quantityFew: 3,
-    quantitySome: 5,
-    quantitySeveral: 7,
-    quantityMany: 13,
-    quantityCountless: 100,
+export const quantity = lookup(quantities);
+
+const range = [ 0, 1, 2, 3, 5, 7, 13, 26, 99 ];
+
+export const getRange = (value) => {
+    let index = quantities.indexOf(value);
+
+    if (index === -1) {
+        throw `Invalid quantity value: ${value}`;
+    }
+
+    let min = range[index];
+    let max = (range[index + 1] - 1);
+
+    return { min, max };
 };
+
+console.log(quantity.one);
+
+// export const list = (() => {
+//     console.log('once');
+//     return Object.keys(quantity)
+// })();

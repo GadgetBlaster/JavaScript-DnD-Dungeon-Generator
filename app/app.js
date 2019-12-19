@@ -1,23 +1,18 @@
 
-import { getRoomDescription } from '/app/room/description';
-import { getItems } from '/app/room/items';
+import { generateRoom } from '/app/room/room';
 
 import {
     actionGenerate,
     getFormData,
-    knobUi,
+    knobs,
 } from '/app/ui/form';
 
 const knobContainer = document.getElementById('knobs');
 const contentContainer = document.getElementById('content');
 
-const generateRoom = () => {
+const generate = () => {
     let config = getFormData(knobContainer);
-
-    let text = [
-        getRoomDescription(config),
-        getItems(config),
-    ];
+    let text   = generateRoom(config);
 
     contentContainer.innerHTML = '<p>' + text.join('</p><p>') + '</p>';
 };
@@ -29,9 +24,9 @@ document.body.addEventListener('click', (e) => {
 
     switch (action) {
         case actionGenerate:
-            generateRoom();
+            generate();
             break;
     }
 });
 
-knobContainer.innerHTML = knobUi;
+knobContainer.innerHTML = knobs;

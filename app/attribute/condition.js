@@ -1,16 +1,13 @@
 
-export const conditionDecaying  = 'decaying';
-export const conditionBusted    = 'busted';
-export const conditionPoor      = 'poor';
-export const conditionAverage   = 'average';
-export const conditionGood      = 'good';
-export const conditionExquisite = 'exquisite';
+import { lookup } from '/app/utility/config';
 
 export const conditions = [
-    conditionDecaying,
-    conditionBusted,
-    conditionPoor,
-    conditionAverage,
-    conditionGood,
-    conditionExquisite,
+    'decaying',
+    'busted',
+    'poor',
+    'average',
+    'good',
+    'exquisite',
 ];
+
+export const condition = lookup(conditions);

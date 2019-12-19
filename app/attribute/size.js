@@ -1,14 +1,12 @@
 
-export const sizeTiny    = 'tiny';
-export const sizeSmall   = 'small';
-export const sizeMedium  = 'medium';
-export const sizeLarge   = 'large';
-export const sizeMassive = 'massive';
+import { lookup } from '/app/utility/config';
 
 export const sizes = [
-    sizeTiny,
-    sizeSmall,
-    sizeMedium,
-    sizeLarge,
-    sizeMassive,
+    'tiny',
+    'small',
+    'medium',
+    'large',
+    'massive',
 ];
+
+export const size = lookup(sizes);
