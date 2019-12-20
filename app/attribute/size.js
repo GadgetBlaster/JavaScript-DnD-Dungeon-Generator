@@ -1,12 +1,12 @@
 
-import { lookup } from '/app/utility/config';
+const size = {
+    tiny: 'tiny',
+    small: 'small',
+    medium: 'medium',
+    large: 'large',
+    massive: 'massive',
+};
 
-export const sizes = [
-    'tiny',
-    'small',
-    'medium',
-    'large',
-    'massive',
-];
+export const sizes = Object.values(size);
 
-export const size = lookup(sizes);
+export default size;

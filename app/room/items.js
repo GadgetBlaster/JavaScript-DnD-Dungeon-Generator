@@ -1,13 +1,14 @@
 
-import { quantity, getRange } from '/app/attribute/quantity';
-import { items } from '/app/item/item';
 import { getRandomInt, getRandomArrayItem } from '/app/utility/random';
+import { items } from '/app/item/item';
+import quantity, { getRange } from '../attribute/quantity';
+import { title } from '/app/ui/title';
 
 const getItemCount = (itemQuantity) => {
     let { min, max } = getRange(itemQuantity);
 
     return getRandomInt(min, max);
-}
+};
 
 export const getItemList = (config) => {
     let {
@@ -16,7 +17,7 @@ export const getItemList = (config) => {
     } = config;
 
     if (itemQuantity === quantity.zero) {
-        return 'Items: None';
+        return title('Items: None');
     }
 
     let count = getItemCount(itemQuantity);
@@ -25,5 +26,5 @@ export const getItemList = (config) => {
         return getRandomArrayItem(items).name;
     }).join(', ');
 
-    return `Items (${count}): ${list}`;
+    return title(`Items (${count})`) + `${list}`;
 };

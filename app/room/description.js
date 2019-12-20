@@ -1,7 +1,9 @@
 
-import { condition } from '/app/attribute/condition';
-import { quantity } from '/app/attribute/quantity';
-import { size } from '/app/attribute/size';
+import condition from '../attribute/condition';
+import quantity from '../attribute/quantity';
+import size from '../attribute/size';
+
+import { title } from '/app/ui/title';
 
 const getSizeDesc = (config) => {
     let {
@@ -55,7 +57,7 @@ const getContentsDesc = (config) => {
 };
 
 export const getDescription = (config) => {
-    return [
+    return title('Room Description') + [
         getSizeDesc(config),
         getContentsDesc(config),
     ].filter(Boolean).join('. ') + '.';

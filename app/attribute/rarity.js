@@ -1,14 +1,14 @@
 
-import { lookup } from '/app/utility/config';
+const rarity = {
+    abundant: 'abundant',
+    common: 'common',
+    uncommon: 'uncommon',
+    average: 'average',
+    rare: 'rare',
+    exotic: 'exotic',
+    legendary: 'legendary',
+};
 
-export const rarities = [
-    'abundant',
-    'common',
-    'uncommon',
-    'average',
-    'rare',
-    'exotic',
-    'legendary',
-];
+export const list = Object.values(rarity);
 
-export const rarity = lookup(rarities);
+export default rarity;

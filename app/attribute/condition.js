@@ -1,13 +1,13 @@
 
-import { lookup } from '/app/utility/config';
+const condition = {
+    decaying: 'decaying',
+    busted: 'busted',
+    poor: 'poor',
+    average: 'average',
+    good: 'good',
+    exquisite: 'exquisite',
+};
 
-export const conditions = [
-    'decaying',
-    'busted',
-    'poor',
-    'average',
-    'good',
-    'exquisite',
-];
+export const list = Object.values(condition);
 
-export const condition = lookup(conditions);
+export default condition;

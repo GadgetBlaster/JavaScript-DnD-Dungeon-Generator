@@ -1,8 +1,8 @@
 
 import { random } from '/app/utility/random';
 
-import { conditions } from '/app/attribute/condition';
-import { quantities } from '/app/attribute/quantity';
+import { list as conditions } from '../attribute/condition';
+import { list as quantities } from '/app/attribute/quantity';
 import { sizes } from '/app/attribute/size';
 
 const typeSelect = 'select';
