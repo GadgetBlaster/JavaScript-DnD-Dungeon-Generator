@@ -1,19 +1,26 @@
 
-import { random } from '../utility/random';
-import { rollArrayItem } from '../utility/roll';
-
-import { config as roomKnobs } from '../rooms/knobs';
-
+import { actions } from './action';
 import { button } from './button';
+import { config as roomKnobs } from '../rooms/knobs';
 import { select } from './select';
-
-export const actionGenerate = 'generate';
+import { uiLarge } from './size';
 
 export const knobs = roomKnobs.map(({ label: groupLabel, options }) => {
     let fields = Object.keys(options).map((key) => {
-        let { label, name, values } = options[key];
+        let { label, name, values, desc } = options[key];
 
-        return `<div>${select(label, name, values)}</div>`;
+        let knobSelect = select(label, name, values);
+        let descId     = desc && `info-${name}`;
+        let descButton = desc ? button('?', actions.showHide, { target: descId }) : '';
+        let descText   = desc ? `<p hidden="true" data-id="${descId}">${desc}</p>` : '';
+
+        return `
+            <div>
+                ${knobSelect}
+                ${descButton}
+            </div>
+            ${descText}
+        `;
     }).join('');
 
     return `
@@ -22,13 +29,7 @@ export const knobs = roomKnobs.map(({ label: groupLabel, options }) => {
             ${fields}
         </fieldset>
     `;
-}).join('') + button('Generate', actionGenerate);
-
-const getRandomSelectOption = (selectOptions) => {
-    let options = [ ...selectOptions ].map(({ value }) => value !== random && value).filter(Boolean);
-
-    return rollArrayItem(options);
-};
+}).join('') + button('Generate', actions.generate, { size: uiLarge });
 
 export const getFormData = (knobContainer) => {
     let fields = [ ...knobContainer.querySelectorAll('[name]') ];

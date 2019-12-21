@@ -1,9 +1,12 @@
 
-body {
-    margin: 20px;
+* {
     font-size: 16px;
     line-height: 1.4;
     font-family: monospace;
+}
+
+body {
+    margin: 20px;
 }
 
 form {
@@ -11,24 +14,49 @@ form {
 }
 
 fieldset {
-    padding: 15px;
-    border: 1px solid #CCC;
+    padding: 15px 25px;
+    border: 1px solid #ccc;
     margin: 20px 0;
 }
 
+fieldset > div {
+    display: flex;
+    align-items: center;
+}
+
 legend {
-    padding: 0 8px;
+    padding: 0 10px;
+    margin-left: -10px;
 }
 
 label {
-    padding: 8px;
-    width: 140px;
+    padding: 10px 0;
+    width: 150px;
     display: inline-block;
 }
 
-button {
-    padding: 8px 20px;
+button,
+select {
     border-radius: 4px;
+    background: #f9f9f9;
+    border: 1px solid #ccc;
+}
+
+button[data-size="small"] {
+    height: 24px;
+    padding: 0 4px;
+}
+
+button[data-size="large"] {
+    padding: 8px 20px;
+}
+
+select {
+    height: 24px;
+}
+
+select + button {
+    margin-left: 10px;
 }
 
 h1 {
@@ -40,7 +68,7 @@ ul {
 }
 
 li {
-    padding-right: 10px;
+    padding-right: 12px;
 }
 
 [data-columns="2"] { columns: 2; }

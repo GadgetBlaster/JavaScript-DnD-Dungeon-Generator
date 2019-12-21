@@ -1,11 +1,7 @@
 
+import { actions, attachActions, toggleVisibility } from './ui/action';
 import { generateRoom } from './room';
-
-import {
-    actionGenerate,
-    getFormData,
-    knobs,
-} from './ui/form';
+import { knobs, getFormData } from './ui/form';
 
 const knobContainer = document.getElementById('knobs');
 const contentContainer = document.getElementById('content');
@@ -17,16 +13,9 @@ const generate = () => {
     contentContainer.innerHTML = '<section>' + text.join('') + '</section>';
 };
 
-document.body.addEventListener('click', (e) => {
-    e.preventDefault();
-
-    let action = e.target.dataset.action;
-
-    switch (action) {
-        case actionGenerate:
-            generate();
-            break;
-    }
+attachActions({
+    [actions.generate]: generate,
+    [actions.showHide]: toggleVisibility,
 });
 
 knobContainer.innerHTML = knobs;

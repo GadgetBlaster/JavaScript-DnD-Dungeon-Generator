@@ -1,16 +1,16 @@
 
+import { knobs } from './knobs';
+import { title } from '../ui/title';
 import condition from '../attributes/condition';
 import quantity from '../attributes/quantity';
 import size from '../attributes/size';
 
-import { title } from '../ui/title';
-
-const getSizeDesc = (config) => {
+const getSizeDesc = (settings) => {
     let {
-        itemQuantity,
-        roomCondition,
-        roomSize,
-    } = config;
+        [knobs.itemQuantity]: itemQuantity,
+        [knobs.roomCondition]: roomCondition,
+        [knobs.roomSize]: roomSize,
+    } = settings;
 
     if (roomSize === size.medium) {
         roomSize = 'medium sized';
@@ -19,20 +19,15 @@ const getSizeDesc = (config) => {
     let empty = itemQuantity === quantity.zero ? ' empty' : '';
     let desc  = `You enter a ${roomSize}${empty} room`;
 
-    switch (roomCondition) {
-        case condition.decaying:
-        case condition.busted:
-        case condition.poor:
-        case condition.good:
-            desc += ` in ${roomCondition} condition`;
-            break;
+    if (roomCondition !== condition.average) {
+        desc += ` in ${roomCondition} condition`;
     }
 
     return desc;
 };
 
-const getContentsDesc = (config) => {
-    let { itemQuantity } = config;
+const getContentsDesc = (settings) => {
+    let { [knobs.itemQuantity]: itemQuantity } = settings;
 
     switch (itemQuantity) {
         case quantity.one:
@@ -56,9 +51,9 @@ const getContentsDesc = (config) => {
     }
 };
 
-export const getDescription = (config) => {
+export const getDescription = (settings) => {
     return title('Room Description') + '<p>' + [
-        getSizeDesc(config),
-        getContentsDesc(config),
+        getSizeDesc(settings),
+        getContentsDesc(settings),
     ].filter(Boolean).join('. ') + '.</p>';
 };

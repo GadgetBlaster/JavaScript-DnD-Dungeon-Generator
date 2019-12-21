@@ -1,4 +1,6 @@
 
+import { Probability } from '../utility/roll';
+
 const condition = {
     decaying: 'decaying',
     busted: 'busted',
@@ -8,6 +10,24 @@ const condition = {
     exquisite: 'exquisite',
 };
 
+let {
+    decaying,
+    busted,
+    poor,
+    average,
+    good,
+    exquisite,
+} = condition;
+
 export const list = Object.values(condition);
+
+export const probability = new Probability([
+    [ 50, average ],
+    [ 60, good ],
+    [ 75, poor ],
+    [ 85, busted ],
+    [ 95, decaying ],
+    [ 100, exquisite ],
+]);
 
 export default condition;

@@ -1,18 +1,14 @@
 
 import { getDescription } from './rooms/description';
 import { getItemList } from './rooms/items';
-import { getSettings } from './rooms/generate';
+import { getSettings } from './rooms/settings';
 
 export const generateRoom = (config) => {
-    let {
-        itemCondition,
-        itemQuantity,
-        roomCondition,
-        roomSize,
-    } = getSettings(config);
+    let settings = getSettings(config);
 
     return [
-        getDescription({ itemQuantity, roomCondition, roomSize }),
-        getItemList({ itemQuantity, itemCondition }),
+        getDescription(settings),
+        getItemList(settings),
     ];
 };
+ 

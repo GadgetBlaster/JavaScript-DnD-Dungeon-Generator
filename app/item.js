@@ -36,9 +36,9 @@ items.forEach((item) => {
     groupByRarity[item.rarity].push(item);
 });
 
-export const getItem = () => {
+export const generateItem = () => {
     let rarity = rollRarity();
-    let item = rollArrayItem(groupByRarity[rarity]) || { name: 'Mysterious object' };
+    let item   = rollArrayItem(groupByRarity[rarity]) || { name: 'Mysterious object' };
 
     return item.name;
 };

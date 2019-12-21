@@ -1,9 +1,8 @@
 
-import { list as conditions } from '../attributes/condition';
-import { list as quantities } from '../attributes/quantity';
-import { list as sizes } from '../attributes/size';
+import { conditions, quantities, sizes } from '../attribute';
 import { random } from '../utility/random';
 import { rollArrayItem } from '../utility/roll';
+import { knobs } from './knobs';
 
 export const getSettings = (config) => {
     Object.keys(config).forEach((key) => {
@@ -14,15 +13,15 @@ export const getSettings = (config) => {
         let list;
 
         switch (key) {
-            case 'itemQuantity':
+            case knobs.itemQuantity:
                 list = quantities;
                 break;
 
-            case 'roomCondition':
+            case knobs.roomCondition:
                 list = conditions;
                 break;
 
-            case 'roomSize':
+            case knobs.roomSize:
                 list = sizes;
                 break;
         }
@@ -31,7 +30,7 @@ export const getSettings = (config) => {
             return;
         }
 
-        config[key] = rollArrayItem(quantities);
+        config[key] = rollArrayItem(list);
     });
 
     return config;
