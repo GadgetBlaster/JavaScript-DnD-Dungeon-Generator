@@ -57,8 +57,8 @@ const getContentsDesc = (config) => {
 };
 
 export const getDescription = (config) => {
-    return title('Room Description') + [
+    return title('Room Description') + '<p>' + [
         getSizeDesc(config),
         getContentsDesc(config),
-    ].filter(Boolean).join('. ') + '.';
+    ].filter(Boolean).join('. ') + '.</p>';
 };

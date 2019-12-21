@@ -1,13 +1,16 @@
 
-import { getRandomInt, getRandomArrayItem } from '/app/utility/random';
-import items from '/app/item/item';
+import { title } from '../ui/title';
+
 import quantity, { getRange } from '../attributes/quantity';
-import { title } from '/app/ui/title';
+
+import { roll } from '../utility/roll';
+
+import { getItem } from '../item';
 
 const getItemCount = (itemQuantity) => {
     let { min, max } = getRange(itemQuantity);
 
-    return getRandomInt(min, max);
+    return roll(min, max);
 };
 
 export const getItemList = (config) => {
@@ -22,9 +25,7 @@ export const getItemList = (config) => {
 
     let count = getItemCount(itemQuantity);
 
-    let list = [...Array(count)].map((_, i) => {
-        return getRandomArrayItem(items).name;
-    }).join(', ');
+    let list = [...Array(count)].map((_, i) => getItem().name).join(', ');
 
-    return title(`Items (${count})`) + `${list}`;
+    return title(`Items (${count})`) + `<p>${list}</p>`;
 };

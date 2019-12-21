@@ -3,6 +3,7 @@ body {
     margin: 20px;
     font-size: 16px;
     line-height: 1.5em;
+    font-family: monospace;
 }
 
 form {
@@ -21,7 +22,7 @@ legend {
 
 label {
     padding: 8px;
-    width: 110px;
+    width: 140px;
     display: inline-block;
 }
 

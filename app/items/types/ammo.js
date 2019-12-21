@@ -1,4 +1,5 @@
 
+import rarity from '../../attributes/rarity'
 import type from '../type';
 
 const defaults = {
@@ -7,10 +8,10 @@ const defaults = {
 };
 
 const config = [
-    { name: 'Arrow, set' },
-    { name: 'Blowgun needles' },
-    { name: 'Crossbow bolts' },
-    { name: 'Sling bullets' },
+    { name: 'Arrow' },
+    { name: 'Blowgun needle' },
+    { name: 'Crossbow bolt' },
+    { name: 'Sling bullet' },
 ];
 
 export default config.map((item) => ({ ...defaults, ...item }));

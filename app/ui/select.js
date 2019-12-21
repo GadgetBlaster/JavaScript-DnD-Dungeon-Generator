@@ -1,6 +1,4 @@
 
-import { random } from '/app/utility/random';
-
 const option = (value) => `<option>${value}</option>`;
 
 export const select = (label, name, values) => {

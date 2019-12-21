@@ -1,4 +1,4 @@
 
 export const title = (label) => {
-    return `<strong>${label}:</strong> `;
+    return `<h1><strong>${label}:</strong></h1>`;
 };

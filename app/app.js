@@ -14,7 +14,7 @@ const generate = () => {
     let config = getFormData(knobContainer);
     let text   = generateRoom(config);
 
-    contentContainer.innerHTML = '<p>' + text.join('</p><p>') + '</p>';
+    contentContainer.innerHTML = '<section>' + text.join('') + '</section>';
 };
 
 document.body.addEventListener('click', (e) => {

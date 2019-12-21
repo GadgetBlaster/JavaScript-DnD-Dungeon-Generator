@@ -1,13 +1,11 @@
 
-import {
-    random,
-    getRandomArrayItem,
-} from '/app/utility/random';
+import { random } from '../utility/random';
+import { rollArrayItem } from '../utility/roll';
 
-import { config as roomKnobs } from '/app/room/knobs';
+import { config as roomKnobs } from '../room/knobs';
 
-import { button } from '/app/ui/button';
-import { select } from '/app/ui/select';
+import { button } from './button';
+import { select } from './select';
 
 export const actionGenerate = 'generate';
 
@@ -29,7 +27,7 @@ export const knobs = roomKnobs.map(({ label: groupLabel, options }) => {
 const getRandomSelectOption = (selectOptions) => {
     let options = [ ...selectOptions ].map(({ value }) => value !== random && value).filter(Boolean);
 
-    return getRandomArrayItem(options);
+    return rollArrayItem(options);
 };
 
 export const getFormData = (knobContainer) => {
