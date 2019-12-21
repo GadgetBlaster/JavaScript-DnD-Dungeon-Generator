@@ -10,20 +10,19 @@ const defaults = {
 const config = [
     { name: 'Abacus', rarity: rarity.rare },
     { name: 'Book', rarity: rarity.common },
-    { name: 'Journal', },
-    { name: 'Paperweight', },
-    { name: 'Pen', },
-    { name: 'Pencil', },
-    { name: 'Wax seal', },
     { name: 'Chalk' },
-    { name: 'Hourglass' },
-    { name: 'Ink', variants: [ 'Vial', 'Bottle' ] },
+    { name: 'Hourglass', rarity: rarity.rare },
     { name: 'Ink pen' },
+    { name: 'Ink', variants: [ 'Vial', 'Bottle' ] },
+    { name: 'Journal', variants: [ 'Blank', 'Adventurer’s', 'Noble person’s', 'Hermit’s', 'Wizard’s', 'Merchant’s' ] },
     { name: 'Paper', quantity: 100 },
+    { name: 'Paperweight' },
     { name: 'Parchment', quantity: 100 },
-    { name: 'Scale, merchant’s' },
+    { name: 'Pencil' },
+    { name: 'Scale, merchant’s', rarity: rarity.rare },
     { name: 'Sealing wax' },
     { name: 'Signet ring' },
+    { name: 'Wax seal' },
 ];
 
 export default config.map((item) => ({ ...defaults, ...item }));

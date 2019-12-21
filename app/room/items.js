@@ -1,11 +1,8 @@
 
-import { title } from '../ui/title';
-
-import quantity, { getRange } from '../attributes/quantity';
-
-import { roll } from '../utility/roll';
-
 import { getItem } from '../item';
+import { roll } from '../utility/roll';
+import { title } from '../ui/title';
+import quantity, { getRange } from '../attributes/quantity';
 
 const getItemCount = (itemQuantity) => {
     let { min, max } = getRange(itemQuantity);
@@ -25,7 +22,16 @@ export const getItemList = (config) => {
 
     let count = getItemCount(itemQuantity);
 
-    let list = [...Array(count)].map((_, i) => getItem().name).join(', ');
+    let items = [ ...Array(count) ].reduce((obj) => {
+        let item  = getItem();
+        obj[item] = (obj[item] + 1) || 1;
+        return obj;
+    }, {});
 
-    return title(`Items (${count})`) + `<p>${list}</p>`;
+    let list  = Object.keys(items).map((item) => {
+        let count = items[item];
+        return count === 1 ? item : `[${count}x] ${item}`;
+    });
+
+    return title(`Items (${count})`) + `<p>${list.join(', ')}</p>`;
 };

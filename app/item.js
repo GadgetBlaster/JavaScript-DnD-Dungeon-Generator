@@ -1,9 +1,9 @@
 
-import rarity, { list as rarities } from './attributes/rarity';
+import rarity, { list as rarities, rollRarity } from './attributes/rarity';
 import size from './attributes/size';
 import type from './items/type';
 
-import { roll } from './utility/roll';
+import { roll, rollArrayItem } from './utility/roll';
 
 import ammo from './items/types/ammo';
 import chancery from './items/types/chancery';
@@ -41,14 +41,13 @@ const defaults = {
     type: type.miscellaneous,
 };
 
-const config = [
+const items = [
     ...ammo,
-];
+    ...chancery,
+].map((item) => ({ ...defaults, ...item }));
 
-const items = config.map((item) => ({ ...defaults, ...item }));
-
-const groupByRarity = rarities.reduce((obj, i) => {
-    obj[i] = [];
+const groupByRarity = rarities.reduce((obj, rarity) => {
+    obj[rarity] = [];
     return obj;
 }, {});
 
@@ -56,9 +55,9 @@ items.forEach((item) => {
     groupByRarity[item.rarity].push(item);
 });
 
-console.log(groupByRarity);
-
 export const getItem = () => {
-    let rarity = roll();
-    return { name: 'test' }
+    let rarity = rollRarity();
+    let item = rollArrayItem(groupByRarity[rarity]) || { name: 'Mysterious object' };
+
+    return item.name;
 };
