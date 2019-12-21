@@ -51,7 +51,7 @@ const getContentsDesc = (config) => {
         case quantity.zero:
             return;
         default:
-            console.error(`Undescribed item quantity: ${itemQuantity}`);
+            console.warn(`Undescribed item quantity: ${itemQuantity}`);
             return;
     }
 };

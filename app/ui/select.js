@@ -9,7 +9,7 @@ export const select = (label, name, values) => {
     return `
         <label>${label}</label>
         <select name="${name}">
-            ${options}
+            ${options.join('')}
         </select>
     `;
 };

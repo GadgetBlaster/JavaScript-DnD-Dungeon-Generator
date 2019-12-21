@@ -2,7 +2,7 @@
 import { random } from '../utility/random';
 import { rollArrayItem } from '../utility/roll';
 
-import { config as roomKnobs } from '../room/knobs';
+import { config as roomKnobs } from '../rooms/knobs';
 
 import { button } from './button';
 import { select } from './select';
@@ -34,11 +34,7 @@ export const getFormData = (knobContainer) => {
     let fields = [ ...knobContainer.querySelectorAll('[name]') ];
     let config = fields.reduce((set, item) => {
         let { name, value } = item;
-
-        let formValue = value === random ? getRandomSelectOption(item.options) : value;
-
-        set[name] = formValue;
-
+        set[name] = value;
         return set;
     }, {});
 

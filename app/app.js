@@ -1,11 +1,11 @@
 
-import { generateRoom } from './room/room';
+import { generateRoom } from './room';
 
 import {
     actionGenerate,
     getFormData,
     knobs,
-} from '/app/ui/form';
+} from './ui/form';
 
 const knobContainer = document.getElementById('knobs');
 const contentContainer = document.getElementById('content');
