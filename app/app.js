@@ -1,5 +1,5 @@
 
-import { generateRoom } from '/app/room/room';
+import { generateRoom } from './room/room';
 
 import {
     actionGenerate,

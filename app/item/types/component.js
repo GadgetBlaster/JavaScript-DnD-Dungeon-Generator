@@ -1,5 +1,9 @@
 
-const defaults = {};
+import type from '../type';
+
+const defaults = {
+    type: type.component,
+};
 
 const config = [
     { name: 'Sprig of mistletoe' },

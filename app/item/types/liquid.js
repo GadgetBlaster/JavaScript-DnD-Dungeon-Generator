@@ -1,9 +1,13 @@
 
-import rarity from '../attribute/rarity';
+import rarity from '../../attributes/rarity';
+import type from '../type';
 
-let { uncommon } = rarity;
+let {
+    common,
+    uncommon,
+} = rarity;
 
-const receptacles = [
+const variants = [
     'Barrel',
     'Beaker',
     'Bottle',
@@ -13,17 +17,23 @@ const receptacles = [
     'Tankard',
     'Vat',
     'Vial',
+    'Waterskin',
 ];
 
 const defaults = {
-    receptacles,
     rarity: uncommon,
+    type: type.liquid,
+    variants,
 };
 
 const config = [
     { name: 'Acid' },
     { name: 'Alchemist’s fire' },
     { name: 'Antitoxin' },
+    { name: 'Holy water' },
+    { name: 'Oil' },
+    { name: 'Water', rarity: common },
+    { name: 'Poison, basic' },
 ];
 
 export default config.map((item) => ({ ...defaults, ...item }));

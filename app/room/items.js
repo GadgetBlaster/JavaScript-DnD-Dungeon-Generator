@@ -1,7 +1,7 @@
 
 import { getRandomInt, getRandomArrayItem } from '/app/utility/random';
-import { items } from '/app/item/item';
-import quantity, { getRange } from '../attribute/quantity';
+import items from '/app/item/item';
+import quantity, { getRange } from '../attributes/quantity';
 import { title } from '/app/ui/title';
 
 const getItemCount = (itemQuantity) => {
@@ -17,7 +17,7 @@ export const getItemList = (config) => {
     } = config;
 
     if (itemQuantity === quantity.zero) {
-        return title('Items: None');
+        return;
     }
 
     let count = getItemCount(itemQuantity);

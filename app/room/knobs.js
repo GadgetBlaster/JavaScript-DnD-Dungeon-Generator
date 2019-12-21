@@ -1,9 +1,9 @@
 
-import { random } from '/app/utility/random';
+import { random } from '../utility/random';
 
-import { list as conditions } from '../attribute/condition';
-import { list as quantities } from '/app/attribute/quantity';
-import { sizes } from '/app/attribute/size';
+import { list as conditions } from '../attributes/condition';
+import { list as quantities } from '../attributes/quantity';
+import { list as sizes } from '../attributes/size';
 
 const typeSelect = 'select';
 
@@ -16,7 +16,7 @@ const getValues = (values) => {
 
 export const config = [
     {
-        label: 'Room Options',
+        label: 'Room',
         options: {
             condition: {
                 label:  'Room Condition',

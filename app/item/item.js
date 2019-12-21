@@ -1,79 +1,50 @@
 
-import rarity from '../attribute/rarity';
-import size from '../attribute/size';
+import rarity from '../attributes/rarity';
+import size from '../attributes/size';
+import type from './type';
 
-import container from './container';
+import ammo from './types/ammo';
+import chancery from './types/chancery';
+import clothing from './types/clothing';
+import component from './types/component';
+import container from './types/container';
+import food from './types/food';
+import furnishing from './types/furnishing';
+import kitchen from './types/kitchen';
+import liquid from './types/liquid';
+import miscellaneous from './types/miscellaneous';
+import mythic from './types/mythic';
+import potion from './types/potion';
+import survival from './types/survival';
+import tool from './types/tool';
+import weapon from './types/weapon';
 
 /**
  * Item
  * 
  * @typedef {Item}
  *  @property {string} name
+ *  @property {string} type
  *  @property {string} rarity
- *  @property {number} quantity
+ *  @property {number} quantity - Max number of item found 
  *  @property {number} [capacity] - Max number of small items found inside 
- *  @property {string[]} [receptacles]
- *  @property {string[]} [variants]
+ *  @property {string[]} [variants] - Array of variations
  */
 
 const defaults = {
     quantity: 1,
-    size: size.small,
     rarity: rarity.average,
+    size: size.small,
+    type: type.miscellaneous,
 };
 
 const config = [
-    { name: 'Healer’s kit' },
-    { name: 'Holy symbol Amulet Emblem' },
-    { name: 'Reliquary' },
-    { name: 'Holy water (flask)' },
-    { name: 'Hourglass' },
-    { name: 'Hunting trap' },
-    { name: 'Ink (1 ounce bottle)' },
-    { name: 'Ink pen' },
-    { name: 'Jug or pitcher' },
-    { name: 'Ladder (10-foot)' },
-    { name: 'Lamp' },
-    { name: 'Lantern, bullseye' },
-    { name: 'Lantern, hooded' },
-    { name: 'Lock' },
-    { name: 'Magnifying glass' },
-    { name: 'Manacles' },
-    { name: 'Mess kit' },
-    { name: 'Mirror, steel' },
-    { name: 'Oil (flask)' },
-    { name: 'Paper (one sheet)' },
-    { name: 'Parchment (one sheet)' },
-    { name: 'Perfume (vial)' },
-    { name: 'Pick, miner’s' },
-    { name: 'Piton' },
-    { name: 'Poison, basic (vial)' },
-    { name: 'Pole (10-foot)' },
-    { name: 'Pot, iron' },
-    { name: 'Potion of healing' },
-    { name: 'Pouch' },
-    { name: 'Quiver' },
-    { name: 'Ram, portable' },
-    { name: 'Rations (1 day)' },
-    { name: 'Robes' },
-    { name: 'Rope, hempen (50 feet)' },
-    { name: 'Rope, silk (50 feet)' },
-    { name: 'Sack' },
-    { name: 'Scale, merchant’s' },
-    { name: 'Sealing wax' },
-    { name: 'Shovel' },
-    { name: 'Signal whistle' },
-    { name: 'Signet ring' },
-    { name: 'Soap' },
-    { name: 'Spellbook' },
-    { name: 'Spikes, iron (10)' },
-    { name: 'Spyglass' },
-    { name: 'Tent, two-person' },
-    { name: 'Tinderbox' },
-    { name: 'Torch' },
-    { name: 'Vial' },
-    { name: 'Waterskin' },
-    { name: 'Whetstone' },
+    ...ammo,
 ];
 
-export const items = config.map((item) => ({ ...defaults, ...item }));
+const items = config.map((item) => {
+    console.log('hi');
+    return { ...defaults, ...item };
+});
+
+export default items;

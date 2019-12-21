@@ -1,9 +1,9 @@
 
-import condition from '../attribute/condition';
-import quantity from '../attribute/quantity';
-import size from '../attribute/size';
+import condition from '../attributes/condition';
+import quantity from '../attributes/quantity';
+import size from '../attributes/size';
 
-import { title } from '/app/ui/title';
+import { title } from '../ui/title';
 
 const getSizeDesc = (config) => {
     let {
