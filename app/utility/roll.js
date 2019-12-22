@@ -1,16 +1,27 @@
 
+const minPercent = 1;
+const maxPercent = 100;
+
+const _throw = (m) => { throw m; }
+
 export const roll = (min = 0, max = 1) => {
+    min < 0   && _throw(`Min cannot be negative`);
+    min > max && _throw('Min must be lower than max');
+
     return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+};
+
+export const rollPercentile = (chance) => {
+    !Number.isInteger(chance) && _throw(`Percent chance must be an integer`);
+    chance < minPercent && _throw(`Percent chance must be ${minPercent} or greater`);
+    chance > maxPercent && _throw(`Percent chance exceeds ${maxPercent}`);
+
+    return roll(minPercent, maxPercent) <= chance;
+};
 
 export const rollArrayItem = (array) => {
     return array[Math.floor(Math.random() * array.length)];
 };
-
-const _throw = (m) => { throw m; }
-
-const minProbability = 1;
-const maxProbability = 100;
 
 export function Probability(config) {
     !Array.isArray(config) && _throw(`Probability config must be an array`)
@@ -19,8 +30,8 @@ export function Probability(config) {
 
     map.forEach((_, key) => {
         !Number.isInteger(key) && _throw(`Probability key "${key}" must be an integer`);
-        key < minProbability   && _throw(`Probability key "${key}" must be a positive integer`);
-        key > maxProbability   && _throw(`Probability key "${key}" exceeds 100`);
+        key < minPercent && _throw(`Probability key "${key}" must be ${minPercent} or greater`);
+        key > maxPercent && _throw(`Probability key "${key}" exceeds ${maxPercent}`);
     });
 
     let sorted = [ ...map.keys() ].sort((a, b) => a - b);
@@ -38,7 +49,7 @@ export function Probability(config) {
     return {
         description,
         roll: () => {
-            let result = roll(minProbability, maxProbability);
+            let result = roll(minPercent, maxPercent);
             let key    = sorted.find((val) => result <= val);
 
             return map.get(key);
