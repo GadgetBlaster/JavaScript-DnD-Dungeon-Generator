@@ -7,6 +7,7 @@ import size from '../attributes/size';
 
 const getSizeDesc = (settings) => {
     let {
+        [knobs.roomType]: roomType,
         [knobs.itemQuantity]: itemQuantity,
         [knobs.roomCondition]: roomCondition,
         [knobs.roomSize]: roomSize,
@@ -17,7 +18,7 @@ const getSizeDesc = (settings) => {
     }
 
     let empty = itemQuantity === quantity.zero ? ' empty' : '';
-    let desc  = `You enter a ${roomSize}${empty} room`;
+    let desc  = `You enter a ${roomSize}${empty} ${roomType}`;
 
     if (roomCondition !== condition.average) {
         desc += ` in ${roomCondition} condition`;
@@ -27,22 +28,25 @@ const getSizeDesc = (settings) => {
 };
 
 const getContentsDesc = (settings) => {
-    let { [knobs.itemQuantity]: itemQuantity } = settings;
+    let {
+        [knobs.itemQuantity]: itemQuantity,
+        [knobs.roomType]: roomType,
+    } = settings;
 
     switch (itemQuantity) {
         case quantity.one:
-            return 'The room is entirely empty except for a single item';
+            return `The ${roomType} is entirely empty except for a single item`;
         case quantity.couple:
-            return `There are a couple of things in the room`;
+            return `There are a couple of things in the ${roomType}`;
         case quantity.few:
-            return `There are a few things in the room`;
+            return `There are a few things in the ${roomType}`;
         case quantity.some:
         case quantity.several:
-            return `There are ${itemQuantity} things in the room`;
+            return `You can see ${itemQuantity} objects as you look around`;
         case quantity.many:
-            return `The room is cluttered with items`;
+            return `The ${roomType} is cluttered with items`;
         case quantity.numerous:
-            return `There are numerous objects littering the room`;
+            return `There are numerous objects littering the ${roomType}`;
         case quantity.zero:
             return;
         default:

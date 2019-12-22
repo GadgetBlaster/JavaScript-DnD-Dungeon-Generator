@@ -1,10 +1,11 @@
 
 import { knobs } from './knobs';
+import { list as roomTypes } from './type';
 import { probability as conditionProbability } from '../attributes/condition'
-import { probability as rarityProbability } from '../attributes/rarity'
 import { probability as quantityProbability } from '../attributes/quantity'
-import { sizes } from '../attribute';
+import { probability as rarityProbability } from '../attributes/rarity'
 import { random } from '../utility/random';
+import { sizes } from '../attribute';
 
 import {
     rollArrayItem,
@@ -14,32 +15,47 @@ import {
 const uniformConditionChance = 10;
 const uniformRarityChance    = 10;
 
+let {
+    itemCondition,
+    itemQuantity,
+    itemRarity,
+    roomCondition,
+    roomSize,
+    roomType,
+} = knobs;
+
 export const getSettings = (config) => {
+
+
     Object.keys(config).forEach((key) => {
         if (config[key] !== random) {
             return;
         }
 
         switch (key) {
-            case knobs.roomCondition:
+            case roomType:
+                config[key] = rollArrayItem(roomTypes);
+                return;
+
+                case roomCondition:
                 config[key] = conditionProbability.roll();
                 return;
 
-            case knobs.roomSize:
+            case roomSize:
                 config[key] = rollArrayItem(sizes)
                 return;
 
-            case knobs.itemQuantity:
+            case itemQuantity:
                 config[key] = quantityProbability.roll()
                 break;
 
-            case knobs.itemCondition:
+            case itemCondition:
                 if (rollPercentile(uniformConditionChance)) {
                     config[key] = conditionProbability.roll();
                 }
                 break;
 
-            case knobs.itemRarity:
+            case itemRarity:
                 if (rollPercentile(uniformRarityChance)) {
                     config[key] = rarityProbability.roll();
                 }
