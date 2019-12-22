@@ -5,6 +5,11 @@
     font-family: monospace;
 }
 
+:focus {
+    outline: none;
+    box-shadow: 0 0 2px 1px #1ba3f7;
+}
+
 body {
     margin: 20px;
 }
@@ -52,6 +57,7 @@ button[data-size="large"] {
 }
 
 select {
+    min-width: 120px;
     height: 24px;
 }
 
@@ -68,7 +74,7 @@ ul {
 }
 
 li {
-    padding-right: 12px;
+    padding-right: 20px;
 }
 
 [data-columns="2"] { columns: 2; }

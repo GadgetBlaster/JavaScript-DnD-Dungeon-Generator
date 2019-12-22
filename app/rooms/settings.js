@@ -1,8 +1,9 @@
 
-import { conditions, quantities, sizes } from '../attribute';
+import { quantities, sizes } from '../attribute';
 import { random } from '../utility/random';
 import { rollArrayItem } from '../utility/roll';
 import { knobs } from './knobs';
+import { probability as conditionProbability } from '../attributes/condition'
 
 export const getSettings = (config) => {
     Object.keys(config).forEach((key) => {
@@ -10,27 +11,19 @@ export const getSettings = (config) => {
             return;
         }
 
-        let list;
-
         switch (key) {
             case knobs.itemQuantity:
-                list = quantities;
+                config[key] = rollArrayItem(quantities)
                 break;
 
             case knobs.roomCondition:
-                list = conditions;
-                break;
+                config[key] = conditionProbability.roll();
+                return;
 
             case knobs.roomSize:
-                list = sizes;
-                break;
+                config[key] = rollArrayItem(sizes)
+                return;
         }
-
-        if (!list) {
-            return;
-        }
-
-        config[key] = rollArrayItem(list);
     });
 
     return config;

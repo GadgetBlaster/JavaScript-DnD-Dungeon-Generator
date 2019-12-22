@@ -1,20 +1,32 @@
 
+import { knobs } from './rooms/knobs';
+import { random } from './utility/random';
 import { rollArrayItem } from './utility/roll';
-import rarity, { list as rarities, rollRarity } from './attributes/rarity';
+import { strong } from './ui/type';
 import set from './items/set';
 import size from './attributes/size';
 import type from './items/type';
 
+import rarity, {
+    list as rarities,
+    probability as rarityProbability,
+} from './attributes/rarity';
+
+import condition, {
+    probability as conditionProbability,
+} from './attributes/condition';
+import quantity from './attributes/quantity';
+
 /**
  * Item
- * 
+ *
  * @typedef {Item}
  *  @property {string} name
  *  @property {number} count
  *  @property {string} type
  *  @property {string} rarity
- *  @property {number} quantity - Max number of item found 
- *  @property {number} [capacity] - Max number of small items found inside 
+ *  @property {number} quantity - Max number of item found
+ *  @property {number} [capacity] - Max number of small items found inside
  *  @property {string[]} [variants] - Array of variations
  */
 
@@ -24,6 +36,12 @@ const defaults = {
     size: size.small,
     type: type.miscellaneous,
 };
+
+const rarityIndicated = new Set([
+    rarity.rare,
+    rarity.exotic,
+    rarity.legendary,
+]);
 
 const items = set.map((item) => ({ ...defaults, ...item }));
 
@@ -36,9 +54,41 @@ items.forEach((item) => {
     groupByRarity[item.rarity].push(item);
 });
 
-export const generateItem = () => {
-    let rarity = rollRarity();
-    let item   = rollArrayItem(groupByRarity[rarity]) || { name: 'Mysterious object' };
+export const generateItem = (settings) => {
+    let {
+        [knobs.itemCondition]: conditionSetting,
+        [knobs.itemQuantity]: quantitySetting,
+        [knobs.itemRarity]: raritySetting,
+    } = settings;
 
-    return item.name;
+    let itemRarity    = raritySetting;
+    let itemCondition = conditionSetting;
+
+    if (raritySetting === random) {
+        itemRarity = rarityProbability.roll();
+    }
+
+    if (conditionSetting === random) {
+        itemCondition = conditionProbability.roll();
+    }
+
+    let isSingle          = quantitySetting === quantity.one;
+    let indicateRare      = (isSingle || raritySetting === random)    && rarityIndicated.has(itemRarity);
+    let indicateCondition = (isSingle || conditionSetting === random) && itemCondition !== condition.average;
+
+    let item  = rollArrayItem(groupByRarity[itemRarity]) || { name: 'Mysterious object' };
+    let name  = indicateRare ? strong(item.name) : item.name;
+    let notes = [];
+
+    if (indicateRare) {
+        notes.push(itemRarity);
+    }
+
+    if (indicateCondition) {
+        notes.push(itemCondition);
+    }
+
+    let noteText = notes.length ? ` (${notes.join(', ')})` : '';
+
+    return name + noteText;
 };

@@ -26,13 +26,14 @@ export function Probability(config) {
     let sorted = [ ...map.keys() ].sort((a, b) => a - b);
 
     let description = 'Random: ' + sorted.reduce((acc, key, index) => {
-        let prev = sorted[index - 1];
+        let prev  = sorted[index - 1];
         let start = prev ? (prev + 1) : 1;
-        let end = key;
-        console.log(key);
-        console.log(map.get(key));
-        return `${acc} ${start}-${end}% ${map.get(key)},`;
-    }, '');
+        let end   = key;
+
+        acc.push(`${start}-${end}% ${map.get(key)}`)
+
+        return acc;
+    }, []).join(', ');
 
     return {
         description,

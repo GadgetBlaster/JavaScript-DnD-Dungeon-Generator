@@ -1,13 +1,14 @@
 
-import { conditions } from '../attribute';
 import { generateItem } from '../item';
 import { knobs } from './knobs';
 import { list } from '../ui/list';
 import { random } from '../utility/random';
-import { roll, rollArrayItem } from '../utility/roll';
-import { title } from '../ui/title';
-import condition from '../attributes/condition';
+import { roll } from '../utility/roll';
+import { title, paragraph } from '../ui/type';
 import quantity, { getRange } from '../attributes/quantity';
+import condition from '../attributes/condition';
+
+const maxColumns = 4;
 
 const getItemCount = (itemQuantity) => {
     let { min, max } = getRange(itemQuantity);
@@ -15,52 +16,69 @@ const getItemCount = (itemQuantity) => {
     return roll(min, max);
 };
 
-const generateItems = (count) => [ ...Array(count) ].reduce((obj) => {
-    let item  = generateItem();
+const generateItems = (count, settings) => [ ...Array(count) ].reduce((obj) => {
+    let item  = generateItem(settings);
     obj[item] = (obj[item] + 1) || 1;
     return obj;
 }, {});
 
-const getItemDescription = (item, count, itemCondition) => {
-    let label = count === 1 ? item : `[${count}x] ${item}`;
-
-    if (itemCondition === random) {
-        let randomCondition = rollArrayItem(conditions);
-
-        if (randomCondition !== condition.average) {
-            label += ` in ${randomCondition} condition`;
-        }
-    }
-
-    return label;
+const getItemDescription = (item, count) => {
+    return count === 1 ? item : `[${count}x] ${item}`;
 };
 
-export const getItemList = (config) => {
+const getConditionDescription = (itemCondition) => {
+    switch (itemCondition) {
+        case condition.busted:
+        case condition.decaying:
+            return `Everything in the room is ${itemCondition}`;
+
+        case condition.good:
+        case condition.poor:
+            return `All of the items in the room are in ${itemCondition} condition`;
+
+        case condition.exquisite:
+            return `The room’s contents are exquisite`;
+
+        case condition.average:
+        default:
+            return;
+    }
+};
+
+export const getItemList = (settings) => {
     let {
         [knobs.itemCondition]: itemCondition,
         [knobs.itemQuantity]: itemQuantity,
-    } = config;
+        [knobs.itemRarity]: itemRarity,
+    } = settings;
 
     if (itemQuantity === quantity.zero) {
         return;
     }
 
     let count = getItemCount(itemQuantity);
-    let items = generateItems(count);
+    let items = generateItems(count, settings);
 
     let itemList = Object.keys(items).map((item) => {
-        return getItemDescription(item, items[item], itemCondition);
+        return getItemDescription(item, items[item]);
     });
 
-    let content = [
-        title(`Items (${count})`),
-    ];
+    let content = [];
 
     if (itemQuantity !== quantity.one && itemCondition !== random) {
-        content.push(`<p>All of the items in the room are in ${itemCondition} condition.</p>`)
+        content.push(getConditionDescription(itemCondition));
     }
 
-    content.push(list(itemList, { columns: 4 }));
+    if (itemQuantity !== quantity.one && itemRarity !== random) {
+        content.push(`The room is filled with ${itemRarity} items`)
+    }
 
-    return content.join('');
+    let columns = Math.min(maxColumns, Math.max(1, Math.ceil(itemList.length / maxColumns)));
+    let description = content.length && paragraph(content.join('. ')+'.');
+
+    return [
+        title(`Items (${count})`),
+        description,
+        list(itemList, { columns }),
+    ].filter(Boolean).join('');
 };

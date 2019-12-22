@@ -21,7 +21,7 @@ let {
     legendary,
 } = rarity;
 
-const probability = new Probability([
+export const probability = new Probability([
     [ 30, abundant ],
     [ 55, common ],
     [ 75, average ],
@@ -30,8 +30,6 @@ const probability = new Probability([
     [ 98, exotic ],
     [ 100, legendary ],
 ]);
-
-export const rollRarity = probability.roll;
 
 export const list = Object.values(rarity);
 
