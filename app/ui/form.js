@@ -1,17 +1,18 @@
 
 import { actions } from './action';
 import { button, buttonSize } from './button';
-import { config as roomKnobs } from '../rooms/knobs';
 import { select } from './select';
 
-export const knobs = roomKnobs.map(({ label: groupLabel, options }) => {
+export const getKnobs = (config) => config.map((knobConfig) => {
+    let { label: groupLabel, options } = knobConfig;
+
     let fields = Object.keys(options).map((key) => {
         let { label, name, values, desc } = options[key];
 
         let knobSelect = select(label, name, values);
         let descId     = desc && `info-${name}`;
         let descButton = desc ? button('?', actions.showHide, { target: descId }) : '';
-        let descText   = desc ? `<p hidden="true" data-id="${descId}">${desc}</p>` : '';
+        let descText   = desc ? `<p hidden="true" data-id="${descId}"><small>${desc}</small></p>` : '';
 
         return `
             <div>
@@ -32,9 +33,12 @@ export const knobs = roomKnobs.map(({ label: groupLabel, options }) => {
 
 export const getFormData = (knobContainer) => {
     let fields = [ ...knobContainer.querySelectorAll('[name]') ];
+
     let config = fields.reduce((set, item) => {
         let { name, value } = item;
+
         set[name] = value;
+
         return set;
     }, {});
 

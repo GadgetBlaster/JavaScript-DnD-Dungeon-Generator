@@ -2,6 +2,7 @@
 import ammo from './types/ammo';
 import chancery from './types/chancery';
 import clothing from './types/clothing';
+import coin from './types/coin';
 import component from './types/component';
 import container from './types/container';
 import food from './types/food';
@@ -19,6 +20,7 @@ export default [
     ...ammo,
     ...chancery,
     ...clothing,
+    ...coin,
     ...component,
     ...container,
     ...food,

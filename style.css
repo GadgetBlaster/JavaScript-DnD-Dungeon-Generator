@@ -1,3 +1,9 @@
+:root {
+    --accent: #1ba3f7;
+    --bg: #f9f9f9;
+    --gray: #cccccc;
+    --white: #ffffff;
+}
 
 * {
     font-size: 16px;
@@ -7,11 +13,15 @@
 
 :focus {
     outline: none;
-    box-shadow: 0 0 2px 1px #1ba3f7;
+    box-shadow: 0 0 2px 1px var(--accent);
 }
 
 body {
     margin: 20px;
+}
+
+nav {
+    display: flex;
 }
 
 form {
@@ -20,7 +30,7 @@ form {
 
 fieldset {
     padding: 15px 25px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--gray);
     margin: 20px 0;
 }
 
@@ -43,13 +53,13 @@ label {
 button,
 select {
     border-radius: 4px;
-    background: #f9f9f9;
-    border: 1px solid #ccc;
+    background: var(--bg);
+    border: 1px solid var(--gray);
 }
 
 button[data-size="small"] {
     min-height: 30px;
-    padding: 0 4px;
+    padding: 0 12px;
 }
 
 button[data-size="large"] {
@@ -58,7 +68,15 @@ button[data-size="large"] {
 
 button[data-info] {
     border-radius: 50%;
+    padding: 0;
     min-width: 30px;
+    min-height: 30px;
+}
+
+button[data-active] {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: var(--white);
 }
 
 select {
@@ -66,12 +84,17 @@ select {
     height: 30px;
 }
 
+button + button,
 select + button {
     margin-left: 10px;
 }
 
 h1 {
     font-size: 18px;
+}
+
+small {
+    font-size: 14px;
 }
 
 ul {

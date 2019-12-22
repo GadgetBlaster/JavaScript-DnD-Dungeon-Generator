@@ -1,11 +1,12 @@
 
-import { knobs } from './rooms/knobs';
+import { knobs } from './knobs';
 import { random } from './utility/random';
 import { rollArrayItem, roll } from './utility/roll';
 import { strong } from './ui/typography';
+import quantity from './attributes/quantity';
 import set from './items/set';
 import size from './attributes/size';
-import type from './items/type';
+import type, { list as itemTypes } from './items/type';
 
 import rarity, {
     list as rarities,
@@ -15,7 +16,6 @@ import rarity, {
 import condition, {
     probability as conditionProbability,
 } from './attributes/condition';
-import quantity from './attributes/quantity';
 
 /**
  * Item
@@ -42,15 +42,23 @@ const rarityIndicated = new Set([
     rarity.legendary,
 ]);
 
+const detailsHidden = new Set([
+    type.coin,
+]);
+
 const items = set.map((item) => ({ ...defaults, ...item }));
 
-const groupByRarity = rarities.reduce((obj, rarity) => {
-    obj[rarity] = [];
+const makeGroup = (groups) => groups.reduce((obj, group) => {
+    obj[group] = [];
     return obj;
 }, {});
 
+const groupByRarity = makeGroup(rarities);
+const groupByType   = makeGroup(itemTypes);
+
 items.forEach((item) => {
     groupByRarity[item.rarity].push(item);
+    groupByType[item.type].push(item);
 });
 
 export const generateItem = (settings) => {
@@ -58,6 +66,7 @@ export const generateItem = (settings) => {
         [knobs.itemCondition]: conditionSetting,
         [knobs.itemQuantity]: quantitySetting,
         [knobs.itemRarity]: raritySetting,
+        [knobs.itemType]: itemType,
     } = settings;
 
     let itemRarity    = raritySetting;
@@ -67,16 +76,31 @@ export const generateItem = (settings) => {
         itemRarity = rarityProbability.roll();
     }
 
-    if (conditionSetting === random) {
+    let randomItem;
+
+    if (itemType === random) {
+        randomItem = rollArrayItem(groupByRarity[itemRarity]);
+    } else {
+        randomItem = rollArrayItem(groupByType[itemType]);
+    }
+
+    let item = randomItem || { name: 'Mysterious object' };
+
+    if (detailsHidden.has(item.type)) {
+        itemCondition = condition.average;
+        itemRarity    = rarity.average;
+    }
+
+    let isSingle     = quantitySetting === quantity.one;
+    let indicateRare = (isSingle || raritySetting === random) && rarityIndicated.has(itemRarity);
+    let name         = indicateRare ? strong(item.name) : item.name;
+
+    if (itemCondition === random) {
         itemCondition = conditionProbability.roll();
     }
 
-    let isSingle          = quantitySetting === quantity.one;
-    let indicateRare      = (isSingle || raritySetting === random)    && rarityIndicated.has(itemRarity);
     let indicateCondition = (isSingle || conditionSetting === random) && itemCondition !== condition.average;
 
-    let item  = rollArrayItem(groupByRarity[itemRarity]) || { name: 'Mysterious object' };
-    let name  = indicateRare ? strong(item.name) : item.name;
     let notes = [];
 
     if (indicateRare) {
@@ -93,7 +117,11 @@ export const generateItem = (settings) => {
         let quantity = roll(1, item.quantity);
 
         if (quantity > 1) {
-            name += `, set of ${quantity}`;
+            if (item.type === type.coin) {
+                name = `${quantity} ${name}${quantity > 1 ? 's' : ''}`;
+            } else {
+                name += `, set of ${quantity}`;
+            }
         }
     }
 

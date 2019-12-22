@@ -1,13 +1,14 @@
 
 export const actions = {
     generate: 'generate',
+    navigate: 'navigate',
     showHide: 'showHide',
 };
 
 export const toggleVisibility = (e) => {
     let id = e.target.dataset.target;
     let el = document.body.querySelector(`[data-id="${id}"`);
-    
+
     el.hidden = !el.hidden;
 };
 

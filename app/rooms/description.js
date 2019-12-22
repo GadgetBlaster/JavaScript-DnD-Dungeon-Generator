@@ -1,5 +1,5 @@
 
-import { knobs } from './knobs';
+import { knobs } from '../knobs';
 import { title } from '../ui/typography';
 import condition from '../attributes/condition';
 import quantity from '../attributes/quantity';

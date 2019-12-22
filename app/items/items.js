@@ -1,6 +1,6 @@
 
 import { generateItem } from '../item';
-import { knobs } from './knobs';
+import { knobs } from '../knobs';
 import { list } from '../ui/list';
 import { random } from '../utility/random';
 import { roll } from '../utility/roll';
@@ -17,7 +17,7 @@ const getItemCount = (itemQuantity) => {
     return roll(min, max);
 };
 
-const generateItems = (count, settings) => [ ...Array(count) ].reduce((obj) => {
+const generateItemObjects = (count, settings) => [ ...Array(count) ].reduce((obj) => {
     let item  = generateItem(settings);
     obj[item] = (obj[item] + 1) || 1;
     return obj;
@@ -64,19 +64,22 @@ const getRarityDescription = (itemRarity) => {
     }
 };
 
-export const getItemList = (settings) => {
+export const generateItems = (settings) => {
     let {
+        [knobs.roomType]: roomType,
         [knobs.itemCondition]: itemCondition,
         [knobs.itemQuantity]: itemQuantity,
         [knobs.itemRarity]: itemRarity,
     } = settings;
 
+    let inRoom = Boolean(roomType);
+
     if (itemQuantity === quantity.zero) {
-        return;
+        return inRoom ? [] : [ title('Items (0)') ];
     }
 
     let count = getItemCount(itemQuantity);
-    let items = generateItems(count, settings);
+    let items = generateItemObjects(count, settings);
 
     let itemList = Object.keys(items).map((item) => {
         return getItemDescription(item, items[item]);
@@ -101,5 +104,5 @@ export const getItemList = (settings) => {
         title(`Items (${count})`),
         description,
         list(itemList, { columns }),
-    ].filter(Boolean).join('');
+    ].filter(Boolean);
 };

@@ -1,16 +1,16 @@
 
 import { knobs } from './knobs';
-import { list as roomTypes } from './type';
-import { probability as conditionProbability } from '../attributes/condition'
-import { probability as quantityProbability } from '../attributes/quantity'
-import { probability as rarityProbability } from '../attributes/rarity'
-import { random } from '../utility/random';
-import { sizes } from '../attribute';
+import { list as roomTypes } from './rooms/type';
+import { probability as conditionProbability } from './attributes/condition'
+import { probability as quantityProbability } from './attributes/quantity'
+import { probability as rarityProbability } from './attributes/rarity'
+import { random } from './utility/random';
+import { sizes } from './attribute';
 
 import {
     rollArrayItem,
     rollPercentile,
-} from '../utility/roll';
+} from './utility/roll';
 
 const uniformConditionChance = 10;
 const uniformRarityChance    = 10;
@@ -25,8 +25,6 @@ let {
 } = knobs;
 
 export const getSettings = (config) => {
-
-
     Object.keys(config).forEach((key) => {
         if (config[key] !== random) {
             return;

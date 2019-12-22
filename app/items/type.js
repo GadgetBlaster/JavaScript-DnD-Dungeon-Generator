@@ -1,8 +1,9 @@
 
-const itemType = {
+const type = {
     ammo: 'ammo',
     chancery: 'chancery',
     clothing: 'clothing',
+    coin: 'coin',
     component: 'component',
     container: 'container',
     food: 'food',
@@ -17,4 +18,6 @@ const itemType = {
     weapon: 'weapon',
 };
 
-export default itemType;
+export const list = Object.values(type);
+
+export default type;

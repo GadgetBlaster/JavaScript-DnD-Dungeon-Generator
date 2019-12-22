@@ -8,11 +8,20 @@ export const buttonSize = {
 
 let { small } = buttonSize;
 
-export const button = (label, action, { size = small, target } = {}) => {
+export const button = (label, action, options = {}) => {
+    let {
+        size = small,
+        active,
+        target,
+        value,
+    } = options;
+
     let attrs = {
         action,
         size,
+        ...(active && { active }),
         ...(target && { target }),
+        ...(value && { value }),
         ...(label === infoLabel && { 'info': 'true' }),
     };
 
