@@ -1,8 +1,8 @@
 
 import { knobs } from './rooms/knobs';
 import { random } from './utility/random';
-import { rollArrayItem } from './utility/roll';
-import { strong } from './ui/type';
+import { rollArrayItem, roll } from './utility/roll';
+import { strong } from './ui/typography';
 import set from './items/set';
 import size from './attributes/size';
 import type from './items/type';
@@ -22,7 +22,6 @@ import quantity from './attributes/quantity';
  *
  * @typedef {Item}
  *  @property {string} name
- *  @property {number} count
  *  @property {string} type
  *  @property {string} rarity
  *  @property {number} quantity - Max number of item found
@@ -89,6 +88,19 @@ export const generateItem = (settings) => {
     }
 
     let noteText = notes.length ? ` (${notes.join(', ')})` : '';
+
+    if (item.quantity > 1) {
+        let quantity = roll(1, item.quantity);
+
+        if (quantity > 1) {
+            name += `, set of ${quantity}`;
+        }
+    }
+
+    if (item.variants) {
+        let variant = rollArrayItem(item.variants);
+        name += `, ${variant}`;
+    }
 
     return name + noteText;
 };

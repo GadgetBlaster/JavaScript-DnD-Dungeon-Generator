@@ -4,12 +4,12 @@ import { knobs } from './knobs';
 import { list } from '../ui/list';
 import { random } from '../utility/random';
 import { roll } from '../utility/roll';
-import { title, paragraph } from '../ui/type';
+import { title, paragraph } from '../ui/typography';
 import condition from '../attributes/condition';
 import rarity from '../attributes/rarity';
 import quantity, { getRange } from '../attributes/quantity';
 
-const maxColumns = 4;
+const maxColumns = 3;
 
 const getItemCount = (itemQuantity) => {
     let { min, max } = getRange(itemQuantity);

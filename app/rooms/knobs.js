@@ -1,6 +1,7 @@
 
 import { conditions, quantities, sizes, rarities } from '../attribute';
 import { probability as conditionProbability } from '../attributes/condition';
+import { probability as quantityProbability } from '../attributes/quantity';
 import { probability as rarityProbability } from '../attributes/rarity';
 import { random } from '../utility/random';
 
@@ -37,6 +38,7 @@ export const config = [
                 name:   knobs.roomSize,
                 type:   typeSelect,
                 values: getValues(sizes),
+                desc:   'Random: Equal probability'
             },
         },
     },
@@ -55,6 +57,7 @@ export const config = [
                 name:   knobs.itemQuantity,
                 type:   typeSelect,
                 values: getValues(quantities),
+                desc:   quantityProbability.description,
             },
             rarity: {
                 label:  'Item Rarity',

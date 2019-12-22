@@ -1,11 +1,19 @@
 
-import { uiSmall } from './size';
+const infoLabel = '?';
 
-export const button = (label, action, { size = uiSmall, target } = {}) => {
+export const buttonSize = {
+    small: 'small',
+    large: 'large',
+};
+
+let { small } = buttonSize;
+
+export const button = (label, action, { size = small, target } = {}) => {
     let attrs = {
         action,
         size,
-        ...(target && { target })
+        ...(target && { target }),
+        ...(label === infoLabel && { 'info': 'true' }),
     };
 
     let htmlAttrs = Object.keys(attrs).map((key) => {

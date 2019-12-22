@@ -2,7 +2,8 @@
 import { knobs } from './knobs';
 import { probability as conditionProbability } from '../attributes/condition'
 import { probability as rarityProbability } from '../attributes/rarity'
-import { quantities, sizes } from '../attribute';
+import { probability as quantityProbability } from '../attributes/quantity'
+import { sizes } from '../attribute';
 import { random } from '../utility/random';
 
 import {
@@ -29,19 +30,17 @@ export const getSettings = (config) => {
                 return;
 
             case knobs.itemQuantity:
-                config[key] = rollArrayItem(quantities)
+                config[key] = quantityProbability.roll()
                 break;
 
             case knobs.itemCondition:
                 if (rollPercentile(uniformConditionChance)) {
-                    console.log('uniform item condition');
                     config[key] = conditionProbability.roll();
                 }
                 break;
 
             case knobs.itemRarity:
                 if (rollPercentile(uniformRarityChance)) {
-                    console.log('uniform item rarity');
                     config[key] = rarityProbability.roll();
                 }
                 break;

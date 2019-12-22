@@ -1,9 +1,8 @@
 
 import { actions } from './action';
-import { button } from './button';
+import { button, buttonSize } from './button';
 import { config as roomKnobs } from '../rooms/knobs';
 import { select } from './select';
-import { uiLarge } from './size';
 
 export const knobs = roomKnobs.map(({ label: groupLabel, options }) => {
     let fields = Object.keys(options).map((key) => {
@@ -29,7 +28,7 @@ export const knobs = roomKnobs.map(({ label: groupLabel, options }) => {
             ${fields}
         </fieldset>
     `;
-}).join('') + button('Generate', actions.generate, { size: uiLarge });
+}).join('') + button('Generate', actions.generate, { size: buttonSize.large });
 
 export const getFormData = (knobContainer) => {
     let fields = [ ...knobContainer.querySelectorAll('[name]') ];

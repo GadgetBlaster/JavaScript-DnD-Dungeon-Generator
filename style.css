@@ -48,7 +48,7 @@ select {
 }
 
 button[data-size="small"] {
-    height: 24px;
+    min-height: 30px;
     padding: 0 4px;
 }
 
@@ -56,9 +56,14 @@ button[data-size="large"] {
     padding: 8px 20px;
 }
 
+button[data-info] {
+    border-radius: 50%;
+    min-width: 30px;
+}
+
 select {
     min-width: 120px;
-    height: 24px;
+    height: 30px;
 }
 
 select + button {

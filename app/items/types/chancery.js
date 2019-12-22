@@ -2,7 +2,7 @@
 import rarity from '../../attributes/rarity'
 import type from '../type';
 
-const defaults = { 
+const defaults = {
     rarity: rarity.uncommon,
     type: type.chancery,
 };
@@ -13,8 +13,8 @@ const config = [
     { name: 'Chalk' },
     { name: 'Hourglass', rarity: rarity.rare },
     { name: 'Ink pen' },
-    { name: 'Ink', variants: [ 'Vial', 'Bottle' ] },
-    { name: 'Journal', variants: [ 'Blank', 'Adventurer’s', 'Noble person’s', 'Hermit’s', 'Wizard’s', 'Merchant’s' ] },
+    { name: 'Ink', variants: [ 'vial', 'bottle' ] },
+    { name: 'Journal', variants: [ 'blank', 'adventurer’s', 'noble person’s', 'hermit’s', 'wizard’s', 'merchant’s' ] },
     { name: 'Paper', quantity: 100 },
     { name: 'Paperweight' },
     { name: 'Parchment', quantity: 100 },

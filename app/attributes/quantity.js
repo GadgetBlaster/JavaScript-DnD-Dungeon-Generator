@@ -1,4 +1,6 @@
 
+import { Probability } from '../utility/roll';
+
 const quantity = {
     zero: 'zero',
     one: 'one',
@@ -10,9 +12,31 @@ const quantity = {
     numerous: 'numerous',
 };
 
-const range = [ 0, 1, 2, 3, 5, 7, 13, 26, 99 ];
+let {
+    zero,
+    one,
+    couple,
+    few,
+    some,
+    several,
+    many,
+    numerous,
+} = quantity;
+
+export const probability = new Probability([
+    [ 10, zero ],
+    [ 20, one ],
+    [ 30, couple ],
+    [ 40, few ],
+    [ 70, some ],
+    [ 85, several ],
+    [ 95, many ],
+    [ 100, numerous ],
+]);
 
 export const list = Object.values(quantity);
+
+const range = [ 0, 1, 2, 3, 5, 7, 13, 26, 99 ];
 
 export const getRange = (value) => {
     let index = list.indexOf(value);

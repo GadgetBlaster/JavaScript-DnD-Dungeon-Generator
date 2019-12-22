@@ -4,7 +4,7 @@ import type from '../type';
 
 let { common, uncommon } = rarity;
 
-const defaults = { 
+const defaults = {
     rarity: uncommon,
     type: type.survival,
 };
@@ -17,7 +17,7 @@ const config = [
     { name: 'Hunting trap' },
     { name: 'Piton' },
     { name: 'Signal whistle' },
-    { name: 'Tent', variants: [ 'One-person', 'Two-person', 'TODO' ] },
+    { name: 'Tent', variants: [ 'one-person', 'two-person', 'todo' ] },
     { name: 'Tinderbox' },
 ];
 

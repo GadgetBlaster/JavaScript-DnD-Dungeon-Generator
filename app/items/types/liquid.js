@@ -8,16 +8,16 @@ let {
 } = rarity;
 
 const variants = [
-    'Barrel',
-    'Beaker',
-    'Bottle',
-    'Flask',
-    'Jar',
-    'Jug',
-    'Tankard',
-    'Vat',
-    'Vial',
-    'Waterskin',
+    'barrel',
+    'beaker',
+    'bottle',
+    'flask',
+    'jar',
+    'jug',
+    'tankard',
+    'vat',
+    'vial',
+    'waterskin',
 ];
 
 const defaults = {

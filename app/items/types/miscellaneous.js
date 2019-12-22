@@ -3,7 +3,7 @@ import rarity from '../../attributes/rarity';
 
 let { abundant, common } = rarity;
 
-const defaults = { 
+const defaults = {
     rarity: common,
 };
 
@@ -12,7 +12,7 @@ const config = [
     { name: 'Candle', rarity: abundant, quantity: 5 },
     { name: 'Totem' },
     { name: 'Manacles' },
-    { name: 'Perfume', variants: [ 'Vial', 'Bottle' ] },
+    { name: 'Perfume', variants: [ 'vial', 'bottle' ] },
     { name: 'Torch' },
 ];
 

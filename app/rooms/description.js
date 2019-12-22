@@ -1,6 +1,6 @@
 
 import { knobs } from './knobs';
-import { title } from '../ui/type';
+import { title } from '../ui/typography';
 import condition from '../attributes/condition';
 import quantity from '../attributes/quantity';
 import size from '../attributes/size';
