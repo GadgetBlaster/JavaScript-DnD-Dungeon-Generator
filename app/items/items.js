@@ -5,8 +5,6 @@ import { list } from '../ui/list';
 import { random } from '../utility/random';
 import { roll } from '../utility/roll';
 import { title, paragraph } from '../ui/typography';
-import condition from '../attributes/condition';
-import rarity from '../attributes/rarity';
 import quantity, { getRange } from '../attributes/quantity';
 
 const maxColumns = 3;
@@ -28,40 +26,11 @@ const getItemDescription = (item, count) => {
 };
 
 const getConditionDescription = (itemCondition) => {
-    switch (itemCondition) {
-        case condition.busted:
-        case condition.decaying:
-            return `Everything in the room is ${itemCondition}`;
-
-        case condition.good:
-        case condition.poor:
-            return `All of the items in the room are in ${itemCondition} condition`;
-
-        case condition.exquisite:
-            return `The room’s contents are exquisite`;
-
-        case condition.average:
-        default:
-            return;
-    }
+    return `Condition: ${itemCondition}`;
 };
 
 const getRarityDescription = (itemRarity) => {
-    switch (itemRarity) {
-        case rarity.exotic:
-        case rarity.legendary:
-        case rarity.rare:
-            return `All the items in the room are ${itemRarity}`;
-
-        case rarity.uncommon:
-            return `The room’s items are uncommon`;
-
-        case rarity.abundant:
-        case rarity.average:
-        case rarity.common:
-        default:
-            return;
-    }
+    return `Rarity: ${itemRarity}`;
 };
 
 export const generateItems = (settings) => {
@@ -98,7 +67,7 @@ export const generateItems = (settings) => {
     }
 
     let columns = Math.min(maxColumns, Math.max(1, Math.ceil(itemList.length / maxColumns)));
-    let description = descriptions.length && paragraph(descriptions.join('. ')+'.');
+    let description = descriptions.length && paragraph(descriptions.map((desc) => desc).join(' | '));
 
     return [
         title(`Items (${count})`),

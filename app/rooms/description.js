@@ -1,16 +1,17 @@
 
 import { knobs } from '../knobs';
-import { title } from '../ui/typography';
+import { title, paragraph } from '../ui/typography';
 import condition from '../attributes/condition';
 import quantity from '../attributes/quantity';
+import rarity from '../attributes/rarity';
 import size from '../attributes/size';
 
 const getSizeDesc = (settings) => {
     let {
-        [knobs.roomType]: roomType,
         [knobs.itemQuantity]: itemQuantity,
         [knobs.roomCondition]: roomCondition,
         [knobs.roomSize]: roomSize,
+        [knobs.roomType]: roomType,
     } = settings;
 
     if (roomSize === size.medium) {
@@ -55,9 +56,57 @@ const getContentsDesc = (settings) => {
     }
 };
 
+const getItemConditionDescription = (itemCondition) => {
+    switch (itemCondition) {
+        case condition.busted:
+        case condition.decaying:
+            return `Everything in the room is ${itemCondition}`;
+
+        case condition.good:
+        case condition.poor:
+            return `All of the items in the room are in ${itemCondition} condition`;
+
+        case condition.exquisite:
+            return `The room’s contents are in exquisite condition`;
+
+        case condition.average:
+        default:
+            return;
+    }
+};
+
+const getItemRarityDescription = (itemRarity) => {
+    switch (itemRarity) {
+        case rarity.exotic:
+        case rarity.legendary:
+        case rarity.rare:
+            return `All items in the room are ${itemRarity}`;
+
+        case rarity.uncommon:
+            return `The room’s items are all uncommon`;
+
+        case rarity.abundant:
+            return `The room contains typical items`;
+
+        case rarity.common:
+            return `The room contains ${itemRarity} items`;
+
+        case rarity.average:
+        default:
+            return;
+    }
+};
+
 export const getDescription = (settings) => {
+    let {
+        [knobs.itemCondition]: itemCondition,
+        [knobs.itemRarity]: itemRarity,
+    } = settings;
+
     return title('Room Description') + '<p>' + [
         getSizeDesc(settings),
         getContentsDesc(settings),
+        getItemConditionDescription(itemCondition),
+        getItemRarityDescription(itemRarity),
     ].filter(Boolean).join('. ') + '.</p>';
 };
