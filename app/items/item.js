@@ -64,9 +64,9 @@ items.forEach((item) => {
 export const generateItem = (settings) => {
     let {
         [knobs.itemCondition]: conditionSetting,
-        [knobs.itemQuantity]: quantitySetting,
-        [knobs.itemRarity]: raritySetting,
-        [knobs.itemType]: itemType,
+        [knobs.itemQuantity] : quantitySetting,
+        [knobs.itemRarity]   : raritySetting,
+        [knobs.itemType]     : itemType,
     } = settings;
 
     let itemRarity    = raritySetting;

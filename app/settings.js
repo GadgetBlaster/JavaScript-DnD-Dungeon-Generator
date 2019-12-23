@@ -24,7 +24,7 @@ let {
     roomType,
 } = knobs;
 
-const randomizations = {
+const roomRandomizations = {
     [roomType]     : () => rollArrayItem(roomTypes),
     [roomCondition]: () => conditionProbability.roll(),
     [roomSize]     : () => rollArrayItem(sizes),
@@ -33,7 +33,7 @@ const randomizations = {
     [itemRarity]   : () => rollPercentile(uniformRarityChance) && rarityProbability.roll(),
 };
 
-export const applyRoomRandomization = (config) => {
+const applyRandomization = (config, randomizations) => {
     let settings = { ...config };
 
     Object.keys(settings).forEach((key) => {
@@ -49,4 +49,8 @@ export const applyRoomRandomization = (config) => {
     });
 
     return settings;
+};
+
+export const applyRoomRandomization = (config) => {
+    return applyRandomization(config, roomRandomizations);
 };

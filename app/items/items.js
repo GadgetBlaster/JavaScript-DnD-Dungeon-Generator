@@ -5,9 +5,13 @@ import { list } from '../ui/list';
 import { random } from '../utility/random';
 import { roll } from '../utility/roll';
 import { subTitle, paragraph } from '../ui/typography';
-import quantity, { getRange } from '../attributes/quantity';
 import condition from '../attributes/condition';
 import rarity from '../attributes/rarity';
+
+import quantity, {
+    getRange,
+    probability as quantityProbability,
+} from '../attributes/quantity';
 
 const maxColumns = 3;
 
@@ -52,10 +56,14 @@ export const generateItems = (settings) => {
         [knobs.itemRarity]   : itemRarity,
     } = settings;
 
+    if (itemQuantity === random) {
+        itemQuantity = quantityProbability.roll();
+    }
+
     let inRoom = Boolean(roomType);
 
     if (itemQuantity === quantity.zero) {
-        return inRoom ? [] : [ title('Items (0)') ];
+        return inRoom ? [] : [ subTitle('Items (0)') ];
     }
 
     let count = getItemCount(itemQuantity);

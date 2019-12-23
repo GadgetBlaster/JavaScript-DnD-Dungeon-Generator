@@ -43,8 +43,8 @@ const navigate = (e) => {
 
 const generators = {
     [pages.dungeon]: () => [ 'TODO' ],
-    [pages.room]: generateRooms,
-    [pages.items]: generateItems,
+    [pages.room]   : generateRooms,
+    [pages.items]  : generateItems,
 };
 
 const generate = () => {
