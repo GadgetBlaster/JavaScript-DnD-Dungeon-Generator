@@ -3,6 +3,10 @@
 // Room type item affinity
 // Flush out items
 // Fill containers
+// Doors, locked doors, keys
+// Secret doors, secret rooms
+// Traps
+// Item rarity for speific type
 
 import {
     actions,
@@ -13,7 +17,6 @@ import {
 import { generateItems } from './items/items';
 import { generateRooms } from './rooms/rooms';
 import { getKnobConfig } from './knobs';
-import { getSettings } from './settings';
 import { nav, setActive, getActive, pages } from './ui/nav';
 import { renderKnobs, getFormData } from './ui/form';
 import { section } from './ui/block';
@@ -45,7 +48,7 @@ const generators = {
 };
 
 const generate = () => {
-    let settings  = getSettings(getFormData(knobContainer));
+    let settings  = getFormData(knobContainer);
     let page      = getActive(navContainer);
     let generator = generators[page]
 

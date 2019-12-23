@@ -24,42 +24,44 @@ let {
     roomType,
 } = knobs;
 
-export const getSettings = (config) => {
-    Object.keys(config).forEach((key) => {
-        if (config[key] !== random) {
+export const applyRoomRandomization = (config) => {
+    let settings = { ...config };
+
+    Object.keys(settings).forEach((key) => {
+        if (settings[key] !== random) {
             return;
         }
 
         switch (key) {
             case roomType:
-                config[key] = rollArrayItem(roomTypes);
+                settings[key] = rollArrayItem(roomTypes);
                 return;
 
             case roomCondition:
-                config[key] = conditionProbability.roll();
+                settings[key] = conditionProbability.roll();
                 return;
 
             case roomSize:
-                config[key] = rollArrayItem(sizes)
+                settings[key] = rollArrayItem(sizes)
                 return;
 
             case itemQuantity:
-                config[key] = quantityProbability.roll()
+                settings[key] = quantityProbability.roll()
                 break;
 
             case itemCondition:
                 if (rollPercentile(uniformConditionChance)) {
-                    config[key] = conditionProbability.roll();
+                    settings[key] = conditionProbability.roll();
                 }
                 break;
 
             case itemRarity:
                 if (rollPercentile(uniformRarityChance)) {
-                    config[key] = rarityProbability.roll();
+                    settings[key] = rarityProbability.roll();
                 }
                 break;
         }
     });
 
-    return config;
+    return settings;
 }
