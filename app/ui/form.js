@@ -1,42 +1,58 @@
 
 import { actions } from './action';
 import { button, buttonSize } from './button';
-import { select } from './select';
+import { div, legend, fieldset } from './block';
+import { select, input, fieldLabel } from './field';
+import { typeSelect, typeNumber } from '../knobs';
 
-const generateButton = button('Generate', actions.generate, { size: buttonSize.large });
+const submitButton = button('Generate', actions.generate, { size: buttonSize.large });
+
+const getKnob = (settings) => {
+    let {
+        type,
+        value,
+        values,
+    } = settings;
+
+    switch (type) {
+        case typeSelect:
+            return select(name, values);
+        case typeNumber:
+            return input(name, 'number', value);
+        default:
+            throw 'Invalid knob type';
+    }
+};
+
+const renderFields = (options) => Object.keys(options).map((key) => {
+    let settings = options[key];
+
+    let { desc, label, name } = settings;
+
+    let knobLabel  = fieldLabel(label);
+    let knob       = getKnob(settings);
+    let descId     = desc && `info-${name}`;
+    let descButton = desc ? button('?', actions.showHide, { target: descId }) : '';
+    let descText   = desc ? `<p hidden="true" data-id="${descId}"><small>${desc}</small></p>` : '';
+
+    return div(knobLabel + knob + descButton) + descText;
+}).join('');
 
 export const renderKnobs = (config, page) => config.map((knobConfig) => {
     let {
-        label: legendLabel,
+        label,
         labels,
         options,
     } = knobConfig;
 
     if (labels && labels[page]) {
-        legendLabel = labels[page];
+        label = labels[page];
     }
 
-    let fields = Object.keys(options).map((key) => {
-        let { label, name, values, desc } = options[key];
+    let fields = renderFields(options);
 
-        let knobSelect = select(label, name, values);
-        let descId     = desc && `info-${name}`;
-        let descButton = desc ? button('?', actions.showHide, { target: descId }) : '';
-        let descText   = desc ? `<p hidden="true" data-id="${descId}"><small>${desc}</small></p>` : '';
-
-        return `
-            <div>
-                ${knobSelect}
-                ${descButton}
-            </div>
-            ${descText}
-        `;
-    }).join('');
-
-    let legend = `<legend>${legendLabel}</legend>`;
-
-    return `<fieldset>${legend}${fields}</fieldset>`;
-}).join('') + generateButton;
+    return fieldset(legend(label) + fields);
+}).join('') + submitButton;
 
 export const getFormData = (knobContainer) => {
     let fields = [ ...knobContainer.querySelectorAll('[name]') ];

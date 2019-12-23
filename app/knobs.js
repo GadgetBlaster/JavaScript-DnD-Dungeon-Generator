@@ -8,7 +8,8 @@ import { probability as rarityProbability } from './attributes/rarity';
 import { random } from './utility/random';
 import { pages } from './ui/nav';
 
-const typeSelect = 'select';
+export const typeSelect = 'select';
+export const typeNumber = 'number';
 
 const equalDistributionLabel = 'Random probability: Equally distributed';
 
@@ -25,6 +26,7 @@ export const knobs = {
     itemRarity: 'item-rarity',
     itemType: 'item-type',
     roomCondition: 'room-condition',
+    roomCount: 'room-count',
     roomSize: 'room-size',
     roomType: 'room-type',
 };
@@ -34,12 +36,19 @@ const config = [
         label: 'Room Settings',
         pages: new Set([ pages.dungeon, pages.room ]),
         options: {
+            count: {
+                label : 'Rooms',
+                name  : knobs.roomCount,
+                type  : typeNumber,
+                value : 1,
+                desc  : 'Number of rooms to generate',
+            },
             type: {
                 label : 'Type',
                 name  : knobs.roomType,
                 type  : typeSelect,
                 values: getValues(roomTypes),
-                desc  : equalDistributionLabel
+                desc  : equalDistributionLabel,
             },
             condition: {
                 label:  'Condition',
@@ -53,7 +62,7 @@ const config = [
                 name:   knobs.roomSize,
                 type:   typeSelect,
                 values: getValues(sizes),
-                desc:   equalDistributionLabel
+                desc:   equalDistributionLabel,
             },
         },
     },
@@ -66,28 +75,28 @@ const config = [
         pages: new Set([ pages.dungeon, pages.room, pages.items ]),
         options: {
             quantity: {
-                label:  'Item Quantity',
+                label:  'Quantity',
                 name:   knobs.itemQuantity,
                 type:   typeSelect,
                 values: getValues(quantities),
                 desc:   quantityProbability.description,
             },
             type: {
-                label:  'Item Type',
+                label:  'Type',
                 name:   knobs.itemType,
                 type:   typeSelect,
                 values: getValues(itemTypes),
                 desc:   equalDistributionLabel,
             },
             condition: {
-                label:  'Item Condition',
+                label:  'Condition',
                 name:   knobs.itemCondition,
                 type:   typeSelect,
                 values: getValues(conditions),
                 desc:   conditionProbability.description,
             },
             rarity: {
-                label:  'Item Rarity',
+                label:  'Rarity',
                 name:   knobs.itemRarity,
                 type:   typeSelect,
                 values: getValues(rarities),
@@ -101,12 +110,6 @@ export const getKnobConfig = (page = pages.dungeon) => {
     return config.reduce((arr, knobSet) => {
         if (!knobSet.pages.has(page)) {
             return arr;
-        }
-
-        let { labels } = knobSet;
-
-        if (labels && labels[page]) {
-            knobSet.label = labels[page];
         }
 
         arr.push(knobSet);

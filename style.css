@@ -50,6 +50,11 @@ label {
     display: inline-block;
 }
 
+input {
+    padding: 0 8px;
+}
+
+input,
 button,
 select {
     border-radius: 4px;
@@ -79,12 +84,15 @@ button[data-active] {
     background: var(--white);
 }
 
+input,
 select {
-    min-width: 175px;
+    width: 175px;
     height: 30px;
+    box-sizing: border-box;
 }
 
 button + button,
+input + button,
 select + button {
     margin-left: 10px;
 }

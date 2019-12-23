@@ -24,13 +24,14 @@ const contentContainer = document.getElementById('content');
 
 const navigate = (e) => {
     let target = e && e.target;
-    let page;
+    let value;
 
     if (target) {
-        page = target.dataset.value;
+        value = target.dataset.value;
         setActive(target);
     }
 
+    let page = value || getActive(navContainer);
     let config = getKnobConfig(page);
 
     contentContainer.innerHTML = '';
