@@ -9,6 +9,7 @@ const submitButton = button('Generate', actions.generate, { size: buttonSize.lar
 
 const getKnob = (settings) => {
     let {
+        name,
         type,
         value,
         values,

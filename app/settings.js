@@ -35,7 +35,7 @@ export const getSettings = (config) => {
                 config[key] = rollArrayItem(roomTypes);
                 return;
 
-                case roomCondition:
+            case roomCondition:
                 config[key] = conditionProbability.roll();
                 return;
 
