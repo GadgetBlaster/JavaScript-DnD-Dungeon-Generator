@@ -3,8 +3,18 @@ import { actions } from './action';
 import { button, buttonSize } from './button';
 import { select } from './select';
 
-export const getKnobs = (config) => config.map((knobConfig) => {
-    let { label: groupLabel, options } = knobConfig;
+const generateButton = button('Generate', actions.generate, { size: buttonSize.large });
+
+export const renderKnobs = (config, page) => config.map((knobConfig) => {
+    let {
+        label: legendLabel,
+        labels,
+        options,
+    } = knobConfig;
+
+    if (labels && labels[page]) {
+        legendLabel = labels[page];
+    }
 
     let fields = Object.keys(options).map((key) => {
         let { label, name, values, desc } = options[key];
@@ -23,13 +33,10 @@ export const getKnobs = (config) => config.map((knobConfig) => {
         `;
     }).join('');
 
-    return `
-        <fieldset>
-            <legend>${groupLabel}</legend>
-            ${fields}
-        </fieldset>
-    `;
-}).join('') + button('Generate', actions.generate, { size: buttonSize.large });
+    let legend = `<legend>${legendLabel}</legend>`;
+
+    return `<fieldset>${legend}${fields}</fieldset>`;
+}).join('') + generateButton;
 
 export const getFormData = (knobContainer) => {
     let fields = [ ...knobContainer.querySelectorAll('[name]') ];

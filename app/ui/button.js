@@ -29,9 +29,5 @@ export const button = (label, action, options = {}) => {
         return `data-${key}="${attrs[key]}"`;
     }).join(' ');
 
-    return `
-        <button ${htmlAttrs}>
-            ${label}
-        </button>
-    `;
+    return `<button ${htmlAttrs}>${label}</button>`;
 };

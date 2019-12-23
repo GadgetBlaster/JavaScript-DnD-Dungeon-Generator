@@ -98,9 +98,7 @@ const config = [
 ];
 
 export const getKnobConfig = (page = pages.dungeon) => {
-    return config.reduce((arr, item) => {
-        let knobSet = { ...item };
-
+    return config.reduce((arr, knobSet) => {
         if (!knobSet.pages.has(page)) {
             return arr;
         }

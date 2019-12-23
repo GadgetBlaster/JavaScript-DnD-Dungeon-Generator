@@ -103,10 +103,10 @@ export const getDescription = (settings) => {
         [knobs.itemRarity]: itemRarity,
     } = settings;
 
-    return title('Room Description') + '<p>' + [
+    return title('Room Description') + paragraph([
         getSizeDesc(settings),
         getContentsDesc(settings),
         getItemConditionDescription(itemCondition),
         getItemRarityDescription(itemRarity),
-    ].filter(Boolean).join('. ') + '.</p>';
+    ].filter(Boolean).join('. ')+'.');
 };

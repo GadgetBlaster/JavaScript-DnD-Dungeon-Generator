@@ -12,11 +12,11 @@ let { dungeon, room, items } = pages;
 
 let { navigate } = actions;
 
-const link = [
+export const nav = [
     button('Dungeon', navigate, { value: dungeon, active: true }),
     button('Room', navigate, { value: room }),
     button('Items', navigate, { value: items }),
-];
+].join('');
 
 export const setActive = (target) => {
     [ ...target.parentNode.children ].forEach((btn) => {
@@ -24,7 +24,7 @@ export const setActive = (target) => {
     });
 
     target.dataset.active = true;
-}
+};
 
 export const getActive = (navContainer) => {
     let activeBtn = [ ...navContainer.children ].find((btn) => {
@@ -33,5 +33,3 @@ export const getActive = (navContainer) => {
 
     return activeBtn.dataset.value;
 };
-
-export const nav = link.join('');

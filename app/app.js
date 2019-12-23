@@ -1,4 +1,9 @@
 
+// TODO:
+// Room type item affinity
+// Flush out items
+// Fill containers
+
 import {
     actions,
     attachActions,
@@ -8,9 +13,10 @@ import {
 import { generateItems } from './items/items';
 import { generateRoom } from './room';
 import { getKnobConfig } from './knobs';
-import { getKnobs, getFormData } from './ui/form';
 import { getSettings } from './settings';
 import { nav, setActive, getActive, pages } from './ui/nav';
+import { renderKnobs, getFormData } from './ui/form';
+import { section } from './ui/block';
 
 const navContainer     = document.getElementById('nav');
 const knobContainer    = document.getElementById('knobs');
@@ -18,17 +24,17 @@ const contentContainer = document.getElementById('content');
 
 const navigate = (e) => {
     let target = e && e.target;
-    let value;
+    let page;
 
     if (target) {
-        value = target.dataset.value;
+        page = target.dataset.value;
         setActive(target);
     }
 
-    let config = getKnobConfig(value);
+    let config = getKnobConfig(page);
 
     contentContainer.innerHTML = '';
-    knobContainer.innerHTML    = getKnobs(config);
+    knobContainer.innerHTML    = renderKnobs(config, page);
 };
 
 const generators = {
@@ -43,12 +49,12 @@ const generate = () => {
     let generator = generators[page]
 
     if (!generator) {
-        throw 'Invalid page'
+        throw 'Invalid page';
     }
 
     let text = generator(settings);
 
-    contentContainer.innerHTML = '<section>' + text.join('') + '</section>';
+    contentContainer.innerHTML = section(text.join(''));
 };
 
 attachActions({

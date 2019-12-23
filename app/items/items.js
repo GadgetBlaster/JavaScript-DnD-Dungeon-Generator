@@ -26,11 +26,11 @@ const getItemDescription = (item, count) => {
 };
 
 const getConditionDescription = (itemCondition) => {
-    return `Condition: ${itemCondition}`;
+    return `Item Condition: ${itemCondition}`;
 };
 
 const getRarityDescription = (itemRarity) => {
-    return `Rarity: ${itemRarity}`;
+    return `Item Rarity: ${itemRarity}`;
 };
 
 export const generateItems = (settings) => {
