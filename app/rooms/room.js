@@ -2,9 +2,9 @@
 import { generateItems } from '../items/items';
 import { getDescription } from './description';
 
-export const generateRoom = (settings) => {
+export const generateRoom = (settings, roomNumber) => {
     return [
-        getDescription(settings),
+        getDescription(settings, roomNumber),
         ...generateItems(settings),
-    ];
+    ].join('');
 };

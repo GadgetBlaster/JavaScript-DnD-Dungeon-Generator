@@ -13,8 +13,8 @@ let { dungeon, room, items } = pages;
 let { navigate } = actions;
 
 export const nav = [
-    button('Dungeon', navigate, { value: dungeon, active: true }),
-    button('Room', navigate, { value: room }),
+    button('Dungeon', navigate, { value: dungeon }),
+    button('Room', navigate, { value: room, active: true }),
     button('Items', navigate, { value: items }),
 ].join('');
 

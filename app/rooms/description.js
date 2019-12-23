@@ -1,6 +1,6 @@
 
 import { knobs } from '../knobs';
-import { title, paragraph } from '../ui/typography';
+import { title, subTitle, paragraph } from '../ui/typography';
 import condition from '../attributes/condition';
 import quantity from '../attributes/quantity';
 import rarity from '../attributes/rarity';
@@ -97,13 +97,16 @@ const getItemRarityDescription = (itemRarity) => {
     }
 };
 
-export const getDescription = (settings) => {
+export const getDescription = (settings, roomNumber) => {
     let {
         [knobs.itemCondition]: itemCondition,
         [knobs.itemRarity]: itemRarity,
+        [knobs.roomType]: roomType,
     } = settings;
 
-    return title('Room Description') + paragraph([
+    let roomTitle = title(`Room ${roomNumber}: ${roomType}`);
+
+    return roomTitle + subTitle('Description') + paragraph([
         getSizeDesc(settings),
         getContentsDesc(settings),
         getItemConditionDescription(itemCondition),

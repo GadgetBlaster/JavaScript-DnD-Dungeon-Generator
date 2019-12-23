@@ -4,7 +4,7 @@ import { knobs } from '../knobs';
 import { list } from '../ui/list';
 import { random } from '../utility/random';
 import { roll } from '../utility/roll';
-import { title, paragraph } from '../ui/typography';
+import { subTitle, paragraph } from '../ui/typography';
 import quantity, { getRange } from '../attributes/quantity';
 
 const maxColumns = 3;
@@ -70,8 +70,8 @@ export const generateItems = (settings) => {
     let description = descriptions.length && paragraph(descriptions.map((desc) => desc).join(' | '));
 
     return [
-        title(`Items (${count})`),
+        subTitle(`Items (${count})`),
         description,
         list(itemList, { columns }),
-    ].filter(Boolean);
+    ].filter(Boolean).join('');
 };

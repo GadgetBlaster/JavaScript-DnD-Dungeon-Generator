@@ -98,6 +98,12 @@ select + button {
 }
 
 h1 {
+    font-size: 20px;
+    border-bottom: 1px solid var(--gray);
+    margin-top: 40px;
+}
+
+h2 {
     font-size: 18px;
 }
 

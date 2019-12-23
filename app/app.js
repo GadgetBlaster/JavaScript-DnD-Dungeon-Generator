@@ -11,7 +11,7 @@ import {
 } from './ui/action';
 
 import { generateItems } from './items/items';
-import { generateRoom } from './rooms/room';
+import { generateRooms } from './rooms/rooms';
 import { getKnobConfig } from './knobs';
 import { getSettings } from './settings';
 import { nav, setActive, getActive, pages } from './ui/nav';
@@ -40,7 +40,7 @@ const navigate = (e) => {
 
 const generators = {
     [pages.dungeon]: () => [ 'TODO' ],
-    [pages.room]: generateRoom,
+    [pages.room]: generateRooms,
     [pages.items]: generateItems,
 };
 
@@ -55,7 +55,7 @@ const generate = () => {
 
     let text = generator(settings);
 
-    contentContainer.innerHTML = section(text.join(''));
+    contentContainer.innerHTML = section(text);
 };
 
 attachActions({
