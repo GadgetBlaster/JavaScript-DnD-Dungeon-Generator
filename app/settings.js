@@ -24,6 +24,15 @@ let {
     roomType,
 } = knobs;
 
+const randomizations = {
+    [roomType]     : () => rollArrayItem(roomTypes),
+    [roomCondition]: () => conditionProbability.roll(),
+    [roomSize]     : () => rollArrayItem(sizes),
+    [itemQuantity] : () => quantityProbability.roll(),
+    [itemCondition]: () => rollPercentile(uniformConditionChance) && conditionProbability.roll(),
+    [itemRarity]   : () => rollPercentile(uniformRarityChance) && rarityProbability.roll(),
+};
+
 export const applyRoomRandomization = (config) => {
     let settings = { ...config };
 
@@ -32,34 +41,10 @@ export const applyRoomRandomization = (config) => {
             return;
         }
 
-        switch (key) {
-            case roomType:
-                settings[key] = rollArrayItem(roomTypes);
-                return;
+        let randomValue = randomizations[key] && randomizations[key]();
 
-            case roomCondition:
-                settings[key] = conditionProbability.roll();
-                return;
-
-            case roomSize:
-                settings[key] = rollArrayItem(sizes)
-                return;
-
-            case itemQuantity:
-                settings[key] = quantityProbability.roll()
-                break;
-
-            case itemCondition:
-                if (rollPercentile(uniformConditionChance)) {
-                    settings[key] = conditionProbability.roll();
-                }
-                break;
-
-            case itemRarity:
-                if (rollPercentile(uniformRarityChance)) {
-                    settings[key] = rarityProbability.roll();
-                }
-                break;
+        if (randomValue) {
+            settings[key] = randomValue;
         }
     });
 
