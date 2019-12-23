@@ -1,5 +1,5 @@
 
-import { generateItem } from '../item';
+import { generateItem } from './item';
 import { knobs } from '../knobs';
 import { list } from '../ui/list';
 import { random } from '../utility/random';

@@ -11,7 +11,7 @@ import {
 } from './ui/action';
 
 import { generateItems } from './items/items';
-import { generateRoom } from './room';
+import { generateRoom } from './rooms/room';
 import { getKnobConfig } from './knobs';
 import { getSettings } from './settings';
 import { nav, setActive, getActive, pages } from './ui/nav';

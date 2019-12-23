@@ -1,6 +1,6 @@
 
-import { generateItems } from './items/items';
-import { getDescription } from './rooms/description';
+import { generateItems } from '../items/items';
+import { getDescription } from './description';
 
 export const generateRoom = (settings) => {
     return [

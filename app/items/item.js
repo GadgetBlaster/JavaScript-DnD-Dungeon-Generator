@@ -1,21 +1,21 @@
 
-import { knobs } from './knobs';
-import { random } from './utility/random';
-import { rollArrayItem, roll } from './utility/roll';
-import { strong } from './ui/typography';
-import quantity from './attributes/quantity';
-import set from './items/set';
-import size from './attributes/size';
-import type, { list as itemTypes } from './items/type';
+import { knobs } from '../knobs';
+import { random } from '../utility/random';
+import { rollArrayItem, roll } from '../utility/roll';
+import { strong } from '../ui/typography';
+import quantity from '../attributes/quantity';
+import set from './set';
+import size from '../attributes/size';
+import type, { list as itemTypes } from './type';
 
 import rarity, {
     list as rarities,
     probability as rarityProbability,
-} from './attributes/rarity';
+} from '../attributes/rarity';
 
 import condition, {
     probability as conditionProbability,
-} from './attributes/condition';
+} from '../attributes/condition';
 
 /**
  * Item
