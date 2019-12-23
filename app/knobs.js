@@ -40,7 +40,7 @@ const config = [
                 label : 'Rooms',
                 name  : knobs.roomCount,
                 type  : typeNumber,
-                value : 1,
+                value : 3,
                 desc  : 'Number of rooms to generate',
             },
             type: {

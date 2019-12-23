@@ -70,3 +70,4 @@ attachActions({
 navContainer.innerHTML  = nav;
 
 navigate();
+generate();

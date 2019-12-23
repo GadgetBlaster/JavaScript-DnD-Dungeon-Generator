@@ -85,12 +85,10 @@ const getItemRarityDescription = (itemRarity) => {
         case rarity.uncommon:
             return `The room’s items are all uncommon`;
 
-        case rarity.abundant:
-            return `The room contains typical items`;
-
         case rarity.common:
             return `The room contains ${itemRarity} items`;
 
+        case rarity.abundant:
         case rarity.average:
         default:
             return;

@@ -12,8 +12,8 @@ import {
     rollPercentile,
 } from './utility/roll';
 
-const uniformConditionChance = 10;
-const uniformRarityChance    = 10;
+const uniformConditionChance = 100;
+const uniformRarityChance    = 100;
 
 let {
     itemCondition,
@@ -49,4 +49,4 @@ export const applyRoomRandomization = (config) => {
     });
 
     return settings;
-}
+};

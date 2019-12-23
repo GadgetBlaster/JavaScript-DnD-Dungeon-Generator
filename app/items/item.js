@@ -91,15 +91,15 @@ export const generateItem = (settings) => {
         itemRarity    = rarity.average;
     }
 
-    let isSingle     = quantitySetting === quantity.one;
-    let indicateRare = (isSingle || raritySetting === random) && rarityIndicated.has(itemRarity);
-    let name         = indicateRare ? strong(item.name) : item.name;
-
     if (itemCondition === random) {
         itemCondition = conditionProbability.roll();
     }
 
+    let isSingle          = quantitySetting === quantity.one;
+    let indicateRare      = (isSingle || raritySetting === random)    && rarityIndicated.has(itemRarity);
     let indicateCondition = (isSingle || conditionSetting === random) && itemCondition !== condition.average;
+
+    let name = indicateRare ? strong(item.name) : item.name;
 
     let notes = [];
 

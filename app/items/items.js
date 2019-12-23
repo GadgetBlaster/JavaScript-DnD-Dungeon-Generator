@@ -6,6 +6,8 @@ import { random } from '../utility/random';
 import { roll } from '../utility/roll';
 import { subTitle, paragraph } from '../ui/typography';
 import quantity, { getRange } from '../attributes/quantity';
+import condition from '../attributes/condition';
+import rarity from '../attributes/rarity';
 
 const maxColumns = 3;
 
@@ -26,19 +28,28 @@ const getItemDescription = (item, count) => {
 };
 
 const getConditionDescription = (itemCondition) => {
-    return `Item Condition: ${itemCondition}`;
+    let showCondition = itemCondition !== condition.average;
+    return showCondition && `Item Condition: ${itemCondition}`;
 };
 
+const rarityIndicated = new Set([
+    rarity.uncommon,
+    rarity.rare,
+    rarity.exotic,
+    rarity.legendary,
+]);
+
 const getRarityDescription = (itemRarity) => {
-    return `Item Rarity: ${itemRarity}`;
+    let showRarity = rarityIndicated.has(itemRarity);
+    return showRarity && `Item Rarity: ${itemRarity}`;
 };
 
 export const generateItems = (settings) => {
     let {
-        [knobs.roomType]: roomType,
+        [knobs.roomType]     : roomType,
         [knobs.itemCondition]: itemCondition,
-        [knobs.itemQuantity]: itemQuantity,
-        [knobs.itemRarity]: itemRarity,
+        [knobs.itemQuantity] : itemQuantity,
+        [knobs.itemRarity]   : itemRarity,
     } = settings;
 
     let inRoom = Boolean(roomType);
