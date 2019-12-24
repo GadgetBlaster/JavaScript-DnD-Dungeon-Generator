@@ -25,8 +25,8 @@ const getKnob = (settings) => {
     }
 };
 
-const renderFields = (options) => Object.keys(options).map((key) => {
-    let settings = options[key];
+const renderFields = (fields) => Object.keys(fields).map((key) => {
+    let settings = fields[key];
 
     let { desc, label, name } = settings;
 
@@ -43,16 +43,14 @@ export const renderKnobs = (config, page) => config.map((knobConfig) => {
     let {
         label,
         labels,
-        options,
+        fields,
     } = knobConfig;
 
     if (labels && labels[page]) {
         label = labels[page];
     }
 
-    let fields = renderFields(options);
-
-    return fieldset(legend(label) + fields);
+    return fieldset(legend(label) + renderFields(fields));
 }).join('') + submitButton;
 
 export const getFormData = (knobContainer) => {

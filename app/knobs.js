@@ -21,6 +21,7 @@ const getValues = (values) => {
 };
 
 export const knobs = {
+    dungeonComplexity: 'dungeon-complexity',
     itemCondition: 'item-condition',
     itemQuantity: 'item-quantity',
     itemRarity: 'item-rarity',
@@ -33,14 +34,27 @@ export const knobs = {
 
 const config = [
     {
-        label: 'Room Settings',
-        pages: new Set([ pages.dungeon, pages.room ]),
-        options: {
+        label : 'Dungeon Settings',
+        pages : new Set([ pages.dungeon ]),
+        fields: {
+            complexity: {
+                label : 'Complexity',
+                name  : knobs.dungeonComplexity,
+                type  : typeSelect,
+                values: [ 1, 2, 3, 4, 5 ],
+            }
+        },
+    },
+    {
+        label : 'Room Settings',
+        pages : new Set([ pages.dungeon, pages.room ]),
+        fields: {
             count: {
                 label : 'Rooms',
+                pages : new Set([ pages.room ]),
                 name  : knobs.roomCount,
                 type  : typeNumber,
-                value : 3,
+                value : 1,
                 desc  : 'Number of rooms to generate',
             },
             type: {
@@ -67,13 +81,13 @@ const config = [
         },
     },
     {
-        label: 'Item Settings',
+        label : 'Item Settings',
         labels: {
             [pages.dungeon]: 'Room Contents',
             [pages.room]:    'Room Contents',
         },
-        pages: new Set([ pages.dungeon, pages.room, pages.items ]),
-        options: {
+        pages : new Set([ pages.dungeon, pages.room, pages.items ]),
+        fields: {
             quantity: {
                 label:  'Quantity',
                 name:   knobs.itemQuantity,
@@ -106,13 +120,34 @@ const config = [
     },
 ];
 
+const getFields = (knobSet, page) => {
+    let knobSetFields = knobSet.fields;
+
+    let fields = Object.keys(knobSetFields).reduce((obj, key) => {
+        let knobConfig = knobSetFields[key];
+
+        if (knobConfig.pages && !knobConfig.pages.has(page)) {
+            return obj;
+        }
+
+        obj[key] = knobConfig;
+
+        return obj;
+    }, {});
+
+    return {
+        ...knobSet,
+        fields,
+    };
+};
+
 export const getKnobConfig = (page = pages.dungeon) => {
     return config.reduce((arr, knobSet) => {
         if (!knobSet.pages.has(page)) {
             return arr;
         }
 
-        arr.push(knobSet);
+        arr.push(getFields(knobSet, page));
 
         return arr;
     }, []);

@@ -5,6 +5,7 @@ import condition from '../attributes/condition';
 import quantity from '../attributes/quantity';
 import rarity from '../attributes/rarity';
 import size from '../attributes/size';
+import type from '../rooms/type';
 
 const getSizeDesc = (settings) => {
     let {
@@ -98,11 +99,14 @@ const getItemRarityDescription = (itemRarity) => {
 export const getDescription = (settings, roomNumber) => {
     let {
         [knobs.itemCondition]: itemCondition,
-        [knobs.itemRarity]: itemRarity,
-        [knobs.roomType]: roomType,
+        [knobs.itemRarity]   : itemRarity,
+        [knobs.roomCount]    : roomCount,
+        [knobs.roomType]     : roomType,
     } = settings;
 
-    let roomTitle = title(`Room ${roomNumber}: ${roomType}`);
+    let numberLabel = roomCount > 1 ? roomNumber : '';
+    let typeLabel   = roomType !== type.room ? `: ${roomType}` : '';
+    let roomTitle   = title(`Room ${numberLabel}${typeLabel}`);
 
     return roomTitle + subTitle('Description') + paragraph([
         getSizeDesc(settings),

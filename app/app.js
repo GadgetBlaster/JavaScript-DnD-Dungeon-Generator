@@ -35,6 +35,7 @@ const navigate = (e) => {
     }
 
     let page = value || getActive(navContainer);
+
     let config = getKnobConfig(page);
 
     contentContainer.innerHTML = '';
