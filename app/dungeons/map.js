@@ -1,7 +1,8 @@
 
-import { rollArrayItem } from '../utility/roll';
+import { roll, rollArrayItem } from '../utility/roll';
 
-const tempRoomCount = 6;
+const tempRoomCount = 1;
+const tempRoomUnits = 4;
 
 const sides = {
     top   : 'top',
@@ -10,30 +11,48 @@ const sides = {
     left  : 'left',
 };
 
-const units    = 64;
-const cellSize = 10;
+const gridWidth  = 50;
+const gridHeight = 20;
+const cellSize   = 20;
 
-const gridColor      = '#cfcfcf';
-const background     = '#efefef';
-const roomBackground = '#ffffff';
+const gridBackground  = '#efefef';
+const gridStrokeColor = '#cfcfcf';
+const roomBackground  = '#ffffff';
+const roomStrokeColor = '#555555';
 
-const getStartingPoint = ({ roomWidth = cel, roomHeight }) => {
+const getRoomMaxX = (roomWidth)  => gridWidth - roomWidth;
+const getRoomMaxY = (roomHeight) => gridHeight - roomHeight;
+
+const getStartingPoint = ({ roomWidth = 1, roomHeight = 1 } = {}) => {
     let side = rollArrayItem(Object.values(sides));
+
     let x;
     let y;
 
     switch (side) {
         case sides.right:
-            // x =
+            x = gridWidth - roomWidth;
+            y = roll(0, getRoomMaxY(roomHeight));
             break;
+
         case sides.bottom:
+            x = roll(0, getRoomMaxX(roomWidth));
+            y = gridHeight - roomHeight;
             break;
+
         case sides.left:
+            x = 0;
+            y = roll(0, getRoomMaxY(roomHeight));
             break;
+
         case sides.top:
         default:
+            x = roll(0, getRoomMaxX(roomWidth));
+            y = 0;
             break;
     }
+
+    return [ x, y ];
 };
 
 const createAttrs = (obj) => {
@@ -42,15 +61,35 @@ const createAttrs = (obj) => {
     }).join('');
 };
 
-const createLine = ({ x1, y1, x2, y2 }, stroke = gridColor, width = 1) => {
+const createLine = ({ x1, y1, x2, y2 }) => {
     let attrs = createAttrs({
         x1, y1, x2, y2,
-        stroke,
-        'stroke-width': width,
+        stroke: gridStrokeColor,
+        'stroke-width': 1,
         'shape-rendering': 'crispEdges',
     });
 
     return `<line ${attrs} />`;
+};
+
+const createGrid = () => {
+    let lines = '';
+
+    for (let i = 0; i <= gridHeight; i++) {
+        let unit = i * cellSize;
+        let x2   = gridWidth * cellSize;
+
+        lines += createLine({ x1: 0, y1: unit, x2, y2: unit });
+    }
+
+    for (let i = 0; i <= gridWidth; i++) {
+        let unit = i * cellSize;
+        let y2   = gridHeight * cellSize;
+
+        lines += createLine({ x1: unit, y1: 0, x2: unit, y2 });
+    }
+
+    return lines;
 };
 
 const createRect = ({ x, y, width = 1, height = 1, fill = roomBackground }) => {
@@ -60,33 +99,26 @@ const createRect = ({ x, y, width = 1, height = 1, fill = roomBackground }) => {
         width: width * cellSize,
         height: height * cellSize,
         fill,
+        stroke: roomStrokeColor,
+        'stroke-width': 2
     });
 
     return `<rect ${attrs} />`
 };
 
-const createGrid = () => {
-    let lines = '';
-
-    for (let i = 0; i <= units; i++) {
-        let unit = i * cellSize;
-        let x2   = units * cellSize;
-        let y2   = units * cellSize;
-
-        lines += createLine({ x1: 0, y1: unit, x2, y2: unit });
-        lines += createLine({ x1: unit, y1: 0, x2: unit, y2 });
-    }
-
-    return lines;
-};
-
 const createRooms = () => {
     let rooms = '';
 
+    let [ x, y ] = getStartingPoint({
+        roomWidth: tempRoomUnits,
+        roomHeight: tempRoomUnits,
+    });
+
     for (let i = 0; i < tempRoomCount; i++) {
         rooms += createRect({
-            x: i,
-            y: i,
+            x, y,
+            width: tempRoomUnits,
+            height: tempRoomUnits,
         });
     }
 
@@ -94,17 +126,15 @@ const createRooms = () => {
 };
 
 export const generateMap = () => {
-    let dimension = units * cellSize;
-
     let grid  = createGrid();
     let rooms = createRooms();
 
-    let content = rooms + grid;
+    let content = grid + rooms;
 
     let attrs = createAttrs({
-        width : dimension + 1,
-        height: dimension + 1,
-        style : `background: ${background}`,
+        width : (gridWidth * cellSize),
+        height: (gridHeight * cellSize),
+        style : `background: ${gridBackground}; overflow: visible;`,
     });
 
     return `<svg ${attrs}>${content}</svg>`;

@@ -17,10 +17,9 @@
 }
 
 body {
-    margin: 20px auto;
+    margin: 20px;
     background: var(--white);
     -webkit-print-color-adjust: exact;
-    width: 640px;
 }
 
 nav {
@@ -35,6 +34,7 @@ fieldset {
     padding: 15px 25px;
     border: 1px solid var(--gray);
     margin: 20px 0;
+    display: none;
 }
 
 fieldset > div {
