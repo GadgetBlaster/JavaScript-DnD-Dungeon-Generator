@@ -14,6 +14,7 @@ import {
     toggleVisibility,
 } from './ui/action';
 
+import { generateDungeon } from './dungeons/generate';
 import { generateItems } from './items/items';
 import { generateRooms } from './rooms/rooms';
 import { getKnobConfig } from './knobs';
@@ -43,9 +44,9 @@ const navigate = (e) => {
 };
 
 const generators = {
-    [pages.dungeon]: () => [ 'TODO' ],
-    [pages.room]   : generateRooms,
+    [pages.dungeon]: generateDungeon,
     [pages.items]  : generateItems,
+    [pages.room]   : generateRooms,
 };
 
 const generate = () => {
