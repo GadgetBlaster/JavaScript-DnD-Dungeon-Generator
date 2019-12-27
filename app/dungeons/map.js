@@ -3,7 +3,7 @@ import { roll, rollArrayItem } from '../utility/roll';
 
 const debug = false;
 
-const tempRoomCount = 2;
+const tempRoomCount = 10;
 const tempRoomUnits = 4;
 
 const sides = {
@@ -38,28 +38,33 @@ const createAttrs = (obj) => {
 const getStartingPoint = ({ roomWidth, roomHeight }) => {
     let side = rollArrayItem(Object.values(sides));
 
+    let minX = 1;
+    let minY = 1;
+    let maxX = gridWidth - roomWidth - 1;
+    let maxY = gridWidth - roomWidth - 1;
+
     let x;
     let y;
 
     switch (side) {
         case sides.right:
             x = gridWidth - roomWidth;
-            y = roll(0, getRoomMaxY(roomHeight));
+            y = roll(minY, maxY);
             break;
 
         case sides.bottom:
-            x = roll(0, getRoomMaxX(roomWidth));
+            x = roll(minX, maxX);
             y = gridHeight - roomHeight;
             break;
 
         case sides.left:
             x = 0;
-            y = roll(0, getRoomMaxY(roomHeight));
+            y = roll(minY, maxY);
             break;
 
         case sides.top:
         default:
-            x = roll(0, getRoomMaxX(roomWidth));
+            x = roll(minX, maxX);
             y = 0;
             break;
     }
@@ -68,16 +73,18 @@ const getStartingPoint = ({ roomWidth, roomHeight }) => {
 };
 
 const checkArea = (grid, { x, y, width, height }) => {
+    let minX = 1;
+    let minY = 1;
     let maxX = grid.length - 1;
     let maxY = grid[0].length - 1;
 
     for (let xCord = x; xCord < (x + width); xCord++) {
         for (let yCord = y; yCord < (y + height); yCord++) {
-            if (xCord < 0 || xCord >= maxX) {
+            if (xCord < minX || xCord >= maxX) {
                 return false;
             }
 
-            if (yCord < 0 || yCord >= maxY) {
+            if (yCord < minY || yCord >= maxY) {
                 return false;
             }
 
@@ -126,9 +133,11 @@ const getValidRoomCords = (grid, prevRoom, { roomWidth, roomHeight }) => {
                 height: roomHeight,
             });
 
-            if (valid) {
-                validCords.push([ x, y ]);
+            if (!valid) {
+                continue;
             }
+
+            validCords.push([ x, y ]);
         }
     }
 
