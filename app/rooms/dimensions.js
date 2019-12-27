@@ -1,5 +1,5 @@
 
-import size from '../attributes/size';
+import size, { list as sizes } from '../attributes/size';
 import type, { list as roomTypes } from './type';
 
 let {
@@ -10,7 +10,7 @@ let {
     massive,
 } = size;
 
-export const dimensions = {
+const dimensionRanges = {
     [tiny]   : [ 1, 2 ],
     [small]  : [ 1, 4 ],
     [medium] : [ 2, 5 ],
@@ -18,31 +18,30 @@ export const dimensions = {
     [massive]: [ 4, 10 ],
 };
 
-armory: 'armory',
-atrium: 'atrium',
-attic: 'attic',
-ballroom: 'ballroom',
-bathhouse: 'bathhouse',
-bedroom: 'bedroom',
-chamber: 'chamber',
-chapel: 'chapel',
-classroom: 'classroom',
-closet: 'closet',
-diningRoom: 'dining room',
-dormitory: 'dormitory',
-hall: 'hall',
-hallway: 'hallway',
-kitchen: 'kitchen',
-laboratory: 'laboratory',
-library: 'library',
-loft: 'loft',
-pantry: 'pantry',
-parlour: 'parlour',
-prisonCell: 'prison cell',
-room: 'room',
-smithy: 'smithy',
-store: 'store',
-study: 'study',
-throneRoom: 'throne room',
-tortureChamber: 'torture chamber',
-treasury: 'treasury',
+const roomSizes = {
+    ballroom      : [ medium, large, massive ],
+    bathhouse     : [ small, medium, large, massive ],
+    chapel        : [ small, medium, large, massive ],
+    classroom     : [ small, medium, large ],
+    closet        : [ tiny, small ],
+    diningRoom    : [ small, medium, large, massive ],
+    dormitory     : [ medium, large, massive ],
+    hallway       : [ tiny, small, medium ],
+    pantry        : [ tiny, small, medium ],
+    parlour       : [ tiny, small, medium ],
+    study         : [ tiny, small, medium ],
+    throneRoom    : [ medium, large, massive ],
+    tortureChamber: [ tiny, small, medium ],
+};
+
+const customDimensions = {
+    // hallway: (size) => size,
+};
+
+export const roomTypeSizes = roomTypes.reduce((obj, type) => {
+    let validSizes = roomSizes[type] || sizes;
+
+    obj[type] = validSizes;
+
+    return obj;
+}, {});

@@ -9,9 +9,10 @@ export const generateRooms = (settings) => {
     let count = Math.floor(Number(roomCount));
 
     return [ ...Array(count) ].map(() => {
+        let roomSettings = applyRoomRandomization(settings);
         return {
-            settings: applyRoomRandomization(settings),
-            items: generateItems(settings),
+            settings: roomSettings,
+            items: generateItems(roomSettings),
         };
     });
 };

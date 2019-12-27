@@ -2,6 +2,7 @@
 // TODO:
 // Room type item affinity
 // Flush out items
+// Furniture
 // Fill containers
 // Doors, locked doors, keys
 // Secret doors, secret rooms
