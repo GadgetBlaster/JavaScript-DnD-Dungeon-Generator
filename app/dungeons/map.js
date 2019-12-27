@@ -11,9 +11,13 @@ const sides = {
     left  : 'left',
 };
 
-const gridWidth  = 50;
-const gridHeight = 20;
-const cellSize   = 20;
+const cellBlank = '.';
+const cellRoom  = 'R';
+
+const gridWidth  = 10;
+const gridHeight = 10;
+
+const cellPx   = 20;
 
 const gridBackground  = '#efefef';
 const gridStrokeColor = '#cfcfcf';
@@ -61,7 +65,7 @@ const createAttrs = (obj) => {
     }).join('');
 };
 
-const createLine = ({ x1, y1, x2, y2 }) => {
+const drawLine = ({ x1, y1, x2, y2 }) => {
     let attrs = createAttrs({
         x1, y1, x2, y2,
         stroke: gridStrokeColor,
@@ -72,32 +76,41 @@ const createLine = ({ x1, y1, x2, y2 }) => {
     return `<line ${attrs} />`;
 };
 
-const createGrid = () => {
+const drawGrid = () => {
     let lines = '';
 
     for (let i = 0; i <= gridHeight; i++) {
-        let unit = i * cellSize;
-        let x2   = gridWidth * cellSize;
+        let unit = i * cellPx;
+        let x2   = gridWidth * cellPx;
 
-        lines += createLine({ x1: 0, y1: unit, x2, y2: unit });
+        lines += drawLine({ x1: 0, y1: unit, x2, y2: unit });
     }
 
     for (let i = 0; i <= gridWidth; i++) {
-        let unit = i * cellSize;
-        let y2   = gridHeight * cellSize;
+        let unit = i * cellPx;
+        let y2   = gridHeight * cellPx;
 
-        lines += createLine({ x1: unit, y1: 0, x2: unit, y2 });
+        lines += drawLine({ x1: unit, y1: 0, x2: unit, y2 });
     }
 
     return lines;
 };
 
-const createRect = ({ x, y, width = 1, height = 1, fill = roomBackground }) => {
+const drawRect = (grid, { x, y, width = 1, height = 1, fill = roomBackground }) => {
+    for (let w = 0; w < width; w++) {
+        for (let h = 0; h < height; h++) {
+            let xCord = x + w;
+            let yCord = y + h;
+
+            grid[xCord][yCord] = cellRoom;
+        }
+    }
+
     let attrs = createAttrs({
-        x: x * cellSize,
-        y: y * cellSize,
-        width: width * cellSize,
-        height: height * cellSize,
+        x: x * cellPx,
+        y: y * cellPx,
+        width: width * cellPx,
+        height: height * cellPx,
         fill,
         stroke: roomStrokeColor,
         'stroke-width': 2
@@ -106,7 +119,7 @@ const createRect = ({ x, y, width = 1, height = 1, fill = roomBackground }) => {
     return `<rect ${attrs} />`
 };
 
-const createRooms = (grid) => {
+const drawDungeon = (grid) => {
     let rooms = '';
 
     let [ x, y ] = getStartingPoint({
@@ -114,13 +127,9 @@ const createRooms = (grid) => {
         roomHeight: tempRoomUnits,
     });
 
-    console.log(grid);
-
     for (let i = 0; i <= tempRoomCount; i++) {
-        grid[x][y] = true;
-
-        rooms += createRect({
-            x, y,
+        rooms += drawRect(grid, {
+            x: 1, y: 0,
             width: tempRoomUnits,
             height: tempRoomUnits,
         });
@@ -129,18 +138,36 @@ const createRooms = (grid) => {
     return rooms;
 };
 
-export const generateMap = () => {
-    let grid = [ ...Array(gridWidth) ];
+const logGrid = (grid) => {
+    let cols = [];
 
-    grid.forEach((_, col) => {
-        grid[col] = [ ...Array(gridHeight) ];
+    grid.forEach((column, x) => {
+        let row = [];
+
+        column.forEach((_, y) => {
+            row.push(grid[y][x]);
+        });
+
+        cols.push(row);
     });
 
-    let content = createGrid() + createRooms(grid);
+    console.table(cols);
+};
+
+export const generateMap = () => {
+    let grid = [ ...Array(gridWidth) ].fill(cellBlank);
+
+    grid.forEach((_, col) => {
+        grid[col] = [ ...Array(gridHeight) ].fill(cellBlank);
+    });
+
+    let content = drawGrid() + drawDungeon(grid);
+
+    logGrid(grid);
 
     let attrs = createAttrs({
-        width : (gridWidth * cellSize),
-        height: (gridHeight * cellSize),
+        width : (gridWidth * cellPx),
+        height: (gridHeight * cellPx),
         style : `background: ${gridBackground}; overflow: visible;`,
     });
 
