@@ -215,7 +215,9 @@ const drawDungeon = (mapSettings, grid) => {
     let rooms = [];
     let prevRoom;
 
-    mapSettings.rooms.forEach((roomConfig, i) => {
+    let count = 1;
+
+    mapSettings.rooms.forEach((roomConfig) => {
         let { settings: { [knobs.roomSize]: roomSize } } = roomConfig;
         let [ min, max ] = dimensionRanges[roomSize];
 
@@ -245,7 +247,9 @@ const drawDungeon = (mapSettings, grid) => {
             height: roomHeight,
         };
 
-        rooms.push(drawRoom(grid, room, i + 1));
+        rooms.push(drawRoom(grid, room, count));
+
+        count++;
 
         prevRoom = room;
     });
