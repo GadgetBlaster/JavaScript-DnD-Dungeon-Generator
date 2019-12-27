@@ -1,10 +1,10 @@
 
 import { roll, rollArrayItem } from '../utility/roll';
 
+const debug = false;
+
 const tempRoomCount = 2;
 const tempRoomUnits = 4;
-const tempStartX = 4;
-const tempStartY = 4;
 
 const sides = {
     top   : 'top',
@@ -68,8 +68,8 @@ const getStartingPoint = ({ roomWidth, roomHeight }) => {
 };
 
 const checkArea = (grid, { x, y, width, height }) => {
-    let maxX = grid.length;
-    let maxY = grid[0].length;
+    let maxX = grid.length - 1;
+    let maxY = grid[0].length - 1;
 
     for (let xCord = x; xCord < (x + width); xCord++) {
         for (let yCord = y; yCord < (y + height); yCord++) {
@@ -198,8 +198,6 @@ const drawDungeon = (grid) => {
     let roomDimensions = { roomWidth, roomHeight };
 
     let [ x, y ] = getStartingPoint(roomDimensions);
-    x = tempStartX;
-    y = tempStartY;
 
     let prevRoom;
 
@@ -253,7 +251,7 @@ export const generateMap = () => {
 
     let content = drawGrid() + drawDungeon(grid);
 
-    // logGrid(grid);
+    debug && logGrid(grid);
 
     let attrs = createAttrs({
         width : (gridWidth * cellPx),
