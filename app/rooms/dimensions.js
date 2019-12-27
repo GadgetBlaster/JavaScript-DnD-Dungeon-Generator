@@ -10,7 +10,7 @@ let {
     massive,
 } = size;
 
-const dimensionRanges = {
+export const dimensionRanges = {
     [tiny]   : [ 1, 2 ],
     [small]  : [ 1, 4 ],
     [medium] : [ 2, 5 ],

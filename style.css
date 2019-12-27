@@ -59,7 +59,8 @@ fieldset[data-collapsed="true"] {
     padding-bottom: 0;
 }
 
-fieldset[data-collapsed="true"] > div {
+fieldset[data-collapsed="true"] > div,
+fieldset[data-collapsed="true"] > p {
     display: none;
 }
 

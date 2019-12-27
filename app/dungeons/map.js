@@ -1,5 +1,6 @@
 
 import { createAttrs } from '../utility/html';
+import { dimensionRanges } from '../rooms/dimensions';
 import { knobs } from '../knobs';
 import { roll, rollArrayItem } from '../utility/roll';
 
@@ -212,17 +213,20 @@ const drawRoom = (grid, { x, y, width, height }, label) => {
 
 const drawDungeon = (mapSettings, grid) => {
     let rooms = [];
-
-    let roomWidth  = tempRoomUnits;
-    let roomHeight = tempRoomUnits;
-
-    let roomDimensions = { roomWidth, roomHeight };
-
-    let [ x, y ] = getStartingPoint(mapSettings, roomDimensions);
-
     let prevRoom;
 
     mapSettings.rooms.forEach((roomConfig, i) => {
+        let { settings: { [knobs.roomSize]: roomSize } } = roomConfig;
+        let [ min, max ] = dimensionRanges[roomSize];
+
+        let roomWidth  = roll(min, max);
+        let roomHeight = roll(min, max);
+
+        let roomDimensions = { roomWidth, roomHeight };
+
+        let x;
+        let y;
+
         if (prevRoom) {
             let validCords = getValidRoomCords(grid, prevRoom, roomDimensions);
 
@@ -231,6 +235,8 @@ const drawDungeon = (mapSettings, grid) => {
             }
 
             [ x, y ] = rollArrayItem(validCords);
+        } else {
+            [ x, y ] = getStartingPoint(mapSettings, roomDimensions);
         }
 
         let room = {
