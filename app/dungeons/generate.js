@@ -1,4 +1,5 @@
-import { generateMap } from "./map";
+
+import { generateMap } from './map';
 
 export const generateDungeon = (settings) => {
     return [

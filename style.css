@@ -1,3 +1,4 @@
+
 :root {
     --accent: #1ba3f7;
     --bg: #f9f9f9;
@@ -34,7 +35,6 @@ fieldset {
     padding: 15px 25px;
     border: 1px solid var(--gray);
     margin: 20px 0;
-    display: none;
 }
 
 fieldset > div {

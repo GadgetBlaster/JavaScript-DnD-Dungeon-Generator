@@ -6,7 +6,7 @@
 // Doors, locked doors, keys
 // Secret doors, secret rooms
 // Traps
-// Item rarity for speific type
+// Item rarity for specific type
 
 import {
     actions,
@@ -15,8 +15,8 @@ import {
 } from './ui/action';
 
 import { generateDungeon } from './dungeons/generate';
-import { generateItems } from './items/items';
-import { generateRooms } from './rooms/rooms';
+import { generateItems } from './items/generate';
+import { generateRooms } from './rooms/generate';
 import { getKnobConfig } from './knobs';
 import { nav, setActive, getActive, pages } from './ui/nav';
 import { renderKnobs, getFormData } from './ui/form';

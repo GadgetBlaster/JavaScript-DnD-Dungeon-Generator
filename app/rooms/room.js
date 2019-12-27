@@ -1,5 +1,5 @@
 
-import { generateItems } from '../items/items';
+import { generateItems } from '../items/generate';
 import { getDescription } from './description';
 
 export const generateRoom = (settings, roomNumber) => {
