@@ -17,9 +17,9 @@ const defaults = {
 const config = [
     { name: 'Copper piece', rarity: common },
     { name: 'Silver piece' },
-    { name: 'Electrum piece' },
+    { name: 'Electrum piece', rarity: rare },
     { name: 'Gold piece' },
-    { name: 'Platinum piece' },
+    { name: 'Platinum piece', rarity: rare },
 ];
 
 export default config.map((item) => ({ ...defaults, ...item }));

@@ -56,13 +56,12 @@ const makeGroup = (groups) => groups.reduce((obj, group) => {
 const groupByRarity = makeGroup(rarities);
 const groupByType   = makeGroup(itemTypes);
 
+Object.keys(groupByType).forEach((type) => {
+    groupByType[type] = makeGroup(rarities);
+});
+
 items.forEach((item) => {
     groupByRarity[item.rarity].push(item);
-
-    if (!groupByType[item.type][item.rarity]) {
-        groupByType[item.type][item.rarity] = [];
-    }
-
     groupByType[item.type][item.rarity].push(item);
 });
 
