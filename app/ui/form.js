@@ -40,7 +40,7 @@ const renderFields = (fields) => Object.keys(fields).map((key) => {
     return div(knobLabel + knob + descButton) + descText;
 }).join('');
 
-export const renderKnobs = (config, page) => config.map((knobConfig) => {
+export const renderKnobs = (config, page) => config.map((knobConfig, i) => {
     let {
         label,
         labels,
@@ -58,7 +58,7 @@ export const renderKnobs = (config, page) => config.map((knobConfig) => {
     });
 
     let attrs = {
-        'data-collapsed': true,
+        'data-collapsed': i !== 0,
         'data-id': fieldsetId,
     };
 
