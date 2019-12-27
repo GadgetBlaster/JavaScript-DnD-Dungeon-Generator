@@ -24,13 +24,13 @@ let {
 } = quantity;
 
 export const probability = new Probability([
-    [ 10, zero ],
-    [ 20, one ],
-    [ 30, couple ],
-    [ 40, few ],
-    [ 70, some ],
-    [ 85, several ],
-    [ 95, many ],
+    [ 10,  zero     ],
+    [ 20,  one      ],
+    [ 30,  couple   ],
+    [ 40,  few      ],
+    [ 70,  some     ],
+    [ 85,  several  ],
+    [ 95,  many     ],
     [ 100, numerous ],
 ]);
 

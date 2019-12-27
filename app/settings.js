@@ -1,6 +1,6 @@
 
 import { knobs } from './knobs';
-import { list as roomTypes } from './rooms/type';
+import { list as roomTypes, probability as roomTypeProbability } from './rooms/type';
 import { probability as conditionProbability } from './attributes/condition'
 import { probability as quantityProbability } from './attributes/quantity'
 import { probability as rarityProbability } from './attributes/rarity'
@@ -28,8 +28,18 @@ const rollRoomSize = (roomType) => {
     return rollArrayItem(roomTypeSizes[roomType]);
 };
 
+const rollRoomType = () => {
+    let type = roomTypeProbability.roll();
+
+    if (type === random) {
+        return rollArrayItem(roomTypes);
+    }
+
+    return type;
+};
+
 const roomRandomizations = {
-    [roomType]     : () => rollArrayItem(roomTypes),
+    [roomType]     : () => rollRoomType(),
     [roomCondition]: () => conditionProbability.roll(),
     [itemQuantity] : () => quantityProbability.roll(),
     [itemCondition]: () => rollPercentile(uniformConditionChance) && conditionProbability.roll(),

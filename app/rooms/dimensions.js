@@ -1,6 +1,8 @@
 
+import { list as roomTypes } from './type';
+import { roll } from '../utility/roll';
 import size, { list as sizes } from '../attributes/size';
-import type, { list as roomTypes } from './type';
+import type from './type';
 
 let {
     tiny,
@@ -11,31 +13,40 @@ let {
 } = size;
 
 export const dimensionRanges = {
-    [tiny]   : [ 1, 2 ],
-    [small]  : [ 1, 4 ],
+    [tiny]   : [ 2, 3 ],
+    [small]  : [ 2, 4 ],
     [medium] : [ 2, 5 ],
     [large]  : [ 3, 8 ],
     [massive]: [ 4, 10 ],
 };
 
 const roomSizes = {
-    ballroom      : [ medium, large, massive ],
-    bathhouse     : [ small, medium, large, massive ],
-    chapel        : [ small, medium, large, massive ],
-    classroom     : [ small, medium, large ],
-    closet        : [ tiny, small ],
-    diningRoom    : [ small, medium, large, massive ],
-    dormitory     : [ medium, large, massive ],
-    hallway       : [ tiny, small, medium ],
-    pantry        : [ tiny, small, medium ],
-    parlour       : [ tiny, small, medium ],
-    study         : [ tiny, small, medium ],
-    throneRoom    : [ medium, large, massive ],
-    tortureChamber: [ tiny, small, medium ],
+    [type.ballroom]      : [ medium, large, massive ],
+    [type.bathhouse]     : [ small, medium, large, massive ],
+    [type.chapel]        : [ small, medium, large, massive ],
+    [type.classroom]     : [ small, medium, large ],
+    [type.closet]        : [ tiny, small ],
+    [type.diningRoom]    : [ small, medium, large, massive ],
+    [type.dormitory]     : [ medium, large, massive ],
+    [type.hallway]       : [ tiny, small, medium, large ],
+    [type.pantry]        : [ tiny, small, medium ],
+    [type.parlour]       : [ tiny, small, medium ],
+    [type.study]         : [ tiny, small, medium ],
+    [type.throneRoom]    : [ medium, large, massive ],
+    [type.tortureChamber]: [ tiny, small, medium ],
 };
 
-const customDimensions = {
-    // hallway: (size) => size,
+export const customDimensions = {
+    hallway: (roomSize) => {
+        let [ min, max ] = dimensionRanges[roomSize];
+
+        let isHorizontal = roll();
+
+        let roomWidth  = isHorizontal ? roll(min, max) : 1;
+        let roomHeight = isHorizontal ? 1 : roll(min, max);
+
+        return { roomWidth, roomHeight };
+    },
 };
 
 export const roomTypeSizes = roomTypes.reduce((obj, type) => {

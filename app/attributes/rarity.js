@@ -22,12 +22,12 @@ let {
 } = rarity;
 
 export const probability = new Probability([
-    [ 30, abundant ],
-    [ 55, common ],
-    [ 75, average ],
-    [ 85, uncommon ],
-    [ 93, rare ],
-    [ 98, exotic ],
+    [ 30,  abundant  ],
+    [ 55,  common    ],
+    [ 75,  average   ],
+    [ 85,  uncommon  ],
+    [ 93,  rare      ],
+    [ 98,  exotic    ],
     [ 100, legendary ],
 ]);
 

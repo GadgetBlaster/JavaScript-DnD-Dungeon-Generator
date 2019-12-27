@@ -1,4 +1,7 @@
 
+import { Probability } from '../utility/roll';
+import { random } from '../utility/random';
+
 const type = {
     armory: 'armory',
     atrium: 'atrium',
@@ -29,6 +32,12 @@ const type = {
     tortureChamber: 'tortureChamber',
     treasury: 'treasury',
 };
+
+export const probability = new Probability([
+    [ 50,  type.hallway ],
+    [ 75,  type.room    ],
+    [ 100, random  ],
+]);
 
 export const list = Object.keys(type);
 

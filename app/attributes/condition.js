@@ -22,11 +22,11 @@ let {
 export const list = Object.keys(condition);
 
 export const probability = new Probability([
-    [ 50, average ],
-    [ 60, good ],
-    [ 75, poor ],
-    [ 85, busted ],
-    [ 95, decaying ],
+    [ 50,  average   ],
+    [ 60,  good      ],
+    [ 75,  poor      ],
+    [ 85,  busted    ],
+    [ 95,  decaying  ],
     [ 100, exquisite ],
 ]);
 

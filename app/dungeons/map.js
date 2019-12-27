@@ -1,10 +1,10 @@
 
 import { createAttrs } from '../utility/html';
-import { dimensionRanges } from '../rooms/dimensions';
+import { dimensionRanges, customDimensions, roomTypeSizes } from '../rooms/dimensions';
 import { knobs } from '../knobs';
 import { roll, rollArrayItem } from '../utility/roll';
 
-const debug = true;
+const debug = false;
 
 const wallWidth = 1;
 
@@ -226,6 +226,19 @@ const drawRoom = (grid, { x, y, width, height }, label) => {
     return `<rect ${attrs} />${text}`;
 };
 
+const getRoomDimensions = (roomType, roomSize) => {
+    if (customDimensions[roomType]) {
+        return customDimensions[roomType](roomSize);
+    }
+
+    let [ min, max ] = dimensionRanges[roomSize];
+
+    let roomWidth  = roll(min, max);
+    let roomHeight = roll(min, max);
+
+    return { roomWidth, roomHeight };
+};
+
 const drawDungeon = (mapSettings, grid) => {
     let rooms = [];
     let prevRoom;
@@ -233,13 +246,12 @@ const drawDungeon = (mapSettings, grid) => {
     let count = 1;
 
     mapSettings.rooms.forEach((roomConfig) => {
-        let { settings: { [knobs.roomSize]: roomSize } } = roomConfig;
-        let [ min, max ] = dimensionRanges[roomSize];
+        let { settings: {
+            [knobs.roomSize]: roomSize,
+            [knobs.roomType]: roomType,
+        } } = roomConfig;
 
-        let roomWidth  = roll(min, max);
-        let roomHeight = roll(min, max);
-
-        let roomDimensions = { roomWidth, roomHeight };
+        let roomDimensions = getRoomDimensions(roomType, roomSize);
 
         let x;
         let y;
@@ -258,8 +270,8 @@ const drawDungeon = (mapSettings, grid) => {
 
         let room = {
             x, y,
-            width: roomWidth,
-            height: roomHeight,
+            width: roomDimensions.roomWidth,
+            height: roomDimensions.roomHeight,
         };
 
         rooms.push(drawRoom(grid, room, count));
