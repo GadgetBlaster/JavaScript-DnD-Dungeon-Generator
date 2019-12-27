@@ -1,7 +1,7 @@
 
 import { roll, rollArrayItem } from '../utility/roll';
 
-const tempRoomCount = 1;
+const tempRoomCount = 2;
 const tempRoomUnits = 4;
 
 const sides = {
@@ -20,7 +20,7 @@ const gridStrokeColor = '#cfcfcf';
 const roomBackground  = '#ffffff';
 const roomStrokeColor = '#555555';
 
-const getRoomMaxX = (roomWidth)  => gridWidth - roomWidth;
+const getRoomMaxX = (roomWidth) => gridWidth - roomWidth;
 const getRoomMaxY = (roomHeight) => gridHeight - roomHeight;
 
 const getStartingPoint = ({ roomWidth = 1, roomHeight = 1 } = {}) => {
@@ -106,7 +106,7 @@ const createRect = ({ x, y, width = 1, height = 1, fill = roomBackground }) => {
     return `<rect ${attrs} />`
 };
 
-const createRooms = () => {
+const createRooms = (grid) => {
     let rooms = '';
 
     let [ x, y ] = getStartingPoint({
@@ -114,7 +114,11 @@ const createRooms = () => {
         roomHeight: tempRoomUnits,
     });
 
-    for (let i = 0; i < tempRoomCount; i++) {
+    console.log(grid);
+
+    for (let i = 0; i <= tempRoomCount; i++) {
+        grid[x][y] = true;
+
         rooms += createRect({
             x, y,
             width: tempRoomUnits,
@@ -126,10 +130,13 @@ const createRooms = () => {
 };
 
 export const generateMap = () => {
-    let grid  = createGrid();
-    let rooms = createRooms();
+    let grid = [ ...Array(gridWidth) ];
 
-    let content = grid + rooms;
+    grid.forEach((_, col) => {
+        grid[col] = [ ...Array(gridHeight) ];
+    });
+
+    let content = createGrid() + createRooms(grid);
 
     let attrs = createAttrs({
         width : (gridWidth * cellSize),
