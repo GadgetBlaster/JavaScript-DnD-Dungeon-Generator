@@ -23,6 +23,11 @@ body {
     -webkit-print-color-adjust: exact;
 }
 
+header {
+    display: flex;
+    justify-content: space-between;
+}
+
 nav {
     display: flex;
 }
@@ -124,6 +129,7 @@ select + button {
 h1 {
     font-size: 20px;
     font-family: fantasy;
+    margin: 0;
 }
 
 h2 {

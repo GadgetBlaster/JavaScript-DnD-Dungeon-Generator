@@ -10,6 +10,7 @@ import { random } from './utility/random';
 
 export const typeSelect = 'select';
 export const typeNumber = 'number';
+export const typeRange  = 'range';
 
 const equalDistributionLabel = 'Random probability: Equally distributed';
 
@@ -40,8 +41,8 @@ const config = [
             complexity: {
                 label : 'Complexity',
                 name  : knobs.dungeonComplexity,
-                type  : typeSelect,
-                values: [ 1, 2, 3, 4, 5 ],
+                type  : typeRange,
+                values: [ 2, 10 ],
             }
         },
     },

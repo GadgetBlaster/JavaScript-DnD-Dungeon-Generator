@@ -1,10 +1,14 @@
 
-import { roll, rollArrayItem } from '../utility/roll';
 import { createAttrs } from '../utility/html';
+import { knobs } from '../knobs';
+import { roll, rollArrayItem } from '../utility/roll';
 
 const debug = false;
 
-const tempRoomCount = 10;
+const maxRoomMultiplier      = 10;
+const minDimensionMultiplier = 4;
+const maxDimensionMultiplier = 5;
+
 const tempRoomUnits = 4;
 
 const sides = {
@@ -17,9 +21,6 @@ const sides = {
 const cellBlank = '.';
 const cellRoom  = 'R';
 
-const gridWidth  = 20;
-const gridHeight = 20;
-
 const cellPx   = 20;
 
 const gridBackground  = '#efefef';
@@ -27,13 +28,13 @@ const gridStrokeColor = '#cfcfcf';
 const roomBackground  = '#ffffff';
 const roomStrokeColor = '#555555';
 
-const getStartingPoint = ({ roomWidth, roomHeight }) => {
+const getStartingPoint = ({ gridWidth, gridHeight }, { roomWidth, roomHeight }) => {
     let side = rollArrayItem(Object.values(sides));
 
     let minX = 1;
     let minY = 1;
     let maxX = gridWidth - roomWidth - 1;
-    let maxY = gridWidth - roomWidth - 1;
+    let maxY = gridHeight - roomWidth - 1;
 
     let x;
     let y;
@@ -159,7 +160,7 @@ const drawLine = ({ x1, y1, x2, y2 }) => {
     return `<line ${attrs} />`;
 };
 
-const drawGrid = () => {
+const drawGrid = ({ gridWidth, gridHeight }) => {
     let lines = '';
 
     for (let i = 0; i <= gridHeight; i++) {
@@ -213,19 +214,21 @@ const drawRoom = (grid, { x, y, width, height }, label) => {
     return `<rect ${attrs} />` + text;
 };
 
-const drawDungeon = (grid) => {
+const drawDungeon = (mapSettings, grid) => {
+    let { maxRooms } = mapSettings;
+
     let rooms = '';
 
-    let roomWidth = tempRoomUnits;
+    let roomWidth  = tempRoomUnits;
     let roomHeight = tempRoomUnits;
 
     let roomDimensions = { roomWidth, roomHeight };
 
-    let [ x, y ] = getStartingPoint(roomDimensions);
+    let [ x, y ] = getStartingPoint(mapSettings, roomDimensions);
 
     let prevRoom;
 
-    for (let i = 0; i < tempRoomCount; i++) {
+    for (let i = 0; i < maxRooms; i++) {
         if (prevRoom) {
             let validCords = getValidRoomCords(grid, prevRoom, roomDimensions);
 
@@ -266,14 +269,34 @@ const logGrid = (grid) => {
     console.table(cols);
 };
 
-export const generateMap = () => {
+const getMapSettings = (settings) => {
+    let { [knobs.dungeonComplexity]: complexity } = settings;
+
+    let maxRooms     = complexity * maxRoomMultiplier;
+    let minDimension = complexity * minDimensionMultiplier;
+    let maxDimension = complexity * maxDimensionMultiplier;
+    let gridWidth    = roll(minDimension, maxDimension);
+    let gridHeight   = roll(minDimension, maxDimension);
+
+    return {
+        maxRooms,
+        gridWidth,
+        gridHeight,
+    };
+};
+
+export const generateMap = (settings) => {
+    let mapSettings = getMapSettings(settings);
+
+    let { gridWidth, gridHeight } = mapSettings;
+
     let grid = [ ...Array(gridWidth) ].fill(cellBlank);
 
     grid.forEach((_, col) => {
         grid[col] = [ ...Array(gridHeight) ].fill(cellBlank);
     });
 
-    let content = drawGrid() + drawDungeon(grid);
+    let content = drawGrid(mapSettings) + drawDungeon(mapSettings, grid);
 
     debug && logGrid(grid);
 

@@ -2,9 +2,9 @@
 import { actions } from './action';
 import { button, buttonSize, infoLabel } from './button';
 import { div, legend, fieldset } from './block';
-import { select, input, fieldLabel } from './field';
-import { typeSelect, typeNumber } from '../knobs';
 import { paragraph, small } from './typography';
+import { select, input, slider, fieldLabel } from './field';
+import { typeSelect, typeNumber, typeRange } from '../knobs';
 
 const submitButton = button('Generate', actions.generate, { size: buttonSize.large });
 
@@ -21,6 +21,8 @@ const getKnob = (settings) => {
             return select(name, values);
         case typeNumber:
             return input(name, 'number', value);
+        case typeRange:
+            return slider(name, values);
         default:
             throw 'Invalid knob type';
     }
@@ -40,7 +42,7 @@ const renderFields = (fields) => Object.keys(fields).map((key) => {
     return div(knobLabel + knob + descButton) + descText;
 }).join('');
 
-export const renderKnobs = (config, page) => config.map((knobConfig, i) => {
+export const renderKnobs = (config, page) => config.map((knobConfig) => {
     let {
         label,
         labels,
@@ -58,7 +60,7 @@ export const renderKnobs = (config, page) => config.map((knobConfig, i) => {
     });
 
     let attrs = {
-        'data-collapsed': i !== 0,
+        'data-collapsed': true,
         'data-id': fieldsetId,
     };
 
