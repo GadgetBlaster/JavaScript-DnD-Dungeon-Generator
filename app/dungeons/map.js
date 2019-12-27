@@ -4,9 +4,9 @@ import { dimensionRanges } from '../rooms/dimensions';
 import { knobs } from '../knobs';
 import { roll, rollArrayItem } from '../utility/roll';
 
-const debug = false;
+const debug = true;
 
-const tempRoomUnits = 4;
+const wallWidth = 1;
 
 const sides = {
     top   : 'top',
@@ -17,6 +17,7 @@ const sides = {
 
 const cellBlank = '.';
 const cellRoom  = 'R';
+const cellWall  = 'W';
 
 const cellPx   = 20;
 
@@ -28,10 +29,10 @@ const roomStrokeColor = '#555555';
 const getStartingPoint = ({ gridWidth, gridHeight }, { roomWidth, roomHeight }) => {
     let side = rollArrayItem(Object.values(sides));
 
-    let minX = 1;
-    let minY = 1;
-    let maxX = gridWidth - roomWidth - 1;
-    let maxY = gridHeight - roomWidth - 1;
+    let minX = wallWidth;
+    let minY = wallWidth;
+    let maxX = gridWidth - roomWidth - wallWidth;
+    let maxY = gridHeight - roomWidth - wallWidth;
 
     let x;
     let y;
@@ -63,10 +64,10 @@ const getStartingPoint = ({ gridWidth, gridHeight }, { roomWidth, roomHeight }) 
 };
 
 const checkArea = (grid, { x, y, width, height }) => {
-    let minX = 1;
-    let minY = 1;
-    let maxX = grid.length - 1;
-    let maxY = grid[0].length - 1;
+    let minX = wallWidth;
+    let minY = wallWidth;
+    let maxX = grid.length - wallWidth;
+    let maxY = grid[0].length - wallWidth;
 
     for (let xCord = x; xCord < (x + width); xCord++) {
         for (let yCord = y; yCord < (y + height); yCord++) {
@@ -88,10 +89,15 @@ const checkArea = (grid, { x, y, width, height }) => {
 };
 
 const isCorner = ({ x, y, minX, minY, maxX, maxY }) => {
-    let upperLeft  = x === minX && y === minY;
-    let upperRight = x === maxX && y === minY;
-    let lowerRight = x === maxX && y === maxY;
-    let lowerLeft  = x === minX && y === maxY;
+    let minLeft   = minX + wallWidth;
+    let minTop    = minY + wallWidth;
+    let minBottom = maxY - wallWidth;
+    let minRight  = maxX - wallWidth;
+
+    let upperLeft  = x <= minLeft  && y <= minTop;
+    let upperRight = x >= minRight && y <= minTop;
+    let lowerRight = x >= minRight && y >= minBottom;
+    let lowerLeft  = x <= minLeft  && y >= minBottom;
 
     return upperLeft || upperRight || lowerRight || lowerLeft;
 };
@@ -104,10 +110,10 @@ const getValidRoomCords = (grid, prevRoom, { roomWidth, roomHeight }) => {
         height: prevHeight,
     } = prevRoom;
 
-    let minX = prevX - roomWidth;
-    let minY = prevY - roomHeight;
-    let maxX = prevX + prevWidth;
-    let maxY = prevY + prevHeight;
+    let minX = prevX - roomWidth - wallWidth;
+    let minY = prevY - roomHeight - wallWidth;
+    let maxX = prevX + prevWidth + wallWidth;
+    let maxY = prevY + prevHeight + wallWidth;
 
     let validCords = [];
 
@@ -178,12 +184,21 @@ const drawGrid = ({ gridWidth, gridHeight }) => {
 };
 
 const drawRoom = (grid, { x, y, width, height }, label) => {
-    for (let w = 0; w < width; w++) {
-        for (let h = 0; h < height; h++) {
+    for (let w = -wallWidth; w < (width + wallWidth); w++) {
+        for (let h = -wallWidth; h < (height + wallWidth); h++) {
             let xCord = x + w;
             let yCord = y + h;
 
-            grid[xCord][yCord] = cellRoom;
+            if (!grid[xCord] || !grid[xCord][yCord]) {
+                continue;
+            }
+
+            let isWall = w === -wallWidth || w === width ||
+                         h === -wallWidth || h === height;
+
+            let cell = isWall ?  cellWall : cellRoom;
+
+            grid[xCord][yCord] = cell;
         }
     }
 
@@ -261,16 +276,16 @@ const logGrid = (grid) => {
     let cols = [];
 
     grid.forEach((column, x) => {
-        let row = [];
+        let rows = [];
 
         column.forEach((_, y) => {
-            row.push(grid[y][x]);
+            grid[y] && grid[y][x] && rows.push(grid[y][x]);
         });
 
-        cols.push(row);
+        rows.length && cols.push(rows);
     });
 
-    console.table(cols);
+    console.log(cols);
 };
 
 
