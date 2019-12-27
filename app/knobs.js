@@ -1,12 +1,12 @@
 
-import { conditions, quantities, sizes, rarities } from './attribute';
+import { list as conditions, probability as conditionProbability } from './attributes/condition';
 import { list as itemTypes } from './items/type';
+import { list as quantities, probability as quantityProbability } from './attributes/quantity';
+import { list as rarities, probability as rarityProbability } from './attributes/rarity';
 import { list as roomTypes } from './rooms/type';
-import { probability as conditionProbability } from './attributes/condition';
-import { probability as quantityProbability } from './attributes/quantity';
-import { probability as rarityProbability } from './attributes/rarity';
-import { random } from './utility/random';
+import { list as sizes } from './attributes/size';
 import { pages } from './ui/nav';
+import { random } from './utility/random';
 
 export const typeSelect = 'select';
 export const typeNumber = 'number';

@@ -1,11 +1,11 @@
 
 import { knobs } from './knobs';
 import { list as roomTypes } from './rooms/type';
+import { list as sizes } from './attributes/size'
 import { probability as conditionProbability } from './attributes/condition'
 import { probability as quantityProbability } from './attributes/quantity'
 import { probability as rarityProbability } from './attributes/rarity'
 import { random } from './utility/random';
-import { sizes } from './attribute';
 
 import {
     rollArrayItem,
