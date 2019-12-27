@@ -1,5 +1,8 @@
 
-export const paragraph = (label) => `<p>${label}</p>`;
-export const strong    = (label) => `<strong>${label}</strong>`;
-export const title     = (label) => `<h2>${label}</h2>`;
-export const subTitle  = (label) => `<h3>${label}</h3>`;
+import { element } from '../utility/html';
+
+export const paragraph = (label, attrs) => element('p', label, attrs);
+export const strong    = (label, attrs) => element('strong', label, attrs);
+export const title     = (label, attrs) => element('h2', label, attrs);
+export const subTitle  = (label, attrs) => element('h3', label, attrs);
+export const small     = (label, attrs) => element('small', label, attrs);

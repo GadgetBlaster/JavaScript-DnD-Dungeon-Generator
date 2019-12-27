@@ -1,5 +1,7 @@
 
-const infoLabel = '?';
+import { element } from '../utility/html';
+
+export const infoLabel = '?';
 
 export const buttonSize = {
     small: 'small',
@@ -25,9 +27,10 @@ export const button = (label, action, options = {}) => {
         ...(label === infoLabel && { 'info': 'true' }),
     };
 
-    let htmlAttrs = Object.keys(attrs).map((key) => {
-        return `data-${key}="${attrs[key]}"`;
-    }).join(' ');
+    let attributes = Object.keys(attrs).reduce((obj, key) => {
+        obj[`data-${key}`] = attrs[key];
+        return obj;
+    }, {});
 
-    return `<button ${htmlAttrs}>${label}</button>`;
+    return element('button', label, attributes);
 };

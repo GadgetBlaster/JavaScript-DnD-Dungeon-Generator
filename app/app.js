@@ -11,6 +11,7 @@
 import {
     actions,
     attachActions,
+    toggleCollapsed,
     toggleVisibility,
 } from './ui/action';
 
@@ -64,9 +65,10 @@ const generate = () => {
 };
 
 attachActions({
+    [actions.expandCollapse]: toggleCollapsed,
     [actions.generate]: generate,
-    [actions.showHide]: toggleVisibility,
     [actions.navigate]: navigate,
+    [actions.showHide]: toggleVisibility,
 });
 
 navContainer.innerHTML  = nav;

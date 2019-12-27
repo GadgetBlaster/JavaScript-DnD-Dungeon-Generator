@@ -27,13 +27,17 @@ nav {
     display: flex;
 }
 
+/* Forms */
+
 form {
     margin-bottom: 20px;
 }
 
 fieldset {
     padding: 15px 25px;
-    border: 1px solid var(--gray);
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--gray);
     margin: 20px 0;
 }
 
@@ -42,9 +46,22 @@ fieldset > div {
     align-items: center;
 }
 
+fieldset[data-collapsed="true"] {
+    border-left-color: transparent;
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+fieldset[data-collapsed="true"] > div {
+    display: none;
+}
+
 legend {
     padding: 0 10px;
     margin-left: -10px;
+    cursor: pointer;
 }
 
 label {
@@ -64,6 +81,8 @@ select {
     background: var(--bg);
     border: 1px solid var(--gray);
 }
+
+/* Buttons */
 
 button[data-size="small"] {
     min-height: 30px;
@@ -100,6 +119,8 @@ select + button {
     margin-left: 10px;
 }
 
+/* Type */
+
 h1 {
     font-size: 20px;
     font-family: fantasy;
@@ -120,6 +141,8 @@ small {
     font-size: 14px;
 }
 
+/* Lists */
+
 ul {
     list-style: square;
 }
@@ -127,6 +150,8 @@ ul {
 li {
     padding-right: 20px;
 }
+
+/* Grid */
 
 [data-columns="2"] { columns: 2; }
 [data-columns="3"] { columns: 3; }

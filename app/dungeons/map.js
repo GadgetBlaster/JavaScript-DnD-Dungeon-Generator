@@ -1,5 +1,6 @@
 
 import { roll, rollArrayItem } from '../utility/roll';
+import { createAttrs } from '../utility/html';
 
 const debug = false;
 
@@ -25,15 +26,6 @@ const gridBackground  = '#efefef';
 const gridStrokeColor = '#cfcfcf';
 const roomBackground  = '#ffffff';
 const roomStrokeColor = '#555555';
-
-const getRoomMaxX = (roomWidth) => gridWidth - roomWidth;
-const getRoomMaxY = (roomHeight) => gridHeight - roomHeight;
-
-const createAttrs = (obj) => {
-    return Object.keys(obj).map((key) => {
-        return `${key}="${obj[key]}"`;
-    }).join('');
-};
 
 const getStartingPoint = ({ roomWidth, roomHeight }) => {
     let side = rollArrayItem(Object.values(sides));

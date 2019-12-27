@@ -1,9 +1,10 @@
 
 import { actions } from './action';
-import { button, buttonSize } from './button';
+import { button, buttonSize, infoLabel } from './button';
 import { div, legend, fieldset } from './block';
 import { select, input, fieldLabel } from './field';
 import { typeSelect, typeNumber } from '../knobs';
+import { paragraph, small } from './typography';
 
 const submitButton = button('Generate', actions.generate, { size: buttonSize.large });
 
@@ -33,8 +34,8 @@ const renderFields = (fields) => Object.keys(fields).map((key) => {
     let knobLabel  = fieldLabel(label);
     let knob       = getKnob(settings);
     let descId     = desc && `info-${name}`;
-    let descButton = desc ? button('?', actions.showHide, { target: descId }) : '';
-    let descText   = desc ? `<p hidden="true" data-id="${descId}"><small>${desc}</small></p>` : '';
+    let descButton = desc ? button(infoLabel, actions.showHide, { target: descId }) : '';
+    let descText   = desc ? paragraph(small(desc), { hidden: true, 'data-id': descId }) : '';
 
     return div(knobLabel + knob + descButton) + descText;
 }).join('');
@@ -50,7 +51,18 @@ export const renderKnobs = (config, page) => config.map((knobConfig) => {
         label = labels[page];
     }
 
-    return fieldset(legend(label) + renderFields(fields));
+    let fieldsetId = `fieldset-${label}`;
+    let handle = legend(label, {
+        'data-action': actions.expandCollapse,
+        'data-target': fieldsetId,
+    });
+
+    let attrs = {
+        'data-collapsed': true,
+        'data-id': fieldsetId,
+    };
+
+    return fieldset(handle + renderFields(fields), attrs);
 }).join('') + submitButton;
 
 export const getFormData = (knobContainer) => {
