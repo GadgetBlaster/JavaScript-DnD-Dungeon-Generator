@@ -58,7 +58,12 @@ const groupByType   = makeGroup(itemTypes);
 
 items.forEach((item) => {
     groupByRarity[item.rarity].push(item);
-    groupByType[item.type].push(item);
+
+    if (!groupByType[item.type][item.rarity]) {
+        groupByType[item.type][item.rarity] = [];
+    }
+
+    groupByType[item.type][item.rarity].push(item);
 });
 
 export const generateItem = (settings) => {
@@ -81,7 +86,7 @@ export const generateItem = (settings) => {
     if (itemType === random) {
         randomItem = rollArrayItem(groupByRarity[itemRarity]);
     } else {
-        randomItem = rollArrayItem(groupByType[itemType]);
+        randomItem = rollArrayItem(groupByType[itemType][itemRarity]);
     }
 
     let item = randomItem || { name: 'Mysterious object' };

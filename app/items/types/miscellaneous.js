@@ -14,6 +14,7 @@ const config = [
     { name: 'Manacles' },
     { name: 'Perfume', variants: [ 'vial', 'bottle' ] },
     { name: 'Torch' },
+    { name: 'Bone', variants: [ 'test' ] },
 ];
 
 export default config.map((item) => ({ ...defaults, ...item }));

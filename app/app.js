@@ -6,7 +6,7 @@
 // Doors, locked doors, keys
 // Secret doors, secret rooms
 // Traps
-// Item rarity for specific type
+// Room vegetation
 
 import {
     actions,
