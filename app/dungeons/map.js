@@ -136,6 +136,18 @@ const getValidRoomCords = (grid, prevRoom, { roomWidth, roomHeight }) => {
     return validCords;
 };
 
+const drawText = (text, { x, y }) => {
+    let attrs = createAttrs({
+        x, y,
+        'alignment-baseline': 'middle',
+        'font-family': 'sans-serif',
+        'font-size': '20px',
+        'text-anchor': 'middle',
+    });
+
+    return `<text ${attrs}>${text}</text>`;
+};
+
 const drawLine = ({ x1, y1, x2, y2 }) => {
     let attrs = createAttrs({
         x1, y1, x2, y2,
@@ -167,7 +179,7 @@ const drawGrid = () => {
     return lines;
 };
 
-const drawRect = (grid, { x, y, width = 1, height = 1, fill = roomBackground }) => {
+const drawRoom = (grid, { x, y, width, height }, label) => {
     for (let w = 0; w < width; w++) {
         for (let h = 0; h < height; h++) {
             let xCord = x + w;
@@ -177,17 +189,28 @@ const drawRect = (grid, { x, y, width = 1, height = 1, fill = roomBackground }) 
         }
     }
 
+    let xPx = x * cellPx;
+    let yPx = y * cellPx;
+
+    let widthPx  = width * cellPx;
+    let heightPx = height * cellPx;
+
     let attrs = createAttrs({
-        x: x * cellPx,
-        y: y * cellPx,
-        width: width * cellPx,
-        height: height * cellPx,
-        fill,
+        x: xPx,
+        y: yPx,
+        width: widthPx,
+        height: heightPx,
+        fill: roomBackground,
         stroke: roomStrokeColor,
         'stroke-width': 2
     });
 
-    return `<rect ${attrs} />`
+    let text = drawText(label, {
+        x: (xPx + widthPx / 2),
+        y: (yPx + heightPx / 2),
+    });
+
+    return `<rect ${attrs} />` + text;
 };
 
 const drawDungeon = (grid) => {
@@ -219,7 +242,7 @@ const drawDungeon = (grid) => {
             height: roomHeight,
         };
 
-        rooms += drawRect(grid, room);
+        rooms += drawRoom(grid, room, i);
 
         prevRoom = room;
     }
