@@ -1,6 +1,6 @@
 
 import { applyRoomRandomization } from '../settings';
-import { generateRoom } from './room';
+import { generateItems } from '../items/generate';
 import { knobs } from '../knobs';
 
 export const generateRooms = (settings) => {
@@ -8,7 +8,10 @@ export const generateRooms = (settings) => {
 
     let count = Math.floor(Number(roomCount));
 
-    return [ ...Array(count) ].map((_, i) => {
-        return generateRoom(applyRoomRandomization(settings), i + 1);
-    }).join('');
+    return [ ...Array(count) ].map(() => {
+        return {
+            settings: applyRoomRandomization(settings),
+            items: generateItems(settings),
+        };
+    });
 };

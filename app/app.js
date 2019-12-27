@@ -22,6 +22,7 @@ import { getKnobConfig } from './knobs';
 import { nav, setActive, getActive, pages } from './ui/nav';
 import { renderKnobs, getFormData } from './ui/form';
 import { section } from './ui/block';
+import { getRoomDescription } from './rooms/description';
 
 const navContainer     = document.getElementById('nav');
 const knobContainer    = document.getElementById('knobs');
@@ -44,10 +45,25 @@ const navigate = (e) => {
     knobContainer.innerHTML    = renderKnobs(config, page);
 };
 
+const formatRoom = (room, i) => getRoomDescription(room.settings, i + 1) + room.items.join('');
+
+const getItems = (settings) => generateItems(settings).join('');
+
+const getRooms = (settings) => {
+    return generateRooms(settings).map((room, i) => formatRoom(room, i)).join('');
+};
+
+const getDungeon = (settings) => {
+    let { map, rooms } = generateDungeon(settings);
+    let roomText = rooms.map((room, i) => formatRoom(room, i)).join('');
+
+    return map + roomText;
+};
+
 const generators = {
-    [pages.dungeon]: generateDungeon,
-    [pages.items]  : generateItems,
-    [pages.room]   : generateRooms,
+    [pages.dungeon]: getDungeon,
+    [pages.items]  : getItems,
+    [pages.room]   : getRooms,
 };
 
 const generate = () => {

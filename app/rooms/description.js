@@ -96,7 +96,7 @@ const getItemRarityDescription = (itemRarity) => {
     }
 };
 
-export const getDescription = (settings, roomNumber) => {
+export const getRoomDescription = (settings, roomNumber) => {
     let {
         [knobs.itemCondition]: itemCondition,
         [knobs.itemRarity]   : itemRarity,

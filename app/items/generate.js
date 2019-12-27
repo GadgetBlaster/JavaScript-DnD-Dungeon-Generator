@@ -92,5 +92,5 @@ export const generateItems = (settings) => {
         subTitle(`Items (${count})`),
         description,
         list(itemList, { columns }),
-    ].filter(Boolean).join('');
+    ].filter(Boolean);
 };

@@ -5,10 +5,6 @@ import { roll, rollArrayItem } from '../utility/roll';
 
 const debug = false;
 
-const maxRoomMultiplier      = 10;
-const minDimensionMultiplier = 4;
-const maxDimensionMultiplier = 5;
-
 const tempRoomUnits = 4;
 
 const sides = {
@@ -215,9 +211,7 @@ const drawRoom = (grid, { x, y, width, height }, label) => {
 };
 
 const drawDungeon = (mapSettings, grid) => {
-    let { maxRooms } = mapSettings;
-
-    let rooms = '';
+    let rooms = [];
 
     let roomWidth  = tempRoomUnits;
     let roomHeight = tempRoomUnits;
@@ -228,12 +222,12 @@ const drawDungeon = (mapSettings, grid) => {
 
     let prevRoom;
 
-    for (let i = 0; i < maxRooms; i++) {
+    mapSettings.rooms.forEach((roomConfig, i) => {
         if (prevRoom) {
             let validCords = getValidRoomCords(grid, prevRoom, roomDimensions);
 
             if (!validCords.length) {
-                continue;
+                return;
             }
 
             [ x, y ] = rollArrayItem(validCords);
@@ -245,10 +239,10 @@ const drawDungeon = (mapSettings, grid) => {
             height: roomHeight,
         };
 
-        rooms += drawRoom(grid, room, i);
+        rooms.push(drawRoom(grid, room, i + 1));
 
         prevRoom = room;
-    }
+    });
 
     return rooms;
 };
@@ -269,25 +263,8 @@ const logGrid = (grid) => {
     console.table(cols);
 };
 
-const getMapSettings = (settings) => {
-    let { [knobs.dungeonComplexity]: complexity } = settings;
 
-    let maxRooms     = complexity * maxRoomMultiplier;
-    let minDimension = complexity * minDimensionMultiplier;
-    let maxDimension = complexity * maxDimensionMultiplier;
-    let gridWidth    = roll(minDimension, maxDimension);
-    let gridHeight   = roll(minDimension, maxDimension);
-
-    return {
-        maxRooms,
-        gridWidth,
-        gridHeight,
-    };
-};
-
-export const generateMap = (settings) => {
-    let mapSettings = getMapSettings(settings);
-
+export const generateMap = (mapSettings) => {
     let { gridWidth, gridHeight } = mapSettings;
 
     let grid = [ ...Array(gridWidth) ].fill(cellBlank);
@@ -296,7 +273,9 @@ export const generateMap = (settings) => {
         grid[col] = [ ...Array(gridHeight) ].fill(cellBlank);
     });
 
-    let content = drawGrid(mapSettings) + drawDungeon(mapSettings, grid);
+    let rooms = drawDungeon(mapSettings, grid);
+
+    let content = drawGrid(mapSettings) + rooms.join('');
 
     debug && logGrid(grid);
 
@@ -306,5 +285,8 @@ export const generateMap = (settings) => {
         style : `background: ${gridBackground}; overflow: visible;`,
     });
 
-    return `<svg ${attrs}>${content}</svg>`;
+    return {
+        map: `<svg ${attrs}>${content}</svg>`,
+        roomCount: rooms.length,
+    };
 };
