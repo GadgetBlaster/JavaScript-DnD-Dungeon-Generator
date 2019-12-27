@@ -6,16 +6,14 @@ export const actions = {
     expandCollapse: 'expandCollapse',
 };
 
-export const toggleVisibility = (e) => {
-    let id = e.target.dataset.target;
-    let el = document.body.querySelector(`[data-id="${id}"]`);
+export const toggleVisibility = (target) => {
+    let el = document.body.querySelector(`[data-id="${target}"]`);
 
     el.hidden = !el.hidden;
 };
 
-export const toggleCollapsed = (e) => {
-    let id = e.target.dataset.target;
-    let el = document.body.querySelector(`[data-id="${id}"]`);
+export const toggleCollapsed = (target) => {
+    let el = document.body.querySelector(`[data-id="${target}"]`);
 
     let collapsed = el.dataset.collapsed === 'true';
 
@@ -27,7 +25,8 @@ export const attachActions = (actions) => {
         e.preventDefault();
 
         let action = e.target.dataset.action;
+        let target = e.target.dataset.target;
 
-        actions[action] && actions[action](e);
+        actions[action] && actions[action](target, e.target);
     });
 };

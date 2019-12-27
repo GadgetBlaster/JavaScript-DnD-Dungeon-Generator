@@ -19,7 +19,7 @@ let {
     exquisite,
 } = condition;
 
-export const list = Object.values(condition);
+export const list = Object.keys(condition);
 
 export const probability = new Probability([
     [ 50, average ],

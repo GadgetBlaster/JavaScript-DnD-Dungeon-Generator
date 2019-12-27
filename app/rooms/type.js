@@ -10,7 +10,7 @@ const type = {
     chapel: 'chapel',
     classroom: 'classroom',
     closet: 'closet',
-    diningRoom: 'dining room',
+    diningRoom: 'diningRoom',
     dormitory: 'dormitory',
     hall: 'hall',
     hallway: 'hallway',
@@ -20,16 +20,16 @@ const type = {
     loft: 'loft',
     pantry: 'pantry',
     parlour: 'parlour',
-    prisonCell: 'prison cell',
+    prisonCell: 'prisonCell',
     room: 'room',
     smithy: 'smithy',
     store: 'store',
     study: 'study',
-    throneRoom: 'throne room',
-    tortureChamber: 'torture chamber',
+    throneRoom: 'throneRoom',
+    tortureChamber: 'tortureChamber',
     treasury: 'treasury',
 };
 
-export const list = Object.values(type);
+export const list = Object.keys(type);
 
 export default type;

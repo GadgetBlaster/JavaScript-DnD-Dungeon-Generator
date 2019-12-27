@@ -19,30 +19,27 @@ import { generateDungeon } from './dungeons/generate';
 import { generateItems } from './items/generate';
 import { generateRooms } from './rooms/generate';
 import { getKnobConfig } from './knobs';
+import { getRoomDescription } from './rooms/description';
 import { nav, setActive, getActive, pages } from './ui/nav';
 import { renderKnobs, getFormData } from './ui/form';
 import { section } from './ui/block';
-import { getRoomDescription } from './rooms/description';
+import { toDash } from './utility/tools';
 
 const navContainer     = document.getElementById('nav');
 const knobContainer    = document.getElementById('knobs');
 const contentContainer = document.getElementById('content');
 
-const navigate = (e) => {
-    let target = e && e.target;
-    let value;
+const navigate = (target, el) => {
+    el && setActive(el);
 
-    if (target) {
-        value = target.dataset.value;
-        setActive(target);
-    }
-
-    let page = value || getActive(navContainer);
+    let page = target || getActive(navContainer);
 
     let config = getKnobConfig(page);
 
     contentContainer.innerHTML = '';
     knobContainer.innerHTML    = renderKnobs(config, page);
+
+    el && toggleCollapsed(`fieldset-${toDash(config[0].label)}`);
 };
 
 const formatRoom = (room, i) => getRoomDescription(room.settings, i + 1) + room.items.join('');

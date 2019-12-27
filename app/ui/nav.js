@@ -13,9 +13,9 @@ let { dungeon, room, items } = pages;
 let { navigate } = actions;
 
 export const nav = [
-    button('Dungeon', navigate, { value: dungeon, active: true }),
-    button('Rooms', navigate, { value: room }),
-    button('Items', navigate, { value: items }),
+    button('Dungeon', navigate, { target: dungeon, active: true }),
+    button('Rooms', navigate, { target: room }),
+    button('Items', navigate, { target: items }),
 ].join('');
 
 export const setActive = (target) => {
@@ -31,5 +31,5 @@ export const getActive = (navContainer) => {
         return btn.dataset.active
     });
 
-    return activeBtn.dataset.value;
+    return activeBtn.dataset.target;
 };

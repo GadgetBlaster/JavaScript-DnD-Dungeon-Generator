@@ -31,6 +31,6 @@ export const probability = new Probability([
     [ 100, legendary ],
 ]);
 
-export const list = Object.values(rarity);
+export const list = Object.keys(rarity);
 
 export default rarity;

@@ -4,6 +4,7 @@ import { button, buttonSize, infoLabel } from './button';
 import { div, legend, fieldset } from './block';
 import { paragraph, small } from './typography';
 import { select, input, slider, fieldLabel } from './field';
+import { toDash } from '../utility/tools';
 import { typeSelect, typeNumber, typeRange } from '../knobs';
 
 const submitButton = button('Generate', actions.generate, { size: buttonSize.large });
@@ -53,7 +54,7 @@ export const renderKnobs = (config, page) => config.map((knobConfig) => {
         label = labels[page];
     }
 
-    let fieldsetId = `fieldset-${label}`;
+    let fieldsetId = `fieldset-${toDash(label)}`;
     let handle = legend(label, {
         'data-action': actions.expandCollapse,
         'data-target': fieldsetId,

@@ -207,7 +207,7 @@ const drawRoom = (grid, { x, y, width, height }, label) => {
         y: (yPx + heightPx / 2),
     });
 
-    return `<rect ${attrs} />` + text;
+    return `<rect ${attrs} />${text}`;
 };
 
 const drawDungeon = (mapSettings, grid) => {
