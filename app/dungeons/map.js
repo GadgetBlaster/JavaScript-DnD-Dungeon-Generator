@@ -3,6 +3,8 @@ import { roll, rollArrayItem } from '../utility/roll';
 
 const tempRoomCount = 2;
 const tempRoomUnits = 4;
+const tempStartX = 4;
+const tempStartY = 4;
 
 const sides = {
     top   : 'top',
@@ -14,8 +16,8 @@ const sides = {
 const cellBlank = '.';
 const cellRoom  = 'R';
 
-const gridWidth  = 10;
-const gridHeight = 10;
+const gridWidth  = 20;
+const gridHeight = 20;
 
 const cellPx   = 20;
 
@@ -27,7 +29,13 @@ const roomStrokeColor = '#555555';
 const getRoomMaxX = (roomWidth) => gridWidth - roomWidth;
 const getRoomMaxY = (roomHeight) => gridHeight - roomHeight;
 
-const getStartingPoint = ({ roomWidth = 1, roomHeight = 1 } = {}) => {
+const createAttrs = (obj) => {
+    return Object.keys(obj).map((key) => {
+        return `${key}="${obj[key]}"`;
+    }).join('');
+};
+
+const getStartingPoint = ({ roomWidth, roomHeight }) => {
     let side = rollArrayItem(Object.values(sides));
 
     let x;
@@ -59,10 +67,72 @@ const getStartingPoint = ({ roomWidth = 1, roomHeight = 1 } = {}) => {
     return [ x, y ];
 };
 
-const createAttrs = (obj) => {
-    return Object.keys(obj).map((key) => {
-        return `${key}="${obj[key]}"`;
-    }).join('');
+const checkArea = (grid, { x, y, width, height }) => {
+    let maxX = grid.length;
+    let maxY = grid[0].length;
+
+    for (let xCord = x; xCord < (x + width); xCord++) {
+        for (let yCord = y; yCord < (y + height); yCord++) {
+            if (xCord < 0 || xCord >= maxX) {
+                return false;
+            }
+
+            if (yCord < 0 || yCord >= maxY) {
+                return false;
+            }
+
+            if (grid[xCord][yCord] !== cellBlank) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+};
+
+const isCorner = ({ x, y, minX, minY, maxX, maxY }) => {
+    let upperLeft  = x === minX && y === minY;
+    let upperRight = x === maxX && y === minY;
+    let lowerRight = x === maxX && y === maxY;
+    let lowerLeft  = x === minX && y === maxY;
+
+    return upperLeft || upperRight || lowerRight || lowerLeft;
+};
+
+const getValidRoomCords = (grid, prevRoom, { roomWidth, roomHeight }) => {
+    let {
+        x: prevX,
+        y: prevY,
+        width: prevWidth,
+        height: prevHeight,
+    } = prevRoom;
+
+    let minX = prevX - roomWidth;
+    let minY = prevY - roomHeight;
+    let maxX = prevX + prevWidth;
+    let maxY = prevY + prevHeight;
+
+    let validCords = [];
+
+    for (let x = minX; x <= maxX; x++) {
+        for (let y = minY; y <= maxY; y++) {
+            if (isCorner({ x, y, minX, minY, maxX, maxY })) {
+                continue;
+            }
+
+            let valid = checkArea(grid, {
+                x, y,
+                width: roomWidth,
+                height: roomHeight,
+            });
+
+            if (valid) {
+                validCords.push([ x, y ]);
+            }
+        }
+    }
+
+    return validCords;
 };
 
 const drawLine = ({ x1, y1, x2, y2 }) => {
@@ -122,17 +192,37 @@ const drawRect = (grid, { x, y, width = 1, height = 1, fill = roomBackground }) 
 const drawDungeon = (grid) => {
     let rooms = '';
 
-    let [ x, y ] = getStartingPoint({
-        roomWidth: tempRoomUnits,
-        roomHeight: tempRoomUnits,
-    });
+    let roomWidth = tempRoomUnits;
+    let roomHeight = tempRoomUnits;
 
-    for (let i = 0; i <= tempRoomCount; i++) {
-        rooms += drawRect(grid, {
-            x: 1, y: 0,
-            width: tempRoomUnits,
-            height: tempRoomUnits,
-        });
+    let roomDimensions = { roomWidth, roomHeight };
+
+    let [ x, y ] = getStartingPoint(roomDimensions);
+    x = tempStartX;
+    y = tempStartY;
+
+    let prevRoom;
+
+    for (let i = 0; i < tempRoomCount; i++) {
+        if (prevRoom) {
+            let validCords = getValidRoomCords(grid, prevRoom, roomDimensions);
+
+            if (!validCords.length) {
+                continue;
+            }
+
+            [ x, y ] = rollArrayItem(validCords);
+        }
+
+        let room = {
+            x, y,
+            width: roomWidth,
+            height: roomHeight,
+        };
+
+        rooms += drawRect(grid, room);
+
+        prevRoom = room;
     }
 
     return rooms;
@@ -163,7 +253,7 @@ export const generateMap = () => {
 
     let content = drawGrid() + drawDungeon(grid);
 
-    logGrid(grid);
+    // logGrid(grid);
 
     let attrs = createAttrs({
         width : (gridWidth * cellPx),
