@@ -1,9 +1,13 @@
 
 import { createAttrs } from '../utility/html';
+import { directions } from './map';
 
 const gridLinePx = 1;
 const cellPx     = 24;
+const borderPx   = 2;
 
+const roomStrokeColor = '#a9a9a9';
+const roomBackground  = 'rgba(255, 255, 255, 0.7)';
 const gridBackground  = '#f0f0f0';
 const textColor       = '#666666';
 const gridStrokeColor = '#cfcfcf';
@@ -31,7 +35,7 @@ export const drawText = (text, [ x, y ], { fontSize }) => {
     return `<text ${attrs}>${text}</text>`;
 };
 
-export const drawLine = ({ x1, y1, x2, y2, color, width }) => {
+const drawLine = ({ x1, y1, x2, y2, color, width }) => {
     let attrs = createAttrs({
         x1, y1, x2, y2,
         stroke: color,
@@ -77,6 +81,67 @@ export const drawGrid = ({ gridWidth, gridHeight }) => {
     }
 
     return lines;
+};
+
+export const drawRoom = (rectAttrs) => {
+    let attrs = createAttrs({
+        ...rectAttrs,
+        fill: roomBackground,
+        stroke: roomStrokeColor,
+        'stroke-width': borderPx,
+    });
+
+    return `<rect ${attrs} />`;
+};
+
+export const drawDoor = (rectConfig) => {
+    let direction = rectConfig.direction;
+    let rectAttrs = getRectAttrs(rectConfig)
+
+    let attrs = createAttrs({
+        ...rectAttrs,
+        fill: roomBackground,
+        stroke: roomBackground,
+        'stroke-width': borderPx,
+    });
+
+    let { x, y, width, height } = rectAttrs;
+
+    let lineAttrs = {
+        color: roomStrokeColor,
+        width: borderPx,
+    };
+
+    let lines = [];
+
+    let x1 = x;
+    let y1 = y;
+    let x2 = x;
+    let y2 = y;
+
+    if (direction === directions.north || direction === directions.south) {
+            y2     = y + height;
+        let xRight = x + width
+        let yHalf  = y + (height / 2);
+
+        lines.push(
+            drawLine({ ...lineAttrs, x1, y1, x2, y2 }),
+            drawLine({ ...lineAttrs, x1: xRight, y1, x2: xRight, y2 }),
+            drawLine({ ...lineAttrs, x1, y1: yHalf, x2: xRight, y2: yHalf }),
+        );
+    } else {
+            x2      = x + width;
+        let yBottom = y + height
+        let xHalf   = x + (width / 2);
+
+        lines.push(
+            drawLine({ ...lineAttrs, x1, y1, x2, y2 }),
+            drawLine({ ...lineAttrs, x1, y1: yBottom, x2, y2: yBottom }),
+            drawLine({ ...lineAttrs, x1: xHalf, y1, x2: xHalf, y2: yBottom }),
+        );
+    }
+
+    return `<rect ${attrs} />${lines.join('')}`;
 };
 
 export const drawMap = ({ gridWidth, gridHeight }, content) => {

@@ -1,6 +1,8 @@
 
 import {
     cellBlank,
+    cellDoor,
+    cellWall,
     getStartingPoint,
     getValidRoomCords,
     sides,
@@ -9,13 +11,13 @@ import {
 
 import {
     drawGrid,
-    drawLine,
+    drawDoor,
     drawMap,
     drawText,
+    drawRoom,
     getRectAttrs,
 } from './draw';
 
-import { createAttrs } from '../utility/html';
 import { dimensionRanges, customDimensions } from '../rooms/dimensions';
 import { knobs } from '../knobs';
 import { roll, rollArrayItem } from '../utility/roll';
@@ -24,22 +26,14 @@ import type from '../rooms/type';
 
 const debug = false;
 
-const cellWall = 'w';
-const cellDoor = 'd';
-
-const borderPx   = 2;
-
 const maxDoorWidth = 4;
-
-const roomBackground  = 'rgba(255, 255, 255, 0.7)';
-const roomStrokeColor = '#a9a9a9';
 
 const labelMinWidth  = 3;
 const labelMinHeight = 2;
 const labelRoomNumberSize = 14;
 const labelRoomTypeSize   = 10;
 
-const directions = {
+export const directions = {
     north: 'north',
     east : 'east',
     south: 'south',
@@ -101,13 +95,6 @@ const getRoom = (grid, room, roomConfig, roomNumber) => {
 
     let px = getRectAttrs({ x, y, width, height });
 
-    let attrs = createAttrs({
-        ...px,
-        fill: roomBackground,
-        stroke: roomStrokeColor,
-        'stroke-width': borderPx,
-    });
-
     let roomType      = roomConfig.settings[knobs.roomType];
     let showRoomLabel = roomType !== type.room && width >= labelMinWidth && height >= labelMinHeight;
 
@@ -125,60 +112,12 @@ const getRoom = (grid, room, roomConfig, roomNumber) => {
         text += drawText(roomLabel, [ middleX, roomLabelY ], { fontSize: labelRoomTypeSize });
     }
 
+    let rect = drawRoom(px);
+
     return {
-        rect: `<rect ${attrs} />${text}`,
+        rect: rect + text,
         walls,
     };
-};
-
-const drawDoor = (rectConfig) => {
-    let direction = rectConfig.direction;
-    let rectAttrs = getRectAttrs(rectConfig)
-
-    let attrs = createAttrs({
-        ...rectAttrs,
-        fill: roomBackground,
-        stroke: roomBackground,
-        'stroke-width': borderPx,
-    });
-
-    let { x, y, width, height } = rectAttrs;
-
-    let lineAttrs = {
-        color: roomStrokeColor,
-        width: borderPx,
-    };
-
-    let lines = [];
-
-    let x1 = x;
-    let y1 = y;
-    let x2 = x;
-    let y2 = y;
-
-    if (direction === directions.north || direction === directions.south) {
-            y2     = y + height;
-        let xRight = x + width
-        let yHalf  = y + (height / 2);
-
-        lines.push(
-            drawLine({ ...lineAttrs, x1, y1, x2, y2 }),
-            drawLine({ ...lineAttrs, x1: xRight, y1, x2: xRight, y2 }),
-            drawLine({ ...lineAttrs, x1, y1: yHalf, x2: xRight, y2: yHalf }),
-        );
-    } else {
-            x2      = x + width;
-        let yBottom = y + height
-        let xHalf   = x + (width / 2);
-
-        lines.push(
-            drawLine({ ...lineAttrs, x1, y1, x2, y2 }),
-            drawLine({ ...lineAttrs, x1, y1: yBottom, x2, y2: yBottom }),
-            drawLine({ ...lineAttrs, x1: xHalf, y1, x2: xHalf, y2: yBottom }),
-        );
-    }
-
-    return `<rect ${attrs} />${lines.join('')}`;
 };
 
 const getDoorCells = (grid, room, prevRoom) => {
@@ -224,7 +163,7 @@ const getDoorCells = (grid, room, prevRoom) => {
     intersection.pop();
 
     let cells = intersection.map((xy) => xy.split(','));
-    console.log(cells);
+
     return cells;
 };
 
