@@ -381,12 +381,15 @@ const drawDungeon = (mapSettings, grid) => {
 
         room.walls = walls;
 
-        let doors = drawDoors(grid, room, prevRoom);
+        let doorRects = drawDoors(grid, room, prevRoom);
 
         rooms.push({
             rect,
-            room: roomConfig,
-            doors: doors, // TODO desc
+            doorRects,
+            room: {
+                ...roomConfig,
+                doors: [],
+            },
         });
 
         roomNumber++;
@@ -424,7 +427,7 @@ export const generateMap = (mapSettings) => {
 
     let rooms     = drawDungeon(mapSettings, grid);
     let roomRects = rooms.map((room) => room.rect).join('');
-    let doorRects = rooms.map((room) => room.doors.map((door) => door.rect).join('')).join('');
+    let doorRects = rooms.map((room) => room.doorRects.map((door) => door.rect).join('')).join('');
     let gridLines = drawGrid(mapSettings);
     let content   = gridLines + roomRects + doorRects;
 
@@ -436,8 +439,12 @@ export const generateMap = (mapSettings) => {
         style : `background: ${gridBackground}; overflow: visible;`,
     });
 
+    let roomConfigs = rooms.map(({ room }) => {
+        return room;
+    });
+
     return {
         map: `<svg ${attrs}>${content}</svg>`,
-        rooms,
+        rooms: roomConfigs,
     };
 };

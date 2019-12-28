@@ -43,7 +43,7 @@ const navigate = (target, el) => {
     el && toggleCollapsed(`fieldset-${toDash(config[0].label)}`);
 };
 
-const formatRoom = (room, i) => getRoomDescription(room.settings, i + 1) + room.items.join('');
+const formatRoom = (room, i) => getRoomDescription(room, i + 1) + room.items.join('');
 
 const getItems = (settings) => generateItems(settings).join('');
 
@@ -53,7 +53,7 @@ const getRooms = (settings) => {
 
 const getDungeon = (settings) => {
     let { map, rooms } = generateDungeon(settings);
-    let roomText = rooms.map((room, i) => formatRoom(room.room, i)).join('');
+    let roomText = rooms.map((room, i) => formatRoom(room, i)).join('');
 
     return map + roomText;
 };

@@ -7,6 +7,7 @@ import quantity from '../attributes/quantity';
 import rarity from '../attributes/rarity';
 import size from '../attributes/size';
 import type from '../rooms/type';
+import { random } from '../utility/random';
 
 const getSizeDesc = (settings) => {
     let {
@@ -32,28 +33,39 @@ const getSizeDesc = (settings) => {
     return desc;
 };
 
+const contentsRarity = new Set([
+    rarity.exotic,
+    rarity.legendary,
+    rarity.rare,
+    rarity.uncommon,
+]);
+
 const getContentsDesc = (settings) => {
     let {
         [knobs.itemQuantity]: itemQuantity,
-        [knobs.roomType]: roomType,
+        [knobs.itemRarity]  : itemRarity,
+        [knobs.roomType]    : roomType,
     } = settings;
 
-    let typeString = toWords(roomType);
+    let type = toWords(roomType);
+
+    let defaultRarity = itemRarity === random ? '' : 'ordinary';
+    let rarity = contentsRarity.has(itemRarity) ? itemRarity : defaultRarity;
 
     switch (itemQuantity) {
         case quantity.one:
-            return `The ${typeString} is entirely empty except for a single item`;
+            return `The ${type} is entirely empty except for a single ${rarity} item`;
         case quantity.couple:
-            return `There are a couple of things in the ${typeString}`;
+            return `There are a couple of ${rarity} things in the ${type}`;
         case quantity.few:
-            return `There are a few things in the ${typeString}`;
+            return `There are a few ${rarity} things in the ${type}`;
         case quantity.some:
         case quantity.several:
-            return `You can see ${itemQuantity} objects as you look around`;
+            return `You can see ${itemQuantity} ${rarity} objects as you look around`;
         case quantity.many:
-            return `The ${typeString} is cluttered with items`;
+            return `The ${type} is cluttered with ${rarity} items`;
         case quantity.numerous:
-            return `There are numerous objects littering the ${typeString}`;
+            return `There are numerous ${rarity} objects littering the ${type}`;
         case quantity.zero:
             return;
         default:
@@ -62,7 +74,16 @@ const getContentsDesc = (settings) => {
     }
 };
 
-const getItemConditionDescription = (itemCondition) => {
+const getItemConditionDescription = (settings) => {
+    let {
+        [knobs.itemQuantity] : itemQuantity,
+        [knobs.itemCondition]: itemCondition,
+    } = settings;
+
+    if (itemQuantity === quantity.zero) {
+        return;
+    }
+
     switch (itemCondition) {
         case condition.busted:
         case condition.decaying:
@@ -81,44 +102,21 @@ const getItemConditionDescription = (itemCondition) => {
     }
 };
 
-const getItemRarityDescription = (itemRarity) => {
-    switch (itemRarity) {
-        case rarity.exotic:
-        case rarity.legendary:
-        case rarity.rare:
-            return `All items in the room look ${itemRarity}`;
-
-        case rarity.uncommon:
-            return `The room’s items appear to be uncommon`;
-
-        case rarity.abundant:
-        case rarity.average:
-        case rarity.common:
-            return `The room contains ordinary items`;
-
-        default:
-            return;
-    }
-};
-
-export const getRoomDescription = (settings, roomNumber) => {
+export const getRoomDescription = (room, roomNumber) => {
+    let { settings } = room;
+    console.log(room.doors);
     let {
-        [knobs.itemCondition]: itemCondition,
-        [knobs.itemRarity]   : itemRarity,
-        [knobs.itemQuantity] : itemQuantity,
-        [knobs.roomCount]    : roomCount,
-        [knobs.roomType]     : roomType,
+        [knobs.roomCount]: roomCount,
+        [knobs.roomType] : roomType,
     } = settings;
 
     let numberLabel = roomCount > 1 ? roomNumber : '';
-    let empty       = itemQuantity === quantity.zero
     let typeLabel   = roomType !== type.room ? `: ${toWords(roomType)}` : '';
     let roomTitle   = title(`Room ${numberLabel}${typeLabel}`);
 
     return roomTitle + subTitle('Description') + paragraph([
         getSizeDesc(settings),
         getContentsDesc(settings),
-        !empty && getItemConditionDescription(itemCondition),
-        !empty && getItemRarityDescription(itemRarity),
+        getItemConditionDescription(settings),
     ].filter(Boolean).join('. ')+'.');
 };

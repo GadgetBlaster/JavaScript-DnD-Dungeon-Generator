@@ -12,8 +12,8 @@ import {
     rollPercentile,
 } from './utility/roll';
 
-const uniformConditionChance = 100;
-const uniformRarityChance    = 100;
+const uniformConditionChance = 20;
+const uniformRarityChance    = 20;
 
 let {
     itemCondition,
