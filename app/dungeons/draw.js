@@ -6,11 +6,11 @@ const pxBorder   = 2;
 const pxCell     = 24;
 const pxGridLine = 1;
 
-const gridBackground  = '#f0f0f0';
-const gridStrokeColor = '#cfcfcf';
-const roomBackground  = 'rgba(255, 255, 255, 0.7)';
-const roomStrokeColor = '#a9a9a9';
-const textColor       = '#666666';
+const colorGridBg     = '#f0f0f0';
+const colorGridStroke = '#cfcfcf';
+const colorRoomBg     = 'rgba(255, 255, 255, 0.7)';
+const colorRoomStroke = '#a9a9a9';
+const colorText       = '#666666';
 
 export const getRectAttrs = ({ x, y, width, height }) => {
     let xPx = x * pxCell;
@@ -25,7 +25,7 @@ export const getRectAttrs = ({ x, y, width, height }) => {
 export const drawText = (text, [ x, y ], { fontSize }) => {
     let attrs = createAttrs({
         x, y: y + 2,
-        fill: textColor,
+        fill: colorText,
         'alignment-baseline': 'middle',
         'font-family': 'monospace',
         'font-size': `${fontSize}px`,
@@ -51,7 +51,7 @@ export const drawGrid = ({ gridWidth, gridHeight }) => {
     let lines = '';
 
     let gridLineAttrs = {
-        color: gridStrokeColor,
+        color: colorGridStroke,
         width: pxGridLine,
     };
 
@@ -86,8 +86,8 @@ export const drawGrid = ({ gridWidth, gridHeight }) => {
 export const drawRoom = (rectAttrs) => {
     let attrs = createAttrs({
         ...rectAttrs,
-        fill: roomBackground,
-        stroke: roomStrokeColor,
+        fill: colorRoomBg,
+        stroke: colorRoomStroke,
         'shape-rendering': 'crispEdges',
         'stroke-width': pxBorder,
     });
@@ -101,15 +101,15 @@ export const drawDoor = (rectConfig) => {
 
     let attrs = createAttrs({
         ...rectAttrs,
-        fill: roomBackground,
-        stroke: roomBackground,
+        fill: colorRoomBg,
+        stroke: colorRoomBg,
         'stroke-width': pxBorder,
     });
 
     let { x, y, width, height } = rectAttrs;
 
     let lineAttrs = {
-        color: roomStrokeColor,
+        color: colorRoomStroke,
         width: pxBorder,
     };
 
@@ -149,7 +149,7 @@ export const drawMap = ({ gridWidth, gridHeight }, content) => {
     let attrs = createAttrs({
         width : (gridWidth * pxCell),
         height: (gridHeight * pxCell),
-        style : `background: ${gridBackground}; overflow: visible;`,
+        style : `background: ${colorGridBg}; overflow: visible;`,
     });
 
     return `<svg ${attrs}>${content}</svg>`;
