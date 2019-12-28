@@ -93,7 +93,6 @@ const getRoom = (grid, room) => {
 
     let rectAttrs     = getRectAttrs({ x, y, width, height });
     let showRoomLabel = roomType !== type.room && width >= labelMinWidth && height >= labelMinHeight;
-    console.log(roomType);
     let roomLabel     = showRoomLabel && toWords(roomType);
 
     let text = drawRoomText(rectAttrs, { roomNumber, roomLabel });
@@ -153,16 +152,14 @@ const getDoorCells = (grid, room, prevRoom) => {
 };
 
 const getDoor = (grid, room, prevRoom) => {
-    console.log(room);
     let cells     = getDoorCells(grid, room, prevRoom);
+    let useEdge   = prevRoom && prevRoom.roomType === type.hallway && room.roomType === type.hallway;
     let max       = Math.min(maxDoorWidth, Math.ceil(cells.length / 2));
     let size      = roll(1, max);
     let remainder = cells.length - size;
-    let start     = roll(0, remainder);
-
+    let start     = useEdge ? rollArrayItem([ 0, remainder ]) : roll(0, remainder);
     let doorCells = cells.slice(start, start + size);
-
-    let [ x, y ] = doorCells[0];
+    let [ x, y ]  = doorCells[0];
 
     let direction;
 
@@ -220,7 +217,11 @@ const getRooms = (mapSettings, grid) => {
                 return;
             }
 
-            [ x, y ] = rollArrayItem(validCords);
+            if (roomType === type.hallway) {
+                [ x, y ] = validCords[validCords.length - 1];
+            } else {
+                [ x, y ] = rollArrayItem(validCords);
+            }
         } else {
             [ x, y ] = getStartingPoint(mapSettings, roomDimensions);
         }
