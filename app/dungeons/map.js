@@ -25,7 +25,7 @@ const gridLinePx = 1;
 
 const maxDoorWidth = 4;
 
-const gridBackground  = '#efefef';
+const gridBackground  = '#f0f0f0';
 const gridStrokeColor = '#cfcfcf';
 const roomBackground  = 'rgba(255, 255, 255, 0.7)';
 const roomStrokeColor = '#a9a9a9';
@@ -307,7 +307,6 @@ const getDoors = (grid, room, prevRoom) => {
 const drawDoors = (grid, room, prevRoom) => {
     return getDoors(grid, room, prevRoom).map((cells) => {
         let max       = Math.min(maxDoorWidth, Math.ceil(cells.length / 2));
-        // console.log(max);
         let size      = roll(1, max);
         let remainder = cells.length - size;
         let start     = roll(0, remainder);
@@ -343,6 +342,7 @@ const drawDoors = (grid, room, prevRoom) => {
         return {
             rect: drawDoor({ x, y, width, height, direction }),
             type: 'Door', // TODO door type
+            direction,
         };
     });
 };
@@ -381,14 +381,25 @@ const drawDungeon = (mapSettings, grid) => {
 
         room.walls = walls;
 
-        let doorRects = drawDoors(grid, room, prevRoom);
+        let doors = drawDoors(grid, room, prevRoom);
+        let doorRects = [];
+        let doorConfigs = [];
+
+        doors.forEach((door) => {
+            let {
+                rect,
+                ...settings
+            } = door;
+            doorRects.push(rect);
+            doorConfigs.push(settings);
+        });
 
         rooms.push({
             rect,
             doorRects,
             room: {
                 ...roomConfig,
-                doors: [], // TODO
+                doors: doorConfigs,
             },
         });
 
@@ -427,7 +438,7 @@ export const generateMap = (mapSettings) => {
 
     let rooms     = drawDungeon(mapSettings, grid);
     let roomRects = rooms.map((room) => room.rect).join('');
-    let doorRects = rooms.map((room) => room.doorRects.map((door) => door.rect).join('')).join('');
+    let doorRects = rooms.map((room) => room.doorRects.map((rect) => rect).join('')).join('');
     let gridLines = drawGrid(mapSettings);
     let content   = gridLines + roomRects + doorRects;
 
