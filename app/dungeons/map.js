@@ -11,9 +11,10 @@ import {
     wallSize,
 } from './grid';
 
-const debug = false;
+const debug = true;
 
-const cellWall  = 'w';
+const cellWall = 'w';
+const cellDoor = 'd';
 
 const cellPx     = 20;
 const borderPx   = 2;
@@ -154,9 +155,7 @@ const drawRoom = (grid, { x, y, width, height }, roomNumber) => {
     };
 };
 
-const drawDoor = (grid, rectConfig) => {
-    // TODO add doors to grid
-
+const drawDoor = (rectConfig) => {
     let rectAttrs = getRectAttrs(rectConfig)
 
     let attrs = createAttrs({
@@ -243,11 +242,13 @@ const drawDoors = (grid, room, prevRoom) => {
             if (cellY > y) {
                 height++;
             }
+
+            grid[cellX][cellY] = cellDoor;
         });
 
         return {
-            rect: drawDoor(grid, { x, y, width, height }),
-            type: 'Door', // TODO
+            rect: drawDoor({ x, y, width, height }),
+            type: 'Door', // TODO door type
         };
     });
 };
@@ -292,7 +293,7 @@ const drawDungeon = (mapSettings, grid) => {
         room.walls = walls;
 
         let doors = drawDoors(grid, room, prevRoom);
-        // doors
+
         rooms.push({
             rect,
             room: roomConfig,
