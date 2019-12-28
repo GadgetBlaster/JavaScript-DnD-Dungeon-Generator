@@ -72,7 +72,7 @@ const getRoomDimensions = (mapSettings, roomConfig) => {
     return { roomWidth: width, roomHeight: height };
 };
 
-const drawRoom = (grid, room, roomConfig, roomNumber) => {
+const getRoom = (grid, room, roomConfig, roomNumber) => {
     let { x, y, width, height } = room;
 
     let walls = [];
@@ -181,7 +181,7 @@ const drawDoor = (rectConfig) => {
     return `<rect ${attrs} />${lines.join('')}`;
 };
 
-const getDoors = (grid, room, prevRoom) => {
+const getDoorCells = (grid, room, prevRoom) => {
     let prevWalls = [];
 
     if (prevRoom) {
@@ -223,57 +223,58 @@ const getDoors = (grid, room, prevRoom) => {
     intersection.shift();
     intersection.pop();
 
-    let cords = intersection.map((xy) => xy.split(','));
-
-    return [
-        cords,
-    ];
+    let cells = intersection.map((xy) => xy.split(','));
+    console.log(cells);
+    return cells;
 };
 
-const drawDoors = (grid, room, prevRoom) => {
-    return getDoors(grid, room, prevRoom).map((cells) => {
-        let max       = Math.min(maxDoorWidth, Math.ceil(cells.length / 2));
-        let size      = roll(1, max);
-        let remainder = cells.length - size;
-        let start     = roll(0, remainder);
+const getDoor = (grid, room, prevRoom) => {
+    let cells     = getDoorCells(grid, room, prevRoom);
+    let max       = Math.min(maxDoorWidth, Math.ceil(cells.length / 2));
+    let size      = roll(1, max);
+    let remainder = cells.length - size;
+    let start     = roll(0, remainder);
 
-        let doorCells = cells.slice(start, start + size);
+    let doorCells = cells.slice(start, start + size);
 
-        let [ x, y ] = doorCells[0];
+    let [ x, y ] = doorCells[0];
 
-        let direction;
+    let direction;
 
-        if (Number(y) === (room.y - 1)) {
-            direction = directions.north;
-        } else if (Number(x) === (room.x + room.width)) {
-            direction = directions.east;
-        } else if (Number(y) === (room.y + room.height)) {
-            direction = directions.south;
-        } else if (Number(x) === (room.x - 1)) {
-            direction = directions.west;
+    if (Number(y) === (room.y - 1)) {
+        direction = directions.north;
+    } else if (Number(x) === (room.x + room.width)) {
+        direction = directions.east;
+    } else if (Number(y) === (room.y + room.height)) {
+        direction = directions.south;
+    } else if (Number(x) === (room.x - 1)) {
+        direction = directions.west;
+    }
+
+    let width  = 1;
+    let height = 1;
+
+    grid[x][y] = cellDoor;
+
+    doorCells.forEach(([ cellX, cellY ]) => {
+        if (cellX > x || cellY > y) {
+            cellX > x ? width++ : height++;
+            grid[cellX][cellY] = cellDoor;
         }
-
-        let width  = 1;
-        let height = 1;
-
-        grid[x][y] = cellDoor;
-
-        doorCells.forEach(([ cellX, cellY ]) => {
-            if (cellX > x || cellY > y) {
-                cellX > x ? width++ : height++;
-                grid[cellX][cellY] = cellDoor;
-            }
-        });
-
-        return {
-            rect: drawDoor({ x, y, width, height, direction }),
-            type: 'Door', // TODO door type
-            direction,
-        };
     });
+
+    return {
+        rect: drawDoor({ x, y, width, height, direction }),
+        type: 'Door', // TODO door type
+        direction,
+    };
 };
 
-const drawDungeon = (mapSettings, grid) => {
+const getDoors = (grid, room, prevRoom) => {
+    return [ getDoor(grid, room, prevRoom) ];
+};
+
+const getRooms = (mapSettings, grid) => {
     let roomNumber = 1;
     let rooms      = [];
 
@@ -303,12 +304,12 @@ const drawDungeon = (mapSettings, grid) => {
             height: roomDimensions.roomHeight,
         };
 
-        let { rect, walls } = drawRoom(grid, room, roomConfig, roomNumber);
+        let { rect, walls } = getRoom(grid, room, roomConfig, roomNumber);
 
         room.walls = walls;
 
-        let doors = drawDoors(grid, room, prevRoom);
-        let doorRects = [];
+        let doors       = getDoors(grid, room, prevRoom);
+        let doorRects   = [];
         let doorConfigs = [];
 
         doors.forEach((door) => {
@@ -316,6 +317,7 @@ const drawDungeon = (mapSettings, grid) => {
                 rect,
                 ...settings
             } = door;
+
             doorRects.push(rect);
             doorConfigs.push(settings);
         });
@@ -362,7 +364,7 @@ export const generateMap = (mapSettings) => {
         grid[col] = [ ...Array(gridHeight) ].fill(cellBlank);
     });
 
-    let rooms     = drawDungeon(mapSettings, grid);
+    let rooms     = getRooms(mapSettings, grid);
     let roomRects = rooms.map((room) => room.rect).join('');
     let doorRects = rooms.map((room) => room.doorRects.map((rect) => rect).join('')).join('');
     let gridLines = drawGrid(mapSettings);
