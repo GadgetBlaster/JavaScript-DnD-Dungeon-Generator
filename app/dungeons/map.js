@@ -1,11 +1,4 @@
 
-import { createAttrs } from '../utility/html';
-import { dimensionRanges, customDimensions } from '../rooms/dimensions';
-import { knobs } from '../knobs';
-import { roll, rollArrayItem } from '../utility/roll';
-import { toWords } from '../utility/tools';
-import type from '../rooms/type';
-
 import {
     cellBlank,
     getStartingPoint,
@@ -14,22 +7,32 @@ import {
     wallSize,
 } from './grid';
 
+import {
+    drawGrid,
+    drawLine,
+    drawMap,
+    drawText,
+    getRectAttrs,
+} from './draw';
+
+import { createAttrs } from '../utility/html';
+import { dimensionRanges, customDimensions } from '../rooms/dimensions';
+import { knobs } from '../knobs';
+import { roll, rollArrayItem } from '../utility/roll';
+import { toWords } from '../utility/tools';
+import type from '../rooms/type';
+
 const debug = false;
 
 const cellWall = 'w';
 const cellDoor = 'd';
 
-const cellPx     = 24;
 const borderPx   = 2;
-const gridLinePx = 1;
 
 const maxDoorWidth = 4;
 
-const gridBackground  = '#f0f0f0';
-const gridStrokeColor = '#cfcfcf';
 const roomBackground  = 'rgba(255, 255, 255, 0.7)';
 const roomStrokeColor = '#a9a9a9';
-const textColor       = '#666666';
 
 const labelMinWidth  = 3;
 const labelMinHeight = 2;
@@ -41,77 +44,6 @@ const directions = {
     east : 'east',
     south: 'south',
     west : 'west',
-};
-
-const drawText = (text, [ x, y ], { fontSize }) => {
-    let attrs = createAttrs({
-        x, y: y + 2,
-        fill: textColor,
-        'alignment-baseline': 'middle',
-        'font-family': 'monospace',
-        'font-size': `${fontSize}px`,
-        'text-anchor': 'middle',
-    });
-
-    return `<text ${attrs}>${text}</text>`;
-};
-
-const drawLine = ({ x1, y1, x2, y2, color, width }) => {
-    let attrs = createAttrs({
-        x1, y1, x2, y2,
-        stroke: color,
-        'stroke-width': width,
-        'shape-rendering': 'crispEdges',
-        'stroke-linecap': 'square',
-    });
-
-    return `<line ${attrs} />`;
-};
-
-const drawGrid = ({ gridWidth, gridHeight }) => {
-    let lines = '';
-
-    let gridLineAttrs = {
-        color: gridStrokeColor,
-        width: gridLinePx,
-    };
-
-    for (let i = 0; i <= gridHeight; i++) {
-        let unit = i * cellPx;
-
-        lines += drawLine({
-            ...gridLineAttrs,
-            x1: 0,
-            y1: unit,
-            x2: gridWidth * cellPx,
-            y2: unit,
-
-        });
-    }
-
-    for (let i = 0; i <= gridWidth; i++) {
-        let unit = i * cellPx;
-
-        lines += drawLine({
-            ...gridLineAttrs,
-            x1: unit,
-            y1: 0,
-            x2: unit,
-            y2: gridHeight * cellPx,
-        });
-    }
-
-    return lines;
-};
-
-const getRectAttrs = ({ x, y, width, height }) => {
-    let xPx = x * cellPx;
-    let yPx = y * cellPx;
-
-    let widthPx  = width * cellPx;
-    let heightPx = height * cellPx;
-
-    return { x: xPx, y: yPx, width: widthPx, height: heightPx }
 };
 
 const getRoomDimensions = (mapSettings, roomConfig) => {
@@ -293,12 +225,6 @@ const getDoors = (grid, room, prevRoom) => {
 
     let cords = intersection.map((xy) => xy.split(','));
 
-    if (!cords.length) {
-        console.log('cords', cords);
-        console.log('roomWalls', roomWalls);
-        console.log('prevRoomWalls',prevRoomWalls);
-    }
-
     return [
         cords,
     ];
@@ -444,18 +370,8 @@ export const generateMap = (mapSettings) => {
 
     debug && logGrid(grid);
 
-    let attrs = createAttrs({
-        width : (gridWidth * cellPx),
-        height: (gridHeight * cellPx),
-        style : `background: ${gridBackground}; overflow: visible;`,
-    });
-
-    let roomConfigs = rooms.map(({ room }) => {
-        return room;
-    });
-
     return {
-        map: `<svg ${attrs}>${content}</svg>`,
-        rooms: roomConfigs,
+        map: drawMap({ gridWidth, gridHeight }, content),
+        rooms: rooms.map(({ room }) => room),
     };
 };
