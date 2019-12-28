@@ -27,7 +27,6 @@ export const dimensionRanges = {
 const roomSizes = {
     [type.ballroom]      : [ medium, large, massive ],
     [type.bathhouse]     : [ small, medium, large, massive ],
-    [type.closet]        : [ tiny ],
     [type.diningRoom]    : [ small, medium, large, massive ],
     [type.dormitory]     : [ medium, large, massive ],
     [type.greatHall]     : [ large, massive ],

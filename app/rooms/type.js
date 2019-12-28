@@ -9,7 +9,6 @@ const type = {
     bathhouse: 'bathhouse',
     bedroom: 'bedroom',
     chamber: 'chamber',
-    closet: 'closet',
     diningRoom: 'diningRoom',
     dormitory: 'dormitory',
     greatHall: 'greatHall',
