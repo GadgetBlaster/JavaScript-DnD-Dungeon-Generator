@@ -10,6 +10,7 @@ import {
     cellBlank,
     getStartingPoint,
     getValidRoomCords,
+    sides,
     wallSize,
 } from './grid';
 
@@ -257,14 +258,29 @@ const getDoors = (grid, room, prevRoom) => {
         let gridWidth  = grid.length - 1;
         let gridHeight = grid[0].length - 1;
 
-        for (let i = 0; i <= gridHeight; i++) {
-            prevWalls.push([ 0, i ]);
-            prevWalls.push([ gridWidth, i ]);
-        }
+        let startTop    = room.y === wallSize && sides.top;
+        let startRight  = room.x === gridWidth - room.width && sides.right;
+        let startBottom = room.y === gridHeight - room.height && sides.bottom;
+        let startLeft   = room.x === wallSize && sides.left;
 
-        for (let i = 0; i <= gridWidth; i++) {
-            prevWalls.push([ i, 0 ]);
-            prevWalls.push([ i, gridHeight ]);
+        let side = rollArrayItem([ startTop, startRight, startBottom, startLeft ].filter(Boolean));
+        let dimension = (side === sides.top || side === sides.bottom) ? gridWidth : gridHeight;
+
+        for (let i = 1; i < dimension; i++) {
+            switch (side) {
+                case sides.top:
+                    prevWalls.push([ i, 0 ]);
+                    break;
+                case sides.right:
+                    prevWalls.push([ gridWidth, i ]);
+                    break;
+                case sides.bottom:
+                    prevWalls.push([ i, gridHeight ]);
+                    break;
+                case sides.left:
+                    prevWalls.push([ 0, i ]);
+                    break;
+            }
         }
     }
 
@@ -293,21 +309,6 @@ const drawDoors = (grid, room, prevRoom) => {
 
         let [ x, y ] = doorCells[0];
 
-        let width  = 1;
-        let height = 1;
-
-        doorCells.forEach(([ cellX, cellY ]) => {
-            grid[cellX][cellY] = cellDoor;
-
-            if (cellX > x) {
-                width++;
-            }
-
-            if (cellY > y) {
-                height++;
-            }
-        });
-
         let direction;
 
         if (Number(y) === (room.y - 1)) {
@@ -319,6 +320,18 @@ const drawDoors = (grid, room, prevRoom) => {
         } else if (Number(x) === (room.x - 1)) {
             direction = directions.west;
         }
+
+        let width  = 1;
+        let height = 1;
+
+        grid[x][y] = cellDoor;
+
+        doorCells.forEach(([ cellX, cellY ]) => {
+            if (cellX > x || cellY > y) {
+                cellX > x ? width++ : height++;
+                grid[cellX][cellY] = cellDoor;
+            }
+        });
 
         return {
             rect: drawDoor({ x, y, width, height, direction }),

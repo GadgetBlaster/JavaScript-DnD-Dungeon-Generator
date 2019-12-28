@@ -5,7 +5,7 @@ export const wallSize = 1;
 
 export const cellBlank = '.';
 
-const sides = {
+export const sides = {
     top   : 'top',
     right : 'right',
     bottom: 'bottom',
