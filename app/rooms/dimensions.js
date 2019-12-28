@@ -12,6 +12,10 @@ let {
     massive,
 } = size;
 
+const hallLengthMin = 3;
+const hallWidthMin  = 1;
+const hallWidthMax  = 1;
+
 export const dimensionRanges = {
     [tiny]   : [ 2, 3 ],
     [small]  : [ 2, 4 ],
@@ -28,7 +32,6 @@ const roomSizes = {
     [type.closet]        : [ tiny, small ],
     [type.diningRoom]    : [ small, medium, large, massive ],
     [type.dormitory]     : [ medium, large, massive ],
-    [type.hallway]       : [ tiny, small, medium, large ],
     [type.pantry]        : [ tiny, small, medium ],
     [type.parlour]       : [ tiny, small, medium ],
     [type.study]         : [ tiny, small, medium ],
@@ -42,8 +45,11 @@ export const customDimensions = {
 
         let isHorizontal = roll();
 
-        let roomWidth  = isHorizontal ? roll(min, max) : 1;
-        let roomHeight = isHorizontal ? 1 : roll(min, max);
+        let length = roll(Math.max(hallLengthMin, min), max);
+        let width  = roll(hallWidthMin, hallWidthMax);
+
+        let roomWidth  = isHorizontal ? length : width;
+        let roomHeight = isHorizontal ? width  : length;
 
         return { roomWidth, roomHeight };
     },

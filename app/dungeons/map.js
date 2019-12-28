@@ -182,35 +182,30 @@ const drawDoor = (rectConfig) => {
 
     let lines = [];
 
+    let x1 = x;
+    let y1 = y;
+    let x2 = x;
+    let y2 = y;
+
     if (direction === directions.north || direction === directions.south) {
+            y2     = y + height;
+        let xRight = x + width
+        let yHalf  = y + (height / 2);
+
         lines.push(
-            drawLine({ ...lineAttrs,
-                x1: x,
-                y1: y,
-                x2: x,
-                y2: y + height,
-            }),
-            drawLine({ ...lineAttrs,
-                x1: x + width,
-                y1: y,
-                x2: x + width,
-                y2: y + height,
-            }),
+            drawLine({ ...lineAttrs, x1, y1, x2, y2 }),
+            drawLine({ ...lineAttrs, x1: xRight, y1, x2: xRight, y2 }),
+            drawLine({ ...lineAttrs, x1, y1: yHalf, x2: xRight, y2: yHalf }),
         );
     } else {
+            x2      = x + width;
+        let yBottom = y + height
+        let xHalf   = x + (width / 2);
+
         lines.push(
-            drawLine({ ...lineAttrs,
-                x1: x,
-                y1: y,
-                x2: x + width,
-                y2: y,
-            }),
-            drawLine({ ...lineAttrs,
-                x1: x,
-                y1: y + height,
-                x2: x + width,
-                y2: y + height,
-            }),
+            drawLine({ ...lineAttrs, x1, y1, x2, y2 }),
+            drawLine({ ...lineAttrs, x1, y1: yBottom, x2, y2: yBottom }),
+            drawLine({ ...lineAttrs, x1: xHalf, y1, x2: xHalf, y2: yBottom }),
         );
     }
 
