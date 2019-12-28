@@ -17,6 +17,6 @@ export const select = (name, values) => {
     return `<select name="${name}">${options}</select>`;
 };
 
-export const slider = (name, [ min = 1, max = 100 ] = []) => {
-    return `<input type="range" name="${name}" min="${min}" max="${max}" />`;
+export const slider = (name, [ min = 1, max = 100 ] = [], value) => {
+    return `<input type="range" name="${name}" min="${min}" max="${max}" value="${value}" />`;
 };

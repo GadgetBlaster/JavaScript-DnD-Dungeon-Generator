@@ -3,6 +3,8 @@ import { createAttrs } from '../utility/html';
 import { dimensionRanges, customDimensions } from '../rooms/dimensions';
 import { knobs } from '../knobs';
 import { roll, rollArrayItem } from '../utility/roll';
+import { toWords } from '../utility/tools';
+import type from '../rooms/type';
 
 import {
     cellBlank,
@@ -16,7 +18,7 @@ const debug = false;
 const cellWall = 'w';
 const cellDoor = 'd';
 
-const cellPx     = 20;
+const cellPx     = 24;
 const borderPx   = 2;
 const gridLinePx = 1;
 
@@ -25,7 +27,13 @@ const maxDoorWidth = 4;
 const gridBackground  = '#efefef';
 const gridStrokeColor = '#cfcfcf';
 const roomBackground  = '#ffffff';
-const roomStrokeColor = '#555555';
+const roomStrokeColor = '#a9a9a9';
+const textColor       = '#666666';
+
+const labelMinWidth  = 3;
+const labelMinHeight = 2;
+const labelRoomNumberSize = 14;
+const labelRoomTypeSize   = 10;
 
 const directions = {
     north: 'north',
@@ -34,12 +42,13 @@ const directions = {
     west : 'west',
 };
 
-const drawText = (text, { x, y }) => {
+const drawText = (text, [ x, y ], { fontSize }) => {
     let attrs = createAttrs({
-        x, y,
+        x, y: y + 2,
+        fill: textColor,
         'alignment-baseline': 'middle',
-        'font-family': 'sans-serif',
-        'font-size': '20px',
+        'font-family': 'monospace',
+        'font-size': `${fontSize}px`,
         'text-anchor': 'middle',
     });
 
@@ -104,7 +113,12 @@ const getRectAttrs = ({ x, y, width, height }) => {
     return { x: xPx, y: yPx, width: widthPx, height: heightPx }
 };
 
-const getRoomDimensions = (roomType, roomSize) => {
+const getRoomDimensions = (roomConfig) => {
+    let { settings: {
+        [knobs.roomSize]: roomSize,
+        [knobs.roomType]: roomType,
+    } } = roomConfig;
+
     if (customDimensions[roomType]) {
         return customDimensions[roomType](roomSize);
     }
@@ -117,7 +131,9 @@ const getRoomDimensions = (roomType, roomSize) => {
     return { roomWidth, roomHeight };
 };
 
-const drawRoom = (grid, { x, y, width, height }, roomNumber) => {
+const drawRoom = (grid, room, roomConfig, roomNumber) => {
+    let { x, y, width, height } = room;
+
     let walls = [];
 
     for (let w = -wallSize; w < (width + wallSize); w++) {
@@ -136,7 +152,7 @@ const drawRoom = (grid, { x, y, width, height }, roomNumber) => {
                 walls.push([ xCord, yCord ]);
             }
 
-            let cell = isWall ?  cellWall : roomNumber;
+            let cell = isWall ? cellWall : roomNumber;
 
             grid[xCord][yCord] = cell;
         }
@@ -151,10 +167,22 @@ const drawRoom = (grid, { x, y, width, height }, roomNumber) => {
         'stroke-width': borderPx,
     });
 
-    let text = drawText(roomNumber, {
-        x: (px.x + px.width  / 2),
-        y: (px.y + px.height / 2),
-    });
+    let roomType      = roomConfig.settings[knobs.roomType];
+    let showRoomLabel = roomType !== type.room && width >= labelMinWidth && height >= labelMinHeight;
+
+    let middleX = (px.x + px.width  / 2);
+    let middleY = (px.y + px.height / 2);
+
+    let labelY = showRoomLabel ? middleY - (labelRoomNumberSize / 2) : middleY;
+
+    let text = drawText(roomNumber, [ middleX, labelY ], { fontSize: labelRoomNumberSize });
+
+    if (showRoomLabel) {
+        let roomLabel  = toWords(roomType);
+        let roomLabelY = labelY + labelRoomNumberSize;
+
+        text += drawText(roomLabel, [ middleX, roomLabelY ], { fontSize: labelRoomTypeSize });
+    }
 
     return {
         rect: `<rect ${attrs} />${text}`,
@@ -292,18 +320,13 @@ const drawDoors = (grid, room, prevRoom) => {
 };
 
 const drawDungeon = (mapSettings, grid) => {
-    let rooms = [];
+    let roomNumber = 1;
+    let rooms      = [];
+
     let prevRoom;
 
-    let roomNumber = 1;
-
     mapSettings.rooms.forEach((roomConfig) => {
-        let { settings: {
-            [knobs.roomSize]: roomSize,
-            [knobs.roomType]: roomType,
-        } } = roomConfig;
-
-        let roomDimensions = getRoomDimensions(roomType, roomSize);
+        let roomDimensions = getRoomDimensions(roomConfig);
 
         let x;
         let y;
@@ -326,7 +349,7 @@ const drawDungeon = (mapSettings, grid) => {
             height: roomDimensions.roomHeight,
         };
 
-        let { rect, walls } = drawRoom(grid, room, roomNumber);
+        let { rect, walls } = drawRoom(grid, room, roomConfig, roomNumber);
 
         room.walls = walls;
 

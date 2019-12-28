@@ -23,7 +23,7 @@ const getKnob = (settings) => {
         case typeNumber:
             return input(name, 'number', value);
         case typeRange:
-            return slider(name, values);
+            return slider(name, values, value);
         default:
             throw 'Invalid knob type';
     }

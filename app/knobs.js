@@ -42,8 +42,9 @@ const config = [
                 label : 'Complexity',
                 name  : knobs.dungeonComplexity,
                 type  : typeRange,
+                value : 2,
                 values: [ 2, 10 ],
-            }
+            },
         },
     },
     {
