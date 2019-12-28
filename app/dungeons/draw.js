@@ -2,22 +2,22 @@
 import { createAttrs } from '../utility/html';
 import { directions } from './map';
 
-const gridLinePx = 1;
-const cellPx     = 24;
-const borderPx   = 2;
+const pxBorder   = 2;
+const pxCell     = 24;
+const pxGridLine = 1;
 
-const roomStrokeColor = '#a9a9a9';
-const roomBackground  = 'rgba(255, 255, 255, 0.7)';
 const gridBackground  = '#f0f0f0';
-const textColor       = '#666666';
 const gridStrokeColor = '#cfcfcf';
+const roomBackground  = 'rgba(255, 255, 255, 0.7)';
+const roomStrokeColor = '#a9a9a9';
+const textColor       = '#666666';
 
 export const getRectAttrs = ({ x, y, width, height }) => {
-    let xPx = x * cellPx;
-    let yPx = y * cellPx;
+    let xPx = x * pxCell;
+    let yPx = y * pxCell;
 
-    let widthPx  = width * cellPx;
-    let heightPx = height * cellPx;
+    let widthPx  = width * pxCell;
+    let heightPx = height * pxCell;
 
     return { x: xPx, y: yPx, width: widthPx, height: heightPx }
 };
@@ -39,9 +39,9 @@ const drawLine = ({ x1, y1, x2, y2, color, width }) => {
     let attrs = createAttrs({
         x1, y1, x2, y2,
         stroke: color,
-        'stroke-width': width,
         'shape-rendering': 'crispEdges',
         'stroke-linecap': 'square',
+        'stroke-width': width,
     });
 
     return `<line ${attrs} />`;
@@ -52,31 +52,31 @@ export const drawGrid = ({ gridWidth, gridHeight }) => {
 
     let gridLineAttrs = {
         color: gridStrokeColor,
-        width: gridLinePx,
+        width: pxGridLine,
     };
 
     for (let i = 0; i <= gridHeight; i++) {
-        let unit = i * cellPx;
+        let unit = i * pxCell;
 
         lines += drawLine({
             ...gridLineAttrs,
             x1: 0,
             y1: unit,
-            x2: gridWidth * cellPx,
+            x2: gridWidth * pxCell,
             y2: unit,
 
         });
     }
 
     for (let i = 0; i <= gridWidth; i++) {
-        let unit = i * cellPx;
+        let unit = i * pxCell;
 
         lines += drawLine({
             ...gridLineAttrs,
             x1: unit,
             y1: 0,
             x2: unit,
-            y2: gridHeight * cellPx,
+            y2: gridHeight * pxCell,
         });
     }
 
@@ -88,7 +88,8 @@ export const drawRoom = (rectAttrs) => {
         ...rectAttrs,
         fill: roomBackground,
         stroke: roomStrokeColor,
-        'stroke-width': borderPx,
+        'shape-rendering': 'crispEdges',
+        'stroke-width': pxBorder,
     });
 
     return `<rect ${attrs} />`;
@@ -102,14 +103,14 @@ export const drawDoor = (rectConfig) => {
         ...rectAttrs,
         fill: roomBackground,
         stroke: roomBackground,
-        'stroke-width': borderPx,
+        'stroke-width': pxBorder,
     });
 
     let { x, y, width, height } = rectAttrs;
 
     let lineAttrs = {
         color: roomStrokeColor,
-        width: borderPx,
+        width: pxBorder,
     };
 
     let lines = [];
@@ -146,8 +147,8 @@ export const drawDoor = (rectConfig) => {
 
 export const drawMap = ({ gridWidth, gridHeight }, content) => {
     let attrs = createAttrs({
-        width : (gridWidth * cellPx),
-        height: (gridHeight * cellPx),
+        width : (gridWidth * pxCell),
+        height: (gridHeight * pxCell),
         style : `background: ${gridBackground}; overflow: visible;`,
     });
 
