@@ -6,7 +6,7 @@ const _throw = (m) => { throw m; }
 
 export const roll = (min = 0, max = 1) => {
     min < 0   && _throw(`Min cannot be negative`);
-    min > max && _throw('Min must be lower than max');
+    min > max && _throw('Min must less than or equal to max');
 
     return Math.floor(Math.random() * (max - min + 1)) + min;
 };

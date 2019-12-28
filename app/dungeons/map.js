@@ -266,7 +266,7 @@ const getDoors = (grid, room, prevRoom) => {
         let side = rollArrayItem([ startTop, startRight, startBottom, startLeft ].filter(Boolean));
         let dimension = (side === sides.top || side === sides.bottom) ? gridWidth : gridHeight;
 
-        for (let i = 1; i < dimension; i++) {
+        for (let i = 0; i <= dimension; i++) {
             switch (side) {
                 case sides.top:
                     prevWalls.push([ i, 0 ]);
@@ -293,6 +293,12 @@ const getDoors = (grid, room, prevRoom) => {
 
     let cords = intersection.map((xy) => xy.split(','));
 
+    if (!cords.length) {
+        console.log('cords', cords);
+        console.log('roomWalls', roomWalls);
+        console.log('prevRoomWalls',prevRoomWalls);
+    }
+
     return [
         cords,
     ];
@@ -301,6 +307,7 @@ const getDoors = (grid, room, prevRoom) => {
 const drawDoors = (grid, room, prevRoom) => {
     return getDoors(grid, room, prevRoom).map((cells) => {
         let max       = Math.min(maxDoorWidth, Math.ceil(cells.length / 2));
+        // console.log(max);
         let size      = roll(1, max);
         let remainder = cells.length - size;
         let start     = roll(0, remainder);
