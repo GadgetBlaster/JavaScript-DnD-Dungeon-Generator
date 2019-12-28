@@ -150,7 +150,7 @@ export const drawDoor = (rectConfig) => {
         lines.push(
             drawLine({ ...lineAttrs, x1, y1, x2, y2 }),
             drawLine({ ...lineAttrs, x1: xRight, y1, x2: xRight, y2 }),
-            drawLine({ ...lineAttrs, x1, y1: yHalf, x2: xRight, y2: yHalf }),
+            // drawLine({ ...lineAttrs, x1, y1: yHalf, x2: xRight, y2: yHalf }),
         );
     } else {
             x2      = x + width;
@@ -160,7 +160,7 @@ export const drawDoor = (rectConfig) => {
         lines.push(
             drawLine({ ...lineAttrs, x1, y1, x2, y2 }),
             drawLine({ ...lineAttrs, x1, y1: yBottom, x2, y2: yBottom }),
-            drawLine({ ...lineAttrs, x1: xHalf, y1, x2: xHalf, y2: yBottom }),
+            // drawLine({ ...lineAttrs, x1: xHalf, y1, x2: xHalf, y2: yBottom }),
         );
     }
 
