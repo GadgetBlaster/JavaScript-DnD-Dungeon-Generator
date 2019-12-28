@@ -1,17 +1,22 @@
 
 import { createAttrs } from '../utility/html';
 import { directions } from './map';
-import { toWords } from '../utility/tools';
+import doorType, { lockable } from '../rooms/door';
 
 const pxBorder   = 2;
 const pxCell     = 24;
 const pxGridLine = 1;
 
-const colorGridBg     = '#f0f0f0';
+const colorGridFill   = '#f0f0f0';
 const colorGridStroke = '#cfcfcf';
-const colorRoomBg     = 'rgba(255, 255, 255, 0.7)';
+const colorRoomFill   = 'rgba(255, 255, 255, 0.7)';
 const colorRoomStroke = '#a9a9a9';
 const colorText       = '#666666';
+const colorPillarFill = '#ffffff';
+
+const pillarRadius = 4;
+const doorWidth    = 8;
+const doorInset    = 12;
 
 const labelRoomNumberFontSize = 14;
 const labelRoomTypeFontSize   = 10;
@@ -40,6 +45,24 @@ const drawLine = ({ x1, y1, x2, y2, color, width }) => {
 
     return `<line ${attrs} />`;
 };
+
+const drawCircle = ({ cx, cy, r }) => {
+    let attrs = createAttrs({
+        cx, cy, r,
+        stroke: colorRoomStroke,
+        fill: colorPillarFill,
+        'shape-rendering': 'geometricPrecision',
+        'stroke-width': 2,
+    });
+
+    return `<circle ${attrs} />`;
+};
+
+const drawRect = (rectAttrs) => {
+    let attrs = createAttrs(rectAttrs);
+
+    return `<rect ${attrs} />`;
+}
 
 export const getRectAttrs = ({ x, y, width, height }) => {
     let xPx = x * pxCell;
@@ -88,15 +111,15 @@ export const drawGrid = ({ gridWidth, gridHeight }) => {
 };
 
 export const drawRoom = (rectAttrs) => {
-    let attrs = createAttrs({
+    let attrs = {
         ...rectAttrs,
-        fill: colorRoomBg,
+        fill: colorRoomFill,
         stroke: colorRoomStroke,
         'shape-rendering': 'crispEdges',
         'stroke-width': pxBorder,
-    });
+    };
 
-    return `<rect ${attrs} />`;
+    return drawRect(attrs);
 };
 
 export const drawRoomText = (rectAttrs, { roomNumber, roomLabel }) => {
@@ -122,10 +145,12 @@ export const drawDoor = (doorAttrs, { direction, type }) => {
 
     let attrs = createAttrs({
         ...rectAttrs,
-        fill: colorRoomBg,
-        stroke: colorRoomBg,
+        fill: colorRoomFill,
+        stroke: colorRoomFill,
         'stroke-width': pxBorder,
     });
+
+    let rect = `<rect ${attrs} />`;
 
     let { x, y, width, height } = rectAttrs;
 
@@ -135,36 +160,81 @@ export const drawDoor = (doorAttrs, { direction, type }) => {
     };
 
     let lineCords = [];
+    let isVertical = direction === directions.north || direction === directions.south;
 
-    if (direction === directions.north || direction === directions.south) {
-        let y2     = y + height;
-        let xRight = x + width
-        let yHalf  = y + (height / 2);
+    let xHalf   = x + (width / 2);
+    let yHalf   = y + (height / 2);
+    let xRight  = x + width
+    let yBottom = y + height
+
+    if (isVertical) {
+        let y2 = y + height;
 
         lineCords.push({ x1: x,      y1: y, x2: x,      y2: y2 });
         lineCords.push({ x1: xRight, y1: y, x2: xRight, y2: y2 });
             // drawLine({ ...lineAttrs, x1, y1: yHalf, x2: xRight, y2: yHalf }),
     } else {
-        let x2      = x + width;
-        let yBottom = y + height
-        let xHalf   = x + (width / 2);
+        let x2 = x + width;
 
         lineCords.push({ x1: x, y1: y,       x2: x2, y2: y });
         lineCords.push({ x1: x, y1: yBottom, x2: x2, y2: yBottom });
 
-        //     // drawLine({ ...lineAttrs, x1: xHalf, y1, x2: xHalf, y2: yBottom }),
+            // drawLine({ ...lineAttrs, x1: xHalf, y1, x2: xHalf, y2: yBottom }),
     }
 
-    let lines = lineCords.map((cords) => drawLine({ ...lineAttrs, ...cords }));
+    let details = [];
 
-    return `<rect ${attrs} />${lines.join('')}`;
+    if (lockable.has(type)) {
+        let x1 = isVertical ? x      : xHalf;
+        let y1 = isVertical ? yHalf  : y;
+        let x2 = isVertical ? xRight : xHalf;
+        let y2 = isVertical ? yHalf  : yBottom;
+
+        lineCords.push({ x1, y1, x2, y2 });
+
+        let inset     = isVertical ? (width - doorInset) : (height - doorInset);
+        let halfInset = doorInset / 2;
+        let halfWidth = doorWidth / 2;
+
+        let rectWidth  = isVertical ? inset : doorWidth;
+        let rectHeight = isVertical ? doorWidth : inset;
+
+        let rectX = isVertical ? (x1 + halfInset) : (x1 - halfWidth);
+        let rectY = isVertical ? (y1 - halfWidth) : (y1 + halfInset);
+
+        details.push(drawRect({
+            x: rectX,
+            y: rectY,
+            width: rectWidth,
+            height: rectHeight,
+            fill: colorPillarFill,
+            stroke: colorRoomStroke,
+            'stroke-width': pxBorder,
+        }));
+
+    } else if (type === doorType.archway) {
+        let cx  = isVertical ? x      : xHalf;
+        let cy  = isVertical ? yHalf  : y;
+        let cx2 = isVertical ? xRight : cx;
+        let cy2 = isVertical ? cy     : yBottom;
+
+        details.push(drawCircle({ cx, cy, r: pillarRadius }));
+        details.push(drawCircle({ cx: cx2, cy: cy2, r: pillarRadius }));
+
+    } else if (type === doorType.hole) {
+
+    }
+
+    let lines = lineCords.map((cords) => drawLine({ ...lineAttrs, ...cords })).join('');
+
+    return rect + lines + details.join();
 };
 
 export const drawMap = ({ gridWidth, gridHeight }, content) => {
     let attrs = createAttrs({
         width : (gridWidth * pxCell),
         height: (gridHeight * pxCell),
-        style : `background: ${colorGridBg}; overflow: visible;`,
+        style : `background: ${colorGridFill}; overflow: visible;`,
     });
 
     return `<svg ${attrs}>${content}</svg>`;
