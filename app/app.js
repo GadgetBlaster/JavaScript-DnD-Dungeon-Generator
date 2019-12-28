@@ -9,6 +9,7 @@
 // Traps
 // Room vegetation
 // Checkboxes for randomized sets
+// Dungeon map item
 
 import {
     actions,

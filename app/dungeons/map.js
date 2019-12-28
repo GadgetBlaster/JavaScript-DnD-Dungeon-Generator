@@ -27,7 +27,7 @@ const maxDoorWidth = 4;
 
 const gridBackground  = '#efefef';
 const gridStrokeColor = '#cfcfcf';
-const roomBackground  = '#ffffff';
+const roomBackground  = 'rgba(255, 255, 255, 0.7)';
 const roomStrokeColor = '#a9a9a9';
 const textColor       = '#666666';
 
@@ -206,7 +206,7 @@ const drawDoor = (rectConfig) => {
     let attrs = createAttrs({
         ...rectAttrs,
         fill: roomBackground,
-        stroke: '#ffffff',
+        stroke: roomBackground,
         'stroke-width': borderPx,
     });
 
