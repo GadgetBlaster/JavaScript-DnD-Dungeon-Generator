@@ -34,8 +34,8 @@ const type = {
 };
 
 export const probability = new Probability([
-    [ 50,  type.hallway ],
-    [ 75,  type.room    ],
+    [ 40,  type.hallway ],
+    [ 65,  type.room    ],
     [ 100, random  ],
 ]);
 

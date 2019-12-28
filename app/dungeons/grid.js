@@ -51,17 +51,3 @@ export const getStartingPoint = ({ gridWidth, gridHeight }, { roomWidth, roomHei
 
     return [ x, y ];
 };
-
-export const getDoorStartingPoint = (grid, { x, y, width, height }) => {
-    if (x === 1) {
-        x--;
-    } else if (x + width === (grid.length - 1)) {
-        x += width;
-    } else if (y === 1) {
-        y--;
-    } else if (y + height === (grid[0].length - 1)) {
-        y += height;
-    }
-
-    return [ x, y ];
-};

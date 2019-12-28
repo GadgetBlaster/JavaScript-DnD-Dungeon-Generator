@@ -1,7 +1,7 @@
 
 import { createAttrs } from '../utility/html';
 import { dimensionRanges, customDimensions, roomTypeSizes } from '../rooms/dimensions';
-import { getStartingPoint, wallSize, getDoorStartingPoint } from './grid';
+import { getStartingPoint, wallSize } from './grid';
 import { knobs } from '../knobs';
 import { roll, rollArrayItem } from '../utility/roll';
 
@@ -11,6 +11,8 @@ const cellBlank = '.';
 const cellWall  = 'w';
 
 const cellPx   = 20;
+
+const maxDoorWidth = 4;
 
 const gridBackground  = '#efefef';
 const gridStrokeColor = '#cfcfcf';
@@ -206,10 +208,10 @@ const drawRoom = (grid, { x, y, width, height }, roomNumber) => {
     };
 };
 
-const drawDoor = (grid, { x, y }) => {
+const drawDoor = (grid, { x, y, width, height }) => {
     // TODO add doors to grid
     let attrs = createAttrs({
-        ...getRectAttrs({ x, y, width: wallSize, height: wallSize }),
+        ...getRectAttrs({ x, y, width, height }),
         fill: roomBackground,
         stroke: roomStrokeColor,
         'stroke-width': 2
@@ -219,15 +221,29 @@ const drawDoor = (grid, { x, y }) => {
 };
 
 const getDoors = (grid, room, prevRoom) => {
-    if (!prevRoom) {
-        let cords = [ getDoorStartingPoint(grid, room) ];
+    let prevWalls = [];
 
-        return [ cords ];
+    if (prevRoom) {
+        prevWalls = prevRoom.walls;
+    } else {
+        let gridWidth  = grid.length - 1;
+        let gridHeight = grid[0].length - 1;
+
+        for (let i = 0; i <= gridHeight; i++) {
+            prevWalls.push([ 0, i ]);
+            prevWalls.push([ gridWidth, i ]);
+        }
+
+        for (let i = 0; i <= gridWidth; i++) {
+            prevWalls.push([ i, 0 ]);
+            prevWalls.push([ i, gridHeight ]);
+        }
     }
 
-    let currWalls    = room.walls.map((cords) => cords.join());
-    let prevWalls    = prevRoom.walls.map((cords) => cords.join());
-    let intersection = currWalls.filter((value) => prevWalls.includes(value));
+    let roomWalls = room.walls.map((cords) => cords.join());
+    let prevRoomWalls = prevWalls.map((cords) => cords.join())
+
+    let intersection = roomWalls.filter((value) => prevRoomWalls.includes(value));
 
     intersection.shift();
     intersection.pop();
@@ -240,12 +256,31 @@ const getDoors = (grid, room, prevRoom) => {
 };
 
 const drawDoors = (grid, room, prevRoom) => {
-    return getDoors(grid, room, prevRoom).map((doorCells) => {
-        // TODO determine cells
+    return getDoors(grid, room, prevRoom).map((cells) => {
+        let max       = Math.min(maxDoorWidth, Math.ceil(cells.length / 2));
+        let size      = roll(1, max);
+        let remainder = cells.length - size;
+        let start     = roll(0, remainder);
+
+        let doorCells = cells.slice(start, start + size);
+
         let [ x, y ] = doorCells[0];
-        // console.log(x, y);
+
+        let width  = 1;
+        let height = 1;
+
+        doorCells.forEach(([ cellX, cellY ]) => {
+            if (cellX > x) {
+                width++;
+            }
+
+            if (cellY > y) {
+                height++;
+            }
+        });
+
         return {
-            rect: drawDoor(grid, { x, y }),
+            rect: drawDoor(grid, { x, y, width, height }),
             type: 'Door', // TODO
         };
     });
