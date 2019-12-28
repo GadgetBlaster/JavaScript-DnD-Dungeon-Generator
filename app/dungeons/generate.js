@@ -4,9 +4,9 @@ import { generateRooms } from '../rooms/generate';
 import { knobs } from '../knobs';
 import { roll } from '../utility/roll';
 
-const complexityRoomCountMultiplier    = 10;
-const complexityMultiplierMinXY = 4;
-const complexityMultiplierMaxXY = 5;
+const complexityRoomCountMultiplier = 10;
+const complexityMultiplierMinXY     = 5;
+const complexityMultiplierMaxXY     = 6;
 
 const getMxRoomCount = (complexity) => {
     return complexity * complexityRoomCountMultiplier;
@@ -37,10 +37,5 @@ export const generateDungeon = (settings) => {
         rooms: rooms,
     };
 
-    let { map, roomCount } = generateMap(mapSettings);
-
-    return {
-        map,
-        rooms: rooms.slice(0, roomCount),
-    };
+    return generateMap(mapSettings);
 };

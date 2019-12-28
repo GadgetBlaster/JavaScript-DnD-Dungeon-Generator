@@ -53,7 +53,7 @@ const getRooms = (settings) => {
 
 const getDungeon = (settings) => {
     let { map, rooms } = generateDungeon(settings);
-    let roomText = rooms.map((room, i) => formatRoom(room, i)).join('');
+    let roomText = rooms.map((room, i) => formatRoom(room.room, i)).join('');
 
     return map + roomText;
 };
