@@ -44,6 +44,7 @@ const drawLine = ({ x1, y1, x2, y2, color, width }) => {
         stroke: color,
         'stroke-width': width,
         'shape-rendering': 'crispEdges',
+        'stroke-linecap': 'square',
     });
 
     return `<line ${attrs} />`;
@@ -153,16 +154,36 @@ const drawRoom = (grid, { x, y, width, height }, roomNumber) => {
     };
 };
 
-const drawDoor = (grid, { x, y, width, height }) => {
+const drawDoor = (grid, rectConfig) => {
     // TODO add doors to grid
+
+    let rectAttrs = getRectAttrs(rectConfig)
+
     let attrs = createAttrs({
-        ...getRectAttrs({ x, y, width, height }),
+        ...rectAttrs,
         fill: roomBackground,
         stroke: '#ffffff',
         'stroke-width': borderPx,
     });
 
-    return `<rect ${attrs} />`;
+    let { x, y, width, height } = rectAttrs;
+
+    let lineAttrs = {
+        color: roomStrokeColor,
+        width: borderPx,
+    };
+
+    let lines = [
+        drawLine({
+            ...lineAttrs,
+            x1: x,
+            y1: y,
+            x2: x + width,
+            y2: y,
+        }),
+    ].join('');
+
+    return `<rect ${attrs} />${lines}`;
 };
 
 const getDoors = (grid, room, prevRoom) => {
