@@ -20,7 +20,7 @@ export const getStartingPoint = ({ gridWidth, gridHeight }, { roomWidth, roomHei
     let maxX = gridWidth - roomWidth - wallSize;
     let maxY = gridHeight - roomHeight - wallSize;
 
-    if (maxX <= minX || maxY <= minY) {
+    if (maxX < minX || maxY < minY) {
         console.log(minX, maxX, minY, maxY);
         throw 'Min max error in getStartingPoint';
     }

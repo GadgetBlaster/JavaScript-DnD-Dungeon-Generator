@@ -113,22 +113,30 @@ const getRectAttrs = ({ x, y, width, height }) => {
     return { x: xPx, y: yPx, width: widthPx, height: heightPx }
 };
 
-const getRoomDimensions = (roomConfig) => {
+const getRoomDimensions = (mapSettings, roomConfig) => {
     let { settings: {
         [knobs.roomSize]: roomSize,
         [knobs.roomType]: roomType,
     } } = roomConfig;
 
+    let { gridWidth, gridHeight } = mapSettings;
+
+    let roomWidth;
+    let roomHeight;
+
     if (customDimensions[roomType]) {
-        return customDimensions[roomType](roomSize);
+        ({ roomWidth, roomHeight } = customDimensions[roomType](roomSize));
+    } else {
+        let [ min, max ] = dimensionRanges[roomSize];
+
+        roomWidth  = roll(min, max);
+        roomHeight = roll(min, max);
     }
 
-    let [ min, max ] = dimensionRanges[roomSize];
+    let width  = Math.min(gridWidth - 2, roomWidth);
+    let height = Math.min(gridHeight - 2, roomHeight);
 
-    let roomWidth  = roll(min, max);
-    let roomHeight = roll(min, max);
-
-    return { roomWidth, roomHeight };
+    return { roomWidth: width, roomHeight: height };
 };
 
 const drawRoom = (grid, room, roomConfig, roomNumber) => {
@@ -326,7 +334,7 @@ const drawDungeon = (mapSettings, grid) => {
     let prevRoom;
 
     mapSettings.rooms.forEach((roomConfig) => {
-        let roomDimensions = getRoomDimensions(roomConfig);
+        let roomDimensions = getRoomDimensions(mapSettings, roomConfig);
 
         let x;
         let y;
