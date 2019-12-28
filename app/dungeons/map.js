@@ -11,7 +11,7 @@ import {
     wallSize,
 } from './grid';
 
-const debug = true;
+const debug = false;
 
 const cellWall = 'w';
 const cellDoor = 'd';
@@ -26,6 +26,13 @@ const gridBackground  = '#efefef';
 const gridStrokeColor = '#cfcfcf';
 const roomBackground  = '#ffffff';
 const roomStrokeColor = '#555555';
+
+const directions = {
+    north: 'north',
+    east : 'east',
+    south: 'south',
+    west : 'west',
+};
 
 const drawText = (text, { x, y }) => {
     let attrs = createAttrs({
@@ -156,6 +163,7 @@ const drawRoom = (grid, { x, y, width, height }, roomNumber) => {
 };
 
 const drawDoor = (rectConfig) => {
+    let direction = rectConfig.direction;
     let rectAttrs = getRectAttrs(rectConfig)
 
     let attrs = createAttrs({
@@ -172,17 +180,41 @@ const drawDoor = (rectConfig) => {
         width: borderPx,
     };
 
-    let lines = [
-        drawLine({
-            ...lineAttrs,
-            x1: x,
-            y1: y,
-            x2: x + width,
-            y2: y,
-        }),
-    ].join('');
+    let lines = [];
 
-    return `<rect ${attrs} />${lines}`;
+    if (direction === directions.north || direction === directions.south) {
+        lines.push(
+            drawLine({ ...lineAttrs,
+                x1: x,
+                y1: y,
+                x2: x,
+                y2: y + height,
+            }),
+            drawLine({ ...lineAttrs,
+                x1: x + width,
+                y1: y,
+                x2: x + width,
+                y2: y + height,
+            }),
+        );
+    } else {
+        lines.push(
+            drawLine({ ...lineAttrs,
+                x1: x,
+                y1: y,
+                x2: x + width,
+                y2: y,
+            }),
+            drawLine({ ...lineAttrs,
+                x1: x,
+                y1: y + height,
+                x2: x + width,
+                y2: y + height,
+            }),
+        );
+    }
+
+    return `<rect ${attrs} />${lines.join('')}`;
 };
 
 const getDoors = (grid, room, prevRoom) => {
@@ -205,10 +237,9 @@ const getDoors = (grid, room, prevRoom) => {
         }
     }
 
-    let roomWalls = room.walls.map((cords) => cords.join());
+    let roomWalls     = room.walls.map((cords) => cords.join());
     let prevRoomWalls = prevWalls.map((cords) => cords.join())
-
-    let intersection = roomWalls.filter((value) => prevRoomWalls.includes(value));
+    let intersection  = roomWalls.filter((value) => prevRoomWalls.includes(value));
 
     intersection.shift();
     intersection.pop();
@@ -235,6 +266,8 @@ const drawDoors = (grid, room, prevRoom) => {
         let height = 1;
 
         doorCells.forEach(([ cellX, cellY ]) => {
+            grid[cellX][cellY] = cellDoor;
+
             if (cellX > x) {
                 width++;
             }
@@ -242,12 +275,22 @@ const drawDoors = (grid, room, prevRoom) => {
             if (cellY > y) {
                 height++;
             }
-
-            grid[cellX][cellY] = cellDoor;
         });
 
+        let direction;
+
+        if (Number(y) === (room.y - 1)) {
+            direction = directions.north;
+        } else if (Number(x) === (room.x + room.width)) {
+            direction = directions.east;
+        } else if (Number(y) === (room.y + room.height)) {
+            direction = directions.south;
+        } else if (Number(x) === (room.x - 1)) {
+            direction = directions.west;
+        }
+
         return {
-            rect: drawDoor({ x, y, width, height }),
+            rect: drawDoor({ x, y, width, height, direction }),
             type: 'Door', // TODO door type
         };
     });
@@ -297,7 +340,7 @@ const drawDungeon = (mapSettings, grid) => {
         rooms.push({
             rect,
             room: roomConfig,
-            doors: doors, // TODO rects
+            doors: doors, // TODO desc
         });
 
         roomNumber++;
