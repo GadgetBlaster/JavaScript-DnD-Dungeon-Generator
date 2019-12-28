@@ -388,7 +388,7 @@ const drawDungeon = (mapSettings, grid) => {
             doorRects,
             room: {
                 ...roomConfig,
-                doors: [],
+                doors: [], // TODO
             },
         });
 

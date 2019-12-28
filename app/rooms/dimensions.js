@@ -25,16 +25,16 @@ export const dimensionRanges = {
 };
 
 const roomSizes = {
-    [type.ballroom]      : [ medium, large, massive ],
-    [type.bathhouse]     : [ small, medium, large, massive ],
-    [type.diningRoom]    : [ small, medium, large, massive ],
-    [type.dormitory]     : [ medium, large, massive ],
-    [type.greatHall]     : [ large, massive ],
-    [type.pantry]        : [ tiny, small, medium ],
-    [type.parlour]       : [ tiny, small, medium ],
-    [type.study]         : [ tiny, small, medium ],
-    [type.throneRoom]    : [ medium, large, massive ],
-    [type.tortureChamber]: [ tiny, small, medium ],
+    [type.ballroom] : [ medium, large, massive ],
+    [type.bathhouse]: [ small, medium, large, massive ],
+    [type.dining]   : [ small, medium, large, massive ],
+    [type.dormitory]: [ medium, large, massive ],
+    [type.greatHall]: [ large, massive ],
+    [type.pantry]   : [ tiny, small, medium ],
+    [type.parlour]  : [ tiny, small, medium ],
+    [type.study]    : [ tiny, small, medium ],
+    [type.throne]   : [ medium, large, massive ],
+    [type.torture]  : [ tiny, small, medium ],
 };
 
 export const customDimensions = {

@@ -9,7 +9,7 @@ const type = {
     bathhouse: 'bathhouse',
     bedroom: 'bedroom',
     chamber: 'chamber',
-    diningRoom: 'diningRoom',
+    dining: 'dining',
     dormitory: 'dormitory',
     greatHall: 'greatHall',
     hallway: 'hallway',
@@ -21,14 +21,21 @@ const type = {
     parlour: 'parlour',
     prison: 'prison',
     room: 'room',
-    shrineRoom: 'shrineRoom',
+    shrine: 'shrine',
     smithy: 'smithy',
-    storeRoom: 'storeRoom',
+    store: 'store',
     study: 'study',
-    throneRoom: 'throneRoom',
-    tortureChamber: 'tortureChamber',
+    throne: 'throne',
+    torture: 'torture',
     treasury: 'treasury',
 };
+
+export const appendRoomTypes = new Set([
+    type.dining,
+    type.shrine,
+    type.throne,
+    type.torture,
+]);
 
 export const probability = new Probability([
     [ 40,  type.hallway ],

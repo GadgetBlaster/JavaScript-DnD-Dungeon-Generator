@@ -6,7 +6,7 @@ import condition from '../attributes/condition';
 import quantity from '../attributes/quantity';
 import rarity from '../attributes/rarity';
 import size from '../attributes/size';
-import type from '../rooms/type';
+import type, { appendRoomTypes } from '../rooms/type';
 import { random } from '../utility/random';
 
 const getSizeDesc = (settings) => {
@@ -17,7 +17,8 @@ const getSizeDesc = (settings) => {
         [knobs.roomType]: roomType,
     } = settings;
 
-    let typeString = toWords(roomType);
+    let appendRoom = appendRoomTypes.has(roomType);
+    let typeString = toWords(roomType) + (appendRoom ? ' room' : '');
 
     if (roomSize === size.medium) {
         roomSize = 'medium sized';
@@ -104,7 +105,7 @@ const getItemConditionDescription = (settings) => {
 
 export const getRoomDescription = (room, roomNumber) => {
     let { settings } = room;
-    console.log(room.doors);
+
     let {
         [knobs.roomCount]: roomCount,
         [knobs.roomType] : roomType,

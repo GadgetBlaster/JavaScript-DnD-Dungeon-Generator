@@ -8,6 +8,7 @@
 // Secret doors, secret rooms
 // Traps
 // Room vegetation
+// Checkboxes for randomized sets
 
 import {
     actions,
