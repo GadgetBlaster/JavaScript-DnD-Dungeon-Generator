@@ -23,6 +23,7 @@ import { knobs } from '../knobs';
 import { roll, rollArrayItem } from '../utility/roll';
 import type from '../rooms/type';
 import { toWords } from '../utility/tools';
+import { probability as doorProbability } from '../rooms/door';
 
 const debug = false;
 
@@ -185,9 +186,12 @@ const getDoor = (grid, room, prevRoom) => {
         }
     });
 
+    let doorType  = doorProbability.roll();
+    let doorAttrs = { x, y, width, height };
+
     return {
-        rect: drawDoor({ x, y, width, height, direction }),
-        type: 'Door', // TODO door type
+        rect: drawDoor(doorAttrs, { direction, type: doorType }),
+        type: doorType,
         direction,
     };
 };

@@ -117,9 +117,8 @@ export const drawRoomText = (rectAttrs, { roomNumber, roomLabel }) => {
     return text;
 };
 
-export const drawDoor = (rectConfig) => {
-    let direction = rectConfig.direction;
-    let rectAttrs = getRectAttrs(rectConfig)
+export const drawDoor = (doorAttrs, { direction, type }) => {
+    let rectAttrs = getRectAttrs(doorAttrs);
 
     let attrs = createAttrs({
         ...rectAttrs,
@@ -135,34 +134,28 @@ export const drawDoor = (rectConfig) => {
         width: pxBorder,
     };
 
-    let lines = [];
-
-    let x1 = x;
-    let y1 = y;
-    let x2 = x;
-    let y2 = y;
+    let lineCords = [];
 
     if (direction === directions.north || direction === directions.south) {
-            y2     = y + height;
+        let y2     = y + height;
         let xRight = x + width
         let yHalf  = y + (height / 2);
 
-        lines.push(
-            drawLine({ ...lineAttrs, x1, y1, x2, y2 }),
-            drawLine({ ...lineAttrs, x1: xRight, y1, x2: xRight, y2 }),
+        lineCords.push({ x1: x,      y1: y, x2: x,      y2: y2 });
+        lineCords.push({ x1: xRight, y1: y, x2: xRight, y2: y2 });
             // drawLine({ ...lineAttrs, x1, y1: yHalf, x2: xRight, y2: yHalf }),
-        );
     } else {
-            x2      = x + width;
+        let x2      = x + width;
         let yBottom = y + height
         let xHalf   = x + (width / 2);
 
-        lines.push(
-            drawLine({ ...lineAttrs, x1, y1, x2, y2 }),
-            drawLine({ ...lineAttrs, x1, y1: yBottom, x2, y2: yBottom }),
-            // drawLine({ ...lineAttrs, x1: xHalf, y1, x2: xHalf, y2: yBottom }),
-        );
+        lineCords.push({ x1: x, y1: y,       x2: x2, y2: y });
+        lineCords.push({ x1: x, y1: yBottom, x2: x2, y2: yBottom });
+
+        //     // drawLine({ ...lineAttrs, x1: xHalf, y1, x2: xHalf, y2: yBottom }),
     }
+
+    let lines = lineCords.map((cords) => drawLine({ ...lineAttrs, ...cords }));
 
     return `<rect ${attrs} />${lines.join('')}`;
 };
