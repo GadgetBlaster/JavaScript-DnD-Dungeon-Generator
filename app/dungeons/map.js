@@ -13,7 +13,7 @@ import {
     drawGrid,
     drawDoor,
     drawMap,
-    drawText,
+    drawRoomText,
     drawRoom,
     getRectAttrs,
 } from './draw';
@@ -21,8 +21,8 @@ import {
 import { dimensionRanges, customDimensions } from '../rooms/dimensions';
 import { knobs } from '../knobs';
 import { roll, rollArrayItem } from '../utility/roll';
-import { toWords } from '../utility/tools';
 import type from '../rooms/type';
+import { toWords } from '../utility/tools';
 
 const debug = false;
 
@@ -30,8 +30,6 @@ const maxDoorWidth = 4;
 
 const labelMinWidth  = 3;
 const labelMinHeight = 2;
-const labelRoomNumberSize = 14;
-const labelRoomTypeSize   = 10;
 
 export const directions = {
     north: 'north',
@@ -93,26 +91,13 @@ const getRoom = (grid, room, roomConfig, roomNumber) => {
         }
     }
 
-    let px = getRectAttrs({ x, y, width, height });
-
+    let rectAttrs     = getRectAttrs({ x, y, width, height });
     let roomType      = roomConfig.settings[knobs.roomType];
     let showRoomLabel = roomType !== type.room && width >= labelMinWidth && height >= labelMinHeight;
+    let roomLabel     = showRoomLabel && toWords(roomType);
 
-    let middleX = (px.x + px.width  / 2);
-    let middleY = (px.y + px.height / 2);
-
-    let labelY = showRoomLabel ? middleY - (labelRoomNumberSize / 2) : middleY;
-
-    let text = drawText(roomNumber, [ middleX, labelY ], { fontSize: labelRoomNumberSize });
-
-    if (showRoomLabel) {
-        let roomLabel  = toWords(roomType);
-        let roomLabelY = labelY + labelRoomNumberSize;
-
-        text += drawText(roomLabel, [ middleX, roomLabelY ], { fontSize: labelRoomTypeSize });
-    }
-
-    let rect = drawRoom(px);
+    let text = drawRoomText(rectAttrs, { roomNumber, roomLabel });
+    let rect = drawRoom(rectAttrs);
 
     return {
         rect: rect + text,

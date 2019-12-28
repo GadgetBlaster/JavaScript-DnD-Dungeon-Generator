@@ -1,6 +1,7 @@
 
 import { createAttrs } from '../utility/html';
 import { directions } from './map';
+import { toWords } from '../utility/tools';
 
 const pxBorder   = 2;
 const pxCell     = 24;
@@ -12,17 +13,10 @@ const colorRoomBg     = 'rgba(255, 255, 255, 0.7)';
 const colorRoomStroke = '#a9a9a9';
 const colorText       = '#666666';
 
-export const getRectAttrs = ({ x, y, width, height }) => {
-    let xPx = x * pxCell;
-    let yPx = y * pxCell;
+const labelRoomNumberFontSize = 14;
+const labelRoomTypeFontSize   = 10;
 
-    let widthPx  = width * pxCell;
-    let heightPx = height * pxCell;
-
-    return { x: xPx, y: yPx, width: widthPx, height: heightPx }
-};
-
-export const drawText = (text, [ x, y ], { fontSize }) => {
+const drawText = (text, [ x, y ], { fontSize }) => {
     let attrs = createAttrs({
         x, y: y + 2,
         fill: colorText,
@@ -45,6 +39,16 @@ const drawLine = ({ x1, y1, x2, y2, color, width }) => {
     });
 
     return `<line ${attrs} />`;
+};
+
+export const getRectAttrs = ({ x, y, width, height }) => {
+    let xPx = x * pxCell;
+    let yPx = y * pxCell;
+
+    let widthPx  = width * pxCell;
+    let heightPx = height * pxCell;
+
+    return { x: xPx, y: yPx, width: widthPx, height: heightPx }
 };
 
 export const drawGrid = ({ gridWidth, gridHeight }) => {
@@ -93,6 +97,24 @@ export const drawRoom = (rectAttrs) => {
     });
 
     return `<rect ${attrs} />`;
+};
+
+export const drawRoomText = (rectAttrs, { roomNumber, roomLabel }) => {
+    let middleX = (rectAttrs.x + rectAttrs.width  / 2);
+    let middleY = (rectAttrs.y + rectAttrs.height / 2);
+
+    let fontSize = labelRoomNumberFontSize;
+    let labelY   = roomLabel ? middleY - (fontSize / 2) : middleY;
+
+    let text = drawText(roomNumber, [ middleX, labelY ], { fontSize });
+
+    if (roomLabel) {
+        let roomLabelY = labelY + fontSize;
+
+        text += drawText(roomLabel, [ middleX, roomLabelY ], { fontSize: labelRoomTypeFontSize });
+    }
+
+    return text;
 };
 
 export const drawDoor = (rectConfig) => {
