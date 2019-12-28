@@ -1,19 +1,11 @@
 
 import { createAttrs } from '../utility/html';
 import { dimensionRanges, customDimensions, roomTypeSizes } from '../rooms/dimensions';
+import { getStartingPoint, wallSize, getDoorStartingPoint } from './grid';
 import { knobs } from '../knobs';
 import { roll, rollArrayItem } from '../utility/roll';
 
 const debug = false;
-
-const wallSize = 1;
-
-const sides = {
-    top   : 'top',
-    right : 'right',
-    bottom: 'bottom',
-    left  : 'left',
-};
 
 const cellBlank = '.';
 const cellWall  = 'w';
@@ -25,47 +17,6 @@ const gridStrokeColor = '#cfcfcf';
 const roomBackground  = '#ffffff';
 const roomStrokeColor = '#555555';
 
-const getStartingPoint = ({ gridWidth, gridHeight }, { roomWidth, roomHeight }) => {
-    let side = rollArrayItem(Object.values(sides));
-
-    let minX = wallSize;
-    let minY = wallSize;
-    let maxX = gridWidth - roomWidth - wallSize;
-    let maxY = gridHeight - roomHeight - wallSize;
-
-    if (maxX <= minX || maxY <= minY) {
-        console.log(minX, maxX, minY, maxY);
-        throw 'Min max error';
-    }
-
-    let x;
-    let y;
-
-    switch (side) {
-        case sides.right:
-            x = maxX;
-            y = roll(minY, maxY);
-            break;
-
-        case sides.bottom:
-            x = roll(minX, maxX);
-            y = maxY;
-            break;
-
-        case sides.left:
-            x = minX;
-            y = roll(minY, maxY);
-            break;
-
-        case sides.top:
-        default:
-            x = roll(minX, maxX);
-            y = minY;
-            break;
-    }
-
-    return [ x, y ];
-};
 
 const checkArea = (grid, { x, y, width, height }) => {
     let minX = wallSize;
@@ -269,20 +220,9 @@ const drawDoor = (grid, { x, y }) => {
 
 const getDoors = (grid, room, prevRoom) => {
     if (!prevRoom) {
-        let x = room.x;
-        let y = room.y;
+        let cords = [ getDoorStartingPoint(grid, room) ];
 
-        if (x === 1) {
-            x--;
-        } else if (x === (grid.length - 1)) {
-            x++;
-        } else if (y === 1) {
-            y--;
-        } else if (y === (grid[0].length - 1)) {
-            y++;
-        }
-
-        return [ [ [ x, y ] ] ];
+        return [ cords ];
     }
 
     let currWalls    = room.walls.map((cords) => cords.join());
@@ -303,7 +243,7 @@ const drawDoors = (grid, room, prevRoom) => {
     return getDoors(grid, room, prevRoom).map((doorCells) => {
         // TODO determine cells
         let [ x, y ] = doorCells[0];
-        console.log(x, y);
+        // console.log(x, y);
         return {
             rect: drawDoor(grid, { x, y }),
             type: 'Door', // TODO
