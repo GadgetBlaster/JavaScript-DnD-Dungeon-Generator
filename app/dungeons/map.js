@@ -10,7 +10,9 @@ const debug = false;
 const cellBlank = '.';
 const cellWall  = 'w';
 
-const cellPx   = 20;
+const cellPx     = 20;
+const borderPx   = 2;
+const gridLinePx = 1;
 
 const maxDoorWidth = 4;
 
@@ -109,11 +111,11 @@ const drawText = (text, { x, y }) => {
     return `<text ${attrs}>${text}</text>`;
 };
 
-const drawLine = ({ x1, y1, x2, y2 }) => {
+const drawLine = ({ x1, y1, x2, y2, color, width }) => {
     let attrs = createAttrs({
         x1, y1, x2, y2,
-        stroke: gridStrokeColor,
-        'stroke-width': 1,
+        stroke: color,
+        'stroke-width': width,
         'shape-rendering': 'crispEdges',
     });
 
@@ -123,18 +125,34 @@ const drawLine = ({ x1, y1, x2, y2 }) => {
 const drawGrid = ({ gridWidth, gridHeight }) => {
     let lines = '';
 
+    let gridLineAttrs = {
+        color: gridStrokeColor,
+        width: gridLinePx,
+    };
+
     for (let i = 0; i <= gridHeight; i++) {
         let unit = i * cellPx;
-        let x2   = gridWidth * cellPx;
 
-        lines += drawLine({ x1: 0, y1: unit, x2, y2: unit });
+        lines += drawLine({
+            ...gridLineAttrs,
+            x1: 0,
+            y1: unit,
+            x2: gridWidth * cellPx,
+            y2: unit,
+
+        });
     }
 
     for (let i = 0; i <= gridWidth; i++) {
         let unit = i * cellPx;
-        let y2   = gridHeight * cellPx;
 
-        lines += drawLine({ x1: unit, y1: 0, x2: unit, y2 });
+        lines += drawLine({
+            ...gridLineAttrs,
+            x1: unit,
+            y1: 0,
+            x2: unit,
+            y2: gridHeight * cellPx,
+        });
     }
 
     return lines;
@@ -194,7 +212,7 @@ const drawRoom = (grid, { x, y, width, height }, roomNumber) => {
         ...px,
         fill: roomBackground,
         stroke: roomStrokeColor,
-        'stroke-width': 2
+        'stroke-width': borderPx,
     });
 
     let text = drawText(roomNumber, {
@@ -213,8 +231,8 @@ const drawDoor = (grid, { x, y, width, height }) => {
     let attrs = createAttrs({
         ...getRectAttrs({ x, y, width, height }),
         fill: roomBackground,
-        stroke: roomStrokeColor,
-        'stroke-width': 2
+        stroke: '#ffffff',
+        'stroke-width': borderPx,
     });
 
     return `<rect ${attrs} />`;
