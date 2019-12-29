@@ -131,23 +131,22 @@ const getDoorwayDescription = (doors) => {
     }).join('. ');
 };
 
-export const getDoorwayList = (doors) => {
-    if (!doors) {
-        return;
-    }
+export const getDoorwayList = (roomDoors) => {
+    let doorList = roomDoors.map(({ type, connection, size }) => {
 
-    let doorList = doors.map(({ type, connection, direction, size }) => {
-        let desc       = getDoorwayDesc(type, size);
-        let connectsTo = connection === outside ? 'leading out of the dungeon' : `to Room ${connection}`;
+        let { direction, to } = connection;
 
-        return `${capitalize(direction)} ${connectsTo} (${desc})`;
+        let desc    = getDoorwayDesc(type, size);
+        let connect = to === outside ? 'leading out of the dungeon' : `to Room ${to}`;
+
+        return `${capitalize(direction)} ${connect} (${desc})`;
     });
 
-    return subTitle(`Doorways (${doors.length})`) + list(doorList);
+    return subTitle(`Doorways (${roomDoors.length})`) + list(doorList);
 };
 
-export const getRoomDescription = (room, roomNumber) => {
-    let { settings, doors } = room;
+export const getRoomDescription = (room, doors) => {
+    let { settings, roomNumber } = room;
 
     let {
         [knobs.roomCount]: roomCount,

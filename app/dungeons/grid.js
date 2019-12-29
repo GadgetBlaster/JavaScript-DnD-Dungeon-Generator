@@ -1,7 +1,7 @@
 
 import { roll, rollArrayItem } from '../utility/roll';
 
-export const wallSize = 1;
+export const wallSize  = 1;
 
 export const cellBlank = '.';
 export const cellWall  = 'w';

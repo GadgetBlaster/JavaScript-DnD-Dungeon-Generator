@@ -1,6 +1,7 @@
 
 import { createAttrs } from '../utility/html';
 import { directions } from './map';
+import { wallSize } from './grid';
 import doorType, { lockable } from '../rooms/door';
 
 const pxBorder   = 2;
@@ -84,6 +85,24 @@ const getRectAttrs = ({ x, y, width, height }) => {
     return { x: xPx, y: yPx, width: widthPx, height: heightPx }
 };
 
+const drawRoomText = (rectAttrs, { roomNumber, roomLabel }) => {
+    let middleX = (rectAttrs.x + rectAttrs.width  / 2);
+    let middleY = (rectAttrs.y + rectAttrs.height / 2);
+
+    let fontSize = labelRoomNumberFontSize;
+    let labelY   = roomLabel ? middleY - (fontSize / 2) : middleY;
+
+    let text = drawText(roomNumber, [ middleX, labelY ], { fontSize });
+
+    if (roomLabel) {
+        let roomLabelY = labelY + fontSize;
+
+        text += drawText(roomLabel, [ middleX, roomLabelY ], { fontSize: labelRoomTypeFontSize });
+    }
+
+    return text;
+};
+
 export const drawGrid = ({ gridWidth, gridHeight }) => {
     let lines = '';
 
@@ -119,22 +138,12 @@ export const drawGrid = ({ gridWidth, gridHeight }) => {
     return lines;
 };
 
-const drawRoomText = (rectAttrs, { roomNumber, roomLabel }) => {
-    let middleX = (rectAttrs.x + rectAttrs.width  / 2);
-    let middleY = (rectAttrs.y + rectAttrs.height / 2);
+export const drawPillarCell = ([ x, y ]) => {
+    let px = getRectAttrs({ x, y, width: wallSize, height: wallSize });
+    let cx = px.x + (px.width / 2);
+    let cy = px.y + (px.height / 2);
 
-    let fontSize = labelRoomNumberFontSize;
-    let labelY   = roomLabel ? middleY - (fontSize / 2) : middleY;
-
-    let text = drawText(roomNumber, [ middleX, labelY ], { fontSize });
-
-    if (roomLabel) {
-        let roomLabelY = labelY + fontSize;
-
-        text += drawText(roomLabel, [ middleX, roomLabelY ], { fontSize: labelRoomTypeFontSize });
-    }
-
-    return text;
+    return drawPillar({ cx, cy });
 };
 
 export const drawRoom = (roomAttrs, roomTextConfig) => {

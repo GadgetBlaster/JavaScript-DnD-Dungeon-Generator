@@ -46,27 +46,54 @@ const navigate = (target, el) => {
     el && toggleCollapsed(`fieldset-${toDash(config[0].label)}`);
 };
 
-const formatRoom = (room, i) => {
-    let desc  = getRoomDescription(room, i + 1);
-    let doors = getDoorwayList(room.doors);
-    let items = room.items.join('');
+const createDoorLookup = (doors) => {
+    let lookup = {};
 
-    return article(desc + doors + items);
+    doors.forEach((door) => {
+        Object.keys(door.connections).forEach((roomNumber) => {
+            if (!lookup[roomNumber]) {
+                lookup[roomNumber] = [];
+            }
+
+            let roomDoor = {
+                ...door,
+                connection: door.connections[roomNumber],
+            };
+
+            lookup[roomNumber].push(roomDoor);
+        });
+    });
+
+    return lookup;
+};
+
+const formatRoom = (room, doors, doorLookup) => {
+    let desc      = getRoomDescription(room);
+    let roomDoors = doorLookup[room.roomNumber];
+    let doorList  = getDoorwayList(roomDoors);
+    let items     = room.items.join('');
+
+    return article(desc + doorList + items);
 };
 
 const getItems = (settings) => generateItems(settings).join('');
 
 const getRooms = (settings) => {
-    return generateRooms(settings).map((room, i) => formatRoom(room, i)).join('');
+    return generateRooms(settings).map((room, i) => {
+        room.roomNumber = i;
+
+        return formatRoom(room);
+    }).join('');
 };
 
 const getDungeon = (settings) => {
-    let { map, rooms } = generateDungeon(settings);
+    let { map, rooms, doors } = generateDungeon(settings);
 
     let legend     = drawLegend();
-    let roomBlocks = rooms.map((room, i) => formatRoom(room, i)).join('');
+    let doorLookup = createDoorLookup(doors);
+    let articles   = rooms.map((room) => formatRoom(room, doors, doorLookup)).join('');
 
-    return map + legend + div(roomBlocks, { 'data-grid': true });
+    return map + legend + div(articles, { 'data-grid': true });
 };
 
 const generators = {
