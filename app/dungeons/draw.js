@@ -7,14 +7,17 @@ const pxBorder   = 2;
 const pxCell     = 24;
 const pxGridLine = 1;
 
-const colorGridFill   = '#f0f0f0';
-const colorGridStroke = '#cfcfcf';
-const colorRoomFill   = 'rgba(255, 255, 255, 0.7)';
-const colorRoomStroke = '#a9a9a9';
-const colorText       = '#666666';
-const colorPillarFill = '#ffffff';
+const colorGridFill    = '#f0f0f0';
+const colorGridStroke  = '#cfcfcf';
+const colorRoomFill    = 'rgba(255, 255, 255, 0.7)';
+const colorRoomStroke  = '#a9a9a9';
+const colorText        = '#666666';
+const colorPillarFill  = '#f9f9f9';
+const colorTransparent = 'transparent';
 
-const pillarRadius = 4;
+const radiusPillar = 4;
+const radiusHole   = 6;
+
 const doorWidth    = 8;
 const doorInset    = 12;
 
@@ -46,13 +49,12 @@ const drawLine = ({ x1, y1, x2, y2, color, width }) => {
     return `<line ${attrs} />`;
 };
 
-const drawCircle = ({ cx, cy, r }) => {
+const drawCircle = ({ cx, cy, r, stroke, fill }) => {
     let attrs = createAttrs({
         cx, cy, r,
-        stroke: colorRoomStroke,
-        fill: colorPillarFill,
+        fill,
         'shape-rendering': 'geometricPrecision',
-        'stroke-width': 2,
+        ...(stroke && { stroke, 'stroke-width': 2 })
     });
 
     return `<circle ${attrs} />`;
@@ -63,6 +65,15 @@ const drawRect = (rectAttrs) => {
 
     return `<rect ${attrs} />`;
 }
+
+const drawPillar = (attrs) => {
+    return drawCircle({
+        ...attrs,
+        r: radiusPillar,
+        stroke: colorRoomStroke,
+        fill: colorPillarFill,
+    });
+};
 
 export const getRectAttrs = ({ x, y, width, height }) => {
     let xPx = x * pxCell;
@@ -172,27 +183,29 @@ export const drawDoor = (doorAttrs, { direction, type }) => {
 
         lineCords.push({ x1: x,      y1: y, x2: x,      y2: y2 });
         lineCords.push({ x1: xRight, y1: y, x2: xRight, y2: y2 });
-            // drawLine({ ...lineAttrs, x1, y1: yHalf, x2: xRight, y2: yHalf }),
     } else {
         let x2 = x + width;
 
         lineCords.push({ x1: x, y1: y,       x2: x2, y2: y });
         lineCords.push({ x1: x, y1: yBottom, x2: x2, y2: yBottom });
-
-            // drawLine({ ...lineAttrs, x1: xHalf, y1, x2: xHalf, y2: yBottom }),
     }
 
     let details = [];
 
+    let divisionLineCords = {
+        x1: isVertical ? x      : xHalf,
+        y1: isVertical ? yHalf  : y,
+        x2: isVertical ? xRight : xHalf,
+        y2: isVertical ? yHalf  : yBottom,
+    };
+
     if (lockable.has(type)) {
-        let x1 = isVertical ? x      : xHalf;
-        let y1 = isVertical ? yHalf  : y;
-        let x2 = isVertical ? xRight : xHalf;
-        let y2 = isVertical ? yHalf  : yBottom;
+        lineCords.push(divisionLineCords);
 
-        lineCords.push({ x1, y1, x2, y2 });
+        let { x1, y1 } = divisionLineCords;
 
-        let inset     = isVertical ? (width - doorInset) : (height - doorInset);
+        let inset = isVertical ? (width - doorInset) : (height - doorInset);
+
         let halfInset = doorInset / 2;
         let halfWidth = doorWidth / 2;
 
@@ -218,11 +231,18 @@ export const drawDoor = (doorAttrs, { direction, type }) => {
         let cx2 = isVertical ? xRight : cx;
         let cy2 = isVertical ? cy     : yBottom;
 
-        details.push(drawCircle({ cx, cy, r: pillarRadius }));
-        details.push(drawCircle({ cx: cx2, cy: cy2, r: pillarRadius }));
+        details.push(drawPillar({ cx, cy }));
+        details.push(drawPillar({ cx: cx2, cy: cy2 }));
 
     } else if (type === doorType.hole) {
+        lineCords.push(divisionLineCords);
 
+        let { x1, y1 } = divisionLineCords;
+
+        let cx = isVertical ? xHalf : x1;
+        let cy = isVertical ? y1 : yHalf;
+
+        details.push(drawCircle({ cx, cy, r: radiusHole, fill: colorPillarFill }));
     }
 
     let lines = lineCords.map((cords) => drawLine({ ...lineAttrs, ...cords })).join('');
