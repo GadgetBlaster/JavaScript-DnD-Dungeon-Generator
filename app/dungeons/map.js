@@ -18,17 +18,19 @@ import {
 
 import { dimensionRanges, customDimensions } from '../rooms/dimensions';
 import { knobs } from '../knobs';
-import { roll, rollArrayItem } from '../utility/roll';
+import { roll, rollArrayItem, rollPercentile } from '../utility/roll';
 import type from '../rooms/type';
 import { toWords } from '../utility/tools';
 import { probability as doorProbability } from '../rooms/door';
 
-const debug = false;
+const debug = true;
 
 const maxDoorWidth = 4;
 
 const labelMinWidth  = 3;
 const labelMinHeight = 2;
+
+const chanceToConnectRooms = 10;
 
 export const directions = {
     north: 'north',
@@ -149,7 +151,39 @@ const getDoorCells = (grid, room, prevRoom) => {
     return cells;
 };
 
+// const getDoorConnection = (grid, [ x, y ], room, direction) => {
+//     switch (direction) {
+//         case directions.north:
+//             return grid[x][y + room.height + 1];
+//         case directions.east:
+//             x = room.x - 1;
+//             return grid[x] && grid[x][y];
+//         case directions.south:
+//             return grid[x][y - 1];
+//         case directions.west:
+//             x = room.x + room.width + 1;
+//             return grid[x] && grid[x][y];
+//         default:
+//             throw 'Invalid direction';
+//     }
+// };
+
+const getDoorDirection = ([ x, y ], room) => {
+    if (Number(y) === (room.y - 1)) {
+        return directions.north;
+    } else if (Number(x) === (room.x + room.width)) {
+        return directions.east;
+    } else if (Number(y) === (room.y + room.height)) {
+        return directions.south;
+    } else if (Number(x) === (room.x - 1)) {
+        return directions.west;
+    } else {
+        throw 'Invalid direction';
+    }
+};
+
 const getDoor = (grid, room, prevRoom) => {
+    console.log(room.roomNumber);
     let cells     = getDoorCells(grid, room, prevRoom);
     let useEdge   = prevRoom && prevRoom.roomType === type.hallway && room.roomType === type.hallway;
     let max       = Math.min(maxDoorWidth, Math.ceil(cells.length / 2));
@@ -158,18 +192,7 @@ const getDoor = (grid, room, prevRoom) => {
     let start     = useEdge ? rollArrayItem([ 0, remainder ]) : roll(0, remainder);
     let doorCells = cells.slice(start, start + size);
     let [ x, y ]  = doorCells[0];
-
-    let direction;
-
-    if (Number(y) === (room.y - 1)) {
-        direction = directions.north;
-    } else if (Number(x) === (room.x + room.width)) {
-        direction = directions.east;
-    } else if (Number(y) === (room.y + room.height)) {
-        direction = directions.south;
-    } else if (Number(x) === (room.x - 1)) {
-        direction = directions.west;
-    }
+    let direction = getDoorDirection([ x, y ], room);
 
     let width  = 1;
     let height = 1;
@@ -194,7 +217,38 @@ const getDoor = (grid, room, prevRoom) => {
 };
 
 const getDoors = (grid, room, prevRoom) => {
-    return [ getDoor(grid, room, prevRoom) ];
+    let defaultDoor = getDoor(grid, room, prevRoom);
+    let doors = [ defaultDoor ];
+    return doors;
+    // WIP
+    room.walls.forEach(([ x, y ]) => {
+        let connect = false;
+
+        [ 1, -1 ].forEach((adjust) => {
+            let xAdjust = x + adjust;
+            let yAdjust = y + adjust;
+
+            let xCollision = grid[xAdjust] && grid[xAdjust][y];
+            let yCollision = grid[x] && grid[x][yAdjust];
+
+            if (xCollision && Number.isInteger(xCollision) && xCollision !== room.roomNumber) {
+                // console.log(xCollision);
+            }
+
+            // if (grid[xAdjust] && grid[xAdjust][y] ===  )
+        });
+
+        // console.log(grid[x][y]);
+        let isWall = grid[x][y] === cellWall;
+        // && rollPercentile(chanceToConnectRooms)
+        if (isWall) {
+            // console.log('hit wall');
+            // let direction = getDoorDirection([ x, y ], room);
+            // console.log(x, y, direction);
+        }
+    });
+
+    return doors;
 };
 
 const getRooms = (mapSettings, grid) => {
@@ -271,19 +325,23 @@ const getRooms = (mapSettings, grid) => {
 };
 
 const logGrid = (grid) => {
-    let cols = [];
+    let rows = [];
 
     grid.forEach((column, x) => {
-        let rows = [];
+        let cols = [];
 
         column.forEach((_, y) => {
-            grid[y] && grid[y][x] && rows.push(grid[y][x]);
+            grid[y] && grid[y][x] && cols.push(grid[y][x]);
         });
 
-        rows.length && cols.push(rows);
+        cols.length && rows.push(cols);
     });
 
-    console.log(cols);
+    let ascii = rows.map((cols) => {
+        return cols.join(' ');
+    }).join("\n");
+
+    console.log(ascii);
 };
 
 export const generateMap = (mapSettings) => {

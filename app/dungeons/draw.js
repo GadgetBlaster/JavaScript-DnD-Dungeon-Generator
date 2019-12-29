@@ -13,7 +13,6 @@ const colorRoomFill    = 'rgba(255, 255, 255, 0.7)';
 const colorRoomStroke  = '#a9a9a9';
 const colorText        = '#666666';
 const colorPillarFill  = '#f9f9f9';
-const colorTransparent = 'transparent';
 
 const radiusPillar = 4;
 const radiusHole   = 6;
@@ -102,7 +101,6 @@ export const drawGrid = ({ gridWidth, gridHeight }) => {
             y1: unit,
             x2: gridWidth * pxCell,
             y2: unit,
-
         });
     }
 
