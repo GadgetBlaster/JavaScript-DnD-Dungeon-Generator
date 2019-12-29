@@ -18,6 +18,7 @@ import {
     toggleVisibility,
 } from './ui/action';
 
+import { article, div, section } from './ui/block';
 import { drawLegend } from './dungeons/legend';
 import { generateDungeon } from './dungeons/generate';
 import { generateItems } from './items/generate';
@@ -26,7 +27,6 @@ import { getKnobConfig } from './knobs';
 import { getRoomDescription } from './rooms/description';
 import { nav, setActive, getActive, pages } from './ui/nav';
 import { renderKnobs, getFormData } from './ui/form';
-import { section } from './ui/block';
 import { toDash } from './utility/tools';
 
 const navContainer     = document.getElementById('nav');
@@ -46,7 +46,7 @@ const navigate = (target, el) => {
     el && toggleCollapsed(`fieldset-${toDash(config[0].label)}`);
 };
 
-const formatRoom = (room, i) => getRoomDescription(room, i + 1) + room.items.join('');
+const formatRoom = (room, i) => article(getRoomDescription(room, i + 1) + room.items.join(''));
 
 const getItems = (settings) => generateItems(settings).join('');
 
@@ -57,11 +57,10 @@ const getRooms = (settings) => {
 const getDungeon = (settings) => {
     let { map, rooms } = generateDungeon(settings);
 
-    let legend = drawLegend();
+    let legend     = drawLegend();
+    let roomBlocks = rooms.map((room, i) => formatRoom(room, i)).join('');
 
-    let roomText = rooms.map((room, i) => formatRoom(room, i)).join('');
-
-    return map + legend + roomText;
+    return map + legend + div(roomBlocks, { 'data-grid': true });
 };
 
 const generators = {

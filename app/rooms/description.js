@@ -1,5 +1,6 @@
 
 import { knobs } from '../knobs';
+import { random } from '../utility/random';
 import { title, subTitle, paragraph } from '../ui/typography';
 import { toWords } from '../utility/tools';
 import condition from '../attributes/condition';
@@ -7,7 +8,6 @@ import quantity from '../attributes/quantity';
 import rarity from '../attributes/rarity';
 import size from '../attributes/size';
 import type, { appendRoomTypes } from '../rooms/type';
-import { random } from '../utility/random';
 
 const getSizeDesc = (settings) => {
     let {
@@ -115,9 +115,11 @@ export const getRoomDescription = (room, roomNumber) => {
     let typeLabel   = roomType !== type.room ? `: ${toWords(roomType)}` : '';
     let roomTitle   = title(`Room ${numberLabel}${typeLabel}`);
 
-    return roomTitle + subTitle('Description') + paragraph([
+    let content = roomTitle + subTitle('Description') + paragraph([
         getSizeDesc(settings),
         getContentsDesc(settings),
         getItemConditionDescription(settings),
-    ].filter(Boolean).join('. ')+'.');
+    ].filter(Boolean).join('. ')+'.')
+
+    return content;
 };

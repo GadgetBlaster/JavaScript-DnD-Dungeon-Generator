@@ -183,7 +183,6 @@ const getDoorDirection = ([ x, y ], room) => {
 };
 
 const getDoor = (grid, room, prevRoom) => {
-    console.log(room.roomNumber);
     let cells     = getDoorCells(grid, room, prevRoom);
     let useEdge   = prevRoom && prevRoom.roomType === type.hallway && room.roomType === type.hallway;
     let max       = Math.min(maxDoorWidth, Math.ceil(cells.length / 2));
@@ -212,6 +211,7 @@ const getDoor = (grid, room, prevRoom) => {
     return {
         rect: drawDoor(doorAttrs, { direction, type: doorType }),
         type: doorType,
+        connection: prevRoom ? prevRoom.roomNumber : 'outside',
         direction,
     };
 };

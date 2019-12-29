@@ -32,6 +32,15 @@ nav {
     display: flex;
 }
 
+article {
+    border: 1px solid var(--gray);
+    padding: 20px;
+}
+
+article * {
+    font-size: 12px;
+}
+
 /* Forms */
 
 form {
@@ -137,7 +146,6 @@ h2 {
     font-size: 20px;
     font-family: fantasy;
     border-bottom: 1px solid var(--gray);
-    margin-top: 60px;
 }
 
 h3 {
@@ -178,3 +186,10 @@ ul[data-legend] li span {
 [data-columns="3"] { columns: 3; }
 [data-columns="4"] { columns: 4; }
 [data-columns="5"] { columns: 5; }
+
+[data-grid] {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-column-gap: 20px;
+    grid-row-gap: 30px;
+}
