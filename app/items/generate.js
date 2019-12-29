@@ -1,17 +1,12 @@
 
 import { generateItem } from './item';
+import { getRarityDescription, getConditionDescription, getItemDescription } from './description';
 import { knobs } from '../knobs';
 import { list } from '../ui/list';
 import { random } from '../utility/random';
 import { roll } from '../utility/roll';
 import { subTitle, paragraph } from '../ui/typography';
-import condition from '../attributes/condition';
-import rarity from '../attributes/rarity';
-
-import quantity, {
-    getRange,
-    probability as quantityProbability,
-} from '../attributes/quantity';
+import quantity, { getRange, probability as quantityProbability } from '../attributes/quantity';
 
 const maxColumns = 3;
 
@@ -26,28 +21,6 @@ const generateItemObjects = (count, settings) => [ ...Array(count) ].reduce((obj
     obj[item] = (obj[item] + 1) || 1;
     return obj;
 }, {});
-
-// TODO move to items/description.js
-const getItemDescription = (item, count) => {
-    return count === 1 ? item : `[${count}x] ${item}`;
-};
-
-const getConditionDescription = (itemCondition) => {
-    let showCondition = itemCondition !== condition.average;
-    return showCondition && `Item Condition: ${itemCondition}`;
-};
-
-const rarityIndicated = new Set([
-    rarity.uncommon,
-    rarity.rare,
-    rarity.exotic,
-    rarity.legendary,
-]);
-
-const getRarityDescription = (itemRarity) => {
-    let showRarity = rarityIndicated.has(itemRarity);
-    return showRarity && `Item Rarity: ${itemRarity}`;
-};
 
 export const generateItems = (settings) => {
     let {
