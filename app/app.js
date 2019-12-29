@@ -24,7 +24,7 @@ import { generateDungeon } from './dungeons/generate';
 import { generateItems } from './items/generate';
 import { generateRooms } from './rooms/generate';
 import { getKnobConfig } from './knobs';
-import { getRoomDescription } from './rooms/description';
+import { getRoomDescription, getDoorwayList } from './rooms/description';
 import { nav, setActive, getActive, pages } from './ui/nav';
 import { renderKnobs, getFormData } from './ui/form';
 import { toDash } from './utility/tools';
@@ -46,7 +46,13 @@ const navigate = (target, el) => {
     el && toggleCollapsed(`fieldset-${toDash(config[0].label)}`);
 };
 
-const formatRoom = (room, i) => article(getRoomDescription(room, i + 1) + room.items.join(''));
+const formatRoom = (room, i) => {
+    let desc  = getRoomDescription(room, i + 1);
+    let doors = getDoorwayList(room.doors);
+    let items = room.items.join('');
+
+    return article(desc + doors + items);
+};
 
 const getItems = (settings) => generateItems(settings).join('');
 

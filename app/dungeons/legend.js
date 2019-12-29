@@ -13,9 +13,9 @@ export const drawLegend = () => {
 
     let legend = {
         'room'   : drawRoom(attrs, { roomNumber: 1 }),
-        'passage': drawDoor(attrs, { direction, type: doorType.opening }),
+        'passage': drawDoor(attrs, { direction, type: doorType.passage }),
         'archway': drawDoor(attrs, { direction, type: doorType.archway }),
-        'door'   : drawDoor(attrs, { direction, type: doorType.wood }),
+        'door'   : drawDoor(attrs, { direction, type: doorType.wooden }),
         'hole'   : drawDoor(attrs, { direction, type: doorType.hole }),
     };
 

@@ -21,7 +21,7 @@ import { knobs } from '../knobs';
 import { roll, rollArrayItem, rollPercentile } from '../utility/roll';
 import type from '../rooms/type';
 import { toWords } from '../utility/tools';
-import { probability as doorProbability } from '../rooms/door';
+import { probability as doorProbability, outside } from '../rooms/door';
 
 const debug = true;
 
@@ -211,7 +211,8 @@ const getDoor = (grid, room, prevRoom) => {
     return {
         rect: drawDoor(doorAttrs, { direction, type: doorType }),
         type: doorType,
-        connection: prevRoom ? prevRoom.roomNumber : 'outside',
+        connection: prevRoom ? prevRoom.roomNumber : outside,
+        size: Math.max(width, height),
         direction,
     };
 };

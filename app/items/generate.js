@@ -27,6 +27,7 @@ const generateItemObjects = (count, settings) => [ ...Array(count) ].reduce((obj
     return obj;
 }, {});
 
+// TODO move to items/description.js
 const getItemDescription = (item, count) => {
     return count === 1 ? item : `[${count}x] ${item}`;
 };

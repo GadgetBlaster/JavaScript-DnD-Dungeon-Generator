@@ -1,13 +1,16 @@
 
 import { knobs } from '../knobs';
+import { list } from '../ui/list';
+import { lockable, outside } from './door';
 import { random } from '../utility/random';
 import { title, subTitle, paragraph } from '../ui/typography';
-import { toWords } from '../utility/tools';
+import { toWords, capitalize } from '../utility/tools';
 import condition from '../attributes/condition';
 import quantity from '../attributes/quantity';
 import rarity from '../attributes/rarity';
 import size from '../attributes/size';
 import type, { appendRoomTypes } from '../rooms/type';
+
 
 const getSizeDesc = (settings) => {
     let {
@@ -103,8 +106,48 @@ const getItemConditionDescription = (settings) => {
     }
 };
 
+const getDoorwayDesc = (type, size) => {
+    let sizeDesc;
+
+    if (size === 2) {
+        sizeDesc = 'double wide';
+    } else if (size > 2) {
+        sizeDesc = 'massive';
+    }
+
+    let appendDoorway = lockable.has(type) && 'doorway';
+
+    return [ sizeDesc, type, appendDoorway ].filter(Boolean).join(' ');
+}
+
+const getDoorwayDescription = (doors) => {
+    return doors.map(({ type, connection, direction, size }) => {
+        let desc = getDoorwayDesc(type, size);
+        let out  = connection === outside ? ' out of the dungeon' : '';
+
+        if (doors.length === 1) {
+            return `A single ${desc} leads ${direction}${out}`;
+        }
+    }).join('. ');
+};
+
+export const getDoorwayList = (doors) => {
+    if (!doors) {
+        return;
+    }
+
+    let doorList = doors.map(({ type, connection, direction, size }) => {
+        let desc       = getDoorwayDesc(type, size);
+        let connectsTo = connection === outside ? 'leading out of the dungeon' : `to Room ${connection}`;
+
+        return `${capitalize(direction)} ${connectsTo} (${desc})`;
+    });
+
+    return subTitle(`Doorways (${doors.length})`) + list(doorList);
+};
+
 export const getRoomDescription = (room, roomNumber) => {
-    let { settings } = room;
+    let { settings, doors } = room;
 
     let {
         [knobs.roomCount]: roomCount,
@@ -119,6 +162,7 @@ export const getRoomDescription = (room, roomNumber) => {
         getSizeDesc(settings),
         getContentsDesc(settings),
         getItemConditionDescription(settings),
+        ...(doors ? [ getDoorwayDescription(doors) ] : []),
     ].filter(Boolean).join('. ')+'.')
 
     return content;
