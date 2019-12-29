@@ -23,7 +23,7 @@ const type = {
     room: 'room',
     shrine: 'shrine',
     smithy: 'smithy',
-    store: 'store',
+    storage: 'storage',
     study: 'study',
     throne: 'throne',
     torture: 'torture',
@@ -33,6 +33,7 @@ const type = {
 export const appendRoomTypes = new Set([
     type.dining,
     type.shrine,
+    type.storage,
     type.throne,
     type.torture,
 ]);

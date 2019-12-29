@@ -75,7 +75,7 @@ const drawPillar = (attrs) => {
     });
 };
 
-export const getRectAttrs = ({ x, y, width, height }) => {
+const getRectAttrs = ({ x, y, width, height }) => {
     let xPx = x * pxCell;
     let yPx = y * pxCell;
 
@@ -121,19 +121,7 @@ export const drawGrid = ({ gridWidth, gridHeight }) => {
     return lines;
 };
 
-export const drawRoom = (rectAttrs) => {
-    let attrs = {
-        ...rectAttrs,
-        fill: colorRoomFill,
-        stroke: colorRoomStroke,
-        'shape-rendering': 'crispEdges',
-        'stroke-width': pxBorder,
-    };
-
-    return drawRect(attrs);
-};
-
-export const drawRoomText = (rectAttrs, { roomNumber, roomLabel }) => {
+const drawRoomText = (rectAttrs, { roomNumber, roomLabel }) => {
     let middleX = (rectAttrs.x + rectAttrs.width  / 2);
     let middleY = (rectAttrs.y + rectAttrs.height / 2);
 
@@ -149,6 +137,23 @@ export const drawRoomText = (rectAttrs, { roomNumber, roomLabel }) => {
     }
 
     return text;
+};
+
+export const drawRoom = (roomAttrs, roomTextConfig) => {
+    let rectAttrs = getRectAttrs(roomAttrs);
+
+    let attrs = {
+        ...rectAttrs,
+        fill: colorRoomFill,
+        stroke: colorRoomStroke,
+        'shape-rendering': 'crispEdges',
+        'stroke-width': pxBorder,
+    };
+
+    let rect = drawRect(attrs);
+    let text = drawRoomText(rectAttrs, roomTextConfig);
+
+    return rect + text;
 };
 
 export const drawDoor = (doorAttrs, { direction, type }) => {

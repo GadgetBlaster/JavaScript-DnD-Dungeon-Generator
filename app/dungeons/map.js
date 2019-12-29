@@ -13,9 +13,7 @@ import {
     drawGrid,
     drawDoor,
     drawMap,
-    drawRoomText,
     drawRoom,
-    getRectAttrs,
 } from './draw';
 
 import { dimensionRanges, customDimensions } from '../rooms/dimensions';
@@ -92,15 +90,14 @@ const getRoom = (grid, room) => {
         }
     }
 
-    let rectAttrs     = getRectAttrs({ x, y, width, height });
+    let roomAttrs     = { x, y, width, height };
     let showRoomLabel = roomType !== type.room && width >= labelMinWidth && height >= labelMinHeight;
     let roomLabel     = showRoomLabel && toWords(roomType);
 
-    let text = drawRoomText(rectAttrs, { roomNumber, roomLabel });
-    let rect = drawRoom(rectAttrs);
+    let rect = drawRoom(roomAttrs, { roomNumber, roomLabel });
 
     return {
-        rect: rect + text,
+        rect,
         walls,
     };
 };
@@ -307,7 +304,7 @@ export const generateMap = (mapSettings) => {
     debug && logGrid(grid);
 
     return {
-        map: drawMap({ gridWidth, gridHeight }, content),
+        map: drawMap(mapSettings, content),
         rooms: rooms.map(({ room }) => room),
     };
 };

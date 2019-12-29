@@ -18,6 +18,7 @@ import {
     toggleVisibility,
 } from './ui/action';
 
+import { drawLegend } from './dungeons/legend';
 import { generateDungeon } from './dungeons/generate';
 import { generateItems } from './items/generate';
 import { generateRooms } from './rooms/generate';
@@ -55,9 +56,11 @@ const getRooms = (settings) => {
 
 const getDungeon = (settings) => {
     let { map, rooms } = generateDungeon(settings);
+    let legend = drawLegend();
+
     let roomText = rooms.map((room, i) => formatRoom(room, i)).join('');
 
-    return map + roomText;
+    return map + legend + roomText;
 };
 
 const generators = {

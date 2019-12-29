@@ -91,6 +91,6 @@ export const generateItems = (settings) => {
     return [
         subTitle(`Items (${count})`),
         description,
-        list(itemList, { columns }),
+        list(itemList, { 'data-columns': columns }),
     ].filter(Boolean);
 };
