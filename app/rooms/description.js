@@ -1,27 +1,27 @@
 
 import { knobs } from '../knobs';
 import { list } from '../ui/list';
-import { lockable, outside } from './door';
 import { random } from '../utility/random';
-import { title, subTitle, paragraph } from '../ui/typography';
+import { title, subTitle, paragraph, strong } from '../ui/typography';
 import { toWords, capitalize } from '../utility/tools';
 import condition from '../attributes/condition';
+import doorType, { lockable, outside } from './door';
 import quantity from '../attributes/quantity';
 import rarity from '../attributes/rarity';
+import roomType, { appendRoomTypes } from '../rooms/type';
 import size from '../attributes/size';
-import type, { appendRoomTypes } from '../rooms/type';
 
-const getRoomTypeLabel = (roomType) => toWords(roomType) + (appendRoomTypes.has(roomType) ? ' room' : '');
+const getRoomTypeLabel = (type) => toWords(type) + (appendRoomTypes.has(type) ? ' room' : '');
 
 const getSizeDesc = (settings) => {
     let {
         [knobs.itemQuantity]: itemQuantity,
         [knobs.roomCondition]: roomCondition,
         [knobs.roomSize]: roomSize,
-        [knobs.roomType]: roomType,
+        [knobs.roomType]: type,
     } = settings;
 
-    let typeString = getRoomTypeLabel(roomType);
+    let typeString = getRoomTypeLabel(type);
 
     if (roomSize === size.medium) {
         roomSize = 'medium sized';
@@ -108,27 +108,38 @@ const getItemConditionDescription = (settings) => {
 
 const getDoorwayDesc = (type, size) => {
     let sizeDesc;
+    let appendDoorway = lockable.has(type) && 'doorway';
 
-    if (size === 2) {
+    if (size === 2 && appendDoorway) {
         sizeDesc = 'double wide';
     } else if (size > 2) {
         sizeDesc = 'massive';
     }
 
-    let appendDoorway = lockable.has(type) && 'doorway';
-
     return [ sizeDesc, type, appendDoorway ].filter(Boolean).join(' ');
-}
+};
 
-const getDoorwayDescription = (doors) => {
-    return doors.map(({ type, connection, direction, size }) => {
-        let desc = getDoorwayDesc(type, size);
-        let out  = connection === outside ? ' out of the dungeon' : '';
-
-        if (doors.length === 1) {
-            return `A single ${desc} leads ${direction}${out}`;
+const getDoorwayDescription = (roomDoors) => {
+    let descParts = roomDoors.map(({ type, connection, size }) => {
+        if (type === doorType.concealed || type === doorType.secret) {
+            return;
         }
-    }).join('. ');
+
+        let { direction, to } = connection;
+
+        let desc = getDoorwayDesc(type, size);
+        let out  = to === outside ? ' out of the dungeon' : '';
+
+        let article = type === doorType.archway ? 'an' : 'a';
+        let single  = roomDoors.length === 1 ? 'single ' : '';
+
+        return `${article} ${single}${desc} leads ${direction}${out}`;
+    }).filter(Boolean);
+
+    let comma = descParts.length > 2 ? ',' : '';
+    let last  = descParts.pop();
+
+    return `${capitalize(descParts.join(', '))}${comma} and ${last}`;
 };
 
 export const getDoorwayList = (roomDoors) => {
@@ -138,30 +149,32 @@ export const getDoorwayList = (roomDoors) => {
 
         let desc    = getDoorwayDesc(type, size);
         let connect = to === outside ? 'leading out of the dungeon' : `to Room ${to}`;
+        let text    = `${capitalize(direction)} ${connect} (${desc})`;
+        let secret  = type === doorType.concealed || type === doorType.secret;
 
-        return `${capitalize(direction)} ${connect} (${desc})`;
+        return secret ? strong(text) : text;
     });
 
     return subTitle(`Doorways (${roomDoors.length})`) + list(doorList);
 };
 
-export const getRoomDescription = (room, doors) => {
+export const getRoomDescription = (room, roomDoors) => {
     let { settings, roomNumber } = room;
 
     let {
         [knobs.roomCount]: roomCount,
-        [knobs.roomType] : roomType,
+        [knobs.roomType] : type,
     } = settings;
 
     let numberLabel = roomCount > 1 ? ` ${roomNumber}` : '';
-    let typeLabel   = roomType !== type.room ? `: ${getRoomTypeLabel(roomType)}` : '';
+    let typeLabel   = type !== roomType.room ? `: ${getRoomTypeLabel(type)}` : '';
     let roomTitle   = title(`Room${numberLabel}${typeLabel}`);
 
     let content = roomTitle + subTitle('Description') + paragraph([
         getSizeDesc(settings),
         getContentsDesc(settings),
         getItemConditionDescription(settings),
-        ...(doors ? [ getDoorwayDescription(doors) ] : []),
+        ...(roomDoors ? [ getDoorwayDescription(roomDoors) ] : []),
     ].filter(Boolean).join('. ')+'.')
 
     return content;

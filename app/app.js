@@ -69,8 +69,8 @@ const createDoorLookup = (doors) => {
 };
 
 const formatRoom = (room, doorLookup) => {
-    let desc      = getRoomDescription(room);
     let roomDoors = doorLookup && doorLookup[room.roomNumber];
+    let desc      = getRoomDescription(room, roomDoors);
     let doorList  = roomDoors ? getDoorwayList(roomDoors) : '';
     let items     = room.items.join('');
 
