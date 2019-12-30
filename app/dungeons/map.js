@@ -246,12 +246,21 @@ const checkAdjacentDoor = (grid, [ x, y ]) => {
     });
 };
 
-const getExtraDoors = (grid, rooms) => {
+const getExtraDoors = (grid, rooms, existingDoors) => {
     let doors = [];
 
     rooms.forEach((room) => {
         let { roomNumber } = room.config;
-        let connectedTo = {};
+
+        let connectedTo = new Set();
+
+        [ ...existingDoors, ...doors ].forEach((door) => {
+            let connection = door.connections[roomNumber];
+
+            if (connection) {
+                connectedTo.add(connection.to);
+            }
+        });
 
         room.config.walls.forEach(([ x, y ]) => {
             let cell = grid[x][y];
@@ -272,21 +281,28 @@ const getExtraDoors = (grid, rooms) => {
                 let yCell = grid[x] && grid[x][yAdjust];
 
                 let doorAttrs = { x, y, width: wallSize, height: wallSize };
+                let xConnect = xCell && Number.isInteger(xCell) && xCell;
 
-                if (xCell && Number.isInteger(xCell) && xCell !== roomNumber) {
+                if (xConnect && xConnect !== roomNumber && !connectedTo.has(xConnect)) {
                     grid[x][y] = cellDoor;
+
+                    connectedTo.add(xConnect);
 
                     let direction = adjust === -1 ? directions.west : directions.east;
 
-                    doors.push(makeDoor(doorAttrs, { from: roomNumber, to: xCell, direction }));
+                    doors.push(makeDoor(doorAttrs, { from: roomNumber, to: xConnect, direction }));
                 }
 
-                if (yCell && Number.isInteger(yCell) && yCell !== roomNumber) {
+                let yConnect = yCell && Number.isInteger(yCell) && yCell;
+
+                if (yConnect && yConnect !== roomNumber && !connectedTo.has(yConnect)) {
                     grid[x][y] = cellDoor;
+
+                    connectedTo.add(yConnect);
 
                     let direction = adjust === -1 ? directions.north : directions.south;
 
-                    doors.push(makeDoor(doorAttrs, { from: roomNumber, to: yCell, direction }));
+                    doors.push(makeDoor(doorAttrs, { from: roomNumber, to: yConnect, direction }));
                 }
             });
         });
@@ -354,7 +370,7 @@ const getRooms = (mapSettings, grid) => {
         prevRoom = room;
     });
 
-    let extraDoors = getExtraDoors(grid, rooms);
+    let extraDoors = getExtraDoors(grid, rooms, doors);
 
     return {
         rooms,
