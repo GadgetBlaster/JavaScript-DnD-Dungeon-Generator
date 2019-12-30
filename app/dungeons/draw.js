@@ -14,6 +14,7 @@ const colorRoomFill    = 'rgba(255, 255, 255, 0.7)';
 const colorRoomStroke  = '#a9a9a9';
 const colorText        = '#666666';
 const colorPillarFill  = '#f9f9f9';
+const colorTransparent = 'transparent';
 
 const radiusPillar = 4;
 const radiusHole   = 6;
@@ -21,10 +22,13 @@ const radiusHole   = 6;
 const doorWidth    = 8;
 const doorInset    = 12;
 
+const doorSecretLabel    = 'S';
+const doorConcealedLabel = 'C';
+
 const labelRoomNumberFontSize = 14;
 const labelRoomTypeFontSize   = 10;
 
-const drawText = (text, [ x, y ], { fontSize }) => {
+const drawText = (text, [ x, y ], { fontSize = labelRoomNumberFontSize } = {}) => {
     let attrs = createAttrs({
         x, y: y + 2,
         fill: colorText,
@@ -37,13 +41,14 @@ const drawText = (text, [ x, y ], { fontSize }) => {
     return `<text ${attrs}>${text}</text>`;
 };
 
-const drawLine = ({ x1, y1, x2, y2, color, width }) => {
+const drawLine = ({ x1, y1, x2, y2, color, width, dashed }) => {
     let attrs = createAttrs({
         x1, y1, x2, y2,
         stroke: color,
         'shape-rendering': 'crispEdges',
         'stroke-linecap': 'square',
         'stroke-width': width,
+        ...(dashed && { 'stroke-dasharray': 5 }),
     });
 
     return `<line ${attrs} />`;
@@ -166,11 +171,13 @@ export const drawRoom = (roomAttrs, roomTextConfig) => {
 
 export const drawDoor = (doorAttrs, { direction, type }) => {
     let rectAttrs = getRectAttrs(doorAttrs);
+    let isSecret  = type === doorType.secret || type === doorType.concealed;
+    let color     = isSecret ? colorTransparent : colorRoomFill;
 
     let attrs = createAttrs({
         ...rectAttrs,
-        fill: colorRoomFill,
-        stroke: colorRoomFill,
+        fill: color,
+        stroke: color,
         'stroke-width': pxBorder,
     });
 
@@ -181,6 +188,7 @@ export const drawDoor = (doorAttrs, { direction, type }) => {
     let lineAttrs = {
         color: colorRoomStroke,
         width: pxBorder,
+        dashed: isSecret,
     };
 
     let lineCords = [];
@@ -256,6 +264,10 @@ export const drawDoor = (doorAttrs, { direction, type }) => {
         let cy = isVertical ? y1 : yHalf;
 
         details.push(drawCircle({ cx, cy, r: radiusHole, fill: colorPillarFill }));
+    } else if (type === doorType.secret) {
+        details.push(drawText(doorSecretLabel, [ xHalf, yHalf ]));
+    } else if (type === doorType.concealed) {
+        details.push(drawText(doorConcealedLabel, [ xHalf, yHalf ]));
     }
 
     let lines = lineCords.map((cords) => drawLine({ ...lineAttrs, ...cords })).join('');

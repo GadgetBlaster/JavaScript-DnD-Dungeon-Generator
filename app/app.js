@@ -4,12 +4,13 @@
 // Flush out items
 // Furniture
 // Fill containers
-// Doors, locked doors, keys
-// Secret doors, secret rooms
+// Secret rooms
 // Traps
 // Room vegetation
 // Checkboxes for randomized sets
 // Dungeon map item
+// Locked doors
+// Door keys stashed
 
 import {
     actions,

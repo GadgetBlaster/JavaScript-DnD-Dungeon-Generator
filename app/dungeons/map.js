@@ -19,7 +19,7 @@ import {
 
 import { dimensionRanges, customDimensions } from '../rooms/dimensions';
 import { knobs } from '../knobs';
-import { probability as doorProbability, outside } from '../rooms/door';
+import { probability as doorProbability, outside, secretProbability } from '../rooms/door';
 import { roll, rollArrayItem, rollPercentile } from '../utility/roll';
 import { toWords } from '../utility/tools';
 import roomType from '../rooms/type';
@@ -180,8 +180,10 @@ const getDoorDirection = ([ x, y ], room) => {
     }
 };
 
-const makeDoor = (doorAttrs, { from, to, direction }) => {
-    let type = doorProbability.roll();
+const makeDoor = (doorAttrs, { from, to, direction, type }) => {
+    if (!type) {
+        type = doorProbability.roll();
+    }
 
     return {
         rect: drawDoor(doorAttrs, { direction, type }),
@@ -292,8 +294,9 @@ const getExtraDoors = (grid, rooms, existingDoors) => {
                     connectedTo.add(xConnect);
 
                     let direction = adjust === -1 ? directions.west : directions.east;
+                    let type      = secretProbability.roll();
 
-                    doors.push(makeDoor(doorAttrs, { from: roomNumber, to: xConnect, direction }));
+                    doors.push(makeDoor(doorAttrs, { from: roomNumber, to: xConnect, direction, type }));
                 }
 
                 let yConnect    = yCell && Number.isInteger(yCell) && yCell;
@@ -305,8 +308,9 @@ const getExtraDoors = (grid, rooms, existingDoors) => {
                     connectedTo.add(yConnect);
 
                     let direction = adjust === -1 ? directions.north : directions.south;
+                    let type      = secretProbability.roll();
 
-                    doors.push(makeDoor(doorAttrs, { from: roomNumber, to: yConnect, direction }));
+                    doors.push(makeDoor(doorAttrs, { from: roomNumber, to: yConnect, direction, type }));
                 }
             });
         });
