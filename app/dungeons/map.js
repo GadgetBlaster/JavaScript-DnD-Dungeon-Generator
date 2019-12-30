@@ -394,13 +394,14 @@ const getRooms = (mapSettings, grid) => {
     let { rooms, doors, skipped, roomNumber, gridRooms } = drawRooms(mapSettings, mapSettings.rooms, grid);
 
     let lastRoomNumber = roomNumber;
-
+    let lastSkipped    = skipped;
     // TODO encourage secret doors on these
     gridRooms.forEach((gridRoom) => {
-        let fork = drawRooms(mapSettings, skipped, grid, lastRoomNumber, gridRoom);
+        let fork = drawRooms(mapSettings, lastSkipped, grid, lastRoomNumber, gridRoom);
 
         if (fork.rooms.length && fork.doors.length) {
             lastRoomNumber = fork.roomNumber;
+            lastSkipped    = fork.skipped;
 
             rooms.push(...fork.rooms);
             doors.push(...fork.doors);
