@@ -16,10 +16,9 @@ const descEqualDistribution = 'Random probability: Equally distributed';
 
 const descComplexity = 'Controls dungeon size and room count.';
 
-const descConnections = `Probably that rooms will be connected to adjacent.
-    rooms. Setting to zero will make dungeons linear, with each room connecting
-    to only the next and previous rooms. Setting to 100 places a doorway
-    between every adjacent room.`;
+const descConnections = `Probably that rooms will be connected to adjacent
+    rooms. Setting to zero will make dungeons more linear, setting to 100
+    places a doorway between every adjacent room.`;
 
 const getValues = (values) => {
     return [

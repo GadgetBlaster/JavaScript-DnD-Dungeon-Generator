@@ -195,7 +195,7 @@ const makeDoor = (doorAttrs, { from, to, direction, type }) => {
     };
 };
 
-const getDoor = (grid, room, prevRoom) => {
+const getDoor = (grid, room, prevRoom, { allowSecret }) => {
     let cells     = getDoorCells(grid, room, prevRoom);
     let useEdge   = prevRoom && prevRoom.roomType === roomType.hallway && room.roomType === roomType.hallway;
     let max       = Math.min(maxDoorWidth, Math.ceil(cells.length / 2));
@@ -221,8 +221,9 @@ const getDoor = (grid, room, prevRoom) => {
     let doorAttrs  = { x, y, width, height };
     let from       = room.roomNumber;
     let to         = prevRoom ? prevRoom.roomNumber : outside;
+    let type       = allowSecret && secretProbability.roll();
 
-    return makeDoor(doorAttrs, { from, to, direction });
+    return makeDoor(doorAttrs, { from, to, direction, type });
 };
 
 const checkAdjacentDoor = (grid, [ x, y ]) => {
@@ -323,6 +324,7 @@ const drawRooms = (mapSettings, mapRooms, grid, roomNumber = 1, prevRoom) => {
     let doors     = [];
     let skipped   = [];
     let gridRooms = [];
+    let isFork    = roomNumber === 1 ? false : true;
 
     mapRooms.forEach((roomConfig) => {
         let { [knobs.roomType]: type } = roomConfig.settings;
@@ -363,7 +365,7 @@ const drawRooms = (mapSettings, mapRooms, grid, roomNumber = 1, prevRoom) => {
 
         gridRooms.push(room);
 
-        doors.push(getDoor(grid, room, prevRoom));
+        doors.push(getDoor(grid, room, prevRoom, { allowSecret: isFork }));
 
         rooms.push({
             rect,
@@ -395,7 +397,7 @@ const getRooms = (mapSettings, grid) => {
 
     let lastRoomNumber = roomNumber;
     let lastSkipped    = skipped;
-    // TODO encourage secret doors on these
+
     gridRooms.forEach((gridRoom) => {
         let fork = drawRooms(mapSettings, lastSkipped, grid, lastRoomNumber, gridRoom);
 

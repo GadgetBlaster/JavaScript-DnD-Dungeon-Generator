@@ -32,8 +32,8 @@ export const probability = new Probability([
 ]);
 
 export const secretProbability = new Probability([
-    [ 10,  door.concealed ],
-    [ 20,  door.secret ],
+    [ 13,  door.concealed ],
+    [ 30,  door.secret ],
 ]);
 
 export const list = Object.keys(door);
