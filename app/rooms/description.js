@@ -11,6 +11,7 @@ import rarity from '../attributes/rarity';
 import size from '../attributes/size';
 import type, { appendRoomTypes } from '../rooms/type';
 
+const getRoomTypeLabel = (roomType) => toWords(roomType) + (appendRoomTypes.has(roomType) ? ' room' : '');
 
 const getSizeDesc = (settings) => {
     let {
@@ -20,8 +21,7 @@ const getSizeDesc = (settings) => {
         [knobs.roomType]: roomType,
     } = settings;
 
-    let appendRoom = appendRoomTypes.has(roomType);
-    let typeString = toWords(roomType) + (appendRoom ? ' room' : '');
+    let typeString = getRoomTypeLabel(roomType);
 
     if (roomSize === size.medium) {
         roomSize = 'medium sized';
@@ -154,7 +154,7 @@ export const getRoomDescription = (room, doors) => {
     } = settings;
 
     let numberLabel = roomCount > 1 ? roomNumber : '';
-    let typeLabel   = roomType !== type.room ? `: ${toWords(roomType)}` : '';
+    let typeLabel   = roomType !== type.room ? `: ${getRoomTypeLabel(roomType)}` : '';
     let roomTitle   = title(`Room ${numberLabel}${typeLabel}`);
 
     let content = roomTitle + subTitle('Description') + paragraph([

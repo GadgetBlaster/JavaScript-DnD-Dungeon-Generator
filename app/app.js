@@ -93,7 +93,7 @@ const getDungeon = (settings) => {
     let doorLookup = createDoorLookup(doors);
     let articles   = rooms.map((room) => formatRoom(room, doors, doorLookup)).join('');
 
-    return map + legend + div(articles, { 'data-grid': true });
+    return map + legend + div(articles, { 'data-grid': 2 });
 };
 
 const generators = {

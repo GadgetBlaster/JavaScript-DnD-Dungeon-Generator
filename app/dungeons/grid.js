@@ -7,6 +7,8 @@ export const cellBlank = '.';
 export const cellWall  = 'w';
 export const cellDoor  = 'd';
 
+export const cellFeet = 5;
+
 export const sides = {
     top   : 'top',
     right : 'right',
