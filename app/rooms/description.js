@@ -153,9 +153,9 @@ export const getRoomDescription = (room, doors) => {
         [knobs.roomType] : roomType,
     } = settings;
 
-    let numberLabel = roomCount > 1 ? roomNumber : '';
+    let numberLabel = roomCount > 1 ? ` ${roomNumber}` : '';
     let typeLabel   = roomType !== type.room ? `: ${getRoomTypeLabel(roomType)}` : '';
-    let roomTitle   = title(`Room ${numberLabel}${typeLabel}`);
+    let roomTitle   = title(`Room${numberLabel}${typeLabel}`);
 
     let content = roomTitle + subTitle('Description') + paragraph([
         getSizeDesc(settings),

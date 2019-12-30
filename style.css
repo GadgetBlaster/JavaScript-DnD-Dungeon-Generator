@@ -201,3 +201,7 @@ ul[data-grid] li small {
 [data-grid="2"] {
     grid-template-columns: repeat(2, 1fr);
 }
+
+[data-grid-span="2"] {
+    grid-column: span 2;
+}

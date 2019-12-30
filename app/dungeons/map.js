@@ -1,6 +1,7 @@
 
 import {
     cellBlank,
+    cellCornerWall,
     cellDoor,
     cellWall,
     getStartingPoint,
@@ -87,14 +88,26 @@ const getRoom = (grid, room) => {
                 continue;
             }
 
-            let isWall = w === -wallSize || w === width ||
-                         h === -wallSize || h === height;
+            let isCornerWall = (w === -wallSize && h === -wallSize) ||
+                               (w === -wallSize && h === height) ||
+                               (w === width && h === -wallSize) ||
+                               (w === width && h === height);
+
+            let isWall = !isCornerWall && (
+                         w === -wallSize || w === width ||
+                         h === -wallSize || h === height);
 
             if (isWall) {
                 walls.push([ xCord, yCord ]);
             }
 
-            let cell = isWall ? cellWall : roomNumber;
+            let cell = roomNumber;
+
+            if (isWall) {
+                cell = cellWall;
+            } else if (isCornerWall) {
+                cell = cellCornerWall;
+            }
 
             grid[xCord][yCord] = cell;
         }
@@ -122,8 +135,8 @@ const getDoorCells = (grid, room, prevRoom) => {
         let gridHeight = grid[0].length - 1;
 
         let startTop    = room.y === wallSize && sides.top;
-        let startRight  = room.x === gridWidth - room.width && sides.right;
-        let startBottom = room.y === gridHeight - room.height && sides.bottom;
+        let startRight  = room.x === (gridWidth - room.width) && sides.right;
+        let startBottom = room.y === (gridHeight - room.height) && sides.bottom;
         let startLeft   = room.x === wallSize && sides.left;
 
         let side = rollArrayItem([ startTop, startRight, startBottom, startLeft ].filter(Boolean));
@@ -151,30 +164,14 @@ const getDoorCells = (grid, room, prevRoom) => {
     let prevRoomWalls = prevWalls.map((cords) => cords.join())
     let intersection  = roomWalls.filter((value) => prevRoomWalls.includes(value));
 
-    intersection.shift();
-    intersection.pop();
+    // Removed when wall corner detection was added to getRoom
+    // intersection.shift();
+    // intersection.pop();
 
     let cells = intersection.map((xy) => xy.split(','));
 
     return cells;
 };
-
-// const getDoorConnection = (grid, [ x, y ], room, direction) => {
-//     switch (direction) {
-//         case directions.north:
-//             return grid[x][y + room.height + 1];
-//         case directions.east:
-//             x = room.x - 1;
-//             return grid[x] && grid[x][y];
-//         case directions.south:
-//             return grid[x][y - 1];
-//         case directions.west:
-//             x = room.x + room.width + 1;
-//             return grid[x] && grid[x][y];
-//         default:
-//             throw 'Invalid direction';
-//     }
-// };
 
 const getDoorDirection = ([ x, y ], room) => {
     if (Number(y) === (room.y - 1)) {
@@ -228,59 +225,59 @@ const getDoor = (grid, room, prevRoom) => {
     };
 };
 
+const checkAdjacentDoor = (grid, [ x, y ]) => {
+    return [ -1, 1 ].some((adjust) => {
+        let xAdjust = x + adjust;
+        let yAdjust = y + adjust;
+
+        let xCollision = grid[xAdjust] && grid[xAdjust][y];
+        let yCollision = grid[x] && grid[x][yAdjust];
+
+        if (xCollision === cellDoor || yCollision === cellDoor) {
+            return true;
+        }
+
+        return false;
+    });
+};
+
 const getExtraDoors = (grid, rooms) => {
     let doors = [];
+    let collisions = [];
 
     rooms.forEach((room) => {
-        // console.log(room);
+        let { roomNumber } = room.config;
+
         room.config.walls.forEach(([ x, y ]) => {
-            let adjacentToDoor = false;
-            let collisions = [];
             let cell = grid[x][y];
 
             if (cell !== cellWall) {
                 return;
             }
-            // console.log(cell);
-            collisions.push([ x, y ]);
 
-            // [ -1, 1 ].forEach((adjust) => {
-            //     let xAdjust = x + adjust;
-            //     let yAdjust = y + adjust;
-
-
-
-
-            //     let xCollision = grid[xAdjust] && grid[xAdjust][y];
-            //     let yCollision = grid[x] && grid[x][yAdjust];
-
-            //     if (xCollision === cellDoor || yCollision === cellDoor) {
-            //         adjacentToDoor = true;
-            //         return;
-            //     }
-
-            //     if (xCollision && Number.isInteger(xCollision) && xCollision !== room.roomNumber) {
-            //         console.log(room.roomNumber, 'x', x, y);
-            //         console.log('connects to', xCollision);
-            //         collisions.push([ x, y ]);
-            //     }
-
-            //     if (yCollision && Number.isInteger(yCollision) && yCollision !== room.roomNumber) {
-            //         console.log(room.roomNumber, 'y', x, y);
-            //         console.log('connects to', yCollision);
-            //         collisions.push([ x, y ]);
-            //     }
-            // });
-
-            if (!adjacentToDoor) {
-                doors = doors.concat(collisions);
+            if (checkAdjacentDoor(grid, [ x, y ])) {
+                return;
             }
+
+            [ -1, 1 ].forEach((adjust) => {
+                let xAdjust = x + adjust;
+                let yAdjust = y + adjust;
+
+                let xCollision = grid[xAdjust] && grid[xAdjust][y];
+                let yCollision = grid[x] && grid[x][yAdjust];
+
+                if (xCollision && Number.isInteger(xCollision) && xCollision !== roomNumber) {
+                    collisions.push([ x, y ]);
+                }
+
+                if (yCollision && Number.isInteger(yCollision) && yCollision !== roomNumber) {
+                    collisions.push([ x, y ]);
+                }
+            });
         });
     });
 
-    // console.log(extraDoors);
-    doors.forEach(([ x, y ]) => {
-        let direction = directions.north;
+    collisions.forEach(([ x, y ]) => {
         let type      = doorType.hole;
         let size      = 1;
 
@@ -288,12 +285,12 @@ const getExtraDoors = (grid, rooms) => {
             // rect: drawDoor({ x, y, width: size, height: size }, { direction, doorType: type }),
             rect: drawPillarCell([ x, y ]),
             connection: 'test',
-            type: doorType,
-            direction,
+            type,
+            connections: {},
             size,
         });
     });
-
+    // console.log(doors);
     return doors;
 };
 
@@ -356,11 +353,11 @@ const getRooms = (mapSettings, grid) => {
         prevRoom = room;
     });
 
-    let extraDoors  = getExtraDoors(grid, rooms);
+    let extraDoors = getExtraDoors(grid, rooms);
 
     return {
         rooms,
-        doors,
+        doors: doors.concat(extraDoors),
     };
 };
 

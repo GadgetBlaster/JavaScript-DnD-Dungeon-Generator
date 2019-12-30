@@ -3,9 +3,10 @@ import { roll, rollArrayItem } from '../utility/roll';
 
 export const wallSize  = 1;
 
-export const cellBlank = '.';
-export const cellWall  = 'w';
-export const cellDoor  = 'd';
+export const cellBlank      = '.';
+export const cellWall       = 'w';
+export const cellDoor       = 'd';
+export const cellCornerWall = 'c';
 
 export const cellFeet = 5;
 

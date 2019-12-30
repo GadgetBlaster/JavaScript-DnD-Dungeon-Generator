@@ -67,10 +67,10 @@ const createDoorLookup = (doors) => {
     return lookup;
 };
 
-const formatRoom = (room, doors, doorLookup) => {
+const formatRoom = (room, doorLookup) => {
     let desc      = getRoomDescription(room);
-    let roomDoors = doorLookup[room.roomNumber];
-    let doorList  = getDoorwayList(roomDoors);
+    let roomDoors = doorLookup && doorLookup[room.roomNumber];
+    let doorList  = roomDoors ? getDoorwayList(roomDoors) : '';
     let items     = room.items.join('');
 
     return article(desc + doorList + items);
@@ -91,7 +91,7 @@ const getDungeon = (settings) => {
 
     let legend     = drawLegend();
     let doorLookup = createDoorLookup(doors);
-    let articles   = rooms.map((room) => formatRoom(room, doors, doorLookup)).join('');
+    let articles   = rooms.map((room) => formatRoom(room, doorLookup)).join('');
 
     return map + legend + div(articles, { 'data-grid': 2 });
 };
