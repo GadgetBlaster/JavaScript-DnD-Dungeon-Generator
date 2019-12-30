@@ -54,7 +54,7 @@ const config = [
                 label : 'Connections',
                 name  : knobs.dungeonConnections,
                 type  : typeRange,
-                value : 15,
+                value : 12,
                 values: [ 0, 100 ],
                 desc  : descConnections,
             },

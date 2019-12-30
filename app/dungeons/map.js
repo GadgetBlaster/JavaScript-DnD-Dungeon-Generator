@@ -72,7 +72,7 @@ const getRoomDimensions = (mapSettings, roomConfig) => {
 };
 
 const getRoom = (grid, room) => {
-    let { x, y, width, height, roomType, roomNumber } = room;
+    let { x, y, width, height, type, roomNumber } = room;
 
     let walls = [];
 
@@ -111,8 +111,8 @@ const getRoom = (grid, room) => {
     }
 
     let roomAttrs     = { x, y, width, height };
-    let showRoomLabel = roomType !== roomType.room && width >= labelMinWidth && height >= labelMinHeight;
-    let roomLabel     = showRoomLabel && toWords(roomType);
+    let showRoomLabel = type !== roomType.room && width >= labelMinWidth && height >= labelMinHeight;
+    let roomLabel     = showRoomLabel && toWords(type);
 
     let rect = drawRoom(roomAttrs, { roomNumber, roomLabel });
 
@@ -323,7 +323,7 @@ const getRooms = (mapSettings, grid) => {
     let prevRoom;
 
     mapSettings.rooms.forEach((roomConfig) => {
-        let { [knobs.roomType]: roomType } = roomConfig.settings;
+        let { [knobs.roomType]: type } = roomConfig.settings;
 
         let roomDimensions = getRoomDimensions(mapSettings, roomConfig);
 
@@ -337,7 +337,7 @@ const getRooms = (mapSettings, grid) => {
                 return;
             }
 
-            if (roomType === roomType.hallway) {
+            if (type === roomType.hallway) {
                 [ x, y ] = validCords[validCords.length - 1];
             } else {
                 [ x, y ] = rollArrayItem(validCords);
@@ -350,7 +350,7 @@ const getRooms = (mapSettings, grid) => {
             x, y,
             width: roomDimensions.roomWidth,
             height: roomDimensions.roomHeight,
-            roomType,
+            type,
             roomNumber,
         };
 
