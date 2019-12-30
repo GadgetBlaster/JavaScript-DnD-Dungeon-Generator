@@ -43,7 +43,7 @@ const navigate = (target, el) => {
     contentContainer.innerHTML = '';
     knobContainer.innerHTML    = renderKnobs(config, page);
 
-    el && toggleCollapsed(`fieldset-${toDash(config[0].label)}`);
+    toggleCollapsed(`fieldset-${toDash(config[0].label)}`);
 };
 
 const createDoorLookup = (doors) => {

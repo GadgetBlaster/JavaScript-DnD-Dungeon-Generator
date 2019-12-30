@@ -12,7 +12,11 @@ export const typeSelect = 'select';
 export const typeNumber = 'number';
 export const typeRange  = 'range';
 
-const equalDistributionLabel = 'Random probability: Equally distributed';
+const descEqualDistribution = 'Random probability: Equally distributed';
+const descConnections       = `Probably that rooms will be connected to adjacent.
+    rooms. Setting to zero will make dungeons linear, with each room connecting to
+    only the next and previous rooms. Setting to 100 places a doorway between every
+    adjacent room.`;
 
 const getValues = (values) => {
     return [
@@ -23,6 +27,7 @@ const getValues = (values) => {
 
 export const knobs = {
     dungeonComplexity: 'dungeon-complexity',
+    dungeonConnections: 'dungeon-connections',
     itemCondition: 'item-condition',
     itemQuantity: 'item-quantity',
     itemRarity: 'item-rarity',
@@ -42,8 +47,16 @@ const config = [
                 label : 'Complexity',
                 name  : knobs.dungeonComplexity,
                 type  : typeRange,
-                value : 2,
+                value : 4,
                 values: [ 2, 10 ],
+            },
+            connections: {
+                label : 'Connections',
+                name  : knobs.dungeonConnections,
+                type  : typeRange,
+                value : 15,
+                values: [ 0, 100 ],
+                desc  : descConnections,
             },
         },
     },
@@ -64,7 +77,7 @@ const config = [
                 name  : knobs.roomType,
                 type  : typeSelect,
                 values: getValues(roomTypes),
-                desc  : equalDistributionLabel,
+                desc  : descEqualDistribution,
             },
             condition: {
                 label:  'Condition',
@@ -78,7 +91,7 @@ const config = [
                 name:   knobs.roomSize,
                 type:   typeSelect,
                 values: getValues(sizes),
-                desc:   equalDistributionLabel,
+                desc:   descEqualDistribution,
             },
         },
     },
@@ -102,7 +115,7 @@ const config = [
                 name:   knobs.itemType,
                 type:   typeSelect,
                 values: getValues(itemTypes),
-                desc:   equalDistributionLabel,
+                desc:   descEqualDistribution,
             },
             condition: {
                 label:  'Condition',
