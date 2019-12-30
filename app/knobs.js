@@ -13,10 +13,13 @@ export const typeNumber = 'number';
 export const typeRange  = 'range';
 
 const descEqualDistribution = 'Random probability: Equally distributed';
-const descConnections       = `Probably that rooms will be connected to adjacent.
-    rooms. Setting to zero will make dungeons linear, with each room connecting to
-    only the next and previous rooms. Setting to 100 places a doorway between every
-    adjacent room.`;
+
+const descComplexity = 'Controls dungeon size and room count.';
+
+const descConnections = `Probably that rooms will be connected to adjacent.
+    rooms. Setting to zero will make dungeons linear, with each room connecting
+    to only the next and previous rooms. Setting to 100 places a doorway
+    between every adjacent room.`;
 
 const getValues = (values) => {
     return [
@@ -49,6 +52,7 @@ const config = [
                 type  : typeRange,
                 value : 4,
                 values: [ 2, 10 ],
+                desc  : descComplexity,
             },
             connections: {
                 label : 'Connections',

@@ -318,14 +318,13 @@ const getExtraDoors = (grid, rooms, existingDoors) => {
     return doors;
 };
 
-const getRooms = (mapSettings, grid) => {
-    let roomNumber = 1;
-    let rooms      = [];
-    let doors      = [];
+const drawRooms = (mapSettings, mapRooms, grid, roomNumber = 1, prevRoom) => {
+    let rooms     = [];
+    let doors     = [];
+    let skipped   = [];
+    let gridRooms = [];
 
-    let prevRoom;
-
-    mapSettings.rooms.forEach((roomConfig) => {
+    mapRooms.forEach((roomConfig) => {
         let { [knobs.roomType]: type } = roomConfig.settings;
 
         let roomDimensions = getRoomDimensions(mapSettings, roomConfig);
@@ -337,6 +336,7 @@ const getRooms = (mapSettings, grid) => {
             let validCords = getValidRoomCords(grid, prevRoom, roomDimensions);
 
             if (!validCords.length) {
+                skipped.push(roomConfig);
                 return;
             }
 
@@ -361,6 +361,8 @@ const getRooms = (mapSettings, grid) => {
 
         room.walls = walls;
 
+        gridRooms.push(room);
+
         doors.push(getDoor(grid, room, prevRoom));
 
         rooms.push({
@@ -382,6 +384,32 @@ const getRooms = (mapSettings, grid) => {
     return {
         rooms,
         doors: doors.concat(extraDoors),
+        gridRooms,
+        skipped,
+        roomNumber,
+    };
+};
+
+const getRooms = (mapSettings, grid) => {
+    let { rooms, doors, skipped, roomNumber, gridRooms } = drawRooms(mapSettings, mapSettings.rooms, grid);
+
+    let lastRoomNumber = roomNumber;
+
+    // TODO encourage secret doors on these
+    gridRooms.forEach((gridRoom) => {
+        let fork = drawRooms(mapSettings, skipped, grid, lastRoomNumber, gridRoom);
+
+        if (fork.rooms.length && fork.doors.length) {
+            lastRoomNumber = fork.roomNumber;
+
+            rooms.push(...fork.rooms);
+            doors.push(...fork.doors);
+        };
+    });
+
+    return {
+        rooms,
+        doors,
     };
 };
 

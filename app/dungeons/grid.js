@@ -18,8 +18,6 @@ export const sides = {
 };
 
 export const getStartingPoint = ({ gridWidth, gridHeight }, { roomWidth, roomHeight }) => {
-    let side = rollArrayItem(Object.values(sides));
-
     let minX = wallSize;
     let minY = wallSize;
     let maxX = gridWidth - roomWidth - wallSize;
@@ -32,6 +30,8 @@ export const getStartingPoint = ({ gridWidth, gridHeight }, { roomWidth, roomHei
 
     let x;
     let y;
+
+    let side = rollArrayItem(Object.values(sides));
 
     switch (side) {
         case sides.right:

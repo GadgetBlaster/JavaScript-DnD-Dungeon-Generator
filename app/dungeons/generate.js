@@ -4,7 +4,7 @@ import { generateRooms } from '../rooms/generate';
 import { knobs } from '../knobs';
 import { roll } from '../utility/roll';
 
-const complexityRoomCountMultiplier = 10;
+const complexityRoomCountMultiplier = 6;
 const complexityMultiplierMinXY     = 5;
 const complexityMultiplierMaxXY     = 6;
 
