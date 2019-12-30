@@ -230,10 +230,10 @@ const checkAdjacentDoor = (grid, [ x, y ]) => {
         let xAdjust = x + adjust;
         let yAdjust = y + adjust;
 
-        let xCollision = grid[xAdjust] && grid[xAdjust][y];
-        let yCollision = grid[x] && grid[x][yAdjust];
+        let xCell = grid[xAdjust] && grid[xAdjust][y];
+        let yCell = grid[x] && grid[x][yAdjust];
 
-        if (xCollision === cellDoor || yCollision === cellDoor) {
+        if (xCell === cellDoor || yCell === cellDoor) {
             return true;
         }
 
@@ -242,7 +242,6 @@ const checkAdjacentDoor = (grid, [ x, y ]) => {
 };
 
 const getExtraDoors = (grid, rooms) => {
-    let doors = [];
     let collisions = [];
 
     rooms.forEach((room) => {
@@ -263,23 +262,25 @@ const getExtraDoors = (grid, rooms) => {
                 let xAdjust = x + adjust;
                 let yAdjust = y + adjust;
 
-                let xCollision = grid[xAdjust] && grid[xAdjust][y];
-                let yCollision = grid[x] && grid[x][yAdjust];
+                let xCell = grid[xAdjust] && grid[xAdjust][y];
+                let yCell = grid[x] && grid[x][yAdjust];
 
-                if (xCollision && Number.isInteger(xCollision) && xCollision !== roomNumber) {
+                if (xCell && Number.isInteger(xCell) && xCell !== roomNumber) {
                     collisions.push([ x, y ]);
                 }
 
-                if (yCollision && Number.isInteger(yCollision) && yCollision !== roomNumber) {
+                if (yCell && Number.isInteger(yCell) && yCell !== roomNumber) {
                     collisions.push([ x, y ]);
                 }
             });
         });
     });
 
+    let doors = [];
+
     collisions.forEach(([ x, y ]) => {
-        let type      = doorType.hole;
-        let size      = 1;
+        let type = doorType.hole;
+        let size = 1;
 
         doors.push({
             // rect: drawDoor({ x, y, width: size, height: size }, { direction, doorType: type }),
@@ -290,7 +291,7 @@ const getExtraDoors = (grid, rooms) => {
             size,
         });
     });
-    // console.log(doors);
+
     return doors;
 };
 
