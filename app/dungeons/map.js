@@ -15,6 +15,8 @@ import {
     drawGrid,
     drawMap,
     drawRoom,
+    labelMinHeight,
+    labelMinWidth,
 } from './draw';
 
 import { dimensionRanges, customDimensions } from '../rooms/dimensions';
@@ -27,9 +29,6 @@ import roomType from '../rooms/type';
 const debug = false;
 
 const maxDoorWidth = 4;
-
-const labelMinWidth  = 3;
-const labelMinHeight = 2;
 
 export const directions = {
     north: 'north',

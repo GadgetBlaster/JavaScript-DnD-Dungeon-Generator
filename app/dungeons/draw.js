@@ -8,13 +8,14 @@ const pxBorder   = 2;
 const pxCell     = 24;
 const pxGridLine = 1;
 
-const colorGridFill    = '#f0f0f0';
-const colorGridStroke  = '#cfcfcf';
-const colorRoomFill    = 'rgba(255, 255, 255, 0.7)';
-const colorRoomStroke  = '#a9a9a9';
-const colorText        = '#666666';
-const colorPillarFill  = '#f9f9f9';
-const colorTransparent = 'transparent';
+const colorGridFill     = '#f0f0f0';
+const colorGridStroke   = '#cfcfcf';
+const colorRoomFill     = 'rgba(255, 255, 255, 0.7)';
+const colorRoomStroke   = '#a9a9a9';
+const colorText         = '#666666';
+const colorPillarFill   = '#f9f9f9';
+const colorPillarStroke = 'rgba(207, 207, 207, 0.7)';
+const colorTransparent  = 'transparent';
 
 const radiusPillar = 4;
 const radiusHole   = 6;
@@ -24,6 +25,11 @@ const doorInset    = 12;
 
 const doorSecretLabel    = 'S';
 const doorConcealedLabel = 'C';
+
+export const labelMinWidth  = 3;
+export const labelMinHeight = 2;
+
+const pillarThreshold = 6;
 
 const labelRoomNumberFontSize = 14;
 const labelRoomTypeFontSize   = 10;
@@ -73,10 +79,10 @@ const drawRect = (rectAttrs) => {
 
 const drawPillar = (attrs) => {
     return drawCircle({
-        ...attrs,
         r: radiusPillar,
         stroke: colorRoomStroke,
         fill: colorPillarFill,
+        ...attrs,
     });
 };
 
@@ -143,13 +149,30 @@ export const drawGrid = ({ gridWidth, gridHeight }) => {
     return lines;
 };
 
-// TODO apply to large rooms
-export const drawPillarCell = ([ x, y ]) => {
+const drawPillarCell = ([ x, y ]) => {
     let px = getRectAttrs({ x, y, width: wallSize, height: wallSize });
     let cx = px.x + (px.width / 2);
     let cy = px.y + (px.height / 2);
 
-    return drawPillar({ cx, cy });
+    return drawPillar({ cx, cy, stroke: colorPillarStroke });
+};
+
+const drawPillars = ({ x, y, width, height }) => {
+    let pillars = [];
+
+    if (width < pillarThreshold || height < pillarThreshold) {
+        return pillars;
+    }
+
+    let innerWidth  = width - 2;
+    let innerHeight = height - 2;
+
+    pillars.push(drawPillarCell([ x + 1, y + 1 ]));
+    pillars.push(drawPillarCell([ x + innerWidth, y + 1 ]));
+    pillars.push(drawPillarCell([ x + 1, y + innerHeight ]));
+    pillars.push(drawPillarCell([ x + innerWidth, y + innerHeight ]));
+
+    return pillars;
 };
 
 export const drawRoom = (roomAttrs, roomTextConfig) => {
@@ -163,10 +186,11 @@ export const drawRoom = (roomAttrs, roomTextConfig) => {
         'stroke-width': pxBorder,
     };
 
-    let rect = drawRect(attrs);
-    let text = drawRoomText(rectAttrs, roomTextConfig);
+    let rect    = drawRect(attrs);
+    let pillars = drawPillars(roomAttrs) || [];
+    let text    = drawRoomText(rectAttrs, roomTextConfig);
 
-    return rect + text;
+    return rect + pillars.join('') + text;
 };
 
 export const drawDoor = (doorAttrs, { direction, type }) => {
