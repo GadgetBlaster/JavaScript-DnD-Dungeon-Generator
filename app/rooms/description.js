@@ -136,8 +136,13 @@ const getDoorwayDescription = (roomDoors) => {
         return `${article} ${single}${desc} leads ${direction}${out}`;
     }).filter(Boolean);
 
-    let comma = descParts.length > 2 ? ',' : '';
-    let last  = descParts.pop();
+    let last = descParts.pop();
+    console.log(descParts.length, last);
+    if (last && descParts.length === 0) {
+        return capitalize(last);
+    }
+
+    let comma = descParts.length > 1 ? ',' : '';
 
     return `${capitalize(descParts.join(', '))}${comma} and ${last}`;
 };
