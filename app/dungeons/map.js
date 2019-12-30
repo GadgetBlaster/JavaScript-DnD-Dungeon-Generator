@@ -24,7 +24,7 @@ import { roll, rollArrayItem } from '../utility/roll';
 import { toWords } from '../utility/tools';
 import roomType from '../rooms/type';
 
-const debug = true;
+const debug = false;
 
 const maxDoorWidth = 4;
 
@@ -274,16 +274,18 @@ const getExtraDoors = (grid, rooms, existingDoors) => {
             }
 
             [ -1, 1 ].forEach((adjust) => {
+                let doorAttrs = { x, y, width: wallSize, height: wallSize };
+
                 let xAdjust = x + adjust;
                 let yAdjust = y + adjust;
 
                 let xCell = grid[xAdjust] && grid[xAdjust][y];
                 let yCell = grid[x] && grid[x][yAdjust];
 
-                let doorAttrs = { x, y, width: wallSize, height: wallSize };
-                let xConnect = xCell && Number.isInteger(xCell) && xCell;
+                let xConnect    = xCell && Number.isInteger(xCell) && xCell;
+                let canConnectX = xConnect && xConnect !== roomNumber && !connectedTo.has(xConnect);
 
-                if (xConnect && xConnect !== roomNumber && !connectedTo.has(xConnect)) {
+                if (canConnectX) {
                     grid[x][y] = cellDoor;
 
                     connectedTo.add(xConnect);
@@ -293,9 +295,10 @@ const getExtraDoors = (grid, rooms, existingDoors) => {
                     doors.push(makeDoor(doorAttrs, { from: roomNumber, to: xConnect, direction }));
                 }
 
-                let yConnect = yCell && Number.isInteger(yCell) && yCell;
+                let yConnect    = yCell && Number.isInteger(yCell) && yCell;
+                let canConnectY = yConnect && yConnect !== roomNumber && !connectedTo.has(yConnect);
 
-                if (yConnect && yConnect !== roomNumber && !connectedTo.has(yConnect)) {
+                if (canConnectY) {
                     grid[x][y] = cellDoor;
 
                     connectedTo.add(yConnect);
