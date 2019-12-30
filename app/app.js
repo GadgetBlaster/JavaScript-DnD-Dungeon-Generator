@@ -4,13 +4,14 @@
 // Flush out items
 // Furniture
 // Fill containers
+// Split rooms
 // Secret rooms
 // Traps
 // Room vegetation
-// Checkboxes for randomized sets
 // Dungeon map item
 // Locked doors
 // Door keys stashed
+// Checkboxes for randomized sets
 
 import {
     actions,
