@@ -14,16 +14,15 @@ import {
     drawDoor,
     drawGrid,
     drawMap,
-    drawPillarCell,
     drawRoom,
 } from './draw';
 
 import { dimensionRanges, customDimensions } from '../rooms/dimensions';
 import { knobs } from '../knobs';
+import { probability as doorProbability, outside } from '../rooms/door';
 import { roll, rollArrayItem } from '../utility/roll';
 import { toWords } from '../utility/tools';
-import doorType, { probability as doorProbability, outside } from '../rooms/door';
-import type from '../rooms/type';
+import roomType from '../rooms/type';
 
 const debug = true;
 
@@ -114,7 +113,7 @@ const getRoom = (grid, room) => {
     }
 
     let roomAttrs     = { x, y, width, height };
-    let showRoomLabel = roomType !== type.room && width >= labelMinWidth && height >= labelMinHeight;
+    let showRoomLabel = roomType !== roomType.room && width >= labelMinWidth && height >= labelMinHeight;
     let roomLabel     = showRoomLabel && toWords(roomType);
 
     let rect = drawRoom(roomAttrs, { roomNumber, roomLabel });
@@ -187,9 +186,23 @@ const getDoorDirection = ([ x, y ], room) => {
     }
 };
 
+const makeDoor = (doorAttrs, { from, to, direction }) => {
+    let type = doorProbability.roll();
+
+    return {
+        rect: drawDoor(doorAttrs, { direction, type }),
+        type,
+        connections: {
+            [from]: { direction, to },
+            [to]  : { direction: oppositeDirection[direction], to: from },
+        },
+        size: Math.max(doorAttrs.width, doorAttrs.height),
+    };
+};
+
 const getDoor = (grid, room, prevRoom) => {
     let cells     = getDoorCells(grid, room, prevRoom);
-    let useEdge   = prevRoom && prevRoom.roomType === type.hallway && room.roomType === type.hallway;
+    let useEdge   = prevRoom && prevRoom.roomType === roomType.hallway && room.roomType === roomType.hallway;
     let max       = Math.min(maxDoorWidth, Math.ceil(cells.length / 2));
     let size      = roll(1, max);
     let remainder = cells.length - size;
@@ -210,19 +223,11 @@ const getDoor = (grid, room, prevRoom) => {
         }
     });
 
-    let doorType   = doorProbability.roll();
     let doorAttrs  = { x, y, width, height };
-    let connection = prevRoom ? prevRoom.roomNumber : outside;
+    let from       = room.roomNumber;
+    let to         = prevRoom ? prevRoom.roomNumber : outside;
 
-    return {
-        rect: drawDoor(doorAttrs, { direction, type: doorType }),
-        type: doorType,
-        connections: {
-            [room.roomNumber]: { direction, to: connection },
-            [connection]     : { direction: oppositeDirection[direction], to: room.roomNumber },
-        },
-        size: Math.max(width, height),
-    };
+    return makeDoor(doorAttrs, { from, to, direction });
 };
 
 const checkAdjacentDoor = (grid, [ x, y ]) => {
@@ -242,10 +247,11 @@ const checkAdjacentDoor = (grid, [ x, y ]) => {
 };
 
 const getExtraDoors = (grid, rooms) => {
-    let collisions = [];
+    let doors = [];
 
     rooms.forEach((room) => {
         let { roomNumber } = room.config;
+        let connectedTo = {};
 
         room.config.walls.forEach(([ x, y ]) => {
             let cell = grid[x][y];
@@ -265,30 +271,24 @@ const getExtraDoors = (grid, rooms) => {
                 let xCell = grid[xAdjust] && grid[xAdjust][y];
                 let yCell = grid[x] && grid[x][yAdjust];
 
+                let doorAttrs = { x, y, width: wallSize, height: wallSize };
+
                 if (xCell && Number.isInteger(xCell) && xCell !== roomNumber) {
-                    collisions.push([ x, y ]);
+                    grid[x][y] = cellDoor;
+
+                    let direction = adjust === -1 ? directions.west : directions.east;
+
+                    doors.push(makeDoor(doorAttrs, { from: roomNumber, to: xCell, direction }));
                 }
 
                 if (yCell && Number.isInteger(yCell) && yCell !== roomNumber) {
-                    collisions.push([ x, y ]);
+                    grid[x][y] = cellDoor;
+
+                    let direction = adjust === -1 ? directions.north : directions.south;
+
+                    doors.push(makeDoor(doorAttrs, { from: roomNumber, to: yCell, direction }));
                 }
             });
-        });
-    });
-
-    let doors = [];
-
-    collisions.forEach(([ x, y ]) => {
-        let type = doorType.hole;
-        let size = 1;
-
-        doors.push({
-            // rect: drawDoor({ x, y, width: size, height: size }, { direction, doorType: type }),
-            rect: drawPillarCell([ x, y ]),
-            connection: 'test',
-            type,
-            connections: {},
-            size,
         });
     });
 
@@ -317,7 +317,7 @@ const getRooms = (mapSettings, grid) => {
                 return;
             }
 
-            if (roomType === type.hallway) {
+            if (roomType === roomType.hallway) {
                 [ x, y ] = validCords[validCords.length - 1];
             } else {
                 [ x, y ] = rollArrayItem(validCords);

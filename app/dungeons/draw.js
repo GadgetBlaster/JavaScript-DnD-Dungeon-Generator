@@ -138,6 +138,7 @@ export const drawGrid = ({ gridWidth, gridHeight }) => {
     return lines;
 };
 
+// TODO apply to large rooms
 export const drawPillarCell = ([ x, y ]) => {
     let px = getRectAttrs({ x, y, width: wallSize, height: wallSize });
     let cx = px.x + (px.width / 2);
