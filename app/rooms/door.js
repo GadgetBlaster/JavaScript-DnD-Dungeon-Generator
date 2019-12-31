@@ -3,12 +3,14 @@ import { Probability } from '../utility/roll';
 
 const door = {
     archway   : 'archway',
+    brass     : 'brass',
     concealed : 'concealed',
     hole      : 'hole',
-    metal     : 'metal',
+    iron      : 'iron',
     passageway: 'passageway',
     portal    : 'portal',
     secret    : 'secret',
+    steel     : 'steel',
     stone     : 'stone',
     wooden    : 'wooden',
 };
@@ -20,7 +22,10 @@ export const list = Object.keys(door);
 export const outside = 'outside';
 
 export const lockable = new Set([
+    door.brass,
+    door.iron,
     door.metal,
+    door.steel,
     door.stone,
     door.wooden,
 ]);

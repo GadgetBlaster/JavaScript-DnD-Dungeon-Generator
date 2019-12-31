@@ -1,7 +1,9 @@
 
+import { cellFeet } from '../dungeons/grid';
+import { element } from '../utility/html';
+import { getEnvironmentDescription } from './environment';
 import { knobs } from '../knobs';
 import { list } from '../ui/list';
-import { element } from '../utility/html';
 import { random } from '../utility/random';
 import { title, subTitle, paragraph, strong } from '../ui/typography';
 import { toWords, capitalize } from '../utility/tools';
@@ -11,9 +13,8 @@ import quantity from '../attributes/quantity';
 import rarity from '../attributes/rarity';
 import roomType, { appendRoomTypes } from '../rooms/type';
 import size from '../attributes/size';
-import { cellFeet } from '../dungeons/grid';
 
-const getRoomTypeLabel = (type) => toWords(type) + (appendRoomTypes.has(type) ? ' room' : '');
+export const getRoomTypeLabel = (type) => capitalize(toWords(type)) + (appendRoomTypes.has(type) ? ' room' : '');
 
 const getSizeDesc = (settings) => {
     let {
@@ -138,9 +139,13 @@ const getDoorwayDescription = (roomDoors) => {
         return `${article} ${single}${desc} leads ${direction}${out}`;
     }).filter(Boolean);
 
+    if (descParts.length === 0) {
+        return;
+    }
+
     let last = descParts.pop();
 
-    if (last && descParts.length === 0) {
+    if (descParts.length === 0) {
         return capitalize(last);
     }
 
@@ -180,13 +185,14 @@ export const getRoomDescription = (room, roomDoors) => {
     } = settings;
 
     let numberLabel = roomCount > 1 ? ` ${roomNumber}` : '';
-    let typeLabel   = type !== roomType.room ? `: ${getRoomTypeLabel(type)}` : '';
+    let typeLabel   = type !== roomType.room ? ` - ${getRoomTypeLabel(type)}` : '';
     let dimensions  = element('span', getRoomDimensions(room));
     let roomTitle   = title(`Room${numberLabel}${typeLabel}`);
     let header      = element('header', roomTitle + dimensions);
 
     let content = header + subTitle('Description') + paragraph([
         getSizeDesc(settings),
+        ...getEnvironmentDescription(settings),
         getContentsDesc(settings),
         getItemConditionDescription(settings),
         ...(roomDoors ? [ getDoorwayDescription(roomDoors) ] : []),
