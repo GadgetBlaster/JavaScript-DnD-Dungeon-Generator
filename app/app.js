@@ -18,7 +18,8 @@ import {
     toggleVisibility,
 } from './ui/action';
 
-import { article, div, section } from './ui/block';
+import { article, section } from './ui/block';
+import { createDoorLookup } from './rooms/door';
 import { drawLegend } from './dungeons/legend';
 import { generateDungeon } from './dungeons/generate';
 import { generateItems } from './items/generate';
@@ -46,27 +47,6 @@ const navigate = (target, el) => {
     knobContainer.innerHTML    = renderKnobs(config, page);
 
     toggleCollapsed(`fieldset-${toDash(config[0].label)}`);
-};
-
-const createDoorLookup = (doors) => {
-    let lookup = {};
-
-    doors.forEach((door) => {
-        Object.keys(door.connections).forEach((roomNumber) => {
-            if (!lookup[roomNumber]) {
-                lookup[roomNumber] = [];
-            }
-
-            let roomDoor = {
-                ...door,
-                connection: door.connections[roomNumber],
-            };
-
-            lookup[roomNumber].push(roomDoor);
-        });
-    });
-
-    return lookup;
 };
 
 const formatRoom = (room, doorLookup) => {

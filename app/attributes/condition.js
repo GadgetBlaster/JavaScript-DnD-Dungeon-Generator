@@ -10,6 +10,10 @@ const condition = {
     exquisite: 'exquisite',
 };
 
+export default condition;
+
+export const list = Object.keys(condition);
+
 let {
     decaying,
     busted,
@@ -19,8 +23,6 @@ let {
     exquisite,
 } = condition;
 
-export const list = Object.keys(condition);
-
 export const probability = new Probability([
     [ 50,  average   ],
     [ 60,  good      ],
@@ -29,5 +31,3 @@ export const probability = new Probability([
     [ 95,  decaying  ],
     [ 100, exquisite ],
 ]);
-
-export default condition;

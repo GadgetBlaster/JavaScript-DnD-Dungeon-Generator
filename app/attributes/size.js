@@ -7,6 +7,6 @@ const size = {
     massive: 'massive',
 };
 
-export const list = Object.keys(size);
-
 export default size;
+
+export const list = Object.keys(size);

@@ -26,6 +26,7 @@ const config = [
     { name: 'Table', defaultCapacity, variants: [ 'wood', 'stone', 'metal' ] },
     { name: 'Wardrobe', defaultCapacity },
     { name: 'Workbench', defaultCapacity, variants: [ 'wood', 'stone', 'metal' ] },
+    { name: 'Mirror' },
 ];
 
 export default config.map((item) => ({ ...defaults, ...item }));

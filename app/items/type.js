@@ -18,6 +18,6 @@ const type = {
     weapon: 'weapon',
 };
 
-export const list = Object.values(type);
-
 export default type;
+
+export const list = Object.values(type);

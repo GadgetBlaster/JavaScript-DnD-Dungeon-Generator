@@ -11,6 +11,10 @@ const rarity = {
     legendary: 'legendary',
 };
 
+export default rarity;
+
+export const list = Object.keys(rarity);
+
 let {
     abundant,
     common,
@@ -30,7 +34,3 @@ export const probability = new Probability([
     [ 98,  exotic    ],
     [ 100, legendary ],
 ]);
-
-export const list = Object.keys(rarity);
-
-export default rarity;

@@ -373,6 +373,7 @@ const drawRooms = (mapSettings, mapRooms, grid, roomNumber = 1, prevRoom) => {
                 ...roomConfig,
                 walls,
                 roomNumber,
+                size: [ roomDimensions.roomWidth, roomDimensions.roomHeight ],
             },
         });
 

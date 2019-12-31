@@ -21,7 +21,7 @@ export const dimensionRanges = {
     [small]  : [ 2, 4 ],
     [medium] : [ 2, 5 ],
     [large]  : [ 3, 8 ],
-    [massive]: [ 4, 10 ],
+    [massive]: [ 5, 20 ],
 };
 
 const roomSizes = {

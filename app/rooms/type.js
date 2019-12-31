@@ -30,6 +30,10 @@ const type = {
     treasury: 'treasury',
 };
 
+export default type;
+
+export const list = Object.keys(type);
+
 export const appendRoomTypes = new Set([
     type.dining,
     type.shrine,
@@ -43,7 +47,3 @@ export const probability = new Probability([
     [ 65,  type.room    ],
     [ 100, random  ],
 ]);
-
-export const list = Object.keys(type);
-
-export default type;

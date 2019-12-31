@@ -12,6 +12,10 @@ const quantity = {
     numerous: 'numerous',
 };
 
+export default quantity;
+
+export const list = Object.keys(quantity);
+
 let {
     zero,
     one,
@@ -34,8 +38,6 @@ export const probability = new Probability([
     [ 100, numerous ],
 ]);
 
-export const list = Object.keys(quantity);
-
 const range = [ 0, 1, 2, 3, 5, 7, 13, 26, 99 ];
 
 export const getRange = (value) => {
@@ -50,5 +52,3 @@ export const getRange = (value) => {
 
     return { min, max };
 };
-
-export default quantity;

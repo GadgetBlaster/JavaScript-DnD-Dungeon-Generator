@@ -1,6 +1,7 @@
 
 import { knobs } from '../knobs';
 import { list } from '../ui/list';
+import { element } from '../utility/html';
 import { random } from '../utility/random';
 import { title, subTitle, paragraph, strong } from '../ui/typography';
 import { toWords, capitalize } from '../utility/tools';
@@ -10,6 +11,7 @@ import quantity from '../attributes/quantity';
 import rarity from '../attributes/rarity';
 import roomType, { appendRoomTypes } from '../rooms/type';
 import size from '../attributes/size';
+import { cellFeet } from '../dungeons/grid';
 
 const getRoomTypeLabel = (type) => toWords(type) + (appendRoomTypes.has(type) ? ' room' : '');
 
@@ -163,6 +165,12 @@ export const getDoorwayList = (roomDoors) => {
     return subTitle(`Doorways (${roomDoors.length})`) + list(doorList);
 };
 
+const getRoomDimensions = (room) => {
+    let [ width, height ] = room.size;
+
+    return `${width * cellFeet} x ${height * cellFeet} feet`;
+};
+
 export const getRoomDescription = (room, roomDoors) => {
     let { settings, roomNumber } = room;
 
@@ -173,9 +181,11 @@ export const getRoomDescription = (room, roomDoors) => {
 
     let numberLabel = roomCount > 1 ? ` ${roomNumber}` : '';
     let typeLabel   = type !== roomType.room ? `: ${getRoomTypeLabel(type)}` : '';
+    let dimensions  = element('span', getRoomDimensions(room));
     let roomTitle   = title(`Room${numberLabel}${typeLabel}`);
+    let header      = element('header', roomTitle + dimensions);
 
-    let content = roomTitle + subTitle('Description') + paragraph([
+    let content = header + subTitle('Description') + paragraph([
         getSizeDesc(settings),
         getContentsDesc(settings),
         getItemConditionDescription(settings),

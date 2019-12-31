@@ -13,6 +13,10 @@ const door = {
     wooden    : 'wooden',
 };
 
+export default door;
+
+export const list = Object.keys(door);
+
 export const outside = 'outside';
 
 export const lockable = new Set([
@@ -36,6 +40,23 @@ export const secretProbability = new Probability([
     [ 30,  door.secret ],
 ]);
 
-export const list = Object.keys(door);
+export const createDoorLookup = (doors) => {
+    let lookup = {};
 
-export default door;
+    doors.forEach((door) => {
+        Object.keys(door.connections).forEach((roomNumber) => {
+            if (!lookup[roomNumber]) {
+                lookup[roomNumber] = [];
+            }
+
+            let roomDoor = {
+                ...door,
+                connection: door.connections[roomNumber],
+            };
+
+            lookup[roomNumber].push(roomDoor);
+        });
+    });
+
+    return lookup;
+};
