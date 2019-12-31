@@ -60,7 +60,7 @@ const config = [
     { name: 'Quiver' },
     { name: 'Sack', size: small },
     { name: 'Tankard', size: tiny, rarity: abundant },
-    { name: 'Vial', rarity: uncommon },
+    { name: 'Vial', size: tiny, rarity: uncommon },
     { name: 'Waterskin' },
 ];
 
