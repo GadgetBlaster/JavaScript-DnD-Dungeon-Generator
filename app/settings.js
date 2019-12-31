@@ -1,11 +1,12 @@
 
 import { knobs } from './knobs';
-import { list as roomTypes, probability as roomTypeProbability } from './rooms/type';
 import { probability as conditionProbability } from './attributes/condition'
 import { probability as quantityProbability } from './attributes/quantity'
 import { probability as rarityProbability } from './attributes/rarity'
 import { random } from './utility/random';
 import { roomTypeSizes } from './rooms/dimensions';
+import quantity from './attributes/quantity';
+import roomType, { list as roomTypes, probability as roomTypeProbability } from './rooms/type';
 
 import {
     rollArrayItem,
@@ -15,17 +16,8 @@ import {
 const uniformConditionChance = 20;
 const uniformRarityChance    = 20;
 
-let {
-    itemCondition,
-    itemQuantity,
-    itemRarity,
-    roomCondition,
-    roomSize,
-    roomType,
-} = knobs;
-
-const rollRoomSize = (roomType) => {
-    return rollArrayItem(roomTypeSizes[roomType]);
+const rollRoomSize = (type) => {
+    return rollArrayItem(roomTypeSizes[type]);
 };
 
 const rollRoomType = () => {
@@ -39,11 +31,11 @@ const rollRoomType = () => {
 };
 
 const roomRandomizations = {
-    [roomType]     : () => rollRoomType(),
-    [roomCondition]: () => conditionProbability.roll(),
-    [itemQuantity] : () => quantityProbability.roll(),
-    [itemCondition]: () => rollPercentile(uniformConditionChance) && conditionProbability.roll(),
-    [itemRarity]   : () => rollPercentile(uniformRarityChance) && rarityProbability.roll(),
+    [knobs.roomType]     : () => rollRoomType(),
+    [knobs.roomCondition]: () => conditionProbability.roll(),
+    [knobs.itemQuantity] : () => quantityProbability.roll(),
+    [knobs.itemCondition]: () => rollPercentile(uniformConditionChance) && conditionProbability.roll(),
+    [knobs.itemRarity]   : () => rollPercentile(uniformRarityChance) && rarityProbability.roll(),
 };
 
 const applyRandomization = (config, randomizations) => {
@@ -61,8 +53,12 @@ const applyRandomization = (config, randomizations) => {
         }
     });
 
-    if (settings[roomSize] === random) {
-        settings[roomSize] = rollRoomSize(settings[roomType]);
+    if (settings[knobs.roomSize] === random) {
+        settings[knobs.roomSize] = rollRoomSize(settings[knobs.roomType]);
+    }
+
+    if (settings[knobs.roomType] === roomType.hallway && settings[knobs.itemQuantity] === quantity.numerous) {
+        settings[knobs.itemQuantity] = quantity.several;
     }
 
     return settings;

@@ -6,6 +6,7 @@ const feature = {
     cage      : 'cage',
     candles   : 'candles',
     carvings  : 'carvings',
+    caveIn    : 'caveIn',
     cobwebs   : 'cobwebs',
     corpse    : 'corpse',
     embers    : 'embers',

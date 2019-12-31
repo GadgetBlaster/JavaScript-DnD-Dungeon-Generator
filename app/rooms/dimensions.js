@@ -17,11 +17,11 @@ const hallWidthMin  = 1;
 const hallWidthMax  = 1;
 
 export const dimensionRanges = {
-    [tiny]   : [ 2, 3 ],
-    [small]  : [ 2, 4 ],
-    [medium] : [ 2, 5 ],
-    [large]  : [ 3, 8 ],
-    [massive]: [ 5, 20 ],
+    [tiny]   : [ 2, 3  ],
+    [small]  : [ 2, 4  ],
+    [medium] : [ 2, 5  ],
+    [large]  : [ 3, 10 ],
+    [massive]: [ 5, 18 ],
 };
 
 const roomSizes = {
