@@ -16,3 +16,19 @@ export const chunk = (array, size) => array.reduce((resultArray, item, index) =>
 
     return resultArray
 }, []);
+
+export const listSentence = (parts) => {
+    if (parts.length === 0) {
+        return;
+    }
+
+    let last = parts.pop();
+
+    if (parts.length === 0) {
+        return capitalize(last);
+    }
+
+    let comma = parts.length > 1 ? ',' : '';
+
+    return `${capitalize(parts.join(', '))}${comma} and ${last}`;
+};

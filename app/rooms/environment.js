@@ -1,11 +1,13 @@
 
 import { getRoomTypeLabel } from './description';
+import { getVegetationDescription } from './vegetation';
 import { knobs } from '../knobs';
 import { roll, rollArrayItem, rollPercentile } from '../utility/roll';
 import roomType from './type';
 import size from '../attributes/size';
+import { listSentence } from '../utility/tools';
 
-const detailChance = 50;
+const detailChance  = 50;
 
 const structure = {
     cave     : 'cave',
@@ -16,6 +18,13 @@ const structure = {
     wood     : 'wood',
 };
 
+const supportsVegetation = new Set([
+    structure.cave,
+    structure.stone,
+    structure.stoneWood,
+    structure.wood,
+]);
+
 const air = {
     damp  : 'damp',
     misty : 'misty',
@@ -25,6 +34,7 @@ const air = {
 
 const ground = {
     bloody  : 'bloody',
+    dirt    : 'dirt',
     flooded : 'flooded',
     muddy   : 'muddy',
     rubble  : 'rubble',
@@ -40,7 +50,7 @@ const wall = {
     slimy    : 'slimy',
 };
 
-const getStructureDesc = (settings) => {
+const getStructureDesc = (settings, roomStructure) => {
     let {
         [knobs.roomType]: typeSetting,
         [knobs.roomSize]: roomSize,
@@ -48,9 +58,7 @@ const getStructureDesc = (settings) => {
 
     let type = getRoomTypeLabel(typeSetting);
 
-    let random = rollArrayItem(Object.keys(structure));
-
-    switch (random) {
+    switch (roomStructure) {
         case structure.cave:
             let isCavern = roomSize === size.massive && typeSetting !== roomType.hallway;
             return `The ${type} is formed by a ${isCavern ? 'cavern' : 'cave'}`;
@@ -63,7 +71,7 @@ const getStructureDesc = (settings) => {
 
         case structure.stone:
         case structure.wood:
-            return `The ${type} is constructed from ${random}`;
+            return `The ${type} is constructed from ${roomStructure}`;
 
         case structure.stoneWood:
             return `The stone ${type} is reinforced with wooden beams and pillars`;
@@ -85,6 +93,9 @@ const getGroundDesc = () => {
             let isFresh = roll() ? 'Fresh blood' : 'Blood stains';
             return `${isFresh} can be seen on the floor`;
 
+        case ground.dirt:
+            return 'Dirt covers the ground';
+
         case ground.flooded:
             let inches = roll();
             return `The room is ${inches ? '' : 'completely '}flooded with a few ${inches ? 'inches' : 'feet'} of water`;
@@ -102,7 +113,7 @@ const getGroundDesc = () => {
             return 'The floor is wet and slippery';
 
         default:
-            throw 'Invalid ground';
+            throw 'Undefined ground';
     }
 };
 
@@ -128,10 +139,10 @@ const getWallDesc = () => {
             return 'The walls appear to have been scorched by fire';
 
         case wall.slimy:
-            return 'A slimy ooze drips from the walls';
+            return 'Something slimy drips from the walls';
 
         default:
-            throw 'Invalid wall';
+            throw 'Undefined wall';
     }
 };
 
@@ -165,18 +176,26 @@ const getAirDesc = () => {
             return 'There is strange sweet sent in the air';
 
         case air.smokey:
-            return 'The room is filed with smoke from a hastily extinguished fire';
+            return 'The room is filled with smoke from a hastily extinguished fire';
 
         default:
-            throw 'Invalid air';
+            throw 'Undefined air';
     }
 };
 
 export const getEnvironmentDescription = (settings) => {
+    let roomStructure = rollArrayItem(Object.keys(structure));
+    let roomVegetation;
+
+    if (supportsVegetation.has(roomStructure)) {
+        roomVegetation = getVegetationDescription();
+    }
+
     return [
-        getStructureDesc(settings),
+        getStructureDesc(settings, roomStructure),
         getGroundDesc(),
         getWallDesc(),
+        roomVegetation,
         getAirDesc(),
     ].filter(Boolean);
 };
