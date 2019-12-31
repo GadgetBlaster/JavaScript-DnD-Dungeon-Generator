@@ -4,12 +4,14 @@
     --bg: #f9f9f9;
     --gray: #cccccc;
     --white: #ffffff;
+    --font-default: 'Courier Prime', monospace;
+    --font-title: 'Inknut Antiqua', fantasy;
 }
 
 *:not(text) {
     font-size: 14px;
     line-height: 1.4;
-    font-family: monospace;
+    font-family: var(--font-default);
 }
 
 :focus {
@@ -147,13 +149,13 @@ select + button {
 
 h1 {
     font-size: 20px;
-    font-family: fantasy;
+    font-family: var(--font-title);
     margin: 0;
 }
 
 h2 {
     font-size: 16px;
-    font-family: fantasy;
+    font-family: var(--font-title);
     margin: 0;
 }
 

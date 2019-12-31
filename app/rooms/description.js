@@ -5,7 +5,7 @@ import { getEnvironmentDescription } from './environment';
 import { knobs } from '../knobs';
 import { list } from '../ui/list';
 import { random } from '../utility/random';
-import { title, subTitle, paragraph, strong } from '../ui/typography';
+import { title, subTitle, paragraph, strong, em } from '../ui/typography';
 import { toWords, capitalize } from '../utility/tools';
 import condition from '../attributes/condition';
 import doorType, { lockable, outside } from './door';
@@ -161,7 +161,7 @@ export const getDoorwayList = (roomDoors) => {
 
         let desc    = getDoorwayDesc(type, size);
         let connect = to === outside ? 'leading out of the dungeon' : `to Room ${to}`;
-        let text    = `${capitalize(direction)} ${connect} (${desc})`;
+        let text    = `${capitalize(direction)} ${connect} (${em(desc)})`;
         let secret  = type === doorType.concealed || type === doorType.secret;
 
         return secret ? strong(text) : text;

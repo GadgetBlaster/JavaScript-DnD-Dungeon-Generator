@@ -2,7 +2,7 @@
 import { knobs } from '../knobs';
 import { random } from '../utility/random';
 import { rollArrayItem, roll } from '../utility/roll';
-import { strong } from '../ui/typography';
+import { strong, em } from '../ui/typography';
 import quantity from '../attributes/quantity';
 import set from './set';
 import size from '../attributes/size';
@@ -115,7 +115,7 @@ export const generateItem = (settings) => {
         notes.push(itemCondition);
     }
 
-    let noteText = notes.length ? ` (${notes.join(', ')})` : '';
+    let noteText = notes.length ? ` (${em(notes.join(', '))})` : '';
 
     if (item.quantity > 1) {
         let quantity = roll(1, item.quantity);
