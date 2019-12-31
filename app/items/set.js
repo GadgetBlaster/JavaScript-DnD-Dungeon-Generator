@@ -6,7 +6,6 @@ import coin from './types/coin';
 import component from './types/component';
 import container from './types/container';
 import food from './types/food';
-import furnishing from './types/furnishing';
 import kitchen from './types/kitchen';
 import liquid from './types/liquid';
 import miscellaneous from './types/miscellaneous';
@@ -24,7 +23,6 @@ export default [
     ...component,
     ...container,
     ...food,
-    ...furnishing,
     ...kitchen,
     ...liquid,
     ...miscellaneous,

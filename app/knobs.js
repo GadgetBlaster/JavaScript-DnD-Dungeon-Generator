@@ -1,4 +1,5 @@
 
+import { furnitureQuantityList } from './items/types/furnishing';
 import { list as conditions, probability as conditionProbability } from './attributes/condition';
 import { list as itemTypes } from './items/type';
 import { list as quantities, probability as quantityProbability } from './attributes/quantity';
@@ -21,6 +22,8 @@ const descConnections = `Probably that rooms will be connected to adjacent
     rooms. Setting to zero will make dungeons more linear, setting to 100
     places a doorway between every adjacent room.`;
 
+const descFurnitureQuantity = 'How furnished the rooms in the dungeon are.';
+
 const getValues = (values) => {
     return [
         random,
@@ -29,16 +32,17 @@ const getValues = (values) => {
 };
 
 export const knobs = {
-    dungeonComplexity: 'dungeon-complexity',
+    dungeonComplexity : 'dungeon-complexity',
     dungeonConnections: 'dungeon-connections',
-    itemCondition: 'item-condition',
-    itemQuantity: 'item-quantity',
-    itemRarity: 'item-rarity',
-    itemType: 'item-type',
-    roomCondition: 'room-condition',
-    roomCount: 'room-count',
-    roomSize: 'room-size',
-    roomType: 'room-type',
+    itemCondition     : 'item-condition',
+    itemQuantity      : 'item-quantity',
+    itemRarity        : 'item-rarity',
+    itemType          : 'item-type',
+    roomCondition     : 'room-condition',
+    roomCount         : 'room-count',
+    roomFurnishing    : 'room-furnishing',
+    roomSize          : 'room-size',
+    roomType          : 'room-type',
 };
 
 const config = [
@@ -84,19 +88,26 @@ const config = [
                 desc  : descEqualDistribution,
             },
             condition: {
-                label:  'Condition',
-                name:   knobs.roomCondition,
-                type:   typeSelect,
+                label :'Condition',
+                name  : knobs.roomCondition,
+                type  : typeSelect,
                 values: getValues(conditions),
-                desc:   conditionProbability.description,
+                desc  : conditionProbability.description,
             },
             size: {
-                label:  'Size',
-                name:   knobs.roomSize,
-                type:   typeSelect,
+                label : 'Size',
+                name  : knobs.roomSize,
+                type  : typeSelect,
                 values: getValues(sizes),
-                desc:   descEqualDistribution,
+                desc  : descEqualDistribution,
             },
+            furnishing: {
+                label : 'Furnishing',
+                name  : knobs.roomFurnishing,
+                type  : typeSelect,
+                values: getValues(furnitureQuantityList),
+                desc  : descFurnitureQuantity,
+            }
         },
     },
     {

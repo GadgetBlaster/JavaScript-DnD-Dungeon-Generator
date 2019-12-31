@@ -3,7 +3,7 @@ import rarity from '../../attributes/rarity';
 import size from '../../attributes/size';
 import type from '../type';
 
-let { large } = size;
+let { medium, large } = size;
 let { uncommon, rare } = rarity;
 
 const defaults = {
@@ -12,9 +12,9 @@ const defaults = {
 
 const config = [
     { name: 'Ball bearings', quantity: 1000 },
-    { name: 'Block and tackle' },
+    { name: 'Block and tackle', size: medium },
     { name: 'Chain' },
-    { name: 'Crowbar' },
+    { name: 'Crowbar', size: medium },
     { name: 'Grappling hook', rarity: uncommon },
     { name: 'Hammer, sledge', size: large },
     { name: 'Hammer' },
@@ -25,17 +25,17 @@ const config = [
     { name: 'Lock', variants: [ 'door', 'bolt', 'combination' ] },
     { name: 'Magnifying glass', rarity: rare },
     { name: 'Mirror, steel', rarity: uncommon },
-    { name: 'Pick, miner’s', size: large },
+    { name: 'Pick, miner’s', size: medium },
     { name: 'Pole, 1 foot' },
     { name: 'Pole', size: large, variants: [ '5 foot', '10 foot', '20 foot' ] },
     { name: 'Ram, portable', size: large },
-    { name: 'Rope, hempen', size: large, variants: [ '10 feet', '25 feet', '50 feet', '100 feet' ] },
-    { name: 'Rope, silk', size: large, variants: [ '10 feet', '25 feet', '50 feet', '100 feet' ] },
-    { name: 'Shovel', size: large },
+    { name: 'Rope, hempen', size: medium, variants: [ '10 feet', '25 feet', '50 feet', '100 feet' ] },
+    { name: 'Rope, silk', size: medium, variants: [ '10 feet', '25 feet', '50 feet', '100 feet' ] },
+    { name: 'Shovel', size: medium },
     { name: 'Spikes, iron', quantity: 100 },
     { name: 'Spyglass', rarity: rare },
     { name: 'Whetstone', rarity: uncommon },
-    { name: 'Wooden staff', size: large },
+    { name: 'Wooden staff', size: medium },
 ];
 
 export default config.map((item) => ({ ...defaults, ...item }));
