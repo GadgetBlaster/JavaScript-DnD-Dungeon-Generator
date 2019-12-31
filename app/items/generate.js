@@ -6,7 +6,9 @@ import { list } from '../ui/list';
 import { random } from '../utility/random';
 import { roll } from '../utility/roll';
 import { subTitle, paragraph } from '../ui/typography';
+import itemType from './type';
 import quantity, { getRange, probability as quantityProbability } from '../attributes/quantity';
+import size from '../attributes/size';
 
 const maxColumns = 2;
 
@@ -50,10 +52,26 @@ export const generateItems = (settings) => {
         return inRoom ? [] : [ subTitle('Items (0)') ];
     }
 
-    let count  = getItemCount(itemQuantity);
+    let count = getItemCount(itemQuantity);
     let items = generateItemObjects(count, settings);
 
-    console.log(items);
+    let containers = [];
+    let smallItems = [];
+    let remaining  = [];
+
+    Object.keys(items).forEach((item) => {
+        if (item.type === itemType.container) {
+            containers.push(item);
+            return;
+        }
+
+        if (item.size === size.tiny || item.size === size.small) {
+            smallItems.push(item);
+            return;
+        }
+
+        remaining.push(item);
+    });
 
     let itemList = Object.keys(items).map((key) => {
         return getItemDescription(items[key]);

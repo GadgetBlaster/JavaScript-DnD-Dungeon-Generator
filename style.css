@@ -32,9 +32,14 @@ nav {
     display: flex;
 }
 
+section {
+    margin-bottom: 20px;
+    page-break-inside: avoid;
+}
+
 article {
     border: 1px solid var(--gray);
-    padding: 30px;
+    padding: 20px;
 }
 
 /* Forms */
@@ -143,14 +148,14 @@ h1 {
 }
 
 h2 {
-    font-size: 20px;
+    font-size: 16px;
     font-family: fantasy;
     border-bottom: 1px solid var(--gray);
     margin: 0;
 }
 
 h3 {
-    font-size: 18px;
+    font-size: 14px;
 }
 
 small {
@@ -198,10 +203,6 @@ ul[data-grid] li small {
     grid-row-gap: 20px;
 }
 
-[data-grid="2"] {
-    grid-template-columns: repeat(2, 1fr);
-}
-
-[data-grid-span="2"] {
-    grid-column: span 2;
+[data-grid="3"] {
+    grid-template-columns: repeat(3, 1fr);
 }

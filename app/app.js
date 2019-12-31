@@ -27,11 +27,13 @@ import { getKnobConfig } from './knobs';
 import { getRoomDescription, getDoorwayList } from './rooms/description';
 import { nav, setActive, getActive, pages } from './ui/nav';
 import { renderKnobs, getFormData } from './ui/form';
-import { toDash } from './utility/tools';
+import { toDash, chunk } from './utility/tools';
 
 const navContainer     = document.getElementById('nav');
 const knobContainer    = document.getElementById('knobs');
 const contentContainer = document.getElementById('content');
+
+const roomsPerRow = 3;
 
 const navigate = (target, el) => {
     el && setActive(el);
@@ -91,9 +93,15 @@ const getDungeon = (settings) => {
 
     let legend     = drawLegend();
     let doorLookup = createDoorLookup(doors);
-    let articles   = rooms.map((room) => formatRoom(room, doorLookup)).join('');
+    let sections   = chunk(rooms, roomsPerRow);
 
-    return map + legend + div(articles, { 'data-grid': 2 });
+    let articleSections = sections.map((roomChunk) => {
+        let row = roomChunk.map((room) => formatRoom(room, doorLookup)).join('');
+
+        return section(row, { 'data-grid': 3 });
+    }).join('');
+
+    return section(map + legend) + articleSections;
 };
 
 const generators = {
@@ -111,9 +119,7 @@ const generate = () => {
         throw 'Invalid page';
     }
 
-    let text = generator(settings);
-
-    contentContainer.innerHTML = section(text);
+    contentContainer.innerHTML = generator(settings);
 };
 
 attachActions({

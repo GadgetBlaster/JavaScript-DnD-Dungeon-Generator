@@ -23,10 +23,10 @@ const {
  * @type {Object.<Size, number>}
  */
 export const capacity = {
-    [tiny]: 0.5,
-    [small]: 1,
+    [tiny]  : 0.5,
+    [small] : 1,
     [medium]: 10,
-    [large]: 20,
+    [large] : 20,
 };
 
 const defaults = {
