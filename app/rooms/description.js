@@ -137,7 +137,7 @@ const getDoorwayDescription = (roomDoors) => {
     }).filter(Boolean);
 
     let last = descParts.pop();
-    console.log(descParts.length, last);
+
     if (last && descParts.length === 0) {
         return capitalize(last);
     }

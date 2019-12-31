@@ -2,10 +2,8 @@
 // TODO:
 // Room type item affinity
 // Flush out items
-// Furniture
+// Furniture description
 // Fill containers
-// Split rooms
-// Secret rooms
 // Traps
 // Room vegetation
 // Dungeon map item
