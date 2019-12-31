@@ -117,14 +117,16 @@ export const generateItem = (settings) => {
 
     let noteText = notes.length ? ` (${em(notes.join(', '))})` : '';
 
-    if (item.quantity > 1) {
-        let quantity = roll(1, item.quantity);
+    let itemQuantity = 1;
 
-        if (quantity > 1) {
+    if (item.quantity > 1) {
+        itemQuantity = roll(1, item.quantity);
+
+        if (itemQuantity > 1) {
             if (item.type === type.coin) {
-                name = `${quantity} ${name}${quantity > 1 ? 's' : ''}`;
+                name = `${itemQuantity} ${name}${itemQuantity > 1 ? 's' : ''}`;
             } else {
-                name += `, set of ${quantity}`;
+                name += `, set of ${itemQuantity}`;
             }
         }
     }
@@ -136,7 +138,7 @@ export const generateItem = (settings) => {
 
     return {
         label: name + noteText,
-        quantity: quantity,
+        quantity: itemQuantity,
         rarity: itemRarity,
         size: item.size,
         type: item.type,

@@ -1,6 +1,6 @@
 
 import { article } from '../ui/block';
-import { capacity, itemSizeSpace } from './types/container';
+import { capacity, itemSizeSpace, maxItemQuantitySmall } from './types/container';
 import { generateItem } from './item';
 import { getRarityDescription, getConditionDescription, getItemDescription } from './description';
 import { knobs } from '../knobs';
@@ -100,6 +100,11 @@ export const generateItems = (settings) => {
 
             if (!item) {
                 continue;
+            }
+
+            if (item.quantity > maxItemQuantitySmall) {
+                debugContainerFill && console.log(`${item.label} quantity of ${item.quantity} is too many for ${container.label}`);
+                return;
             }
 
             let spaceRequired     = itemSizeSpace[item.size];

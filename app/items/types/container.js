@@ -34,6 +34,8 @@ export const itemSizeSpace = {
     [small] : 1,
 };
 
+export const maxItemQuantitySmall = 10;
+
 const defaults = {
     rarity: common,
     size: small,
