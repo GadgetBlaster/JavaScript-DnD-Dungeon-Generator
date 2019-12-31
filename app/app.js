@@ -59,14 +59,30 @@ const formatRoom = (room, doorLookup) => {
     return article(desc + doorList + items);
 };
 
-const getItems = (settings) => generateItems(settings).join('');
+const getItems = (settings) => {
+    let items = generateItems(settings).join('');
+
+    return section(items, { 'data-grid': true });
+};
+
+const getRoomRows = (rooms, doorLookup) => {
+    let sections = chunk(rooms, roomsPerRow);
+
+    return sections.map((roomChunk) => {
+        let row = roomChunk.map((room) => formatRoom(room, doorLookup)).join('');
+
+        return section(row, { 'data-grid': 3 });
+    }).join('');
+};
 
 const getRooms = (settings) => {
-    return generateRooms(settings).map((room, i) => {
-        room.roomNumber = i;
+    let rooms = generateRooms(settings)
 
-        return formatRoom(room);
-    }).join('');
+    rooms.forEach((room, i) => {
+        rooms[i].roomNumber = i + 1;
+    });
+
+    return getRoomRows(rooms);
 };
 
 const getDungeon = (settings) => {
@@ -74,13 +90,13 @@ const getDungeon = (settings) => {
 
     let legend     = drawLegend();
     let doorLookup = createDoorLookup(doors);
-    let sections   = chunk(rooms, roomsPerRow);
 
-    let articleSections = sections.map((roomChunk) => {
-        let row = roomChunk.map((room) => formatRoom(room, doorLookup)).join('');
+    let articleSections = getRoomRows(rooms, doorLookup);
+    // let articleSections = sections.map((roomChunk) => {
+    //     let row = roomChunk.map((room) => formatRoom(room, doorLookup)).join('');
 
-        return section(row, { 'data-grid': 3 });
-    }).join('');
+    //     return section(row, { 'data-grid': 3 });
+    // }).join('');
 
     return section(map + legend) + articleSections;
 };
@@ -105,9 +121,9 @@ const generate = () => {
 
 attachActions({
     [actions.expandCollapse]: toggleCollapsed,
-    [actions.generate]: generate,
-    [actions.navigate]: navigate,
-    [actions.showHide]: toggleVisibility,
+    [actions.generate]      : generate,
+    [actions.navigate]      : navigate,
+    [actions.showHide]      : toggleVisibility,
 });
 
 navContainer.innerHTML  = nav;

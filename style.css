@@ -9,7 +9,7 @@
 }
 
 *:not(text) {
-    font-size: 14px;
+    font-size: 13px;
     line-height: 1.4;
     font-family: var(--font-default);
 }
@@ -58,6 +58,10 @@ article article {
 
 form {
     margin-bottom: 20px;
+}
+
+form * {
+    font-size: 16px;
 }
 
 fieldset {
@@ -222,4 +226,10 @@ ul[data-grid] li small {
 
 [data-grid="3"] {
     grid-template-columns: repeat(3, 1fr);
+}
+
+@media print {
+    [data-no-print] {
+        display: none;
+    }
 }

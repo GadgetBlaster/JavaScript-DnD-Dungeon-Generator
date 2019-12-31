@@ -38,10 +38,8 @@ const generateItemObjects = (count, settings) => [ ...Array(count) ].reduce((obj
 
     return obj;
 }, {});
-let test = 1;
+
 export const generateItems = (settings) => {
-    console.log('room', test);
-    test++;
     let {
         [knobs.roomType]     : roomType,
         [knobs.itemCondition]: itemCondition,
