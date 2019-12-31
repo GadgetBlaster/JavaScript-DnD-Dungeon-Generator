@@ -5,7 +5,7 @@
     --gray: #cccccc;
     --white: #ffffff;
     --font-default: 'Courier Prime', monospace;
-    --font-title: 'Inknut Antiqua', fantasy;
+    --font-title: 'Inknut Antiqua', monospace;
 }
 
 *:not(text) {
@@ -108,11 +108,13 @@ select {
 
 button {
     cursor: pointer;
+    font-family: var(--font-title);
 }
 
 button[data-size="small"] {
     min-height: 30px;
     padding: 0 12px;
+    font-size: 12px;
 }
 
 button[data-size="large"] {

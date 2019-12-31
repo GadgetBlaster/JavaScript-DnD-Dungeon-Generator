@@ -14,7 +14,8 @@ export const typeRange  = 'range';
 
 const descEqualDistribution = 'Random probability: Equally distributed';
 
-const descComplexity = 'Controls dungeon size and room count.';
+const descComplexity = `Controls dungeon size and room count. Need more
+    complexity? Generate multiple dungeon levels and add stairways.`;
 
 const descConnections = `Probably that rooms will be connected to adjacent
     rooms. Setting to zero will make dungeons more linear, setting to 100

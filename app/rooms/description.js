@@ -171,6 +171,10 @@ export const getDoorwayList = (roomDoors) => {
 };
 
 const getRoomDimensions = (room) => {
+    if (!room.size) {
+        return '';
+    }
+
     let [ width, height ] = room.size;
 
     return `${width * cellFeet} x ${height * cellFeet} feet`;

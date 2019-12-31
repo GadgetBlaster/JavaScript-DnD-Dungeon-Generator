@@ -448,6 +448,10 @@ export const generateMap = (mapSettings) => {
 
     let { rooms, doors } = getRooms(mapSettings, grid);
 
+    if (mapSettings.rooms.length <= rooms.length) {
+        console.warn('Not enough rooms generated', mapSettings.rooms.length, rooms.length);
+    }
+
     let roomRects = rooms.map((room) => room.rect).join('');
     let doorRects = doors.map(({ rect }) => rect).join('');
     let gridLines = drawGrid(mapSettings);

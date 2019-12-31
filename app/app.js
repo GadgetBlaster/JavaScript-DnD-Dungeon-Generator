@@ -10,6 +10,7 @@
 // Door keys stashed
 // Checkboxes for randomized sets
 // Trim map
+// Levels
 
 import {
     actions,

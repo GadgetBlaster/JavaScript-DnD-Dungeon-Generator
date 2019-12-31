@@ -10,7 +10,8 @@ import itemType from './type';
 import quantity, { getRange, probability as quantityProbability } from '../attributes/quantity';
 import size from '../attributes/size';
 
-const maxColumns = 2;
+const maxColumnsItems = 4;
+const maxColumnsRoom  = 2;
 
 const getItemCount = (itemQuantity) => {
     let { min, max } = getRange(itemQuantity);
@@ -89,7 +90,8 @@ export const generateItems = (settings) => {
         rarityDescription && descriptions.push(rarityDescription)
     }
 
-    let columns = Math.min(maxColumns, Math.max(1, Math.ceil(itemList.length / maxColumns)));
+    let maxColumns  = inRoom ? maxColumnsRoom : maxColumnsItems;
+    let columns     = Math.min(maxColumns, Math.max(1, Math.floor(itemList.length / maxColumns)));
     let description = descriptions.length && paragraph(descriptions.map((desc) => desc).join(' | '));
 
     return [
