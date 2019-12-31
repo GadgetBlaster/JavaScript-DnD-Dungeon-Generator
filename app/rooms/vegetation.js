@@ -20,7 +20,7 @@ export const getVegetationDescription = () => {
         return;
     }
 
-    let vegetationCount = roll(0, maxVegetation);
+    let vegetationCount = roll(1, maxVegetation);
     let types = new Set();
 
     for (let i = 0; i < vegetationCount; i++) {

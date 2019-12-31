@@ -1,15 +1,15 @@
 
 // TODO:
 // Room type item affinity
-// Flush out items
-// Furniture description
+// Flesh out items
+// Add furniture to description
 // Fill containers
 // Traps
-// Room vegetation
 // Dungeon map item
 // Locked doors
 // Door keys stashed
 // Checkboxes for randomized sets
+// Trim map
 
 import {
     actions,

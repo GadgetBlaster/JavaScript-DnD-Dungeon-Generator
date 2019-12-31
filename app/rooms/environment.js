@@ -5,9 +5,9 @@ import { knobs } from '../knobs';
 import { roll, rollArrayItem, rollPercentile } from '../utility/roll';
 import roomType from './type';
 import size from '../attributes/size';
-import { listSentence } from '../utility/tools';
+import { getRoomFeatures } from './feature';
 
-const detailChance  = 50;
+const detailChance = 50;
 
 const structure = {
     cave     : 'cave',
@@ -40,6 +40,7 @@ const ground = {
     rubble  : 'rubble',
     slimy   : 'slimy',
     slippery: 'slippery',
+    uneven  : 'uneven',
 };
 
 const wall = {
@@ -112,6 +113,9 @@ const getGroundDesc = () => {
         case ground.slippery:
             return 'The floor is wet and slippery';
 
+        case ground.uneven:
+            return 'The ground is extremely uneven';
+
         default:
             throw 'Undefined ground';
     }
@@ -170,7 +174,7 @@ const getAirDesc = () => {
             }
 
             if (roll()) {
-                return 'The air smells fresh crisp';
+                return 'The air smells fresh and crisp';
             }
 
             return 'There is strange sweet sent in the air';
@@ -197,5 +201,6 @@ export const getEnvironmentDescription = (settings) => {
         getWallDesc(),
         roomVegetation,
         getAirDesc(),
+        ...getRoomFeatures(settings),
     ].filter(Boolean);
 };
