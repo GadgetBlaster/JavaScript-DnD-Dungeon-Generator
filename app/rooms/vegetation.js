@@ -31,7 +31,7 @@ export const getVegetationDescription = () => {
         switch (type) {
             case vegetation.ferns:
             case vegetation.flowers:
-                return '${type} are somehow growing here';
+                return `${type} are somehow growing here`;
 
             case vegetation.grass:
                 return 'grass pokes through the floor';

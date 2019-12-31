@@ -18,6 +18,7 @@ const feature = {
     embers    : 'embers',
     fire      : 'fire',
     fountain  : 'fountain',
+    gargoyles : 'gargoyles',
     hole      : 'hole',
     machinery : 'machinery',
     moths     : 'moths',
@@ -72,6 +73,13 @@ const getFeatureDesc = (type) => {
         case feature.fountain:
             let flowing = roll() ? 'still flowing' : 'that has long ago stopped running';
             return `The room features a small fountain ${flowing}`;
+
+        case feature.gargoyles:
+            if (roll()) {
+                return 'Small gargoyles line the edge of the ceiling';
+            }
+
+            return 'Tow statues of gargoyles site motionless next to the door';
 
         case feature.hole:
             return 'There is a large hole in the floor';

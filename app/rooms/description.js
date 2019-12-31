@@ -115,7 +115,9 @@ const getDoorwayDesc = (type, size) => {
 
     if (size === 2 && appendDoorway) {
         sizeDesc = 'double wide';
-    } else if (size > 2) {
+    } else if (size === 3) {
+        sizeDesc = 'large';
+    } else if (size > 3) {
         sizeDesc = 'massive';
     }
 

@@ -29,6 +29,11 @@ export const capacity = {
     [large] : 20,
 };
 
+export const itemSizeSpace = {
+    [tiny]  : 0.5,
+    [small] : 1,
+};
+
 const defaults = {
     rarity: common,
     size: small,

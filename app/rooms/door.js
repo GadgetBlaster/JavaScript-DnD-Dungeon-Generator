@@ -41,8 +41,8 @@ export const probability = new Probability([
 ]);
 
 export const secretProbability = new Probability([
-    [ 13,  door.concealed ],
-    [ 30,  door.secret ],
+    [ 13, door.concealed ],
+    [ 30, door.secret    ],
 ]);
 
 export const createDoorLookup = (doors) => {

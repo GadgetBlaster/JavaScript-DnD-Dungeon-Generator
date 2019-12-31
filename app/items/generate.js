@@ -1,4 +1,6 @@
 
+import { article } from '../ui/block';
+import { capacity, itemSizeSpace } from './types/container';
 import { generateItem } from './item';
 import { getRarityDescription, getConditionDescription, getItemDescription } from './description';
 import { knobs } from '../knobs';
@@ -9,6 +11,8 @@ import { subTitle, paragraph } from '../ui/typography';
 import itemType from './type';
 import quantity, { getRange, probability as quantityProbability } from '../attributes/quantity';
 import size from '../attributes/size';
+
+const debugContainerFill = false;
 
 const maxColumnsItems = 4;
 const maxColumnsRoom  = 2;
@@ -34,8 +38,10 @@ const generateItemObjects = (count, settings) => [ ...Array(count) ].reduce((obj
 
     return obj;
 }, {});
-
+let test = 1;
 export const generateItems = (settings) => {
+    console.log('room', test);
+    test++;
     let {
         [knobs.roomType]     : roomType,
         [knobs.itemCondition]: itemCondition,
@@ -60,7 +66,9 @@ export const generateItems = (settings) => {
     let smallItems = [];
     let remaining  = [];
 
-    Object.keys(items).forEach((item) => {
+    Object.keys(items).forEach((key) => {
+        let item = items[key];
+
         if (item.type === itemType.container) {
             containers.push(item);
             return;
@@ -74,9 +82,73 @@ export const generateItems = (settings) => {
         remaining.push(item);
     });
 
-    let itemList = Object.keys(items).map((key) => {
-        return getItemDescription(items[key]);
+    containers.forEach((_, index, array) => {
+        let container = array[index];
+
+        if (!smallItems.length) {
+            return;
+        }
+
+        let contents        = [];
+        let remainingSpace = capacity[container.size];
+        let itemCount      = smallItems.length;
+
+        for (let i = 0; i < itemCount; i++) {
+            if (remainingSpace <= 0) {
+                continue;
+            }
+
+            let item = smallItems[0];
+
+            if (!item) {
+                continue;
+            }
+
+            let spaceRequired     = itemSizeSpace[item.size];
+            let spaceAfterAdded   = remainingSpace - spaceRequired;
+
+            if (spaceAfterAdded < 0) {
+                debugContainerFill && console.log(`${container.label} capacity of ${capacity[container.size]} is too small for ${item.label} of size ${spaceRequired}`);
+                continue;
+            }
+
+            remainingSpace = spaceAfterAdded;
+
+            debugContainerFill && console.log(`placed ${item.label} of size ${spaceRequired} into ${container.label} of size ${capacity[container.size]}, remaining space ${remainingSpace}`);
+
+            contents.push(smallItems.shift());
+        };
+
+        if (contents.length) {
+            container.contents = contents;
+        }
     });
+
+    let emptyContainers = [];
+
+    let containerList = containers.map((container) => {
+        let hasStuff = container.contents;
+
+        if (!hasStuff) {
+            emptyContainers.push(container);
+            return;
+        }
+
+        let items = container.contents && container.contents.map((item) => getItemDescription(item));
+        let desc  = getItemDescription(container);
+
+        return article(desc + (items ? list(items) : ''));
+    }).filter(Boolean).join('');
+
+    let notContained = remaining.concat(smallItems, emptyContainers).map((item) => getItemDescription(item));
+    let maxColumns   = inRoom ? maxColumnsRoom : maxColumnsItems;
+    let columns      = Math.min(maxColumns, Math.max(1, Math.floor(notContained.length / maxColumns)));
+
+    let itemList = containerList;
+
+    if (notContained.length) {
+        itemList += list(notContained, { 'data-columns': columns });
+    }
 
     let descriptions = [];
 
@@ -90,13 +162,11 @@ export const generateItems = (settings) => {
         rarityDescription && descriptions.push(rarityDescription)
     }
 
-    let maxColumns  = inRoom ? maxColumnsRoom : maxColumnsItems;
-    let columns     = Math.min(maxColumns, Math.max(1, Math.floor(itemList.length / maxColumns)));
     let description = descriptions.length && paragraph(descriptions.map((desc) => desc).join(' | '));
 
     return [
         subTitle(`Items (${count})`),
         description,
-        list(itemList, { 'data-columns': columns }),
+        itemList,
     ].filter(Boolean);
 };

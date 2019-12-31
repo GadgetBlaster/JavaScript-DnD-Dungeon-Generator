@@ -28,6 +28,7 @@ body {
 header {
     display: flex;
     justify-content: space-between;
+    align-items: baseline;
 }
 
 nav {
@@ -46,6 +47,11 @@ article {
 
 article header {
     border-bottom: 1px solid var(--gray);
+}
+
+article article {
+    padding: 10px;
+    margin-bottom: 10px;
 }
 
 /* Forms */
@@ -174,7 +180,11 @@ small {
 ul {
     list-style: square;
     padding-left: 18px;
-    margin: 20px 0;
+    margin: 20px 0 0 0;
+}
+
+article article ul {
+    margin-top: 10px;
 }
 
 li {
