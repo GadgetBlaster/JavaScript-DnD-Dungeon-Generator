@@ -2,11 +2,11 @@
 import { Probability } from '../utility/roll';
 
 const condition = {
-    decaying: 'decaying',
-    busted: 'busted',
-    poor: 'poor',
-    average: 'average',
-    good: 'good',
+    decaying : 'decaying',
+    busted   : 'busted',
+    poor     : 'poor',
+    average  : 'average',
+    good     : 'good',
     exquisite: 'exquisite',
 };
 

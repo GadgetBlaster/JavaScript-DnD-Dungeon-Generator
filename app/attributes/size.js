@@ -1,9 +1,9 @@
 
 const size = {
-    tiny: 'tiny',
-    small: 'small',
-    medium: 'medium',
-    large: 'large',
+    tiny   : 'tiny',
+    small  : 'small',
+    medium : 'medium',
+    large  : 'large',
     massive: 'massive',
 };
 

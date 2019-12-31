@@ -2,13 +2,13 @@
 import { Probability } from '../utility/roll';
 
 const quantity = {
-    zero: 'zero',
-    one: 'one',
-    couple: 'couple',
-    few: 'few',
-    some: 'some',
-    several: 'several',
-    many: 'many',
+    zero    : 'zero',
+    one     : 'one',
+    couple  : 'couple',
+    few     : 'few',
+    some    : 'some',
+    several : 'several',
+    many    : 'many',
     numerous: 'numerous',
 };
 

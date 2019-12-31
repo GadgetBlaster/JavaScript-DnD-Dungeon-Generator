@@ -2,12 +2,12 @@
 import { Probability } from '../utility/roll';
 
 const rarity = {
-    abundant: 'abundant',
-    common: 'common',
-    average: 'average',
-    uncommon: 'uncommon',
-    rare: 'rare',
-    exotic: 'exotic',
+    abundant : 'abundant',
+    common   : 'common',
+    average  : 'average',
+    uncommon : 'uncommon',
+    rare     : 'rare',
+    exotic   : 'exotic',
     legendary: 'legendary',
 };
 
