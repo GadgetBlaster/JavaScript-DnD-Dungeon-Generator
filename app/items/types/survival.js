@@ -17,7 +17,7 @@ const config = [
     { name: 'Hunting trap' },
     { name: 'Piton' },
     { name: 'Signal whistle' },
-    { name: 'Tent', variants: [ 'one-person', 'two-person', 'todo' ] },
+    { name: 'Tent', variants: [ 'one-person', 'two-person', 'pavilion' ] },
     { name: 'Tinderbox' },
 ];
 
