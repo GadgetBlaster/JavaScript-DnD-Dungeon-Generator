@@ -134,5 +134,11 @@ export const generateItem = (settings) => {
         name += `, ${variant}`;
     }
 
-    return name + noteText;
+    return {
+        label: name + noteText,
+        quantity: quantity,
+        rarity: itemRarity,
+        size: item.size,
+        type: item.type,
+    };
 };

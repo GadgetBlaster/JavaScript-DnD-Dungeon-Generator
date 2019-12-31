@@ -9,8 +9,10 @@ const rarityIndicated = new Set([
     rarity.legendary,
 ]);
 
-export const getItemDescription = (item, count) => {
-    return count === 1 ? item : `[${count}x] ${item}`;
+export const getItemDescription = (item) => {
+    let { label, count } = item;
+
+    return count === 1 ? label : `[${count}x] ${label}`;
 };
 
 export const getConditionDescription = (itemCondition) => {

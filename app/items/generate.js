@@ -8,7 +8,7 @@ import { roll } from '../utility/roll';
 import { subTitle, paragraph } from '../ui/typography';
 import quantity, { getRange, probability as quantityProbability } from '../attributes/quantity';
 
-const maxColumns = 3;
+const maxColumns = 2;
 
 const getItemCount = (itemQuantity) => {
     let { min, max } = getRange(itemQuantity);
@@ -18,7 +18,17 @@ const getItemCount = (itemQuantity) => {
 
 const generateItemObjects = (count, settings) => [ ...Array(count) ].reduce((obj) => {
     let item  = generateItem(settings);
-    obj[item] = (obj[item] + 1) || 1;
+    let label = item.label;
+
+    if (!obj[label]) {
+        obj[label] = item;
+        obj[label].count = 1;
+
+        return obj;
+    }
+
+    obj[label].count++;
+
     return obj;
 }, {});
 
@@ -40,11 +50,13 @@ export const generateItems = (settings) => {
         return inRoom ? [] : [ subTitle('Items (0)') ];
     }
 
-    let count = getItemCount(itemQuantity);
+    let count  = getItemCount(itemQuantity);
     let items = generateItemObjects(count, settings);
 
-    let itemList = Object.keys(items).map((item) => {
-        return getItemDescription(item, items[item]);
+    console.log(items);
+
+    let itemList = Object.keys(items).map((key) => {
+        return getItemDescription(items[key]);
     });
 
     let descriptions = [];
