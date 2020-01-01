@@ -2,7 +2,7 @@
 import { generateMap } from './map';
 import { generateRooms } from '../rooms/generate';
 import { knobs } from '../knobs';
-import { roll } from '../utility/roll';
+import { roll, rollArrayItem } from '../utility/roll';
 
 const complexityRoomCountMultiplier = 10;
 const complexityMultiplierMinXY     = 5;
@@ -26,11 +26,21 @@ const getMapDimensions = (complexity) => {
 };
 
 export const generateDungeon = (settings) => {
-    let { [knobs.dungeonComplexity]: complexity } = settings;
+    let {
+        [knobs.dungeonComplexity]: complexity,
+        [knobs.dungeonMaps]      : maps,
+    } = settings;
 
     settings[knobs.roomCount] = getMxRoomCount(complexity);
 
     let rooms = generateRooms(settings);
+
+    if (maps) {
+        for (let i = 0; i < maps; i++) {
+            let room = rollArrayItem(rooms);
+            room.map = true;
+        }
+    }
 
     let mapSettings = {
         ...getMapDimensions(complexity),

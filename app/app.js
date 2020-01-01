@@ -2,7 +2,6 @@
 // TODO
 //
 // Traps
-// Dungeon map item
 // Locked doors
 // Door keys stashed
 //
@@ -24,7 +23,7 @@ import { generateDungeon } from './dungeons/generate';
 import { generateItems } from './items/generate';
 import { generateRooms } from './rooms/generate';
 import { getKnobConfig } from './knobs';
-import { getRoomDescription, getDoorwayList } from './rooms/description';
+import { getRoomDescription, getDoorwayList, getMapDescription } from './rooms/description';
 import { nav, setActive, getActive, pages } from './ui/nav';
 import { renderKnobs, getFormData } from './ui/form';
 import { toDash, chunk } from './utility/tools';
@@ -53,8 +52,9 @@ const formatRoom = (room, doorLookup) => {
     let desc      = getRoomDescription(room, roomDoors);
     let doorList  = roomDoors ? getDoorwayList(roomDoors) : '';
     let items     = room.items.join('');
+    let map       = room.map ? getMapDescription() : '';
 
-    return article(desc + doorList + items);
+    return article(desc + doorList + items + map);
 };
 
 const getItems = (settings) => {

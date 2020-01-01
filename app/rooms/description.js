@@ -6,6 +6,7 @@ import { getEnvironmentDescription } from './environment';
 import { knobs } from '../knobs';
 import { list } from '../ui/list';
 import { random } from '../utility/random';
+import { rollArrayItem } from '../utility/roll';
 import { title, subTitle, paragraph, strong, em } from '../ui/typography';
 import { toWords, capitalize } from '../utility/tools';
 import condition from '../attributes/condition';
@@ -14,6 +15,16 @@ import quantity from '../attributes/quantity';
 import rarity from '../attributes/rarity';
 import roomType, { appendRoomTypes } from '../rooms/type';
 import size from '../attributes/size';
+
+const mapDescriptions = [
+    'Searching the room reveals a map that appears to be of the dungeon.',
+    'A large map of the dungeon is hanging on the wall.',
+    'A map of the dungeon has crudely been carved in to the wall.',
+    'Searching the room reveals a loose stone or board with a map hidden underneath it.',
+    'The floor of the room is etched with an intricate map of the dungeon.',
+];
+
+export const getMapDescription = () => subTitle('Map') + paragraph(rollArrayItem(mapDescriptions));
 
 export const getRoomTypeLabel = (type) => toWords(type) + (appendRoomTypes.has(type) ? ' room' : '');
 

@@ -34,6 +34,7 @@ const getValues = (values) => {
 export const knobs = {
     dungeonComplexity : 'dungeon-complexity',
     dungeonConnections: 'dungeon-connections',
+    dungeonMaps       : 'dungeon-maps',
     itemCondition     : 'item-condition',
     itemQuantity      : 'item-quantity',
     itemRarity        : 'item-rarity',
@@ -65,6 +66,13 @@ const config = [
                 value : 12,
                 values: [ 0, 100 ],
                 desc  : descConnections,
+            },
+            maps: {
+                label : 'Maps',
+                name  : knobs.dungeonMaps,
+                type  : typeNumber,
+                value : 2,
+                desc  : 'Number of maps of the dungeon to hide',
             },
         },
     },
