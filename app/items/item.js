@@ -3,19 +3,12 @@ import { knobs } from '../knobs';
 import { random } from '../utility/random';
 import { rollArrayItem, roll } from '../utility/roll';
 import { strong, em } from '../ui/typography';
+import condition, { probability as conditionProbability } from '../attributes/condition';
 import quantity from '../attributes/quantity';
+import rarity, { list as rarities, probability as rarityProbability } from '../attributes/rarity';
 import set from './set';
 import size from '../attributes/size';
 import type, { list as itemTypes } from './type';
-
-import rarity, {
-    list as rarities,
-    probability as rarityProbability,
-} from '../attributes/rarity';
-
-import condition, {
-    probability as conditionProbability,
-} from '../attributes/condition';
 
 /**
  * Item

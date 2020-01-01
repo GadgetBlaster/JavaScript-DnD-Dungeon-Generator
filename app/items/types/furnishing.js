@@ -1,15 +1,16 @@
 
 import { capacity } from './container';
+import { roll, rollArrayItem, Probability } from '../../utility/roll';
+import itemType from '../type';
 import rarity from '../../attributes/rarity';
 import roomType from '../../rooms/type';
 import size from '../../attributes/size';
-import itemType from '../type';
-import { roll, rollArrayItem } from '../../utility/roll';
 
 const defaults = {
-    rarity: rarity.abundant,
-    size  : size.medium,
-    type  : itemType.furnishing,
+    quantity: 1,
+    rarity  : rarity.average,
+    size    : size.medium,
+    type    : itemType.furnishing,
 };
 
 const defaultCapacity = capacity[size.medium];
@@ -49,11 +50,19 @@ const furnishing = {
 };
 
 Object.keys(furnishing).forEach((key) => {
-    let config = furnishing[key];
+    let item = furnishing[key];
+
+    let label = item.name;
+
+    if (item.variants) {
+        let variant = rollArrayItem(item.variants);
+        label += `, ${variant}`;
+    }
 
     furnishing[key] = {
         ...defaults,
-        ...config,
+        ...item,
+        label,
     };
 });
 
@@ -145,6 +154,14 @@ export const furnitureQuantity = {
     furnished: 'furnished',
 };
 
+export const probability = new Probability([
+    [ 25,  furnitureQuantity.none      ],
+    [ 75,  furnitureQuantity.minimum   ],
+    [ 92,  furnitureQuantity.sparse    ],
+    [ 98,  furnitureQuantity.average   ],
+    [ 100, furnitureQuantity.furnished ],
+]);
+
 export const furnitureQuantityList = Object.keys(furnitureQuantity);
 
 const quantityRanges = {
@@ -154,7 +171,7 @@ const quantityRanges = {
     [furnitureQuantity.furnished]: 6,
 };
 
-export const getFurnishing = (type, quantity) => {
+export const generateFurnishings = (type, quantity) => {
     let furniture = [];
 
     if (quantity === furnitureQuantity.none) {
@@ -162,7 +179,7 @@ export const getFurnishing = (type, quantity) => {
     }
 
     if (required[type]) {
-        required.forEach((item) => {
+        required[type].forEach((item) => {
             furniture.push(item);
         });
     }

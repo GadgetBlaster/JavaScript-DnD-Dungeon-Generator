@@ -1,5 +1,5 @@
 
-import { applyRoomRandomization } from '../settings';
+import { applyRoomRandomization } from './settings';
 import { generateItems } from '../items/generate';
 import { knobs } from '../knobs';
 

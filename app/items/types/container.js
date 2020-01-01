@@ -58,7 +58,7 @@ const config = [
     { name: 'Chest, large', size: large },
     { name: 'Chest, medium', size: medium },
     { name: 'Chest, small' },
-    { name: 'Component pouch', rarity: rare },
+    { name: 'Component pouch', size: tiny, rarity: rare },
     { name: 'Crate' },
     { name: 'Flask' },
     { name: 'Glass case', size: medium },

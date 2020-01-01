@@ -1,5 +1,5 @@
 
-import { furnitureQuantityList } from './items/types/furnishing';
+import { furnitureQuantityList, probability as furnitureQuantityProbability } from './items/types/furnishing';
 import { list as conditions, probability as conditionProbability } from './attributes/condition';
 import { list as itemTypes } from './items/type';
 import { list as quantities, probability as quantityProbability } from './attributes/quantity';
@@ -106,7 +106,7 @@ const config = [
                 name  : knobs.roomFurnishing,
                 type  : typeSelect,
                 values: getValues(furnitureQuantityList),
-                desc  : descFurnitureQuantity,
+                desc  : furnitureQuantityProbability.description,
             }
         },
     },

@@ -54,7 +54,7 @@ const getContentsDesc = (settings) => {
         [knobs.roomType]    : roomType,
     } = settings;
 
-    let type = toWords(roomType);
+    let type = getRoomTypeLabel(roomType).toLowerCase();
 
     let defaultRarity = itemRarity === random ? '' : 'ordinary';
     let rarity = contentsRarity.has(itemRarity) ? itemRarity : defaultRarity;

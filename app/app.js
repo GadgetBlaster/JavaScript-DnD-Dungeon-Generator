@@ -1,9 +1,8 @@
 
 // TODO:
-// Room type item affinity
+// Room type furniture affinity
 // Flesh out items
 // Add furniture to description
-// Fill containers
 // Traps
 // Dungeon map item
 // Locked doors
@@ -62,7 +61,7 @@ const formatRoom = (room, doorLookup) => {
 const getItems = (settings) => {
     let items = generateItems(settings).join('');
 
-    return section(items, { 'data-grid': true });
+    return section(items);
 };
 
 const getRoomRows = (rooms, doorLookup) => {

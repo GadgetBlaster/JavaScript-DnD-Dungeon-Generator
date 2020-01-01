@@ -1,13 +1,15 @@
 
 import { article } from '../ui/block';
 import { capacity, itemSizeSpace, maxItemQuantitySmall } from './types/container';
+import { generateFurnishings } from './types/furnishing';
 import { generateItem } from './item';
 import { getRarityDescription, getConditionDescription, getItemDescription } from './description';
 import { knobs } from '../knobs';
 import { list } from '../ui/list';
 import { random } from '../utility/random';
 import { roll } from '../utility/roll';
-import { subTitle, paragraph } from '../ui/typography';
+import { subTitle, paragraph, em } from '../ui/typography';
+import condition from '../attributes/condition';
 import itemType from './type';
 import quantity, { getRange, probability as quantityProbability } from '../attributes/quantity';
 import size from '../attributes/size';
@@ -28,7 +30,26 @@ const generateItemObjects = (count, settings) => [ ...Array(count) ].reduce((obj
     let label = item.label;
 
     if (!obj[label]) {
-        obj[label] = item;
+        obj[label] = { ...item };
+        obj[label].count = 1;
+
+        return obj;
+    }
+
+    obj[label].count++;
+
+    return obj;
+}, {});
+
+const getFurnishingObjects = (furnishings, roomCondition) => furnishings.reduce((obj, item) => {
+    let label = item.label;
+
+    if (roomCondition !== condition.average) {
+        label += ` (${em(roomCondition)})`;
+    }
+
+    if (!obj[label]) {
+        obj[label] = { ...item, label };
         obj[label].count = 1;
 
         return obj;
@@ -41,10 +62,12 @@ const generateItemObjects = (count, settings) => [ ...Array(count) ].reduce((obj
 
 export const generateItems = (settings) => {
     let {
-        [knobs.roomType]     : roomType,
-        [knobs.itemCondition]: itemCondition,
-        [knobs.itemQuantity] : itemQuantity,
-        [knobs.itemRarity]   : itemRarity,
+        [knobs.roomType]      : roomType,
+        [knobs.itemCondition] : itemCondition,
+        [knobs.itemQuantity]  : itemQuantity,
+        [knobs.itemRarity]    : itemRarity,
+        [knobs.roomFurnishing]: furnitureQuantity,
+        [knobs.roomCondition] : roomCondition,
     } = settings;
 
     if (itemQuantity === random) {
@@ -63,6 +86,22 @@ export const generateItems = (settings) => {
     let containers = [];
     let smallItems = [];
     let remaining  = [];
+
+    let furnishings     = inRoom ? generateFurnishings(roomType, furnitureQuantity) : [];
+    let furnishingObj   = getFurnishingObjects(furnishings, roomCondition);
+
+    let total = count + furnishings.length;
+
+    Object.keys(furnishingObj).forEach((key) => {
+        let item = furnishingObj[key];
+
+        if (item.capacity) {
+            containers.push(item);
+            return;
+        }
+
+        remaining.push(item);
+    });
 
     Object.keys(items).forEach((key) => {
         let item = items[key];
@@ -87,7 +126,7 @@ export const generateItems = (settings) => {
             return;
         }
 
-        let contents        = [];
+        let contents       = [];
         let remainingSpace = capacity[container.size];
         let itemCount      = smallItems.length;
 
@@ -137,7 +176,7 @@ export const generateItems = (settings) => {
             return;
         }
 
-        let items = container.contents && container.contents.map((item) => getItemDescription(item));
+        let items = container.contents.length && container.contents.map((item) => getItemDescription(item));
         let desc  = getItemDescription(container);
 
         return article(desc + (items ? list(items) : ''));
@@ -168,7 +207,7 @@ export const generateItems = (settings) => {
     let description = descriptions.length && paragraph(descriptions.map((desc) => desc).join(' | '));
 
     return [
-        subTitle(`Items (${count})`),
+        subTitle(`Items (${total})`),
         description,
         itemList,
     ].filter(Boolean);
