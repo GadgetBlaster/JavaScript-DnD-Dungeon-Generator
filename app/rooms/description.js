@@ -10,7 +10,7 @@ import { rollArrayItem } from '../utility/roll';
 import { title, subTitle, paragraph, strong, em } from '../ui/typography';
 import { toWords, capitalize } from '../utility/tools';
 import condition from '../attributes/condition';
-import doorType, { lockable, outside } from './door';
+import doorType, { appendDoorway, outside } from './door';
 import quantity from '../attributes/quantity';
 import rarity from '../attributes/rarity';
 import roomType, { appendRoomTypes } from '../rooms/type';
@@ -155,9 +155,9 @@ const getItemConditionDescription = (settings) => {
 
 const getDoorwayDesc = (type, size) => {
     let sizeDesc;
-    let appendDoorway = lockable.has(type) && 'doorway';
+    let append = appendDoorway.has(type) && 'doorway';
 
-    if (size === 2 && appendDoorway) {
+    if (size === 2 && append) {
         sizeDesc = 'double wide';
     } else if (size === 3) {
         sizeDesc = 'large';
@@ -165,7 +165,7 @@ const getDoorwayDesc = (type, size) => {
         sizeDesc = 'massive';
     }
 
-    return [ sizeDesc, type, appendDoorway ].filter(Boolean).join(' ');
+    return [ sizeDesc, type, append ].filter(Boolean).join(' ');
 };
 
 const getDoorwayDescription = (roomDoors) => {

@@ -35,6 +35,7 @@ export const knobs = {
     dungeonComplexity : 'dungeon-complexity',
     dungeonConnections: 'dungeon-connections',
     dungeonMaps       : 'dungeon-maps',
+    dungeonLocks      : 'dungeon-locks',
     itemCondition     : 'item-condition',
     itemQuantity      : 'item-quantity',
     itemRarity        : 'item-rarity',

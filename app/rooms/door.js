@@ -22,10 +22,17 @@ export const list = Object.keys(door);
 
 export const outside = 'outside';
 
+export const appendDoorway = new Set([
+    door.brass,
+    door.iron,
+    door.steel,
+    door.stone,
+    door.wooden,
+]);
+
 export const lockable = new Set([
     door.brass,
     door.iron,
-    door.metal,
     door.portcullis,
     door.steel,
     door.stone,
@@ -33,12 +40,15 @@ export const lockable = new Set([
 ]);
 
 export const probability = new Probability([
-    [ 30,  door.passageway ],
-    [ 50,  door.archway    ],
-    [ 65,  door.hole       ],
-    [ 75,  door.wooden     ],
-    [ 89,  door.metal      ],
-    [ 99,  door.stone      ],
+    [ 25,  door.passageway ],
+    [ 45,  door.archway    ],
+    [ 55,  door.hole       ],
+    [ 60,  door.portcullis ],
+    [ 70,  door.wooden     ],
+    [ 80,  door.steel      ],
+    [ 85,  door.iron       ],
+    [ 90,  door.brass      ],
+    [ 95,  door.stone      ],
     [ 100, door.portal     ],
 ]);
 
