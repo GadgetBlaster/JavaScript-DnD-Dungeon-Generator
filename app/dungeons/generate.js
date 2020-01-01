@@ -54,7 +54,7 @@ export const generateDungeon = (settings) => {
 
     if (maps) {
         for (let i = 0; i < maps; i++) {
-            let room = rollArrayItem(dungeon.doors);
+            let room = rollArrayItem(dungeon.rooms);
             room.map = true;
         }
     }

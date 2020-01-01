@@ -24,7 +24,7 @@ const mapDescriptions = [
     'The floor of the room is etched with an intricate map of the dungeon.',
 ];
 
-export const getMapDescription = () => subTitle('Map') + paragraph(rollArrayItem(mapDescriptions));
+export const getMapDescription = () => subTitle('Map') + list([ rollArrayItem(mapDescriptions) ]);
 
 const getKeyDetail = (type) => {
     switch (type) {
