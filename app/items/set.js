@@ -4,7 +4,6 @@ import armor from './types/armor';
 import chancery from './types/chancery';
 import clothing from './types/clothing';
 import coin from './types/coin';
-import component from './types/component';
 import container from './types/container';
 import food from './types/food';
 import kitchen from './types/kitchen';
@@ -24,7 +23,6 @@ export default [
     ...chancery,
     ...clothing,
     ...coin,
-    ...component,
     ...container,
     ...food,
     ...kitchen,

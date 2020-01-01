@@ -5,7 +5,6 @@ const type = {
     chancery     : 'chancery',
     clothing     : 'clothing',
     coin         : 'coin',
-    component    : 'component',
     container    : 'container',
     food         : 'food',
     furnishing   : 'furnishing',
