@@ -2,7 +2,7 @@
 import rarity from '../../attributes/rarity';
 import size from '../../attributes/size';
 
-let { abundant, common, uncommon, rare, exotic } = rarity;
+let { abundant, common, uncommon, rare, exotic, legendary } = rarity;
 let { tiny, medium, large } = size;
 
 const defaults = {

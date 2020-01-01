@@ -37,6 +37,7 @@ const rarityIndicated = new Set([
 
 const detailsHidden = new Set([
     type.coin,
+    type.treasure,
 ]);
 
 const items = set.map((item) => ({ ...defaults, ...item }));

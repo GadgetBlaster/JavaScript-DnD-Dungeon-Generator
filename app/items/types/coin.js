@@ -11,8 +11,8 @@ let {
 
 const defaults = {
     quantity: 100,
-    type: type.coin,
-    rarity: uncommon,
+    type    : type.coin,
+    rarity  : uncommon,
 };
 
 const config = [

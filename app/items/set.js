@@ -12,10 +12,11 @@ import miscellaneous from './types/miscellaneous';
 import mythic from './types/mythic';
 import potion from './types/potion';
 import survival from './types/survival';
-import tool from './types/tool';
-import weapon from './types/weapon';
 import tack from './types/tack';
+import tool from './types/tool';
+import treasure from './types/treasure';
 import trinket from './types/trinket';
+import weapon from './types/weapon';
 
 export default [
     ...ammo,
@@ -33,6 +34,7 @@ export default [
     ...survival,
     ...tack,
     ...tool,
+    ...treasure,
     ...trinket,
     ...weapon,
 ];

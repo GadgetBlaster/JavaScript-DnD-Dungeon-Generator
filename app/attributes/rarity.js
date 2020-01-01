@@ -31,6 +31,6 @@ export const probability = new Probability([
     [ 75,  average   ],
     [ 85,  uncommon  ],
     [ 93,  rare      ],
-    [ 98,  exotic    ],
+    [ 99,  exotic    ],
     [ 100, legendary ],
 ]);
