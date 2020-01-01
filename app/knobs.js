@@ -2,7 +2,7 @@
 import { furnitureQuantityList, probability as furnitureQuantityProbability } from './items/types/furnishing';
 import { list as conditions, probability as conditionProbability } from './attributes/condition';
 import { list as itemTypes } from './items/type';
-import quantity, { list as quantities, probability as quantityProbability } from './attributes/quantity';
+import { list as quantities, probability as quantityProbability } from './attributes/quantity';
 import { list as rarities, probability as rarityProbability } from './attributes/rarity';
 import { list as roomTypes } from './rooms/type';
 import { list as sizes } from './attributes/size';
@@ -24,9 +24,9 @@ const descConnections = `Probably that rooms will be connected to adjacent
 
 const descFurnitureQuantity = 'How furnished the dungeon‘s rooms are.';
 
-const descMaps = 'Number of maps of the dungeon to hide.';
+const descMaps = 'Number of maps of the dungeon to find.';
 
-const descDoorQuantity = 'Number of locked doors and corresponding keys (2 for each door) to hide.';
+const descTraps = 'Trap randomization frequency.';
 
 const getValues = (values) => {
     return [
@@ -39,6 +39,7 @@ export const knobs = {
     dungeonComplexity : 'dungeon-complexity',
     dungeonConnections: 'dungeon-connections',
     dungeonMaps       : 'dungeon-maps',
+    dungeonTraps      : 'dungeon-traps',
     itemCondition     : 'item-condition',
     itemQuantity      : 'item-quantity',
     itemRarity        : 'item-rarity',
@@ -60,7 +61,7 @@ const config = [
                 name  : knobs.dungeonComplexity,
                 type  : typeRange,
                 value : 5,
-                values: [ 2, 10 ],
+                values: [ 2, 11 ],
                 desc  : descComplexity,
             },
             connections: {
@@ -77,6 +78,14 @@ const config = [
                 type  : typeNumber,
                 value : 2,
                 desc  : descMaps,
+            },
+            traps: {
+                label : 'Traps',
+                name  : knobs.dungeonTraps,
+                type  : typeRange,
+                value : [ 1 ],
+                values: [ 0, 4 ],
+                desc  : descTraps,
             },
         },
     },

@@ -70,7 +70,7 @@ const getRoomDimensions = (mapSettings, roomConfig) => {
     return { roomWidth: width, roomHeight: height };
 };
 
-const getRoom = (grid, room) => {
+const getRoom = (grid, room, { hasTraps }) => {
     let { x, y, width, height, type, roomNumber } = room;
 
     let walls = [];
@@ -113,7 +113,7 @@ const getRoom = (grid, room) => {
     let showRoomLabel = type !== roomType.room && width >= labelMinWidth && height >= labelMinHeight;
     let roomLabel     = showRoomLabel && toWords(type);
 
-    let rect = drawRoom(roomAttrs, { roomNumber, roomLabel });
+    let rect = drawRoom(roomAttrs, { roomNumber, roomLabel }, { hasTraps });
 
     return {
         rect,
@@ -362,7 +362,7 @@ const drawRooms = (mapSettings, mapRooms, grid, roomNumber = 1, prevRoom) => {
             roomNumber,
         };
 
-        let { rect, walls } = getRoom(grid, room);
+        let { rect, walls } = getRoom(grid, room, { hasTraps: Boolean(roomConfig.traps) });
 
         room.walls = walls;
 

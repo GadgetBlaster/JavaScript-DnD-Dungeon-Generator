@@ -10,13 +10,14 @@ const pxGridLine = 1;
 
 const colorGridFill     = '#f0f0f0';
 const colorGridStroke   = '#cfcfcf';
-const colorRoomFill     = 'rgba(255, 255, 255, 0.7)';
 const colorLockedFill   = '#cccccc';
-const colorRoomStroke   = '#a9a9a9';
-const colorText         = '#666666';
 const colorPillarFill   = '#f9f9f9';
 const colorPillarStroke = 'rgba(207, 207, 207, 0.7)';
+const colorRoomFill     = 'rgba(255, 255, 255, 0.7)';
+const colorRoomStroke   = '#a9a9a9';
+const colorText         = '#666666';
 const colorTransparent  = 'transparent';
+const colorTrapFill     = 'rgba(207, 207, 207, 0.8)';
 
 const radiusPillar = 4;
 const radiusHole   = 6;
@@ -27,18 +28,20 @@ const doorInset    = 12;
 const doorSecretLabel    = 'S';
 const doorConcealedLabel = 'C';
 
+const trapLabel = 'T';
+
 export const labelMinWidth  = 3;
 export const labelMinHeight = 2;
 
 const pillarThreshold = 6;
 
-const labelRoomNumberFontSize = 14;
-const labelRoomTypeFontSize   = 10;
+const fontSizeNormal = 14;
+const fontSizeSmall  = 10;
 
-const drawText = (text, [ x, y ], { fontSize = labelRoomNumberFontSize } = {}) => {
+const drawText = (text, [ x, y ], { fontSize = fontSizeNormal, fill = colorText } = {}) => {
     let attrs = createAttrs({
         x, y: y + 2,
-        fill: colorText,
+        fill,
         'alignment-baseline': 'middle',
         'font-family': 'monospace',
         'font-size': `${fontSize}px`,
@@ -98,10 +101,10 @@ const getRectAttrs = ({ x, y, width, height }) => {
 };
 
 const drawRoomText = (rectAttrs, { roomNumber, roomLabel }) => {
-    let middleX = (rectAttrs.x + rectAttrs.width  / 2);
-    let middleY = (rectAttrs.y + rectAttrs.height / 2);
+    let middleX = (rectAttrs.x + (rectAttrs.width  / 2));
+    let middleY = (rectAttrs.y + (rectAttrs.height / 2));
 
-    let fontSize = labelRoomNumberFontSize;
+    let fontSize = fontSizeNormal;
     let labelY   = roomLabel ? middleY - (fontSize / 2) : middleY;
 
     let text = drawText(roomNumber, [ middleX, labelY ], { fontSize });
@@ -109,10 +112,17 @@ const drawRoomText = (rectAttrs, { roomNumber, roomLabel }) => {
     if (roomLabel) {
         let roomLabelY = labelY + fontSize;
 
-        text += drawText(roomLabel, [ middleX, roomLabelY ], { fontSize: labelRoomTypeFontSize });
+        text += drawText(roomLabel, [ middleX, roomLabelY ], { fontSize: fontSizeSmall });
     }
 
     return text;
+};
+
+const drawTrapText = (rectAttrs) => {
+    let middleX = (rectAttrs.x + (pxCell  / 2));
+    let middleY = (rectAttrs.y + (rectAttrs.height - (pxCell / 2)));
+
+    return drawText(trapLabel, [ middleX, middleY ], { fill: colorTrapFill });
 };
 
 export const drawGrid = ({ gridWidth, gridHeight }) => {
@@ -176,7 +186,7 @@ const drawPillars = ({ x, y, width, height }) => {
     return pillars;
 };
 
-export const drawRoom = (roomAttrs, roomTextConfig) => {
+export const drawRoom = (roomAttrs, roomTextConfig, { hasTraps } = {}) => {
     let rectAttrs = getRectAttrs(roomAttrs);
 
     let attrs = {
@@ -190,8 +200,9 @@ export const drawRoom = (roomAttrs, roomTextConfig) => {
     let rect    = drawRect(attrs);
     let pillars = drawPillars(roomAttrs) || [];
     let text    = drawRoomText(rectAttrs, roomTextConfig);
+    let trap    = hasTraps ? drawTrapText(rectAttrs) : '';
 
-    return rect + pillars.join('') + text;
+    return rect + pillars.join('') + text + trap;
 };
 
 export const drawDoor = (doorAttrs, { direction, type, locked }) => {

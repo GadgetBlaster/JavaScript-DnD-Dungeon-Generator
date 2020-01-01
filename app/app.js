@@ -30,6 +30,8 @@ import { getKnobConfig } from './knobs';
 import { nav, setActive, getActive, pages } from './ui/nav';
 import { renderKnobs, getFormData } from './ui/form';
 import { toDash, chunk } from './utility/tools';
+import { list } from './ui/list';
+import { subTitle } from './ui/typography';
 
 const navContainer     = document.getElementById('nav');
 const knobContainer    = document.getElementById('knobs');
@@ -57,8 +59,9 @@ const formatRoom = (room, doors) => {
     let items     = room.items.join('');
     let map       = room.map ? getMapDescription() : '';
     let keys      = room.keys ? getKeyDescription(room.keys) : '';
+    let traps     = room.traps ? subTitle(`Traps (${room.traps.length})`) + list(room.traps) : '';
 
-    return article(desc + doorList + items + map + keys);
+    return article(desc + doorList + items + map + keys + traps);
 };
 
 const getItems = (settings) => {
