@@ -17,6 +17,7 @@ const type = {
     survival     : 'survival',
     tack         : 'tack',
     tool         : 'tool',
+    trinket      : 'trinket',
     weapon       : 'weapon',
 };
 

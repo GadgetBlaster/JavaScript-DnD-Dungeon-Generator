@@ -16,6 +16,7 @@ import survival from './types/survival';
 import tool from './types/tool';
 import weapon from './types/weapon';
 import tack from './types/tack';
+import trinket from './types/trinket';
 
 export default [
     ...ammo,
@@ -34,5 +35,6 @@ export default [
     ...survival,
     ...tack,
     ...tool,
+    ...trinket,
     ...weapon,
 ];
