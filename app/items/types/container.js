@@ -25,8 +25,8 @@ const {
 export const capacity = {
     [tiny]  : 0.5,
     [small] : 1,
-    [medium]: 10,
-    [large] : 20,
+    [medium]: 5,
+    [large] : 10,
 };
 
 export const itemSizeSpace = {

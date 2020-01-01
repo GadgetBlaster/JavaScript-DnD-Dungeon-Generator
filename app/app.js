@@ -1,6 +1,5 @@
 
 // TODO:
-// Room type furniture affinity
 // Flesh out items
 // Add furniture to description
 // Traps

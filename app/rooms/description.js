@@ -1,6 +1,7 @@
 
 import { cellFeet } from '../dungeons/grid';
 import { element } from '../utility/html';
+import { furnitureQuantity } from '../items/types/furnishing';
 import { getEnvironmentDescription } from './environment';
 import { knobs } from '../knobs';
 import { list } from '../ui/list';
@@ -49,32 +50,64 @@ const contentsRarity = new Set([
 
 const getContentsDesc = (settings) => {
     let {
-        [knobs.itemQuantity]: itemQuantity,
-        [knobs.itemRarity]  : itemRarity,
-        [knobs.roomType]    : roomType,
+        [knobs.itemQuantity]  : itemQuantity,
+        [knobs.itemRarity]    : itemRarity,
+        [knobs.roomFurnishing]: furnitureQuantitySetting,
+        [knobs.roomType]      : roomType,
     } = settings;
 
     let type = getRoomTypeLabel(roomType).toLowerCase();
 
-    let defaultRarity = itemRarity === random ? '' : 'ordinary';
-    let rarity = contentsRarity.has(itemRarity) ? itemRarity : defaultRarity;
+    let defaultRarity  = itemRarity === random ? '' : 'ordinary';
+    let rarity         = contentsRarity.has(itemRarity) ? itemRarity : defaultRarity;
+    let furniture      = '';
+
+    switch (furnitureQuantitySetting) {
+        case furnitureQuantity.minimum:
+            furniture = 'minimal furnishings'
+            break;
+
+        case furnitureQuantity.sparse:
+            furniture = 'sparse furnishings'
+            break;
+
+        case furnitureQuantity.average:
+        case furnitureQuantity.furnished:
+            furniture = 'some furniture';
+            break;
+    }
+
+    let furnitureText;
 
     switch (itemQuantity) {
         case quantity.one:
-            return `The ${type} is entirely empty except for a single ${rarity} item`;
+            furnitureText = furniture ? (furniture + ' and') : '';
+            return `The ${type} is entirely empty except for ${furnitureText} a single ${rarity} item`;
+
         case quantity.couple:
-            return `There are a couple of ${rarity} things in the ${type}`;
+            furnitureText = furniture ? (' amongst ' + furniture ) : '';
+            return `There are a couple of ${rarity} things in the ${type}${furnitureText}`;
+
         case quantity.few:
-            return `There are a few ${rarity} things in the ${type}`;
+            furnitureText = furniture ? (' amongst ' + furniture ) : '';
+            return `There are a few ${rarity} things in the ${type}${furnitureText}`;
+
         case quantity.some:
         case quantity.several:
-            return `You can see ${itemQuantity} ${rarity} objects as you look around`;
+            furnitureText = furniture ? (furniture + ' and ' ) : '';
+            return `You can see ${furnitureText}${itemQuantity} ${rarity} items as you search around`;
+
         case quantity.many:
-            return `The ${type} is cluttered with ${rarity} items`;
+            furnitureText = furniture ? (' and ' + furniture) : '';
+            return `The ${type} is cluttered with ${rarity} items${furnitureText}`;
+
         case quantity.numerous:
-            return `There are numerous ${rarity} objects littering the ${type}`;
+            furnitureText = furniture ? (' amongst ' + furniture ) : '';
+            return `There are numerous ${rarity} objects littering the ${type}${furnitureText}`;
+
         case quantity.zero:
             return;
+
         default:
             console.warn(`Undescribed item quantity: ${itemQuantity}`);
             return;

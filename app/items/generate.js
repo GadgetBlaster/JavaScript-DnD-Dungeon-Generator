@@ -87,8 +87,8 @@ export const generateItems = (settings) => {
     let smallItems = [];
     let remaining  = [];
 
-    let furnishings     = inRoom ? generateFurnishings(roomType, furnitureQuantity) : [];
-    let furnishingObj   = getFurnishingObjects(furnishings, roomCondition);
+    let furnishings   = inRoom ? generateFurnishings(roomType, furnitureQuantity) : [];
+    let furnishingObj = getFurnishingObjects(furnishings, roomCondition);
 
     let total = count + furnishings.length;
 
@@ -143,7 +143,7 @@ export const generateItems = (settings) => {
 
             if (item.quantity > maxItemQuantitySmall) {
                 debugContainerFill && console.log(`${item.label} quantity of ${item.quantity} is too many for ${container.label}`);
-                return;
+                continue;
             }
 
             let spaceRequired     = itemSizeSpace[item.size];
