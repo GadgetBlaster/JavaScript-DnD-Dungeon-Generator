@@ -4,12 +4,13 @@ import type from '../type';
 
 let {
     common,
-    uncommon,
+    exotic,
     rare,
+    uncommon,
 } = rarity;
 
 const defaults = {
-    quantity: 200,
+    quantity: 100,
     type: type.coin,
     rarity: uncommon,
 };
@@ -17,9 +18,9 @@ const defaults = {
 const config = [
     { name: 'Copper piece', rarity: common },
     { name: 'Silver piece' },
-    { name: 'Electrum piece', rarity: rare },
-    { name: 'Gold piece' },
-    { name: 'Platinum piece', rarity: rare },
+    { name: 'Electrum piece', rarity: exotic },
+    { name: 'Gold piece', rarity: rare },
+    { name: 'Platinum piece', rarity: exotic },
 ];
 
 export default config.map((item) => ({ ...defaults, ...item }));

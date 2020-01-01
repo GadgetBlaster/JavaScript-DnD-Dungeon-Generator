@@ -1,19 +1,27 @@
 
 import rarity from '../../attributes/rarity';
+import size from '../../attributes/size';
 import type from '../type';
 
-let { common, uncommon } = rarity;
+let { large } = size
+let { abundant, common, uncommon } = rarity;
 
 const defaults = {
     rarity: uncommon,
-    type: type.survival,
+    type  : type.survival,
 };
 
 const config = [
     { name: 'Bedroll', rarity: common },
     { name: 'Blanket', rarity: common },
     { name: 'Climber’s kit' },
+    { name: 'Crampons' },
+    { name: 'Firewood', rarity: abundant },
+    { name: 'Fishhook' },
+    { name: 'Fishing net, large', size: large },
+    { name: 'Fishing net', variants: [ 'small', 'medium' ] },
     { name: 'Fishing tackle' },
+    { name: 'Flint and steel' },
     { name: 'Hunting trap' },
     { name: 'Piton' },
     { name: 'Signal whistle' },

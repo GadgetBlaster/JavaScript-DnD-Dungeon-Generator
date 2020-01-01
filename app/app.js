@@ -1,7 +1,6 @@
 
 // TODO:
 // Flesh out items
-// Add furniture to description
 // Traps
 // Dungeon map item
 // Locked doors

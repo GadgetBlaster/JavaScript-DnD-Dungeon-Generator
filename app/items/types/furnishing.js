@@ -31,7 +31,7 @@ const furnishing = {
     fireplace: { name: 'Fireplace' },
     forge    : { name: 'Forge' },
     lamp     : { name: 'Oil lamp' },
-    mirror   : { name: 'Mirror' },
+    mirror   : { name: 'Mirror, large' },
     painting : { name: 'Painting' },
     pillar   : { name: 'Pillar' },
     rack     : { name: 'Rack', capacity: defaultCapacity, variants: [ 'wood', 'metal' ] },

@@ -1,5 +1,6 @@
 
 import ammo from './types/ammo';
+import armor from './types/armor';
 import chancery from './types/chancery';
 import clothing from './types/clothing';
 import coin from './types/coin';
@@ -14,9 +15,11 @@ import potion from './types/potion';
 import survival from './types/survival';
 import tool from './types/tool';
 import weapon from './types/weapon';
+import tack from './types/tack';
 
 export default [
     ...ammo,
+    ...armor,
     ...chancery,
     ...clothing,
     ...coin,
@@ -29,6 +32,7 @@ export default [
     ...mythic,
     ...potion,
     ...survival,
+    ...tack,
     ...tool,
     ...weapon,
 ];

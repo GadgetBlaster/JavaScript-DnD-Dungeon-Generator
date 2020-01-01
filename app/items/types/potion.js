@@ -2,9 +2,9 @@
 import rarity from '../../attributes/rarity';
 import type from '../type';
 
-const defaults = { 
+const defaults = {
     rarity: rarity.rare,
-    type: type.mythic,
+    type  : type.potion,
 };
 
 const config = [

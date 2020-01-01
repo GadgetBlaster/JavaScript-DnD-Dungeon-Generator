@@ -68,7 +68,7 @@ const getStructureDesc = (settings, roomStructure) => {
             return `The ${type} is made entirely of ice`;
 
         case structure.marble:
-            return `The ${type} is carved through solid marble`;
+            return `The ${type} is built of marble tiles`;
 
         case structure.stone:
         case structure.wood:

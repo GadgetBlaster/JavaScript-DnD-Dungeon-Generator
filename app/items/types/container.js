@@ -38,8 +38,8 @@ export const maxItemQuantitySmall = 10;
 
 const defaults = {
     rarity: common,
-    size: small,
-    type: type.container,
+    size  : small,
+    type  : type.container,
 };
 
 const config = [
@@ -47,8 +47,12 @@ const config = [
     { name: 'Barrel, large', size: large },
     { name: 'Barrel, medium', size: medium },
     { name: 'Barrel, small' },
-    { name: 'Basket' },
+    { name: 'Basket, large', size: medium },
+    { name: 'Basket, small', size: small },
+    { name: 'Belt pouch, large' },
+    { name: 'Belt pouch, small', size: tiny },
     { name: 'Bottle, glass', size: tiny },
+    { name: 'Bowl', variants: [ 'wood', 'stone', 'glass' ] },
     { name: 'Box, large', size: large, variants: [ 'wood', 'stone', 'metal' ] },
     { name: 'Box, medium', size: medium, variants: [ 'wood', 'stone', 'metal' ] },
     { name: 'Box, small', variants: [ 'wood', 'stone', 'metal' ] },
@@ -69,6 +73,7 @@ const config = [
     { name: 'Sack' },
     { name: 'Tankard', size: tiny, rarity: abundant },
     { name: 'Vial', size: tiny, rarity: uncommon },
+    { name: 'Wagon', size: large },
     { name: 'Waterskin' },
 ];
 

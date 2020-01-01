@@ -2,10 +2,7 @@
 import rarity from '../../attributes/rarity';
 import type from '../type';
 
-let {
-    common,
-    uncommon,
-} = rarity;
+let { common, uncommon, rare } = rarity;
 
 const variants = [
     'barrel',
@@ -21,19 +18,28 @@ const variants = [
 ];
 
 const defaults = {
-    rarity: uncommon,
-    type: type.liquid,
-    variants,
+    rarity  : uncommon,
+    type    : type.liquid,
+    variants: variants,
 };
 
 const config = [
     { name: 'Acid' },
     { name: 'Alchemist’s fire' },
+    { name: 'Ale' },
     { name: 'Antitoxin' },
+    { name: 'Cider, apple' },
+    { name: 'Cider, hard' },
+    { name: 'Grog' },
     { name: 'Holy water' },
-    { name: 'Oil' },
-    { name: 'Water', rarity: common },
+    { name: 'Oil, lamp' },
     { name: 'Poison, basic' },
+    { name: 'Poison, deadly', rarity: rare },
+    { name: 'Water, clean', rarity: common },
+    { name: 'Water, dirty', rarity: common },
+    { name: 'Whisky' },
+    { name: 'Wine, common' },
+    { name: 'Wine, fine', rarity: rare },
 ];
 
 export default config.map((item) => ({ ...defaults, ...item }));

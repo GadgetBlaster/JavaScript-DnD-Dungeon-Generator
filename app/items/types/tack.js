@@ -1,0 +1,23 @@
+
+import rarity from '../../attributes/rarity';
+import type from '../type';
+
+let { abundant, common, uncommon } = rarity;
+
+const defaults = {
+    rarity: uncommon,
+    type  : type.tack,
+};
+
+const config = [
+    { name: 'Barding', variants: [ 'chain', 'plage', 'scabb' ] },
+    { name: 'Bit and bridle' },
+    { name: 'Carriage' },
+    { name: 'Cart' },
+    { name: 'Chariot' },
+    { name: 'Feed' },
+    { name: 'Saddle', variants: [ 'Exotic', 'Military', 'Pack', 'Riding' ] },
+    { name: 'Saddlebags' }
+];
+
+export default config.map((item) => ({ ...defaults, ...item }));

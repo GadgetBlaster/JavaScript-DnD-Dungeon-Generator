@@ -10,8 +10,8 @@ import { roomTypeSizes } from './dimensions';
 import quantity from '../attributes/quantity';
 import roomType, { list as roomTypes, probability as roomTypeProbability } from './type';
 
-const uniformConditionChance = 20;
-const uniformRarityChance    = 20;
+const uniformConditionChance = 10;
+const uniformRarityChance    = 10;
 
 const rollRoomSize = (type) => {
     return rollArrayItem(roomTypeSizes[type]);

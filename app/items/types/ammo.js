@@ -3,8 +3,9 @@ import rarity from '../../attributes/rarity'
 import type from '../type';
 
 const defaults = {
-    quantity: 200,
-    type: type.ammo,
+    quantity: 50,
+    rarity  : rarity.common,
+    type    : type.ammo,
 };
 
 const config = [

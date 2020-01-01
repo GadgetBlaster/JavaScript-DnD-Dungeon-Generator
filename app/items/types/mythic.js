@@ -4,7 +4,7 @@ import type from '../type';
 
 const defaults = {
     rarity: rarity.rare,
-    type: type.mythic,
+    type  : type.mythic,
 };
 
 const config = [
