@@ -33,6 +33,7 @@ const air = {
 };
 
 const ground = {
+    ashes   : 'ashes',
     bloody  : 'bloody',
     dirt    : 'dirt',
     flooded : 'flooded',
@@ -49,6 +50,7 @@ const wall = {
     crumbling: 'crumbling',
     scorched : 'scorched',
     slimy    : 'slimy',
+    webs     : 'webs',
 };
 
 const getStructureDesc = (settings, roomStructure) => {
@@ -90,6 +92,9 @@ const getGroundDesc = () => {
     let random = rollArrayItem(Object.keys(ground));
 
     switch (random) {
+        case ground.ashes:
+            return 'The floor is covered with ashes';
+
         case ground.bloody:
             let isFresh = roll() ? 'Fresh blood' : 'Blood stains';
             return `${isFresh} can be seen on the floor`;
@@ -144,6 +149,9 @@ const getWallDesc = () => {
 
         case wall.slimy:
             return 'Something slimy drips from the walls';
+
+        case wall.webs:
+            return 'The walls are covered in thick spider webs';
 
         default:
             throw 'Undefined wall';

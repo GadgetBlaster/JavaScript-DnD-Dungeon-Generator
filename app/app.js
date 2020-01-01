@@ -1,10 +1,11 @@
 
-// TODO:
-// Flesh out items
+// TODO
+//
 // Traps
 // Dungeon map item
 // Locked doors
 // Door keys stashed
+//
 // Checkboxes for randomized sets
 // Trim map
 // Levels

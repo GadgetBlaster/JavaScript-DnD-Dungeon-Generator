@@ -2,7 +2,7 @@
 import rarity from '../../attributes/rarity';
 import type from '../type';
 
-let { abundant, common, uncommon } = rarity;
+let { abundant, common, average, uncommon } = rarity;
 
 const defaults = {
     rarity: abundant,
@@ -10,6 +10,8 @@ const defaults = {
 };
 
 const config = [
+    { name: 'Basin' },
+    { name: 'Cauldron', rarity: average },
     { name: 'Cutting board' },
     { name: 'Fork' },
     { name: 'Kitchen knife' },
@@ -20,6 +22,7 @@ const config = [
     { name: 'Soap', rarity: uncommon },
     { name: 'Spoon' },
     { name: 'Steak knife' },
+    { name: 'Tub' },
 ];
 
 export default config.map((item) => ({ ...defaults, ...item }));

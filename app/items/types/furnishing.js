@@ -23,7 +23,7 @@ const furnishing = {
     bookcase : { name: 'Bookcase', capacity: defaultCapacity, variants: [ 'wood', 'metal' ] },
     cabinet  : { name: 'Cabinet', capacity: defaultCapacity },
     carpet   : { name: 'Carpet' },
-    chair    : { name: 'Chair', variants: [ 'wood', 'cushioned', 'stone', 'stool' ] },
+    chair    : { name: 'Chair', variants: [ 'armchair', 'wood', 'cushioned', 'stone', 'stool' ] },
     cupboard : { name: 'Cupboard', capacity: defaultCapacity },
     desk     : { name: 'Desk', capacity: defaultCapacity, variants: [ 'wood', 'stone', 'metal' ] },
     dresser  : { name: 'Dresser', capacity: defaultCapacity },
