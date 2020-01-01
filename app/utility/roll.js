@@ -36,7 +36,7 @@ export function Probability(config) {
 
     let sorted = [ ...map.keys() ].sort((a, b) => a - b);
 
-    let description = 'Probability: ' + sorted.reduce((acc, key, index) => {
+    let description = 'Random probability: ' + sorted.reduce((acc, key, index) => {
         let prev  = sorted[index - 1];
         let start = prev ? (prev + 1) : 1;
         let end   = key;

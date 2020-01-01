@@ -2,7 +2,7 @@
 import { furnitureQuantityList, probability as furnitureQuantityProbability } from './items/types/furnishing';
 import { list as conditions, probability as conditionProbability } from './attributes/condition';
 import { list as itemTypes } from './items/type';
-import { list as quantities, probability as quantityProbability } from './attributes/quantity';
+import quantity, { list as quantities, probability as quantityProbability } from './attributes/quantity';
 import { list as rarities, probability as rarityProbability } from './attributes/rarity';
 import { list as roomTypes } from './rooms/type';
 import { list as sizes } from './attributes/size';
@@ -13,7 +13,7 @@ export const typeSelect = 'select';
 export const typeNumber = 'number';
 export const typeRange  = 'range';
 
-const descEqualDistribution = 'Random probability: Equally distributed';
+const descEqualDistribution = 'Random probability: Equally distributed.';
 
 const descComplexity = `Controls dungeon size and room count. Need more
     complexity? Generate multiple dungeon levels and add stairways.`;
@@ -22,7 +22,11 @@ const descConnections = `Probably that rooms will be connected to adjacent
     rooms. Setting to zero will make dungeons more linear, setting to 100
     places a doorway between every adjacent room.`;
 
-const descFurnitureQuantity = 'How furnished the rooms in the dungeon are.';
+const descFurnitureQuantity = 'How furnished the dungeon‘s rooms are.';
+
+const descMaps = 'Number of maps of the dungeon to hide.';
+
+const descDoorQuantity = 'Number of locked doors and corresponding keys (2 for each door) to hide.';
 
 const getValues = (values) => {
     return [
@@ -73,7 +77,14 @@ const config = [
                 name  : knobs.dungeonMaps,
                 type  : typeNumber,
                 value : 2,
-                desc  : 'Number of maps of the dungeon to hide',
+                desc  : descMaps,
+            },
+            locks: {
+                label : 'Locks',
+                name  : knobs.dungeonLocks,
+                type  : typeSelect,
+                values: getValues(quantities),
+                desc  : descDoorQuantity + ' ' + quantityProbability.description,
             },
         },
     },
@@ -115,7 +126,7 @@ const config = [
                 name  : knobs.roomFurnishing,
                 type  : typeSelect,
                 values: getValues(furnitureQuantityList),
-                desc  : furnitureQuantityProbability.description,
+                desc  : descFurnitureQuantity + ' ' + furnitureQuantityProbability.description,
             }
         },
     },
