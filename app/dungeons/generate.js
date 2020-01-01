@@ -3,6 +3,7 @@ import { generateMap } from './map';
 import { generateRooms } from '../rooms/generate';
 import { knobs } from '../knobs';
 import { roll, rollArrayItem } from '../utility/roll';
+import { createDoorLookup } from '../rooms/door';
 
 const complexityRoomCountMultiplier = 10;
 const complexityMultiplierMinXY     = 5;
@@ -33,19 +34,34 @@ export const generateDungeon = (settings) => {
 
     settings[knobs.roomCount] = getMxRoomCount(complexity);
 
-    let rooms = generateRooms(settings);
+    let mapSettings = {
+        ...getMapDimensions(complexity),
+        rooms: generateRooms(settings),
+    };
+
+    let dungeon         = generateMap(mapSettings);
+    let { doors, keys } = createDoorLookup(dungeon.doors);
+
+    keys.length && keys.forEach((key) => {
+        let room = rollArrayItem(dungeon.rooms);
+
+        if (!room.keys) {
+            room.keys = [];
+        }
+
+        room.keys.push(key);
+    });
 
     if (maps) {
         for (let i = 0; i < maps; i++) {
-            let room = rollArrayItem(rooms);
+            let room = rollArrayItem(dungeon.doors);
             room.map = true;
         }
     }
 
-    let mapSettings = {
-        ...getMapDimensions(complexity),
-        rooms: rooms,
+    return {
+        map  : dungeon.map,
+        rooms: dungeon.rooms,
+        doors: doors,
     };
-
-    return generateMap(mapSettings);
 };

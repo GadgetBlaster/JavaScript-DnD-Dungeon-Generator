@@ -21,7 +21,7 @@ import {
 
 import { dimensionRanges, customDimensions } from '../rooms/dimensions';
 import { knobs } from '../knobs';
-import { probability as doorProbability, outside, secretProbability } from '../rooms/door';
+import { probability as doorProbability, outside, secretProbability, lockable, lockedChance } from '../rooms/door';
 import { roll, rollArrayItem, rollPercentile } from '../utility/roll';
 import { toWords } from '../utility/tools';
 import roomType from '../rooms/type';
@@ -184,9 +184,12 @@ const makeDoor = (doorAttrs, { from, to, direction, type }) => {
         type = doorProbability.roll();
     }
 
+    let locked = lockable.has(type) && rollPercentile(lockedChance);
+
     return {
-        rect: drawDoor(doorAttrs, { direction, type }),
+        rect: drawDoor(doorAttrs, { direction, type, locked }),
         type,
+        locked,
         connections: {
             [from]: { direction, to },
             [to]  : { direction: oppositeDirection[direction], to: from },
@@ -460,7 +463,7 @@ export const generateMap = (mapSettings) => {
     debug && logGrid(grid);
 
     return {
-        map: drawMap(mapSettings, content),
+        map  : drawMap(mapSettings, content),
         rooms: rooms.map(({ config }) => config),
         doors: doors.map(({ rect, ...door }) => door),
     };

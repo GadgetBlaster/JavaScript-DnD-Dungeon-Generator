@@ -7,6 +7,7 @@ const door = {
     concealed : 'concealed',
     hole      : 'hole',
     iron      : 'iron',
+    mechanical: 'mechanical',
     passageway: 'passageway',
     portal    : 'portal',
     portcullis: 'portcullis',
@@ -25,6 +26,7 @@ export const outside = 'outside';
 export const appendDoorway = new Set([
     door.brass,
     door.iron,
+    door.mechanical,
     door.steel,
     door.stone,
     door.wooden,
@@ -33,6 +35,7 @@ export const appendDoorway = new Set([
 export const lockable = new Set([
     door.brass,
     door.iron,
+    door.mechanical,
     door.portcullis,
     door.steel,
     door.stone,
@@ -40,11 +43,12 @@ export const lockable = new Set([
 ]);
 
 export const probability = new Probability([
-    [ 25,  door.passageway ],
-    [ 45,  door.archway    ],
+    [ 20,  door.passageway ],
+    [ 40,  door.archway    ],
     [ 55,  door.hole       ],
-    [ 60,  door.portcullis ],
-    [ 70,  door.wooden     ],
+    [ 60,  door.mechanical ],
+    [ 65,  door.portcullis ],
+    [ 75,  door.wooden     ],
     [ 80,  door.steel      ],
     [ 85,  door.iron       ],
     [ 90,  door.brass      ],
@@ -53,12 +57,15 @@ export const probability = new Probability([
 ]);
 
 export const secretProbability = new Probability([
-    [ 13, door.concealed ],
+    [ 15, door.concealed ],
     [ 30, door.secret    ],
 ]);
 
+export const lockedChance = 25;
+
 export const createDoorLookup = (doors) => {
     let lookup = {};
+    let keys   = [];
 
     doors.forEach((door) => {
         Object.keys(door.connections).forEach((roomNumber) => {
@@ -71,9 +78,19 @@ export const createDoorLookup = (doors) => {
                 connection: door.connections[roomNumber],
             };
 
+            if (door.locked) {
+                keys.push({
+                    type: door.type,
+                    connections: door.connections
+                });
+            }
+
             lookup[roomNumber].push(roomDoor);
         });
     });
 
-    return lookup;
+    return {
+        keys,
+        doors: lookup,
+    };
 };

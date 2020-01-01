@@ -20,11 +20,44 @@ const mapDescriptions = [
     'Searching the room reveals a map that appears to be of the dungeon.',
     'A large map of the dungeon is hanging on the wall.',
     'A map of the dungeon has crudely been carved in to the wall.',
-    'Searching the room reveals a loose stone or board with a map hidden underneath it.',
+    'Searching the room reveals a loose stone (or board) with a map hidden underneath it.',
     'The floor of the room is etched with an intricate map of the dungeon.',
 ];
 
 export const getMapDescription = () => subTitle('Map') + paragraph(rollArrayItem(mapDescriptions));
+
+const getKeyDetail = (type) => {
+    switch (type) {
+        case doorType.brass:
+        case doorType.iron:
+        case doorType.steel:
+        case doorType.stone:
+            return capitalize(type) + ' key';
+
+        case doorType.wooden:
+            return 'Wooden handled key';
+
+        case doorType.portcullis:
+            return 'Large rusty key';
+
+        case doorType.mechanical:
+            return 'A mechanical leaver';
+
+        default:
+            console.warn(`Undefined key description for lockable door type ${type}`);
+            return 'Key';
+    }
+};
+
+export const getKeyDescription = (keys) => {
+    return subTitle(`Keys (${keys.length})`) + list(keys.map((key) => {
+        let connections = key.connections
+
+        let [ from, to ] = Object.keys(connections);
+
+        return `${getKeyDetail(key.type)} to room ${from} / ${to}`;
+    }));
+};
 
 export const getRoomTypeLabel = (type) => toWords(type) + (appendRoomTypes.has(type) ? ' room' : '');
 
@@ -153,7 +186,7 @@ const getItemConditionDescription = (settings) => {
     }
 };
 
-const getDoorwayDesc = (type, size) => {
+const getDoorwayDesc = ({ type, size, locked }) => {
     let sizeDesc;
     let append = appendDoorway.has(type) && 'doorway';
 
@@ -165,18 +198,20 @@ const getDoorwayDesc = (type, size) => {
         sizeDesc = 'massive';
     }
 
-    return [ sizeDesc, type, append ].filter(Boolean).join(' ');
+    let lockedDesc = locked ? 'locked' : '';
+
+    return [ sizeDesc, lockedDesc, type, append ].filter(Boolean).join(' ');
 };
 
 const getDoorwayDescription = (roomDoors) => {
-    let descParts = roomDoors.map(({ type, connection, size }) => {
+    let descParts = roomDoors.map(({ type, connection, size, locked }) => {
         if (type === doorType.concealed || type === doorType.secret) {
             return;
         }
 
         let { direction, to } = connection;
 
-        let desc = getDoorwayDesc(type, size);
+        let desc = getDoorwayDesc({ type, size, locked });
         let out  = to === outside ? ' out of the dungeon' : '';
 
         let article = type === doorType.archway ? 'an' : 'a';
@@ -201,11 +236,11 @@ const getDoorwayDescription = (roomDoors) => {
 };
 
 export const getDoorwayList = (roomDoors) => {
-    let doorList = roomDoors.map(({ type, connection, size }) => {
+    let doorList = roomDoors.map(({ type, connection, size, locked }) => {
 
         let { direction, to } = connection;
 
-        let desc    = getDoorwayDesc(type, size);
+        let desc    = getDoorwayDesc({ type, size, locked });
         let connect = to === outside ? 'leading out of the dungeon' : `to Room ${to}`;
         let text    = `${capitalize(direction)} ${connect} (${em(desc)})`;
         let secret  = type === doorType.concealed || type === doorType.secret;

@@ -199,7 +199,7 @@ li {
 ul[data-grid] {
     list-style: none;
     padding-left: 0;
-    grid-template-columns: repeat(auto-fill, 110px);
+    grid-template-columns: repeat(auto-fill, 120px);
 }
 
 ul[data-grid] li {
@@ -210,6 +210,7 @@ ul[data-grid] li {
 
 ul[data-grid] li small {
     margin-left: 10px;
+    font-family: var(--font-title);
 }
 
 /* Grid */

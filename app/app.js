@@ -2,8 +2,6 @@
 // TODO
 //
 // Traps
-// Locked doors
-// Door keys stashed
 //
 // Checkboxes for randomized sets
 // Trim map
@@ -16,14 +14,19 @@ import {
     toggleVisibility,
 } from './ui/action';
 
+import {
+    getDoorwayList,
+    getKeyDescription,
+    getMapDescription,
+    getRoomDescription,
+} from './rooms/description';
+
 import { article, section } from './ui/block';
-import { createDoorLookup } from './rooms/door';
 import { drawLegend } from './dungeons/legend';
 import { generateDungeon } from './dungeons/generate';
 import { generateItems } from './items/generate';
 import { generateRooms } from './rooms/generate';
 import { getKnobConfig } from './knobs';
-import { getRoomDescription, getDoorwayList, getMapDescription } from './rooms/description';
 import { nav, setActive, getActive, pages } from './ui/nav';
 import { renderKnobs, getFormData } from './ui/form';
 import { toDash, chunk } from './utility/tools';
@@ -47,14 +50,15 @@ const navigate = (target, el) => {
     toggleCollapsed(`fieldset-${toDash(config[0].label)}`);
 };
 
-const formatRoom = (room, doorLookup) => {
-    let roomDoors = doorLookup && doorLookup[room.roomNumber];
+const formatRoom = (room, doors) => {
+    let roomDoors = doors && doors[room.roomNumber];
     let desc      = getRoomDescription(room, roomDoors);
     let doorList  = roomDoors ? getDoorwayList(roomDoors) : '';
     let items     = room.items.join('');
     let map       = room.map ? getMapDescription() : '';
+    let keys      = room.keys ? getKeyDescription(room.keys) : '';
 
-    return article(desc + doorList + items + map);
+    return article(desc + doorList + items + map + keys);
 };
 
 const getItems = (settings) => {
@@ -63,11 +67,11 @@ const getItems = (settings) => {
     return section(items);
 };
 
-const getRoomRows = (rooms, doorLookup) => {
+const getRoomRows = (rooms, doors) => {
     let sections = chunk(rooms, roomsPerRow);
 
     return sections.map((roomChunk) => {
-        let row = roomChunk.map((room) => formatRoom(room, doorLookup)).join('');
+        let row = roomChunk.map((room) => formatRoom(room, doors)).join('');
 
         return section(row, { 'data-grid': 3 });
     }).join('');
@@ -76,7 +80,7 @@ const getRoomRows = (rooms, doorLookup) => {
 const getRooms = (settings) => {
     let rooms = generateRooms(settings)
 
-    rooms.forEach((room, i) => {
+    rooms.forEach((_, i) => {
         rooms[i].roomNumber = i + 1;
     });
 
@@ -86,17 +90,10 @@ const getRooms = (settings) => {
 const getDungeon = (settings) => {
     let { map, rooms, doors } = generateDungeon(settings);
 
-    let legend     = drawLegend();
-    let doorLookup = createDoorLookup(doors);
+    let legend   = drawLegend();
+    let sections = getRoomRows(rooms, doors);
 
-    let articleSections = getRoomRows(rooms, doorLookup);
-    // let articleSections = sections.map((roomChunk) => {
-    //     let row = roomChunk.map((room) => formatRoom(room, doorLookup)).join('');
-
-    //     return section(row, { 'data-grid': 3 });
-    // }).join('');
-
-    return section(map + legend) + articleSections;
+    return section(map + legend) + sections;
 };
 
 const generators = {

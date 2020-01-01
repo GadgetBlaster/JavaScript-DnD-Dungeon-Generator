@@ -11,6 +11,7 @@ const pxGridLine = 1;
 const colorGridFill     = '#f0f0f0';
 const colorGridStroke   = '#cfcfcf';
 const colorRoomFill     = 'rgba(255, 255, 255, 0.7)';
+const colorLockedFill   = '#cccccc';
 const colorRoomStroke   = '#a9a9a9';
 const colorText         = '#666666';
 const colorPillarFill   = '#f9f9f9';
@@ -193,7 +194,7 @@ export const drawRoom = (roomAttrs, roomTextConfig) => {
     return rect + pillars.join('') + text;
 };
 
-export const drawDoor = (doorAttrs, { direction, type }) => {
+export const drawDoor = (doorAttrs, { direction, type, locked }) => {
     let rectAttrs = getRectAttrs(doorAttrs);
     let isSecret  = type === doorType.secret || type === doorType.concealed;
     let color     = isSecret ? colorTransparent : colorRoomFill;
@@ -265,7 +266,7 @@ export const drawDoor = (doorAttrs, { direction, type }) => {
             y: rectY,
             width: rectWidth,
             height: rectHeight,
-            fill: colorPillarFill,
+            fill: locked ? colorLockedFill : colorPillarFill,
             stroke: colorRoomStroke,
             'stroke-width': pxBorder,
         }));

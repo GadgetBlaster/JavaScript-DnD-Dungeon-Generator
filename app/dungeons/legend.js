@@ -15,14 +15,15 @@ export const drawLegend = () => {
     let scale = `${cellFeet} x ${cellFeet} ft`;
 
     let legend = {
-        [scale]     : drawGrid(mapSettings),
-        'room'      : drawRoom(attrs, { roomNumber: 1 }),
-        'passageway': drawDoor(attrs, { direction, type: doorType.passageway }),
-        'archway'   : drawDoor(attrs, { direction, type: doorType.archway }),
-        'doorway'   : drawDoor(attrs, { direction, type: doorType.wooden }),
-        'hole'      : drawDoor(attrs, { direction, type: doorType.hole }),
-        'secret'    : drawDoor(attrs, { direction, type: doorType.secret }),
-        'concealed' : drawDoor(attrs, { direction, type: doorType.concealed }),
+        [scale]      : drawGrid(mapSettings),
+        'room'       : drawRoom(attrs, { roomNumber: 1 }),
+        'passageway' : drawDoor(attrs, { direction, type: doorType.passageway }),
+        'archway'    : drawDoor(attrs, { direction, type: doorType.archway }),
+        'doorway'    : drawDoor(attrs, { direction, type: doorType.wooden }),
+        'locked door': drawDoor(attrs, { direction, type: doorType.wooden, locked: true }),
+        'hole'       : drawDoor(attrs, { direction, type: doorType.hole }),
+        'secret'     : drawDoor(attrs, { direction, type: doorType.secret }),
+        'concealed'  : drawDoor(attrs, { direction, type: doorType.concealed }),
     };
 
     return list(Object.keys(legend).map((key) => {
