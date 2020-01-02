@@ -3,7 +3,7 @@
 //
 // Checkboxes for randomized sets
 // Trim map
-// Levels
+// Levels & stairs
 
 import {
     actions,
