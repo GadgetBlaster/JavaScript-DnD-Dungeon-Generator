@@ -17,6 +17,7 @@ export const drawLegend = () => {
     let legend = {
         [scale]      : drawGrid(mapSettings),
         'room'       : drawRoom(attrs, { roomNumber: 1 }),
+        'trapped'    : drawRoom(attrs, { roomNumber: '' }, { hasTraps: true }),
         'passageway' : drawDoor(attrs, { direction, type: doorType.passageway }),
         'archway'    : drawDoor(attrs, { direction, type: doorType.archway }),
         'doorway'    : drawDoor(attrs, { direction, type: doorType.wooden }),

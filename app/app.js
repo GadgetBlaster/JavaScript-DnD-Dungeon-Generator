@@ -1,8 +1,6 @@
 
 // TODO
 //
-// Traps
-//
 // Checkboxes for randomized sets
 // Trim map
 // Levels
