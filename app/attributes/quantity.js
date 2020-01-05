@@ -30,15 +30,15 @@ let {
 export const probability = new Probability([
     [ 5,   zero     ],
     [ 10,  one      ],
-    [ 20,  couple   ],
-    [ 30,  few      ],
-    [ 50,  some     ],
+    [ 15,  couple   ],
+    [ 20,  few      ],
+    [ 40,  some     ],
     [ 65,  several  ],
     [ 96,  many     ],
     [ 100, numerous ],
 ]);
 
-const range = [ 0, 1, 2, 3, 5, 7, 13, 26, 99 ];
+const range = [ 0, 1, 2, 3, 5, 8, 14, 25, 99 ];
 
 export const getRange = (value) => {
     let index = list.indexOf(value);
