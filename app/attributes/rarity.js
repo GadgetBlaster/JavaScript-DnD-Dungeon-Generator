@@ -29,7 +29,7 @@ export const probability = new Probability([
     [ 25,  abundant  ],
     [ 45,  common    ],
     [ 65,  average   ],
-    [ 75,  uncommon  ],
+    [ 80,  uncommon  ],
     [ 93,  rare      ],
     [ 99,  exotic    ],
     [ 100, legendary ],
