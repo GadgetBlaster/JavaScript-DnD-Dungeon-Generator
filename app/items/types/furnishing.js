@@ -35,7 +35,6 @@ const furnishing = {
     painting : { name: 'Painting' },
     pillar   : { name: 'Pillar' },
     rack     : { name: 'Rack', capacity: defaultCapacity, variants: [ 'wood', 'metal' ] },
-    shackles : { name: 'Shackles' },
     shelf    : { name: 'Table, small', capacity: capacity[size.small] },
     shrine   : { name: 'Shrine' },
     spit     : { name: 'Cooking spit' },
@@ -44,7 +43,6 @@ const furnishing = {
     tapestry : { name: 'Tapestry' },
     throne   : { name: 'Throne' },
     torch    : { name: 'Torch' },
-    torture  : { name: 'Torture equipment' },
     wardrobe : { name: 'Wardrobe', capacity: defaultCapacity },
     workbench: { name: 'Workbench', capacity: defaultCapacity, variants: [ 'wood', 'stone', 'metal' ] },
 };
@@ -86,7 +84,6 @@ let {
     painting,
     pillar,
     rack,
-    shackles,
     shelf,
     shrine,
     spit,
@@ -94,7 +91,6 @@ let {
     tapestry,
     throne,
     torch,
-    torture,
     wardrobe,
     workbench,
 } = furnishing;
@@ -115,14 +111,13 @@ const byRoomType = {
     [roomType.library]   : [ bench, bookcase, cabinet, carpet, chair, desk, fireplace, lamp, tableLg, tableSm, shelf ],
     [roomType.pantry]    : [ cabinet, cupboard, rack, shelf ],
     [roomType.parlour]   : [ bench, bookcase, cabinet, carpet, chair, desk, tableSm ],
-    [roomType.prison]    : [ shackles, torture ],
     [roomType.room]      : [ carpet, firePit, tableSm, torch ],
     [roomType.shrine]    : [ carpet, lamp, shrine, torch ],
     [roomType.smithy]    : [ anvil, forge, workbench ],
     [roomType.storage]   : [ cabinet, cupboard, rack, tableSm, shelf ],
     [roomType.study]     : [ bookcase, cabinet, carpet, chair, desk, lamp, tableSm, shelf ],
     [roomType.throne]    : [ bench, carpet, lamp, pillar, tableLg, throne, torch ],
-    [roomType.torture]   : [ fireplace, shackles, torch, torture, workbench ],
+    [roomType.torture]   : [ fireplace, torch, workbench ],
     [roomType.treasury]  : [ carpet, desk, lamp, mirror, rack, tableLg, tableSm ],
 };
 
@@ -135,16 +130,14 @@ const required = {
     [roomType.laboratory]: [ alchemy, workbench ],
     [roomType.library]   : [ bookcase ],
     [roomType.pantry]    : [ shelf ],
-    [roomType.prison]    : [ shackles ],
     [roomType.shrine]    : [ shrine ],
     [roomType.smithy]    : [ anvil, forge, workbench ],
     [roomType.storage]   : [ rack ],
     [roomType.study]     : [ chair, desk ],
     [roomType.throne]    : [ throne ],
-    [roomType.torture]   : [ shackles, torture ],
 };
 
-const any = [ painting, tapestry ];
+const anyRoom = [ painting, tapestry ];
 
 export const furnitureQuantity = {
     none     : 'none',
@@ -165,7 +158,7 @@ export const probability = new Probability([
 export const furnitureQuantityList = Object.keys(furnitureQuantity);
 
 const quantityRanges = {
-    [furnitureQuantity.minimum]  : 0,
+    [furnitureQuantity.minimum]  : 1,
     [furnitureQuantity.sparse]   : 2,
     [furnitureQuantity.average]  : 4,
     [furnitureQuantity.furnished]: 6,
@@ -184,24 +177,11 @@ export const generateFurnishings = (type, quantity) => {
         });
     }
 
-    if (quantity === furnitureQuantity.minimum) {
-        return furniture;
-    }
-
-    if (!byRoomType[type]) {
-        return furniture;
-    }
-
-    let extraItems = roll(0, quantityRanges[quantity])
-
-    if (!extraItems) {
-        return furniture;
-    }
+    let extraItems = roll(1, quantityRanges[quantity])
+    let itemSet    = byRoomType[type] ? anyRoom.concat(byRoomType[type]) : Object.values(furnishing);
 
     for (let i = 0; i < extraItems; i++) {
-        let options = any.concat(byRoomType[type]);
-
-        furniture.push(rollArrayItem(options));
+        furniture.push(rollArrayItem(itemSet));
     }
 
     return furniture;

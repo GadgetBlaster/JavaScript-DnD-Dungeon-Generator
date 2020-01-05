@@ -1,6 +1,7 @@
 
 // TODO
 //
+// Required items and/or item afinity by room type
 // Checkboxes for randomized sets
 // Trim map
 // Levels & stairs
