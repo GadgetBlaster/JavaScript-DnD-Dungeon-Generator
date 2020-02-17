@@ -90,12 +90,12 @@ const getRooms = (settings) => {
 };
 
 const getDungeon = (settings) => {
-    let { map, rooms, doors } = generateDungeon(settings);
+    let { map, rooms, doors, mapDimensions } = generateDungeon(settings);
 
-    let legend   = drawLegend();
+    let legend   = drawLegend({ mapWidth: mapDimensions.gridWidth });
     let sections = getRoomRows(rooms, doors);
 
-    return section(map + legend) + sections;
+    return section(map) + section(legend) + sections;
 };
 
 const generators = {

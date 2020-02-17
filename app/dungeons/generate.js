@@ -69,8 +69,10 @@ export const generateDungeon = (settings) => {
         room.traps.push(trap);
     });
 
+    let mapDimensions = getMapDimensions(complexity);
+
     let mapSettings = {
-        ...getMapDimensions(complexity),
+        ...mapDimensions,
         rooms,
     };
 
@@ -98,5 +100,6 @@ export const generateDungeon = (settings) => {
         map  : dungeon.map,
         rooms: dungeon.rooms,
         doors: doors,
+        mapDimensions,
     };
 };

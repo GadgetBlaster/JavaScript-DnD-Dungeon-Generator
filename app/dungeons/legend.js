@@ -1,12 +1,12 @@
 
 import { cellFeet } from './grid';
 import { directions } from './map';
-import { drawMap, drawRoom, drawDoor, drawGrid } from './draw';
+import { drawMap, drawRoom, drawDoor, drawGrid, pxCell } from './draw';
 import { small } from '../ui/typography';
 import { list } from '../ui/list';
 import doorType from '../rooms/door';
 
-export const drawLegend = () => {
+export const drawLegend = ({ mapWidth }) => {
 
     let mapSettings = { gridWidth: 1, gridHeight: 1 };
     let attrs       = { x: 0, y: 0, width: 1, height: 1 };
@@ -29,5 +29,5 @@ export const drawLegend = () => {
 
     return list(Object.keys(legend).map((key) => {
         return drawMap(mapSettings, legend[key]) + small(key);
-    }), { 'data-grid': true });
+    }), { 'data-grid': true, style: `width: ${mapWidth * pxCell}px;` });
 };

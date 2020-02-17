@@ -4,9 +4,9 @@ import { directions } from './map';
 import { wallSize } from './grid';
 import doorType, { lockable } from '../rooms/door';
 
-const pxBorder   = 2;
-const pxCell     = 24;
-const pxGridLine = 1;
+export const pxBorder   = 2;
+export const pxCell     = 24;
+export const pxGridLine = 1;
 
 const colorGridFill     = '#f0f0f0';
 const colorGridStroke   = '#cfcfcf';

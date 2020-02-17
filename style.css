@@ -1,12 +1,21 @@
 
+/* Config */
+
 :root {
-    --accent: #1ba3f7;
-    --bg: #f9f9f9;
-    --gray: #cccccc;
-    --white: #ffffff;
-    --font-default: 'Courier Prime', monospace;
-    --font-title: 'Inknut Antiqua', monospace;
+    --font-default: 'Varela', monospace;
+    --font-title: 'Pompiere', monospace;
+
+    --border-radius: 4px;
+
+    --color-action-hover: #F2065F;
+    --color-action: #BF0252;
+    --color-gray-light: #cccccc;
+    --color-header: #70003C;
+    --color-sidebar: #0C0F0F;
+    --color-white: #ffffff;
 }
+
+/* Base Type */
 
 *:not(text) {
     font-size: 13px;
@@ -14,39 +23,73 @@
     font-family: var(--font-default);
 }
 
+/* Focus */
+
 :focus {
-    outline: none;
-    box-shadow: 0 0 2px 1px var(--accent);
+    outline: 1px dashed var(--color-white);
+    outline-offset: -1px;
 }
 
+/* Layout */
+
 body {
-    margin: 20px;
-    background: var(--white);
+    display: grid;
+    margin: 0;
+    background: var(--color-white);
     -webkit-print-color-adjust: exact;
+    grid-template-areas:
+        "header header"
+        "left main"
+        "footer footer";
 }
 
 header {
+    grid-area: header;
     display: flex;
     justify-content: space-between;
-    align-items: baseline;
+    align-items: center;
+    background: var(--color-header);
+}
+
+form {
+    grid-area: left;
+    width: 220px;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-sidebar);
+    color: var(--color-white);
+}
+
+form > button {
+    margin: 20px;
+}
+
+main {
+    grid-area: main;
+}
+
+footer {
+    grid-area: footer;
 }
 
 nav {
-    display: flex;
+    margin: 10px;
 }
 
 section {
-    margin-bottom: 20px;
+    margin: 20px;
     page-break-inside: avoid;
 }
 
 article {
-    border: 1px solid var(--gray);
+    border: 1px solid var(--color-gray-light);
     padding: 20px;
 }
 
 article header {
-    border-bottom: 1px solid var(--gray);
+    background: none;
+    border-bottom: 1px solid var(--color-gray-light);
+    align-items: baseline;
 }
 
 article article {
@@ -54,78 +97,19 @@ article article {
     margin-bottom: 10px;
 }
 
-/* Forms */
-
-form {
-    margin-bottom: 20px;
-}
-
-form * {
-    font-size: 16px;
-}
-
-fieldset {
-    padding: 15px 25px;
-    border-width: 1px;
-    border-style: solid;
-    border-color: var(--gray);
-    margin: 20px 0;
-}
-
-fieldset > div {
-    display: flex;
-    align-items: center;
-}
-
-fieldset[data-collapsed="true"] {
-    border-left-color: transparent;
-    border-right-color: transparent;
-    border-bottom-color: transparent;
-    padding-top: 0;
-    padding-bottom: 0;
-}
-
-fieldset[data-collapsed="true"] > div,
-fieldset[data-collapsed="true"] > p {
-    display: none;
-}
-
-legend {
-    padding: 0 10px;
-    margin-left: -10px;
-    cursor: pointer;
-}
-
-label {
-    padding: 10px 0;
-    width: 120px;
-    display: inline-block;
-}
-
-input {
-    padding: 0 8px;
-    margin: 0;
-}
-
-input,
-button,
-select {
-    border-radius: 4px;
-    background: var(--bg);
-    border: 1px solid var(--gray);
-}
-
 /* Buttons */
 
 button {
     cursor: pointer;
-    font-family: var(--font-title);
+}
+
+button:hover {
+    background: var(--color-action-hover);
 }
 
 button[data-size="small"] {
     min-height: 30px;
     padding: 0 12px;
-    font-size: 12px;
 }
 
 button[data-size="large"] {
@@ -133,23 +117,118 @@ button[data-size="large"] {
 }
 
 button[data-info] {
-    border-radius: 50%;
+    font-size: 14px;
+    line-height: 1rem;
     padding: 0;
-    min-width: 30px;
-    min-height: 30px;
+    /* border-radius: 50%; */
+    width: 20px;
+    height: 20px;
 }
 
 button[data-active] {
     color: var(--accent);
-    border-color: var(--accent);
-    background: var(--white);
+    background: var(--color-white);
+}
+
+/* Forms */
+
+fieldset {
+    padding: 0;
+    margin: 0;
+    border: 1px 0 solid var(--color-gray-light);
+}
+
+fieldset > button {
+    width: 100%;
+    background: none;
+}
+
+fieldset > button:hover {
+    color: var(--color-action-hover);
+    background: none;
+}
+
+fieldset > div,
+fieldset > p {
+    padding: 20px;
+}
+
+fieldset[data-collapsed="true"] > div,
+fieldset[data-collapsed="true"] > p {
+    display: none;
+}
+
+label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+input {
+    padding: 0 8px;
+    margin: 0;
+}
+
+input[type="range"] {
+    padding: 0;
+    height: auto;
+    width: 100%; /* Specific width is required for Firefox. */
+    -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
+    background: transparent; /* Otherwise white in Chrome */
+}
+
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 20px;
+    width: 10px;
+    border-radius: var(--border-radius);
+    background: #ffffff;
+    cursor: pointer;
+    margin-top: -5px;
+}
+
+input[type=range]::-moz-range-thumb {
+    height: 20px;
+    width: 10px;
+    border-radius: var(--border-radius);
+    background: #ffffff;
+    cursor: pointer;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 10px;
+    cursor: pointer;
+    background: #3071a9;
+    border-radius: var(--border-radius);
+}
+
+input[type=range]:focus::-webkit-slider-runnable-track {
+    background: #367ebd;
+}
+
+input[type=range]::-moz-range-track {
+    width: 100%;
+    height: 10px;
+    cursor: pointer;
+    background: #3071a9;
+    border-radius: var(--border-radius);
 }
 
 input,
 select {
-    width: 175px;
+    width: 100%;
     height: 30px;
     box-sizing: border-box;
+}
+
+input,
+button,
+select {
+    border-radius: var(--border-radius);
+    border: 0;
+    background: var(--color-action);
+    color: var(--color-white);
 }
 
 button + button,
@@ -161,8 +240,10 @@ select + button {
 /* Type */
 
 h1 {
-    font-size: 20px;
+    color: var(--color-white);
+    font-size: 22px;
     font-family: var(--font-title);
+    padding: 10px;
     margin: 0;
 }
 
@@ -174,6 +255,10 @@ h2 {
 
 h3 {
     font-size: 14px;
+}
+
+p {
+    margin: 10px 0;
 }
 
 small {
@@ -210,7 +295,6 @@ ul[data-grid] li {
 
 ul[data-grid] li small {
     margin-left: 10px;
-    font-family: var(--font-title);
 }
 
 /* Grid */
