@@ -7,7 +7,10 @@ import { select, input, slider, fieldLabel } from './field';
 import { toDash } from '../utility/tools';
 import { typeSelect, typeNumber, typeRange } from '../knobs';
 
-const submitButton = button('Generate', actions.generate, { size: buttonSize.large });
+const submitButton = button('Generate', actions.generate, {
+    size: buttonSize.large,
+    type: 'submit',
+});
 
 const getKnob = (settings) => {
     let {

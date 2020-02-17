@@ -32,5 +32,7 @@ export const button = (label, action, options = {}) => {
         return obj;
     }, {});
 
+    attributes['type'] = options.type || 'button';
+
     return element('button', label, attributes);
 };

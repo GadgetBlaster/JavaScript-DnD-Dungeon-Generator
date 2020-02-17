@@ -27,13 +27,15 @@ export const toggleCollapsed = (target) => {
     targetEl.dataset.collapsed = collapsed === true ? false : true;
 };
 
-export const attachActions = (actions) => {
+export const attachActions = (triggers) => {
     document.body.addEventListener('click', (e) => {
-        e.preventDefault();
-
         let action = e.target.dataset.action;
         let target = e.target.dataset.target;
 
-        actions[action] && actions[action](target, e.target);
+        if (action === actions.generate) {
+            e.preventDefault();
+        }
+
+        triggers[action] && triggers[action](target, e.target);
     });
 };

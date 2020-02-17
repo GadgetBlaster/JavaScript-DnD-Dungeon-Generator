@@ -1,10 +1,14 @@
 
 // TODO
 //
-// Required items and/or item afinity by room type
+// Required items by room type
+// Item affinity by room type
+// Item quantity by room type
 // Checkboxes for randomized sets
 // Trim map
 // Levels & stairs
+// Grid size
+// Fix awkward descriptions
 
 import {
     actions,
