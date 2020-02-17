@@ -58,7 +58,7 @@ export const renderKnobs = (config, page) => submitButton + config.map((knobConf
     }
 
     let fieldsetId = `fieldset-${toDash(label)}`;
-    let handle = button(label, actions.expandCollapse, { target: fieldsetId });
+    let handle = button(label, actions.accordion, { target: fieldsetId });
 
     let attrs = {
         'data-collapsed': true,

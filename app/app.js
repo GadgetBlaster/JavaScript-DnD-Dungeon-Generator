@@ -1,19 +1,8 @@
 
-// TODO
-//
-// Required items by room type
-// Item affinity by room type
-// Item quantity by room type
-// Checkboxes for randomized sets
-// Trim map
-// Levels & stairs
-// Grid size
-// Fix awkward descriptions
-
 import {
     actions,
     attachActions,
-    toggleCollapsed,
+    toggleAccordion,
     toggleVisibility,
 } from './ui/action';
 
@@ -40,19 +29,28 @@ const navContainer     = document.getElementById('nav');
 const knobContainer    = document.getElementById('knobs');
 const contentContainer = document.getElementById('content');
 
+const homepageContent = contentContainer.innerHTML;
+
 const roomsPerRow = 3;
+
+const updateKnobs = (target) => {
+    let page = target || getActive(navContainer);
+    let config = getKnobConfig(page);
+
+    knobContainer.innerHTML = renderKnobs(config, page);
+
+    toggleAccordion(`fieldset-${toDash(config[0].label)}`);
+};
 
 const navigate = (target, el) => {
     el && setActive(el);
 
-    let page = target || getActive(navContainer);
-
-    let config = getKnobConfig(page);
-
+    updateKnobs(target);
     contentContainer.innerHTML = '';
-    knobContainer.innerHTML    = renderKnobs(config, page);
+};
 
-    toggleCollapsed(`fieldset-${toDash(config[0].label)}`);
+const navigateHome = () => {
+    contentContainer.innerHTML = homepageContent;
 };
 
 const formatRoom = (room, doors) => {
@@ -70,7 +68,7 @@ const formatRoom = (room, doors) => {
 const getItems = (settings) => {
     let items = generateItems(settings).join('');
 
-    return section(items);
+    return section(article(items));
 };
 
 const getRoomRows = (rooms, doors) => {
@@ -121,13 +119,13 @@ const generate = () => {
 };
 
 attachActions({
-    [actions.expandCollapse]: toggleCollapsed,
-    [actions.generate]      : generate,
-    [actions.navigate]      : navigate,
-    [actions.showHide]      : toggleVisibility,
+    [actions.accordion]: toggleAccordion,
+    [actions.generate] : generate,
+    [actions.navigate] : navigate,
+    [actions.showHide] : toggleVisibility,
+    [actions.home]     : navigateHome,
 });
 
 navContainer.innerHTML  = nav;
 
-navigate();
-generate();
+updateKnobs();

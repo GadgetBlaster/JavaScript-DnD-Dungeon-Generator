@@ -1,9 +1,10 @@
 
 export const actions = {
-    generate: 'generate',
-    navigate: 'navigate',
-    showHide: 'showHide',
-    expandCollapse: 'expandCollapse',
+    accordion: 'accordion',
+    generate : 'generate',
+    home     : 'home',
+    navigate : 'navigate',
+    showHide : 'showHide',
 };
 
 export const toggleVisibility = (target) => {
@@ -12,7 +13,7 @@ export const toggleVisibility = (target) => {
     targetEl.hidden = !targetEl.hidden;
 };
 
-export const toggleCollapsed = (target) => {
+export const toggleAccordion = (target) => {
     let accordions = document.body.querySelectorAll('[data-collapsed');
     let targetEl = document.body.querySelector(`[data-id="${target}"]`);
 
