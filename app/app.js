@@ -29,7 +29,7 @@ const navContainer     = document.getElementById('nav');
 const knobContainer    = document.getElementById('knobs');
 const contentContainer = document.getElementById('content');
 
-const homepageContent = contentContainer.innerHTML;
+const empty = contentContainer.innerHTML;
 
 const roomsPerRow = 3;
 
@@ -46,11 +46,11 @@ const navigate = (target, el) => {
     el && setActive(el);
 
     updateKnobs(target);
-    contentContainer.innerHTML = '';
+    contentContainer.innerHTML = empty;
 };
 
 const navigateHome = () => {
-    contentContainer.innerHTML = homepageContent;
+    contentContainer.innerHTML = empty;
 };
 
 const formatRoom = (room, doors) => {
