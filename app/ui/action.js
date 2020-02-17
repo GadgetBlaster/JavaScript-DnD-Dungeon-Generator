@@ -7,17 +7,24 @@ export const actions = {
 };
 
 export const toggleVisibility = (target) => {
-    let el = document.body.querySelector(`[data-id="${target}"]`);
+    let targetEl = document.body.querySelector(`[data-id="${target}"]`);
 
-    el.hidden = !el.hidden;
+    targetEl.hidden = !targetEl.hidden;
 };
 
 export const toggleCollapsed = (target) => {
-    let el = document.body.querySelector(`[data-id="${target}"]`);
+    let accordions = document.body.querySelectorAll('[data-collapsed');
+    let targetEl = document.body.querySelector(`[data-id="${target}"]`);
 
-    let collapsed = el.dataset.collapsed === 'true';
+    [ ...accordions ].forEach((el) => {
+        if (el !== targetEl) {
+            el.dataset.collapsed = true;
+        }
+    });
 
-    el.dataset.collapsed = collapsed === true ? false : true;
+    let collapsed = targetEl.dataset.collapsed === 'true';
+
+    targetEl.dataset.collapsed = collapsed === true ? false : true;
 };
 
 export const attachActions = (actions) => {

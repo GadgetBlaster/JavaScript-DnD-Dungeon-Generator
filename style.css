@@ -3,18 +3,19 @@
 
 :root {
     --font-default: 'Varela', monospace;
-    --font-title: 'Pompiere', monospace;
+    --font-logo: 'Pompiere', monospace;
 
     --border-radius: 4px;
 
-    --color-action-hover: #F2065F;
-    --color-action: #BF0252;
+    --color-action-1: #BF0252;
+    --color-action-2: #F2065F;
     --color-secondary: #08B3BD;
-    --color-gray-light: #cccccc;
     --color-header: #70003C;
-    --color-sidebar: #0C0F0F;
-    --color-sidebar-accordion: #363838;
-    --color-sidebar-accordion-hover: #4f5252;
+    --color-gray-10: #cccccc;
+    --color-gray-20: #4f5252;
+    --color-gray-30: #363838;
+    --color-gray-40: #0C0F0F;
+
     --color-white: #ffffff;
 }
 
@@ -35,15 +36,19 @@
 
 /* Layout */
 
+html {
+    height: 100%;
+}
+
 body {
     display: grid;
+    height: 100%;
     margin: 0;
     background: var(--color-white);
     -webkit-print-color-adjust: exact;
-    grid-template-areas:
-        "header header"
-        "left main"
-        "footer footer";
+    grid-template-areas: "header header" "left main";
+    grid-template-columns: 220px 1fr;
+    grid-template-rows: auto 1fr;
 }
 
 header {
@@ -54,17 +59,15 @@ header {
     background: var(--color-header);
 }
 
-form {
+aside {
     grid-area: left;
-    width: 220px;
-    display: flex;
-    flex-direction: column;
-    background: var(--color-sidebar);
+    background: var(--color-gray-40);
     color: var(--color-white);
 }
 
-form > button {
-    margin: 20px;
+form {
+    display: flex;
+    flex-direction: column;
 }
 
 main {
@@ -72,7 +75,9 @@ main {
 }
 
 footer {
-    grid-area: footer;
+    text-align: center;
+    font-size: 12px;
+    padding: 20px;
 }
 
 nav {
@@ -85,13 +90,13 @@ section {
 }
 
 article {
-    border: 1px solid var(--color-gray-light);
+    border: 1px solid var(--color-gray-10);
     padding: 20px;
 }
 
 article header {
     background: none;
-    border-bottom: 1px solid var(--color-gray-light);
+    border-bottom: 1px solid var(--color-gray-10);
     align-items: baseline;
 }
 
@@ -100,19 +105,30 @@ article article {
     margin-bottom: 10px;
 }
 
+/* Links */
+
+a {
+    color: var(--color-action-2);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
 /* Buttons */
 
 button {
     cursor: pointer;
     border-radius: var(--border-radius);
     border: 0;
-    background: var(--color-action);
+    background: var(--color-action-1);
     color: var(--color-white);
 }
 
 button:hover,
 button[data-active] {
-    background: var(--color-action-hover);
+    background: var(--color-action-2);
 }
 
 button[data-size="small"] {
@@ -132,22 +148,26 @@ button[data-info] {
     height: 20px;
 }
 
-/* Forms */
+/* Form */
+
+form > button {
+    margin: 20px;
+}
 
 fieldset {
     padding: 0;
     margin: 0 0 2px 0;
-    border: 1px 0 solid var(--color-gray-light);
+    border: 0;
 }
 
 fieldset > button {
     width: 100%;
     border-radius: 0;
-    background: var(--color-sidebar-accordion);
+    background: var(--color-gray-30);
 }
 
 fieldset > button:hover {
-    background: var(--color-sidebar-accordion-hover);
+    background: var(--color-gray-20);
 }
 
 fieldset > section {
@@ -236,14 +256,13 @@ select + button {
 h1 {
     color: var(--color-white);
     font-size: 22px;
-    font-family: var(--font-title);
+    font-family: var(--font-logo);
     padding: 10px;
     margin: 0;
 }
 
 h2 {
     font-size: 16px;
-    font-family: var(--font-title);
     margin: 0;
 }
 
