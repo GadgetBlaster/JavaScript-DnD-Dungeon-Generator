@@ -9,9 +9,12 @@
 
     --color-action-hover: #F2065F;
     --color-action: #BF0252;
+    --color-secondary: #08B3BD;
     --color-gray-light: #cccccc;
     --color-header: #70003C;
     --color-sidebar: #0C0F0F;
+    --color-sidebar-accordion: #363838;
+    --color-sidebar-accordion-hover: #4f5252;
     --color-white: #ffffff;
 }
 
@@ -101,9 +104,14 @@ article article {
 
 button {
     cursor: pointer;
+    border-radius: var(--border-radius);
+    border: 0;
+    background: var(--color-action);
+    color: var(--color-white);
 }
 
-button:hover {
+button:hover,
+button[data-active] {
     background: var(--color-action-hover);
 }
 
@@ -120,41 +128,37 @@ button[data-info] {
     font-size: 14px;
     line-height: 1rem;
     padding: 0;
-    /* border-radius: 50%; */
     width: 20px;
     height: 20px;
-}
-
-button[data-active] {
-    color: var(--accent);
-    background: var(--color-white);
 }
 
 /* Forms */
 
 fieldset {
     padding: 0;
-    margin: 0;
+    margin: 0 0 2px 0;
     border: 1px 0 solid var(--color-gray-light);
 }
 
 fieldset > button {
     width: 100%;
-    background: none;
+    border-radius: 0;
+    background: var(--color-sidebar-accordion);
 }
 
 fieldset > button:hover {
-    color: var(--color-action-hover);
-    background: none;
+    background: var(--color-sidebar-accordion-hover);
 }
 
-fieldset > div,
-fieldset > p {
+fieldset > section {
+    margin: 0;
+}
+
+fieldset > section > div {
     padding: 20px;
 }
 
-fieldset[data-collapsed="true"] > div,
-fieldset[data-collapsed="true"] > p {
+fieldset[data-collapsed="true"] > section {
     display: none;
 }
 
@@ -179,39 +183,36 @@ input[type="range"] {
 
 input[type=range]::-webkit-slider-thumb {
     -webkit-appearance: none;
-    height: 20px;
-    width: 10px;
-    border-radius: var(--border-radius);
+    margin-top: -4px;
+
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
     background: #ffffff;
     cursor: pointer;
-    margin-top: -5px;
 }
 
 input[type=range]::-moz-range-thumb {
-    height: 20px;
-    width: 10px;
-    border-radius: var(--border-radius);
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
     background: #ffffff;
     cursor: pointer;
 }
 
 input[type=range]::-webkit-slider-runnable-track {
     width: 100%;
-    height: 10px;
+    height: 8px;
     cursor: pointer;
-    background: #3071a9;
+    background: var(--color-secondary);
     border-radius: var(--border-radius);
-}
-
-input[type=range]:focus::-webkit-slider-runnable-track {
-    background: #367ebd;
 }
 
 input[type=range]::-moz-range-track {
     width: 100%;
-    height: 10px;
+    height: 8px;
     cursor: pointer;
-    background: #3071a9;
+    background: var(--color-secondary);
     border-radius: var(--border-radius);
 }
 
@@ -220,15 +221,8 @@ select {
     width: 100%;
     height: 30px;
     box-sizing: border-box;
-}
-
-input,
-button,
-select {
     border-radius: var(--border-radius);
     border: 0;
-    background: var(--color-action);
-    color: var(--color-white);
 }
 
 button + button,

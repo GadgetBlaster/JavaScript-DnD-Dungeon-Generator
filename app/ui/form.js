@@ -1,7 +1,7 @@
 
 import { actions } from './action';
 import { button, buttonSize, infoLabel } from './button';
-import { div, fieldset } from './block';
+import { div, fieldset, section } from './block';
 import { paragraph, small } from './typography';
 import { select, input, slider, fieldLabel } from './field';
 import { toDash } from '../utility/tools';
@@ -62,7 +62,7 @@ export const renderKnobs = (config, page) => submitButton + config.map((knobConf
         'data-id': fieldsetId,
     };
 
-    return fieldset(handle + renderFields(fields), attrs);
+    return fieldset(handle + section(renderFields(fields)), attrs);
 }).join('');
 
 export const getFormData = (knobContainer) => {

@@ -24,7 +24,7 @@ const descConnections = `Probably that rooms will be connected to adjacent
 
 const descFurnitureQuantity = 'How furnished the dungeon‘s rooms are.';
 
-const descMaps = 'Number of maps of the dungeon to find.';
+const descMaps = 'Number of dungeon maps that can be found.';
 
 const descTraps = 'Trap randomization frequency.';
 
