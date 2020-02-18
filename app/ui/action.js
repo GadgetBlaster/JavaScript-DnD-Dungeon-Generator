@@ -33,7 +33,7 @@ export const attachActions = (triggers) => {
         let action = e.target.dataset.action;
         let target = e.target.dataset.target;
 
-        if (action === actions.generate) {
+        if ([ actions.generate, actions.home].includes(action)) {
             e.preventDefault();
         }
 

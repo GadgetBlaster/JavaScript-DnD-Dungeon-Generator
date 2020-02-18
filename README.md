@@ -1,11 +1,15 @@
 # D&D Dungeon Generator
 
 This JavaScript based D&D Dungeon Generator takes user input to randomly
-generate a dungeon map within the defined configurations. Dynamically
-generated SVG elements are draw on the page accompanied with dungeon room
-descriptions, doorway and passageway room connections, and room contents.
+generate a dungeon map within the chosen configurations. Dynamically
+generated SVG elements are drawn in HTML and accompanied with dungeon room
+descriptions, doorway connections, and room contents.
 
-## Application Design
+## [See it in action on Mystic Waffle](https://github.com/GadgetBlaster/JS-Dungeon-Generator).
+
+![D&D Dungeon Generator Map Example](/img/example.png)
+
+### Application Design
 
 This simple app uses native browser support for JavaScript modules and so
 will only run in modern browsers that support modules.
@@ -30,13 +34,16 @@ size and condition.
 
 ## TODO list:
 
-- Fix awkward room descriptions.
-- Add rate loot and magical item generation.
-- Required items by room type. For example, a bedroom should always contain at least a bed.
-- Item frequency by room type. For example, books should be more common in library and study rooms.
-- Item quantity by room type. For example, a hallway should typically have fewer items than a laboratory.
-- Add checkbox filters for sets. For example, be able to select a subset of room types or room conditions.
-- Add a max room count setting.
-- Add grid dimension settings.
-- Add multi level generation with stairway connections.
-- Generate dungeon title and dungeon description.
+- [ ] Fix awkward room descriptions.
+- [ ] Add rare loot and magical item generation.
+- [ ] Required items by room type. For example, a bedroom should always contain at least a bed.
+- [ ] Item frequency by room type. For example, books should be more common in libraries and studies.
+- [ ] Item quantity by room type. For example, a hallway should typically have fewer items than a laboratory.
+- [ ] Add checkbox sets for select menu options. For example, be able to select a subset of room types or room conditions.
+- [ ] Add a max room count setting.
+- [ ] Add grid dimension settings.
+- [ ] Add multi level generation with stairway connections.
+- [ ] Generate dungeon title and dungeon description.
+- [ ] Generate random encounters based on challenge rating and frequency knobs.
+- [ ] Add dungeon and environment types. Such as classic dungeon, wilderness, jungle ruin, etc.
+- [ ] JS doc blocks & type defs
