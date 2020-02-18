@@ -13,11 +13,16 @@ descriptions, doorway connections, and room contents.
 
 ## Application Design
 
-This simple app uses native browser support for JavaScript modules and so
-will only run in modern browsers that support modules.
+This app uses native browser support for JavaScript modules and so will only
+run in modern browsers.
 
-All HTML elements are generated via simple JavaScript Template literals
-(Template strings).
+All HTML elements are generated via template literals.
+
+A multi-dimensional array is generated to represent the grid. Rooms and
+doorway connections are procedurally generated on the grid and drawn as
+as SVG element. Room descriptions, traps, condition, and contents are
+randomly assigned to each room based on conditional probability tables
+for attributes such as rarity, condition, and quantity.
 
 The application is organized by a top level `/app/app.js` file that initializes
 the app, a `/app/knobs.js` configuration, and the following directories:
