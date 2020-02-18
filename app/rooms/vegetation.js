@@ -1,6 +1,6 @@
 
-import { listSentence } from '../utility/tools';
-import { roll, rollPercentile, rollArrayItem } from '../utility/roll';
+import { listSentence } from '../utility/tools.js';
+import { roll, rollPercentile, rollArrayItem } from '../utility/roll.js';
 
 const vegetationChance = 60;
 const maxVegetation    = 3;

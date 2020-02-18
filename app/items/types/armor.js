@@ -1,12 +1,14 @@
 
-import rarity from '../../attributes/rarity'
-import type from '../type';
+import rarity from '../../attributes/rarity.js';
+import type from '../type.js';
+import size from '../../attributes/size.js';
 
-let { uncommon, rare, exotic } = rarity;
+let { uncommon, rare } = rarity;
 
 const defaults = {
     rarity: uncommon,
     type  : type.armor,
+    size  : size.medium,
 };
 
 const config = [

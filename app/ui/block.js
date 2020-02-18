@@ -1,5 +1,5 @@
 
-import { element } from '../utility/html';
+import { element } from '../utility/html.js';
 
 export const article  = (content, attrs) => element('article', content, attrs);
 export const div      = (content, attrs) => element('div', content, attrs);

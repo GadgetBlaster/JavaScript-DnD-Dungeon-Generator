@@ -1,10 +1,10 @@
 
-import { generateMap } from './map';
-import { generateRooms } from '../rooms/generate';
-import { knobs } from '../knobs';
-import { roll, rollArrayItem } from '../utility/roll';
-import { createDoorLookup } from '../rooms/door';
-import trapList from '../rooms/trap';
+import { generateMap } from './map.js';
+import { generateRooms } from '../rooms/generate.js';
+import { knobs } from '../knobs.js';
+import { roll, rollArrayItem } from '../utility/roll.js';
+import { createDoorLookup } from '../rooms/door.js';
+import trapList from '../rooms/trap.js';
 
 const complexityRoomCountMultiplier = 10;
 const complexityMultiplierMinXY     = 5;

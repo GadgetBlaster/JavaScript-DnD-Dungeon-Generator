@@ -1,5 +1,5 @@
 
-import { element } from '../utility/html';
+import { element } from '../utility/html.js';
 
 export const paragraph = (label, attrs) => element('p', label, attrs);
 export const strong    = (label, attrs) => element('strong', label, attrs);

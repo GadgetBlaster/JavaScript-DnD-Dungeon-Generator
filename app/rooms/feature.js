@@ -1,7 +1,7 @@
 
-import { knobs } from '../knobs';
-import { roll, rollArrayItem, rollPercentile } from '../utility/roll';
-import roomType from './type';
+import { knobs } from '../knobs.js';
+import { roll, rollArrayItem, rollPercentile } from '../utility/roll.js';
+import roomType from './type.js';
 
 const featureChance = 50;
 const maxFeatures   = 3;

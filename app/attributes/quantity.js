@@ -1,5 +1,5 @@
 
-import { Probability } from '../utility/roll';
+import { Probability } from '../utility/roll.js';
 
 const quantity = {
     zero    : 'zero',

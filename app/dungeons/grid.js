@@ -1,5 +1,5 @@
 
-import { roll, rollArrayItem } from '../utility/roll';
+import { roll, rollArrayItem } from '../utility/roll.js';
 
 export const wallSize  = 1;
 

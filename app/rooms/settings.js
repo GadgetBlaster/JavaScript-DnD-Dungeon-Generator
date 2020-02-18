@@ -1,14 +1,14 @@
 
-import { knobs } from '../knobs';
-import { probability as conditionProbability } from '../attributes/condition'
-import { probability as furnitureQuantityProbability } from '../items/types/furnishing';
-import { probability as quantityProbability } from '../attributes/quantity'
-import { probability as rarityProbability } from '../attributes/rarity'
-import { random } from '../utility/random';
-import { rollArrayItem, rollPercentile } from '../utility/roll';
-import { roomTypeSizes } from './dimensions';
-import quantity from '../attributes/quantity';
-import roomType, { list as roomTypes, probability as roomTypeProbability } from './type';
+import { knobs } from '../knobs.js';
+import { probability as conditionProbability } from '../attributes/condition.js';
+import { probability as furnitureQuantityProbability } from '../items/types/furnishing.js';
+import { probability as quantityProbability } from '../attributes/quantity.js';
+import { probability as rarityProbability } from '../attributes/rarity.js';
+import { random } from '../utility/random.js';
+import { rollArrayItem, rollPercentile } from '../utility/roll.js';
+import { roomTypeSizes } from './dimensions.js';
+import quantity from '../attributes/quantity.js';
+import roomType, { list as roomTypes, probability as roomTypeProbability } from './type.js';
 
 const uniformConditionChance = 10;
 const uniformRarityChance    = 10;

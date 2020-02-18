@@ -1,6 +1,6 @@
 
-import condition from '../attributes/condition';
-import rarity from '../attributes/rarity';
+import condition from '../attributes/condition.js';
+import rarity from '../attributes/rarity.js';
 
 const rarityIndicated = new Set([
     rarity.uncommon,

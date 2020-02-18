@@ -1,5 +1,5 @@
 
-import { toWords } from '../utility/tools';
+import { toWords } from '../utility/tools.js';
 
 export const fieldLabel = (label) => `<label>${label}</label>`;
 

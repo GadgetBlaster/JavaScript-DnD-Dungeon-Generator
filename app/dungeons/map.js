@@ -8,7 +8,7 @@ import {
     getValidRoomCords,
     sides,
     wallSize,
-} from './grid';
+} from './grid.js';
 
 import {
     drawDoor,
@@ -17,14 +17,20 @@ import {
     drawRoom,
     labelMinHeight,
     labelMinWidth,
-} from './draw';
+} from './draw.js';
 
-import { dimensionRanges, customDimensions } from '../rooms/dimensions';
-import { knobs } from '../knobs';
-import { probability as doorProbability, outside, secretProbability, lockable, lockedChance } from '../rooms/door';
-import { roll, rollArrayItem, rollPercentile } from '../utility/roll';
-import { toWords } from '../utility/tools';
-import roomType from '../rooms/type';
+import { dimensionRanges, customDimensions } from '../rooms/dimensions.js';
+import { probability as doorProbability,
+    outside,
+    secretProbability,
+    lockable,
+    lockedChance,
+} from '../rooms/door.js';
+
+import { knobs } from '../knobs.js';
+import { roll, rollArrayItem, rollPercentile } from '../utility/roll.js';
+import { toWords } from '../utility/tools.js';
+import roomType from '../rooms/type.js';
 
 const debug = false;
 

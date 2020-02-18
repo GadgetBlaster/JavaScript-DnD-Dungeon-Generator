@@ -1,10 +1,10 @@
 
-import { capacity } from './container';
-import { roll, rollArrayItem, Probability } from '../../utility/roll';
-import itemType from '../type';
-import rarity from '../../attributes/rarity';
-import roomType from '../../rooms/type';
-import size from '../../attributes/size';
+import { capacity } from './container.js';
+import { roll, rollArrayItem, Probability } from '../../utility/roll.js';
+import itemType from '../type.js';
+import rarity from '../../attributes/rarity.js';
+import roomType from '../../rooms/type.js';
+import size from '../../attributes/size.js';
 
 const defaults = {
     quantity: 1,

@@ -1,6 +1,6 @@
 
-import { Probability } from '../utility/roll';
-import { random } from '../utility/random';
+import { Probability } from '../utility/roll.js';
+import { random } from '../utility/random.js';
 
 const type = {
     armory    : 'armory',

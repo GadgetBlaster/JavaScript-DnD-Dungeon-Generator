@@ -1,11 +1,11 @@
 
-import { getRoomTypeLabel } from './description';
-import { getVegetationDescription } from './vegetation';
-import { knobs } from '../knobs';
-import { roll, rollArrayItem, rollPercentile } from '../utility/roll';
-import roomType from './type';
-import size from '../attributes/size';
-import { getRoomFeatures } from './feature';
+import { getRoomTypeLabel } from './description.js';
+import { getVegetationDescription } from './vegetation.js';
+import { knobs } from '../knobs.js';
+import { roll, rollArrayItem, rollPercentile } from '../utility/roll.js';
+import roomType from './type.js';
+import size from '../attributes/size.js';
+import { getRoomFeatures } from './feature.js';
 
 const detailChance = 50;
 

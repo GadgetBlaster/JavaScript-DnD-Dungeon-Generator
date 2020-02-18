@@ -1,6 +1,6 @@
 
-import type from '../type';
-import rarity from '../../attributes/rarity';
+import type from '../type.js';
+import rarity from '../../attributes/rarity.js';
 
 const defaults = {
     rarity: rarity.exotic,

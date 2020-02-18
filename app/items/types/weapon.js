@@ -1,7 +1,7 @@
 
-import type from '../type';
-import rarity from '../../attributes/rarity';
-import size from '../../attributes/size';
+import type from '../type.js';
+import rarity from '../../attributes/rarity.js';
+import size from '../../attributes/size.js';
 
 let { abundant, common, average, uncommon, rare } = rarity;
 let { tiny, small, medium, large } = size;

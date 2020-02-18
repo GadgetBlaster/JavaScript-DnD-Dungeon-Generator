@@ -1,7 +1,7 @@
 
-import { applyRoomRandomization } from './settings';
-import { generateItems } from '../items/generate';
-import { knobs } from '../knobs';
+import { applyRoomRandomization } from './settings.js';
+import { generateItems } from '../items/generate.js';
+import { knobs } from '../knobs.js';
 
 export const generateRooms = (settings) => {
     let { [knobs.roomCount]: roomCount } = settings;

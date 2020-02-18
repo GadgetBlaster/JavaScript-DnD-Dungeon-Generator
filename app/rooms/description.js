@@ -1,20 +1,20 @@
 
-import { cellFeet } from '../dungeons/grid';
-import { element } from '../utility/html';
-import { furnitureQuantity } from '../items/types/furnishing';
-import { getEnvironmentDescription } from './environment';
-import { knobs } from '../knobs';
-import { list } from '../ui/list';
-import { random } from '../utility/random';
-import { rollArrayItem } from '../utility/roll';
-import { title, subTitle, paragraph, strong, em } from '../ui/typography';
-import { toWords, capitalize } from '../utility/tools';
-import condition from '../attributes/condition';
-import doorType, { appendDoorway, outside } from './door';
-import quantity from '../attributes/quantity';
-import rarity from '../attributes/rarity';
-import roomType, { appendRoomTypes } from '../rooms/type';
-import size from '../attributes/size';
+import { cellFeet } from '../dungeons/grid.js';
+import { element } from '../utility/html.js';
+import { furnitureQuantity } from '../items/types/furnishing.js';
+import { getEnvironmentDescription } from './environment.js';
+import { knobs } from '../knobs.js';
+import { list } from '../ui/list.js';
+import { random } from '../utility/random.js';
+import { rollArrayItem } from '../utility/roll.js';
+import { title, subTitle, paragraph, strong, em } from '../ui/typography.js';
+import { toWords, capitalize } from '../utility/tools.js';
+import condition from '../attributes/condition.js';
+import doorType, { appendDoorway, outside } from './door.js';
+import quantity from '../attributes/quantity.js';
+import rarity from '../attributes/rarity.js';
+import roomType, { appendRoomTypes } from '../rooms/type.js';
+import size from '../attributes/size.js';
 
 const mapDescriptions = [
     'Searching the room reveals a map that appears to be of the dungeon.',

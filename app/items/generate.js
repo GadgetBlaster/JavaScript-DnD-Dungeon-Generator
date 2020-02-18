@@ -1,18 +1,18 @@
 
-import { article } from '../ui/block';
-import { capacity, itemSizeSpace, maxItemQuantitySmall } from './types/container';
-import { generateFurnishings } from './types/furnishing';
-import { generateItem } from './item';
-import { getRarityDescription, getConditionDescription, getItemDescription } from './description';
-import { knobs } from '../knobs';
-import { list } from '../ui/list';
-import { random } from '../utility/random';
-import { roll } from '../utility/roll';
-import { subTitle, paragraph, em } from '../ui/typography';
-import condition from '../attributes/condition';
-import itemType from './type';
-import quantity, { getRange, probability as quantityProbability } from '../attributes/quantity';
-import size from '../attributes/size';
+import { article } from '../ui/block.js';
+import { capacity, itemSizeSpace, maxItemQuantitySmall } from './types/container.js';
+import { generateFurnishings } from './types/furnishing.js';
+import { generateItem } from './item.js';
+import { getRarityDescription, getConditionDescription, getItemDescription } from './description.js';
+import { knobs } from '../knobs.js';
+import { list } from '../ui/list.js';
+import { random } from '../utility/random.js';
+import { roll } from '../utility/roll.js';
+import { subTitle, paragraph, em } from '../ui/typography.js';
+import condition from '../attributes/condition.js';
+import itemType from './type.js';
+import quantity, { getRange, probability as quantityProbability } from '../attributes/quantity.js';
+import size from '../attributes/size.js';
 
 const debugContainerFill = false;
 

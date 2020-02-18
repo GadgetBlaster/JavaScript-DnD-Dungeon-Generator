@@ -1,8 +1,8 @@
 
-import { list as roomTypes } from './type';
-import { roll } from '../utility/roll';
-import size, { list as sizes } from '../attributes/size';
-import type from './type';
+import { list as roomTypes } from './type.js';
+import { roll } from '../utility/roll.js';
+import size, { list as sizes } from '../attributes/size.js';
+import type from './type.js';
 
 let {
     tiny,

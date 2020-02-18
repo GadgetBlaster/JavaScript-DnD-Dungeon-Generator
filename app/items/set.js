@@ -1,22 +1,22 @@
 
-import ammo from './types/ammo';
-import armor from './types/armor';
-import chancery from './types/chancery';
-import clothing from './types/clothing';
-import coin from './types/coin';
-import container from './types/container';
-import food from './types/food';
-import kitchen from './types/kitchen';
-import liquid from './types/liquid';
-import miscellaneous from './types/miscellaneous';
-import mythic from './types/mythic';
-import potion from './types/potion';
-import survival from './types/survival';
-import tack from './types/tack';
-import tool from './types/tool';
-import treasure from './types/treasure';
-import trinket from './types/trinket';
-import weapon from './types/weapon';
+import ammo from './types/ammo.js';
+import armor from './types/armor.js';
+import chancery from './types/chancery.js';
+import clothing from './types/clothing.js';
+import coin from './types/coin.js';
+import container from './types/container.js';
+import food from './types/food.js';
+import kitchen from './types/kitchen.js';
+import liquid from './types/liquid.js';
+import miscellaneous from './types/miscellaneous.js';
+import mythic from './types/mythic.js';
+import potion from './types/potion.js';
+import survival from './types/survival.js';
+import tack from './types/tack.js';
+import tool from './types/tool.js';
+import treasure from './types/treasure.js';
+import trinket from './types/trinket.js';
+import weapon from './types/weapon.js';
 
 export default [
     ...ammo,

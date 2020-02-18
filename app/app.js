@@ -4,26 +4,26 @@ import {
     attachActions,
     toggleAccordion,
     toggleVisibility,
-} from './ui/action';
+} from './ui/action.js';
 
 import {
     getDoorwayList,
     getKeyDescription,
     getMapDescription,
     getRoomDescription,
-} from './rooms/description';
+} from './rooms/description.js';
 
-import { article, section } from './ui/block';
-import { drawLegend } from './dungeons/legend';
-import { generateDungeon } from './dungeons/generate';
-import { generateItems } from './items/generate';
-import { generateRooms } from './rooms/generate';
-import { getKnobConfig } from './knobs';
-import { nav, setActive, getActive, pages } from './ui/nav';
-import { renderKnobs, getFormData } from './ui/form';
-import { toDash, chunk } from './utility/tools';
-import { list } from './ui/list';
-import { subTitle } from './ui/typography';
+import { article, section } from './ui/block.js';
+import { drawLegend } from './dungeons/legend.js';
+import { generateDungeon } from './dungeons/generate.js';
+import { generateItems } from './items/generate.js';
+import { generateRooms } from './rooms/generate.js';
+import { getKnobConfig } from './knobs.js';
+import { nav, setActive, getActive, pages } from './ui/nav.js';
+import { renderKnobs, getFormData } from './ui/form.js';
+import { toDash, chunk } from './utility/tools.js';
+import { list } from './ui/list.js';
+import { subTitle } from './ui/typography.js';
 
 const navContainer     = document.getElementById('nav');
 const knobContainer    = document.getElementById('knobs');

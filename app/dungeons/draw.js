@@ -1,8 +1,8 @@
 
-import { createAttrs } from '../utility/html';
-import { directions } from './map';
-import { wallSize } from './grid';
-import doorType, { lockable } from '../rooms/door';
+import { createAttrs } from '../utility/html.js';
+import { directions } from './map.js';
+import { wallSize } from './grid.js';
+import doorType, { lockable } from '../rooms/door.js';
 
 export const pxBorder   = 2;
 export const pxCell     = 24;

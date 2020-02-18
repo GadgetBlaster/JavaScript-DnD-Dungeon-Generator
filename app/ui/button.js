@@ -1,5 +1,5 @@
 
-import { element } from '../utility/html';
+import { element } from '../utility/html.js';
 
 export const infoLabel = '?';
 

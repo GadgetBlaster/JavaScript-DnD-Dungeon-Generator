@@ -1,10 +1,10 @@
 
-import { cellFeet } from './grid';
-import { directions } from './map';
-import { drawMap, drawRoom, drawDoor, drawGrid, pxCell } from './draw';
-import { small } from '../ui/typography';
-import { list } from '../ui/list';
-import doorType from '../rooms/door';
+import { cellFeet } from './grid.js';
+import { directions } from './map.js';
+import { drawMap, drawRoom, drawDoor, drawGrid, pxCell } from './draw.js';
+import { small } from '../ui/typography.js';
+import { list } from '../ui/list.js';
+import doorType from '../rooms/door.js';
 
 export const drawLegend = ({ mapWidth }) => {
 

@@ -1,6 +1,6 @@
 
-import rarity from '../../attributes/rarity';
-import type from '../type';
+import rarity from '../../attributes/rarity.js';
+import type from '../type.js';
 
 let { abundant, common, uncommon } = rarity;
 

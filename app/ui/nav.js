@@ -1,6 +1,6 @@
 
-import { actions } from './action';
-import { button } from './button'
+import { actions } from './action.js';
+import { button } from './button.js';
 
 export const pages = {
     dungeon: 'dungeon',

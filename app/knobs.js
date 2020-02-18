@@ -1,13 +1,13 @@
 
-import { furnitureQuantityList, probability as furnitureQuantityProbability } from './items/types/furnishing';
-import { list as conditions, probability as conditionProbability } from './attributes/condition';
-import { list as itemTypes } from './items/type';
-import { list as quantities, probability as quantityProbability } from './attributes/quantity';
-import { list as rarities, probability as rarityProbability } from './attributes/rarity';
-import { list as roomTypes } from './rooms/type';
-import { list as sizes } from './attributes/size';
-import { pages } from './ui/nav';
-import { random } from './utility/random';
+import { furnitureQuantityList, probability as furnitureQuantityProbability } from './items/types/furnishing.js';
+import { list as conditions, probability as conditionProbability } from './attributes/condition.js';
+import { list as itemTypes } from './items/type.js';
+import { list as quantities, probability as quantityProbability } from './attributes/quantity.js';
+import { list as rarities, probability as rarityProbability } from './attributes/rarity.js';
+import { list as roomTypes } from './rooms/type.js';
+import { list as sizes } from './attributes/size.js';
+import { pages } from './ui/nav.js';
+import { random } from './utility/random.js';
 
 export const typeSelect = 'select';
 export const typeNumber = 'number';

@@ -1,11 +1,11 @@
 
-import { actions } from './action';
-import { button, buttonSize, infoLabel } from './button';
-import { div, fieldset, section } from './block';
-import { paragraph, small } from './typography';
-import { select, input, slider, fieldLabel } from './field';
-import { toDash } from '../utility/tools';
-import { typeSelect, typeNumber, typeRange } from '../knobs';
+import { actions } from './action.js';
+import { button, buttonSize, infoLabel } from './button.js';
+import { div, fieldset, section } from './block.js';
+import { paragraph, small } from './typography.js';
+import { select, input, slider, fieldLabel } from './field.js';
+import { toDash } from '../utility/tools.js';
+import { typeSelect, typeNumber, typeRange } from '../knobs.js';
 
 const submitButton = button('Generate', actions.generate, {
     size: buttonSize.large,
