@@ -7,7 +7,7 @@ descriptions, doorway connections, and room contents.
 
 ## Examples
 
-[D&D Dungeon Generator App Live Example on Mystic Waffle](https://apps.mysticwaffle.com/dnd-dungeon-generator/)
+[D&D Dungeon Generator App on Mystic Waffle](https://apps.mysticwaffle.com/dnd-dungeon-generator/)
 
 ![D&D Dungeon Generator Map Example](/img/example.png)
 
