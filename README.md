@@ -7,7 +7,7 @@ descriptions, doorway connections, and room contents.
 
 ## Examples
 
-[D&D Dungeon Generator App Live Example on Mystic Waffle](https://widgets.mysticwaffle.com/dnd-dungeon-generator/)
+[D&D Dungeon Generator App Live Example on Mystic Waffle](https://apps.mysticwaffle.com/dnd-dungeon-generator/)
 
 ![D&D Dungeon Generator Map Example](/img/example.png)
 
@@ -30,8 +30,8 @@ the app, a `/app/knobs.js` configuration, and the following directories:
 - `/app/attributes` - Contains configurations for reusable attributes such as
 size and condition.
 - `/app/dungeons` - Code related to generating dungeons
-- `/app/dungeons` - Code related to generating items
-- `/app/dungeons` - Code related to generating rooms
+- `/app/items` - Code related to generating items
+- `/app/rooms` - Code related to, you guessed it, generating rooms
 - `/app/ui` - HTML generators, interactive logic, and UI constants
 - `/app/utility` - Helpers such as randomizers and text formatters
 
@@ -48,6 +48,7 @@ license.
 
 ## TODO list:
 
+- [ ] Loading indicator.
 - [ ] Fix awkward room descriptions.
 - [ ] Add rare loot and magical item generation.
 - [ ] Required items by room type. For example, a bedroom should always contain at least a bed.
