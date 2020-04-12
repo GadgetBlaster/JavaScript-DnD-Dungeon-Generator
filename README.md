@@ -2,8 +2,7 @@
 
 A JavaScript based D&D Dungeon Generator. Procedurally generates a dungeon map
 based on your selected configurations. The map is drawn as a printable SVG
-element and accompanied with dungeon room descriptions, doorway connections,
-and room contents.
+element and accompanied with room descriptions, doorway connections, and items.
 
 ## Examples
 
