@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>D&D Dungeon Generator: Unit Tests</title>
+        <link href="https://fonts.googleapis.com/css?family=Pompiere|Varela&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="./style.css">
+        <style>
+            main { font-size: 18px; }
+            .fail { color: #db0f0f; }
+            .ok { color: #14c80f; }
+            .dot-ok { background: #14c80f; }
+            .dot-fail { background: #db0f0f; }
+            .dot-ok, .dot-fail {
+                width: 6px;
+                height: 6px;
+                border-radius: 6px;
+                display: inline-block;
+                margin: 2px;
+            }
+            .output {
+                white-space: pre;
+            }
+        </style>
+    </head>
+    <body>
+
+        <header data-no-print>
+            <a href="/" data-action="home">D&D Dungeon Generator: Unit Tests</a>
+            <nav>
+                <a href="/unit.html">Run</a>
+                <a href="/unit.html?mode=verbose">Run Verbose</a>
+            </nav>
+        </header>
+
+        <main>
+            <section>
+                <p id="status"></p>
+                <p id="count"></p>
+                <p id="summary"></p>
+                <ul id="output" class="output"></ul>
+            </section>
+        </main>
+
+        <script src="./unit/unit.js" type="module"></script>
+
+    </body>
+</html>

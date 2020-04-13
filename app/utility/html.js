@@ -2,7 +2,7 @@
 export const createAttrs = (obj) => {
     return Object.keys(obj).map((key) => {
         return `${key}="${obj[key]}"`;
-    }).join('');
+    }).join(' ');
 };
 
 export const element = (tag, content, attrs) => {

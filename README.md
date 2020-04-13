@@ -17,11 +17,11 @@ run in modern browsers.
 
 All HTML elements are generated via template literals.
 
-A multi-dimensional array is generated to represent the grid. Rooms and
-doorway connections are procedurally generated on the grid and drawn as
-as SVG element. Room descriptions, traps, condition, and contents are
-randomly assigned to each room based on conditional probability tables
-for attributes such as rarity, condition, and quantity.
+A multi-dimensional array is generated to represent the dungeon grid. Rooms and
+doorway connections are procedurally generated on the grid and drawn as as SVG
+element. Room descriptions, traps, condition, and contents are randomly
+assigned to each room based on conditional probability tables for attributes
+such as rarity, condition, and quantity.
 
 The application is organized by a top level `/app/app.js` file that initializes
 the app, a `/app/knobs.js` configuration, and the following directories:
@@ -33,6 +33,12 @@ size and condition.
 - `/app/rooms` - Code related to, you guessed it, generating rooms
 - `/app/ui` - HTML generators, interactive logic, and UI constants
 - `/app/utility` - Helpers such as randomizers and text formatters
+
+## Unit Tests
+
+Because I'm crazy I wrote a unit test library found in the `/unit/` directory.
+Tests are run by navigating to `/unit.html` and the output is printed to the
+browser.
 
 ## Creative Commons
 
@@ -61,3 +67,4 @@ license.
 - [ ] Generate random encounters based on challenge rating and frequency knobs.
 - [ ] Add dungeon and environment types. Such as classic dungeon, wilderness, jungle ruin, etc.
 - [ ] JS doc blocks & type defs
+- [ ] Unit test coverage
