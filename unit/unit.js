@@ -4,7 +4,7 @@ import manifest from './manifest.js'
 const urlParams = new URLSearchParams(window.location.search);
 const isVerbose = urlParams.get('mode') === 'verbose';
 
-const countContainer   = document.getElementById('count');
+const dotsContainer    = document.getElementById('dots');
 const outputContainer  = document.getElementById('output');
 const summaryContainer = document.getElementById('summary');
 const statusContainer  = document.getElementById('status');
@@ -39,18 +39,32 @@ let failures = 0;
 let assertions = 0;
 
 /**
- * File
+ * Path
  *
- * @type {string}
+ * @type {string|undefined}
  */
-let file;
+let path;
 
 /**
- * Set status
+ * Count unit
+ *
+ * @param {Object} options
+ *     @param {boolean} options.isOk
+ */
+const countUnit = ({ isOk }) => {
+    assertions++;
+
+    if (!isOk) {
+        failures++;
+    }
+};
+
+/**
+ * Render status
  *
  * @param {string} status
  */
-const setStatus = (status) => {
+const renderStatus = (status) => {
     statusContainer.innerHTML = `Status: ${status}`;
 };
 
@@ -67,48 +81,19 @@ const getFailureSummary = (failures) => {
         case 1:  return '<span class="fail">1 Failure</span>';
         default: return `<span class="fail">${failures} Failures</span>`;
     }
-}
+};
 
 /**
- * Set summary
+ * Render summary
  *
  * @param {number} assertions
  * @param {number} failures
  */
-const setSummary = (assertions, failures) => {
+const renderSummary = (assertions, failures) => {
     let total = `${assertions} Assertion${assertions === 1 ? '' : 's'}`;
     let fails = getFailureSummary(failures);
 
     summaryContainer.innerHTML = `${total}, ${fails}`;
-};
-
-/**
- * Render count
- *
- * @param {Object} options
- *     @param {boolean} options.isOk
- */
-export const renderDot = ({ isOk }) => {
-    countContainer.innerHTML += dot(isOk);
-};
-
-/**
- * Render output
- *
- * @param {Object} options
- *     @param {string} options.msg
- *     @param {boolean} options.isOk
- */
-export const renderOutput = ({ msg, isOk }) => {
-    assertions++;
-
-    if (!isOk) {
-        failures++;
-    }
-
-    if (isVerbose || !isOk) {
-        outputContainer.innerHTML += isOk ? info(msg) : fail(`${msg} \nIn ${file}`);
-    }
 };
 
 /**
@@ -117,36 +102,63 @@ export const renderOutput = ({ msg, isOk }) => {
  * @param {Object} options
  *     @param {string} options.msg
  */
-export const renderError = ({ msg }) => {
-    outputContainer.innerHTML += fail(`Error: ${msg}`);
+const printError = ({ msg }) => {
+    outputContainer.innerHTML += fail(msg);
 };
 
 /**
- * Run tests
+ * Print output
  *
- * @param {number} index
+ * @param {Object} options
+ *     @param {string} options.msg
+ *     @param {boolean} options.isOk
  */
-const runtTests = async (index = 0) => {
-    if (!manifest.length) {
-        setStatus('Empty manifest');
-        return;
+const printUnit = ({ msg, isOk }) => {
+    dotsContainer.innerHTML += dot(isOk);
+
+    if (isVerbose || !isOk) {
+        outputContainer.innerHTML += isOk ? info(msg) : fail(`${msg} \nIn ${path}`);
     }
-
-    setStatus('Running');
-
-    file = manifest[index];
-
-    if (!file) {
-        setStatus('Complete');
-        setSummary(assertions, failures);
-        return;
-    }
-
-    await import(file).catch((err) => {
-        renderError({ msg: err });
-    });
-
-    runtTests(index + 1);
 };
 
-runtTests();
+/**
+ * Print
+ *
+ * @param {Object} options
+ *     @param {string} options.msg
+ *     @param {boolean} options.isOk
+ */
+export const unit = ({ msg, isOk }) => {
+    countUnit({ isOk });
+    printUnit({ msg, isOk });
+};
+
+/**
+ * Run
+ *
+ * @param {number} [index]
+ */
+(async function run(index = 0) {
+    if (!manifest.length) {
+        renderStatus('Empty manifest');
+        return;
+    }
+
+    renderStatus('Running');
+
+    path = manifest[index];
+
+    if (!path) {
+        renderStatus('Complete');
+        renderSummary(assertions, failures);
+        return;
+    }
+
+    try {
+        await import(path)
+    } catch(error) {
+        printError({ msg: error.toString() });
+    }
+
+    run(index + 1);
+})();

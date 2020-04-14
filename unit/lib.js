@@ -1,14 +1,17 @@
 
-import { renderDot, renderOutput } from './unit.js';
+import { unit } from './unit.js';
 
 import {
     equals,
+    isArray,
     isBoolean,
     isFalse,
+    isNull,
     isNumber,
     isObject,
     isString,
     isTrue,
+    isUndefined,
 } from './assert.js';
 
 /**
@@ -54,8 +57,7 @@ const runAssert = (assertion, value, expected) => {
 
     output.push(`${isOk ? 'Pass:' : 'Failure:'} ${msg}`);
 
-    renderDot({ isOk });
-    renderOutput({
+    unit({
         isOk,
         msg: output.reduce((string, current, index) => {
             return `${string}${'    '.repeat(index)}${current}\n`;
@@ -69,13 +71,18 @@ const runAssert = (assertion, value, expected) => {
  * Assert
  *
  * @param {*} value
+ *
+ * @returns {Object.<string, Function>}
  */
 export const assert = (value) => ({
-    equals   : (expected) => runAssert(equals, value, expected),
-    isBoolean: () => runAssert(isBoolean, value),
-    isFalse  : () => runAssert(isFalse, value),
-    isNumber : () => runAssert(isNumber, value),
-    isObject : () => runAssert(isObject, value),
-    isString : () => runAssert(isString, value),
-    isTrue   : () => runAssert(isTrue, value),
+    equals     : (expected) => runAssert(equals, value, expected),
+    isArray    : () => runAssert(isArray, value),
+    isBoolean  : () => runAssert(isBoolean, value),
+    isFalse    : () => runAssert(isFalse, value),
+    isNull     : () => runAssert(isNull, value),
+    isNumber   : () => runAssert(isNumber, value),
+    isObject   : () => runAssert(isObject, value),
+    isString   : () => runAssert(isString, value),
+    isTrue     : () => runAssert(isTrue, value),
+    isUndefined: () => runAssert(isUndefined, value),
 });
