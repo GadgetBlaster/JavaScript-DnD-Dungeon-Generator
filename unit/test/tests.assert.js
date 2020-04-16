@@ -11,7 +11,7 @@ import {
     isString,
     isTrue,
     isUndefined,
-} from '../assert';
+} from '../assert.js';
 
 /**
  * Types
