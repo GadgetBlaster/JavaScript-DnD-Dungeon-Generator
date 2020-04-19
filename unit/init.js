@@ -1,5 +1,5 @@
 
-import { dot, info, fail } from './output.js'
+import { dot, info, fail, summary } from './output.js'
 import manifest from './manifest.js'
 import unit from './unit.js'
 
@@ -45,20 +45,10 @@ const printDot = ({ isOk }) => {
 /**
  * Render summary
  *
- * @param {number} assertions
- * @param {number} failures
+ * @param {string} summary
  */
-const renderSummary = (assertions, failures) => {
-    let total = `${assertions} Assertion${assertions === 1 ? '' : 's'}`;
-    let fails = ((count) => {
-        switch (count) {
-            case 0:  return '<span class="ok">0 Failures, nice job 👏</span>';
-            case 1:  return '<span class="fail">1 Failure</span>';
-            default: return `<span class="fail">${count} Failures</span>`;
-        }
-    })(failures);
-
-    summaryContainer.innerHTML = `${total}, ${fails}`;
+const renderSummary = (summary) => {
+    summaryContainer.innerHTML = summary;
 };
 
 /**
@@ -73,10 +63,10 @@ const printError = (msg) => {
 /**
  * Render summary log
  *
- * @param {string[]} summary
+ * @param {Result[]} log
  */
-const renderSummaryLog = (summary) => {
-    logContainer.innerHTML = summary.map(({ isOk, msg }) => {
+const renderLog = (log) => {
+    logContainer.innerHTML = log.map(({ isOk, msg }) => {
         if (verbose && isOk) {
             return info(msg);
         }
@@ -90,9 +80,9 @@ const renderSummaryLog = (summary) => {
  *
  * @param {Summary}
  */
-const onComplete = ({ assertions, failures, summary }) => {
-    renderSummary(assertions, failures)
-    renderSummaryLog(summary);
+const onComplete = ({ assertions, failures, log }) => {
+    renderSummary(summary(assertions, failures));
+    renderLog(log);
 };
 
 /**

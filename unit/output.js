@@ -49,3 +49,24 @@ export const info = (msg) => `<li>${escapeHTML(msg)}</li>`;
  * @returns {string}
  */
 export const fail = (msg) => `<li class="fail">${escapeHTML(msg)}</li>`;
+
+/**
+ * Summary
+ *
+ * @param {number} assertions
+ * @param {number} failures
+ *
+ * @returns {string}
+ */
+export const summary = (assertions, failures) => {
+    let total = `${assertions} Assertion${assertions === 1 ? '' : 's'}`;
+    let fails = ((count) => {
+        switch (count) {
+            case 0:  return '<span class="ok">0 Failures, nice job 👏</span>';
+            case 1:  return '<span class="fail">1 Failure</span>';
+            default: return `<span class="fail">${count} Failures</span>`;
+        }
+    })(failures);
+
+    return `${total}, ${fails}`;
+};

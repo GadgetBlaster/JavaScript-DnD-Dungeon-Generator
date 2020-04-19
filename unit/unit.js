@@ -10,23 +10,15 @@ import {
     isString,
     isTrue,
     isUndefined,
+    stringContains,
 } from './assert.js';
-
-/**
- * Entry
- *
- * @typedef {Object} Entry
- *
- * @property {boolean} isOk
- * @property {string} msg
- */
 
 /**
  * Summary
  *
  * @typedef {Object} Summary
  *
- * @property {Entry[]} summary
+ * @property {Result[]} log
  * @property {number} assertions
  * @property {number} failures
  */
@@ -60,11 +52,11 @@ import {
 export default ({ onAssert }) => {
 
     /**
-     * Summary
+     * Log
      *
      * @type {string[]}
      */
-    let summary = [];
+    let log = [];
 
     /**
      * Current
@@ -131,7 +123,7 @@ export default ({ onAssert }) => {
 
         onAssert({ isOk });
 
-        summary.push({
+        log.push({
             isOk,
             msg: current.reduce((string, current, index) => {
                 return `${string}${'    '.repeat(index)}${current}\n`;
@@ -139,6 +131,8 @@ export default ({ onAssert }) => {
         });
 
         current.pop();
+
+        return assert(value);
     };
 
     /**
@@ -149,16 +143,17 @@ export default ({ onAssert }) => {
      * @returns {Object.<string, Function>}
      */
     const assert = (value) => ({
-        equals     : (expected) => _runAssert(equals, value, expected),
-        isArray    : () => _runAssert(isArray, value),
-        isBoolean  : () => _runAssert(isBoolean, value),
-        isFalse    : () => _runAssert(isFalse, value),
-        isNull     : () => _runAssert(isNull, value),
-        isNumber   : () => _runAssert(isNumber, value),
-        isObject   : () => _runAssert(isObject, value),
-        isString   : () => _runAssert(isString, value),
-        isTrue     : () => _runAssert(isTrue, value),
-        isUndefined: () => _runAssert(isUndefined, value),
+        equals        : (expected) => _runAssert(equals, value, expected),
+        isArray       : () => _runAssert(isArray, value),
+        isBoolean     : () => _runAssert(isBoolean, value),
+        isFalse       : () => _runAssert(isFalse, value),
+        isNull        : () => _runAssert(isNull, value),
+        isNumber      : () => _runAssert(isNumber, value),
+        isObject      : () => _runAssert(isObject, value),
+        isString      : () => _runAssert(isString, value),
+        isTrue        : () => _runAssert(isTrue, value),
+        isUndefined   : () => _runAssert(isUndefined, value),
+        stringContains: (expected) => _runAssert(stringContains, value, expected),
     });
 
     /**
@@ -190,7 +185,7 @@ export default ({ onAssert }) => {
         return {
             assertions,
             failures,
-            summary: [ ...summary ],
+            log: [ ...log ],
         };
     };
 
