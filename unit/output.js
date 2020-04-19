@@ -25,8 +25,7 @@ export const escapeHTML = (string) => string.replace(/[&<>"'\/]/g, (match) => ht
 /**
  * Dot
  *
- * @param {Object} options
- *     @param {boolean} options.isOk
+ * @param {Result} result
  *
  * @returns {string}
  */
@@ -67,6 +66,26 @@ export const log = (results, { verbose } = {}) => {
 
         return !isOk && fail(msg);
     }).filter(Boolean).join('');
+};
+
+/**
+ * Print
+ *
+ * @param {Element} el
+ * @param {string} text
+ */
+export const print = (el, text) => {
+    el.innerHTML += text;
+};
+
+/**
+ * Render
+ *
+ * @param {Element} el
+ * @param {string} text
+ */
+export const render = (el, text) => {
+    el.innerHTML = text;
 };
 
 /**

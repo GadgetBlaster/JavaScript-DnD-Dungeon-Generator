@@ -1,7 +1,15 @@
 
-import { dot, info, fail, summary, log } from './output.js'
 import manifest from './manifest.js'
 import unit from './unit.js'
+
+import {
+    dot,
+    fail,
+    log,
+    print,
+    render,
+    summary,
+} from './output.js'
 
 /**
  * URL params
@@ -24,52 +32,6 @@ const statusContainer  = document.getElementById('status');
 const summaryContainer = document.getElementById('summary');
 
 /**
- * Render status
- *
- * @param {string} text
- */
-const renderStatus = (text) => {
-    statusContainer.innerHTML = `Status: ${text}`;
-};
-
-/**
- * Print dot
- *
- * @param {Object} options
- *     @param {boolean} options.isOk
- */
-const printDot = ({ isOk }) => {
-    dotsContainer.innerHTML += dot({ isOk });
-};
-
-/**
- * Render summary
- *
- * @param {string} text
- */
-const renderSummary = (text) => {
-    summaryContainer.innerHTML = text;
-};
-
-/**
- * Print error
- *
- * @param {string} msg
- */
-const printError = (msg) => {
-    errorContainer.innerHTML += fail(msg);
-};
-
-/**
- * Render log
- *
- * @param {string} text
- */
-const renderLog = (text) => {
-    logContainer.innerHTML = text;
-};
-
-/**
  * On complete
  *
  * @param {Summary}
@@ -77,14 +39,16 @@ const renderLog = (text) => {
  *     @param {boolean} options.verbose
  */
 const onComplete = ({ assertions, failures, results }, { verbose }) => {
-    renderSummary(summary(assertions, failures));
-    renderLog(log(results, { verbose }));
+    render(summaryContainer, summary(assertions, failures));
+    render(logContainer, log(results, { verbose }));
 };
 
 /**
  * @type {Unit}
  */
-const { getSummary, runTests } = unit({ onAssert: printDot });
+const { getSummary, runTests } = unit({
+    onAssert: (result) => print(dotsContainer, dot(result)),
+});
 
 /**
  * Run
@@ -93,17 +57,17 @@ const { getSummary, runTests } = unit({ onAssert: printDot });
  */
 (async function run(index = 0) {
     if (!manifest.length) {
-        renderStatus('Empty test manifest');
+        render(statusContainer, 'Status: Empty test manifest');
         return;
     }
 
-    renderStatus('Running');
+    render(statusContainer, 'Status: Running...');
 
     /** {string} path */
     let path = manifest[index];
 
     if (!path) {
-        renderStatus('Complete');
+        render(statusContainer, 'Status: Complete');
         onComplete(getSummary(), { verbose });
         return;
     }
@@ -114,7 +78,7 @@ const { getSummary, runTests } = unit({ onAssert: printDot });
         runTests(path, tests);
     } catch ({ stack }) {
         console.error(stack);
-        printError({ msg: stack.toString() });
+        print(errorContainer, fail(stack.toString()));
     }
 
     run(index + 1);

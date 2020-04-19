@@ -44,8 +44,16 @@ import {
  */
 
 /**
+ * On assert
+ *
+ * @typedef {Function} OnAssert
+ *
+ * @param {Result} result
+ */
+
+/**
  * @param {Object} config
- *     @param {Function} config.onAssert
+ *     @param {OnAssert} config.onAssert
  *
  * @return {Unit}
  */
@@ -113,7 +121,8 @@ export default ({ onAssert }) => {
      * @returns {Object.<string, Function>}
      */
     const _runAssert = (actual, expected, assertion) => {
-        let { msg, isOk } = assertion(actual, expected);
+        let result = assertion(actual, expected);
+        let { msg, isOk } = result;
 
         assertions++;
 
@@ -123,7 +132,7 @@ export default ({ onAssert }) => {
 
         current.push(`${isOk ? 'Pass:' : 'Failure:'} ${msg}`);
 
-        onAssert({ isOk });
+        onAssert(result);
 
         results.push({
             isOk,
