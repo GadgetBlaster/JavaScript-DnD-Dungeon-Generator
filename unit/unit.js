@@ -106,12 +106,14 @@ export default ({ onAssert }) => {
     /**
      * Run assert
      *
-     * @param {Function} assertion
-     * @param {*} value
+     * @param {*} actual
      * @param {*} expected
+     * @param {Function} assertion
+     *
+     * @returns {Object.<string, Function>}
      */
-    const _runAssert = (assertion, value, expected) => {
-        let { msg, isOk } = assertion(value, expected);
+    const _runAssert = (actual, expected, assertion) => {
+        let { msg, isOk } = assertion(actual, expected);
 
         assertions++;
 
@@ -132,7 +134,7 @@ export default ({ onAssert }) => {
 
         current.pop();
 
-        return assert(value);
+        return assert(actual, expected);
     };
 
     /**
@@ -143,17 +145,17 @@ export default ({ onAssert }) => {
      * @returns {Object.<string, Function>}
      */
     const assert = (value) => ({
-        equals        : (expected) => _runAssert(equals, value, expected),
-        isArray       : () => _runAssert(isArray, value),
-        isBoolean     : () => _runAssert(isBoolean, value),
-        isFalse       : () => _runAssert(isFalse, value),
-        isNull        : () => _runAssert(isNull, value),
-        isNumber      : () => _runAssert(isNumber, value),
-        isObject      : () => _runAssert(isObject, value),
-        isString      : () => _runAssert(isString, value),
-        isTrue        : () => _runAssert(isTrue, value),
-        isUndefined   : () => _runAssert(isUndefined, value),
-        stringContains: (expected) => _runAssert(stringContains, value, expected),
+        equals        : (expected) => _runAssert(value, expected, equals),
+        isArray       : (expected) => _runAssert(value, expected, isArray),
+        isBoolean     : (expected) => _runAssert(value, expected, isBoolean),
+        isFalse       : (expected) => _runAssert(value, expected, isFalse),
+        isNull        : (expected) => _runAssert(value, expected, isNull),
+        isNumber      : (expected) => _runAssert(value, expected, isNumber),
+        isObject      : (expected) => _runAssert(value, expected, isObject),
+        isString      : (expected) => _runAssert(value, expected, isString),
+        isTrue        : (expected) => _runAssert(value, expected, isTrue),
+        isUndefined   : (expected) => _runAssert(value, expected, isUndefined),
+        stringContains: (expected) => _runAssert(value, expected, stringContains),
     });
 
     /**
