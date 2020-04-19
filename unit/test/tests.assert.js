@@ -41,33 +41,34 @@ const types = {
         'an empty array': [],
     },
     boolean: {
-        'false': false,
-        'true': true,
+        '`false`': false,
+        '`true`': true,
     },
     function: {
         'a function': () => {},
     },
     null: {
-        'null': null,
+        '`null`': null,
     },
     number: {
         'a float': 3.14159,
         'infinity': Infinity,
-        'the integer 1': 1,
-        'the integer 2': 2,
-        'the integer negative one': -1,
-        'the integer zero': 0,
+        'the integer `-1`': -1,
+        'the integer `0`': 0,
+        'the integer `1`': 1,
+        'the integer `2`': 2,
     },
     object: {
         'an empty object': {},
         'an object': { hi: 'hi' },
     },
     string: {
+        'a numeric string': '42',
         'a string': 'string',
         'an empty string': '',
     },
     undefined: {
-        'undefined': undefined,
+        '`undefined`': undefined,
     },
 };
 
@@ -148,15 +149,11 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('#isArray', () => {
-        describe('given an empty Array', () => {
-            it('should return a truthy `isOk` property', () => {
-                assert(isArray([]).isOk).isTrue();
-            });
-        });
-
-        describe('given an Array with values', () => {
-            it('should return a truthy `isOk` property', () => {
-                assert(isArray([ 'one', 'two' ]).isOk).isTrue();
+        Object.entries(types.array).forEach(([ key, value ]) => {
+            describe(`given ${key}`, () => {
+                it('should return a truthy `isOk` property', () => {
+                    assert(isArray(value).isOk).isTrue();
+                });
             });
         });
 
@@ -170,15 +167,11 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('#isBoolean', () => {
-        describe('given `true`', () => {
-            it('should return a truthy `isOk` property', () => {
-                assert(isBoolean(true).isOk).isTrue();
-            });
-        });
-
-        describe('given `false`', () => {
-            it('should return a truthy `isOk` property', () => {
-                assert(isBoolean(false).isOk).isTrue();
+        Object.entries(types.boolean).forEach(([ key, value ]) => {
+            describe(`given ${key}`, () => {
+                it('should return a truthy `isOk` property', () => {
+                    assert(isBoolean(value).isOk).isTrue();
+                });
             });
         });
 
@@ -214,9 +207,11 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('#isNull', () => {
-        describe('given `null`', () => {
-            it('should return a truthy `isOk` property', () => {
-                assert(isNull(null).isOk).isTrue();
+        Object.entries(types.null).forEach(([ key, value ]) => {
+            describe(`given ${key}`, () => {
+                it('should return a truthy `isOk` property', () => {
+                    assert(isNull(value).isOk).isTrue();
+                });
             });
         });
 
@@ -230,27 +225,11 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('#isNumber', () => {
-        describe('given an Integer', () => {
-            it('should return a truthy `isOk` property', () => {
-                assert(isNumber(2).isOk).isTrue();
-            });
-        });
-
-        describe('given a Float', () => {
-            it('should return a falsy `isOk` property', () => {
-                assert(isNumber(3.14).isOk).isTrue();
-            });
-        });
-
-        describe('given `0`', () => {
-            it('should return a truthy `isOk` property', () => {
-                assert(isNumber(0).isOk).isTrue();
-            });
-        });
-
-        describe('given `Infinity`', () => {
-            it('should return a truthy `isOk` property', () => {
-                assert(isNumber(Infinity).isOk).isTrue();
+        Object.entries(types.number).forEach(([ key, value ]) => {
+            describe(`given ${key}`, () => {
+                it('should return a truthy `isOk` property', () => {
+                    assert(isNumber(value).isOk).isTrue();
+                });
             });
         });
 
@@ -270,15 +249,11 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('#isObject', () => {
-        describe('given an empty Object', () => {
-            it('should return a truthy `isOk` property', () => {
-                assert(isObject({}).isOk).isTrue();
-            });
-        });
-
-        describe('given an Object with properties', () => {
-            it('should return a truthy `isOk` property', () => {
-                assert(isObject({ hi: 'hi' }).isOk).isTrue();
+        Object.entries(types.object).forEach(([ key, value ]) => {
+            describe(`given ${key}`, () => {
+                it('should return a truthy `isOk` property', () => {
+                    assert(isObject(value).isOk).isTrue();
+                });
             });
         });
 
@@ -292,15 +267,11 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('#isString', () => {
-        describe('given an empty String', () => {
-            it('should return a truthy `isOk` property', () => {
-                assert(isString('').isOk).isTrue();
-            });
-        });
-
-        describe('given a non-empty string', () => {
-            it('should return a truthy `isOk` property', () => {
-                assert(isString('hi').isOk).isTrue();
+        Object.entries(types.string).forEach(([ key, value ]) => {
+            describe(`given ${key}`, () => {
+                it('should return a truthy `isOk` property', () => {
+                    assert(isString(value).isOk).isTrue();
+                });
             });
         });
 
@@ -342,9 +313,11 @@ export default ({ assert, describe, it }) => {
             });
         });
 
-        describe('given `undefined`', () => {
-            it('should return a truthy `isOk` property', () => {
-                assert(isUndefined(undefined).isOk).isTrue();
+        Object.entries(types.undefined).forEach(([ key, value ]) => {
+            describe(`given ${key}`, () => {
+                it('should return a truthy `isOk` property', () => {
+                    assert(isUndefined(value).isOk).isTrue();
+                });
             });
         });
 

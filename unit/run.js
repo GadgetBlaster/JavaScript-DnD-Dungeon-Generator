@@ -1,4 +1,5 @@
 
+import { dot, info, fail } from './output.js'
 import manifest from './manifest.js'
 import unit from './unit.js'
 
@@ -22,20 +23,6 @@ const logContainer     = document.getElementById('log');
 const statusContainer  = document.getElementById('status');
 const summaryContainer = document.getElementById('summary');
 
-const htmlEscapes = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#x27;',
-    '/': '&#x2F;'
-};
-
-const escape = (string) => string.replace(/[&<>"'\/]/g, (match) => htmlEscapes[match]);
-
-const dot  = (isOk) => `<span class="dot-${isOk ? 'ok' : 'fail'}"></span>`;
-const info = (msg)  => `<li>${escape(msg)}</li>`;
-const fail = (msg)  => `<li class="fail">${escape(msg)}</li>`;
 
 /**
  * Render status
@@ -98,7 +85,7 @@ const onComplete = ({ assertions, failures, summary }) => {
  *     @param {boolean} options.isOk
  */
 const onAssert = ({ isOk }) => {
-    dotsContainer.innerHTML += dot(isOk);
+    dotsContainer.innerHTML += dot({ isOk });
 };
 
 /**
