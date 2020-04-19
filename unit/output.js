@@ -30,7 +30,7 @@ export const escapeHTML = (string) => string.replace(/[&<>"'\/]/g, (match) => ht
  *
  * @returns {string}
  */
-export const dot = ({ isOk }) => `<span class="dot-${isOk ? 'ok' : 'fail'}"></span>`;
+export const dot = ({ isOk }) => `<span class="dot dot-${isOk ? 'ok' : 'fail'}"></span>`;
 
 /**
  * Info

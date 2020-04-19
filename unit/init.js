@@ -23,7 +23,6 @@ const logContainer     = document.getElementById('log');
 const statusContainer  = document.getElementById('status');
 const summaryContainer = document.getElementById('summary');
 
-
 /**
  * Render status
  *
@@ -34,41 +33,49 @@ const renderStatus = (status) => {
 };
 
 /**
- * Get failure summary
+ * Print dot
  *
- * @param {number} failures
- *
- * @returns {string}
+ * @param {Object} options
+ *     @param {boolean} options.isOk
  */
-const getFailureSummary = (failures) => {
-    switch (failures) {
-        case 0:  return '<span class="ok">0 Failures, nice job 👏</span>';
-        case 1:  return '<span class="fail">1 Failure</span>';
-        default: return `<span class="fail">${failures} Failures</span>`;
-    }
+const printDot = ({ isOk }) => {
+    dotsContainer.innerHTML += dot({ isOk });
+};
+
+/**
+ * Render summary
+ *
+ * @param {number} assertions
+ * @param {number} failures
+ */
+const renderSummary = (assertions, failures) => {
+    let total = `${assertions} Assertion${assertions === 1 ? '' : 's'}`;
+    let fails = ((count) => {
+        switch (count) {
+            case 0:  return '<span class="ok">0 Failures, nice job 👏</span>';
+            case 1:  return '<span class="fail">1 Failure</span>';
+            default: return `<span class="fail">${count} Failures</span>`;
+        }
+    })(failures);
+
+    summaryContainer.innerHTML = `${total}, ${fails}`;
 };
 
 /**
  * Print error
  *
- * @param {Object} options
- *     @param {string} options.msg
+ * @param {string} msg
  */
-const printError = ({ msg }) => {
+const printError = (msg) => {
     errorContainer.innerHTML += fail(msg);
 };
 
 /**
- * On complete
+ * Render summary log
  *
- * @param {Summary} summary
+ * @param {string[]} summary
  */
-const onComplete = ({ assertions, failures, summary }) => {
-    let total = `${assertions} Assertion${assertions === 1 ? '' : 's'}`;
-    let fails = getFailureSummary(failures);
-
-    summaryContainer.innerHTML = `${total}, ${fails}`;
-
+const renderSummaryLog = (summary) => {
     logContainer.innerHTML = summary.map(({ isOk, msg }) => {
         if (verbose && isOk) {
             return info(msg);
@@ -79,22 +86,19 @@ const onComplete = ({ assertions, failures, summary }) => {
 };
 
 /**
- * On assert
+ * On complete
  *
- * @param {Object} options
- *     @param {boolean} options.isOk
+ * @param {Summary}
  */
-const onAssert = ({ isOk }) => {
-    dotsContainer.innerHTML += dot({ isOk });
+const onComplete = ({ assertions, failures, summary }) => {
+    renderSummary(assertions, failures)
+    renderSummaryLog(summary);
 };
 
 /**
  * @type {Unit}
  */
-const {
-    getSummary,
-    runTests,
-} = unit({ onAssert });
+const { getSummary, runTests } = unit({ onAssert: printDot });
 
 /**
  * Run
@@ -103,7 +107,7 @@ const {
  */
 (async function run(index = 0) {
     if (!manifest.length) {
-        renderStatus('Empty manifest');
+        renderStatus('Empty test manifest');
         return;
     }
 
