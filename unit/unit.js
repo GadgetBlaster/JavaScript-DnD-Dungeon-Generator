@@ -1,164 +1,88 @@
 
-import manifest from './manifest.js'
+import { unit } from './run.js';
 
-const urlParams = new URLSearchParams(window.location.search);
-const isVerbose = urlParams.get('mode') === 'verbose';
-
-const dotsContainer    = document.getElementById('dots');
-const outputContainer  = document.getElementById('output');
-const summaryContainer = document.getElementById('summary');
-const statusContainer  = document.getElementById('status');
-
-const htmlEscapes = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#x27;',
-    '/': '&#x2F;'
-};
-
-const escape = (string) => string.replace(/[&<>"'\/]/g, (match) => htmlEscapes[match]);
-
-const dot  = (isOk) => `<span class="dot-${isOk ? 'ok' : 'fail'}"></span>`;
-const info = (msg)  => `<li>${escape(msg)}</li>`;
-const fail = (msg)  => `<li class="fail">${escape(msg)}</li>`;
+import {
+    equals,
+    isArray,
+    isBoolean,
+    isFalse,
+    isNull,
+    isNumber,
+    isObject,
+    isString,
+    isTrue,
+    isUndefined,
+} from './assert.js';
 
 /**
- * Failures
+ * Output
  *
- * @type {number}
+ * @type {string[]}
  */
-let failures = 0;
+let output = [];
 
 /**
- * Assertions
+ * Describe
  *
- * @type {number}
+ * @param {string} msg
+ * @param {Function} callback
  */
-let assertions = 0;
-
-/**
- * Path
- *
- * @type {string|undefined}
- */
-let path;
-
-/**
- * Count unit
- *
- * @param {Object} options
- *     @param {boolean} options.isOk
- */
-const countUnit = ({ isOk }) => {
-    assertions++;
-
-    if (!isOk) {
-        failures++;
-    }
+export const describe = (msg, callback) => {
+    output.push(msg);
+    callback();
+    output.pop();
 };
 
 /**
- * Render status
+ * It
  *
- * @param {string} status
+ * @param {string} msg
+ * @param {Function} callback
  */
-const renderStatus = (status) => {
-    statusContainer.innerHTML = `Status: ${status}`;
+export const it = (msg, callback) => {
+    output.push(msg);
+    callback();
+    output.pop();
 };
 
 /**
- * Get failure summary
+ * Run assert
  *
- * @param {number} failures
- *
- * @returns {string}
+ * @param {Function} assertion
+ * @param {*} value
+ * @param {*} expected
  */
-const getFailureSummary = (failures) => {
-    switch (failures) {
-        case 0:  return '<span class="ok">0 Failures, nice job 👏</span>';
-        case 1:  return '<span class="fail">1 Failure</span>';
-        default: return `<span class="fail">${failures} Failures</span>`;
-    }
+const runAssert = (assertion, value, expected) => {
+    let { msg, isOk } = assertion(value, expected);
+
+    output.push(`${isOk ? 'Pass:' : 'Failure:'} ${msg}`);
+
+    unit({
+        isOk,
+        msg: output.reduce((string, current, index) => {
+            return `${string}${'    '.repeat(index)}${current}\n`;
+        }, '')
+    });
+
+    output.pop();
 };
 
 /**
- * Render summary
+ * Assert
  *
- * @param {number} assertions
- * @param {number} failures
- */
-const renderSummary = (assertions, failures) => {
-    let total = `${assertions} Assertion${assertions === 1 ? '' : 's'}`;
-    let fails = getFailureSummary(failures);
-
-    summaryContainer.innerHTML = `${total}, ${fails}`;
-};
-
-/**
- * Render error
+ * @param {*} value
  *
- * @param {Object} options
- *     @param {string} options.msg
+ * @returns {Object.<string, Function>}
  */
-const printError = ({ msg }) => {
-    outputContainer.innerHTML += fail(msg);
-};
-
-/**
- * Print output
- *
- * @param {Object} options
- *     @param {string} options.msg
- *     @param {boolean} options.isOk
- */
-const printUnit = ({ msg, isOk }) => {
-    dotsContainer.innerHTML += dot(isOk);
-
-    if (isVerbose || !isOk) {
-        outputContainer.innerHTML += isOk ? info(msg) : fail(`${msg} \nIn ${path}`);
-    }
-};
-
-/**
- * Print
- *
- * @param {Object} options
- *     @param {string} options.msg
- *     @param {boolean} options.isOk
- */
-export const unit = ({ msg, isOk }) => {
-    countUnit({ isOk });
-    printUnit({ msg, isOk });
-};
-
-/**
- * Run
- *
- * @param {number} [index]
- */
-(async function run(index = 0) {
-    if (!manifest.length) {
-        renderStatus('Empty manifest');
-        return;
-    }
-
-    renderStatus('Running');
-
-    path = manifest[index];
-
-    if (!path) {
-        renderStatus('Complete');
-        renderSummary(assertions, failures);
-        return;
-    }
-
-    try {
-        await import(path)
-    } catch(error) {
-        printError({ msg: error.toString() });
-    }
-
-    run(index + 1);
-})();
+export const assert = (value) => ({
+    equals     : (expected) => runAssert(equals, value, expected),
+    isArray    : () => runAssert(isArray, value),
+    isBoolean  : () => runAssert(isBoolean, value),
+    isFalse    : () => runAssert(isFalse, value),
+    isNull     : () => runAssert(isNull, value),
+    isNumber   : () => runAssert(isNumber, value),
+    isObject   : () => runAssert(isObject, value),
+    isString   : () => runAssert(isString, value),
+    isTrue     : () => runAssert(isTrue, value),
+    isUndefined: () => runAssert(isUndefined, value),
+});

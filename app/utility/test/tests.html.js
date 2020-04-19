@@ -1,5 +1,5 @@
 
-import { describe, it, assert } from '../../../unit/lib.js';
+import { describe, it, assert } from '../../../unit/unit.js';
 
 import {
     createAttrs,

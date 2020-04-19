@@ -1,5 +1,5 @@
 
-import { describe, it, assert } from '../lib.js';
+import { describe, it, assert } from '../unit.js';
 import {
     equals,
     isArray,
