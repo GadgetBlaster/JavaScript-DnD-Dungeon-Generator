@@ -1,5 +1,5 @@
 
-import { dot, info, fail, summary } from './output.js'
+import { dot, info, fail, summary, log } from './output.js'
 import manifest from './manifest.js'
 import unit from './unit.js'
 
@@ -26,10 +26,10 @@ const summaryContainer = document.getElementById('summary');
 /**
  * Render status
  *
- * @param {string} status
+ * @param {string} text
  */
-const renderStatus = (status) => {
-    statusContainer.innerHTML = `Status: ${status}`;
+const renderStatus = (text) => {
+    statusContainer.innerHTML = `Status: ${text}`;
 };
 
 /**
@@ -45,10 +45,10 @@ const printDot = ({ isOk }) => {
 /**
  * Render summary
  *
- * @param {string} summary
+ * @param {string} text
  */
-const renderSummary = (summary) => {
-    summaryContainer.innerHTML = summary;
+const renderSummary = (text) => {
+    summaryContainer.innerHTML = text;
 };
 
 /**
@@ -61,28 +61,24 @@ const printError = (msg) => {
 };
 
 /**
- * Render summary log
+ * Render log
  *
- * @param {Result[]} log
+ * @param {string} text
  */
-const renderLog = (log) => {
-    logContainer.innerHTML = log.map(({ isOk, msg }) => {
-        if (verbose && isOk) {
-            return info(msg);
-        }
-
-        return !isOk && fail(msg);
-    }).filter(Boolean).join('');
+const renderLog = (text) => {
+    logContainer.innerHTML = text;
 };
 
 /**
  * On complete
  *
  * @param {Summary}
+ * @param {Object} options
+ *     @param {boolean} options.verbose
  */
-const onComplete = ({ assertions, failures, log }) => {
+const onComplete = ({ assertions, failures, results }, { verbose }) => {
     renderSummary(summary(assertions, failures));
-    renderLog(log);
+    renderLog(log(results, { verbose }));
 };
 
 /**
@@ -108,7 +104,7 @@ const { getSummary, runTests } = unit({ onAssert: printDot });
 
     if (!path) {
         renderStatus('Complete');
-        onComplete(getSummary());
+        onComplete(getSummary(), { verbose });
         return;
     }
 

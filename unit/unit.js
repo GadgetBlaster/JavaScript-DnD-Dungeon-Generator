@@ -18,7 +18,7 @@ import {
  *
  * @typedef {Object} Summary
  *
- * @property {Result[]} log
+ * @property {Result[]} results
  * @property {number} assertions
  * @property {number} failures
  */
@@ -52,11 +52,11 @@ import {
 export default ({ onAssert }) => {
 
     /**
-     * Log
+     * Results
      *
      * @type {string[]}
      */
-    let log = [];
+    let results = [];
 
     /**
      * Current
@@ -125,7 +125,7 @@ export default ({ onAssert }) => {
 
         onAssert({ isOk });
 
-        log.push({
+        results.push({
             isOk,
             msg: current.reduce((string, current, index) => {
                 return `${string}${'    '.repeat(index)}${current}\n`;
@@ -187,7 +187,7 @@ export default ({ onAssert }) => {
         return {
             assertions,
             failures,
-            log: [ ...log ],
+            results: [ ...results ],
         };
     };
 

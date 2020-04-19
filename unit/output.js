@@ -33,6 +33,15 @@ export const escapeHTML = (string) => string.replace(/[&<>"'\/]/g, (match) => ht
 export const dot = ({ isOk }) => `<span class="dot dot-${isOk ? 'ok' : 'fail'}"></span>`;
 
 /**
+ * Fail
+ *
+ * @param {string} msg
+ *
+ * @returns {string}
+ */
+export const fail = (msg) => `<li class="fail">${escapeHTML(msg)}</li>`;
+
+/**
  * Info
  *
  * @param {string} msg
@@ -42,13 +51,23 @@ export const dot = ({ isOk }) => `<span class="dot dot-${isOk ? 'ok' : 'fail'}">
 export const info = (msg) => `<li>${escapeHTML(msg)}</li>`;
 
 /**
- * Fail
+ * Result log
  *
- * @param {string} msg
+ * @param {Result[]} results
+ * @param {Object} [options]
+ *     @param {boolean} [options.verbose]
  *
  * @returns {string}
  */
-export const fail = (msg) => `<li class="fail">${escapeHTML(msg)}</li>`;
+export const log = (results, { verbose } = {}) => {
+    return results.map(({ isOk, msg }) => {
+        if (verbose && isOk) {
+            return info(msg);
+        }
+
+        return !isOk && fail(msg);
+    }).filter(Boolean).join('');
+};
 
 /**
  * Summary
