@@ -1,13 +1,26 @@
 
 import manifest from './manifest.js'
+import unit from './unit.js'
 
+/**
+ * URL params
+ *
+ * @type {URLSearchParams}
+ */
 const urlParams = new URLSearchParams(window.location.search);
-const isVerbose = urlParams.get('mode') === 'verbose';
+
+/**
+ * Verbose
+ *
+ * @type {boolean}
+ */
+const verbose = urlParams.get('mode') === 'verbose';
 
 const dotsContainer    = document.getElementById('dots');
-const outputContainer  = document.getElementById('output');
-const summaryContainer = document.getElementById('summary');
+const errorContainer   = document.getElementById('errors');
+const logContainer     = document.getElementById('log');
 const statusContainer  = document.getElementById('status');
+const summaryContainer = document.getElementById('summary');
 
 const htmlEscapes = {
     '&': '&amp;',
@@ -23,41 +36,6 @@ const escape = (string) => string.replace(/[&<>"'\/]/g, (match) => htmlEscapes[m
 const dot  = (isOk) => `<span class="dot-${isOk ? 'ok' : 'fail'}"></span>`;
 const info = (msg)  => `<li>${escape(msg)}</li>`;
 const fail = (msg)  => `<li class="fail">${escape(msg)}</li>`;
-
-/**
- * Failures
- *
- * @type {number}
- */
-let failures = 0;
-
-/**
- * Assertions
- *
- * @type {number}
- */
-let assertions = 0;
-
-/**
- * Path
- *
- * @type {string|undefined}
- */
-let path;
-
-/**
- * Count unit
- *
- * @param {Object} options
- *     @param {boolean} options.isOk
- */
-const countUnit = ({ isOk }) => {
-    assertions++;
-
-    if (!isOk) {
-        failures++;
-    }
-};
 
 /**
  * Render status
@@ -84,54 +62,52 @@ const getFailureSummary = (failures) => {
 };
 
 /**
- * Render summary
- *
- * @param {number} assertions
- * @param {number} failures
- */
-const renderSummary = (assertions, failures) => {
-    let total = `${assertions} Assertion${assertions === 1 ? '' : 's'}`;
-    let fails = getFailureSummary(failures);
-
-    summaryContainer.innerHTML = `${total}, ${fails}`;
-};
-
-/**
- * Render error
+ * Print error
  *
  * @param {Object} options
  *     @param {string} options.msg
  */
 const printError = ({ msg }) => {
-    outputContainer.innerHTML += fail(msg);
+    errorContainer.innerHTML += fail(msg);
 };
 
 /**
- * Print output
+ * On complete
+ *
+ * @param {Summary} summary
+ */
+const onComplete = ({ assertions, failures, summary }) => {
+    let total = `${assertions} Assertion${assertions === 1 ? '' : 's'}`;
+    let fails = getFailureSummary(failures);
+
+    summaryContainer.innerHTML = `${total}, ${fails}`;
+
+    logContainer.innerHTML = summary.map(({ isOk, msg }) => {
+        if (verbose && isOk) {
+            return info(msg);
+        }
+
+        return !isOk && fail(msg);
+    }).filter(Boolean).join('');
+};
+
+/**
+ * On assert
  *
  * @param {Object} options
- *     @param {string} options.msg
  *     @param {boolean} options.isOk
  */
-const printUnit = ({ msg, isOk }) => {
+const onAssert = ({ isOk }) => {
     dotsContainer.innerHTML += dot(isOk);
-
-    if (isVerbose || !isOk) {
-        outputContainer.innerHTML += isOk ? info(msg) : fail(`${msg} \nIn ${path}`);
-    }
 };
 
 /**
- * Print
- *
- * @param {Object} options
- *     @param {string} options.msg
- *     @param {boolean} options.isOk
+ * @type {Unit}
  */
-export const unit = ({ msg, isOk }) => {
-    countUnit({ isOk });
-    printUnit({ msg, isOk });
-};
+const {
+    getSummary,
+    runTests,
+} = unit({ onAssert });
 
 /**
  * Run
@@ -146,18 +122,22 @@ export const unit = ({ msg, isOk }) => {
 
     renderStatus('Running');
 
-    path = manifest[index];
+    /** {string} path */
+    let path = manifest[index];
 
     if (!path) {
         renderStatus('Complete');
-        renderSummary(assertions, failures);
+        onComplete(getSummary());
         return;
     }
 
     try {
-        await import(path)
-    } catch(error) {
-        printError({ msg: error.toString() });
+        /** {Function} tests */
+        let { default: tests } = await import(path);
+        runTests(path, tests);
+    } catch ({ stack }) {
+        console.error(stack);
+        printError({ msg: stack.toString() });
     }
 
     run(index + 1);

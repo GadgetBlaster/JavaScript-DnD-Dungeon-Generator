@@ -1,12 +1,10 @@
 
-import { describe, it, assert } from '../../../unit/unit.js';
-
 import {
     createAttrs,
     element,
 } from '../html.js';
 
-describe('html', () => {
+export default ({ assert, describe, it }) => {
     describe('#createAttrs', () => {
         it('should return a string', () => {
             assert(createAttrs({ class: 'css-class' })).isString();
@@ -66,4 +64,4 @@ describe('html', () => {
             });
         });
     });
-});
+};

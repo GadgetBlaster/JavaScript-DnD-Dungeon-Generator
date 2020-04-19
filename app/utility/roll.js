@@ -58,4 +58,4 @@ export function Probability(config) {
             return map.get(key);
         }
     };
-};
+}

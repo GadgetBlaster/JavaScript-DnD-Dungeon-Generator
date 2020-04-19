@@ -1,5 +1,4 @@
 
-import { describe, it, assert } from '../unit.js';
 import {
     equals,
     isArray,
@@ -14,75 +13,100 @@ import {
 } from '../assert.js';
 
 /**
+ * Assertions
+ *
+ * @type {Function[]}
+ */
+const assertions = [
+    equals,
+    isArray,
+    isBoolean,
+    isFalse,
+    isNull,
+    isNumber,
+    isObject,
+    isString,
+    isTrue,
+    isUndefined,
+];
+
+/**
  * Types
  *
  * @type {Object}
  */
 const types = {
-    array: [ 'array' ],
-    arrayEmpty: [],
-    boolFalse: false,
-    boolTrue: true,
-    func: () => {},
-    nullValue: null,
-    numbFloat: 3.14159,
-    numbInfinity: Infinity,
-    numbNegOne: -1,
-    numbOne: 1,
-    numbTwo: 2,
-    numbZero: 0,
-    object: { hi: 'hi' },
-    objectEmpty: {},
-    string: 'string',
-    stringEmpty: '',
-    undefined: undefined,
+    array: {
+        'an array': [ 'array' ],
+        'an empty array': [],
+    },
+    boolean: {
+        'false': false,
+        'true': true,
+    },
+    function: {
+        'a function': () => {},
+    },
+    null: {
+        'null': null,
+    },
+    number: {
+        'a float': 3.14159,
+        'infinity': Infinity,
+        'the integer 1': 1,
+        'the integer 2': 2,
+        'the integer negative one': -1,
+        'the integer zero': 0,
+    },
+    object: {
+        'an empty object': {},
+        'an object': { hi: 'hi' },
+    },
+    string: {
+        'a string': 'string',
+        'an empty string': '',
+    },
+    undefined: {
+        'undefined': undefined,
+    },
+};
+
+/**
+ * Excluding type
+ *
+ * @param {string} type
+ *
+ * @returns {Array}
+ */
+const excludingType = (type) => {
+    let { [type]: _, ...remaining } = types;
+    return Object.values(remaining).flatMap((group) => Object.entries(group));
 };
 
 /** {*[]} nonArrayTypes */
-const nonArrayTypes = (() => {
-    let { array, arrayEmpty, ...remaining } = types;
-    return Object.values(remaining);
-})();
+const nonArrayTypes = (() => excludingType('array'))();
 
 /** {*[]} nonBooleanTypes */
-const nonBooleanTypes = (() => {
-    let { boolFalse, boolTrue, ...remaining } = types;
-    return Object.values(remaining);
-})();
+const nonBooleanTypes = (() => excludingType('boolean'))();
 
 /** {*[]} nonNullTypes */
-let nonNullTypes = (() => {
-    let { nullValue, ...remaining } = types;
-    return Object.values(remaining);
-})();
+let nonNullTypes = (() => excludingType('null'))();
 
 /** {*[]} nonNumberTypes */
-let nonNumberTypes = (() => {
-    let { numbFloat, numbInfinity, numbNegOne, numbOne, numbTwo, numbZero, ...remaining } = types;
-    return Object.values(remaining);
-})();
+let nonNumberTypes = (() => excludingType('number'))();
 
 /** {*[]} nonObjectTypes */
-let nonObjectTypes = (() => {
-    let { object, objectEmpty, ...remaining } = types;
-    return Object.values(remaining);
-})();
+let nonObjectTypes = (() => excludingType('object'))();
 
 /** {*[]} nonStringTypes */
-let nonStringTypes = (() => {
-    let { string, stringEmpty, ...remaining } = types;
-    return Object.values(remaining);
-})();
+let nonStringTypes = (() => excludingType('string'))();
 
 /** {*[]} nonUndefinedTypes */
-let nonUndefinedTypes = (() => {
-    let { undefined, ...remaining } = types;
-    return Object.values(remaining);
-})();
+let nonUndefinedTypes = (() => excludingType('undefined'))();
 
-describe('assert', () => {
-    [ equals, isArray, isBoolean, isFalse, isNull, isNumber, isObject, isString, isTrue, isUndefined ].forEach((func) => {
-        describe(`#${func.name} return`, () => {
+export default ({ assert, describe, it }) => {
+    assertions.forEach((func) => {
+        describe(`#${func.name}`, () => {
             let result = func();
 
             it('should return an Object', () => assert(result).isObject());
@@ -103,6 +127,24 @@ describe('assert', () => {
                 assert(equals('test', '42').isOk).isFalse();
             });
         });
+
+        describe('given two numbers that are equal', () => {
+            it('should return a truthy `isOk` property', () => {
+                assert(equals(3, 3).isOk).isTrue();
+            });
+        });
+
+        describe('given two numbers that are not equal', () => {
+            it('should return a falsy `isOk` boolean', () => {
+                assert(equals(3, 3.2).isOk).isFalse();
+            });
+        });
+
+        describe('given two values that are not the same type', () => {
+            it('should return a falsy `isOk` boolean', () => {
+                assert(equals(3, '3').isOk).isFalse();
+            });
+        });
     });
 
     describe('#isArray', () => {
@@ -118,8 +160,8 @@ describe('assert', () => {
             });
         });
 
-        nonArrayTypes.forEach((value) => {
-            describe(`given ${value}`, () => {
+        nonArrayTypes.forEach(([ key, value ]) => {
+            describe(`given ${key}`, () => {
                 it('should return a falsy `isOk` property', () => {
                     assert(isArray(value).isOk).isFalse();
                 });
@@ -140,8 +182,8 @@ describe('assert', () => {
             });
         });
 
-        nonBooleanTypes.forEach((value) => {
-            describe(`given ${value}`, () => {
+        nonBooleanTypes.forEach(([ key, value ]) => {
+            describe(`given ${key}`, () => {
                 it('should return a falsy `isOk` property', () => {
                     assert(isBoolean(value).isOk).isFalse();
                 });
@@ -162,8 +204,8 @@ describe('assert', () => {
             });
         });
 
-        nonBooleanTypes.forEach((value) => {
-            describe(`given ${value}`, () => {
+        nonBooleanTypes.forEach(([ key, value ]) => {
+            describe(`given ${key}`, () => {
                 it('should return a falsy `isOk` property', () => {
                     assert(isFalse(value).isOk).isFalse();
                 });
@@ -178,8 +220,8 @@ describe('assert', () => {
             });
         });
 
-        nonNullTypes.forEach((value) => {
-            describe(`given ${value}`, () => {
+        nonNullTypes.forEach(([ key, value ]) => {
+            describe(`given ${key}`, () => {
                 it('should return a falsy `isOk` property', () => {
                     assert(isNull(value).isOk).isFalse();
                 });
@@ -218,8 +260,8 @@ describe('assert', () => {
             });
         });
 
-        nonNumberTypes.forEach((value) => {
-            describe(`given ${value}`, () => {
+        nonNumberTypes.forEach(([ key, value ]) => {
+            describe(`given ${key}`, () => {
                 it('should return a falsy `isOk` property', () => {
                     assert(isNumber(value).isOk).isFalse();
                 });
@@ -240,8 +282,8 @@ describe('assert', () => {
             });
         });
 
-        nonObjectTypes.forEach((value) => {
-            describe(`given ${value}`, () => {
+        nonObjectTypes.forEach(([ key, value ]) => {
+            describe(`given ${key}`, () => {
                 it('should return a falsy `isOk` property', () => {
                     assert(isObject(value).isOk).isFalse();
                 });
@@ -262,8 +304,8 @@ describe('assert', () => {
             });
         });
 
-        nonStringTypes.forEach((value) => {
-            describe(`given ${value}`, () => {
+        nonStringTypes.forEach(([ key, value ]) => {
+            describe(`given ${key}`, () => {
                 it('should return a falsy `isOk` property', () => {
                     assert(isString(value).isOk).isFalse();
                 });
@@ -284,8 +326,8 @@ describe('assert', () => {
             });
         });
 
-        nonBooleanTypes.forEach((value) => {
-            describe(`given ${value}`, () => {
+        nonBooleanTypes.forEach(([ key, value ]) => {
+            describe(`given ${key}`, () => {
                 it('should return a falsy `isOk` property', () => {
                     assert(isTrue(value).isOk).isFalse();
                 });
@@ -306,12 +348,12 @@ describe('assert', () => {
             });
         });
 
-        nonUndefinedTypes.forEach((value) => {
-            describe(`given ${value}`, () => {
+        nonUndefinedTypes.forEach(([ key, value ]) => {
+            describe(`given ${key}`, () => {
                 it('should return a falsy `isOk` property', () => {
                     assert(isUndefined(value).isOk).isFalse();
                 });
             });
         });
     });
-});
+};
