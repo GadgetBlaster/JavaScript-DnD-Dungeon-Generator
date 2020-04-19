@@ -32,18 +32,6 @@ const statusContainer  = document.getElementById('status');
 const summaryContainer = document.getElementById('summary');
 
 /**
- * On complete
- *
- * @param {Summary}
- * @param {Object} options
- *     @param {boolean} options.verbose
- */
-const onComplete = ({ assertions, failures, results }, { verbose }) => {
-    render(summaryContainer, summary(assertions, failures));
-    render(logContainer, log(results, { verbose }));
-};
-
-/**
  * @type {Unit}
  */
 const { getSummary, runTests } = unit({
@@ -67,8 +55,11 @@ const { getSummary, runTests } = unit({
     let path = manifest[index];
 
     if (!path) {
+        let { assertions, failures, results } = getSummary();
+
         render(statusContainer, 'Status: Complete');
-        onComplete(getSummary(), { verbose });
+        render(summaryContainer, summary(assertions, failures));
+        render(logContainer, log(results, { verbose }));
         return;
     }
 
