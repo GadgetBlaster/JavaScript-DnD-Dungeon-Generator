@@ -34,7 +34,7 @@ const summaryContainer = document.getElementById('summary');
 /**
  * @type {Unit}
  */
-const { getSummary, runTests } = unit({
+const { getSummary, runUnits } = unit({
     onAssert: (result) => print(dotsContainer, dot(result)),
 });
 
@@ -64,9 +64,9 @@ const { getSummary, runTests } = unit({
     }
 
     try {
-        /** {Function} tests */
-        let { default: tests } = await import(path);
-        runTests(path, tests);
+        /** {Function} units */
+        let { default: units } = await import(path);
+        runUnits(path, units);
     } catch ({ stack }) {
         console.error(stack);
         print(errorContainer, fail(stack.toString()));

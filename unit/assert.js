@@ -51,6 +51,14 @@ export const isFalse = (value) => {
     return { msg, isOk };
 };
 
+/** @type {Assertion} isFunction */
+export const isFunction = (value) => {
+    let isOk = typeof value === 'function';
+    let msg  = `expected [ ${value} ] to be a function`;
+
+    return { msg, isOk };
+};
+
 /** @type {Assertion} isNull */
 export const isNull = (value) => {
     let isOk = value === null;

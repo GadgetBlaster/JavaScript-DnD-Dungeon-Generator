@@ -12,7 +12,7 @@ import {
 
 export default ({ assert, describe, it }) => {
     describe('#dot', () => {
-        describe('given a falsey `isOk` property', () => {
+        describe('given a falsy `isOk` property', () => {
             it('should return a `<span>` with the `dot` and `dot-fail` class', () => {
                 assert(dot({ isOk: false })).equals('<span class="dot dot-fail"></span>');
             });
@@ -28,8 +28,8 @@ export default ({ assert, describe, it }) => {
     describe('#escapeHTML', () => {
         describe('given an HTML string', () => {
             it('should return a string with escaped HTML', () => {
-                let html   = '<h1 class="logo">Sal\'s Soups &amp; Sandwiches</h1>';
-                let expect = '&lt;h1 class=&quot;logo&quot;&gt;Sal&#x27;s Soups &amp;amp; Sandwiches&lt;&#x2F;h1&gt;';
+                const html   = '<h1 class="logo">Sal\'s Soups &amp; Sandwiches</h1>';
+                const expect = '&lt;h1 class=&quot;logo&quot;&gt;Sal&#x27;s Soups &amp;amp; Sandwiches&lt;&#x2F;h1&gt;';
                 assert(escapeHTML(html)).equals(expect);
             });
         });
@@ -59,7 +59,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given one success then one failure', () => {
-            let results = [
+            const results = [
                 { isOk: true, msg: 'success' },
                 { isOk: false, msg: 'failure' },
             ];
@@ -70,14 +70,14 @@ export default ({ assert, describe, it }) => {
 
             describe('given the verbose flag', () => {
                 it('should return the success and the failure', () => {
-                    let expect = info('success') + fail('failure');
+                    const expect = info('success') + fail('failure');
                     assert(log(results, { verbose: true })).equals(expect);
                 });
             });
         });
 
         describe('given two successes then two failures', () => {
-            let results = [
+            const results = [
                 { isOk: true, msg: 'yep' },
                 { isOk: true, msg: 'you bet' },
                 { isOk: false, msg: 'nope' },
@@ -100,7 +100,7 @@ export default ({ assert, describe, it }) => {
     describe('#print', () => {
         describe('given an element and an html string', () => {
             it('should set the html string to the element', () => {
-                let el = document.createElement('p');
+                const el = document.createElement('p');
                 print(el, '<b>wombats</b>');
                 assert(el.innerHTML).equals('<b>wombats</b>');
             });
@@ -108,7 +108,7 @@ export default ({ assert, describe, it }) => {
 
         describe('called multiple times', () => {
             it('should append html strings to the element', () => {
-                let el = document.createElement('ul');
+                const el = document.createElement('ul');
                 print(el, '<li>gems</li>');
                 print(el, '<li>potions</li>');
                 assert(el.innerHTML).equals('<li>gems</li><li>potions</li>');
@@ -119,7 +119,7 @@ export default ({ assert, describe, it }) => {
     describe('#render', () => {
         describe('given an element and an html string', () => {
             it('should set the html string to the element', () => {
-                let el = document.createElement('h1');
+                const el = document.createElement('h1');
                 render(el, '<strong>buff</strong>');
                 assert(el.innerHTML).equals('<strong>buff</strong>');
             });
@@ -127,7 +127,7 @@ export default ({ assert, describe, it }) => {
 
         describe('called multiple times', () => {
             it('should replace the element\'s content with the last html string', () => {
-                let el = document.createElement('section');
+                const el = document.createElement('section');
                 render(el, '<p>first wizard</p>');
                 render(el, '<p>second wizard</p>');
                 assert(el.innerHTML).equals('<p>second wizard</p>');

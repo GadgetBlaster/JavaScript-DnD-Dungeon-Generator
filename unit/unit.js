@@ -4,6 +4,7 @@ import {
     isArray,
     isBoolean,
     isFalse,
+    isFunction,
     isNull,
     isNumber,
     isObject,
@@ -39,8 +40,7 @@ import {
  * @typedef {Object} Unit
  *
  * @property {Function} getSummary
- * @property {Function} setPath
- * @property {Utility} utility
+ * @property {Function} runUnits
  */
 
 /**
@@ -136,14 +136,14 @@ export default ({ onAssert }) => {
 
         results.push({
             isOk,
-            msg: current.reduce((string, current, index) => {
-                return `${string}${'    '.repeat(index)}${current}\n`;
+            msg: current.reduce((accumulator, value, index) => {
+                return `${accumulator}${'  '.repeat(index)}${value}\n`;
             }, ''),
         });
 
         current.pop();
 
-        return assert(actual, expected);
+        return assert(actual);
     };
 
     /**
@@ -158,6 +158,7 @@ export default ({ onAssert }) => {
         isArray       : (expected) => _runAssert(value, expected, isArray),
         isBoolean     : (expected) => _runAssert(value, expected, isBoolean),
         isFalse       : (expected) => _runAssert(value, expected, isFalse),
+        isFunction    : (expected) => _runAssert(value, expected, isFunction),
         isNull        : (expected) => _runAssert(value, expected, isNull),
         isNumber      : (expected) => _runAssert(value, expected, isNumber),
         isObject      : (expected) => _runAssert(value, expected, isObject),
@@ -175,13 +176,16 @@ export default ({ onAssert }) => {
     const utility = {
         assert,
         describe,
-        it
+        it,
     };
 
     /**
-     * Run tests
+     * Run units
+     *
+     * @param {string} path
+     * @param {Function} tests
      */
-    const runTests = (path, tests) => {
+    const runUnits = (path, tests) => {
         current.push(path);
         tests(utility);
         current.pop();
@@ -202,6 +206,6 @@ export default ({ onAssert }) => {
 
     return {
         getSummary,
-        runTests,
+        runUnits,
     };
 }
