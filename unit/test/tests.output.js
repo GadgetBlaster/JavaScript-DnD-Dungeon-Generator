@@ -7,6 +7,7 @@ import {
     log,
     print,
     render,
+    resultMsg,
     summary,
 } from '../output.js';
 
@@ -35,18 +36,18 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#info', () => {
-        describe('given a string', () => {
-            it('should return the string wrapped in an `<li>`', () => {
-                assert(info('info')).equals('<li>info</li>');
-            });
-        });
-    });
-
     describe('#fail', () => {
         describe('given a string', () => {
             it('should return the string wrapped in an `<li>` with the fail CSS class', () => {
                 assert(fail('failure')).equals('<li class="fail">failure</li>');
+            });
+        });
+    });
+
+    describe('#info', () => {
+        describe('given a string', () => {
+            it('should return the string wrapped in an `<li>`', () => {
+                assert(info('info')).equals('<li>info</li>');
             });
         });
     });
@@ -131,6 +132,37 @@ export default ({ assert, describe, it }) => {
                 render(el, '<p>first wizard</p>');
                 render(el, '<p>second wizard</p>');
                 assert(el.innerHTML).equals('<p>second wizard</p>');
+            });
+        });
+    });
+
+    describe('#resultMsg', () => {
+        describe('given an empty array', () => {
+            it('should return an empty string', () => {
+                assert(resultMsg([])).equals('');
+            });
+        });
+
+        describe('given a single entry', () => {
+            it('should return the entry', () => {
+                assert(resultMsg([ 'just us chickens' ])).equals('just us chickens');
+            });
+        });
+
+        describe('given three entries', () => {
+            const entries = resultMsg([ 'jimmy', 'joey', 'sarah' ]);
+            const lines = entries.split(`\n`);
+
+            it('should return each entry on a new line', () => {
+                assert(lines[0].trim()).equals('jimmy');
+                assert(lines[1].trim()).equals('joey');
+                assert(lines[2].trim()).equals('sarah');
+            });
+
+            it('should indent each line with two spaces', () => {
+                assert(lines[0]).stringContains('');
+                assert(lines[1]).stringContains('  ');
+                assert(lines[2]).stringContains('    ');
             });
         });
     });

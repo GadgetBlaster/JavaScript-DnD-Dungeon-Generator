@@ -14,6 +14,8 @@ import {
     stringContains,
 } from './assert.js';
 
+import { resultMsg } from './output.js';
+
 /**
  * Summary
  *
@@ -136,9 +138,7 @@ export default ({ onAssert }) => {
 
         results.push({
             isOk,
-            msg: current.reduce((accumulator, value, index) => {
-                return `${accumulator}${'  '.repeat(index)}${value}\n`;
-            }, ''),
+            msg: resultMsg(current),
         });
 
         current.pop();

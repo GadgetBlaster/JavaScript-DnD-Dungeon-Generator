@@ -5,7 +5,7 @@
     },
     "rules": {
         "semi": [ "warn", "always" ],
-        "quotes": [ "warn", "single" ],
+        "quotes": [ "warn", "single",  { "allowTemplateLiterals": true } ],
         "no-shadow": "warn"
     }
 }
