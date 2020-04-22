@@ -47,9 +47,207 @@ export default ({ assert, describe, it }) => {
             assert(itFunc).isFunction();
         });
 
-        it('should add the file path to the first `msg` in `results`', () => {
+        it('should add the file path to the `msg` in `results`', () => {
             const { results } = getSummary();
-            assert(results.shift().msg).stringContains('/fake/path');
+            assert(results.pop().msg).stringContains('/fake/path');
+        });
+    });
+
+    // TODO
+    describe('nesting', () => {
+        describe('when `it` is called outside of a `describe` callback', () => {
+            it('should throw', () => {});
+        });
+
+        describe('when `assert` is called outside of an `it` callback', () => {
+            it('should throw', () => {});
+        });
+
+        describe('when `describe` is called inside of an `it` callback', () => {
+            it('should throw', () => {});
+        });
+
+        describe('when `it` is called inside of an `it` callback', () => {
+            it('should throw', () => {});
+        });
+    });
+
+    describe('#getSummary', () => {
+        describe('summary properties', () => {
+            const { getSummary } = unit({ onAssert: () => {} });
+            const summary = getSummary();
+
+            it('should return a object', () => {
+                assert(summary).isObject();
+            });
+
+            it('should return a object with a numeric `assertions` property', () => {
+                assert(summary.assertions).isNumber();
+            });
+
+            it('should return a object with a numeric `failures` property', () => {
+                assert(summary.failures).isNumber();
+            });
+
+            it('should return a object with a `results` array property', () => {
+                assert(summary.results).isArray();
+            });
+        });
+
+        describe('summary values', () => {
+            describe('when two of three assertions pass', () => {
+                const { runUnits, getSummary } = unit({ onAssert: () => {} });
+
+                runUnits('/fake/path', (utility) => {
+                    utility.assert().equals();
+                    utility.assert().equals();
+                    utility.assert(1).equals();
+                });
+
+                const summary = getSummary();
+
+                it('summary `assertions` should be 3', () => {
+                    assert(summary.assertions).equals(3);
+                });
+
+                it('summary `failures` should be 1', () => {
+                    assert(summary.failures).equals(1);
+                });
+
+                it('summary `results` should contain 3 entries', () => {
+                    assert(summary.results.length).equals(3);
+                });
+            });
+        });
+
+        describe('summary `results`', () => {
+            describe('when each assertion is in its own `describe` and `it` callback', () => {
+                const { runUnits, getSummary } = unit({ onAssert: () => {} });
+
+                runUnits('/fake/path', (utility) => {
+                    utility.describe('description one', () => {
+                        utility.it('it one', () => {
+                            utility.assert().equals();
+                        });
+                    });
+
+                    utility.describe('description two', () => {
+                        utility.it('it two', () => {
+                            utility.assert().equals();
+                        });
+                    });
+                });
+
+                const { results } = getSummary();
+
+                describe('the first `msg` in the summary `results`', () => {
+                    it('should contain the first description and expectation', () => {
+                        assert(results[0].msg)
+                            .stringContains('description one')
+                            .stringContains('it one');
+                    });
+                });
+
+                describe('the second `msg` in the summary `results`', () => {
+                    it('should contain the first description and expectation', () => {
+                        assert(results[1].msg)
+                            .stringContains('description two')
+                            .stringContains('it two');
+                    });
+                });
+            });
+
+            describe('when an assertion is inside two `describe` callbacks', () => {
+                const { runUnits, getSummary } = unit({ onAssert: () => {} });
+
+                runUnits('/fake/path', (utility) => {
+                    utility.describe('description one', () => {
+                        utility.describe('description two', () => {
+                            utility.it('it one', () => {
+                                utility.assert().equals();
+                            });
+                        });
+                    });
+                });
+
+                const { results } = getSummary();
+
+                it('should add both descriptions to the summary `results`', () => {
+                    assert(results.pop().msg)
+                        .stringContains('description one')
+                        .stringContains('description two');
+                });
+            });
+
+            describe('when two assertions are made inside one `describe` callback and two `it` callbacks', () => {
+                const { runUnits, getSummary } = unit({ onAssert: () => {} });
+
+                runUnits('/fake/path', (utility) => {
+                    utility.describe('description one', () => {
+                        utility.it('it one', () => { utility.assert().equals(); });
+                        utility.it('it two', () => { utility.assert().equals(); });
+                    });
+                });
+
+                const { results } = getSummary();
+
+                it('both summary `results` should contain the description', () => {
+                    results.forEach(({ msg }) => {
+                        assert(msg).stringContains('description one');
+                    });
+                });
+
+                it('the first result `msg` should contain the first expectation', () => {
+                    assert(results[0].msg).stringContains('it one');
+                });
+
+                it('the second result `msg` should contain the second expectation', () => {
+                    assert(results[1].msg).stringContains('it two');
+                });
+            });
+
+            describe('when two assertions are made inside one `describe` and `it` callback', () => {
+                const { runUnits, getSummary } = unit({ onAssert: () => {} });
+
+                runUnits('/fake/path', (utility) => {
+                    utility.describe('description one', () => {
+                        utility.it('it one', () => {
+                            utility.assert().equals();
+                            utility.assert().equals();
+                        });
+                    });
+                });
+
+                const { results } = getSummary();
+
+                it('both summary `results` should contain the description and expectation', () => {
+                    results.forEach(({ msg }) => {
+                        assert(msg)
+                            .stringContains('description one')
+                            .stringContains('it one');
+                    });
+                });
+            });
+
+            describe('no assertions are made inside `describe` and `it` callbacks', () => {
+                const { runUnits, getSummary } = unit({ onAssert: () => {} });
+
+                runUnits('/fake/path', (utility) => {
+                    utility.describe('description one', () => {
+                        utility.it('it one', () => {});
+                    });
+
+                    utility.describe('description two', () => {
+                        utility.it('it two', () => {});
+                    });
+                });
+
+                const { results } = getSummary();
+
+                it('should not add anything to the summary `results`', () => {
+                    assert(results.length).equals(0);
+                });
+            });
         });
     });
 
@@ -169,14 +367,36 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('#describe', () => {
-        const unitObj = unit({ onAssert: () => {} });
+        const { runUnits, getSummary } = unit({ onAssert: () => {} });
+
+        runUnits('/fake/path', (utility) => {
+            utility.describe('what snow is like', () => {
+                utility.assert().equals();
+            });
+        });
+
+        const { results } = getSummary();
+
+        it('should add the description to the `msg` in `results`', () => {
+            assert(results.pop().msg).stringContains('what snow is like');
+        });
     });
 
     describe('#it', () => {
-        const unitObj = unit({ onAssert: () => {} });
-    });
+        const { runUnits, getSummary } = unit({ onAssert: () => {} });
 
-    describe('#getSummary', () => {
-        const unitObj = unit({ onAssert: () => {} });
+        runUnits('/fake/path', (utility) => {
+            utility.describe('what snow is like', () => {
+                utility.it('should be wet like', () => {
+                    utility.assert().equals();
+                });
+            });
+        });
+
+        const { results } = getSummary();
+
+        it('should add the expectation to the `msg` in `results`', () => {
+            assert(results.pop().msg).stringContains('should be wet like');
+        });
     });
 };

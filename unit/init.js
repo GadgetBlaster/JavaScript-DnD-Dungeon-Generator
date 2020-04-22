@@ -41,7 +41,7 @@ const { getSummary, runUnits } = unit({
 /**
  * Run
  *
- * @param {number} [index]
+ * @param {number} [index=0]
  */
 (async function run(index = 0) {
     if (!manifest.length) {
