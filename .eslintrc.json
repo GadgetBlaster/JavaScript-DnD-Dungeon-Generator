@@ -1,11 +1,16 @@
 {
+    "ecmaFeatures": {
+        "modules": true
+    },
     "parserOptions": {
-        "ecmaVersion": 6,
+        "ecmaVersion": 8,
         "sourceType": "module"
     },
     "rules": {
         "semi": [ "warn", "always" ],
-        "quotes": [ "warn", "single",  { "allowTemplateLiterals": true } ],
-        "no-shadow": "warn"
+        "quotes": [ "warn", "single",  { "allowTemplateLiterals": true, "avoidEscape": true } ],
+        "no-shadow": "warn",
+        "no-unused-vars": [ "error" ],
+        "no-undef": [ "error" ]
     }
 }

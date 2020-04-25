@@ -23,16 +23,23 @@ export default ({ assert, describe, it }) => {
     describe('#runUnits', () => {
         const { runUnits, getSummary } = unit({ onAssert: () => {} });
 
+        let called = false;
         let assertFunc;
         let describeFunc;
         let itFunc;
 
         runUnits('/fake/path', (utility) => {
+            called = true;
+
             assertFunc   = utility.assert;
             describeFunc = utility.describe;
             itFunc       = utility.it;
 
             assertFunc().equals();
+        });
+
+        it('should call the `tests` function param', () => {
+            assert(called).isTrue();
         });
 
         it('should inject an `assert` function', () => {
