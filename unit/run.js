@@ -31,7 +31,7 @@ export default ({
         try {
             /** @type {Function} units */
             let { default: units } = await import(path);
-            runUnits(path, units);
+            await runUnits(path, units);
         } catch (error) {
             onError(error.stack.toString());
         }

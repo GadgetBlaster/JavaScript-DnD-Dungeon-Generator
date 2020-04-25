@@ -95,9 +95,10 @@ export default ({ onAssert = () => {} } = {}) => {
      * @param {string} msg
      * @param {Function} callback
      */
-    const describe = (msg, callback) => {
+    const describe = async (msg, callback) => {
         current.push(msg);
-        callback();
+        let promise = callback();
+        promise && await promise;
         current.pop();
     };
 
@@ -185,9 +186,9 @@ export default ({ onAssert = () => {} } = {}) => {
      * @param {string} path
      * @param {Function} tests
      */
-    const runUnits = (path, tests) => {
+    const runUnits = async (path, tests) => {
         current.push(path);
-        tests(utility);
+        await tests(utility);
         current.pop();
     };
 

@@ -1,9 +1,9 @@
 
 import run from '../run.js';
 
-export default ({ assert, describe, it }) => {
-    describe('#run', () => {
-        describe('given a manifest of test files', async () => {
+export default async ({ assert, describe, it }) => {
+    await describe('#run', async () => {
+        await describe('given a manifest of test files', async () => {
             let paths     = [];
             let functions = [];
             let completed = false;
@@ -36,9 +36,11 @@ export default ({ assert, describe, it }) => {
                 assert(paths.length).equals(mockManifest.length);
                 assert(completed).isTrue();
             });
+
+            // return new Promise();
         });
 
-        describe('given an empty manifest', async () => {
+        await describe('given an empty manifest', async () => {
             let onErrorResult;
 
             await run({
@@ -53,7 +55,7 @@ export default ({ assert, describe, it }) => {
             });
         });
 
-        describe('given a manifest with invalid test file paths', async () => {
+        await describe('given a manifest with invalid test file paths', async () => {
             let errors = [];
 
             await run({

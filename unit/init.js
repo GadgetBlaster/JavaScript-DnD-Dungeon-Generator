@@ -6,7 +6,6 @@ import unit from './unit.js';
 import {
     dot,
     fail,
-    info,
     log,
     nav,
     pathList,

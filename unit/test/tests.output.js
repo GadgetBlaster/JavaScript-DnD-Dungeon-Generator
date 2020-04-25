@@ -285,14 +285,14 @@ export default ({ assert, describe, it }) => {
             });
         });
 
-        describe('assertions', () => {
+        describe('failures', () => {
             describe('given `0` failures', () => {
                 it('should return a string containing `0 Failures`', () => {
-                    assert(summary(0, 0)).stringContains('0 Failures');
+                    assert(summary(1, 0)).stringContains('0 Failures');
                 });
 
                 it('should return a `<span>` with the `ok` css class', () => {
-                    assert(summary(0, 0))
+                    assert(summary(1, 0))
                         .stringContains('<span class="ok">')
                         .stringContains('</span>');
                 });
@@ -300,20 +300,20 @@ export default ({ assert, describe, it }) => {
 
             describe('given failures', () => {
                 it('should return a `<span>` with the `fail` css class', () => {
-                    assert(summary(0, 1))
+                    assert(summary(1, 1))
                         .stringContains('<span class="fail">')
                         .stringContains('</span>');
                 });
 
                 describe('given `1` failure', () => {
                     it('should return a string containing `1 Failure`', () => {
-                        assert(summary(0, 1)).stringContains('1 Failure');
+                        assert(summary(1, 1)).stringContains('1 Failure');
                     });
                 });
 
                 describe('given `2` failures', () => {
                     it('should return a string containing `2 Failures`', () => {
-                        assert(summary(0, 2)).stringContains('2 Failures');
+                        assert(summary(1, 2)).stringContains('2 Failures');
                     });
                 });
             });
