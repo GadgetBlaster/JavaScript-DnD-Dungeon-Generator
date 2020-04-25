@@ -374,18 +374,56 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('#describe', () => {
-        const { runUnits, getSummary } = unit();
+        describe('when one `describe` function is called', () => {
+            const { runUnits, getSummary } = unit();
 
-        runUnits('/fake/path', (utility) => {
-            utility.describe('what snow is like', () => {
-                utility.assert().equals();
+            runUnits('/fake/path', (utility) => {
+                utility.describe('what snow is like', () => {
+                    utility.assert().equals();
+                });
+            });
+
+            const { results } = getSummary();
+
+            it('should add the description to the `msg` in `results`', () => {
+                assert(results.pop().msg).stringContains('what snow is like');
             });
         });
 
-        const { results } = getSummary();
+        describe('when two `describe` functions are called', () => {
+            const { runUnits, getSummary } = unit();
 
-        it('should add the description to the `msg` in `results`', () => {
-            assert(results.pop().msg).stringContains('what snow is like');
+            runUnits('/fake/path', (utility) => {
+                utility.describe('what is the meaning of life', () => {
+                    utility.assert(42).equals(42);
+                });
+
+                utility.describe('the universe and everything', () => {
+                    utility.assert('also 42').equals('also 42');
+                });
+            });
+
+            const { results } = getSummary();
+
+            it('the first result `msg` should contain the first description', () => {
+                let hasFirstExpectation = results[0].msg.includes('what is the meaning of life');
+                assert(hasFirstExpectation).isTrue();
+            });
+
+            it('the first result `msg` should not contain the second description', () => {
+                let hasFirstExpectation = results[0].msg.includes('the universe and everything');
+                assert(hasFirstExpectation).isFalse();
+            });
+
+            it('the second result `msg` should contain the second description', () => {
+                let hasFirstExpectation = results[1].msg.includes('the universe and everything');
+                assert(hasFirstExpectation).isTrue();
+            });
+
+            it('the second result `msg` should not contain the first description', () => {
+                let hasFirstExpectation = results[1].msg.includes('what is the meaning of life');
+                assert(hasFirstExpectation).isFalse();
+            });
         });
     });
 
