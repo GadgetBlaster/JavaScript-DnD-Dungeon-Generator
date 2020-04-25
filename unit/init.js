@@ -1,6 +1,7 @@
 
-import manifest from './manifest.js'
-import unit from './unit.js'
+import manifest from './manifest.js';
+import run from './run.js';
+import unit from './unit.js';
 
 import {
     dot,
@@ -9,7 +10,7 @@ import {
     print,
     render,
     summary,
-} from './output.js'
+} from './output.js';
 
 /**
  * URL params
@@ -39,38 +40,24 @@ const { getSummary, runUnits } = unit({
 });
 
 /**
- * Run
- *
- * @param {number} [index=0]
+ * On complete
  */
-(async function run(index = 0) {
-    if (!manifest.length) {
-        render(statusContainer, 'Status: Empty test manifest');
-        return;
-    }
+const onComplete = () => {
+    let { assertions, failures, results } = getSummary();
 
-    render(statusContainer, 'Status: Running...');
+    render(statusContainer, 'Status: Complete');
+    render(summaryContainer, summary(assertions, failures));
+    render(logContainer, log(results, { verbose }));
+};
 
-    /** {string} path */
-    let path = manifest[index];
+/**
+ * On error
+ *
+ * @param {string} error
+ */
+const onError = (error) => {
+    print(errorContainer, fail(error));
+};
 
-    if (!path) {
-        let { assertions, failures, results } = getSummary();
-
-        render(statusContainer, 'Status: Complete');
-        render(summaryContainer, summary(assertions, failures));
-        render(logContainer, log(results, { verbose }));
-        return;
-    }
-
-    try {
-        /** {Function} units */
-        let { default: units } = await import(path);
-        runUnits(path, units);
-    } catch ({ stack }) {
-        console.error(stack);
-        print(errorContainer, fail(stack.toString()));
-    }
-
-    run(index + 1);
-})();
+render(statusContainer, 'Status: Running...');
+run({ manifest, onComplete, onError, runUnits });
