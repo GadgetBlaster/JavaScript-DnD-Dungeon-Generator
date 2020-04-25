@@ -3,7 +3,7 @@ import unit from '../unit.js';
 
 export default ({ assert, describe, it }) => {
     describe('#unit', () => {
-        const unitObj = unit({ onAssert: () => {} });
+        const unitObj = unit();
 
         it('should return a object', () => {
             assert(unitObj).isObject();
@@ -21,7 +21,7 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('#runUnits', () => {
-        const { runUnits, getSummary } = unit({ onAssert: () => {} });
+        const { runUnits, getSummary } = unit();
 
         let called = false;
         let assertFunc;
@@ -81,7 +81,7 @@ export default ({ assert, describe, it }) => {
 
     describe('#getSummary', () => {
         describe('summary properties', () => {
-            const { getSummary } = unit({ onAssert: () => {} });
+            const { getSummary } = unit();
             const summary = getSummary();
 
             it('should return a object', () => {
@@ -103,7 +103,7 @@ export default ({ assert, describe, it }) => {
 
         describe('summary values', () => {
             describe('when two of three assertions pass', () => {
-                const { runUnits, getSummary } = unit({ onAssert: () => {} });
+                const { runUnits, getSummary } = unit();
 
                 runUnits('/fake/path', (utility) => {
                     utility.assert().equals();
@@ -129,7 +129,7 @@ export default ({ assert, describe, it }) => {
 
         describe('summary `results`', () => {
             describe('when each assertion is in its own `describe` and `it` callback', () => {
-                const { runUnits, getSummary } = unit({ onAssert: () => {} });
+                const { runUnits, getSummary } = unit();
 
                 runUnits('/fake/path', (utility) => {
                     utility.describe('description one', () => {
@@ -165,7 +165,7 @@ export default ({ assert, describe, it }) => {
             });
 
             describe('when an assertion is inside two `describe` callbacks', () => {
-                const { runUnits, getSummary } = unit({ onAssert: () => {} });
+                const { runUnits, getSummary } = unit();
 
                 runUnits('/fake/path', (utility) => {
                     utility.describe('description one', () => {
@@ -187,7 +187,7 @@ export default ({ assert, describe, it }) => {
             });
 
             describe('when two assertions are made inside one `describe` callback and two `it` callbacks', () => {
-                const { runUnits, getSummary } = unit({ onAssert: () => {} });
+                const { runUnits, getSummary } = unit();
 
                 runUnits('/fake/path', (utility) => {
                     utility.describe('description one', () => {
@@ -214,7 +214,7 @@ export default ({ assert, describe, it }) => {
             });
 
             describe('when two assertions are made inside one `describe` and `it` callback', () => {
-                const { runUnits, getSummary } = unit({ onAssert: () => {} });
+                const { runUnits, getSummary } = unit();
 
                 runUnits('/fake/path', (utility) => {
                     utility.describe('description one', () => {
@@ -237,7 +237,7 @@ export default ({ assert, describe, it }) => {
             });
 
             describe('no assertions are made inside `describe` and `it` callbacks', () => {
-                const { runUnits, getSummary } = unit({ onAssert: () => {} });
+                const { runUnits, getSummary } = unit();
 
                 runUnits('/fake/path', (utility) => {
                     utility.describe('description one', () => {
@@ -259,7 +259,7 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('#assert', () => {
-        const { runUnits } = unit({ onAssert: () => {} });
+        const { runUnits } = unit();
 
         let assertFunc;
 
@@ -374,7 +374,7 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('#describe', () => {
-        const { runUnits, getSummary } = unit({ onAssert: () => {} });
+        const { runUnits, getSummary } = unit();
 
         runUnits('/fake/path', (utility) => {
             utility.describe('what snow is like', () => {
@@ -390,7 +390,7 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('#it', () => {
-        const { runUnits, getSummary } = unit({ onAssert: () => {} });
+        const { runUnits, getSummary } = unit();
 
         runUnits('/fake/path', (utility) => {
             utility.describe('what snow is like', () => {

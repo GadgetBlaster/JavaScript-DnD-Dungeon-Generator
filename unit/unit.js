@@ -54,12 +54,12 @@ import { resultMsg } from './output.js';
  */
 
 /**
- * @param {Object} config
- *     @param {OnAssert} config.onAssert
+ * @param {Object} [config]
+ *     @param {OnAssert} [config.onAssert]
  *
  * @return {Unit}
  */
-export default ({ onAssert }) => {
+export default ({ onAssert = () => {} } = {}) => {
 
     /**
      * Results
