@@ -6,7 +6,10 @@ import unit from './unit.js';
 import {
     dot,
     fail,
+    info,
     log,
+    nav,
+    pathList,
     print,
     render,
     summary,
@@ -20,15 +23,24 @@ import {
 const urlParams = new URLSearchParams(window.location.search);
 
 /**
+ * Action
+ *
+ * @type {string}
+ */
+const action = urlParams.get('action');
+
+/**
  * Verbose
  *
  * @type {boolean}
  */
-const verbose = urlParams.get('mode') === 'verbose';
+const verbose = Boolean(urlParams.get('verbose'));
 
 const dotsContainer    = document.getElementById('dots');
 const errorContainer   = document.getElementById('errors');
+const infoContainer    = document.getElementById('info');
 const logContainer     = document.getElementById('log');
+const navContainer     = document.getElementById('nav');
 const statusContainer  = document.getElementById('status');
 const summaryContainer = document.getElementById('summary');
 
@@ -59,5 +71,25 @@ const onError = (error) => {
     print(errorContainer, fail(error));
 };
 
-render(statusContainer, 'Status: Running...');
-run({ manifest, onComplete, onError, runUnits });
+render(navContainer, nav({
+    action,
+    verbose,
+}));
+
+(() => {
+    if (action === 'list') {
+        render(logContainer, pathList(manifest));
+        return;
+    }
+
+    render(statusContainer, 'Status: Running...');
+
+    if (manifest.includes(action)) {
+        render(infoContainer, `Scope: ${action}`);
+        run({ manifest: [ action ], onComplete, onError, runUnits });
+        return;
+    }
+
+    render(infoContainer, 'Scope: All Tests');
+    run({ manifest, onComplete, onError, runUnits });
+})();

@@ -4,7 +4,10 @@ import {
     escapeHTML,
     fail,
     info,
+    link,
     log,
+    nav,
+    pathList,
     print,
     render,
     resultMsg,
@@ -52,6 +55,22 @@ export default ({ assert, describe, it }) => {
         });
     });
 
+    describe('#link', () => {
+        describe('given `label` and `href`', () => {
+            it('should return an html link', () => {
+                assert(link('Mystic Waffle', 'https://www.mysticwaffle.com/'))
+                    .equals('<a href="https://www.mysticwaffle.com/">Mystic Waffle</a>');
+            });
+        });
+
+        describe('given at truthy `active` option', () => {
+            it('should return an html link with a `data-active` attribute', () => {
+                assert(link('Mystic Waffle', 'https://www.mysticwaffle.com/', { active: true }))
+                    .stringContains(' data-active');
+            });
+        });
+    });
+
     describe('#log', () => {
         describe('given no results', () => {
             it('should return an empty string', () => {
@@ -91,9 +110,87 @@ export default ({ assert, describe, it }) => {
 
             describe('given the verbose flag', () => {
                 it('should return the two success then the two failures', () => {
-                    let expect = info('yep') + info('you bet') + fail('nope') + fail('no way');
+                    const expect = info('yep') + info('you bet') + fail('nope') + fail('no way');
                     assert(log(results, { verbose: true })).equals(expect);
                 });
+            });
+        });
+    });
+
+    describe('#nav', () => {
+        describe('given no options', () => {
+            const html = nav({});
+
+            it('should contain the urls', () => {
+                [
+                    './unit.html',
+                    './unit.html?action=list',
+                    './unit.html?verbose=true',
+                ].forEach((url) => {
+                    assert(html).stringContains(url);
+                });
+            });
+        });
+
+        describe('given an `action` string option', () => {
+            const html = nav({ action: 'fake' });
+
+            it('should contain the urls', () => {
+                [
+                    './unit.html',
+                    './unit.html?action=list',
+                    './unit.html?action=fake&verbose=true',
+                ].forEach((url) => {
+                    assert(html).stringContains(url);
+                });
+            });
+        });
+
+        describe('given a truthy `verbose` option', () => {
+            const html = nav({ verbose: true });
+
+            it('should contain the urls', () => {
+                [
+                    './unit.html?verbose=true',
+                    './unit.html?action=list&verbose=true',
+                    './unit.html',
+                ].forEach((url) => {
+                    assert(html).stringContains(url);
+                });
+            });
+        });
+
+        describe('given an `action` string and truthy `verbose` options', () => {
+            const html = nav({ action: 'fake', verbose: true });
+
+            it('should contain the urls', () => {
+                [
+                    './unit.html?verbose=true',
+                    './unit.html?action=list&verbose=true',
+                    './unit.html?action=fake',
+                ].forEach((url) => {
+                    assert(html).stringContains(url);
+                });
+            });
+        });
+    });
+
+    describe('#pathList', () => {
+        describe('given an array of paths', () => {
+            const paths = [ './path/one', './path/two' ];
+            const html  = pathList(paths);
+
+            it('should return an html list with an `<li>` and `</li>` for each path', () => {
+                assert((html.match(/<li>/g) || []).length).equals(paths.length);
+                assert((html.match(/<\/li>/g) || []).length).equals(paths.length);
+            });
+
+            it('should return an html link with `?action=path` as the link\'s `href`', () => {
+                paths.forEach((path) => {
+                    assert(html).stringContains(`<a href="?action=${path}">`);
+                });
+
+                assert((html.match(/<\/a>/g) || []).length).equals(paths.length);
             });
         });
     });

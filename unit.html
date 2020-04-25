@@ -19,7 +19,7 @@
                 margin: 2px;
             }
             .log {
-                white-space: pre;
+                white-space: pre-wrap;
                 font-size: 15px;
                 font-family: monospace;
             }
@@ -28,16 +28,14 @@
     <body>
 
         <header data-no-print>
-            <a href="/" data-action="home">D&D Dungeon Generator: Unit Tests</a>
-            <nav>
-                <a href="/unit.html">Run</a>
-                <a href="/unit.html?mode=verbose">Run Verbose</a>
-            </nav>
+            <a href="/">D&D Dungeon Generator: Unit Tests</a>
+            <nav id="nav"></nav>
         </header>
 
         <main>
             <section>
                 <p id="status"></p>
+                <p id="info" class="log"></p>
                 <p id="dots"></p>
                 <p id="summary"></p>
                 <ul id="errors" class="log"></ul>

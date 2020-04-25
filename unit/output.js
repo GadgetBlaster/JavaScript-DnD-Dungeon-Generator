@@ -50,6 +50,18 @@ export const fail = (msg) => `<li class="fail">${escapeHTML(msg)}</li>`;
 export const info = (msg) => `<li>${escapeHTML(msg)}</li>`;
 
 /**
+ * Link
+ *
+ * @param {string} label
+ * @param {string} href
+ * @param {boolean} [options]
+ *     @param {boolean} [options.active]
+ *
+ * @returns {string}
+ */
+export const link = (label, href, { active } = {}) => `<a href="${href}"${active ? ' data-active' : ''}>${label}</a>`;
+
+/**
  * Result log
  *
  * @param {Result[]} results
@@ -66,6 +78,48 @@ export const log = (results, { verbose } = {}) => {
 
         return !isOk && fail(msg);
     }).filter(Boolean).join('');
+};
+
+/**
+ * Path list
+ *
+ * @param {options} options
+ *     @param {string} [options.action]
+ *     @param {boolean} [options.verbose]
+ *
+ * @returns {string}
+ */
+export const nav = ({ action, verbose }) => {
+    const makeParams = (options) => {
+        let params = Object.entries(options)
+            .filter(([ _, value ]) => Boolean(value))
+            .map(([ key, value ]) => `${key}=${value}`)
+            .join('&');
+
+        return params && `?${params}`;
+    };
+
+    const links = [
+        link('Run All', `./unit.html${makeParams({ action: null, verbose })}`, { active: !action }),
+        link('Test Files', `./unit.html${makeParams({ action: 'list', verbose })}`, { active: action === 'list' }),
+        '<span role="presentation" data-separator></span>',
+        link('Verbose', `./unit.html${makeParams({ action, verbose: !verbose })}`, { active: verbose })
+    ];
+
+    return links.join('');
+};
+
+/**
+ * Path list
+ *
+ * @param {string[]}
+ *
+ * @returns {string}
+ */
+export const pathList = (paths) => {
+    return paths.map((path) => {
+        return `<li>${link(path, `?action=${path}`)}</li>`;
+    }).join('');
 };
 
 /**
@@ -109,6 +163,11 @@ export const resultMsg = (entries) => entries.reduce((accumulator, value, index)
  */
 export const summary = (assertions, failures) => {
     let total = `${assertions} Assertion${assertions === 1 ? '' : 's'}`;
+
+    if (!assertions) {
+        return total;
+    }
+
     let fails = ((count) => {
         switch (count) {
             case 0:  return '<span class="ok">0 Failures, nice job 👏</span>';

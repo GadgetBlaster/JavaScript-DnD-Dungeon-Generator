@@ -82,7 +82,16 @@ footer a {
 }
 
 nav {
+    color: var(--color-white);
+    display: flex;
+    align-items: center;
     margin: 10px;
+}
+
+nav span[data-separator] {
+    margin: 0 15px;
+    border-left: 1px solid var(--color-gray-10);
+    height: 15px;
 }
 
 section {
@@ -108,7 +117,7 @@ article article {
 
 /* Logo */
 
-header a {
+header > a {
     color: var(--color-white);
     font-size: 22px;
     font-family: var(--font-logo);
@@ -116,7 +125,7 @@ header a {
     margin: 0;
 }
 
-header a:hover {
+header > a:hover {
     text-decoration: none;
 }
 
@@ -133,21 +142,29 @@ a:hover {
 
 /* Buttons */
 
-button {
+button,
+header nav a {
     cursor: pointer;
     border-radius: var(--border-radius);
     border: 0;
     background: var(--color-action-1);
     color: var(--color-white);
     font-size: var(--font-size);
+    font-family: var(--font-default);
+    display: inline-flex;
+    align-items: center;
 }
 
 button:hover,
-button[data-active] {
+button[data-active],
+header nav a[data-active],
+header nav a:hover {
     background: var(--color-action-2);
+    text-decoration: none;
 }
 
-button[data-size="small"] {
+button[data-size="small"],
+header nav a {
     min-height: 30px;
     padding: 0 12px;
 }
@@ -164,7 +181,8 @@ button[data-info] {
     height: 20px;
 }
 
-button + button {
+button + button,
+header nav a + a {
     margin-left: 10px;
 }
 
