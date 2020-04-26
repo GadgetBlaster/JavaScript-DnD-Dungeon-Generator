@@ -219,7 +219,6 @@ export default ({ onAssert = () => {} } = {}) => {
 
     /**
      * Get summary
-     * TODO tests!
      *
      * @param {string} error
      */

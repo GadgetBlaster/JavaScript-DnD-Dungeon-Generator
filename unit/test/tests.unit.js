@@ -60,6 +60,32 @@ export default ({ assert, describe, it }) => {
         });
     });
 
+    describe('#onError', () => {
+        const { onError, getSummary } = unit();
+
+        onError('Some unfortunate error');
+
+        const { errors } = getSummary();
+
+        const entry = errors.pop();
+
+        it('should add a `Result` entry to `errors`', () => {
+            assert(entry).isObject();
+            assert(entry.isOk).isBoolean();
+            assert(entry.msg).isString();
+        });
+
+        describe('the entry', () => {
+            it('should have the error string as its `msg`', () => {
+                assert(entry.msg).equals('Some unfortunate error');
+            });
+
+            it('should have a falsy `isOk`', () => {
+                assert(entry.isOk).isFalse();
+            });
+        });
+    });
+
     // TODO
     describe('nesting', () => {
         describe('when `it` is called outside of a `describe` callback', () => {
@@ -99,17 +125,23 @@ export default ({ assert, describe, it }) => {
             it('should return a object with a `results` array property', () => {
                 assert(summary.results).isArray();
             });
+
+            it('should return a object with a `errors` array property', () => {
+                assert(summary.errors).isArray();
+            });
         });
 
         describe('summary values', () => {
             describe('when two of three assertions pass', () => {
-                const { runUnits, getSummary } = unit();
+                const { runUnits, onError, getSummary } = unit();
 
                 runUnits('/fake/suite', (utility) => {
                     utility.assert().equals();
                     utility.assert().equals();
                     utility.assert(1).equals();
                 });
+
+                onError('Table flip');
 
                 const summary = getSummary();
 
@@ -123,6 +155,10 @@ export default ({ assert, describe, it }) => {
 
                 it('summary `results` should contain 3 entries', () => {
                     assert(summary.results.length).equals(3);
+                });
+
+                it('summary `errors` should contain 1 error', () => {
+                    assert(summary.errors.length).equals(1);
                 });
             });
         });
@@ -198,18 +234,24 @@ export default ({ assert, describe, it }) => {
 
                 const { results } = getSummary();
 
-                it('both summary `results` should contain the description', () => {
-                    results.forEach(({ msg }) => {
-                        assert(msg).stringContains('description one');
+                describe('both summary `results`', () => {
+                    it('should contain the description', () => {
+                        results.forEach(({ msg }) => {
+                            assert(msg).stringContains('description one');
+                        });
                     });
                 });
 
-                it('the first result `msg` should contain the first expectation', () => {
-                    assert(results[0].msg).stringContains('it one');
+                describe('the first result `msg`', () => {
+                    it('should contain the first expectation', () => {
+                        assert(results[0].msg).stringContains('it one');
+                    });
                 });
 
-                it('the second result `msg` should contain the second expectation', () => {
-                    assert(results[1].msg).stringContains('it two');
+                describe('the second result `msg`', () => {
+                    it('should contain the second expectation', () => {
+                        assert(results[1].msg).stringContains('it two');
+                    });
                 });
             });
 
@@ -227,11 +269,13 @@ export default ({ assert, describe, it }) => {
 
                 const { results } = getSummary();
 
-                it('both summary `results` should contain the description and expectation', () => {
-                    results.forEach(({ msg }) => {
-                        assert(msg)
-                            .stringContains('description one')
-                            .stringContains('it one');
+                describe('both summary `results`', () => {
+                    it('should contain the description and expectation', () => {
+                        results.forEach(({ msg }) => {
+                            assert(msg)
+                                .stringContains('description one')
+                                .stringContains('it one');
+                        });
                     });
                 });
             });
@@ -253,6 +297,43 @@ export default ({ assert, describe, it }) => {
 
                 it('should not add anything to the summary `results`', () => {
                     assert(results.length).equals(0);
+                });
+            });
+        });
+
+        describe('summary errors', () => {
+            describe('when two errors have added', () => {
+                const { onError, getSummary } = unit();
+
+                onError('Bad goblin!');
+                onError('Critical fail');
+
+                const { errors } = getSummary();
+
+                describe('summary `errors`', () => {
+                    it('should contain 2 entries', () => {
+                        assert(errors.length).equals(2);
+                    });
+                });
+
+                describe('the first error in the summary', () => {
+                    it('should have a falsy `isOk` property', () => {
+                        assert(errors[0].isOk).isFalse();
+                    });
+
+                    it('should have the error string as its `msg` property', () => {
+                        assert(errors[0].msg).equals('Bad goblin!');
+                    });
+                });
+
+                describe('the secon error in the summary', () => {
+                    it('should have a falsy `isOk` property', () => {
+                        assert(errors[1].isOk).isFalse();
+                    });
+
+                    it('should have the error string as its `msg` property', () => {
+                        assert(errors[1].msg).equals('Critical fail');
+                    });
                 });
             });
         });
@@ -405,24 +486,27 @@ export default ({ assert, describe, it }) => {
 
             const { results } = getSummary();
 
-            it('the first result `msg` should contain the first description', () => {
-                let hasFirstExpectation = results[0].msg.includes('what is the meaning of life');
-                assert(hasFirstExpectation).isTrue();
-            });
+            describe('the first result `msg`', () => {
+                it('should contain the first description', () => {
+                    let hasFirstExpectation = results[0].msg.includes('what is the meaning of life');
+                    assert(hasFirstExpectation).isTrue();
+                });
 
-            it('the first result `msg` should not contain the second description', () => {
-                let hasFirstExpectation = results[0].msg.includes('the universe and everything');
-                assert(hasFirstExpectation).isFalse();
+                it('should not contain the second description', () => {
+                    let hasFirstExpectation = results[0].msg.includes('the universe and everything');
+                    assert(hasFirstExpectation).isFalse();
+                });
             });
+            describe('the second result `msg`', () => {
+                it('should contain the second description', () => {
+                    let hasFirstExpectation = results[1].msg.includes('the universe and everything');
+                    assert(hasFirstExpectation).isTrue();
+                });
 
-            it('the second result `msg` should contain the second description', () => {
-                let hasFirstExpectation = results[1].msg.includes('the universe and everything');
-                assert(hasFirstExpectation).isTrue();
-            });
-
-            it('the second result `msg` should not contain the first description', () => {
-                let hasFirstExpectation = results[1].msg.includes('what is the meaning of life');
-                assert(hasFirstExpectation).isFalse();
+                it('should not contain the first description', () => {
+                    let hasFirstExpectation = results[1].msg.includes('what is the meaning of life');
+                    assert(hasFirstExpectation).isFalse();
+                });
             });
         });
     });

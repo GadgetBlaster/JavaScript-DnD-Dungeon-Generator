@@ -75,6 +75,7 @@ render(navContainer, nav({
     const list = Object.keys(suite);
 
     if (scope === 'list') {
+        render(statusContainer, 'Scope');
         render(logContainer, scopeList(list, { verbose }));
         return;
     }
