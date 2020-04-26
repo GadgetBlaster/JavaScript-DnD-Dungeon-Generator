@@ -135,12 +135,12 @@ export const render = (el, text) => {
 /**
  * Result Msg
  *
- * @param {string[]} entries
+ * @param {Entry[]} entries
  *
  * @returns {string}
  */
 export const resultMsg = (entries) => entries.reduce((accumulator, value, index) => {
-    return `${accumulator}${'  '.repeat(index)}${value}\n`;
+    return `${accumulator}${'  '.repeat(index)}${value.msg}\n`;
 }, '').trim();
 
 /**

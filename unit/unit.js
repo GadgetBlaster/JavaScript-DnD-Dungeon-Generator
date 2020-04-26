@@ -57,6 +57,27 @@ import { resultMsg } from './output.js';
  */
 
 /**
+ * Entry
+ *
+ * @typedef {Object} Entry
+ *
+ * @property {string} msg
+ * @property {boolean} isOk
+ */
+
+/**
+ * Scope
+ *
+ * @type {Object.<string, string>}
+ */
+const scope = {
+    assert  : 'assert',
+    describe: 'describe',
+    it      : 'it',
+    suite   : 'suite',
+};
+
+/**
  * @param {Object} [config]
  *     @param {OnAssert} [config.onAssert]
  *
@@ -74,7 +95,7 @@ export default ({ onAssert = () => {} } = {}) => {
     /**
      * Current
      *
-     * @type {string[]}
+     * @type {Entry[]}
      */
     let current = [];
 
@@ -100,13 +121,37 @@ export default ({ onAssert = () => {} } = {}) => {
     let failures = 0;
 
     /**
+     * Check scope
+     *
+     * @param {string} nextScope
+     * @param {string[] array
+     *
+     * @throws
+     */
+    const checkScope = (nextScope, allowed) => {
+        let currentEntry = current[current.length -1];
+
+        if (!currentEntry) {
+            throw new Error('No test entries');
+        }
+
+        let currentScope = currentEntry.scope;
+
+        if (!allowed.includes(currentScope)) {
+            throw new Error(`${nextScope} cannot be called inside ${currentScope}`);
+        }
+    };
+
+    /**
      * Describe
      *
      * @param {string} msg
      * @param {Function} callback
      */
     const describe = (msg, callback) => {
-        current.push(msg);
+        checkScope(scope.describe, [ scope.suite, scope.describe ]);
+
+        current.push({ scope: scope.describe, msg });
         callback();
         current.pop();
     };
@@ -118,7 +163,9 @@ export default ({ onAssert = () => {} } = {}) => {
      * @param {Function} callback
      */
     const it = (msg, callback) => {
-        current.push(msg);
+        checkScope(scope.it, [ scope.describe ]);
+
+        current.push({ scope: scope.it, msg });
         callback();
         current.pop();
     };
@@ -133,6 +180,8 @@ export default ({ onAssert = () => {} } = {}) => {
      * @returns {Object.<string, Function>}
      */
     const _runAssert = (actual, expected, assertion) => {
+        checkScope(scope.assert, [ scope.it ]);
+
         let result = assertion(actual, expected);
         let { msg, isOk } = result;
 
@@ -142,7 +191,10 @@ export default ({ onAssert = () => {} } = {}) => {
             failures++;
         }
 
-        current.push(`${isOk ? 'Pass:' : 'Failure:'} ${msg}`);
+        current.push({
+            scope: scope.assert,
+            msg: `${isOk ? 'Pass:' : 'Failure:'} ${msg}`
+        });
 
         onAssert(result);
 
@@ -198,7 +250,7 @@ export default ({ onAssert = () => {} } = {}) => {
      * @param {Function} tests
      */
     const runUnits = (suite, tests) => {
-        current.push(suite);
+        current.push({ scope: scope.suite, msg: suite });
         tests(utility);
         current.pop();
     };

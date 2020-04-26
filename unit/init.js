@@ -88,6 +88,6 @@ render(navContainer, nav({
         return;
     }
 
-    render(infoContainer, 'Scope: All Tests');
+    render(infoContainer, 'Scope: All the things');
     run({ suite, onComplete, onError, runUnits });
 })();

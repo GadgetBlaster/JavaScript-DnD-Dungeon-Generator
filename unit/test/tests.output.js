@@ -251,12 +251,16 @@ export default ({ assert, describe, it }) => {
 
         describe('given a single entry', () => {
             it('should return the entry', () => {
-                assert(resultMsg([ 'just us chickens' ])).equals('just us chickens');
+                assert(resultMsg([ { msg: 'just us chickens' } ]))
+                    .equals('just us chickens');
             });
         });
 
         describe('given three entries', () => {
-            const entries = resultMsg([ 'jimmy', 'joey', 'sarah' ]);
+            const entries = resultMsg([
+                { msg: 'jimmy' }, { msg: 'joey' }, { msg: 'sarah' },
+            ]);
+
             const lines = entries.split(`\n`);
 
             it('should return each entry on a new line', () => {

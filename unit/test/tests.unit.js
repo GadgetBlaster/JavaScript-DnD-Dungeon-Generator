@@ -35,7 +35,11 @@ export default ({ assert, describe, it }) => {
             describeFunc = utility.describe;
             itFunc       = utility.it;
 
-            assertFunc().equals();
+            describeFunc('desc', () => {
+                itFunc('it', () => {
+                    assertFunc().equals();
+                });
+            });
         });
 
         it('should call the `tests` function param', () => {
@@ -86,22 +90,45 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    // TODO
     describe('nesting', () => {
         describe('when `it` is called outside of a `describe` callback', () => {
-            it('should throw', () => {});
+            it('should throw', () => {
+                unit().runUnits('/fake/scope', (utility) => {
+                    assert(utility.it).throws();
+                });
+            });
         });
 
         describe('when `assert` is called outside of an `it` callback', () => {
-            it('should throw', () => {});
+            it('should throw', () => {
+                unit().runUnits('/fake/scope', (utility) => {
+                    assert(utility.assert().equals).throws();
+                });
+            });
         });
 
         describe('when `describe` is called inside of an `it` callback', () => {
-            it('should throw', () => {});
+            it('should throw', () => {
+                unit().runUnits('/fake/scope', (utility) => {
+                    utility.describe('desc', () => {
+                        utility.it('it', () => {
+                            assert(utility.describe).throws();
+                        });
+                    });
+                });
+            });
         });
 
         describe('when `it` is called inside of an `it` callback', () => {
-            it('should throw', () => {});
+            it('should throw', () => {
+                unit().runUnits('/fake/scope', (utility) => {
+                    utility.describe('desc', () => {
+                        utility.it('it', () => {
+                            assert(utility.it).throws();
+                        });
+                    });
+                });
+            });
         });
     });
 
@@ -136,9 +163,13 @@ export default ({ assert, describe, it }) => {
                 const { runUnits, onError, getSummary } = unit();
 
                 runUnits('/fake/suite', (utility) => {
-                    utility.assert().equals();
-                    utility.assert().equals();
-                    utility.assert(1).equals();
+                    utility.describe('desc', () => {
+                        utility.it('it', () => {
+                            utility.assert().equals();
+                            utility.assert().equals();
+                            utility.assert(1).equals();
+                        });
+                    });
                 });
 
                 onError('Table flip');
@@ -340,43 +371,41 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('#assert', () => {
-        const { runUnits } = unit();
+        unit().runUnits('/fake/suite', (utility) => {
+            utility.describe('desc', () => {
+                utility.it('it', () => {
+                    const assertObj = utility.assert();
 
-        let assertFunc;
-
-        runUnits('/fake/suite', (utility) => {
-            assertFunc = utility.assert;
-        });
-
-        const assertObj = assertFunc('some value');
-
-        it('should return an object', () => {
-            assert(assertObj).isObject();
-        });
-
-        describe('object properties', () => {
-            const assertEntries = Object.entries(assertObj);
-
-            assertEntries.forEach(([ key, func ]) => {
-                describe(`#${key}`, () => {
-                    it('should be a function', () => {
-                        assert(func).isFunction();
+                    it('should return an object', () => {
+                        assert(assertObj).isObject();
                     });
 
-                    describe('when invoked', () => {
-                        const chainObj = func();
+                    describe('object properties', () => {
+                        const assertEntries = Object.entries(assertObj);
 
-                        it('should return an object', () => {
-                            assert(chainObj).isObject();
-                        });
+                        assertEntries.forEach(([ key, func ]) => {
+                            describe(`#${key}`, () => {
+                                it('should be a function', () => {
+                                    assert(func).isFunction();
+                                });
 
-                        it('should return an object with the same keys and values as `assertEntries`', () => {
-                            const objectsDiffer = Object.entries(chainObj).some(([ key1, value1 ], index) => {
-                                let [ key2, value2 ] = assertEntries[index];
-                                return key1 !== key2 || value1.name !== value2.name;
+                                describe('when invoked', () => {
+                                    const chainObj = func();
+
+                                    it('should return an object', () => {
+                                        assert(chainObj).isObject();
+                                    });
+
+                                    it('should return an object with the same keys and values as `assertEntries`', () => {
+                                        const objectsDiffer = Object.entries(chainObj).some(([ key1, value1 ], index) => {
+                                            let [ key2, value2 ] = assertEntries[index];
+                                            return key1 !== key2 || value1.name !== value2.name;
+                                        });
+
+                                        assert(objectsDiffer).isFalse();
+                                    });
+                                });
                             });
-
-                            assert(objectsDiffer).isFalse();
                         });
                     });
                 });
@@ -393,16 +422,16 @@ export default ({ assert, describe, it }) => {
             },
         });
 
-        let assertFunc;
-
-        runUnits('/fake/suite', (utility) => {
-            assertFunc = utility.assert;
-        });
-
         describe('when an assertion is made', () => {
             const { assertions: startingAssertions } = getSummary();
 
-            assertFunc().equals();
+            runUnits('/fake/suite', (utility) => {
+                utility.describe('desc', () => {
+                    utility.it('it', () => {
+                        utility.assert().equals();
+                    });
+                });
+            });
 
             const { assertions, results } = getSummary();
 
@@ -424,7 +453,13 @@ export default ({ assert, describe, it }) => {
         describe('when an assertion passes', () => {
             const { failures: startingFailures } = getSummary();
 
-            assertFunc('some value').equals('some value');
+            runUnits('/fake/suite', (utility) => {
+                utility.describe('desc', () => {
+                    utility.it('it', () => {
+                        utility.assert('some value').equals('some value');
+                    });
+                });
+            });
 
             const { failures, results } = getSummary();
 
@@ -440,7 +475,13 @@ export default ({ assert, describe, it }) => {
         describe('when an assertion fails', () => {
             const { failures: startingFailures } = getSummary();
 
-            assertFunc('some value').equals('some other value');
+            runUnits('/fake/suite', (utility) => {
+                utility.describe('desc', () => {
+                    utility.it('it', () => {
+                        utility.assert('some value').equals('some other value');
+                    });
+                });
+            });
 
             const { failures, results } = getSummary();
 
@@ -460,7 +501,9 @@ export default ({ assert, describe, it }) => {
 
             runUnits('/fake/suite', (utility) => {
                 utility.describe('what snow is like', () => {
-                    utility.assert().equals();
+                    utility.it('should be wet like', () => {
+                        utility.assert().equals();
+                    });
                 });
             });
 
@@ -476,11 +519,15 @@ export default ({ assert, describe, it }) => {
 
             runUnits('/fake/suite', (utility) => {
                 utility.describe('what is the meaning of life', () => {
-                    utility.assert(42).equals(42);
+                    utility.it('is `42`', () => {
+                        utility.assert(42).equals(42);
+                    });
                 });
 
                 utility.describe('the universe and everything', () => {
-                    utility.assert('also 42').equals('also 42');
+                    utility.it('is also `42`', () => {
+                        utility.assert('also 42').equals('also 42');
+                    });
                 });
             });
 
