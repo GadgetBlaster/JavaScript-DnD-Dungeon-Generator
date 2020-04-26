@@ -199,7 +199,6 @@ export default ({ assert, describe, it }) => {
             const html   = scopeList(scopes, { verbose: true });
 
             it('should return an html list with `&verbose=true` for each scope', () => {
-                console.log(html);
                 assert((html.match(/&verbose=true/g) || []).length).equals(scopes.length);
             });
         });

@@ -223,7 +223,10 @@ export default ({ onAssert = () => {} } = {}) => {
      * @param {string} error
      */
     const onError = (error) => {
-        errors.push({ isOk: false, msg: error });
+        let result = { isOk: false, msg: error };
+
+        onAssert(result);
+        errors.push(result);
     };
 
     return {
