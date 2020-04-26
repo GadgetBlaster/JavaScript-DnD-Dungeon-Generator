@@ -7,9 +7,9 @@ import {
     dot,
     log,
     nav,
-    pathList,
     print,
     render,
+    scopeList,
     summary,
 } from './output.js';
 
@@ -75,7 +75,7 @@ render(navContainer, nav({
     const list = Object.keys(suite);
 
     if (scope === 'list') {
-        render(logContainer, pathList(list));
+        render(logContainer, scopeList(list, { verbose }));
         return;
     }
 

@@ -80,6 +80,16 @@ export const log = (results, { verbose } = {}) => {
     }).filter(Boolean).join('');
 };
 
+// TODO tests
+const makeParams = (options) => {
+    let params = Object.entries(options)
+        .filter(([ _, value ]) => Boolean(value))
+        .map(([ key, value ]) => `${key}=${value}`)
+        .join('&');
+
+    return params && `?${params}`;
+};
+
 /**
  * Path list
  *
@@ -90,15 +100,6 @@ export const log = (results, { verbose } = {}) => {
  * @returns {string}
  */
 export const nav = ({ scope, verbose }) => {
-    const makeParams = (options) => {
-        let params = Object.entries(options)
-            .filter(([ _, value ]) => Boolean(value))
-            .map(([ key, value ]) => `${key}=${value}`)
-            .join('&');
-
-        return params && `?${params}`;
-    };
-
     const links = [
         link('Run All', `./unit.html${makeParams({ scope: null, verbose })}`, { active: !scope }),
         link('Scope', `./unit.html${makeParams({ scope: 'list', verbose })}`, { active: scope === 'list' }),
@@ -107,19 +108,6 @@ export const nav = ({ scope, verbose }) => {
     ];
 
     return links.join('');
-};
-
-/**
- * Path list
- *
- * @param {string[]}
- *
- * @returns {string}
- */
-export const pathList = (paths) => {
-    return paths.map((path) => {
-        return `<li>${link(path, `?scope=${path}`)}</li>`;
-    }).join('');
 };
 
 /**
@@ -152,6 +140,21 @@ export const render = (el, text) => {
 export const resultMsg = (entries) => entries.reduce((accumulator, value, index) => {
     return `${accumulator}${'  '.repeat(index)}${value}\n`;
 }, '').trim();
+
+/**
+ * Scope list
+ *
+ * @param {string[]} scopes
+ * @param {options} [options]
+ *     @param {boolean} [options.verbose]
+ *
+ * @returns {string}
+ */
+export const scopeList = (scopes, { verbose } = {}) => {
+    return scopes.map((scope) => {
+        return `<li>${link(scope, makeParams({ scope, verbose }))}</li>`;
+    }).join('');
+};
 
 /**
  * Summary

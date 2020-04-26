@@ -7,10 +7,10 @@ import {
     link,
     log,
     nav,
-    pathList,
     print,
     render,
     resultMsg,
+    scopeList,
     summary,
 } from '../output.js';
 
@@ -175,10 +175,10 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#pathList', () => {
+    describe('#scopeList', () => {
         describe('given an array of paths', () => {
             const paths = [ './path/one', './path/two' ];
-            const html  = pathList(paths);
+            const html  = scopeList(paths);
 
             it('should return an html list with an `<li>` and `</li>` for each path', () => {
                 assert((html.match(/<li>/g) || []).length).equals(paths.length);
