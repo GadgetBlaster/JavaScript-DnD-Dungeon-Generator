@@ -124,7 +124,7 @@ export default ({ assert, describe, it }) => {
             it('should contain the urls', () => {
                 [
                     './unit.html',
-                    './unit.html?action=list',
+                    './unit.html?scope=list',
                     './unit.html?verbose=true',
                 ].forEach((url) => {
                     assert(html).stringContains(url);
@@ -132,14 +132,14 @@ export default ({ assert, describe, it }) => {
             });
         });
 
-        describe('given an `action` string option', () => {
-            const html = nav({ action: 'fake' });
+        describe('given an `scope` string option', () => {
+            const html = nav({ scope: 'fake' });
 
             it('should contain the urls', () => {
                 [
                     './unit.html',
-                    './unit.html?action=list',
-                    './unit.html?action=fake&verbose=true',
+                    './unit.html?scope=list',
+                    './unit.html?scope=fake&verbose=true',
                 ].forEach((url) => {
                     assert(html).stringContains(url);
                 });
@@ -152,7 +152,7 @@ export default ({ assert, describe, it }) => {
             it('should contain the urls', () => {
                 [
                     './unit.html?verbose=true',
-                    './unit.html?action=list&verbose=true',
+                    './unit.html?scope=list&verbose=true',
                     './unit.html',
                 ].forEach((url) => {
                     assert(html).stringContains(url);
@@ -160,14 +160,14 @@ export default ({ assert, describe, it }) => {
             });
         });
 
-        describe('given an `action` string and truthy `verbose` options', () => {
-            const html = nav({ action: 'fake', verbose: true });
+        describe('given an `scope` string and truthy `verbose` options', () => {
+            const html = nav({ scope: 'fake', verbose: true });
 
             it('should contain the urls', () => {
                 [
                     './unit.html?verbose=true',
-                    './unit.html?action=list&verbose=true',
-                    './unit.html?action=fake',
+                    './unit.html?scope=list&verbose=true',
+                    './unit.html?scope=fake',
                 ].forEach((url) => {
                     assert(html).stringContains(url);
                 });
@@ -185,9 +185,9 @@ export default ({ assert, describe, it }) => {
                 assert((html.match(/<\/li>/g) || []).length).equals(paths.length);
             });
 
-            it('should return an html link with `?action=path` as the link\'s `href`', () => {
+            it('should return an html link with `?scope=path` as the link\'s `href`', () => {
                 paths.forEach((path) => {
-                    assert(html).stringContains(`<a href="?action=${path}">`);
+                    assert(html).stringContains(`<a href="?scope=${path}">`);
                 });
 
                 assert((html.match(/<\/a>/g) || []).length).equals(paths.length);
@@ -265,22 +265,42 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('#summary', () => {
+        describe('errors', () => {
+            describe('given `0` errors', () => {
+                it('should return a string that does not contain `Errors`', () => {
+                    assert(summary(2, 1, 0)).stringExcludes('Errors');
+                });
+            });
+
+            describe('given `1` error', () => {
+                it('should return a string containing `1 Error`', () => {
+                    assert(summary(1, 1, 1)).stringContains('1 Error');
+                });
+            });
+
+            describe('given `10` errors', () => {
+                it('should return a string containing `10 Errors`', () => {
+                    assert(summary(1, 1, 10)).stringContains('10 Errors');
+                });
+            });
+        });
+
         describe('assertions', () => {
             describe('given `0` assertions', () => {
                 it('should return a string containing `0 Assertions`', () => {
-                    assert(summary(0, 0)).stringContains('0 Assertions');
+                    assert(summary(0, 0, 0)).stringContains('0 Assertions');
                 });
             });
 
             describe('given `1` assertion', () => {
                 it('should return a string containing `1 Assertion`', () => {
-                    assert(summary(1, 0)).stringContains('1 Assertion');
+                    assert(summary(1, 0, 0)).stringContains('1 Assertion');
                 });
             });
 
             describe('given `2` assertions', () => {
                 it('should return a string containing `2 Assertions`', () => {
-                    assert(summary(2, 0)).stringContains('2 Assertion');
+                    assert(summary(2, 0, 0)).stringContains('2 Assertion');
                 });
             });
         });
@@ -288,11 +308,11 @@ export default ({ assert, describe, it }) => {
         describe('failures', () => {
             describe('given `0` failures', () => {
                 it('should return a string containing `0 Failures`', () => {
-                    assert(summary(1, 0)).stringContains('0 Failures');
+                    assert(summary(1, 0, 0)).stringContains('0 Failures');
                 });
 
                 it('should return a `<span>` with the `ok` css class', () => {
-                    assert(summary(1, 0))
+                    assert(summary(1, 0, 0))
                         .stringContains('<span class="ok">')
                         .stringContains('</span>');
                 });
@@ -300,20 +320,20 @@ export default ({ assert, describe, it }) => {
 
             describe('given failures', () => {
                 it('should return a `<span>` with the `fail` css class', () => {
-                    assert(summary(1, 1))
+                    assert(summary(1, 1, 0))
                         .stringContains('<span class="fail">')
                         .stringContains('</span>');
                 });
 
                 describe('given `1` failure', () => {
                     it('should return a string containing `1 Failure`', () => {
-                        assert(summary(1, 1)).stringContains('1 Failure');
+                        assert(summary(1, 1, 0)).stringContains('1 Failure');
                     });
                 });
 
                 describe('given `2` failures', () => {
                     it('should return a string containing `2 Failures`', () => {
-                        assert(summary(1, 2)).stringContains('2 Failures');
+                        assert(summary(1, 2, 0)).stringContains('2 Failures');
                     });
                 });
             });

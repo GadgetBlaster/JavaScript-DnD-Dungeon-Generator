@@ -2,7 +2,7 @@
 const minPercent = 1;
 const maxPercent = 100;
 
-const _throw = (m) => { throw m; }
+const _throw = (m) => { throw m; };
 
 export const roll = (min = 0, max = 1) => {
     !Number.isInteger(min) && _throw(`Roll min must be an integer`);

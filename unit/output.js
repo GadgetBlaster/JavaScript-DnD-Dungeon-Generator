@@ -84,12 +84,12 @@ export const log = (results, { verbose } = {}) => {
  * Path list
  *
  * @param {options} options
- *     @param {string} [options.action]
+ *     @param {string} [options.scope]
  *     @param {boolean} [options.verbose]
  *
  * @returns {string}
  */
-export const nav = ({ action, verbose }) => {
+export const nav = ({ scope, verbose }) => {
     const makeParams = (options) => {
         let params = Object.entries(options)
             .filter(([ _, value ]) => Boolean(value))
@@ -100,10 +100,10 @@ export const nav = ({ action, verbose }) => {
     };
 
     const links = [
-        link('Run All', `./unit.html${makeParams({ action: null, verbose })}`, { active: !action }),
-        link('Test Files', `./unit.html${makeParams({ action: 'list', verbose })}`, { active: action === 'list' }),
+        link('Run All', `./unit.html${makeParams({ scope: null, verbose })}`, { active: !scope }),
+        link('Scope', `./unit.html${makeParams({ scope: 'list', verbose })}`, { active: scope === 'list' }),
         '<span role="presentation" data-separator></span>',
-        link('Verbose', `./unit.html${makeParams({ action, verbose: !verbose })}`, { active: verbose })
+        link('Verbose', `./unit.html${makeParams({ scope, verbose: !verbose })}`, { active: verbose })
     ];
 
     return links.join('');
@@ -118,7 +118,7 @@ export const nav = ({ action, verbose }) => {
  */
 export const pathList = (paths) => {
     return paths.map((path) => {
-        return `<li>${link(path, `?action=${path}`)}</li>`;
+        return `<li>${link(path, `?scope=${path}`)}</li>`;
     }).join('');
 };
 
@@ -158,10 +158,15 @@ export const resultMsg = (entries) => entries.reduce((accumulator, value, index)
  *
  * @param {number} assertions
  * @param {number} failures
+ * @param {number} errors
  *
  * @returns {string}
  */
-export const summary = (assertions, failures) => {
+export const summary = (assertions, failures, errors) => {
+    if (errors) {
+        return `<span class="fail">${errors} Error${errors === 1 ? '' : 's'}  😕</span>`;
+    }
+
     let total = `${assertions} Assertion${assertions === 1 ? '' : 's'}`;
 
     if (!assertions) {

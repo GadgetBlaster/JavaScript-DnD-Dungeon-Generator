@@ -1,28 +1,36 @@
 
 import run from '../run.js';
 
-export default async ({ assert, describe, it }) => {
-    await describe('#run', async () => {
-        await describe('given a manifest of test files', async () => {
-            let paths     = [];
+const defaults = {
+    onComplete: () => {},
+    onError   : () => {},
+    runUnits  : () => {},
+    suite     : {},
+};
+
+export default ({ assert, describe, it }) => {
+    describe('#run', () => {
+        describe('given a suite of test functions', () => {
+            let names     = [];
             let functions = [];
             let completed = false;
 
-            const mockManifest = [
-                './test/tests.mock.js',
-                './test/tests.mock.js',
-            ];
+            const suite = {
+                '/test/tests.mock1.js': () => {},
+                '/test/tests.mock2.js': () => {},
+            };
 
-            await run({
-                manifest  : mockManifest,
+            run({
+                ...defaults,
                 onComplete: () => { completed = true; },
-                onError   : () => {},
-                runUnits  : (path, tests) => { paths.push(path); functions.push(tests); },
+                runUnits  : (name, tests) => { names.push(name); functions.push(tests); },
+                suite,
             });
 
-            it('should call `runUnits` for each path in the manifest', () => {
-                paths.forEach((path) => {
-                    assert(path).equals('./test/tests.mock.js');
+            it('should call `runUnits` for each function in the suite', () => {
+                const keys = Object.keys(suite);
+                names.forEach((name, index) => {
+                    assert(name).equals(keys[index]);
                 });
             });
 
@@ -33,46 +41,168 @@ export default async ({ assert, describe, it }) => {
             });
 
             it('should call `onComplete` when all tests have been run', () => {
-                assert(paths.length).equals(mockManifest.length);
                 assert(completed).isTrue();
             });
-
-            // return new Promise();
         });
 
-        await describe('given an empty manifest', async () => {
+        describe('given an undefined suite', () => {
+            let completed = false;
             let onErrorResult;
 
-            await run({
-                manifest  : [],
-                onComplete: () => {},
+            run({
+                ...defaults,
+                onComplete: () => { completed = true; },
                 onError   : (error) => { onErrorResult = error; },
-                runUnits  : () => {},
+                suite     : undefined,
             });
 
-            it('should call `onError` and return an error string', () => {
-                assert(onErrorResult).isString();
+            it('should call `onError` and return a string containing `Invalid`', () => {
+                assert(onErrorResult)
+                    .isString()
+                    .stringContains('Invalid');
+            });
+
+            it('should call `onComplete`', () => {
+                assert(completed).isTrue();
             });
         });
 
-        await describe('given a manifest with invalid test file paths', async () => {
-            let errors = [];
+        describe('given an invalid suite', () => {
+            let completed = false;
+            let onErrorResult;
 
-            await run({
-                manifest  : [ './invalid/tests.404.js' ],
-                onComplete: () => {},
-                onError   : (error) => { errors.push(error); },
-                runUnits  : () => {},
+            run({
+                ...defaults,
+                onComplete: () => { completed = true; },
+                onError   : (error) => { onErrorResult = error; },
+                suite     : 'junk',
             });
 
-            it('should call `onError` for each invalid file', () => {
-                assert(errors.length).equals(1);
+            it('should call `onError` and return a string containing `Invalid`', () => {
+                assert(onErrorResult)
+                    .isString()
+                    .stringContains('Invalid');
             });
 
-            it('should return an error string for each invalid file', () => {
-                errors.forEach((errorString) => {
-                    assert(errorString).isString();
-                });
+            it('should call `onComplete`', () => {
+                assert(completed).isTrue();
+            });
+        });
+
+        describe('given an empty suite', () => {
+            let completed = false;
+            let onErrorResult;
+
+            run({
+                ...defaults,
+                onComplete: () => { completed = true; },
+                onError   : (error) => { onErrorResult = error; },
+                suite     : {},
+            });
+
+            it('should call `onError` and return a string containing `Empty`', () => {
+                assert(onErrorResult)
+                    .isString()
+                    .stringContains('Empty');
+            });
+
+            it('should call `onComplete`', () => {
+                assert(completed).isTrue();
+            });
+        });
+
+        describe('given a `scope`', () => {
+            let names = [];
+            let completed = false;
+
+            const scope = '/some/scope';
+            const suite = { [scope]: () => {} };
+
+            run({
+                ...defaults,
+                onComplete: () => { completed = true; },
+                runUnits  : (name) => { names.push(name); },
+                suite,
+            });
+
+            it('should call `runUnits` once for the scoped function', () => {
+                assert(names.length).equals(1);
+                assert(names[0]).equals(scope);
+            });
+
+            it('should call `onComplete` when all tests have been run', () => {
+                assert(completed).isTrue();
+            });
+        });
+
+        describe('given an invalid `scope`', () => {
+            let completed = false;
+            let onErrorResult;
+
+            run({
+                ...defaults,
+                onComplete: () => { completed = true; },
+                onError   : (error) => { onErrorResult = error; },
+                scope     : '/invalid/scope',
+                suite     : { '/some/scope': () => {} },
+            });
+
+            it('should call `onError` and return a string containing `Invalid` and `scope`', () => {
+                assert(onErrorResult)
+                    .isString()
+                    .stringContains('Invalid')
+                    .stringContains('/invalid/scope');
+            });
+
+            it('should call `onComplete`', () => {
+                assert(completed).isTrue();
+            });
+        });
+
+        describe('given an invalid test function', () => {
+            let completed = false;
+            let onErrorResult;
+
+            run({
+                ...defaults,
+                onComplete: () => { completed = true; },
+                onError   : (error) => { onErrorResult = error; },
+                suite     : { '/some/scope': undefined },
+            });
+
+            it('should call `onError` and return a string containing `Invalid` and `scope`', () => {
+                assert(onErrorResult)
+                    .isString()
+                    .stringContains('Invalid')
+                    .stringContains('/some/scope');
+            });
+
+            it('should call `onComplete`', () => {
+                assert(completed).isTrue();
+            });
+        });
+
+        describe('given test function with errors', () => {
+            let completed = false;
+            let onErrorResult;
+
+            run({
+                ...defaults,
+                onComplete: () => { completed = true; },
+                onError   : (error) => { onErrorResult = error; },
+                runUnits  : (_, tests) => { tests(); },
+                suite     : { '/some/scope': () => { throw new Error('Whoops'); } },
+            });
+
+            it('should call `onError` and return a string containing an error', () => {
+                assert(onErrorResult)
+                    .isString()
+                    .stringContains('Error')
+                    .stringContains('Whoops');
+            });
+
+            it('should call `onComplete`', () => {
+                assert(completed).isTrue();
             });
         });
     });

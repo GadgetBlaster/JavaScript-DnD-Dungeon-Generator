@@ -3,39 +3,62 @@
  * Run
  *
  * @param {Object} config
- *     @param {string[]} manifest
+ *     @param {string[]} suite
  *     @param {Function} onComplete
  *     @param {Function} onError
  *     @param {Function} runUnits
+ *     @param {string} [scope]
+ *
+ * @returns {Function}
  */
 export default ({
-    manifest,
     onComplete,
     onError,
     runUnits,
+    scope,
+    suite,
 }) => {
-    return (async function run(index = 0) {
-        if (!manifest.length) {
-            onError('Empty test manifest');
-            return;
-        }
+    const exit = (error) => {
+        onError(error);
+        onComplete();
+    };
 
-        /** @type {string} path */
-        let path = manifest[index];
+    if (!suite || typeof suite !== 'object') {
+        exit('Invalid test suite');
+        return;
+    }
 
-        if (!path) {
-            onComplete();
-            return;
+    let entries = Object.entries(suite);
+
+    if (!entries.length) {
+        exit('Empty test suite');
+        return;
+    }
+
+    let {
+        [scope]: scopedTest,
+    } = suite;
+
+    if (scope && !scopedTest) {
+        exit(`Invalid test scope: ${scope}`);
+        return;
+    }
+
+    if (scopedTest) {
+        entries = [ [ scope, scopedTest ] ];
+    }
+
+    entries.forEach(([ label, units ]) => {
+        if (typeof units !== 'function') {
+            onError(`Invalid test function: ${label}`);
         }
 
         try {
-            /** @type {Function} units */
-            let { default: units } = await import(path);
-            await runUnits(path, units);
-        } catch (error) {
+            runUnits(label, units);
+        } catch(error) {
             onError(error.stack.toString());
         }
+    });
 
-        return run(index + 1);
-    })();
+    onComplete();
 };

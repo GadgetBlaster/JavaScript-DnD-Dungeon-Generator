@@ -120,3 +120,36 @@ export const stringContains = (actual, expected) => {
 
     return { msg, isOk };
 };
+
+/** @type {Assertion} stringExcludes */
+export const stringExcludes = (actual, expected) => {
+    let checkType = isString(actual);
+
+    if (!checkType.isOk) {
+        return checkType;
+    }
+
+    let { isOk, msg } = stringContains(actual, expected);
+    return { msg, isOk: !isOk };
+};
+
+/** @type {Assertion} throws */
+export const throws = (func) => {
+    let checkFunc = isFunction(func);
+
+    if (!checkFunc.isOk) {
+        return checkFunc;
+    }
+
+    let threw = false;
+
+    try {
+        func();
+    } catch(e) {
+        threw = true;
+    }
+
+    let msg  = `expected [ ${func.name} ] to throw`;
+
+    return { msg, isOk: threw };
+};

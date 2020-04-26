@@ -1,11 +1,10 @@
 
-import manifest from './manifest.js';
 import run from './run.js';
+import suite from './suite.js';
 import unit from './unit.js';
 
 import {
     dot,
-    fail,
     log,
     nav,
     pathList,
@@ -22,11 +21,11 @@ import {
 const urlParams = new URLSearchParams(window.location.search);
 
 /**
- * Action
+ * Scope
  *
  * @type {string}
  */
-const action = urlParams.get('action');
+const scope = urlParams.get('scope');
 
 /**
  * Verbose
@@ -36,7 +35,6 @@ const action = urlParams.get('action');
 const verbose = Boolean(urlParams.get('verbose'));
 
 const dotsContainer    = document.getElementById('dots');
-const errorContainer   = document.getElementById('errors');
 const infoContainer    = document.getElementById('info');
 const logContainer     = document.getElementById('log');
 const navContainer     = document.getElementById('nav');
@@ -46,49 +44,49 @@ const summaryContainer = document.getElementById('summary');
 /**
  * @type {Unit}
  */
-const { getSummary, runUnits } = unit({
+const { getSummary, runUnits, onError } = unit({
     onAssert: (result) => print(dotsContainer, dot(result)),
 });
 
 /**
  * On complete
+ *
+ * @type {Function}
  */
 const onComplete = () => {
-    let { assertions, failures, results } = getSummary();
+    let {
+        assertions,
+        errors,
+        failures,
+        results,
+    } = getSummary();
 
     render(statusContainer, 'Status: Complete');
-    render(summaryContainer, summary(assertions, failures));
-    render(logContainer, log(results, { verbose }));
-};
-
-/**
- * On error
- *
- * @param {string} error
- */
-const onError = (error) => {
-    print(errorContainer, fail(error));
+    render(summaryContainer, summary(assertions, failures, errors.length));
+    render(logContainer, log([ ...errors, ...results], { verbose }));
 };
 
 render(navContainer, nav({
-    action,
+    scope,
     verbose,
 }));
 
 (() => {
-    if (action === 'list') {
-        render(logContainer, pathList(manifest));
+    const list = Object.keys(suite);
+
+    if (scope === 'list') {
+        render(logContainer, pathList(list));
         return;
     }
 
     render(statusContainer, 'Status: Running...');
 
-    if (manifest.includes(action)) {
-        render(infoContainer, `Scope: ${action}`);
-        run({ manifest: [ action ], onComplete, onError, runUnits });
+    if (list.includes(scope)) {
+        render(infoContainer, `Scope: ${scope}`);
+        run({ suite, onComplete, onError, runUnits, scope });
         return;
     }
 
     render(infoContainer, 'Scope: All Tests');
-    run({ manifest, onComplete, onError, runUnits });
+    run({ suite, onComplete, onError, runUnits });
 })();

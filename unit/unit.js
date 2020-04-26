@@ -12,6 +12,8 @@ import {
     isTrue,
     isUndefined,
     stringContains,
+    stringExcludes,
+    throws,
 } from './assert.js';
 
 import { resultMsg } from './output.js';
@@ -24,6 +26,7 @@ import { resultMsg } from './output.js';
  * @property {Result[]} results
  * @property {number} assertions
  * @property {number} failures
+ * @property {number} errors
  */
 
  /**
@@ -76,6 +79,13 @@ export default ({ onAssert = () => {} } = {}) => {
     let current = [];
 
     /**
+     * Errors
+     *
+     * @type {string[]}
+     */
+    let errors = [];
+
+    /**
      * Assertions
      *
      * @type {number}
@@ -95,10 +105,9 @@ export default ({ onAssert = () => {} } = {}) => {
      * @param {string} msg
      * @param {Function} callback
      */
-    const describe = async (msg, callback) => {
+    const describe = (msg, callback) => {
         current.push(msg);
-        let promise = callback();
-        promise && await promise;
+        callback();
         current.pop();
     };
 
@@ -167,6 +176,8 @@ export default ({ onAssert = () => {} } = {}) => {
         isTrue        : (expected) => _runAssert(value, expected, isTrue),
         isUndefined   : (expected) => _runAssert(value, expected, isUndefined),
         stringContains: (expected) => _runAssert(value, expected, stringContains),
+        stringExcludes: (expected) => _runAssert(value, expected, stringExcludes),
+        throws        : (expected) => _runAssert(value, expected, throws),
     });
 
     /**
@@ -183,12 +194,12 @@ export default ({ onAssert = () => {} } = {}) => {
     /**
      * Run units
      *
-     * @param {string} path
+     * @param {string} suite
      * @param {Function} tests
      */
-    const runUnits = async (path, tests) => {
-        current.push(path);
-        await tests(utility);
+    const runUnits = (suite, tests) => {
+        current.push(suite);
+        tests(utility);
         current.pop();
     };
 
@@ -200,13 +211,25 @@ export default ({ onAssert = () => {} } = {}) => {
     const getSummary = () => {
         return {
             assertions,
+            errors: [ ...errors ],
             failures,
             results: [ ...results ],
         };
     };
 
+    /**
+     * Get summary
+     * TODO tests!
+     *
+     * @param {string} error
+     */
+    const onError = (error) => {
+        errors.push({ isOk: false, msg: error });
+    };
+
     return {
         getSummary,
+        onError,
         runUnits,
     };
 };

@@ -28,7 +28,7 @@ export default ({ assert, describe, it }) => {
         let describeFunc;
         let itFunc;
 
-        runUnits('/fake/path', (utility) => {
+        runUnits('/fake/suite', (utility) => {
             called = true;
 
             assertFunc   = utility.assert;
@@ -54,9 +54,9 @@ export default ({ assert, describe, it }) => {
             assert(itFunc).isFunction();
         });
 
-        it('should add the file path to the `msg` in `results`', () => {
+        it('should add the test key to the `msg` in `results`', () => {
             const { results } = getSummary();
-            assert(results.pop().msg).stringContains('/fake/path');
+            assert(results.pop().msg).stringContains('/fake/suite');
         });
     });
 
@@ -105,7 +105,7 @@ export default ({ assert, describe, it }) => {
             describe('when two of three assertions pass', () => {
                 const { runUnits, getSummary } = unit();
 
-                runUnits('/fake/path', (utility) => {
+                runUnits('/fake/suite', (utility) => {
                     utility.assert().equals();
                     utility.assert().equals();
                     utility.assert(1).equals();
@@ -127,11 +127,11 @@ export default ({ assert, describe, it }) => {
             });
         });
 
-        describe('summary `results`', () => {
+        describe('summary results', () => {
             describe('when each assertion is in its own `describe` and `it` callback', () => {
                 const { runUnits, getSummary } = unit();
 
-                runUnits('/fake/path', (utility) => {
+                runUnits('/fake/suite', (utility) => {
                     utility.describe('description one', () => {
                         utility.it('it one', () => {
                             utility.assert().equals();
@@ -167,7 +167,7 @@ export default ({ assert, describe, it }) => {
             describe('when an assertion is inside two `describe` callbacks', () => {
                 const { runUnits, getSummary } = unit();
 
-                runUnits('/fake/path', (utility) => {
+                runUnits('/fake/suite', (utility) => {
                     utility.describe('description one', () => {
                         utility.describe('description two', () => {
                             utility.it('it one', () => {
@@ -189,7 +189,7 @@ export default ({ assert, describe, it }) => {
             describe('when two assertions are made inside one `describe` callback and two `it` callbacks', () => {
                 const { runUnits, getSummary } = unit();
 
-                runUnits('/fake/path', (utility) => {
+                runUnits('/fake/suite', (utility) => {
                     utility.describe('description one', () => {
                         utility.it('it one', () => { utility.assert().equals(); });
                         utility.it('it two', () => { utility.assert().equals(); });
@@ -216,7 +216,7 @@ export default ({ assert, describe, it }) => {
             describe('when two assertions are made inside one `describe` and `it` callback', () => {
                 const { runUnits, getSummary } = unit();
 
-                runUnits('/fake/path', (utility) => {
+                runUnits('/fake/suite', (utility) => {
                     utility.describe('description one', () => {
                         utility.it('it one', () => {
                             utility.assert().equals();
@@ -239,7 +239,7 @@ export default ({ assert, describe, it }) => {
             describe('no assertions are made inside `describe` and `it` callbacks', () => {
                 const { runUnits, getSummary } = unit();
 
-                runUnits('/fake/path', (utility) => {
+                runUnits('/fake/suite', (utility) => {
                     utility.describe('description one', () => {
                         utility.it('it one', () => {});
                     });
@@ -263,7 +263,7 @@ export default ({ assert, describe, it }) => {
 
         let assertFunc;
 
-        runUnits('/fake/path', (utility) => {
+        runUnits('/fake/suite', (utility) => {
             assertFunc = utility.assert;
         });
 
@@ -314,7 +314,7 @@ export default ({ assert, describe, it }) => {
 
         let assertFunc;
 
-        runUnits('/fake/path', (utility) => {
+        runUnits('/fake/suite', (utility) => {
             assertFunc = utility.assert;
         });
 
@@ -377,7 +377,7 @@ export default ({ assert, describe, it }) => {
         describe('when one `describe` function is called', () => {
             const { runUnits, getSummary } = unit();
 
-            runUnits('/fake/path', (utility) => {
+            runUnits('/fake/suite', (utility) => {
                 utility.describe('what snow is like', () => {
                     utility.assert().equals();
                 });
@@ -393,7 +393,7 @@ export default ({ assert, describe, it }) => {
         describe('when two `describe` functions are called', () => {
             const { runUnits, getSummary } = unit();
 
-            runUnits('/fake/path', (utility) => {
+            runUnits('/fake/suite', (utility) => {
                 utility.describe('what is the meaning of life', () => {
                     utility.assert(42).equals(42);
                 });
@@ -430,7 +430,7 @@ export default ({ assert, describe, it }) => {
     describe('#it', () => {
         const { runUnits, getSummary } = unit();
 
-        runUnits('/fake/path', (utility) => {
+        runUnits('/fake/suite', (utility) => {
             utility.describe('what snow is like', () => {
                 utility.it('should be wet like', () => {
                     utility.assert().equals();

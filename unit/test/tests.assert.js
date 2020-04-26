@@ -12,6 +12,8 @@ import {
     isTrue,
     isUndefined,
     stringContains,
+    stringExcludes,
+    throws,
 } from '../assert.js';
 
 /**
@@ -32,6 +34,8 @@ const assertions = [
     isTrue,
     isUndefined,
     stringContains,
+    stringExcludes,
+    throws,
 ];
 
 /**
@@ -50,6 +54,7 @@ const groups = {
     },
     function: {
         'a function': () => {},
+        'a function that throws': () => { throw new Error('Junk'); },
     },
     null: {
         '`null`': null,
@@ -371,6 +376,46 @@ export default ({ assert, describe, it }) => {
         describe('given a string that contains the expected string', () => {
             it('should return a falsy `isOk` property', () => {
                 assert(stringContains('moose in a bag of holding', 'bag of holding').isOk).isTrue();
+            });
+        });
+    });
+
+    describe('#stringExcludes', () => {
+        describe('given a non-string type', () => {
+            it('should return a falsy `isOk` property', () => {
+                assert(stringExcludes().isOk).isFalse();
+            });
+        });
+
+        describe('given a string that does not contain the excluded string', () => {
+            it('should return a truthy `isOk` property', () => {
+                assert(stringExcludes('abcde', '12345').isOk).isTrue();
+            });
+        });
+
+        describe('given a string that contains the excluded string', () => {
+            it('should return a falsy `isOk` property', () => {
+                assert(stringExcludes('moose in a bag of holding', 'bag of holding').isOk).isFalse();
+            });
+        });
+    });
+
+    describe('#throws', () => {
+        describe('given a non-function', () => {
+            it('should return a falsy `isOk` property', () => {
+                assert(throws().isOk).isFalse();
+            });
+        });
+
+        describe('given a function that does not throw', () => {
+            it('should return a falsy `isOk` property', () => {
+                assert(throws(() => {}).isOk).isFalse();
+            });
+        });
+
+        describe('given a function that throws', () => {
+            it('should return a truthy `isOk` property', () => {
+                assert(throws(() => { throw new Error('Junk'); }).isOk).isTrue();
             });
         });
     });
