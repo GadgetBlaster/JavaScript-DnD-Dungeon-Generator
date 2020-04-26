@@ -14,6 +14,22 @@ const htmlEscapes = {
 };
 
 /**
+ * Make params
+ *
+ * @param {Object} entries
+ *
+ * @returns {string}
+ */
+const makeParams = (entries) => {
+    let params = Object.entries(entries)
+        .filter(([ _, value ]) => Boolean(value))
+        .map(([ key, value ]) => `${key}=${value}`)
+        .join('&');
+
+    return params && `?${params}`;
+};
+
+/**
  * Escape HTML
  *
  * @param {string} string
@@ -78,16 +94,6 @@ export const log = (results, { verbose } = {}) => {
 
         return !isOk && fail(msg);
     }).filter(Boolean).join('');
-};
-
-// TODO tests
-const makeParams = (options) => {
-    let params = Object.entries(options)
-        .filter(([ _, value ]) => Boolean(value))
-        .map(([ key, value ]) => `${key}=${value}`)
-        .join('&');
-
-    return params && `?${params}`;
 };
 
 /**

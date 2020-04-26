@@ -176,21 +176,31 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('#scopeList', () => {
-        describe('given an array of paths', () => {
-            const paths = [ './path/one', './path/two' ];
-            const html  = scopeList(paths);
+        describe('given an array of scopes', () => {
+            const scopes = [ '/scope/one', '/scope/two' ];
+            const html   = scopeList(scopes);
 
-            it('should return an html list with an `<li>` and `</li>` for each path', () => {
-                assert((html.match(/<li>/g) || []).length).equals(paths.length);
-                assert((html.match(/<\/li>/g) || []).length).equals(paths.length);
+            it('should return an html list with an `<li>` and `</li>` for each scope', () => {
+                assert((html.match(/<li>/g) || []).length).equals(scopes.length);
+                assert((html.match(/<\/li>/g) || []).length).equals(scopes.length);
             });
 
-            it('should return an html link with `?scope=path` as the link\'s `href`', () => {
-                paths.forEach((path) => {
-                    assert(html).stringContains(`<a href="?scope=${path}">`);
+            it('should return an html link with `?scope=scope` as the link\'s `href`', () => {
+                scopes.forEach((scope) => {
+                    assert(html).stringContains(`<a href="?scope=${scope}">`);
                 });
 
-                assert((html.match(/<\/a>/g) || []).length).equals(paths.length);
+                assert((html.match(/<\/a>/g) || []).length).equals(scopes.length);
+            });
+        });
+
+        describe('given the `verbose` option', () => {
+            const scopes = [ '/scope/one', '/scope/two' ];
+            const html   = scopeList(scopes, { verbose: true });
+
+            it('should return an html list with `&verbose=true` for each scope', () => {
+                console.log(html);
+                assert((html.match(/&verbose=true/g) || []).length).equals(scopes.length);
             });
         });
     });
