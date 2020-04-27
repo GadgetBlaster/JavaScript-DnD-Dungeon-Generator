@@ -2,14 +2,14 @@
 /**
  * Create attrs
  *
- * @param {Object.<string, string>} obj
+ * @param {Object.<string, string>} [obj]
  *
  * @returns {string}
  */
-export const createAttrs = (obj) => {
+export const createAttrs = (obj = {}) => {
     return Object.keys(obj).map((key) => {
-        return `${key}="${obj[key]}"`;
-    }).join(' ');
+        return ` ${key}="${obj[key]}"`;
+    }).join('');
 };
 
 /**
@@ -22,6 +22,5 @@ export const createAttrs = (obj) => {
  * @returns {string}
  */
 export const element = (tag, content, attrs) => {
-    let attributes = attrs ? ` ${createAttrs(attrs)}` : '';
-    return `<${tag}${attributes}>${content}</${tag}>`;
+    return `<${tag}${createAttrs(attrs)}>${content}</${tag}>`;
 };

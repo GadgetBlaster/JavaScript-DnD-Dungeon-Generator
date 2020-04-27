@@ -10,28 +10,40 @@ export default ({ assert, describe, it }) => {
             assert(createAttrs({ class: 'css-class' })).isString();
         });
 
+        describe('given nothing', () => {
+            it('should return an empty string', () => {
+                assert(createAttrs()).equals('');
+            });
+        });
+
+        describe('given an empty object', () => {
+            it('should return an empty string', () => {
+                assert(createAttrs({})).equals('');
+            });
+        });
+
         describe('given an object with a single key value pair', () => {
             it('should return the key and value formatted as an HTML attribute string', () => {
-                assert(createAttrs({ role: 'presentation' })).equals('role="presentation"');
+                assert(createAttrs({ role: 'presentation' })).equals(' role="presentation"');
             });
         });
 
         describe('given an object with a boolean value', () => {
             it('should format the value as a string', () => {
-                assert(createAttrs({ hidden: true })).equals('hidden="true"');
+                assert(createAttrs({ hidden: true })).equals(' hidden="true"');
             });
         });
 
         describe('given an object with a numeric value', () => {
             it('should format the value as a string', () => {
-                assert(createAttrs({ 'data-columns': 2 })).equals('data-columns="2"');
+                assert(createAttrs({ 'data-columns': 2 })).equals(' data-columns="2"');
             });
         });
 
         describe('given an object with multiple key value pairs', () => {
             it('should return the key and value pairs formatted as an HTML attribute string', () => {
                 let object = { 'data-target': 'kitten', id: 'jet-pack', type: 'submit' };
-                let expect = 'data-target="kitten" id="jet-pack" type="submit"';
+                let expect = ' data-target="kitten" id="jet-pack" type="submit"';
 
                 assert(createAttrs(object)).equals(expect);
             });
