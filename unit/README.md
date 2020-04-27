@@ -95,10 +95,10 @@ All tests can be run by visiting
 web browser.
 
 Verbose output can be shown by adding a
-[?verbose=true](https://apps.mysticwaffle.com/dnd-dungeon-generator/unit.html?verbose=true)
+[unit.html?verbose=true](https://apps.mysticwaffle.com/dnd-dungeon-generator/unit.html?verbose=true)
 URL param.
 
 Individual test files can be run by adding a scope to the URL params, for example:
-[?scope=/app/utility/test/tests.roll.js](https://apps.mysticwaffle.com/dnd-dungeon-generator/unit.html?scope=/app/utility/test/tests.roll.js)
+[unit.html?scope=/app/utility/test/tests.roll.js](https://apps.mysticwaffle.com/dnd-dungeon-generator/unit.html?scope=/app/utility/test/tests.roll.js)
 
 To run scoped tests they must be included in `/unit/suite.js`
