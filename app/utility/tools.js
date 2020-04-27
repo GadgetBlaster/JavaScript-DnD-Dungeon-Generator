@@ -6,15 +6,15 @@ export const isOdd      = (num)  => num % 2;
 export const isEven     = (num)  => num % 2 === 0;
 
 export const chunk = (array, size) => array.reduce((resultArray, item, index) => {
-    let chunkIndex = Math.floor(index / size)
+    let chunkIndex = Math.floor(index / size);
 
     if(!resultArray[chunkIndex]) {
         resultArray[chunkIndex] = [];
     }
 
-    resultArray[chunkIndex].push(item)
+    resultArray[chunkIndex].push(item);
 
-    return resultArray
+    return resultArray;
 }, []);
 
 export const listSentence = (parts) => {
@@ -32,3 +32,6 @@ export const listSentence = (parts) => {
 
     return `${capitalize(parts.join(', '))}${comma} and ${last}`;
 };
+
+export const plural = (count, string, suffix = 's') =>
+    `${string}${count !== 1 ? suffix : ''}`;

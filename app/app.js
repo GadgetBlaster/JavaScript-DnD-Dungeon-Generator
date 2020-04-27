@@ -1,10 +1,19 @@
 
+import { chunk, toDash } from './utility/tools.js';
+import testSummary from './utility/tests.js';
+
 import {
     actions,
     attachActions,
     toggleAccordion,
     toggleVisibility,
 } from './ui/action.js';
+
+import { article, section } from './ui/block.js';
+import { getActive, nav, pages, setActive } from './ui/nav.js';
+import { getFormData, renderKnobs } from './ui/form.js';
+import { list } from './ui/list.js';
+import { subTitle } from './ui/typography.js';
 
 import {
     getDoorwayList,
@@ -13,23 +22,22 @@ import {
     getRoomDescription,
 } from './rooms/description.js';
 
-import { article, section } from './ui/block.js';
 import { drawLegend } from './dungeons/legend.js';
 import { generateDungeon } from './dungeons/generate.js';
+
 import { generateItems } from './items/generate.js';
 import { generateRooms } from './rooms/generate.js';
+
 import { getKnobConfig } from './knobs.js';
-import { nav, setActive, getActive, pages } from './ui/nav.js';
-import { renderKnobs, getFormData } from './ui/form.js';
-import { toDash, chunk } from './utility/tools.js';
-import { list } from './ui/list.js';
-import { subTitle } from './ui/typography.js';
 
-const navContainer     = document.getElementById('nav');
-const knobContainer    = document.getElementById('knobs');
 const contentContainer = document.getElementById('content');
+const footerContainer  = document.getElementById('footer');
+const knobContainer    = document.getElementById('knobs');
+const navContainer     = document.getElementById('nav');
 
-const empty = contentContainer.innerHTML;
+footerContainer.insertAdjacentHTML('afterbegin', testSummary());
+
+const homeContent = contentContainer.innerHTML;
 
 const roomsPerRow = 3;
 
@@ -46,11 +54,11 @@ const navigate = (target, el) => {
     el && setActive(el);
 
     updateKnobs(target);
-    contentContainer.innerHTML = empty;
+    contentContainer.innerHTML = homeContent;
 };
 
 const navigateHome = () => {
-    contentContainer.innerHTML = empty;
+    contentContainer.innerHTML = homeContent;
 };
 
 const formatRoom = (room, doors) => {
@@ -82,7 +90,7 @@ const getRoomRows = (rooms, doors) => {
 };
 
 const getRooms = (settings) => {
-    let rooms = generateRooms(settings)
+    let rooms = generateRooms(settings);
 
     rooms.forEach((_, i) => {
         rooms[i].roomNumber = i + 1;
@@ -109,7 +117,7 @@ const generators = {
 const generate = () => {
     let settings  = getFormData(knobContainer);
     let page      = getActive(navContainer);
-    let generator = generators[page]
+    let generator = generators[page];
 
     if (!generator) {
         throw 'Invalid page';

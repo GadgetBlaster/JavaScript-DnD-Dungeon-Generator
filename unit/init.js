@@ -41,9 +41,7 @@ const navContainer     = document.getElementById('nav');
 const statusContainer  = document.getElementById('status');
 const summaryContainer = document.getElementById('summary');
 
-/**
- * @type {Unit}
- */
+/** @type {Unit} */
 const { getSummary, runUnits, onError } = unit({
     onAssert: (result) => print(dotsContainer, dot(result)),
 });
