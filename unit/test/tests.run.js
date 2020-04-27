@@ -182,7 +182,7 @@ export default ({ assert, describe, it }) => {
             });
         });
 
-        describe('given test function with errors', () => {
+        describe('given a test function that throws an `Error` object`', () => {
             let completed = false;
             let onErrorResult;
 
@@ -199,6 +199,29 @@ export default ({ assert, describe, it }) => {
                     .isString()
                     .stringContains('Error')
                     .stringContains('Whoops');
+            });
+
+            it('should call `onComplete`', () => {
+                assert(completed).isTrue();
+            });
+        });
+
+        describe('given a test function that throws an error string`', () => {
+            let completed = false;
+            let onErrorResult;
+
+            run({
+                ...defaults,
+                onComplete: () => { completed = true; },
+                onError   : (error) => { onErrorResult = error; },
+                runUnits  : (_, tests) => { tests(); },
+                suite     : { '/some/scope': () => { throw 'Something is wrong'; } },
+            });
+
+            it('should call `onError` and return the error string', () => {
+                assert(onErrorResult)
+                    .isString()
+                    .equals('Something is wrong');
             });
 
             it('should call `onComplete`', () => {

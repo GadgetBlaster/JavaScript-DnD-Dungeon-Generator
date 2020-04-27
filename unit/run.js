@@ -56,7 +56,8 @@ export default ({
         try {
             runUnits(label, units);
         } catch(error) {
-            onError(error.stack.toString());
+            let msg = typeof error === 'object' ? error.stack.toString() : error;
+            onError(msg);
         }
     });
 

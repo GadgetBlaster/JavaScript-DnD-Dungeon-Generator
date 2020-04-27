@@ -17,7 +17,7 @@ export const createAttrs = (obj = {}) => {
  *
  * @param {string} tag
  * @param {string} content
- * @param {Object.<string, string>} attrs
+ * @param {Object.<string, string>} [attrs]
  *
  * @returns {string}
  */

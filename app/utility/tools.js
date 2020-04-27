@@ -33,5 +33,6 @@ export const listSentence = (parts) => {
     return `${capitalize(parts.join(', '))}${comma} and ${last}`;
 };
 
-export const plural = (count, string, suffix = 's') =>
-    `${string}${count !== 1 ? suffix : ''}`;
+export const plural = (count, string, suffix = 's') => {
+    return `${string}${count !== 1 ? suffix : ''}`;
+};

@@ -56,7 +56,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given the tag `section`', () => {
-            it('should return a section HTML element string', () => {
+            it('should return a `section` html element string', () => {
                 assert(element('section', '')).equals('<section></section>');
             });
         });
