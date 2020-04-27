@@ -101,4 +101,5 @@ URL param.
 Individual test files can be run by adding a scope to the URL params, for example:
 [unit.html?scope=/app/utility/test/tests.roll.js](https://apps.mysticwaffle.com/dnd-dungeon-generator/unit.html?scope=/app/utility/test/tests.roll.js)
 
-To run scoped tests they must be included in `/unit/suite.js`
+To run scoped tests they must be included in the test suite object defined in
+`/unit/suite.js`.
