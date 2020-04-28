@@ -2,7 +2,7 @@
 const minPercent = 1;
 const maxPercent = 100;
 
-const _throw = (m) => { throw m; };
+const _throw = (m) => { throw new Error(m); };
 
 export const roll = (min = 0, max = 1) => {
     !Number.isInteger(min) && _throw(`Roll min must be an integer`);
@@ -27,7 +27,7 @@ export const rollArrayItem = (array) => {
 };
 
 export function Probability(config) {
-    !Array.isArray(config) && _throw(`Probability config must be an array`)
+    !Array.isArray(config) && _throw('Probability config must be an array');
 
     let map = new Map(config);
 
@@ -44,7 +44,7 @@ export function Probability(config) {
         let start = prev ? (prev + 1) : 1;
         let end   = key;
 
-        acc.push(`${start}-${end}% ${map.get(key)}`)
+        acc.push(`${start}-${end}% ${map.get(key)}`);
 
         return acc;
     }, []).join(', ');
