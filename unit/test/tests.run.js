@@ -8,6 +8,9 @@ const defaults = {
     suite     : {},
 };
 
+/**
+ * @param {import('../unit.js').Utility}
+ */
 export default ({ assert, describe, it }) => {
     describe('#run', () => {
         describe('given a suite of test functions', () => {

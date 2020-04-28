@@ -5,25 +5,28 @@ const maxPercent = 100;
 const _throw = (m) => { throw new Error(m); };
 
 export const roll = (min = 0, max = 1) => {
-    !Number.isInteger(min) && _throw(`Roll min must be an integer`);
-    !Number.isInteger(max) && _throw(`Roll max must be an integer`);
+    !Number.isInteger(min) && _throw('Roll min must be an integer');
+    !Number.isInteger(max) && _throw('Roll max must be an integer');
 
-    min < 0   && _throw(`Min cannot be negative`);
-    min > max && _throw('Min must less than or equal to max');
+    min < 0   && _throw('Roll min cannot be negative');
+    min > max && _throw('Roll min must less than or equal to max');
 
     return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
+export const rollArrayItem = (array) => {
+    !Array.isArray(array) && _throw('Roll array must be an array');
+    !array.length && _throw('Roll array must have values');
+
+    return array[Math.floor(Math.random() * array.length)];
+};
+
 export const rollPercentile = (chance) => {
-    !Number.isInteger(chance) && _throw(`Percent chance must be an integer`);
+    !Number.isInteger(chance) && _throw('Percent chance must be an integer');
     chance < minPercent && _throw(`Percent chance must be ${minPercent} or greater`);
     chance > maxPercent && _throw(`Percent chance exceeds ${maxPercent}`);
 
     return roll(minPercent, maxPercent) <= chance;
-};
-
-export const rollArrayItem = (array) => {
-    return array[Math.floor(Math.random() * array.length)];
 };
 
 export function Probability(config) {

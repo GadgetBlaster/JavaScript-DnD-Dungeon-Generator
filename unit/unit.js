@@ -29,12 +29,39 @@ import { resultMsg } from './output.js';
  * @property {number} errors
  */
 
- /**
+/**
+ * Expectation
+ *
+ * @typedef {(value:*) => Assertions} Expectation
+ */
+
+/**
+ * Assertions
+ *
+ * @typedef {Object} Assertions
+ *
+ * @property {Expectation} equals
+ * @property {Expectation} isArray
+ * @property {Expectation} isBoolean
+ * @property {Expectation} isFalse
+ * @property {Expectation} isFunction
+ * @property {Expectation} isNull
+ * @property {Expectation} isNumber
+ * @property {Expectation} isObject
+ * @property {Expectation} isString
+ * @property {Expectation} isTrue
+ * @property {Expectation} isUndefined
+ * @property {Expectation} stringContains
+ * @property {Expectation} stringExcludes
+ * @property {Expectation} throws
+ */
+
+/**
  * Utility
  *
  * @typedef {Object} Utility
  *
- * @property {Function} utility.assert
+ * @property {(value:*) => Assertions} utility.assert
  * @property {Function} utility.describe
  * @property {Function} utility.it
  */
@@ -44,8 +71,9 @@ import { resultMsg } from './output.js';
  *
  * @typedef {Object} Unit
  *
- * @property {Function} getSummary
+ * @property {() => Summary} getSummary
  * @property {Function} runUnits
+ * @property {onError} onError
  */
 
 /**
@@ -81,7 +109,7 @@ const scope = {
  * @param {Object} [config]
  *     @param {OnAssert} [config.onAssert]
  *
- * @return {Unit}
+ * @type {Unit}
  */
 export default ({ onAssert = () => {} } = {}) => {
 
@@ -177,7 +205,7 @@ export default ({ onAssert = () => {} } = {}) => {
      * @param {*} expected
      * @param {Function} assertion
      *
-     * @returns {Object.<string, Function>}
+     * @returns {Assertions}
      */
     const _runAssert = (actual, expected, assertion) => {
         checkScope(scope.assert, [ scope.it ]);
@@ -213,7 +241,7 @@ export default ({ onAssert = () => {} } = {}) => {
      *
      * @param {*} value
      *
-     * @returns {Object.<string, Function>}
+     * @returns {Assertions}
      */
     const assert = (value) => ({
         equals        : (expected) => _runAssert(value, expected, equals),

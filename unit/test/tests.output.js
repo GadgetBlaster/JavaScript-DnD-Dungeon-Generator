@@ -14,6 +14,9 @@ import {
     summary,
 } from '../output.js';
 
+/**
+ * @param {import('../unit.js').Utility}
+ */
 export default ({ assert, describe, it }) => {
     describe('#dot', () => {
         describe('given a falsy `isOk` property', () => {
