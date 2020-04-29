@@ -1,5 +1,5 @@
 
-import { Probability } from '../utility/roll.js';
+import { createProbability } from '../utility/roll.js';
 
 const door = {
     archway   : 'archway',
@@ -42,7 +42,7 @@ export const lockable = new Set([
     door.wooden,
 ]);
 
-export const probability = new Probability([
+export const probability = createProbability([
     [ 20,  door.passageway ],
     [ 40,  door.archway    ],
     [ 55,  door.hole       ],
@@ -56,7 +56,7 @@ export const probability = new Probability([
     [ 100, door.portal     ],
 ]);
 
-export const secretProbability = new Probability([
+export const secretProbability = createProbability([
     [ 15, door.concealed ],
     [ 30, door.secret    ],
 ]);

@@ -1,5 +1,5 @@
 
-import { Probability } from '../utility/roll.js';
+import { createProbability } from '../utility/roll.js';
 
 const quantity = {
     zero    : 'zero',
@@ -27,7 +27,7 @@ let {
     numerous,
 } = quantity;
 
-export const probability = new Probability([
+export const probability = createProbability([
     [ 5,   zero     ],
     [ 10,  one      ],
     [ 15,  couple   ],

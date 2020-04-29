@@ -1,5 +1,6 @@
 
 import {
+    createProbability,
     roll,
     rollArrayItem,
     rollPercentile,
@@ -46,7 +47,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given a `min` and a `max`', () => {
             it('should return an integer between `min` and `max`, inclusive', () => {
-                let result = roll(1, 3);
+                const result = roll(1, 3);
                 assert([1, 2, 3].includes(result)).isTrue();
             });
         });
@@ -61,8 +62,9 @@ export default ({ assert, describe, it }) => {
 
         describe('given an array with multiple items', () => {
             it('should return one of the item', () => {
-                let options = [ 'cats', 'turtles' ];
-                let result = rollArrayItem(options);
+                const options = [ 'cats', 'turtles', 'chickens' ];
+                const result  = rollArrayItem(options);
+
                 assert((options.includes(result))).isTrue();
             });
         });
@@ -76,6 +78,88 @@ export default ({ assert, describe, it }) => {
         describe('given an empty array', () => {
             it('should throw', () => {
                 assert(() => { rollArrayItem([]); }).throws();
+            });
+        });
+    });
+
+    describe('#rollPercentile', () => {
+        describe('given a float', () => {
+            it('should throw', () => {
+                assert(() => { rollPercentile(3.1415); }).throws();
+            });
+        });
+
+        describe('given an integer less than `1`', () => {
+            it('should throw', () => {
+                assert(() => { rollPercentile(0); }).throws();
+            });
+        });
+
+        describe('given an integer greater than `100`', () => {
+            it('should throw', () => {
+                assert(() => { rollPercentile(216); }).throws();
+            });
+        });
+
+        describe('given an integer between `1` and `100`', () => {
+            it('should return a boolean', () => {
+                assert(rollPercentile(2)).isBoolean();
+            });
+        });
+    });
+
+    describe('#createProbability', () => {
+        describe('given a `config` that is not an array`', () => {
+            it('should throw', () => {
+                assert(() => { createProbability('junk'); }).throws();
+            });
+        });
+
+        describe('given an empty `config`', () => {
+            it('should throw', () => {
+                assert(() => { createProbability([]); }).throws();
+            });
+        });
+
+        describe('given a `config` that is not a 2 dimensional array', () => {
+            it('should throw', () => {
+                assert(() => { createProbability([ 'junk' ]); }).throws();
+            });
+        });
+
+        describe('given a `config` with invalid map keys', () => {
+            it('should throw', () => {
+                assert(() => { createProbability([[ 'bad', 'panda' ]]); }).throws();
+            });
+        });
+
+        describe('given a `config` with invalid map values', () => {
+            it('should throw', () => {
+                assert(() => { createProbability([[ 23, 99 ]]); }).throws();
+            });
+        });
+
+        describe('given a `config` with an out of bounds probability', () => {
+            describe('given a map key less than `1`', () => {
+                it('should throw', () => {
+                    assert(() => {
+                        createProbability([
+                            [ 0,  'backpack' ],
+                            [ 50, 'belt pouch' ]
+                        ]);
+                    }).throws();
+                });
+            });
+
+            describe('given a map key greater than `100`', () => {
+                it('should throw', () => {
+                    assert(() => {
+                        createProbability([
+                            [ 1,  'backpack' ],
+                            [ 102, 'belt pouch' ]
+                        ]);
+                    }).throws();
+                });
             });
         });
     });

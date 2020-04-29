@@ -79,7 +79,7 @@ const drawRect = (rectAttrs) => {
     let attrs = createAttrs(rectAttrs);
 
     return `<rect ${attrs} />`;
-}
+};
 
 const drawPillar = (attrs) => {
     return drawCircle({

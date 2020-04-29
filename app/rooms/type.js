@@ -1,5 +1,5 @@
 
-import { Probability } from '../utility/roll.js';
+import { createProbability } from '../utility/roll.js';
 import { random } from '../utility/random.js';
 
 const type = {
@@ -41,7 +41,7 @@ export const appendRoomTypes = new Set([
     type.torture,
 ]);
 
-export const probability = new Probability([
+export const probability = createProbability([
     [ 40,  type.hallway ],
     [ 65,  type.room    ],
     [ 100, random  ],

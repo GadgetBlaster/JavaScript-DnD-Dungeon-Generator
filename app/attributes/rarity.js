@@ -1,5 +1,5 @@
 
-import { Probability } from '../utility/roll.js';
+import { createProbability } from '../utility/roll.js';
 
 const rarity = {
     abundant : 'abundant',
@@ -25,7 +25,7 @@ let {
     legendary,
 } = rarity;
 
-export const probability = new Probability([
+export const probability = createProbability([
     [ 25,  abundant  ],
     [ 45,  common    ],
     [ 65,  average   ],

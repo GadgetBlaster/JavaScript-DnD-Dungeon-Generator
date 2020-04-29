@@ -4,6 +4,16 @@ const maxPercent = 100;
 
 const _throw = (m) => { throw new Error(m); };
 
+/**
+ * Roll
+ *
+ * @param {number} [min=0]
+ * @param {number} [max=1]
+ *
+ * @throws
+ *
+ * @returns {number}
+ */
 export const roll = (min = 0, max = 1) => {
     !Number.isInteger(min) && _throw('Roll min must be an integer');
     !Number.isInteger(max) && _throw('Roll max must be an integer');
@@ -14,6 +24,15 @@ export const roll = (min = 0, max = 1) => {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
+/**
+ * Roll array item
+ *
+ * @param {Array} array
+ *
+ * @throws
+ *
+ * @returns {*}
+ */
 export const rollArrayItem = (array) => {
     !Array.isArray(array) && _throw('Roll array must be an array');
     !array.length && _throw('Roll array must have values');
@@ -21,6 +40,15 @@ export const rollArrayItem = (array) => {
     return array[Math.floor(Math.random() * array.length)];
 };
 
+/**
+ * Roll percentile
+ *
+ * @param {number} change
+ *
+ * @throws
+ *
+ * @returns {boolean}
+ */
 export const rollPercentile = (chance) => {
     !Number.isInteger(chance) && _throw('Percent chance must be an integer');
     chance < minPercent && _throw(`Percent chance must be ${minPercent} or greater`);
@@ -29,12 +57,30 @@ export const rollPercentile = (chance) => {
     return roll(minPercent, maxPercent) <= chance;
 };
 
-export function Probability(config) {
+/**
+ * Probability
+ *
+ * @typedef {Object} Probability
+ *
+ * @property {string} description
+ * @property {() => string)} roll
+ */
+
+/**
+ * Create probability
+ *
+ * @param {[number, string][]} config
+ *
+ * @returns {Probability}
+ */
+export const createProbability = (config) => {
     !Array.isArray(config) && _throw('Probability config must be an array');
+    !config.length && _throw('Probability config must have values');
 
     let map = new Map(config);
 
-    map.forEach((_, key) => {
+    map.forEach((value, key) => {
+        typeof value !== 'string' && _throw(`Probability value "${value}" must be a string`);
         !Number.isInteger(key) && _throw(`Probability key "${key}" must be an integer`);
         key < minPercent && _throw(`Probability key "${key}" must be ${minPercent} or greater`);
         key > maxPercent && _throw(`Probability key "${key}" exceeds ${maxPercent}`);
@@ -61,4 +107,4 @@ export function Probability(config) {
             return map.get(key);
         }
     };
-}
+};

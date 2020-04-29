@@ -1,6 +1,6 @@
 
 import { capacity } from './container.js';
-import { roll, rollArrayItem, Probability } from '../../utility/roll.js';
+import { roll, rollArrayItem, createProbability } from '../../utility/roll.js';
 import itemType from '../type.js';
 import rarity from '../../attributes/rarity.js';
 import roomType from '../../rooms/type.js';
@@ -147,7 +147,7 @@ export const furnitureQuantity = {
     furnished: 'furnished',
 };
 
-export const probability = new Probability([
+export const probability = createProbability([
     [ 25,  furnitureQuantity.none      ],
     [ 75,  furnitureQuantity.minimum   ],
     [ 92,  furnitureQuantity.sparse    ],

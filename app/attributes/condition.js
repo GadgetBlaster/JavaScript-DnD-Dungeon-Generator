@@ -1,5 +1,5 @@
 
-import { Probability } from '../utility/roll.js';
+import { createProbability } from '../utility/roll.js';
 
 const condition = {
     decaying : 'decaying',
@@ -23,7 +23,7 @@ let {
     exquisite,
 } = condition;
 
-export const probability = new Probability([
+export const probability = createProbability([
     [ 50,  average   ],
     [ 60,  good      ],
     [ 75,  poor      ],
