@@ -69,6 +69,13 @@ export const rollPercentile = (chance) => {
 /**
  * Create probability
  *
+ * @todo Each entry should have a probability key that is a fixed percent
+ *     instead of building upon the last key. For example:
+ *     `[[ 20, 'boats' ], [ 10, 'horses' ]]` for 1-20: boats, 21-30: horses
+ *     instead of the current api:
+ *     `[[ 20, 'boats' ], [ 30, 'horses' ]]` for 1-20: boats, 21-30: horses
+ *     Then sort by largest % first and validate the total is 100 or less.
+ *
  * @param {[number, string][]} config
  *
  * @returns {Probability}

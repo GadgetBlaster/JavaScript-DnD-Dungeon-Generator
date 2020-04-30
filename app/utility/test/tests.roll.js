@@ -109,6 +109,41 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('#createProbability', () => {
+        describe('given a valid `config`', () => {
+            const probability = createProbability([[ 23, 'boats' ]]);
+
+            it('should return an object`', () => {
+                assert(probability).isObject();
+            });
+
+            describe('return object properties', () => {
+                it('should return a object with a string property `description`', () => {
+                    assert(probability.description).isString();
+                });
+
+                it('should return an object with a function property `roll`', () => {
+                    assert(probability.roll).isFunction();
+                });
+            });
+        });
+
+        describe('return description', () => {
+            const probability = createProbability([
+                [ 23, 'boats' ],
+                [ 55, 'horses' ],
+            ]);
+
+            it('should include the probability range and value for each `config` entry', () => {
+                assert(probability.description)
+                    .stringContains('1-23% boats')
+                    .stringContains('24-55% horses');
+            });
+        });
+
+        it('should return an object`', () => {
+            assert(createProbability([[ 23, 'boats' ]])).isObject();
+        });
+
         describe('given a `config` that is not an array`', () => {
             it('should throw', () => {
                 assert(() => { createProbability('junk'); }).throws();
