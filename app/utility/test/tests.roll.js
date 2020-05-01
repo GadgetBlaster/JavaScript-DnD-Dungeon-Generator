@@ -117,7 +117,7 @@ export default ({ assert, describe, it }) => {
             });
 
             describe('return object properties', () => {
-                it('should return a object with a string property `description`', () => {
+                it('should return an object with a string property `description`', () => {
                     assert(probability.description).isString();
                 });
 
@@ -127,7 +127,7 @@ export default ({ assert, describe, it }) => {
             });
         });
 
-        describe('return description', () => {
+        describe('return `description`', () => {
             const probability = createProbability([
                 [ 23, 'boats' ],
                 [ 55, 'horses' ],
@@ -137,6 +137,18 @@ export default ({ assert, describe, it }) => {
                 assert(probability.description)
                     .stringContains('1-23% boats')
                     .stringContains('24-55% horses');
+            });
+        });
+
+        describe('return `roll`', () => {
+            const probability = createProbability([
+                [ 50,  'potion of healing' ],
+                [ 100, 'potion of love' ],
+            ]);
+
+            it('should return one of the values in the `config`', () => {
+                const result = probability.roll();
+                assert([ 'potion of healing', 'potion of love' ].includes(result)).isTrue();
             });
         });
 

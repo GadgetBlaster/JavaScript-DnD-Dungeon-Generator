@@ -1,6 +1,6 @@
 
 import { chunk, toDash } from './utility/tools.js';
-import testSummary from './utility/tests.js';
+import tests from './utility/tests.js';
 
 import {
     actions,
@@ -35,7 +35,7 @@ const footerContainer  = document.getElementById('footer');
 const knobContainer    = document.getElementById('knobs');
 const navContainer     = document.getElementById('nav');
 
-footerContainer.insertAdjacentHTML('afterbegin', testSummary());
+footerContainer.insertAdjacentHTML('afterbegin', tests());
 
 const homeContent = contentContainer.innerHTML;
 

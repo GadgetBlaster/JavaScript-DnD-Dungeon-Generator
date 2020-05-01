@@ -41,6 +41,7 @@ const navContainer     = document.getElementById('nav');
 const statusContainer  = document.getElementById('status');
 const summaryContainer = document.getElementById('summary');
 
+/** @type {Unit} */
 const { getSummary, runUnits, onError } = unit({
     onAssert: (result) => print(dotsContainer, dot(result)),
 });
@@ -81,10 +82,12 @@ render(navContainer, nav({
 
     if (list.includes(scope)) {
         render(infoContainer, `Scope: ${scope}`);
-        run({ suite, onComplete, onError, runUnits, scope });
+        run({ suite, onError, runUnits, scope });
+        onComplete();
         return;
     }
 
     render(infoContainer, 'Scope: All the things');
-    run({ suite, onComplete, onError, runUnits });
+    run({ suite, onError, runUnits });
+    onComplete();
 })();
