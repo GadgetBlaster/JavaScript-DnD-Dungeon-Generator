@@ -185,7 +185,7 @@ const getAirDesc = () => {
                 return 'The air smells fresh and crisp';
             }
 
-            return 'There is strange sweet sent in the air';
+            return 'There is a strange sweet sent in the air';
 
         case air.smokey:
             return 'The room is filled with smoke from a hastily extinguished fire';
