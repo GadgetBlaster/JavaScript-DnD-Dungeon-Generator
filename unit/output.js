@@ -106,8 +106,8 @@ export const log = (results, { verbose } = {}) => {
  * @returns {string}
  */
 export const nav = ({ scope, verbose }) => [
-    link('Run All', `./unit.html${makeParams({ scope: null, verbose })}`, { active: !scope }),
-    link('Scope', `./unit.html${makeParams({ scope: 'list', verbose })}`, { active: scope === 'list' }),
+    link('All', `./unit.html${makeParams({ scope: null, verbose })}`, { active: !scope }),
+    link('Tests', `./unit.html${makeParams({ scope: 'list', verbose })}`, { active: scope === 'list' }),
     '<span role="presentation" data-separator></span>',
     link('Verbose', `./unit.html${makeParams({ scope, verbose: !verbose })}`, { active: verbose })
 ].join('');

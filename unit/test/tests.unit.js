@@ -5,7 +5,7 @@ import unit from '../unit.js';
  * @param {import('../unit.js').Utility}
  */
 export default ({ assert, describe, it }) => {
-    describe('#unit', () => {
+    describe('returns', () => {
         const unitObj = unit();
 
         it('should return a object', () => {

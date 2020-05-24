@@ -1,7 +1,7 @@
 
-import getUnit from './unit.js';
 import runSuite from './run.js';
 import suite from './suite.js';
+import unit from './unit.js';
 
 import {
     dot,
@@ -41,10 +41,8 @@ const navContainer     = document.getElementById('nav');
 const statusContainer  = document.getElementById('status');
 const summaryContainer = document.getElementById('summary');
 
-/** @type {Unit} */
-const unit = getUnit({
-    onAssert: (result) => print(dotsContainer, dot(result)),
-});
+/** @type {Function} onAssert */
+const onAssert = (result) => print(dotsContainer, dot(result));
 
 /**
  * On complete
@@ -66,19 +64,15 @@ render(navContainer, nav({
     const list = Object.keys(suite);
 
     if (scope === 'list') {
-        render(statusContainer, 'Scope');
+        render(statusContainer, 'Tests');
         render(logContainer, scopeList(list, { verbose }));
         return;
     }
 
+    let testScope = list.includes(scope) ? scope : undefined;
+
     render(statusContainer, 'Status: Running...');
+    render(infoContainer, testScope ? `Tests: ${scope}` : 'Tests: All');
 
-    if (list.includes(scope)) {
-        render(infoContainer, `Scope: ${scope}`);
-        onComplete(runSuite(unit, suite, scope));
-        return;
-    }
-
-    render(infoContainer, 'Scope: All the things');
-    onComplete(runSuite(unit, suite));
+    onComplete(runSuite(unit({ onAssert }), suite, testScope));
 })();
