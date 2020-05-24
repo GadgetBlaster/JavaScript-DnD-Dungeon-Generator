@@ -6,9 +6,9 @@
  * @param {Object.<string, Function>} suite
  * @param {string} [scope]
  *
- * @returns {Summary}
+ * @returns {import('./unit').Summary}
  */
-export default ({ getSummary, onError, runUnits}, suite, scope) => {
+export default ({ getSummary, onError, runUnits }, suite, scope) => {
     if (!suite || typeof suite !== 'object') {
         onError('Invalid test suite');
         return;

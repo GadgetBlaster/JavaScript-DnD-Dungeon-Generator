@@ -23,10 +23,10 @@ import { resultMsg } from './output.js';
  *
  * @typedef {Object} Summary
  *
- * @property {Result[]} results
  * @property {number} assertions
  * @property {number} failures
- * @property {number} errors
+ * @property {Result[]} results
+ * @property {string[]} errors
  */
 
 /**
