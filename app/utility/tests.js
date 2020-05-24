@@ -11,7 +11,7 @@ const unitUrl = './unit.html';
 /**
  * Get output
  *
- * @param {Summary} summary
+ * @param {import('../../unit/unit.js').Summary} summary
  *
  * @returns {string}
  */
@@ -28,7 +28,7 @@ export const getOutput = ({ assertions, errors, failures }) => {
         encounterText += errors.length ? errorText : '';
         encounterText += errors.length ? '!' : '.';
 
-        let linkAttrs = { 'data-error': true, 'href': unitUrl };
+        let linkAttrs = { 'href': unitUrl, 'data-error': true };
 
         let report = element('p', `Checked for ${assertions} ${koboldsText}. `) +
                      element('p', element('a', encounterText, linkAttrs));
