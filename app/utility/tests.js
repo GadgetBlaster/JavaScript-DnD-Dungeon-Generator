@@ -1,10 +1,12 @@
 
-import run from '../../unit/run.js';
+import getUnit from '../../unit/unit.js';
+import runSuite from '../../unit/run.js';
 import suite from '../../unit/suite.js';
-import unit from '../../unit/unit.js';
 
 import { element } from './../utility/html.js';
 import { plural } from './../utility/tools.js';
+
+const unitUrl = './unit.html';
 
 /**
  * Get output
@@ -14,7 +16,7 @@ import { plural } from './../utility/tools.js';
  * @returns {string}
  */
 export const getOutput = ({ assertions, errors, failures }) => {
-    let report = element('p', `Checked for ${assertions} mischievous ${plural(assertions, 'kobold')}.`);
+    let koboldsText = `mischievous ${plural(assertions, 'kobold')}`;
 
     if (failures || errors.length) {
         let failureText = ` ${failures} ${plural(failures, 'ogre')}`;
@@ -26,24 +28,20 @@ export const getOutput = ({ assertions, errors, failures }) => {
         encounterText += errors.length ? errorText : '';
         encounterText += errors.length ? '!' : '.';
 
-        let linkAttrs = { 'data-error': true, 'href': './unit.html' };
+        let linkAttrs = { 'data-error': true, 'href': unitUrl };
 
-        report += ' ' + element('p', element('a', encounterText, linkAttrs));
+        let report = element('p', `Checked for ${assertions} ${koboldsText}. `) +
+                     element('p', element('a', encounterText, linkAttrs));
+
+        return report;
     }
 
-    return report;
+    return element('p', `Checked for ${assertions} ${element('a', koboldsText, { href: unitUrl })}`);
 };
 
 /**
- * Run tests and return test summary UI
+ * Run tests and return the test summary UI
  *
  * @returns {string}
  */
-export default () => {
-    /** @type {Unit} */
-    let { getSummary, runUnits, onError } = unit();
-
-    run({ suite, onError, runUnits });
-
-    return getOutput(getSummary());
-};
+export default () => getOutput(runSuite(getUnit(), suite));

@@ -2,19 +2,13 @@
 /**
  * Run
  *
- * @param {Object} config
- *     @param {string[]} suite
- *     @param {Function} onComplete
- *     @param {Function} onError
- *     @param {Function} runUnits
- *     @param {string} [scope]
+ * @param {Unit} unit
+ * @param {Object.<string, Function>} suite
+ * @param {string} [scope]
+ *
+ * @returns {Summary}
  */
-export default ({
-    onError,
-    runUnits,
-    scope,
-    suite,
-}) => {
+export default ({ getSummary, onError, runUnits}, suite, scope) => {
     if (!suite || typeof suite !== 'object') {
         onError('Invalid test suite');
         return;
@@ -40,16 +34,18 @@ export default ({
         entries = [ [ scope, scopedTest ] ];
     }
 
-    entries.forEach(([ label, units ]) => {
-        if (typeof units !== 'function') {
+    entries.forEach(([ label, tests ]) => {
+        if (typeof tests !== 'function') {
             onError(`Invalid test function: ${label}`);
         }
 
         try {
-            runUnits(label, units);
+            runUnits(label, tests);
         } catch(error) {
             let msg = typeof error === 'object' ? error.stack.toString() : error;
             onError(msg);
         }
     });
+
+    return getSummary();
 };

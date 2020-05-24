@@ -6,7 +6,7 @@ import tests from '../tests.js';
  */
 export default ({ assert, describe, it }) => {
     describe('#tests', () => {
-        describe('', () => {
+        describe('#getOutput', () => {
 
         });
     });

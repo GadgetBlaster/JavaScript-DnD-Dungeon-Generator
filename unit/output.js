@@ -168,23 +168,25 @@ export const scopeList = (scopes, { verbose } = {}) => {
  * @returns {string}
  */
 export const summary = (assertions, failures, errors) => {
+    let out = [];
+
     if (errors) {
-        return `<span class="fail">${errors} Error${errors === 1 ? '' : 's'}  😕</span>`;
+        out.push(`<span class="fail">${errors} Error${errors === 1 ? '' : 's'} 😕</span>`);
     }
 
-    let total = `${assertions} Assertion${assertions === 1 ? '' : 's'}`;
+    out.push(`${assertions} Assertion${assertions === 1 ? '' : 's'}`);
 
     if (!assertions) {
-        return total;
+        return out.join(', ');
     }
 
-    let fails = ((count) => {
+    out.push(((count) => {
         switch (count) {
             case 0:  return '<span class="ok">0 Failures, nice job 👏</span>';
             case 1:  return '<span class="fail">1 Failure</span>';
             default: return `<span class="fail">${count} Failures</span>`;
         }
-    })(failures);
+    })(failures));
 
-    return `${total}, ${fails}`;
+    return out.join(', ');
 };

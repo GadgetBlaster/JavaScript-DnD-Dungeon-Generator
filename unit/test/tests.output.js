@@ -322,7 +322,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('failures', () => {
-            describe('given `0` failures', () => {
+            describe('given no failures', () => {
                 it('should return a string containing `0 Failures`', () => {
                     assert(summary(1, 0, 0)).stringContains('0 Failures');
                 });

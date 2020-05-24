@@ -77,10 +77,6 @@ footer {
     padding: 20px;
 }
 
-footer a {
-    font-size: 12px;
-}
-
 nav {
     color: var(--color-white);
     display: flex;

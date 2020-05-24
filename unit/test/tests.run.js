@@ -1,10 +1,10 @@
 
-import run from '../run.js';
+import runSuite from '../run.js';
 
-const defaults = {
-    onError : () => {},
-    runUnits: () => {},
-    suite   : {},
+const mockUnit = {
+    getSummary: () => {},
+    onError   : () => {},
+    runUnits  : () => {},
 };
 
 /**
@@ -26,11 +26,9 @@ export default ({ assert, describe, it }) => {
                 functions.push(tests);
             };
 
-            run({
-                ...defaults,
-                runUnits,
-                suite,
-            });
+            const getSummary = () => 'success';
+
+            const results = runSuite({ ...mockUnit, runUnits, getSummary }, suite);
 
             it('should call `runUnits` for each function in the suite', () => {
                 const keys = Object.keys(suite);
@@ -45,22 +43,20 @@ export default ({ assert, describe, it }) => {
                     assert(func).isFunction();
                 });
             });
+
+            it('should call `getSummary` returning the test summary', () => {
+                assert(results).equals('success');
+            });
         });
 
         describe('given an undefined `suite`', () => {
             let onErrorResult;
 
-            const onError = (error) => {
-                onErrorResult = error;
-            };
+            const onError = (error) => { onErrorResult = error; };
 
-            run({
-                ...defaults,
-                onError,
-                suite: undefined,
-            });
+            runSuite({ ...mockUnit, onError });
 
-            it('should call `onError` and return a string containing `Invalid`', () => {
+            it('should call `onError` returning a string containing `Invalid`', () => {
                 assert(onErrorResult)
                     .isString()
                     .stringContains('Invalid');
@@ -70,13 +66,11 @@ export default ({ assert, describe, it }) => {
         describe('given an invalid suite', () => {
             let onErrorResult;
 
-            run({
-                ...defaults,
-                onError: (error) => { onErrorResult = error; },
-                suite  : 'junk',
-            });
+            const onError = (error) => { onErrorResult = error; };
 
-            it('should call `onError` and return a string containing `Invalid`', () => {
+            runSuite({ ...mockUnit, onError }, 'junk');
+
+            it('should call `onError` returning a string containing `Invalid`', () => {
                 assert(onErrorResult)
                     .isString()
                     .stringContains('Invalid');
@@ -86,11 +80,9 @@ export default ({ assert, describe, it }) => {
         describe('given an empty suite', () => {
             let onErrorResult;
 
-            run({
-                ...defaults,
-                onError: (error) => { onErrorResult = error; },
-                suite  : {},
-            });
+            const onError = (error) => { onErrorResult = error; };
+
+            runSuite({ ...mockUnit, onError }, {});
 
             it('should call `onError` and return a string containing `Empty`', () => {
                 assert(onErrorResult)
@@ -105,11 +97,9 @@ export default ({ assert, describe, it }) => {
             const scope = '/some/scope';
             const suite = { [scope]: () => {} };
 
-            run({
-                ...defaults,
-                runUnits: (name) => { names.push(name); },
-                suite,
-            });
+            const runUnits = (name) => { names.push(name); };
+
+            runSuite({ ...mockUnit, runUnits }, suite);
 
             it('should call `runUnits` once for the scoped function', () => {
                 assert(names.length).equals(1);
@@ -120,14 +110,13 @@ export default ({ assert, describe, it }) => {
         describe('given an invalid `scope`', () => {
             let onErrorResult;
 
-            run({
-                ...defaults,
-                onError: (error) => { onErrorResult = error; },
-                scope  : '/invalid/scope',
-                suite  : { '/some/scope': () => {} },
-            });
+            const onError = (error) => { onErrorResult = error; };
+            const suite   = { '/some/scope': () => {} };
+            const scope   = '/invalid/scope';
 
-            it('should call `onError` and return a string containing `Invalid` and `scope`', () => {
+            runSuite({ ...mockUnit, onError }, suite, scope);
+
+            it('should call `onError` returning a string containing `Invalid` and `scope`', () => {
                 assert(onErrorResult)
                     .isString()
                     .stringContains('Invalid')
@@ -138,13 +127,12 @@ export default ({ assert, describe, it }) => {
         describe('given an invalid test function', () => {
             let onErrorResult;
 
-            run({
-                ...defaults,
-                onError: (error) => { onErrorResult = error; },
-                suite  : { '/some/scope': undefined },
-            });
+            const onError = (error) => { onErrorResult = error; };
+            const suite   = { '/some/scope': undefined };
 
-            it('should call `onError` and return a string containing `Invalid` and `scope`', () => {
+            runSuite({ ...mockUnit, onError }, suite);
+
+            it('should call `onError` returning a string containing `Invalid` and `scope`', () => {
                 assert(onErrorResult)
                     .isString()
                     .stringContains('Invalid')
@@ -155,14 +143,13 @@ export default ({ assert, describe, it }) => {
         describe('given a test function that throws an `Error` object`', () => {
             let onErrorResult;
 
-            run({
-                ...defaults,
-                onError : (error) => { onErrorResult = error; },
-                runUnits: (_, tests) => { tests(); },
-                suite   : { '/some/scope': () => { throw new Error('Whoops'); } },
-            });
+            const onError  = (error) => { onErrorResult = error; };
+            const runUnits = (_, tests) => { tests(); };
+            const suite    = { '/some/scope': () => { throw new Error('Whoops'); } };
 
-            it('should call `onError` and return a string containing an error', () => {
+            runSuite({ ...mockUnit, onError, runUnits }, suite);
+
+            it('should call `onError` returning a string containing an error', () => {
                 assert(onErrorResult)
                     .isString()
                     .stringContains('Error')
@@ -173,14 +160,13 @@ export default ({ assert, describe, it }) => {
         describe('given a test function that throws an error string`', () => {
             let onErrorResult;
 
-            run({
-                ...defaults,
-                onError : (error) => { onErrorResult = error; },
-                runUnits: (_, tests) => { tests(); },
-                suite   : { '/some/scope': () => { throw 'Something is wrong'; } },
-            });
+            const onError  = (error) => { onErrorResult = error; };
+            const runUnits = (_, tests) => { tests(); };
+            const suite    = { '/some/scope': () => { throw 'Something is wrong'; } };
 
-            it('should call `onError` and return the error string', () => {
+            runSuite({ ...mockUnit, onError, runUnits }, suite);
+
+            it('should call `onError` returning the error string', () => {
                 assert(onErrorResult)
                     .isString()
                     .equals('Something is wrong');
