@@ -1,6 +1,6 @@
 
 /**
- * Run
+ * Run suite
  *
  * @param {Unit} unit
  * @param {Object.<string, Function>} suite

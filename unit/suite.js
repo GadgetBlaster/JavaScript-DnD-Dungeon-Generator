@@ -7,6 +7,7 @@ import unit from './test/tests.unit.js';
 import html from '../app/utility/test/tests.html.js';
 import roll from '../app/utility/test/tests.roll.js';
 import tests from '../app/utility/test/tests.tests.js';
+import tools from '../app/utility/test/tests.tools.js';
 
 export default {
     '/unit/test/tests.assert.js': assert,
@@ -17,4 +18,5 @@ export default {
     '/app/utility/test/tests.html.js': html,
     '/app/utility/test/tests.roll.js': roll,
     '/app/utility/test/tests.tests.js': tests,
+    '/app/utility/test/tests.tools.js': tools,
 };
