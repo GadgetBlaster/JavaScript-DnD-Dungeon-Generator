@@ -43,9 +43,15 @@ export const escapeHTML = (string) => string.replace(/[&<>"'\/]/g, (match) => ht
  *
  * @param {Result} result
  *
- * @returns {string}
+ * @returns {Element}
  */
-export const dot = ({ isOk }) => `<span class="dot dot-${isOk ? 'ok' : 'fail'}"></span>`;
+export const dot = ({ isOk }) => {
+    let el = document.createElement('span');
+
+    el.className = `dot dot-${isOk ? 'ok' : 'fail'}`;
+
+    return el;
+};
 
 /**
  * Fail
@@ -111,16 +117,6 @@ export const nav = ({ scope, verbose }) => [
     '<span role="presentation" data-separator></span>',
     link('Verbose', `./unit.html${makeParams({ scope, verbose: !verbose })}`, { active: verbose })
 ].join('');
-
-/**
- * Print
- *
- * @param {Element} el
- * @param {string} text
- */
-export const print = (el, text) => {
-    el.innerHTML += text;
-};
 
 /**
  * Render

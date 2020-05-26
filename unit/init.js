@@ -7,7 +7,6 @@ import {
     dot,
     log,
     nav,
-    print,
     render,
     scopeList,
     summary,
@@ -42,13 +41,35 @@ const statusContainer  = document.getElementById('status');
 const summaryContainer = document.getElementById('summary');
 
 /**
+ * Delay
+ *
+ * @param {number} [ms=0]
+ *
+ * @returns {Promise}
+ */
+const delay = (ms = 0) => new Promise((resolve) => setTimeout(resolve, ms));
+
+/**
+ * Append
+ *
+ * @param {Result} result
+ *
+ * @returns {Element}
+ */
+const drawDot = (result) => dotsContainer.appendChild(dot(result));
+
+/**
  * On complete
  *
  * @param {Summary}
  */
-const onComplete = ({ assertions, errors, failures, results }) => {
-    render(statusContainer, 'Status: Complete');
-    render(dotsContainer, results.map((result) => dot(result)).join(''));
+const onComplete = async ({ assertions, errors, failures, results }) => {
+    for (let i = 0; i < results.length; i++) {
+        await delay();
+        drawDot(results[i]);
+    }
+
+    render(statusContainer, 'Complete');
     render(summaryContainer, summary(assertions, failures, errors.length));
     render(logContainer, log(results, { verbose }));
 };
@@ -69,10 +90,8 @@ render(navContainer, nav({
 
     let testScope = list.includes(scope) ? scope : undefined;
 
-    render(statusContainer, 'Status: Running...');
-    render(infoContainer, testScope ? `Tests: ${scope}` : 'Tests: All');
+    render(statusContainer, 'Running tests');
+    render(infoContainer, testScope ? `Tests: ${scope}` : 'All tests');
 
-    window.requestAnimationFrame(() => {
-        onComplete(runSuite(unit(), suite, testScope));
-    });
+    onComplete(runSuite(unit(), suite, testScope));
 })();

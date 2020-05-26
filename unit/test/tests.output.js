@@ -7,7 +7,6 @@ import {
     link,
     log,
     nav,
-    print,
     render,
     resultMsg,
     scopeList,
@@ -19,15 +18,22 @@ import {
  */
 export default ({ assert, describe, it }) => {
     describe('#dot', () => {
+        it('should return a `span` element', () => {
+            let el = dot({});
+            assert(el.tagName).equals('SPAN');
+        });
+
         describe('given a falsy `isOk` property', () => {
-            it('should return a `<span>` with the `dot` and `dot-fail` class', () => {
-                assert(dot({ isOk: false })).equals('<span class="dot dot-fail"></span>');
+            it('should return an element with the `dot` and `dot-fail` classes', () => {
+                let el = dot({ isOk: false });
+                assert(el.className).equals('dot dot-fail');
             });
         });
 
         describe('given a truthy `isOk` property', () => {
-            it('should return a `<span>` with the `dot` and `dot-ok` class', () => {
-                assert(dot({ isOk: true })).equals('<span class="dot dot-ok"></span>');
+            it('should return an element with the `dot` and `dot-ok` class', () => {
+                let el = dot({ isOk: true });
+                assert(el.className).equals('dot dot-ok');
             });
         });
     });
@@ -203,25 +209,6 @@ export default ({ assert, describe, it }) => {
 
             it('should return an html list with `&verbose=true` for each scope', () => {
                 assert((html.match(/&verbose=true/g) || []).length).equals(scopes.length);
-            });
-        });
-    });
-
-    describe('#print', () => {
-        describe('given an element and an html string', () => {
-            it('should set the html string to the element', () => {
-                const el = document.createElement('p');
-                print(el, '<b>wombats</b>');
-                assert(el.innerHTML).equals('<b>wombats</b>');
-            });
-        });
-
-        describe('called multiple times', () => {
-            it('should append html strings to the element', () => {
-                const el = document.createElement('ul');
-                print(el, '<li>gems</li>');
-                print(el, '<li>potions</li>');
-                assert(el.innerHTML).equals('<li>gems</li><li>potions</li>');
             });
         });
     });
