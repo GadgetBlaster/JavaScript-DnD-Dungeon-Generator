@@ -77,14 +77,6 @@ import { resultMsg } from './output.js';
  */
 
 /**
- * On assert
- *
- * @typedef {Function} OnAssert
- *
- * @param {Result} result
- */
-
-/**
  * Entry
  *
  * @typedef {Object} Entry
@@ -106,12 +98,9 @@ const scope = {
 };
 
 /**
- * @param {Object} [config]
- *     @param {OnAssert} [config.onAssert]
- *
  * @type {Unit}
  */
-export default ({ onAssert = () => {} } = {}) => {
+export default () => {
 
     /**
      * Results
@@ -224,8 +213,6 @@ export default ({ onAssert = () => {} } = {}) => {
             msg: `${isOk ? 'Pass:' : 'Failure:'} ${msg}`
         });
 
-        onAssert(result);
-
         results.push({
             isOk,
             msg: resultMsg(current),
@@ -274,11 +261,11 @@ export default ({ onAssert = () => {} } = {}) => {
     /**
      * Run units
      *
-     * @param {string} suite
+     * @param {string} path
      * @param {Function} tests
      */
-    const runUnits = (suite, tests) => {
-        current.push({ scope: scope.suite, msg: suite });
+    const runUnits = (path, tests) => {
+        current.push({ scope: scope.suite, msg: path });
         tests(utility);
         current.pop();
     };
@@ -305,7 +292,8 @@ export default ({ onAssert = () => {} } = {}) => {
     const onError = (error) => {
         let result = { isOk: false, msg: error };
 
-        onAssert(result);
+        results.push(result);
+
         errors.push(result);
     };
 

@@ -41,9 +41,6 @@ const navContainer     = document.getElementById('nav');
 const statusContainer  = document.getElementById('status');
 const summaryContainer = document.getElementById('summary');
 
-/** @type {Function} onAssert */
-const onAssert = (result) => print(dotsContainer, dot(result));
-
 /**
  * On complete
  *
@@ -51,8 +48,9 @@ const onAssert = (result) => print(dotsContainer, dot(result));
  */
 const onComplete = ({ assertions, errors, failures, results }) => {
     render(statusContainer, 'Status: Complete');
+    render(dotsContainer, results.map((result) => dot(result)).join(''));
     render(summaryContainer, summary(assertions, failures, errors.length));
-    render(logContainer, log([ ...errors, ...results], { verbose }));
+    render(logContainer, log(results, { verbose }));
 };
 
 render(navContainer, nav({
@@ -74,5 +72,7 @@ render(navContainer, nav({
     render(statusContainer, 'Status: Running...');
     render(infoContainer, testScope ? `Tests: ${scope}` : 'Tests: All');
 
-    onComplete(runSuite(unit({ onAssert }), suite, testScope));
+    window.requestAnimationFrame(() => {
+        onComplete(runSuite(unit(), suite, testScope));
+    });
 })();

@@ -34,13 +34,13 @@ export default ({ getSummary, onError, runUnits }, suite, scope) => {
         entries = [ [ scope, scopedTest ] ];
     }
 
-    entries.forEach(([ label, tests ]) => {
+    entries.forEach(([ path, tests ]) => {
         if (typeof tests !== 'function') {
-            onError(`Invalid test function: ${label}`);
+            onError(`Invalid test function: ${path}`);
         }
 
         try {
-            runUnits(label, tests);
+            runUnits(path, tests);
         } catch(error) {
             let msg = typeof error === 'object' ? error.stack.toString() : error;
             onError(msg);

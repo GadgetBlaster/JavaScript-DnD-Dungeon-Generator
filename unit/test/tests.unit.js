@@ -187,8 +187,12 @@ export default ({ assert, describe, it }) => {
                     assert(summary.failures).equals(1);
                 });
 
-                it('summary `results` should contain 3 entries', () => {
-                    assert(summary.results.length).equals(3);
+                it('summary `results` should contain 2 successes', () => {
+                    assert(summary.results.filter(({ isOk }) => isOk).length).equals(2);
+                });
+
+                it('summary `results` should contain 2 failures', () => {
+                    assert(summary.results.filter(({ isOk }) => !isOk).length).equals(2);
                 });
 
                 it('summary `errors` should contain 1 error', () => {
@@ -417,13 +421,7 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('#_runAssert', () => {
-        let lastResult;
-
-        const { runUnits, getSummary } = unit({
-            onAssert: (result) => {
-                lastResult = result;
-            },
-        });
+        const { runUnits, getSummary } = unit();
 
         describe('when an assertion is made', () => {
             const { assertions: startingAssertions } = getSummary();
@@ -446,10 +444,12 @@ export default ({ assert, describe, it }) => {
                 assert(results.length).equals(assertions);
             });
 
-            it('should call `onAssert` and return a `Result` object', () => {
-                assert(lastResult).isObject();
-                assert(lastResult.isOk).isBoolean();
-                assert(lastResult.msg).isString();
+            it('should add a `Result` entry to `results`', () => {
+                let result = results.pop();
+
+                assert(result).isObject();
+                assert(result.isOk).isBoolean();
+                assert(result.msg).isString();
             });
         });
 
