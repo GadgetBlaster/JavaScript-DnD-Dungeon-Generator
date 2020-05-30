@@ -87,6 +87,15 @@ export const listSentence = (parts) => {
     return `${parts.join(', ')}${comma} and ${last}`;
 };
 
+/**
+ * Plural
+ *
+ * @param {number} count
+ * @param {string} string
+ * @param {string} [suffix = 's']
+ *
+ * @returns {string}
+ */
 export const plural = (count, string, suffix = 's') => {
     return `${string}${count !== 1 ? suffix : ''}`;
 };
