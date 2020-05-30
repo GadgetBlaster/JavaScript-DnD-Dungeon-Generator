@@ -1,21 +1,5 @@
 
-import {
-    equals,
-    isArray,
-    isBoolean,
-    isFalse,
-    isFunction,
-    isNull,
-    isNumber,
-    isObject,
-    isString,
-    isTrue,
-    isUndefined,
-    stringContains,
-    stringExcludes,
-    throws,
-} from './assert.js';
-
+import * as assertFunctions from './assert.js';
 import { resultMsg } from './output.js';
 
 /**
@@ -41,6 +25,7 @@ import { resultMsg } from './output.js';
  * @typedef {Object} Assertions
  *
  * @property {Expectation} equals
+ * @property {Expectation} equalsArray
  * @property {Expectation} isArray
  * @property {Expectation} isBoolean
  * @property {Expectation} isFalse
@@ -230,22 +215,10 @@ export default () => {
      *
      * @returns {Assertions}
      */
-    const assert = (value) => ({
-        equals        : (expected) => _runAssert(value, expected, equals),
-        isArray       : (expected) => _runAssert(value, expected, isArray),
-        isBoolean     : (expected) => _runAssert(value, expected, isBoolean),
-        isFalse       : (expected) => _runAssert(value, expected, isFalse),
-        isFunction    : (expected) => _runAssert(value, expected, isFunction),
-        isNull        : (expected) => _runAssert(value, expected, isNull),
-        isNumber      : (expected) => _runAssert(value, expected, isNumber),
-        isObject      : (expected) => _runAssert(value, expected, isObject),
-        isString      : (expected) => _runAssert(value, expected, isString),
-        isTrue        : (expected) => _runAssert(value, expected, isTrue),
-        isUndefined   : (expected) => _runAssert(value, expected, isUndefined),
-        stringContains: (expected) => _runAssert(value, expected, stringContains),
-        stringExcludes: (expected) => _runAssert(value, expected, stringExcludes),
-        throws        : (expected) => _runAssert(value, expected, throws),
-    });
+    const assert = (value) => Object.entries(assertFunctions).reduce((assertObj, [ key, assertion ]) => {
+        assertObj[key] = (expected) => _runAssert(value, expected, assertion);
+        return assertObj;
+    }, {});
 
     /**
      * Utility
