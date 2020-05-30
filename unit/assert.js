@@ -27,6 +27,27 @@ export const equals = (actual, expected) => {
     return { msg, isOk };
 };
 
+/** @type {Assertion} equalsArray */
+export const equalsArray = (actual, expected) => {
+    let checkType = isArray(actual);
+
+    if (!checkType.isOk) {
+        return checkType;
+    }
+
+    if (actual.length !== expected.length) {
+        return {
+            msg: `expected array length [ ${actual} ] to equal array length [ ${expected} ]`,
+            isOk: false,
+        };
+    }
+
+    let msg  = `expected [ ${actual} ] to equal [ ${expected} ]`;
+    let isOk = actual.filter((e, i) => e === expected[i]).length === actual.length;
+
+    return { msg, isOk };
+};
+
 /** @type {Assertion} isArray */
 export const isArray = (value) => {
     let isOk = Array.isArray(value);
@@ -130,6 +151,7 @@ export const stringExcludes = (actual, expected) => {
     }
 
     let { isOk, msg } = stringContains(actual, expected);
+
     return { msg, isOk: !isOk };
 };
 
