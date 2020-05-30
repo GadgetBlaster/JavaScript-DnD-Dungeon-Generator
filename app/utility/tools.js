@@ -64,6 +64,13 @@ export const chunk = (array, size) => array.reduce((resultArray, item, index) =>
     return resultArray;
 }, []);
 
+/**
+ * List sentence
+ *
+ * @param {string[]} parts
+ *
+ * @returns {string}
+ */
 export const listSentence = (parts) => {
     if (parts.length === 0) {
         return;
@@ -72,12 +79,12 @@ export const listSentence = (parts) => {
     let last = parts.pop();
 
     if (parts.length === 0) {
-        return capitalize(last);
+        return last;
     }
 
     let comma = parts.length > 1 ? ',' : '';
 
-    return `${capitalize(parts.join(', '))}${comma} and ${last}`;
+    return `${parts.join(', ')}${comma} and ${last}`;
 };
 
 export const plural = (count, string, suffix = 's') => {

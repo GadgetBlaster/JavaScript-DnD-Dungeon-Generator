@@ -1,5 +1,5 @@
 
-import { listSentence } from '../utility/tools.js';
+import { capitalize, listSentence } from '../utility/tools.js';
 import { roll, rollPercentile, rollArrayItem } from '../utility/roll.js';
 
 const vegetationChance = 60;
@@ -57,5 +57,5 @@ export const getVegetationDescription = () => {
         }
     });
 
-    return listSentence(roomVegetation);
+    return capitalize(listSentence(roomVegetation));
 };
