@@ -1,6 +1,7 @@
 
 import {
     equals,
+    equalsArray,
     isArray,
     isBoolean,
     isFalse,
@@ -23,6 +24,7 @@ import {
  */
 const assertions = [
     equals,
+    equalsArray,
     isArray,
     isBoolean,
     isFalse,
@@ -159,6 +161,46 @@ export default ({ assert, describe, it }) => {
         describe('given two values that are not the same type', () => {
             it('should return a falsy `isOk` boolean', () => {
                 assert(equals(3, '3').isOk).isFalse();
+            });
+        });
+    });
+
+    describe('#equalsArray', () => {
+        nonArrayTypes.forEach(([ key, value ]) => {
+            describe(`given ${key}`, () => {
+                it('should return a falsy `isOk` property', () => {
+                    assert(isArray(value).isOk).isFalse();
+                });
+            });
+        });
+
+        describe('given empty arrays', () => {
+            it('should return true', () => {
+                assert(equalsArray([ ], [ ]).isOk).isTrue();
+            });
+        });
+
+        describe('given arrays that are equal', () => {
+            it('should return true', () => {
+                assert(equalsArray([ 1, 'horse', false ], [ 1, 'horse', false ]).isOk).isTrue();
+            });
+        });
+
+        describe('given arrays with objects', () => {
+            it('should return false', () => {
+                assert(equalsArray([ {} ], [ {} ]).isOk).isFalse();
+            });
+        });
+
+        describe('given arrays with different lengths', () => {
+            it('should return false', () => {
+                assert(equalsArray([ 'RoboCop' ], [ 'Tango', 'Whisky', 'Foxtrot' ]).isOk).isFalse();
+            });
+        });
+
+        describe('given arrays with different values', () => {
+            it('should return false', () => {
+                assert(equalsArray([ 'joey' ], [ 'paul' ]).isOk).isFalse();
             });
         });
     });
