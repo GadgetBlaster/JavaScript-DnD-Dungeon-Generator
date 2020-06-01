@@ -30,6 +30,7 @@ import { generateRooms } from './rooms/generate.js';
 
 import { getKnobConfig } from './knobs.js';
 
+const docBody          = document.body;
 const contentContainer = document.getElementById('content');
 const footerContainer  = document.getElementById('footer');
 const knobContainer    = document.getElementById('knobs');
@@ -47,10 +48,14 @@ const updateKnobs = (target) => {
 
     knobContainer.innerHTML = renderKnobs(config, page);
 
-    toggleAccordion(`fieldset-${toDash(config[0].label)}`);
+    let firstAccordionSelector = `[data-id="fieldset-${toDash(config[0].label)}"]`;
+    docBody.querySelector(firstAccordionSelector).dataset.collapsed = false;
 };
 
-const navigate = (target, el) => {
+const navigate = (e) => {
+    let el     = e.target;
+    let target = el.dataset.target;
+
     el && setActive(el);
 
     updateKnobs(target);
@@ -126,14 +131,14 @@ const generate = () => {
     contentContainer.innerHTML = generator(settings);
 };
 
-attachActions({
-    [actions.accordion]: toggleAccordion,
+attachActions(docBody, {
+    [actions.accordion]: (e) => toggleAccordion(docBody, e),
     [actions.generate] : generate,
     [actions.navigate] : navigate,
-    [actions.showHide] : toggleVisibility,
+    [actions.showHide] : (e) => toggleVisibility(docBody, e),
     [actions.home]     : navigateHome,
 });
 
-navContainer.innerHTML  = nav;
+navContainer.innerHTML = nav;
 
 updateKnobs();

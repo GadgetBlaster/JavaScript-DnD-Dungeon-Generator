@@ -91,7 +91,7 @@ render(navContainer, nav({
     let testScope = list.includes(scope) ? scope : undefined;
 
     render(statusContainer, 'Running tests');
-    render(infoContainer, testScope ? `Tests: ${scope}` : 'All tests');
+    render(infoContainer, `Tests: ${testScope ? scope : 'All'}`);
 
     onComplete(runSuite(unit(), suite, testScope));
 })();

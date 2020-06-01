@@ -9,7 +9,6 @@ export const pages = {
 };
 
 let { dungeon, room, items } = pages;
-
 let { navigate } = actions;
 
 export const nav = [
@@ -28,7 +27,7 @@ export const setActive = (target) => {
 
 export const getActive = (navContainer) => {
     let activeBtn = [ ...navContainer.children ].find((btn) => {
-        return btn.dataset.active
+        return btn.dataset.active;
     });
 
     return activeBtn.dataset.target;
