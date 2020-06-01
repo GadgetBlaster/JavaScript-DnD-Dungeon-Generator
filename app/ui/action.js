@@ -14,7 +14,7 @@ export const toggleVisibility = (target) => {
 };
 
 export const toggleAccordion = (target) => {
-    let accordions = document.body.querySelectorAll('[data-collapsed');
+    let accordions = document.body.querySelectorAll('[data-collapsed]');
     let targetEl = document.body.querySelector(`[data-id="${target}"]`);
 
     [ ...accordions ].forEach((el) => {
