@@ -135,8 +135,8 @@ export default ({ assert, describe, it }) => {
 
             it('should include the probability range and value for each `config` entry', () => {
                 assert(probability.description)
-                    .stringContains('1-23% boats')
-                    .stringContains('24-55% horses');
+                    .stringIncludes('1-23% boats')
+                    .stringIncludes('24-55% horses');
             });
         });
 

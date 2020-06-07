@@ -57,6 +57,7 @@ The following assertion functions are available on the assertions object.
 
 ```js
 assert(value).equals();
+assert(value).equalsArray();
 assert(value).isArray();
 assert(value).isBoolean();
 assert(value).isFalse();
@@ -67,7 +68,7 @@ assert(value).isObject();
 assert(value).isString();
 assert(value).isTrue();
 assert(value).isUndefined();
-assert(value).stringContains();
+assert(value).stringIncludes();
 assert(value).stringExcludes();
 assert(value).throws();
 ```

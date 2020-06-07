@@ -117,8 +117,8 @@ export const isUndefined = (value) => {
     return { msg, isOk };
 };
 
-/** @type {Function} stringContains */
-export const stringContains = (actual, expected) => {
+/** @type {Function} stringIncludes */
+export const stringIncludes = (actual, expected) => {
     let checkType = isString(actual);
 
     if (!checkType.isOk) {
@@ -139,7 +139,7 @@ export const stringExcludes = (actual, expected) => {
         return checkType;
     }
 
-    let { isOk, msg } = stringContains(actual, expected);
+    let { isOk, msg } = stringIncludes(actual, expected);
 
     return { msg, isOk: !isOk };
 };

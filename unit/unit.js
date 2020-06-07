@@ -36,7 +36,7 @@ import { resultMsg } from './output.js';
  * @property {Expectation} isString
  * @property {Expectation} isTrue
  * @property {Expectation} isUndefined
- * @property {Expectation} stringContains
+ * @property {Expectation} stringIncludes
  * @property {Expectation} stringExcludes
  * @property {Expectation} throws
  */

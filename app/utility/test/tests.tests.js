@@ -29,8 +29,8 @@ export default ({ assert, describe, it }) => {
 
             it('should return a link to `./unit.html`', () => {
                 assert(output)
-                    .stringContains('<a href="./unit.html">')
-                    .stringContains('</a>');
+                    .stringIncludes('<a href="./unit.html">')
+                    .stringIncludes('</a>');
             });
         });
 
@@ -43,8 +43,8 @@ export default ({ assert, describe, it }) => {
 
             it('should return a link to `./unit.html`', () => {
                 assert(output)
-                    .stringContains('<a href="./unit.html">')
-                    .stringContains('</a>');
+                    .stringIncludes('<a href="./unit.html">')
+                    .stringIncludes('</a>');
             });
         });
 
@@ -60,17 +60,17 @@ export default ({ assert, describe, it }) => {
             let output = getOutput({ ...defaults, failures: 1 });
 
             it('should return a string containing `Encountered`', () => {
-                assert(output).stringContains('Encountered');
+                assert(output).stringIncludes('Encountered');
             });
 
             it('should return a string containing `1 ogre`', () => {
-                assert(output).stringContains('1 ogre');
+                assert(output).stringIncludes('1 ogre');
             });
 
             it('should return a link to `./unit.html` with a `data-error` attribute', () => {
                 assert(output)
-                    .stringContains('<a href="./unit.html" data-error="true">')
-                    .stringContains('</a>');
+                    .stringIncludes('<a href="./unit.html" data-error="true">')
+                    .stringIncludes('</a>');
             });
         });
 
@@ -78,17 +78,17 @@ export default ({ assert, describe, it }) => {
             let output = getOutput({ ...defaults, failures: 2 });
 
             it('should return a string containing `Encountered`', () => {
-                assert(output).stringContains('Encountered');
+                assert(output).stringIncludes('Encountered');
             });
 
             it('should return a string containing `2 ogres`', () => {
-                assert(output).stringContains('2 ogres');
+                assert(output).stringIncludes('2 ogres');
             });
 
             it('should return a link to `./unit.html` with a `data-error` attribute', () => {
                 assert(output)
-                    .stringContains('<a href="./unit.html" data-error="true">')
-                    .stringContains('</a>');
+                    .stringIncludes('<a href="./unit.html" data-error="true">')
+                    .stringIncludes('</a>');
             });
         });
 
@@ -104,17 +104,17 @@ export default ({ assert, describe, it }) => {
             let output = getOutput({ ...defaults, errors: [ 'lobster' ] });
 
             it('should return a string containing `Encountered`', () => {
-                assert(output).stringContains('Encountered');
+                assert(output).stringIncludes('Encountered');
             });
 
             it('should return a string containing `1 dragon`', () => {
-                assert(output).stringContains('1 dragon');
+                assert(output).stringIncludes('1 dragon');
             });
 
             it('should return a link to `./unit.html` with a `data-error` attribute', () => {
                 assert(output)
-                    .stringContains('<a href="./unit.html" data-error="true">')
-                    .stringContains('</a>');
+                    .stringIncludes('<a href="./unit.html" data-error="true">')
+                    .stringIncludes('</a>');
             });
         });
 
@@ -122,17 +122,17 @@ export default ({ assert, describe, it }) => {
             let output = getOutput({ ...defaults, errors: [ 'broken', 'buggy' ] });
 
             it('should return a string containing `Encountered`', () => {
-                assert(output).stringContains('Encountered');
+                assert(output).stringIncludes('Encountered');
             });
 
             it('should return a string containing `2 dragons`', () => {
-                assert(output).stringContains('2 dragons');
+                assert(output).stringIncludes('2 dragons');
             });
 
             it('should return a link to `./unit.html` with a `data-error` attribute', () => {
                 assert(output)
-                    .stringContains('<a href="./unit.html" data-error="true">')
-                    .stringContains('</a>');
+                    .stringIncludes('<a href="./unit.html" data-error="true">')
+                    .stringIncludes('</a>');
             });
         });
 
@@ -140,21 +140,21 @@ export default ({ assert, describe, it }) => {
             let output = getOutput({ ...defaults, errors: [ 'broken', 'buggy' ], failures: 2 });
 
             it('should return a string containing `Encountered`', () => {
-                assert(output).stringContains('Encountered');
+                assert(output).stringIncludes('Encountered');
             });
 
             it('should return a string containing `2 ogres`', () => {
-                assert(output).stringContains('2 ogres');
+                assert(output).stringIncludes('2 ogres');
             });
 
             it('should return a string containing `2 dragons`', () => {
-                assert(output).stringContains('2 dragons');
+                assert(output).stringIncludes('2 dragons');
             });
 
             it('should return a link to `./unit.html` with a `data-error` attribute', () => {
                 assert(output)
-                    .stringContains('<a href="./unit.html" data-error="true">')
-                    .stringContains('</a>');
+                    .stringIncludes('<a href="./unit.html" data-error="true">')
+                    .stringIncludes('</a>');
             });
         });
     });

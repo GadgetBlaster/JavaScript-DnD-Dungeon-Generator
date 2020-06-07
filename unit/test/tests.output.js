@@ -75,7 +75,7 @@ export default ({ assert, describe, it }) => {
         describe('given at truthy `active` option', () => {
             it('should return an html link with a `data-active` attribute', () => {
                 assert(link('Mystic Waffle', 'https://www.mysticwaffle.com/', { active: true }))
-                    .stringContains(' data-active');
+                    .stringIncludes(' data-active');
             });
         });
     });
@@ -136,7 +136,7 @@ export default ({ assert, describe, it }) => {
                     './unit.html?scope=list',
                     './unit.html?verbose=true',
                 ].forEach((url) => {
-                    assert(html).stringContains(url);
+                    assert(html).stringIncludes(url);
                 });
             });
         });
@@ -150,7 +150,7 @@ export default ({ assert, describe, it }) => {
                     './unit.html?scope=list',
                     './unit.html?scope=fake&verbose=true',
                 ].forEach((url) => {
-                    assert(html).stringContains(url);
+                    assert(html).stringIncludes(url);
                 });
             });
         });
@@ -164,7 +164,7 @@ export default ({ assert, describe, it }) => {
                     './unit.html?scope=list&verbose=true',
                     './unit.html',
                 ].forEach((url) => {
-                    assert(html).stringContains(url);
+                    assert(html).stringIncludes(url);
                 });
             });
         });
@@ -178,7 +178,7 @@ export default ({ assert, describe, it }) => {
                     './unit.html?scope=list&verbose=true',
                     './unit.html?scope=fake',
                 ].forEach((url) => {
-                    assert(html).stringContains(url);
+                    assert(html).stringIncludes(url);
                 });
             });
         });
@@ -196,7 +196,7 @@ export default ({ assert, describe, it }) => {
 
             it('should return an html link with `?scope=scope` as the link\'s `href`', () => {
                 scopes.forEach((scope) => {
-                    assert(html).stringContains(`<a href="?scope=${scope}">`);
+                    assert(html).stringIncludes(`<a href="?scope=${scope}">`);
                 });
 
                 assert((html.match(/<\/a>/g) || []).length).equals(scopes.length);
@@ -260,9 +260,9 @@ export default ({ assert, describe, it }) => {
             });
 
             it('should indent each line with two spaces', () => {
-                assert(lines[0]).stringContains('');
-                assert(lines[1]).stringContains('  ');
-                assert(lines[2]).stringContains('    ');
+                assert(lines[0]).stringIncludes('');
+                assert(lines[1]).stringIncludes('  ');
+                assert(lines[2]).stringIncludes('    ');
             });
         });
     });
@@ -277,13 +277,13 @@ export default ({ assert, describe, it }) => {
 
             describe('given `1` error', () => {
                 it('should return a string containing `1 Error`', () => {
-                    assert(summary(1, 1, 1)).stringContains('1 Error');
+                    assert(summary(1, 1, 1)).stringIncludes('1 Error');
                 });
             });
 
             describe('given `10` errors', () => {
                 it('should return a string containing `10 Errors`', () => {
-                    assert(summary(1, 1, 10)).stringContains('10 Errors');
+                    assert(summary(1, 1, 10)).stringIncludes('10 Errors');
                 });
             });
         });
@@ -291,19 +291,19 @@ export default ({ assert, describe, it }) => {
         describe('assertions', () => {
             describe('given `0` assertions', () => {
                 it('should return a string containing `0 Assertions`', () => {
-                    assert(summary(0, 0, 0)).stringContains('0 Assertions');
+                    assert(summary(0, 0, 0)).stringIncludes('0 Assertions');
                 });
             });
 
             describe('given `1` assertion', () => {
                 it('should return a string containing `1 Assertion`', () => {
-                    assert(summary(1, 0, 0)).stringContains('1 Assertion');
+                    assert(summary(1, 0, 0)).stringIncludes('1 Assertion');
                 });
             });
 
             describe('given `2` assertions', () => {
                 it('should return a string containing `2 Assertions`', () => {
-                    assert(summary(2, 0, 0)).stringContains('2 Assertion');
+                    assert(summary(2, 0, 0)).stringIncludes('2 Assertion');
                 });
             });
         });
@@ -311,32 +311,32 @@ export default ({ assert, describe, it }) => {
         describe('failures', () => {
             describe('given no failures', () => {
                 it('should return a string containing `0 Failures`', () => {
-                    assert(summary(1, 0, 0)).stringContains('0 Failures');
+                    assert(summary(1, 0, 0)).stringIncludes('0 Failures');
                 });
 
                 it('should return a `<span>` with the `ok` css class', () => {
                     assert(summary(1, 0, 0))
-                        .stringContains('<span class="ok">')
-                        .stringContains('</span>');
+                        .stringIncludes('<span class="ok">')
+                        .stringIncludes('</span>');
                 });
             });
 
             describe('given failures', () => {
                 it('should return a `<span>` with the `fail` css class', () => {
                     assert(summary(1, 1, 0))
-                        .stringContains('<span class="fail">')
-                        .stringContains('</span>');
+                        .stringIncludes('<span class="fail">')
+                        .stringIncludes('</span>');
                 });
 
                 describe('given `1` failure', () => {
                     it('should return a string containing `1 Failure`', () => {
-                        assert(summary(1, 1, 0)).stringContains('1 Failure');
+                        assert(summary(1, 1, 0)).stringIncludes('1 Failure');
                     });
                 });
 
                 describe('given `2` failures', () => {
                     it('should return a string containing `2 Failures`', () => {
-                        assert(summary(1, 2, 0)).stringContains('2 Failures');
+                        assert(summary(1, 2, 0)).stringIncludes('2 Failures');
                     });
                 });
             });

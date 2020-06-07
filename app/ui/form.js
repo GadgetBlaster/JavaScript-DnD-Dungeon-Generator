@@ -39,7 +39,7 @@ const renderFields = (fields) => Object.keys(fields).map((key) => {
 
     let knob       = getKnob(settings);
     let descId     = desc && `info-${name}`;
-    let descButton = desc ? button(infoLabel, actions.showHide, { target: descId, size: 'auto' }) : '';
+    let descButton = desc ? button(infoLabel, actions.showHide, { target: descId, size: buttonSize.auto }) : '';
     let descText   = desc ? paragraph(small(desc), { hidden: true, 'data-id': descId }) : '';
     let knobLabel  = fieldLabel(label + descButton);
 

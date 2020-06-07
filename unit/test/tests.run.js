@@ -58,7 +58,7 @@ export default ({ assert, describe, it }) => {
         it('should call `onError` returning a string containing `Invalid`', () => {
             assert(onErrorResult)
                 .isString()
-                .stringContains('Invalid');
+                .stringIncludes('Invalid');
         });
     });
 
@@ -72,7 +72,7 @@ export default ({ assert, describe, it }) => {
         it('should call `onError` returning a string containing `Invalid`', () => {
             assert(onErrorResult)
                 .isString()
-                .stringContains('Invalid');
+                .stringIncludes('Invalid');
         });
     });
 
@@ -86,7 +86,7 @@ export default ({ assert, describe, it }) => {
         it('should call `onError` and return a string containing `Empty`', () => {
             assert(onErrorResult)
                 .isString()
-                .stringContains('Empty');
+                .stringIncludes('Empty');
         });
     });
 
@@ -118,8 +118,8 @@ export default ({ assert, describe, it }) => {
         it('should call `onError` returning a string containing `Invalid` and `scope`', () => {
             assert(onErrorResult)
                 .isString()
-                .stringContains('Invalid')
-                .stringContains('/invalid/scope');
+                .stringIncludes('Invalid')
+                .stringIncludes('/invalid/scope');
         });
     });
 
@@ -134,8 +134,8 @@ export default ({ assert, describe, it }) => {
         it('should call `onError` returning a string containing `Invalid` and `scope`', () => {
             assert(onErrorResult)
                 .isString()
-                .stringContains('Invalid')
-                .stringContains('/some/scope');
+                .stringIncludes('Invalid')
+                .stringIncludes('/some/scope');
         });
     });
 
@@ -151,8 +151,8 @@ export default ({ assert, describe, it }) => {
         it('should call `onError` returning a string containing an error', () => {
             assert(onErrorResult)
                 .isString()
-                .stringContains('Error')
-                .stringContains('Whoops');
+                .stringIncludes('Error')
+                .stringIncludes('Whoops');
         });
     });
 

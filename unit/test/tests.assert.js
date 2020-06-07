@@ -12,7 +12,7 @@ import {
     isString,
     isTrue,
     isUndefined,
-    stringContains,
+    stringIncludes,
     stringExcludes,
     throws,
 } from '../assert.js';
@@ -35,7 +35,7 @@ const assertions = [
     isString,
     isTrue,
     isUndefined,
-    stringContains,
+    stringIncludes,
     stringExcludes,
     throws,
 ];
@@ -405,22 +405,22 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#stringContains', () => {
+    describe('#stringIncludes', () => {
         describe('given a non-string type', () => {
             it('should return a falsy `isOk` property', () => {
-                assert(stringContains().isOk).isFalse();
+                assert(stringIncludes().isOk).isFalse();
             });
         });
 
         describe('given a string that does not contain the expected string', () => {
             it('should return a falsy `isOk` property', () => {
-                assert(stringContains('abcde', '12345').isOk).isFalse();
+                assert(stringIncludes('abcde', '12345').isOk).isFalse();
             });
         });
 
         describe('given a string that contains the expected string', () => {
             it('should return a falsy `isOk` property', () => {
-                assert(stringContains('moose in a bag of holding', 'bag of holding').isOk).isTrue();
+                assert(stringIncludes('moose in a bag of holding', 'bag of holding').isOk).isTrue();
             });
         });
     });

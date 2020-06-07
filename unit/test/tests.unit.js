@@ -63,7 +63,7 @@ export default ({ assert, describe, it }) => {
 
         it('should add the test key to the `msg` in `results`', () => {
             const { results } = getSummary();
-            assert(results.pop().msg).stringContains('/fake/suite');
+            assert(results.pop().msg).stringIncludes('/fake/suite');
         });
     });
 
@@ -224,16 +224,16 @@ export default ({ assert, describe, it }) => {
                 describe('the first `msg` in the summary `results`', () => {
                     it('should contain the first description and expectation', () => {
                         assert(results[0].msg)
-                            .stringContains('description one')
-                            .stringContains('it one');
+                            .stringIncludes('description one')
+                            .stringIncludes('it one');
                     });
                 });
 
                 describe('the second `msg` in the summary `results`', () => {
                     it('should contain the first description and expectation', () => {
                         assert(results[1].msg)
-                            .stringContains('description two')
-                            .stringContains('it two');
+                            .stringIncludes('description two')
+                            .stringIncludes('it two');
                     });
                 });
             });
@@ -255,8 +255,8 @@ export default ({ assert, describe, it }) => {
 
                 it('should add both descriptions to the summary `results`', () => {
                     assert(results.pop().msg)
-                        .stringContains('description one')
-                        .stringContains('description two');
+                        .stringIncludes('description one')
+                        .stringIncludes('description two');
                 });
             });
 
@@ -275,20 +275,20 @@ export default ({ assert, describe, it }) => {
                 describe('both summary `results`', () => {
                     it('should contain the description', () => {
                         results.forEach(({ msg }) => {
-                            assert(msg).stringContains('description one');
+                            assert(msg).stringIncludes('description one');
                         });
                     });
                 });
 
                 describe('the first result `msg`', () => {
                     it('should contain the first expectation', () => {
-                        assert(results[0].msg).stringContains('it one');
+                        assert(results[0].msg).stringIncludes('it one');
                     });
                 });
 
                 describe('the second result `msg`', () => {
                     it('should contain the second expectation', () => {
-                        assert(results[1].msg).stringContains('it two');
+                        assert(results[1].msg).stringIncludes('it two');
                     });
                 });
             });
@@ -311,8 +311,8 @@ export default ({ assert, describe, it }) => {
                     it('should contain the description and expectation', () => {
                         results.forEach(({ msg }) => {
                             assert(msg)
-                                .stringContains('description one')
-                                .stringContains('it one');
+                                .stringIncludes('description one')
+                                .stringIncludes('it one');
                         });
                     });
                 });
@@ -471,7 +471,7 @@ export default ({ assert, describe, it }) => {
             });
 
             it('the last item in `results` should include the string `Pass`', () => {
-                assert(results.pop().msg).stringContains('Pass');
+                assert(results.pop().msg).stringIncludes('Pass');
             });
         });
 
@@ -493,7 +493,7 @@ export default ({ assert, describe, it }) => {
             });
 
             it('the last item in `results` should include the string `Failure`', () => {
-                assert(results.pop().msg).stringContains('Failure');
+                assert(results.pop().msg).stringIncludes('Failure');
             });
         });
     });
@@ -513,7 +513,7 @@ export default ({ assert, describe, it }) => {
             const { results } = getSummary();
 
             it('should add the description to the `msg` in `results`', () => {
-                assert(results.pop().msg).stringContains('what snow is like');
+                assert(results.pop().msg).stringIncludes('what snow is like');
             });
         });
 
@@ -575,7 +575,7 @@ export default ({ assert, describe, it }) => {
         const { results } = getSummary();
 
         it('should add the expectation to the `msg` in `results`', () => {
-            assert(results.pop().msg).stringContains('should be wet like');
+            assert(results.pop().msg).stringIncludes('should be wet like');
         });
     });
 };

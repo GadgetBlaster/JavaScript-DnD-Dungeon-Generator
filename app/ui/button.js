@@ -1,22 +1,59 @@
 
 import { element } from '../utility/html.js';
 
+/** @type {string} infoLabel */
 export const infoLabel = '?';
 
+/**
+ * Button size
+ *
+ * @type {Object<string, string>} buttonSize
+ */
 export const buttonSize = {
-    small: 'small',
+    auto: 'auto',
     large: 'large',
+    small: 'small',
 };
 
-let { small } = buttonSize;
+/**
+ * Valid sizes
+ *
+ * @type {Set<string>}
+ */
+const validSizes = new Set(Object.values(buttonSize));
 
+/**
+ * Button options
+ *
+ * @typedef {Object} ButtonOptions
+ *      @property {boolean} active
+ *      @property {string} size
+ *      @property {string} target
+ *      @property {string} value
+ *      @property {string} type
+ */
+
+/**
+ * Button
+ *
+ * @param {string} label
+ * @param {string} action
+ * @param {ButtonOptions} options
+ *
+ * @returns {string}
+ */
 export const button = (label, action, options = {}) => {
     let {
-        size = small,
         active,
+        size = buttonSize.small,
         target,
+        type = 'button',
         value,
     } = options;
+
+    if (!validSizes.has(size)) {
+        throw new Error(`Invalid button size: ${size}`);
+    }
 
     let attrs = {
         action,
@@ -32,7 +69,7 @@ export const button = (label, action, options = {}) => {
         return obj;
     }, {});
 
-    attributes['type'] = options.type || 'button';
+    attributes['type'] = type;
 
     return element('button', label, attributes);
 };

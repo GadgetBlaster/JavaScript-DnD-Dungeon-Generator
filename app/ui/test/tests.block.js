@@ -41,7 +41,7 @@ export default ({ assert, describe, it }) => {
                     let contentResult = func('Gandalf');
 
                     it('should contain the content string', () => {
-                        assert(contentResult).stringContains('Gandalf');
+                        assert(contentResult).stringIncludes('Gandalf');
                     });
                 });
 
@@ -49,7 +49,7 @@ export default ({ assert, describe, it }) => {
                     let contentResult = func('Merlin', { 'data-action': 'fireball' });
 
                     it('should contain the content string', () => {
-                        assert(contentResult).stringContains('data-action="fireball"');
+                        assert(contentResult).stringIncludes('data-action="fireball"');
                     });
                 });
             });
