@@ -2,7 +2,7 @@
 /**
  * HTML escapes
  *
- * @type {Object.<string, string>}
+ * @type {Object<string, string>}
  */
 const htmlEscapes = {
     '"': '&quot;',

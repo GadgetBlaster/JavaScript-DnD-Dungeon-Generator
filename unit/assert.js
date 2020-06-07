@@ -8,18 +8,7 @@
  * @property {boolean} isOk
  */
 
-/**
- * Assertion
- *
- * @typedef {Function} Assertion
- *
- * @param {*} actual
- * @param {*} expected
- *
- * @returns {Result}
- */
-
-/** @type {Assertion} equals */
+/** @type {Function} equals */
 export const equals = (actual, expected) => {
     let isOk = expected === actual;
     let msg  = `expected [ ${actual} ] to equal [ ${expected} ]`;
@@ -27,7 +16,7 @@ export const equals = (actual, expected) => {
     return { msg, isOk };
 };
 
-/** @type {Assertion} equalsArray */
+/** @type {Function} equalsArray */
 export const equalsArray = (actual, expected) => {
     let checkType = isArray(actual);
 
@@ -48,7 +37,7 @@ export const equalsArray = (actual, expected) => {
     return { msg, isOk };
 };
 
-/** @type {Assertion} isArray */
+/** @type {Function} isArray */
 export const isArray = (value) => {
     let isOk = Array.isArray(value);
     let msg  = `expected [ ${value} ] to be an array`;
@@ -56,7 +45,7 @@ export const isArray = (value) => {
     return { msg, isOk };
 };
 
-/** @type {Assertion} isBoolean */
+/** @type {Function} isBoolean */
 export const isBoolean = (value) => {
     let isOk = typeof value === 'boolean';
     let msg  = `expected [ ${value} ] to be a boolean`;
@@ -64,7 +53,7 @@ export const isBoolean = (value) => {
     return { msg, isOk };
 };
 
-/** @type {Assertion} isFalse */
+/** @type {Function} isFalse */
 export const isFalse = (value) => {
     let isOk = value === false;
     let msg  = `expected [ ${value} ] to be false`;
@@ -72,7 +61,7 @@ export const isFalse = (value) => {
     return { msg, isOk };
 };
 
-/** @type {Assertion} isFunction */
+/** @type {Function} isFunction */
 export const isFunction = (value) => {
     let isOk = typeof value === 'function';
     let msg  = `expected [ ${value} ] to be a function`;
@@ -80,7 +69,7 @@ export const isFunction = (value) => {
     return { msg, isOk };
 };
 
-/** @type {Assertion} isNull */
+/** @type {Function} isNull */
 export const isNull = (value) => {
     let isOk = value === null;
     let msg  = `expected [ ${value} ] to be a null`;
@@ -88,7 +77,7 @@ export const isNull = (value) => {
     return { msg, isOk };
 };
 
-/** @type {Assertion} isNumber */
+/** @type {Function} isNumber */
 export const isNumber = (value) => {
     let isOk = typeof value === 'number' && !isNaN(value);
     let msg  = `expected [ ${value} ] to be a number`;
@@ -96,7 +85,7 @@ export const isNumber = (value) => {
     return { msg, isOk };
 };
 
-/** @type {Assertion} isObject */
+/** @type {Function} isObject */
 export const isObject = (value) => {
     let isOk = !!value && typeof value === 'object' && !Array.isArray(value);
     let msg  = `expected [ ${value} ] to be an object`;
@@ -104,7 +93,7 @@ export const isObject = (value) => {
     return { msg, isOk };
 };
 
-/** @type {Assertion} isString */
+/** @type {Function} isString */
 export const isString = (value) => {
     let isOk = typeof value === 'string';
     let msg  = `expected [ ${value} ] to be a string`;
@@ -112,7 +101,7 @@ export const isString = (value) => {
     return { msg, isOk };
 };
 
-/** @type {Assertion} isTrue */
+/** @type {Function} isTrue */
 export const isTrue = (value) => {
     let isOk = value === true;
     let msg  = `expected [ ${value} ] to be true`;
@@ -120,7 +109,7 @@ export const isTrue = (value) => {
     return { msg, isOk };
 };
 
-/** @type {Assertion} isUndefined */
+/** @type {Function} isUndefined */
 export const isUndefined = (value) => {
     let isOk = value === undefined;
     let msg  = `expected [ ${value} ] to be undefined`;
@@ -128,7 +117,7 @@ export const isUndefined = (value) => {
     return { msg, isOk };
 };
 
-/** @type {Assertion} stringContains */
+/** @type {Function} stringContains */
 export const stringContains = (actual, expected) => {
     let checkType = isString(actual);
 
@@ -142,7 +131,7 @@ export const stringContains = (actual, expected) => {
     return { msg, isOk };
 };
 
-/** @type {Assertion} stringExcludes */
+/** @type {Function} stringExcludes */
 export const stringExcludes = (actual, expected) => {
     let checkType = isString(actual);
 
@@ -155,7 +144,7 @@ export const stringExcludes = (actual, expected) => {
     return { msg, isOk: !isOk };
 };
 
-/** @type {Assertion} throws */
+/** @type {Function} throws */
 export const throws = (func) => {
     let checkFunc = isFunction(func);
 

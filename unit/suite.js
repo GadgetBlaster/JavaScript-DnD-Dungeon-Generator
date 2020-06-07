@@ -5,6 +5,8 @@ import run from './test/tests.run.js';
 import unit from './test/tests.unit.js';
 
 import action from '../app/ui/test/tests.action.js';
+import block from '../app/ui/test/tests.block.js';
+
 import html from '../app/utility/test/tests.html.js';
 import roll from '../app/utility/test/tests.roll.js';
 import tests from '../app/utility/test/tests.tests.js';
@@ -16,7 +18,9 @@ export default {
     '/unit/test/tests.run.js'   : run,
     '/unit/test/tests.unit.js'  : unit,
 
-    '/app/ui/test/tests.action.js'    : action,
+    '/app/ui/test/tests.action.js': action,
+    '/app/ui/test/tests.block.js' : block,
+
     '/app/utility/test/tests.html.js' : html,
     '/app/utility/test/tests.roll.js' : roll,
     '/app/utility/test/tests.tests.js': tests,

@@ -16,7 +16,7 @@ import { resultMsg } from './output.js';
 /**
  * Expectation
  *
- * @typedef {(value:*) => Assertions} Expectation
+ * @typedef {(actual:*, expected:*) => Assertions} Expectation
  */
 
 /**
@@ -73,7 +73,7 @@ import { resultMsg } from './output.js';
 /**
  * Scope
  *
- * @type {Object.<string, string>}
+ * @type {Object<string, string>}
  */
 const scope = {
     assert  : 'assert',

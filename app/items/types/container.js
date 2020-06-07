@@ -20,7 +20,7 @@ const {
 /**
  * Number of small items that fit into a container or furnishing
  *
- * @type {Object.<Size, number>}
+ * @type {Object<Size, number>}
  */
 export const capacity = {
     [tiny]  : 0.5,

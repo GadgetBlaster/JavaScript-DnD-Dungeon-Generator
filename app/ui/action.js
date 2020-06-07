@@ -2,7 +2,7 @@
 /**
  * Actions
  *
- * @type {Object.<string, string>}
+ * @type {Object<string, string>}
  */
 export const actions = {
     accordion: 'accordion',
@@ -16,7 +16,7 @@ export const actions = {
  * Attach actions
  *
  * @param {Element} container
- * @param {Object.<string, function>} triggers
+ * @param {Object<string, function>} triggers
  */
 export const attachActions = (container, triggers) => {
     container.addEventListener('click', (e) => {
