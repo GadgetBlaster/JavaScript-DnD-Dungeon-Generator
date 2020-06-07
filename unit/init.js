@@ -59,16 +59,39 @@ const delay = (ms = 0) => new Promise((resolve) => setTimeout(resolve, ms));
 const drawDot = (result) => dotsContainer.appendChild(dot(result));
 
 /**
- * On complete
+ * Animate dots
  *
- * @param {Summary}
+ * @param {Result[]} results
+ *
+ * @returns {Promise}
  */
-const onComplete = async ({ assertions, errors, failures, results }) => {
-    for (let i = 0; i < results.length; i++) {
+const animateDots = (results) => new Promise(async (resolve) => {
+    let chunkSize = Math.ceil(results.length / 100);
+    let current   = 0;
+
+    for (let i = 0; i < Math.ceil(results.length / chunkSize); i++) {
         await delay();
-        drawDot(results[i]);
+
+        for (let x = 0; x < chunkSize; x++) {
+            if (!results[current]) {
+                break;
+            }
+
+            drawDot(results[current]);
+            current++;
+        }
     }
 
+    resolve();
+});
+
+/**
+ * On complete
+ *
+ * @param {import('./unit.js').Summary}
+ */
+const onComplete = async ({ assertions, errors, failures, results }) => {
+    await animateDots(results);
     render(statusContainer, 'Complete');
     render(summaryContainer, summary(assertions, failures, errors.length));
     render(logContainer, log(results, { verbose }));
