@@ -52,16 +52,16 @@ export const isEven = (num)  => num % 2 === 0;
  *
  * @returns {*[][]}
  */
-export const chunk = (array, size) => array.reduce((resultArray, item, index) => {
+export const chunk = (array, size) => array.reduce((newArray, item, index) => {
     let chunkIndex = Math.floor(index / size);
 
-    if(!resultArray[chunkIndex]) {
-        resultArray[chunkIndex] = [];
+    if(!newArray[chunkIndex]) {
+        newArray[chunkIndex] = [];
     }
 
-    resultArray[chunkIndex].push(item);
+    newArray[chunkIndex].push(item);
 
-    return resultArray;
+    return newArray;
 }, []);
 
 /**
