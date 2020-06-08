@@ -7,11 +7,31 @@ import { select, input, slider, fieldLabel } from './field.js';
 import { toDash } from '../utility/tools.js';
 import { typeSelect, typeNumber, typeRange } from '../knobs.js';
 
+/**
+ * Settings
+ *
+ * @typedef {Object} Settings
+ *     @param {string} desc
+ *     @param {string} label
+ *     @param {string} name
+ *     @param {string} type
+ *     @param {*} value
+ *     @param {*} values
+ */
+
+/** @type {string} submitButton */
 const submitButton = button('Generate', actions.generate, {
     size: buttonSize.large,
     type: 'submit',
 });
 
+/**
+ * Get knob
+ *
+ * @param {Settings}
+ *
+ * @returns {string}
+ */
 const getKnob = (settings) => {
     let {
         name,
@@ -33,6 +53,14 @@ const getKnob = (settings) => {
     }
 };
 
+/**
+ * Render fields
+ *
+ * @param {Settings[]}
+ *
+ * @returns {string}
+ */
+// TODO Object.values
 const renderFields = (fields) => Object.keys(fields).map((key) => {
     let settings = fields[key];
 
@@ -47,6 +75,14 @@ const renderFields = (fields) => Object.keys(fields).map((key) => {
     return div(knobLabel + descText + knob);
 }).join('');
 
+/**
+ * Render knobs
+ *
+ * @param {Object} config // TODO describe
+ * @param {string} page // TODO ?
+ *
+ * @returns {string}
+ */
 export const renderKnobs = (config, page) => submitButton + config.map((knobConfig) => {
     let {
         label,
@@ -69,6 +105,13 @@ export const renderKnobs = (config, page) => submitButton + config.map((knobConf
     return fieldset(handle + section(renderFields(fields)), attrs);
 }).join('');
 
+/**
+ * Get form data
+ *
+ * @param {Element} knobContainer
+ *
+ * @returns {Object} // TODO6
+ */
 export const getFormData = (knobContainer) => {
     let fields = [ ...knobContainer.querySelectorAll('[name]') ];
 
