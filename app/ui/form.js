@@ -20,7 +20,7 @@ import { typeSelect, typeNumber, typeRange } from '../knobs.js';
  */
 
 /** @type {string} submitButton */
-const submitButton = button('Generate', actions.generate, {
+export const submitButton = button('Generate', actions.generate, {
     size: buttonSize.large,
     type: 'submit',
 });
@@ -49,7 +49,7 @@ const getKnob = (settings) => {
             // TODO min/max config
             return slider(name, { min: values[0], max: values[1], value });
         default:
-            throw 'Invalid knob type';
+            throw new Error('Invalid knob type');
     }
 };
 
@@ -78,12 +78,12 @@ const renderFields = (fields) => Object.keys(fields).map((key) => {
 /**
  * Render knobs
  *
- * @param {Object} config // TODO describe
+ * @param {Object[]} config // TODO describe
  * @param {string} page // TODO ?
  *
  * @returns {string}
  */
-export const renderKnobs = (config, page) => submitButton + config.map((knobConfig) => {
+export const renderKnobs = (config, page) => config.map((knobConfig) => {
     let {
         label,
         labels,
@@ -110,7 +110,7 @@ export const renderKnobs = (config, page) => submitButton + config.map((knobConf
  *
  * @param {Element} knobContainer
  *
- * @returns {Object} // TODO6
+ * @returns {Object} // TODO typedef
  */
 export const getFormData = (knobContainer) => {
     let fields = [ ...knobContainer.querySelectorAll('[name]') ];

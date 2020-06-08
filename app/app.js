@@ -11,7 +11,7 @@ import {
 
 import { article, section } from './ui/block.js';
 import { getActive, nav, pages, setActive } from './ui/nav.js';
-import { getFormData, renderKnobs } from './ui/form.js';
+import { getFormData, renderKnobs, submitButton } from './ui/form.js';
 import { list } from './ui/list.js';
 import { subTitle } from './ui/typography.js';
 
@@ -46,7 +46,7 @@ const updateKnobs = (target) => {
     let page = target || getActive(navContainer);
     let config = getKnobConfig(page);
 
-    knobContainer.innerHTML = renderKnobs(config, page);
+    knobContainer.innerHTML = submitButton + renderKnobs(config, page);
 
     let firstAccordionSelector = `[data-id="fieldset-${toDash(config[0].label)}"]`;
     docBody.querySelector(firstAccordionSelector).dataset.collapsed = false;
