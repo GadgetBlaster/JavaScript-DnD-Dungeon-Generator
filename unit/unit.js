@@ -16,7 +16,7 @@ import { resultMsg } from './output.js';
 /**
  * Expectation
  *
- * @typedef {(actual:*, expected:*) => Assertions} Expectation
+ * @typedef {(expected:*) => Assertions} Expectation
  */
 
 /**

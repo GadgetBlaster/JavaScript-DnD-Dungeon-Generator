@@ -1,22 +1,80 @@
 
+import { element, createAttrs } from '../utility/html.js';
 import { toWords } from '../utility/tools.js';
 
-export const fieldLabel = (label) => `<label>${label}</label>`;
+/**
+ * Throw
+ *
+ * @param {string} message
+ *
+ * @throws
+ */
+const _throw = (message) => { throw new Error(message); };
 
-export const input = (name, type, value) => {
-    return `<input name="${name}" type="${type}" value="${value}" />`;
+/**
+ * Field label
+ *
+ * @param {string} label
+ *
+ * @returns {string}
+ */
+export const fieldLabel = (label) => element('label', label);
+
+/**
+ * Input
+ *
+ * @param {string} name
+ * @param {Object<string, string>} [attrs]
+ *
+ * @throws
+ *
+ * @returns {string}
+ */
+export const input = (name, attrs = {}) => {
+    attrs.name && _throw('Input attrs cannot contain a name');
+
+    return `<input${createAttrs({ name, type: 'text', ...attrs })} />`;
 };
 
-const option = (value, label) => `<option value="${value}">${label}</option>`;
+/**
+ * Option
+ *
+ * @param {string} label
+ * @param {string} type
+ *
+ * @returns {string}
+ */
+const option = (value, label) => element('option', label, { value });
 
+/**
+ * Input
+ *
+ * @param {string} name
+ * @param {string[]} values
+ *
+ * @returns {string}
+ */
 export const select = (name, values) => {
-    let options = values.map((value) => {
-        return option(value, toWords(value));
-    }).join('');
+    let options = values.map((value) => option(value, toWords(value))).join('');
 
-    return `<select name="${name}">${options}</select>`;
+    return element('select', options, { name });
 };
 
-export const slider = (name, [ min = 1, max = 100 ] = [], value) => {
-    return `<input type="range" name="${name}" min="${min}" max="${max}" value="${value}" />`;
+/**
+ * Slider
+ *
+ * @param {string} name
+ * @param {Object<string, string>} [attrs]
+ *
+ * @throws
+ *
+ * @returns {string}
+ */
+export const slider = (name, attrs = {}) => {
+    attrs.type && _throw('Slider attrs cannot contain a type');
+    attrs.min && typeof attrs.min !== 'number' && _throw('Slider min must be a number');
+    attrs.max && typeof attrs.max !== 'number' && _throw('Slider max must be a number');
+    attrs.min >= attrs.max && _throw('Slider min must be less than max');
+
+    return input(name, { type: 'range', min: 1, max: 100, ...attrs });
 };

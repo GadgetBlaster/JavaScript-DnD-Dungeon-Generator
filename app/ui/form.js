@@ -24,9 +24,10 @@ const getKnob = (settings) => {
         case typeSelect:
             return select(name, values);
         case typeNumber:
-            return input(name, 'number', value);
+            return input(name, { type: 'number' , value });
         case typeRange:
-            return slider(name, values, value);
+            // TODO min/max config
+            return slider(name, { min: values[0], max: values[1], value });
         default:
             throw 'Invalid knob type';
     }

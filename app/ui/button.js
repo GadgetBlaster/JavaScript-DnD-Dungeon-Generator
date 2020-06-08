@@ -40,6 +40,8 @@ const validSizes = new Set(Object.values(buttonSize));
  * @param {string} action
  * @param {ButtonOptions} options
  *
+ * @throws
+ *
  * @returns {string}
  */
 export const button = (label, action, options = {}) => {
@@ -55,7 +57,7 @@ export const button = (label, action, options = {}) => {
         throw new Error(`Invalid button size: ${size}`);
     }
 
-    let attrs = {
+    let dataAttrs = {
         action,
         size,
         ...(active && { active }),
@@ -64,9 +66,9 @@ export const button = (label, action, options = {}) => {
         ...(label === infoLabel && { 'info': 'true' }),
     };
 
-    let attributes = Object.keys(attrs).reduce((obj, key) => {
-        obj[`data-${key}`] = attrs[key];
-        return obj;
+    let attributes = Object.keys(dataAttrs).reduce((attrs, key) => {
+        attrs[`data-${key}`] = dataAttrs[key];
+        return attrs;
     }, {});
 
     attributes['type'] = type;

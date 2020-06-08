@@ -2,7 +2,14 @@
 const minPercent = 1;
 const maxPercent = 100;
 
-const _throw = (m) => { throw new Error(m); };
+/**
+ * Throw
+ *
+ * @param {string} message
+ *
+ * @throws
+ */
+const _throw = (message) => { throw new Error(message); };
 
 /**
  * Roll

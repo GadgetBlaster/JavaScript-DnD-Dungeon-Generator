@@ -6,7 +6,7 @@ import { button, infoLabel } from '../button.js';
  */
 export default ({ assert, describe, it }) => {
     describe('#button', () => {
-        describe('given a label and an action', () => {
+        describe('given a `label` and an `action`', () => {
             it('should return an html button string', () => {
                 let result = button('click me', 'magic-missile');
                 assert(result).equals('<button data-action="magic-missile" data-size="small" type="button">click me</button>');
@@ -37,7 +37,7 @@ export default ({ assert, describe, it }) => {
             });
         });
 
-        describe('given an invalid button size', () => {
+        describe('given an invalid `size` option', () => {
             it('should throw', () => {
                 assert(() => button('fred', 'back-flip', { size: 'invalid-size' })).throws();
             });

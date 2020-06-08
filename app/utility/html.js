@@ -2,13 +2,13 @@
 /**
  * Create attrs
  *
- * @param {Object<string, string>} [obj]
+ * @param {Object<string, string>} [attrs]
  *
  * @returns {string}
  */
-export const createAttrs = (obj = {}) => {
-    return Object.keys(obj).map((key) => {
-        return ` ${key}="${obj[key]}"`;
+export const createAttrs = (attrs = {}) => {
+    return Object.keys(attrs).map((key) => {
+        return ` ${key}="${attrs[key]}"`;
     }).join('');
 };
 
