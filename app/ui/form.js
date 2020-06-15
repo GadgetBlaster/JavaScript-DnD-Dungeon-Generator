@@ -11,12 +11,13 @@ import { typeSelect, typeNumber, typeRange } from '../knobs.js';
  * Settings
  *
  * @typedef {Object} Settings
- *     @param {string} desc
- *     @param {string} label
- *     @param {string} name
- *     @param {string} type
- *     @param {*} value
- *     @param {*} values
+ *
+ * @property {string} desc
+ * @property {string} label
+ * @property {string} name
+ * @property {string} type
+ * @property {*} value
+ * @property {*} values
  */
 
 /** @type {string} submitButton */
@@ -28,11 +29,13 @@ export const submitButton = button('Generate', actions.generate, {
 /**
  * Get knob
  *
- * @param {Settings}
+ * @private
+ *
+ * @param {Settings} settings
  *
  * @returns {string}
  */
-const getKnob = (settings) => {
+export const _getKnob = (settings) => {
     let {
         name,
         type,
@@ -56,17 +59,19 @@ const getKnob = (settings) => {
 /**
  * Render fields
  *
+ * @private
+ *
  * @param {Settings[]}
  *
  * @returns {string}
  */
 // TODO Object.values
-const renderFields = (fields) => Object.keys(fields).map((key) => {
+export const _renderFields = (fields) => Object.keys(fields).map((key) => {
     let settings = fields[key];
 
     let { desc, label, name } = settings;
 
-    let knob       = getKnob(settings);
+    let knob       = _getKnob(settings);
     let descId     = desc && `info-${name}`;
     let descButton = desc ? button(infoLabel, actions.showHide, { target: descId, size: buttonSize.auto }) : '';
     let descText   = desc ? paragraph(small(desc), { hidden: true, 'data-id': descId }) : '';
@@ -102,7 +107,7 @@ export const renderKnobs = (config, page) => config.map((knobConfig) => {
         'data-id': fieldsetId,
     };
 
-    return fieldset(handle + section(renderFields(fields)), attrs);
+    return fieldset(handle + section(_renderFields(fields)), attrs);
 }).join('');
 
 /**

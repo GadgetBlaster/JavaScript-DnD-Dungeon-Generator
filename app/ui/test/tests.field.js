@@ -16,7 +16,7 @@ export default ({ assert, describe, it }) => {
                 assert(fieldLabel('Widget')).isString();
             });
 
-            it('should return an html label element string with the `label`', () => {
+            it('should return an html label element string with the `label` content', () => {
                 assert(fieldLabel('Widget')).equals('<label>Widget</label>');
             });
         });

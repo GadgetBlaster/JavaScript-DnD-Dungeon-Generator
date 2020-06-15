@@ -5,6 +5,8 @@ const maxPercent = 100;
 /**
  * Throw
  *
+ * @private
+ *
  * @param {string} message
  *
  * @throws

@@ -8,6 +8,28 @@
  * @property {boolean} isOk
  */
 
+ /**
+  * Empty elements
+  *
+  * @type {string[]}
+  */
+const emptyElements = [
+    'area',
+    'base',
+    'br',
+    'col',
+    'embed',
+    'hr',
+    'img',
+    'input',
+    'link',
+    'meta',
+    'param',
+    'source',
+    'track',
+    'wbr',
+];
+
 /** @type {Function} equals */
 export const equals = (actual, expected) => {
     let isOk = expected === actual;
@@ -77,9 +99,10 @@ export const isHtmlTag = (string, tag) => {
         return checkType;
     }
 
-    let regExp = new RegExp('^<'+tag+'(?:>| [^>]+>)', 'g');
-    let isOk   = Boolean(string.match(regExp) && string.endsWith(`</${tag}>`));
-    let msg    = `expected [ ${string} ] to be an html tag string [ ${tag} ]`;
+    let regExp  = new RegExp('^<'+tag+'(?:>| [^>]+>)', 'g');
+    let isEmpty = emptyElements.includes(tag);
+    let isOk    = regExp.test(string) && string.endsWith(isEmpty ? ' />' : `</${tag}>`);
+    let msg     = `expected [ ${string} ] to be an html tag string [ ${tag} ]`;
 
     return { msg, isOk };
 };

@@ -5,6 +5,8 @@ import { toWords } from '../utility/tools.js';
 /**
  * Throw
  *
+ * @private
+ *
  * @param {string} message
  *
  * @throws
@@ -39,12 +41,14 @@ export const input = (name, attrs = {}) => {
 /**
  * Option
  *
+ * @private
+ *
  * @param {string} label
  * @param {string} type
  *
  * @returns {string}
  */
-const option = (value, label) => element('option', label, { value });
+const _option = (value, label) => element('option', label, { value });
 
 /**
  * Input
@@ -55,7 +59,7 @@ const option = (value, label) => element('option', label, { value });
  * @returns {string}
  */
 export const select = (name, values) => {
-    let options = values.map((value) => option(value, toWords(value))).join('');
+    let options = values.map((value) => _option(value, toWords(value))).join('');
 
     return element('select', options, { name });
 };

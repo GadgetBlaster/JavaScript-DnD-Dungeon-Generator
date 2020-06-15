@@ -310,6 +310,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given a string that does not start with an html tag', () => {
             it('should return false', () => {
+                console.log('here');
                 assert(isHtmlTag('The crafty <span>Pixie</span>', 'span').isOk).isFalse();
             });
         });
@@ -329,6 +330,13 @@ export default ({ assert, describe, it }) => {
                 assert(isHtmlTag('<p>Pixies<p>', 'p').isOk).isFalse();
                 assert(isHtmlTag('<p>Pixies</>', 'p').isOk).isFalse();
                 assert(isHtmlTag('<p>Pixies</p', 'p').isOk).isFalse();
+                assert(isHtmlTag('<input>', 'input').isOk).isFalse();
+            });
+        });
+
+        describe('given a self closing html tag', () => {
+            it('should return true', () => {
+                assert(isHtmlTag('<input name="ted" />', 'input').isOk).isTrue();
             });
         });
 
