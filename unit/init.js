@@ -59,6 +59,13 @@ const delay = (ms = 0) => new Promise((resolve) => setTimeout(resolve, ms));
 const drawDot = (result) => dotsContainer.appendChild(dot(result));
 
 /**
+ * Animation chunk division
+ *
+ * @type {number}
+ */
+const animationChunkDivision = 200;
+
+/**
  * Animate dots
  *
  * @param {Result[]} results
@@ -66,7 +73,7 @@ const drawDot = (result) => dotsContainer.appendChild(dot(result));
  * @returns {Promise}
  */
 const animateDots = (results) => new Promise(async (resolve) => {
-    let chunkSize = Math.ceil(results.length / 100);
+    let chunkSize = Math.ceil(results.length / animationChunkDivision);
     let current   = 0;
 
     for (let i = 0; i < Math.ceil(results.length / chunkSize); i++) {
