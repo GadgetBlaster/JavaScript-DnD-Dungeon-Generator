@@ -34,6 +34,7 @@ export const fieldLabel = (label) => element('label', label);
  */
 export const input = (name, attrs = {}) => {
     attrs.name && _throw('Input attrs cannot contain a name');
+    Object.keys(attrs).forEach(key => attrs[key] === undefined && delete attrs[key]);
 
     return `<input${createAttrs({ name, type: 'text', ...attrs })} />`;
 };

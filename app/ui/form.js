@@ -8,16 +8,18 @@ import { toDash } from '../utility/tools.js';
 import { typeSelect, typeNumber, typeRange } from '../knobs.js';
 
 /**
- * Settings
+ * Throw
  *
- * @typedef {Object} Settings
+ * @private
  *
- * @property {string} desc
- * @property {string} label
- * @property {string} name
- * @property {string} type
- * @property {*} value
- * @property {*} values
+ * @param {string} message
+ *
+ * @throws
+ */
+const _throw = (message) => { throw new Error(message); };
+
+/**
+ * @typedef {import('../knobs.js').Settings} Settings
  */
 
 /** @type {string} submitButton */
@@ -41,6 +43,8 @@ export const _getKnob = (settings) => {
         type,
         value,
         values,
+        min,
+        max,
     } = settings;
 
     switch (type) {
@@ -49,8 +53,7 @@ export const _getKnob = (settings) => {
         case typeNumber:
             return input(name, { type: 'number' , value });
         case typeRange:
-            // TODO min/max config
-            return slider(name, { min: values[0], max: values[1], value });
+            return slider(name, { min, max, value });
         default:
             throw new Error('Invalid knob type');
     }
@@ -65,11 +68,11 @@ export const _getKnob = (settings) => {
  *
  * @returns {string}
  */
-// TODO Object.values
-export const _renderFields = (fields) => Object.keys(fields).map((key) => {
-    let settings = fields[key];
-
+export const _renderFields = (fields) => Object.values(fields).map((settings) => {
     let { desc, label, name } = settings;
+
+    !name  && _throw('Missing required knob setting: name');
+    !label && _throw('Missing required knob setting: label');
 
     let knob       = _getKnob(settings);
     let descId     = desc && `info-${name}`;

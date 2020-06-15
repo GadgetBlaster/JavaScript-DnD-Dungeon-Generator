@@ -51,6 +51,21 @@ export const knobs = {
     roomType          : 'room-type',
 };
 
+/**
+ * Settings
+ *
+ * @typedef {Object} Settings
+ *
+ * @property {string} label
+ * @property {string} name
+ * @property {string} desc
+ * @property {string} type
+ * @property {number} min
+ * @property {number} max
+ * @property {*} value
+ * @property {*[]} values
+ */
+
 const config = [
     {
         label : 'Dungeon Settings',
@@ -59,33 +74,36 @@ const config = [
             complexity: {
                 label : 'Complexity',
                 name  : knobs.dungeonComplexity,
-                type  : typeRange,
-                value : 5,
-                values: [ 2, 11 ],
                 desc  : descComplexity,
+                type  : typeRange,
+                min   : 2,
+                max   : 11,
+                value : 5,
             },
             connections: {
                 label : 'Connections',
                 name  : knobs.dungeonConnections,
-                type  : typeRange,
-                value : 12,
-                values: [ 0, 100 ],
                 desc  : descConnections,
+                type  : typeRange,
+                min   : 0,
+                max   : 100,
+                value : 12,
             },
             maps: {
                 label : 'Maps',
                 name  : knobs.dungeonMaps,
+                desc  : descMaps,
                 type  : typeNumber,
                 value : 2,
-                desc  : descMaps,
             },
             traps: {
                 label : 'Traps',
                 name  : knobs.dungeonTraps,
-                type  : typeRange,
-                value : [ 1 ],
-                values: [ 0, 4 ],
                 desc  : descTraps,
+                type  : typeRange,
+                min   : 0,
+                max   : 4,
+                value : 1,
             },
         },
     },
@@ -95,39 +113,39 @@ const config = [
         fields: {
             count: {
                 label : 'Rooms',
-                pages : new Set([ pages.room ]),
                 name  : knobs.roomCount,
-                type  : typeNumber,
-                value : 1,
                 desc  : 'Number of rooms to generate',
+                type  : typeNumber,
+                pages : new Set([ pages.room ]),
+                value : 1,
             },
             type: {
                 label : 'Type',
                 name  : knobs.roomType,
+                desc  : descEqualDistribution,
                 type  : typeSelect,
                 values: getValues(roomTypes),
-                desc  : descEqualDistribution,
             },
             condition: {
                 label :'Condition',
                 name  : knobs.roomCondition,
+                desc  : conditionProbability.description,
                 type  : typeSelect,
                 values: getValues(conditions),
-                desc  : conditionProbability.description,
             },
             size: {
                 label : 'Size',
                 name  : knobs.roomSize,
+                desc  : descEqualDistribution,
                 type  : typeSelect,
                 values: getValues(sizes),
-                desc  : descEqualDistribution,
             },
             furnishing: {
                 label : 'Furnishing',
                 name  : knobs.roomFurnishing,
+                desc  : descFurnitureQuantity + ' ' + furnitureQuantityProbability.description,
                 type  : typeSelect,
                 values: getValues(furnitureQuantityList),
-                desc  : descFurnitureQuantity + ' ' + furnitureQuantityProbability.description,
             }
         },
     },
@@ -142,30 +160,30 @@ const config = [
             quantity: {
                 label :  'Quantity',
                 name  :   knobs.itemQuantity,
+                desc  :   quantityProbability.description,
                 type  :   typeSelect,
                 values: getValues(quantities),
-                desc  :   quantityProbability.description,
             },
             type: {
                 label :  'Type',
                 name  :   knobs.itemType,
+                desc  :   descEqualDistribution,
                 type  :   typeSelect,
                 values: getValues(itemTypes),
-                desc  :   descEqualDistribution,
             },
             condition: {
                 label :  'Condition',
                 name  :   knobs.itemCondition,
+                desc  :   conditionProbability.description,
                 type  :   typeSelect,
                 values: getValues(conditions),
-                desc  :   conditionProbability.description,
             },
             rarity: {
                 label :  'Rarity',
                 name  :   knobs.itemRarity,
+                desc  :   rarityProbability.description,
                 type  :   typeSelect,
                 values: getValues(rarities),
-                desc  :   rarityProbability.description,
             },
         },
     },

@@ -45,6 +45,12 @@ export default ({ assert, describe, it }) => {
             });
         });
 
+        describe('given an undefined attribute', () => {
+            it('should not add that attribute to the html input element', () => {
+                assert(input('widget', { action: undefined })).stringExcludes('action');
+            });
+        });
+
         describe('given a `name` attribute', () => {
             it('should throw', () => {
                 assert(() => input('widget', { name: 'not-widget' })).throws();
