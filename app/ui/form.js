@@ -19,7 +19,8 @@ import { typeSelect, typeNumber, typeRange } from '../knobs.js';
 const _throw = (message) => { throw new Error(message); };
 
 /**
- * @typedef {import('../knobs.js').Settings} Settings
+ * @typedef {import('../knobs.js').KnobSettings} KnobSettings
+ * @typedef {import('../knobs.js').KnobSet} KnobSet
  */
 
 /** @type {string} submitButton */
@@ -33,7 +34,7 @@ export const submitButton = button('Generate', actions.generate, {
  *
  * @private
  *
- * @param {Settings} settings
+ * @param {KnobSettings} settings
  *
  * @returns {string}
  */
@@ -64,7 +65,7 @@ export const _getKnob = (settings) => {
  *
  * @private
  *
- * @param {Settings[]}
+ * @param {KnobSettings[]}
  *
  * @returns {string}
  */
@@ -86,12 +87,12 @@ export const _renderFields = (fields) => Object.values(fields).map((settings) =>
 /**
  * Render knobs
  *
- * @param {Object[]} config // TODO describe
- * @param {string} page // TODO ?
+ * @param {KnobSet[]} knobs
+ * @param {string} page
  *
  * @returns {string}
  */
-export const renderKnobs = (config, page) => config.map((knobConfig) => {
+export const renderKnobs = (knobs, page) => knobs.map((knobConfig) => {
     let {
         label,
         labels,

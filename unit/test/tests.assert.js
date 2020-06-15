@@ -310,7 +310,6 @@ export default ({ assert, describe, it }) => {
 
         describe('given a string that does not start with an html tag', () => {
             it('should return false', () => {
-                console.log('here');
                 assert(isHtmlTag('The crafty <span>Pixie</span>', 'span').isOk).isFalse();
             });
         });

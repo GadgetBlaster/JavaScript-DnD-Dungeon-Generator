@@ -52,9 +52,9 @@ export const knobs = {
 };
 
 /**
- * Settings
+ * Knob settings
  *
- * @typedef {Object} Settings
+ * @typedef {Object} KnobSettings
  *
  * @property {string} label
  * @property {string} name
@@ -66,6 +66,22 @@ export const knobs = {
  * @property {*[]} values
  */
 
+/**
+ * Knob set
+ *
+ * @typedef {Object} KnobSet
+ *
+ * @property {string} label
+ * @property {Object<string, string>} [labels]
+ * @property {Set<string>} [pages]
+ * @property {Object<string, KnobSettings>} fields
+ */
+
+ /**
+  * Config
+  *
+  * @type {KnobSet[]}
+  */
 const config = [
     {
         label : 'Dungeon Settings',
@@ -158,31 +174,31 @@ const config = [
         pages : new Set([ pages.dungeon, pages.room, pages.items ]),
         fields: {
             quantity: {
-                label :  'Quantity',
-                name  :   knobs.itemQuantity,
-                desc  :   quantityProbability.description,
-                type  :   typeSelect,
+                label : 'Quantity',
+                name  : knobs.itemQuantity,
+                desc  : quantityProbability.description,
+                type  : typeSelect,
                 values: getValues(quantities),
             },
             type: {
-                label :  'Type',
-                name  :   knobs.itemType,
-                desc  :   descEqualDistribution,
-                type  :   typeSelect,
+                label : 'Type',
+                name  : knobs.itemType,
+                desc  : descEqualDistribution,
+                type  : typeSelect,
                 values: getValues(itemTypes),
             },
             condition: {
-                label :  'Condition',
-                name  :   knobs.itemCondition,
-                desc  :   conditionProbability.description,
-                type  :   typeSelect,
+                label : 'Condition',
+                name  : knobs.itemCondition,
+                desc  : conditionProbability.description,
+                type  : typeSelect,
                 values: getValues(conditions),
             },
             rarity: {
-                label :  'Rarity',
-                name  :   knobs.itemRarity,
-                desc  :   rarityProbability.description,
-                type  :   typeSelect,
+                label : 'Rarity',
+                name  : knobs.itemRarity,
+                desc  : rarityProbability.description,
+                type  : typeSelect,
                 values: getValues(rarities),
             },
         },
