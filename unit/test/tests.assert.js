@@ -6,14 +6,15 @@ import {
     isBoolean,
     isFalse,
     isFunction,
+    isHtmlTag,
     isNull,
     isNumber,
     isObject,
     isString,
     isTrue,
     isUndefined,
-    stringIncludes,
     stringExcludes,
+    stringIncludes,
     throws,
 } from '../assert.js';
 
@@ -29,6 +30,7 @@ const assertions = [
     isBoolean,
     isFalse,
     isFunction,
+    isHtmlTag,
     isNull,
     isNumber,
     isObject,
@@ -276,6 +278,64 @@ export default ({ assert, describe, it }) => {
             describe(`given ${key}`, () => {
                 it('should return a falsy `isOk` property', () => {
                     assert(isFunction(value).isOk).isFalse();
+                });
+            });
+        });
+    });
+
+    describe('#isHtmlTag', () => {
+        describe('given a string that is the desired html tag', () => {
+            it('should return true', () => {
+                assert(isHtmlTag('<strong>Wizards!</strong>', 'strong').isOk).isTrue();
+            });
+        });
+
+        describe('given a string that is the desired html tag with attributes', () => {
+            it('should return true', () => {
+                assert(isHtmlTag('<strong data-type="goblin">Goblins</strong>', 'strong').isOk).isTrue();
+            });
+        });
+
+        describe('given a string that is not an html tag', () => {
+            it('should return false', () => {
+                assert(isHtmlTag('Grumpy wizards', 'b').isOk).isFalse();
+            });
+        });
+
+        describe('given a string that is not the desired html tag', () => {
+            it('should return false', () => {
+                assert(isHtmlTag('<div>Goblins</div>', 'b').isOk).isFalse();
+            });
+        });
+
+        describe('given a string that does not start with an html tag', () => {
+            it('should return false', () => {
+                assert(isHtmlTag('The crafty <span>Pixie</span>', 'span').isOk).isFalse();
+            });
+        });
+
+        describe('given a string that does not end with an html tag', () => {
+            it('should return false', () => {
+                assert(isHtmlTag('<span>Pixies</span> can turn invisible', 'span').isOk).isFalse();
+            });
+        });
+
+        describe('given a string that is a malformed html tag', () => {
+            it('should return false', () => {
+                assert(isHtmlTag('p>Pixies</p>', 'p').isOk).isFalse();
+                assert(isHtmlTag('<>Pixies</p>', 'p').isOk).isFalse();
+                assert(isHtmlTag('<pPixies</p>', 'p').isOk).isFalse();
+                assert(isHtmlTag('<p>Pixies/p>', 'p').isOk).isFalse();
+                assert(isHtmlTag('<p>Pixies<p>', 'p').isOk).isFalse();
+                assert(isHtmlTag('<p>Pixies</>', 'p').isOk).isFalse();
+                assert(isHtmlTag('<p>Pixies</p', 'p').isOk).isFalse();
+            });
+        });
+
+        nonStringTypes.forEach(([ key, value ]) => {
+            describe(`given ${key}`, () => {
+                it('should return a falsy `isOk` property', () => {
+                    assert(isString(value).isOk).isFalse();
                 });
             });
         });

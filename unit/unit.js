@@ -30,14 +30,15 @@ import { resultMsg } from './output.js';
  * @property {Expectation} isBoolean
  * @property {Expectation} isFalse
  * @property {Expectation} isFunction
+ * @property {Expectation} isHtmlTag
  * @property {Expectation} isNull
  * @property {Expectation} isNumber
  * @property {Expectation} isObject
  * @property {Expectation} isString
  * @property {Expectation} isTrue
  * @property {Expectation} isUndefined
- * @property {Expectation} stringIncludes
  * @property {Expectation} stringExcludes
+ * @property {Expectation} stringIncludes
  * @property {Expectation} throws
  */
 
@@ -71,6 +72,12 @@ import { resultMsg } from './output.js';
  */
 
 /**
+ * Result
+ *
+ * @typedef {import('./assert.js').Result}
+ */
+
+/**
  * Scope
  *
  * @type {Object<string, string>}
@@ -90,7 +97,7 @@ export default () => {
     /**
      * Results
      *
-     * @type {string[]}
+     * @type {Result[]}
      */
     let results = [];
 

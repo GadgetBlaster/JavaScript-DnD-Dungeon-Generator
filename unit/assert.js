@@ -69,6 +69,21 @@ export const isFunction = (value) => {
     return { msg, isOk };
 };
 
+/** @type {Function} isHtmlTag */
+export const isHtmlTag = (string, tag) => {
+    let checkType = isString(string);
+
+    if (!checkType.isOk) {
+        return checkType;
+    }
+
+    let regExp = new RegExp('^<'+tag+'(?:>| [^>]+>)', 'g');
+    let isOk   = Boolean(string.match(regExp) && string.endsWith(`</${tag}>`));
+    let msg    = `expected [ ${string} ] to be an html tag string [ ${tag} ]`;
+
+    return { msg, isOk };
+};
+
 /** @type {Function} isNull */
 export const isNull = (value) => {
     let isOk = value === null;
@@ -118,28 +133,28 @@ export const isUndefined = (value) => {
 };
 
 /** @type {Function} stringIncludes */
-export const stringIncludes = (actual, expected) => {
+export const stringIncludes = (actual, includes) => {
     let checkType = isString(actual);
 
     if (!checkType.isOk) {
         return checkType;
     }
 
-    let isOk = actual.includes(expected);
-    let msg  = `expected [ ${actual} ] to contain [ ${expected} ]`;
+    let isOk = actual.includes(includes);
+    let msg  = `expected [ ${actual} ] to include [ ${includes} ]`;
 
     return { msg, isOk };
 };
 
 /** @type {Function} stringExcludes */
-export const stringExcludes = (actual, expected) => {
+export const stringExcludes = (actual, excludes) => {
     let checkType = isString(actual);
 
     if (!checkType.isOk) {
         return checkType;
     }
 
-    let { isOk, msg } = stringIncludes(actual, expected);
+    let { isOk, msg } = stringIncludes(actual, excludes);
 
     return { msg, isOk: !isOk };
 };
