@@ -11,6 +11,7 @@ import field from '../app/ui/test/tests.field.js';
 import form from '../app/ui/test/tests.form.js';
 import list from '../app/ui/test/tests.list.js';
 import nav from '../app/ui/test/tests.nav.js';
+import typography from '../app/ui/test/tests.typography.js';
 
 import html from '../app/utility/test/tests.html.js';
 import roll from '../app/utility/test/tests.roll.js';
@@ -23,13 +24,14 @@ export default {
     '/unit/test/tests.run.js'   : run,
     '/unit/test/tests.unit.js'  : unit,
 
-    '/app/ui/test/tests.action.js': action,
-    '/app/ui/test/tests.block.js' : block,
-    '/app/ui/test/tests.button.js': button,
-    '/app/ui/test/tests.field.js' : field,
-    '/app/ui/test/tests.form.js'  : form,
-    '/app/ui/test/tests.list.js'  : list,
-    '/app/ui/test/tests.nav.js'   : nav,
+    '/app/ui/test/tests.action.js'    : action,
+    '/app/ui/test/tests.block.js'     : block,
+    '/app/ui/test/tests.button.js'    : button,
+    '/app/ui/test/tests.field.js'     : field,
+    '/app/ui/test/tests.form.js'      : form,
+    '/app/ui/test/tests.list.js'      : list,
+    '/app/ui/test/tests.nav.js'       : nav,
+    '/app/ui/test/tests.typography.js': typography,
 
     '/app/utility/test/tests.html.js' : html,
     '/app/utility/test/tests.roll.js' : roll,

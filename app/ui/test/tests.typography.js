@@ -1,29 +1,33 @@
 
 import {
-    article,
-    div,
-    fieldset,
-    section,
-} from '../block.js';
+    paragraph,
+    strong,
+    title,
+    subTitle,
+    small,
+    em,
+} from '../typography.js';
 
 /**
- * Blocks
+ * Type
  *
  * @type {Object<string, function>}
  */
-const blocks = {
-    article,
-    div,
-    fieldset,
-    section,
+const type = {
+    'em'    : em,
+    'h2'    : title,
+    'h3'    : subTitle,
+    'p'     : paragraph,
+    'small' : small,
+    'strong': strong,
 };
 
 /**
  * @param {import('../../../unit/unit.js').Utility}
  */
 export default ({ assert, describe, it }) => {
-    describe('blocks', () => {
-        Object.entries(blocks).forEach(([ name, func ]) => {
+    describe('type', () => {
+        Object.entries(type).forEach(([ name, func ]) => {
             describe(`#${name}`, () => {
                 describe('when called', () => {
                     let result = func('');
