@@ -42,6 +42,7 @@ const homeContent = contentContainer.innerHTML;
 
 const roomsPerRow = 3;
 
+// TODO move to form
 const updateKnobs = (target) => {
     let page = target || getActive(navContainer);
     let config = getKnobConfig(page);

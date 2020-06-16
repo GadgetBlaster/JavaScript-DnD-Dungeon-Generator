@@ -69,7 +69,7 @@ export const _getKnob = (settings) => {
  *
  * @returns {string}
  */
-export const _renderFields = (fields) => Object.values(fields).map((settings) => {
+export const _renderFields = (fields) => fields.map((settings) => {
     let { desc, label, name } = settings;
 
     !name  && _throw('Missing required knob setting: name');
@@ -88,7 +88,7 @@ export const _renderFields = (fields) => Object.values(fields).map((settings) =>
  * Render knobs
  *
  * @param {KnobSet[]} knobs
- * @param {string} page
+ * @param {string} [page]
  *
  * @returns {string}
  */

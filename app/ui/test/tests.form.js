@@ -1,5 +1,11 @@
 
-import { submitButton, _getKnob, _renderFields } from '../form.js';
+import {
+    _getKnob,
+    _renderFields,
+    renderKnobs,
+    submitButton,
+} from '../form.js';
+
 import { actions } from '../action.js';
 import { typeSelect, typeNumber, typeRange } from '../../knobs.js';
 
@@ -73,8 +79,6 @@ export default ({ assert, describe, it }) => {
         });
 
         const numberSettings = { name: 'size', label: 'Size', type: typeNumber };
-        const infoButton     = '<button data-action="showHide" data-size="auto" data-target="info-size" data-info="true" type="button">?</button>';
-        const infoParagraph  = '<p hidden="true" data-id="info-size"><small>Toad\'s tenacity</small></p>';
 
         describe('given settings for a single knob', () => {
             describe('given a name, label, and type', () => {
@@ -101,11 +105,11 @@ export default ({ assert, describe, it }) => {
                 const result = _renderFields([ numberSettings ]);
 
                 it('should not include an html info button string', () => {
-                    assert(result).stringExcludes(infoButton);
+                    assert(result).stringExcludes('<button');
                 });
 
                 it('should not include an html info paragraph string', () => {
-                    assert(result).stringExcludes(infoParagraph);
+                    assert(result).stringExcludes('<p');
                 });
             });
 
@@ -113,11 +117,13 @@ export default ({ assert, describe, it }) => {
                 const result = _renderFields([ { ...numberSettings, desc: 'Toad\'s tenacity'} ]);
 
                 it('should include an html info button string', () => {
-                    assert(result).stringIncludes(infoButton);
+                    const snapshot = '<button data-action="showHide" data-size="auto" data-target="info-size" data-info="true" type="button">?</button>';
+                    assert(result).stringIncludes(snapshot);
                 });
 
                 it('should include an hidden html info paragraph string', () => {
-                    assert(result).stringIncludes(infoParagraph);
+                    const snapshot = '<p hidden="true" data-id="info-size"><small>Toad\'s tenacity</small></p>';
+                    assert(result).stringIncludes(snapshot);
                 });
             });
         });
@@ -141,6 +147,77 @@ export default ({ assert, describe, it }) => {
                     .stringIncludes('<label>Size</label')
                     .stringIncludes('<label>Shape</label')
                     .stringIncludes('<label>Squishiness</label');
+            });
+        });
+    });
+
+    describe('#renderKnobs', () => {
+        describe('given an empty array', () => {
+            it('should return an empty string', () => {
+                assert(renderKnobs([])).equals('');
+            });
+        });
+
+        describe('given a knob config', () => {
+            const result = renderKnobs([ { label: 'Shovels', fields: [] } ]);
+
+            it('should return an html fieldset string', () => {
+                assert(result).isHtmlTag('fieldset');
+            });
+
+            it('should contain the correct data-id', () => {
+                assert(result).stringIncludes('data-id="fieldset-shovels"');
+            });
+
+            it('should be collapsed by default', () => {
+                assert(result).stringIncludes('data-collapsed="true"');
+            });
+
+            it('should include an html accordion button', () => {
+                const snapshot = '<button data-action="accordion" data-size="small" data-target="fieldset-shovels" type="button">Shovels</button>';
+                assert(result).stringIncludes(snapshot);
+            });
+        });
+
+        describe('given a labels setting', () => {
+            const labels = { farm: 'Superior digging tools', mine: 'Funky mining tools' };
+            const config = { label: 'Shovels', labels, fields: [] };
+
+            describe('given no page param', () => {
+                const result = renderKnobs([ config ]);
+
+                it('should render the default label', () => {
+                    assert(result)
+                        .stringIncludes('Shovels')
+                        .stringExcludes('tools');
+                });
+            });
+
+            describe('given a page param', () => {
+                const result = renderKnobs([ config ], 'farm');
+
+                it('should render the correct label', () => {
+                    assert(result)
+                        .stringIncludes('Superior digging tools')
+                        .stringExcludes('Shovels');
+                });
+            });
+        });
+
+        describe('given an array of fields', () => {
+            const fields = [
+                { name: 'size', label: 'Size', type: typeNumber },
+                { name: 'shape', label: 'Shape', type: typeRange },
+                { name: 'squishiness', label: 'Squishiness', type: typeSelect, values: [] },
+            ];
+
+            const result = renderKnobs([ { label: 'Shovels', fields } ]);
+
+            it('should include an html input string for each knob setting', () => {
+                assert(result)
+                    .stringIncludes('<input name="size" type="number" />')
+                    .stringIncludes('<input name="shape" type="range" />')
+                    .stringIncludes('<select name="squishiness"></select>');
             });
         });
     });

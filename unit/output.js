@@ -164,11 +164,11 @@ export const scopeList = (scopes, { verbose } = {}) => {
  * @returns {string}
  */
 export const summary = (assertions, failures, errors) => {
-    let out = [];
-
     if (errors) {
-        out.push(`<span class="fail">${errors} Error${errors === 1 ? '' : 's'} 😕</span>`);
+        return `<span class="fail">${errors} Error${errors === 1 ? '' : 's'} 😕</span>`;
     }
+
+    let out = [];
 
     out.push(`${assertions} Assertion${assertions === 1 ? '' : 's'}`);
 

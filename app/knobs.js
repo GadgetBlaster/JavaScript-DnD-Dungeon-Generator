@@ -86,8 +86,8 @@ const config = [
     {
         label : 'Dungeon Settings',
         pages : new Set([ pages.dungeon ]),
-        fields: {
-            complexity: {
+        fields: [
+            {
                 label : 'Complexity',
                 name  : knobs.dungeonComplexity,
                 desc  : descComplexity,
@@ -96,7 +96,7 @@ const config = [
                 max   : 11,
                 value : 5,
             },
-            connections: {
+            {
                 label : 'Connections',
                 name  : knobs.dungeonConnections,
                 desc  : descConnections,
@@ -105,14 +105,14 @@ const config = [
                 max   : 100,
                 value : 12,
             },
-            maps: {
+            {
                 label : 'Maps',
                 name  : knobs.dungeonMaps,
                 desc  : descMaps,
                 type  : typeNumber,
                 value : 2,
             },
-            traps: {
+            {
                 label : 'Traps',
                 name  : knobs.dungeonTraps,
                 desc  : descTraps,
@@ -121,13 +121,13 @@ const config = [
                 max   : 4,
                 value : 1,
             },
-        },
+        ],
     },
     {
         label : 'Room Settings',
         pages : new Set([ pages.dungeon, pages.room ]),
-        fields: {
-            count: {
+        fields: [
+            {
                 label : 'Rooms',
                 name  : knobs.roomCount,
                 desc  : 'Number of rooms to generate',
@@ -135,35 +135,35 @@ const config = [
                 pages : new Set([ pages.room ]),
                 value : 1,
             },
-            type: {
+            {
                 label : 'Type',
                 name  : knobs.roomType,
                 desc  : descEqualDistribution,
                 type  : typeSelect,
                 values: getValues(roomTypes),
             },
-            condition: {
+            {
                 label :'Condition',
                 name  : knobs.roomCondition,
                 desc  : conditionProbability.description,
                 type  : typeSelect,
                 values: getValues(conditions),
             },
-            size: {
+            {
                 label : 'Size',
                 name  : knobs.roomSize,
                 desc  : descEqualDistribution,
                 type  : typeSelect,
                 values: getValues(sizes),
             },
-            furnishing: {
+            {
                 label : 'Furnishing',
                 name  : knobs.roomFurnishing,
                 desc  : descFurnitureQuantity + ' ' + furnitureQuantityProbability.description,
                 type  : typeSelect,
                 values: getValues(furnitureQuantityList),
             }
-        },
+        ],
     },
     {
         label : 'Item Settings',
@@ -172,53 +172,49 @@ const config = [
             [pages.room]   : 'Room Contents',
         },
         pages : new Set([ pages.dungeon, pages.room, pages.items ]),
-        fields: {
-            quantity: {
+        fields: [
+            {
                 label : 'Quantity',
                 name  : knobs.itemQuantity,
                 desc  : quantityProbability.description,
                 type  : typeSelect,
                 values: getValues(quantities),
             },
-            type: {
+            {
                 label : 'Type',
                 name  : knobs.itemType,
                 desc  : descEqualDistribution,
                 type  : typeSelect,
                 values: getValues(itemTypes),
             },
-            condition: {
+            {
                 label : 'Condition',
                 name  : knobs.itemCondition,
                 desc  : conditionProbability.description,
                 type  : typeSelect,
                 values: getValues(conditions),
             },
-            rarity: {
+            {
                 label : 'Rarity',
                 name  : knobs.itemRarity,
                 desc  : rarityProbability.description,
                 type  : typeSelect,
                 values: getValues(rarities),
             },
-        },
+        ],
     },
 ];
 
 const getFields = (knobSet, page) => {
-    let knobSetFields = knobSet.fields;
-
-    let fields = Object.keys(knobSetFields).reduce((obj, key) => {
-        let knobConfig = knobSetFields[key];
-
-        if (knobConfig.pages && !knobConfig.pages.has(page)) {
-            return obj;
+    let fields = knobSet.fields.reduce((fieldsArray, knobSettings) => {
+        if (knobSettings.pages && !knobSettings.pages.has(page)) {
+            return fieldsArray;
         }
 
-        obj[key] = knobConfig;
+        fieldsArray.push(knobSettings);
 
-        return obj;
-    }, {});
+        return fieldsArray;
+    }, []);
 
     return {
         ...knobSet,
@@ -227,13 +223,13 @@ const getFields = (knobSet, page) => {
 };
 
 export const getKnobConfig = (page = pages.dungeon) => {
-    return config.reduce((arr, knobSet) => {
+    return config.reduce((knobSets, knobSet) => {
         if (!knobSet.pages.has(page)) {
-            return arr;
+            return knobSets;
         }
 
-        arr.push(getFields(knobSet, page));
+        knobSets.push(getFields(knobSet, page));
 
-        return arr;
+        return knobSets;
     }, []);
 };
