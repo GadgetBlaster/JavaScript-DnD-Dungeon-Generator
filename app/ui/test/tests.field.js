@@ -100,19 +100,19 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a `value`', () => {
-            it('should contain a `value` attribute with the given value', () => {
+            it('should include a `value` attribute with the given value', () => {
                 assert(slider('widget', { value: 15 })).stringIncludes('value="15"');
             });
         });
 
         describe('given a `min`', () => {
-            it('should contain a `min` attribute with the given value', () => {
+            it('should include a `min` attribute with the given value', () => {
                 assert(slider('widget', { min: 32 })).stringIncludes('min="32"');
             });
         });
 
         describe('given a `max`', () => {
-            it('should contain a `max` attribute with the given value', () => {
+            it('should include a `max` attribute with the given value', () => {
                 assert(slider('widget', { max: 23 })).stringIncludes('max="23"');
             });
         });
