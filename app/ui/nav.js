@@ -2,6 +2,11 @@
 import { actions } from './action.js';
 import { button } from './button.js';
 
+/**
+ * Pages
+ *
+ * @type {Object<string, string>}
+ */
 export const pages = {
     dungeon: 'dungeon',
     room: 'room',
@@ -11,12 +16,22 @@ export const pages = {
 let { dungeon, room, items } = pages;
 let { navigate } = actions;
 
+/**
+ * Nav
+ *
+ * @type {string}
+ */
 export const nav = [
     button('Dungeon', navigate, { target: dungeon, active: true }),
     button('Rooms', navigate, { target: room }),
     button('Items', navigate, { target: items }),
 ].join('');
 
+/**
+ * Set active
+ *
+ * @param {Element} target
+ */
 export const setActive = (target) => {
     [ ...target.parentNode.children ].forEach((btn) => {
         delete btn.dataset.active;
@@ -25,10 +40,13 @@ export const setActive = (target) => {
     target.dataset.active = true;
 };
 
+/**
+ * Get active
+ *
+ * @param {Element} navContainer
+ *
+ * @returns {string}
+ */
 export const getActive = (navContainer) => {
-    let activeBtn = [ ...navContainer.children ].find((btn) => {
-        return btn.dataset.active;
-    });
-
-    return activeBtn.dataset.target;
+    return [ ...navContainer.children ].find((btn) => btn.dataset.active).dataset.target;
 };

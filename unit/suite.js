@@ -10,6 +10,7 @@ import button from '../app/ui/test/tests.button.js';
 import field from '../app/ui/test/tests.field.js';
 import form from '../app/ui/test/tests.form.js';
 import list from '../app/ui/test/tests.list.js';
+import nav from '../app/ui/test/tests.nav.js';
 
 import html from '../app/utility/test/tests.html.js';
 import roll from '../app/utility/test/tests.roll.js';
@@ -28,6 +29,7 @@ export default {
     '/app/ui/test/tests.field.js' : field,
     '/app/ui/test/tests.form.js'  : form,
     '/app/ui/test/tests.list.js'  : list,
+    '/app/ui/test/tests.nav.js'   : nav,
 
     '/app/utility/test/tests.html.js' : html,
     '/app/utility/test/tests.roll.js' : roll,

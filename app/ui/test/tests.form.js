@@ -15,22 +15,20 @@ import { typeSelect, typeNumber, typeRange } from '../../knobs.js';
  */
 export default ({ assert, describe, it }) => {
     describe('#submitButton', () => {
-        const button = submitButton;
-
         it('should be a string', () => {
-            assert(button).isString();
+            assert(submitButton).isString();
         });
 
         it('should be an html button string', () => {
-            assert(button).isHtmlTag('button');
+            assert(submitButton).isHtmlTag('button');
         });
 
         it('should have a `type="submit"` attribute', () => {
-            assert(button).stringIncludes('type="submit"');
+            assert(submitButton).stringIncludes('type="submit"');
         });
 
         it(`should have a \`data-action="${actions.generate}"\` attribute`, () => {
-            assert(button).stringIncludes(`data-action="${actions.generate}"`);
+            assert(submitButton).stringIncludes(`data-action="${actions.generate}"`);
         });
     });
 
