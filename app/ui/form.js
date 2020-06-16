@@ -119,18 +119,14 @@ export const renderKnobs = (knobs, page) => knobs.map((knobConfig) => {
  *
  * @param {Element} knobContainer
  *
- * @returns {Object} // TODO typedef
+ * @returns {Object<string, *>}
  */
 export const getFormData = (knobContainer) => {
-    let fields = [ ...knobContainer.querySelectorAll('[name]') ];
-
-    let config = fields.reduce((set, item) => {
+    return [ ...knobContainer.querySelectorAll('[name]') ].reduce((set, item) => {
         let { name, value } = item;
 
         set[name] = value;
 
         return set;
     }, {});
-
-    return config;
 };

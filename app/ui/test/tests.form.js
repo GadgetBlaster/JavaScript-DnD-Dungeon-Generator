@@ -2,6 +2,7 @@
 import {
     _getKnob,
     _renderFields,
+    getFormData,
     renderKnobs,
     submitButton,
 } from '../form.js';
@@ -218,6 +219,40 @@ export default ({ assert, describe, it }) => {
                     .stringIncludes('<input name="size" type="number" />')
                     .stringIncludes('<input name="shape" type="range" />')
                     .stringIncludes('<select name="squishiness"></select>');
+            });
+        });
+    });
+
+    describe('#getFormData', () => {
+        describe('given an element with knob child elements', () => {
+            const container = document.createElement('div');
+
+            const addKnob = (tag, name, value) => {
+                const knob = document.createElement(tag);
+                knob.name  = name;
+                knob.value = value;
+
+                if (tag === 'select') {
+                    knob.innerHTML = `<option value="${value}">${value}</option>`;
+                }
+
+                container.appendChild(knob);
+            };
+
+            addKnob('input', 'gopher', 'ralph');
+            addKnob('select', 'lion', 'bob');
+            addKnob('input', 'hats', 12);
+
+            const results = getFormData(container);
+
+            it('should return an object', () => {
+                assert(results).isObject();
+            });
+
+            it('should return an object of knob values keyed by knob name', () => {
+                assert(results.gopher).equals('ralph');
+                assert(results.lion).equals('bob');
+                assert(results.hats).equals('12');
             });
         });
     });
