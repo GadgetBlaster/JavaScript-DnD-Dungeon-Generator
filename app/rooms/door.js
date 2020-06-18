@@ -63,6 +63,24 @@ export const secretProbability = createProbability([
 
 export const lockedChance = 25;
 
+/**
+ * Connection
+ *
+ * @typedef {Object} Connection
+ *
+ * @property {string} direction - north, east, south, or west
+ * @property {number} to - Room number
+ */
+
+/**
+ * Key
+ *
+ * @typedef {Object} Key
+ *
+ * @property {Object<number, Connection>} connections
+ * @property {string} type - Door type
+ */
+
 export const createDoorLookup = (doors) => {
     let lookup = {};
     let keys   = [];

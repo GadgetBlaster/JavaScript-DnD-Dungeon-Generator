@@ -4,6 +4,11 @@ import output from './test/tests.output.js';
 import run from './test/tests.run.js';
 import unit from './test/tests.unit.js';
 
+import html from '../app/utility/test/tests.html.js';
+import roll from '../app/utility/test/tests.roll.js';
+import tests from '../app/utility/test/tests.tests.js';
+import tools from '../app/utility/test/tests.tools.js';
+
 import action from '../app/ui/test/tests.action.js';
 import block from '../app/ui/test/tests.block.js';
 import button from '../app/ui/test/tests.button.js';
@@ -13,16 +18,18 @@ import list from '../app/ui/test/tests.list.js';
 import nav from '../app/ui/test/tests.nav.js';
 import typography from '../app/ui/test/tests.typography.js';
 
-import html from '../app/utility/test/tests.html.js';
-import roll from '../app/utility/test/tests.roll.js';
-import tests from '../app/utility/test/tests.tests.js';
-import tools from '../app/utility/test/tests.tools.js';
+import roomDescription from '../app/rooms/test/tests.description.js';
 
 export default {
     '/unit/test/tests.assert.js': assert,
     '/unit/test/tests.output.js': output,
     '/unit/test/tests.run.js'   : run,
     '/unit/test/tests.unit.js'  : unit,
+
+    '/app/utility/test/tests.html.js' : html,
+    '/app/utility/test/tests.roll.js' : roll,
+    '/app/utility/test/tests.tests.js': tests,
+    '/app/utility/test/tests.tools.js': tools,
 
     '/app/ui/test/tests.action.js'    : action,
     '/app/ui/test/tests.block.js'     : block,
@@ -33,8 +40,5 @@ export default {
     '/app/ui/test/tests.nav.js'       : nav,
     '/app/ui/test/tests.typography.js': typography,
 
-    '/app/utility/test/tests.html.js' : html,
-    '/app/utility/test/tests.roll.js' : roll,
-    '/app/utility/test/tests.tests.js': tests,
-    '/app/utility/test/tests.tools.js': tools,
+    '/app/rooms/test/tests.description.js': roomDescription,
 };

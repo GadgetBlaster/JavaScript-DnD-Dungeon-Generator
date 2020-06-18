@@ -36,6 +36,22 @@ const debug = false;
 
 const maxDoorWidth = 4;
 
+/**
+ * Directions
+ *
+ * @typedef {Object} Directions
+ *
+ * @property {string} north
+ * @property {string} east
+ * @property {string} south
+ * @property {string} west
+ */
+
+/**
+ * Directions
+ *
+ * @type {Directions}
+ */
 export const directions = {
     north: 'north',
     east : 'east',

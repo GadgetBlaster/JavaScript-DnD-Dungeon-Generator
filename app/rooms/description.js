@@ -1,21 +1,33 @@
 
-import { cellFeet } from '../dungeons/grid.js';
 import { element } from '../utility/html.js';
-import { furnitureQuantity } from '../items/types/furnishing.js';
-import { getEnvironmentDescription } from './environment.js';
-import { knobs } from '../knobs.js';
-import { list } from '../ui/list.js';
 import { random } from '../utility/random.js';
 import { rollArrayItem } from '../utility/roll.js';
-import { title, subTitle, paragraph, strong, em } from '../ui/typography.js';
 import { toWords, capitalize } from '../utility/tools.js';
+
+import { list } from '../ui/list.js';
+import { title, subTitle, paragraph, strong, em } from '../ui/typography.js';
+
+import { knobs } from '../knobs.js';
+
 import condition from '../attributes/condition.js';
-import doorType, { appendDoorway, outside } from './door.js';
 import quantity from '../attributes/quantity.js';
 import rarity from '../attributes/rarity.js';
-import roomType, { appendRoomTypes } from '../rooms/type.js';
 import size from '../attributes/size.js';
 
+import { cellFeet } from '../dungeons/grid.js';
+
+import { furnitureQuantity } from '../items/types/furnishing.js';
+
+import roomType, { appendRoomTypes } from '../rooms/type.js';
+
+import { getEnvironmentDescription } from './environment.js';
+import doorType, { appendDoorway, outside } from './door.js';
+
+/**
+ * Map descriptions
+ *
+ * @type {string[]}
+ */
 const mapDescriptions = [
     'Searching the room reveals a map that appears to be of the dungeon.',
     'A large map of the dungeon is hanging on the wall.',
@@ -24,9 +36,25 @@ const mapDescriptions = [
     'The floor of the room is etched with an intricate map of the dungeon.',
 ];
 
-export const getMapDescription = () => subTitle('Map') + list([ rollArrayItem(mapDescriptions) ]);
+/**
+ * Get map description
+ *
+ * @returns {string}
+ */
+export const getMapDescription = () => {
+    return subTitle('Map') + list([ rollArrayItem(mapDescriptions) ]);
+};
 
-const getKeyDetail = (type) => {
+/**
+ * Get key detail
+ *
+ * @private
+ *
+ * @param {string}
+ *
+ * @returns {string}
+ */
+export const _getKeyDetail = (type) => {
     switch (type) {
         case doorType.brass:
         case doorType.iron:
@@ -49,13 +77,19 @@ const getKeyDetail = (type) => {
     }
 };
 
+/**
+ * Get key description
+ *
+ * @param {import('./door.js').Key[]}
+ *
+ * @returns {string}
+ */
 export const getKeyDescription = (keys) => {
     return subTitle(`Keys (${keys.length})`) + list(keys.map((key) => {
-        let connections = key.connections
-
+        let { connections, type } = key;
         let [ from, to ] = Object.keys(connections);
 
-        return `${getKeyDetail(key.type)} to room ${from} / ${to}`;
+        return `${_getKeyDetail(type)} to room ${from} / ${to}`;
     }));
 };
 
