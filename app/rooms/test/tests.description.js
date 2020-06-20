@@ -3,10 +3,12 @@ import {
     _getKeyDetail,
     getKeyDescription,
     getMapDescription,
+    getRoomTypeLabel,
 } from '../description.js';
 
 import { lockable } from '../door.js';
 import { directions } from '../../dungeons/map.js';
+import roomTypes, { appendRoomTypes } from '../../rooms/type.js';
 
 /**
  * @param {import('../../../unit/unit.js').Utility}
@@ -25,11 +27,17 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('#_getKeyDetail', () => {
-        it('should return a string', () => {
-            [ ...lockable, 'Undefined key description for door type' ].forEach((type) => {
+        [ ...lockable, 'Undefined key description for door type' ].forEach((type) => {
+            describe(`key type \`${type}\``, () => {
                 const result = _getKeyDetail(type);
-                assert(result).isString();
-                assert(result === '').isFalse();
+
+                it('should return a string', () => {
+                    assert(result).isString();
+                });
+
+                it('should not be an empty string', () => {
+                    assert(result === '').isFalse();
+                });
             });
         });
     });
@@ -66,6 +74,40 @@ export default ({ assert, describe, it }) => {
             it('should include am html list string with items for each key and the correct room connections', () => {
                 const snapshot = '<ul><li>Key to room 1 / 2</li><li>Key to room 1 / 23</li></ul>';
                 assert(result).stringIncludes(snapshot);
+            });
+        });
+    });
+
+    describe('#getRoomTypeLabel', () => {
+        Object.values(roomTypes).forEach((type) => {
+            describe(`room type \`${type}\``, () => {
+                const result = getRoomTypeLabel(type);
+
+                it('should be a string', () => {
+                    assert(result).isString();
+                });
+            });
+        });
+
+        describe('given a camel cased room type', () => {
+            it('should return lowercased, formatted words', () => {
+                assert(getRoomTypeLabel('funkyMonkey')).equals('funky monkey');
+            });
+        });
+
+        describe('given a room type not included in `appendRoomTypes`', () => {
+            it('should not include the word `room`', () => {
+                assert(getRoomTypeLabel('box')).stringExcludes('room');
+            });
+        });
+
+        describe('given a room type included in `appendRoomTypes`', () => {
+            appendRoomTypes.forEach((type) => {
+                describe(`room type \`${type}\``, () => {
+                    it('should include the word ` room`', () => {
+                        assert(getRoomTypeLabel(type)).stringIncludes(' room');
+                    });
+                });
             });
         });
     });

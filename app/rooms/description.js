@@ -18,6 +18,7 @@ import { cellFeet } from '../dungeons/grid.js';
 
 import { furnitureQuantity } from '../items/types/furnishing.js';
 
+// TODO pluralize roomTypes, doorTypes
 import roomType, { appendRoomTypes } from '../rooms/type.js';
 
 import { getEnvironmentDescription } from './environment.js';
@@ -50,7 +51,7 @@ export const getMapDescription = () => {
  *
  * @private
  *
- * @param {string}
+ * @param {string} type
  *
  * @returns {string}
  */
@@ -93,6 +94,13 @@ export const getKeyDescription = (keys) => {
     }));
 };
 
+/**
+ * Get room type label
+ *
+ * @param {string} type
+ *
+ * @returns {string}
+ */
 export const getRoomTypeLabel = (type) => toWords(type) + (appendRoomTypes.has(type) ? ' room' : '');
 
 const getSizeDesc = (settings) => {
