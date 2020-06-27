@@ -2,7 +2,7 @@
 import { element } from '../utility/html.js';
 import { random } from '../utility/random.js';
 import { rollArrayItem } from '../utility/roll.js';
-import { toWords, capitalize } from '../utility/tools.js';
+import { toWords, capitalize, indefiniteArticle } from '../utility/tools.js';
 
 import { list } from '../ui/list.js';
 import { title, subTitle, paragraph, strong, em } from '../ui/typography.js';
@@ -18,7 +18,7 @@ import { cellFeet } from '../dungeons/grid.js';
 
 import { furnitureQuantity } from '../items/types/furnishing.js';
 
-// TODO pluralize roomTypes, doorTypes
+// TODO pluralize roomTypes, doorTypes, etc
 import roomType, { appendRoomTypes } from '../rooms/type.js';
 
 import { getEnvironmentDescription } from './environment.js';
@@ -103,28 +103,29 @@ export const getKeyDescription = (keys) => {
  */
 export const getRoomTypeLabel = (type) => toWords(type) + (appendRoomTypes.has(type) ? ' room' : '');
 
-const getSizeDesc = (settings) => {
+export const getBaseDescription = (settings = {}) => {
     let {
-        [knobs.itemQuantity]: itemQuantity,
+        [knobs.itemQuantity]:  itemQuantity,
         [knobs.roomCondition]: roomCondition,
-        [knobs.roomSize]: roomSize,
-        [knobs.roomType]: type,
+        [knobs.roomSize]:      roomSize,
+        [knobs.roomType]:      type = roomType.room,
     } = settings;
 
     let typeString = getRoomTypeLabel(type);
 
-    if (roomSize === size.medium) {
+    if (roomSize && roomSize === size.medium) {
         roomSize = 'medium sized';
     }
 
-    let empty = itemQuantity === quantity.zero ? ' empty' : '';
-    let desc  = `You enter a ${roomSize}${empty} ${typeString}`;
+    let empty    = itemQuantity === quantity.zero ? 'empty' : '';
+    let desc     = [ roomSize, empty, typeString ].filter(Boolean).join(' ');
+    let sentence = `You enter ${indefiniteArticle(desc)} ${desc}`;
 
-    if (roomCondition !== condition.average) {
-        desc += ` in ${roomCondition} condition`;
+    if (roomCondition && roomCondition !== condition.average) {
+        sentence += ` in ${roomCondition} condition`;
     }
 
-    return desc;
+    return sentence;
 };
 
 const contentsRarity = new Set([
@@ -318,7 +319,7 @@ export const getRoomDescription = (room, roomDoors) => {
     let header      = element('header', roomTitle + dimensions);
 
     let content = header + subTitle('Description') + paragraph([
-        getSizeDesc(settings),
+        getBaseDescription(settings),
         ...getEnvironmentDescription(settings),
         getContentsDesc(settings),
         getItemConditionDescription(settings),

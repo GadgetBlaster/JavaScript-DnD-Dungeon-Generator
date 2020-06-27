@@ -1,21 +1,5 @@
 
-/**
- * Convert camel case to words
- *
- * @param {string} text
- *
- * @returns {string}
- */
-export const toWords = (text) => text.replace(/([A-Z])/g, ' $1').toLowerCase();
-
-/**
- * Convert spaces to dashes
- *
- * @param {string} text
- *
- * @returns {string}
- */
-export const toDash = (text) => text.replace(/\s+/g, '-').toLowerCase();
+// -- Typography Tools --------------------------------------------------------
 
 /**
  * Capitalize string
@@ -27,42 +11,21 @@ export const toDash = (text) => text.replace(/\s+/g, '-').toLowerCase();
 export const capitalize = (text) => text.charAt(0).toUpperCase() + text.slice(1);
 
 /**
- * Is odd
+ * Indefinite article
  *
- * @param {number} num
+ * @param {string} word
  *
- * @returns {boolean}
- */
-export const isOdd = (num)  => num % 2 !== 0;
-
-/**
- * Is odd
- *
- * @param {number} num
+ * @todo unit tests
  *
  * @returns {string}
  */
-export const isEven = (num)  => num % 2 === 0;
-
-/**
- * Chunk
- *
- * @param {*[]} array
- * @param {number} size
- *
- * @returns {*[][]}
- */
-export const chunk = (array, size) => array.reduce((newArray, item, index) => {
-    let chunkIndex = Math.floor(index / size);
-
-    if(!newArray[chunkIndex]) {
-        newArray[chunkIndex] = [];
+export const indefiniteArticle = (word) => {
+    if ('aeiou'.indexOf(word[0].toLowerCase()) >= 0) {
+        return 'an';
     }
 
-    newArray[chunkIndex].push(item);
-
-    return newArray;
-}, []);
+    return 'a';
+};
 
 /**
  * List sentence
@@ -94,8 +57,70 @@ export const listSentence = (parts) => {
  * @param {string} string
  * @param {string} [suffix = 's']
  *
+ * @todo rename to pluralize
+ *
  * @returns {string}
  */
 export const plural = (count, string, suffix = 's') => {
     return `${string}${count !== 1 ? suffix : ''}`;
 };
+
+/**
+ * Convert spaces to dashes
+ *
+ * @param {string} text
+ *
+ * @returns {string}
+ */
+export const toDash = (text) => text.replace(/\s+/g, '-').toLowerCase();
+
+/**
+ * Convert camel case to words
+ *
+ * @param {string} text
+ *
+ * @returns {string}
+ */
+export const toWords = (text) => text.replace(/([A-Z])/g, ' $1').toLowerCase();
+
+// -- Numeric Tools -----------------------------------------------------------
+
+/**
+ * Is odd
+ *
+ * @param {number} num
+ *
+ * @returns {string}
+ */
+export const isEven = (num)  => num % 2 === 0;
+
+/**
+ * Is odd
+ *
+ * @param {number} num
+ *
+ * @returns {boolean}
+ */
+export const isOdd = (num)  => num % 2 !== 0;
+
+// -- Array Tools -------------------------------------------------------------
+
+/**
+ * Chunk
+ *
+ * @param {*[]} array
+ * @param {number} size
+ *
+ * @returns {*[][]}
+ */
+export const chunk = (array, size) => array.reduce((newArray, item, index) => {
+    let chunkIndex = Math.floor(index / size);
+
+    if(!newArray[chunkIndex]) {
+        newArray[chunkIndex] = [];
+    }
+
+    newArray[chunkIndex].push(item);
+
+    return newArray;
+}, []);
