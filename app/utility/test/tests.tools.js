@@ -1,13 +1,14 @@
 
 import {
-    toWords,
-    toDash,
     capitalize,
-    isOdd,
-    isEven,
     chunk,
+    indefiniteArticle,
+    isEven,
+    isOdd,
     listSentence,
     plural,
+    toDash,
+    toWords,
  } from '../tools.js';
 
 /**
@@ -21,6 +22,22 @@ export default ({ assert, describe, it }) => {
         describe('given a string that starts with a lowercase letter', () => {
             it('should capitalize the first letter in the string', () => {
                 assert(capitalize('joe bob')).equals('Joe bob');
+            });
+        });
+    });
+
+    describe('#indefiniteArticle', () => {
+        describe('given a word that does not start with a vowel', () => {
+            it('should return `a`', () => {
+                assert(indefiniteArticle('hammoc')).equals('a');
+            });
+        });
+
+        [ 'apple', 'elephant', 'igloo', 'otter', 'udder' ].forEach((word) => {
+            describe('given a word that starts with a vowel', () => {
+                it('should return `an`', () => {
+                    assert(indefiniteArticle(word)).equals('an');
+                });
             });
         });
     });

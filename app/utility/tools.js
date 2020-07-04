@@ -15,8 +15,6 @@ export const capitalize = (text) => text.charAt(0).toUpperCase() + text.slice(1)
  *
  * @param {string} word
  *
- * @todo unit tests
- *
  * @returns {string}
  */
 export const indefiniteArticle = (word) => {
