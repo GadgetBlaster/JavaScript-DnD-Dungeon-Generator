@@ -14,10 +14,77 @@ import {
  * @param {import('../../../unit/unit.js').Utility}
  */
 export default ({ assert, describe, it }) => {
-    describe('#toWords', () => {
-        describe('given a camel case string', () => {
-            it('should return a lowercased string broken into multiple words', () => {
-                assert(toWords('bustedBulldozingBrachiosaurus')).equals('busted bulldozing brachiosaurus');
+
+    // -- Typography Tools ----------------------------------------------------
+
+    describe('#capitalize', () => {
+        describe('given a string that starts with a lowercase letter', () => {
+            it('should capitalize the first letter in the string', () => {
+                assert(capitalize('joe bob')).equals('Joe bob');
+            });
+        });
+    });
+
+    describe('#listSentence', () => {
+        describe('given no items', () => {
+            it('should return undefined', () => {
+                assert(listSentence([])).isUndefined();
+            });
+        });
+
+        describe('given an array of one strings', () => {
+            it('should return the string', () => {
+                assert(listSentence([ 'primus' ])).equals('primus');
+            });
+        });
+
+        describe('given an array of two strings', () => {
+            it('should return the strings joined by `and` with first word capitalized', () => {
+                assert(listSentence([ 'hummingbirds', 'jellyfish' ])).equals('hummingbirds and jellyfish');
+            });
+        });
+
+        describe('given an array of three strings', () => {
+            it('should return the strings joined by commas with `and` between the last two', () => {
+                assert(listSentence([ 'hammers', 'polar bears', 'walruses' ])).equals('hammers, polar bears, and walruses');
+            });
+        });
+
+        describe('given an array of four strings', () => {
+            it('should return the strings joined by commas with `and` between the last two', () => {
+                assert(listSentence([ 'one', 'two', 'three', 'four' ])).equals('one, two, three, and four');
+            });
+        });
+    });
+
+    describe('#plural', () => {
+        describe('given a count of 1', () => {
+            it('should return the string', () => {
+                assert(plural(1, 'cat')).equals('cat');
+            });
+        });
+
+        describe('given a count of 0', () => {
+            it('should return a pluralized string', () => {
+                assert(plural(0, 'cat')).equals('cats');
+            });
+        });
+
+        describe('given a count of 2', () => {
+            it('should return a pluralized string', () => {
+                assert(plural(2, 'cat')).equals('cats');
+            });
+        });
+
+        describe('given a count of 3', () => {
+            it('should return the string', () => {
+                assert(plural(3, 'cat')).equals('cats');
+            });
+        });
+
+        describe('given a count of 2 and a suffix of `es`', () => {
+            it('should return the string', () => {
+                assert(plural(2, 'walrus', 'es')).equals('walruses');
             });
         });
     });
@@ -30,10 +97,32 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#capitalize', () => {
-        describe('given a string that starts with a lowercase letter', () => {
-            it('should capitalize the first letter in the string', () => {
-                assert(capitalize('joe bob')).equals('Joe bob');
+    describe('#toWords', () => {
+        describe('given a camel case string', () => {
+            it('should return a lowercased string broken into multiple words', () => {
+                assert(toWords('bustedBulldozingBrachiosaurus')).equals('busted bulldozing brachiosaurus');
+            });
+        });
+    });
+
+    // -- Numeric Tools -------------------------------------------------------
+
+    describe('#isEven', () => {
+        describe('given an odd number', () => {
+            it('should return `false`', () => {
+                assert(isEven(3)).isFalse();
+            });
+        });
+
+        describe('given an even number', () => {
+            it('should return `true`', () => {
+                assert(isEven(12)).isTrue();
+            });
+        });
+
+        describe('given zero', () => {
+            it('should return `true`', () => {
+                assert(isEven(0)).isTrue();
             });
         });
     });
@@ -58,25 +147,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#isEven', () => {
-        describe('given an odd number', () => {
-            it('should return `false`', () => {
-                assert(isEven(3)).isFalse();
-            });
-        });
-
-        describe('given an even number', () => {
-            it('should return `true`', () => {
-                assert(isEven(12)).isTrue();
-            });
-        });
-
-        describe('given zero', () => {
-            it('should return `true`', () => {
-                assert(isEven(0)).isTrue();
-            });
-        });
-    });
+    // -- Array Tools ---------------------------------------------------------
 
     describe('#chunk', () => {
         describe('given an empty array', () => {
@@ -153,70 +224,6 @@ export default ({ assert, describe, it }) => {
             it('should have a chunk identical to the array', () => {
                 let chunks = chunk(Array.from(Array(3).keys()), 4);
                 assert(chunks[0]).equalsArray([ 0, 1, 2 ]);
-            });
-        });
-    });
-
-    describe('#listSentence', () => {
-        describe('given no items', () => {
-            it('should return undefined', () => {
-                assert(listSentence([])).isUndefined();
-            });
-        });
-
-        describe('given an array of one strings', () => {
-            it('should return the string', () => {
-                assert(listSentence([ 'primus' ])).equals('primus');
-            });
-        });
-
-        describe('given an array of two strings', () => {
-            it('should return the strings joined by `and` with first word capitalized', () => {
-                assert(listSentence([ 'hummingbirds', 'jellyfish' ])).equals('hummingbirds and jellyfish');
-            });
-        });
-
-        describe('given an array of three strings', () => {
-            it('should return the strings joined by commas with `and` between the last two', () => {
-                assert(listSentence([ 'hammers', 'polar bears', 'walruses' ])).equals('hammers, polar bears, and walruses');
-            });
-        });
-
-        describe('given an array of four strings', () => {
-            it('should return the strings joined by commas with `and` between the last two', () => {
-                assert(listSentence([ 'one', 'two', 'three', 'four' ])).equals('one, two, three, and four');
-            });
-        });
-    });
-
-    describe('#plural', () => {
-        describe('given a count of 1', () => {
-            it('should return the string', () => {
-                assert(plural(1, 'cat')).equals('cat');
-            });
-        });
-
-        describe('given a count of 0', () => {
-            it('should return a pluralized string', () => {
-                assert(plural(0, 'cat')).equals('cats');
-            });
-        });
-
-        describe('given a count of 2', () => {
-            it('should return a pluralized string', () => {
-                assert(plural(2, 'cat')).equals('cats');
-            });
-        });
-
-        describe('given a count of 3', () => {
-            it('should return the string', () => {
-                assert(plural(3, 'cat')).equals('cats');
-            });
-        });
-
-        describe('given a count of 2 and a suffix of `es`', () => {
-            it('should return the string', () => {
-                assert(plural(2, 'walrus', 'es')).equals('walruses');
             });
         });
     });
