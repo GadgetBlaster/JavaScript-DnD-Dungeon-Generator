@@ -4,8 +4,8 @@ import { random } from '../utility/random.js';
 import { rollArrayItem } from '../utility/roll.js';
 import { toWords, capitalize, indefiniteArticle } from '../utility/tools.js';
 
+import { em, paragraph, strong, subtitle, title } from '../ui/typography.js';
 import { list } from '../ui/list.js';
-import { title, subTitle, paragraph, strong, em } from '../ui/typography.js';
 
 import { knobs } from '../knobs.js';
 
@@ -43,7 +43,7 @@ const mapDescriptions = [
  * @returns {string}
  */
 export const getMapDescription = () => {
-    return subTitle('Map') + list([ rollArrayItem(mapDescriptions) ]);
+    return subtitle('Map') + list([ rollArrayItem(mapDescriptions) ]);
 };
 
 /**
@@ -86,7 +86,7 @@ export const _getKeyDetail = (type) => {
  * @returns {string}
  */
 export const getKeyDescription = (keys) => {
-    return subTitle(`Keys (${keys.length})`) + list(keys.map((key) => {
+    return subtitle(`Keys (${keys.length})`) + list(keys.map((key) => {
         let { connections, type } = key;
         let [ from, to ] = Object.keys(connections);
 
@@ -291,7 +291,7 @@ export const getDoorwayList = (roomDoors) => {
         return secret ? strong(text) : text;
     });
 
-    return subTitle(`Doorways (${roomDoors.length})`) + list(doorList);
+    return subtitle(`Doorways (${roomDoors.length})`) + list(doorList);
 };
 
 const getRoomDimensions = (room) => {
@@ -318,7 +318,7 @@ export const getRoomDescription = (room, roomDoors) => {
     let roomTitle   = title(`Room${numberLabel}${typeLabel}`);
     let header      = element('header', roomTitle + dimensions);
 
-    let content = header + subTitle('Description') + paragraph([
+    let content = header + subtitle('Description') + paragraph([
         getBaseDescription(settings),
         ...getEnvironmentDescription(settings),
         getContentsDesc(settings),

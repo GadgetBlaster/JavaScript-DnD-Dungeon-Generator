@@ -13,7 +13,7 @@ import { article, section } from './ui/block.js';
 import { getActive, nav, pages, setActive } from './ui/nav.js';
 import { getFormData, renderKnobs, submitButton } from './ui/form.js';
 import { list } from './ui/list.js';
-import { subTitle } from './ui/typography.js';
+import { subtitle } from './ui/typography.js';
 
 import {
     getDoorwayList,
@@ -74,7 +74,7 @@ const formatRoom = (room, doors) => {
     let items     = room.items.join('');
     let map       = room.map ? getMapDescription() : '';
     let keys      = room.keys ? getKeyDescription(room.keys) : '';
-    let traps     = room.traps ? subTitle(`Traps (${room.traps.length})`) + list(room.traps) : '';
+    let traps     = room.traps ? subtitle(`Traps (${room.traps.length})`) + list(room.traps) : '';
 
     return article(desc + doorList + items + map + keys + traps);
 };

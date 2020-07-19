@@ -8,7 +8,7 @@ import { knobs } from '../knobs.js';
 import { list } from '../ui/list.js';
 import { random } from '../utility/random.js';
 import { roll } from '../utility/roll.js';
-import { subTitle, paragraph, em } from '../ui/typography.js';
+import { em, paragraph, subtitle,  } from '../ui/typography.js';
 import condition from '../attributes/condition.js';
 import itemType from './type.js';
 import quantity, { getRange, probability as quantityProbability } from '../attributes/quantity.js';
@@ -77,7 +77,7 @@ export const generateItems = (settings) => {
     let inRoom = Boolean(roomType);
 
     if (itemQuantity === quantity.zero) {
-        return inRoom ? [] : [ subTitle('Items (0)') ];
+        return inRoom ? [] : [ subtitle('Items (0)') ];
     }
 
     let count = getItemCount(itemQuantity);
@@ -207,7 +207,7 @@ export const generateItems = (settings) => {
     let description = descriptions.length && paragraph(descriptions.map((desc) => desc).join(' | '));
 
     return [
-        subTitle(`Items (${total})`),
+        subtitle(`Items (${total})`),
         description,
         itemList,
     ].filter(Boolean);

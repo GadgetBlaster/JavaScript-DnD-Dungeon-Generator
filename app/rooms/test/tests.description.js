@@ -22,7 +22,8 @@ export default ({ assert, describe, it }) => {
         it('should include a list with a single item', () => {
             assert(getMapDescription())
                 .stringIncludes('<ul><li>')
-                .stringIncludes('</li></ul>');
+                .stringIncludes('</li></ul>')
+                .stringExcludes('</li><li>');
         });
     });
 
@@ -43,7 +44,7 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('#getKeyDescription', () => {
-        describe('given a set of two keys', () => {
+        describe('given am array with two Key objects', () => {
             const keys = [
                 {
                     type: 'Any',
@@ -67,7 +68,7 @@ export default ({ assert, describe, it }) => {
                 assert(result).isString();
             });
 
-            it('should include a title with the number of keys', () => {
+            it('should include a sub title with the number of keys', () => {
                 assert(result).stringIncludes('<h3>Keys (2)</h3>');
             });
 

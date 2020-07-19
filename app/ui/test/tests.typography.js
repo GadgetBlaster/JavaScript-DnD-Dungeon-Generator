@@ -3,7 +3,7 @@ import {
     paragraph,
     strong,
     title,
-    subTitle,
+    subtitle,
     small,
     em,
 } from '../typography.js';
@@ -16,7 +16,7 @@ import {
 const type = {
     'em'    : em,
     'h2'    : title,
-    'h3'    : subTitle,
+    'h3'    : subtitle,
     'p'     : paragraph,
     'small' : small,
     'strong': strong,
