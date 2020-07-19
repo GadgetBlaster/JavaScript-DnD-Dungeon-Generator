@@ -2,7 +2,7 @@
 import { createProbability } from '../utility/roll.js';
 import { random } from '../utility/random.js';
 
-const type = {
+const roomTypes = {
     armory    : 'armory',
     atrium    : 'atrium',
     ballroom  : 'ballroom',
@@ -29,20 +29,20 @@ const type = {
     treasury  : 'treasury',
 };
 
-export default type;
+export default roomTypes;
 
-export const list = Object.keys(type);
+export const list = Object.keys(roomTypes);
 
 export const appendRoomTypes = new Set([
-    type.dining,
-    type.shrine,
-    type.storage,
-    type.throne,
-    type.torture,
+    roomTypes.dining,
+    roomTypes.shrine,
+    roomTypes.storage,
+    roomTypes.throne,
+    roomTypes.torture,
 ]);
 
 export const probability = createProbability([
-    [ 40,  type.hallway ],
-    [ 65,  type.room    ],
+    [ 40,  roomTypes.hallway ],
+    [ 65,  roomTypes.room    ],
     [ 100, random  ],
 ]);

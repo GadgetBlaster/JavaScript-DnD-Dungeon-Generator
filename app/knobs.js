@@ -36,19 +36,19 @@ const getValues = (values) => {
 };
 
 export const knobs = {
-    dungeonComplexity : 'dungeon-complexity',
-    dungeonConnections: 'dungeon-connections',
-    dungeonMaps       : 'dungeon-maps',
-    dungeonTraps      : 'dungeon-traps',
-    itemCondition     : 'item-condition',
-    itemQuantity      : 'item-quantity',
-    itemRarity        : 'item-rarity',
-    itemType          : 'item-type',
-    roomCondition     : 'room-condition',
-    roomCount         : 'room-count',
-    roomFurnishing    : 'room-furnishing',
-    roomSize          : 'room-size',
-    roomType          : 'room-type',
+    dungeonComplexity : 'dungeonComplexity',
+    dungeonConnections: 'dungeonConnections',
+    dungeonMaps       : 'dungeonMaps',
+    dungeonTraps      : 'dungeonTraps',
+    itemCondition     : 'itemCondition',
+    itemQuantity      : 'itemQuantity',
+    itemRarity        : 'itemRarity',
+    itemType          : 'itemType',
+    roomCondition     : 'roomCondition',
+    roomCount         : 'roomCount',
+    roomFurnishing    : 'roomFurnishing',
+    roomSize          : 'roomSize',
+    roomType          : 'roomType',
 };
 
 /**

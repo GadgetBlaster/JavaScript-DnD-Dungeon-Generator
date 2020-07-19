@@ -25,6 +25,10 @@ import { getEnvironmentDescription } from './environment.js';
 import doorType, { appendDoorway, outside } from './door.js';
 
 /**
+ * @typedef {import('./settings.js').RoomSettings} RoomSettings
+ */
+
+/**
  * Map descriptions
  *
  * @type {string[]}
@@ -103,7 +107,14 @@ export const getKeyDescription = (keys) => {
  */
 export const getRoomTypeLabel = (type) => toWords(type) + (appendRoomTypes.has(type) ? ' room' : '');
 
-export const getBaseDescription = (settings = {}) => {
+/**
+ * Get description
+ *
+ * @param {RoomSettings} settings
+ *
+ * @returns {string}
+ */
+export const _getDescription = (settings = {}) => {
     let {
         [knobs.itemQuantity]:  itemQuantity,
         [knobs.roomCondition]: roomCondition,
@@ -319,7 +330,7 @@ export const getRoomDescription = (room, roomDoors) => {
     let header      = element('header', roomTitle + dimensions);
 
     let content = header + subtitle('Description') + paragraph([
-        getBaseDescription(settings),
+        _getDescription(settings),
         ...getEnvironmentDescription(settings),
         getContentsDesc(settings),
         getItemConditionDescription(settings),

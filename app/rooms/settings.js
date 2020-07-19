@@ -13,6 +13,22 @@ import roomType, { list as roomTypes, probability as roomTypeProbability } from 
 const uniformConditionChance = 10;
 const uniformRarityChance    = 10;
 
+/**
+ * Room settings
+ *
+ * @typedef {Object} RoomSettings
+ *
+ * @property {string} [knobs.itemCondition]
+ * @property {string} itemQuantity
+ * @property {string} itemQuantity
+ * @property {string} itemRarity
+ * @property {string} roomCondition
+ * @property {string} roomFurnishing
+ * @property {string} roomFurnishing
+ * @property {string} roomSize
+ * @property {string} roomType
+ */
+
 const rollRoomSize = (type) => {
     return rollArrayItem(roomTypeSizes[type]);
 };
