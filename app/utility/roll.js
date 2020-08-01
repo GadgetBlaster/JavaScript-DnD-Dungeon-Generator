@@ -43,7 +43,7 @@ export const roll = (min = 0, max = 1) => {
  * @returns {*}
  */
 export const rollArrayItem = (array) => {
-    !Array.isArray(array) && _throw('Roll array must be an array');
+    !Array.isArray(array) && _throw('Invalid roll array');
     !array.length && _throw('Roll array must have values');
 
     return array[Math.floor(Math.random() * array.length)];
@@ -61,7 +61,7 @@ export const rollArrayItem = (array) => {
 export const rollPercentile = (chance) => {
     !Number.isInteger(chance) && _throw('Percent chance must be an integer');
     chance < minPercent && _throw(`Percent chance must be ${minPercent} or greater`);
-    chance > maxPercent && _throw(`Percent chance exceeds ${maxPercent}`);
+    chance > maxPercent && _throw(`Percent chance cannot exceed ${maxPercent}`);
 
     return roll(minPercent, maxPercent) <= chance;
 };
@@ -93,7 +93,13 @@ export const createProbability = (config) => {
     !Array.isArray(config) && _throw('Probability config must be an array');
     !config.length && _throw('Probability config must have values');
 
-    let map = new Map(config);
+    let map;
+
+    try {
+        map = new Map(config);
+    } catch(e) {
+        throw new TypeError('Invalid `config` for Map');
+    }
 
     map.forEach((value, key) => {
         typeof value !== 'string' && _throw(`Probability value "${value}" must be a string`);

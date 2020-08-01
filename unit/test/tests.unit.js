@@ -94,40 +94,44 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('nesting', () => {
-        describe('when `it` is called outside of a `describe` callback', () => {
+        describe('when `it()` is called outside of a `describe()` callback', () => {
             it('should throw', () => {
                 unit().runUnits('/fake/scope', (utility) => {
-                    assert(utility.it).throws();
+                    assert(utility.it)
+                        .throws('it() must be called inside of describe()');
                 });
             });
         });
 
-        describe('when `assert` is called outside of an `it` callback', () => {
+        describe('when `assert()` is called outside of an `it()` callback', () => {
             it('should throw', () => {
                 unit().runUnits('/fake/scope', (utility) => {
-                    assert(utility.assert().equals).throws();
+                    assert(utility.assert().equals)
+                        .throws('assert() must be called inside of it()');
                 });
             });
         });
 
-        describe('when `describe` is called inside of an `it` callback', () => {
+        describe('when `describe()` is called inside of an `it()` callback', () => {
             it('should throw', () => {
                 unit().runUnits('/fake/scope', (utility) => {
                     utility.describe('desc', () => {
                         utility.it('it', () => {
-                            assert(utility.describe).throws();
+                            assert(utility.describe)
+                                .throws('describe() must be called inside of default() or describe()');
                         });
                     });
                 });
             });
         });
 
-        describe('when `it` is called inside of an `it` callback', () => {
+        describe('when `it()` is called inside of an `it()` callback', () => {
             it('should throw', () => {
                 unit().runUnits('/fake/scope', (utility) => {
                     utility.describe('desc', () => {
                         utility.it('it', () => {
-                            assert(utility.it).throws();
+                            assert(utility.it)
+                                .throws('it() must be called inside of describe()');
                         });
                     });
                 });

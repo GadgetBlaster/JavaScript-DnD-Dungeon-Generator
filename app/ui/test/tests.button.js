@@ -39,7 +39,8 @@ export default ({ assert, describe, it }) => {
 
         describe('given an invalid `size` option', () => {
             it('should throw', () => {
-                assert(() => button('fred', 'back-flip', { size: 'invalid-size' })).throws();
+                assert(() => button('fred', 'back-flip', { size: 'invalid-size' }))
+                    .throws('Invalid button size');
             });
         });
 

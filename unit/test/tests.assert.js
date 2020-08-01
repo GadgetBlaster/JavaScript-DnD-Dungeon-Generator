@@ -526,8 +526,16 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a function that throws', () => {
-            it('should return a truthy `isOk` property', () => {
-                assert(throws(() => { throw new TypeError('Junk'); }).isOk).isTrue();
+            describe('given a function that throws an unexpected error message', () => {
+                it('should return a falsy `isOk` property', () => {
+                    assert(throws(() => { throw new TypeError('Junk'); }, 'Not junk').isOk).isFalse();
+                });
+            });
+
+            describe('given a function that throws the expected error message', () => {
+                it('should return a falsy `isOk` property', () => {
+                    assert(throws(() => { throw new TypeError('Peanuts'); }, 'Peanuts').isOk).isTrue();
+                });
             });
         });
     });

@@ -72,8 +72,8 @@ export const _getKnob = (settings) => {
 export const _renderFields = (fields) => fields.map((settings) => {
     let { desc, label, name } = settings;
 
-    !name  && _throw('Missing required knob setting: name');
-    !label && _throw('Missing required knob setting: label');
+    !name  && _throw('Missing required knob name');
+    !label && _throw('Missing required knob label');
 
     let knob       = _getKnob(settings);
     let descId     = desc && `info-${name}`;

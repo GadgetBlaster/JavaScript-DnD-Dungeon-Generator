@@ -35,7 +35,8 @@ export default ({ assert, describe, it }) => {
     describe('_getKnob()', () => {
         describe('given an invalid type', () => {
             it('should throw', () => {
-                assert(() => _getKnob({ name: 'Tools' })).throws();
+                assert(() => _getKnob({ name: 'Tools' }))
+                    .throws('Invalid knob type');
             });
         });
 
@@ -67,13 +68,15 @@ export default ({ assert, describe, it }) => {
 
         describe('given no name', () => {
             it('should throw', () => {
-                assert(() => _getKnob({ label: 'Pirates' })).throws();
+                assert(() => _renderFields([ { label: 'Pirates' } ]))
+                    .throws('Missing required knob name');
             });
         });
 
         describe('given no label', () => {
             it('should throw', () => {
-                assert(() => _getKnob({ name: 'Pirates' })).throws();
+                assert(() => _renderFields([ { name: 'Pirates' } ]))
+                    .throws('Missing required knob label');
             });
         });
 

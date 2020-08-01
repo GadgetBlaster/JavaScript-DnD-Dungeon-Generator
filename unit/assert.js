@@ -183,22 +183,30 @@ export const stringExcludes = (actual, excludes) => {
 };
 
 /** @type {Function} throws */
-export const throws = (func) => {
+export const throws = (func, expected) => {
     let checkFunc = isFunction(func);
 
     if (!checkFunc.isOk) {
         return checkFunc;
     }
 
-    let threw = false;
+    let errorMsg;
 
     try {
         func();
     } catch(e) {
-        threw = true;
+        errorMsg = e.message;
     }
 
-    let msg  = `expected [ ${func.name} ] to throw`;
+    if (!errorMsg) {
+        return {
+            isOk: false,
+            msg: `expected [ ${func.name} ] to throw`,
+        };
+    }
 
-    return { msg, isOk: threw };
+    let isOk = errorMsg === expected;
+    let msg  = `expected [ ${errorMsg} ] to equal [ ${expected} ]`;
+
+    return { msg, isOk };
 };

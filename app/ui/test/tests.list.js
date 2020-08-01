@@ -6,15 +6,15 @@ import { list } from '../list.js';
  */
 export default ({ assert, describe, it }) => {
     describe('list()', () => {
-        describe('given no items', () => {
+        describe('given no `items` param', () => {
             it('should throw', () => {
-                assert(() => list()).throws();
+                assert(() => list()).throws('Items are required for list');
             });
         });
 
         describe('given an empty array', () => {
             it('should throw', () => {
-                assert(() => list([])).throws();
+                assert(() => list([])).throws('Items are required for list');
             });
         });
 

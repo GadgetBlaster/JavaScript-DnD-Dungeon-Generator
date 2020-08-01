@@ -53,7 +53,8 @@ export default ({ assert, describe, it }) => {
 
         describe('given a `name` attribute', () => {
             it('should throw', () => {
-                assert(() => input('widget', { name: 'not-widget' })).throws();
+                assert(() => input('widget', { name: 'not-widget' }))
+                    .throws('Input `attrs` cannot contain a name');
             });
         });
     });
@@ -117,31 +118,36 @@ export default ({ assert, describe, it }) => {
 
         describe('given a `type` attribute', () => {
             it('should throw', () => {
-                assert(() => slider('widget', { type: 'text' })).throws();
-            });
-        });
-
-        describe('given a `min` the same as `max`', () => {
-            it('should throw', () => {
-                assert(() => slider('widget', { min: 1, max: 1 })).throws();
-            });
-        });
-
-        describe('given a `min` greater than `max`', () => {
-            it('should throw', () => {
-                assert(() => slider('widget', { min: 126, max: 12 })).throws();
+                assert(() => slider('widget', { type: 'text' }))
+                    .throws('Slider `attrs` cannot contain a type');
             });
         });
 
         describe('given a `min` that is not a number', () => {
             it('should throw', () => {
-                assert(() => slider('widget', { min: '1' })).throws();
+                assert(() => slider('widget', { min: '1' }))
+                    .throws('Slider `min` must be a number');
             });
         });
 
         describe('given a `max` that is not a number', () => {
             it('should throw', () => {
-                assert(() => slider('widget', { max: '1' })).throws();
+                assert(() => slider('widget', { max: '1' }))
+                    .throws('Slider `max` must be a number');
+            });
+        });
+
+        describe('given a `min` the same as `max`', () => {
+            it('should throw', () => {
+                assert(() => slider('widget', { min: 1, max: 1 }))
+                    .throws('Slider `min` must be less than `max`');
+            });
+        });
+
+        describe('given a `min` greater than `max`', () => {
+            it('should throw', () => {
+                assert(() => slider('widget', { min: 126, max: 12 }))
+                    .throws('Slider `min` must be less than `max`');
             });
         });
     });

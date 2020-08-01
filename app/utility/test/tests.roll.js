@@ -17,25 +17,29 @@ export default ({ assert, describe, it }) => {
 
         describe('given a float for `min`', () => {
             it('should throw', () => {
-                assert(() => { roll(3.1415); }).throws();
+                assert(() => { roll(3.1415); })
+                    .throws('Roll min must be an integer');
             });
         });
 
         describe('given a float for `max`', () => {
             it('should throw', () => {
-                assert(() => { roll(0, 3.1415); }).throws();
+                assert(() => { roll(0, 3.1415); })
+                    .throws('Roll max must be an integer');
             });
         });
 
         describe('given a negative `min`', () => {
             it('should throw', () => {
-                assert(() => { roll(-100); }).throws();
+                assert(() => { roll(-100); })
+                    .throws('Roll min cannot be negative');
             });
         });
 
         describe('given a `min` that is greater than `max`', () => {
             it('should throw', () => {
-                assert(() => { roll(100, 20); }).throws();
+                assert(() => { roll(100, 20); })
+                    .throws('Roll min must less than or equal to max');
             });
         });
 
@@ -71,13 +75,15 @@ export default ({ assert, describe, it }) => {
 
         describe('given no value', () => {
             it('should throw', () => {
-                assert(() => { rollArrayItem(); }).throws();
+                assert(() => { rollArrayItem(); })
+                    .throws('Invalid roll array');
             });
         });
 
         describe('given an empty array', () => {
             it('should throw', () => {
-                assert(() => { rollArrayItem([]); }).throws();
+                assert(() => { rollArrayItem([]); })
+                    .throws('Roll array must have values');
             });
         });
     });
@@ -85,19 +91,22 @@ export default ({ assert, describe, it }) => {
     describe('rollPercentile()', () => {
         describe('given a float', () => {
             it('should throw', () => {
-                assert(() => { rollPercentile(3.1415); }).throws();
+                assert(() => { rollPercentile(3.1415); })
+                    .throws('Percent chance must be an integer');
             });
         });
 
         describe('given an integer less than `1`', () => {
             it('should throw', () => {
-                assert(() => { rollPercentile(0); }).throws();
+                assert(() => { rollPercentile(0); })
+                    .throws('Percent chance must be 1 or greater');
             });
         });
 
         describe('given an integer greater than `100`', () => {
             it('should throw', () => {
-                assert(() => { rollPercentile(216); }).throws();
+                assert(() => { rollPercentile(216); })
+                    .throws('Percent chance cannot exceed 100');
             });
         });
 
@@ -158,31 +167,36 @@ export default ({ assert, describe, it }) => {
 
         describe('given a `config` that is not an array`', () => {
             it('should throw', () => {
-                assert(() => { createProbability('junk'); }).throws();
+                assert(() => { createProbability('junk'); })
+                    .throws('Probability config must be an array');
             });
         });
 
         describe('given an empty `config`', () => {
             it('should throw', () => {
-                assert(() => { createProbability([]); }).throws();
+                assert(() => { createProbability([]); })
+                    .throws('Probability config must have values');
             });
         });
 
         describe('given a `config` that is not a 2 dimensional array', () => {
             it('should throw', () => {
-                assert(() => { createProbability([ 'junk' ]); }).throws();
+                assert(() => { createProbability([ 'junk' ]); })
+                    .throws('Invalid `config` for Map');
             });
         });
 
         describe('given a `config` with invalid map keys', () => {
             it('should throw', () => {
-                assert(() => { createProbability([[ 'bad', 'panda' ]]); }).throws();
+                assert(() => { createProbability([[ 'bad', 'panda' ]]); })
+                    .throws('Probability key "bad" must be an integer');
             });
         });
 
         describe('given a `config` with invalid map values', () => {
             it('should throw', () => {
-                assert(() => { createProbability([[ 23, 99 ]]); }).throws();
+                assert(() => { createProbability([[ 23, 99 ]]); })
+                    .throws('Probability value "99" must be a string');
             });
         });
 
@@ -194,7 +208,7 @@ export default ({ assert, describe, it }) => {
                             [ 0,  'backpack' ],
                             [ 50, 'belt pouch' ]
                         ]);
-                    }).throws();
+                    }).throws('Probability key "0" must be 1 or greater');
                 });
             });
 
@@ -205,7 +219,7 @@ export default ({ assert, describe, it }) => {
                             [ 1,  'backpack' ],
                             [ 102, 'belt pouch' ]
                         ]);
-                    }).throws();
+                    }).throws('Probability key "102" exceeds 100');
                 });
             });
         });

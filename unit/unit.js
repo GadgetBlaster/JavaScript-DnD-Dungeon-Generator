@@ -83,10 +83,10 @@ import { resultMsg } from './output.js';
  * @type {Object<string, string>}
  */
 const scope = {
-    assert  : 'assert',
-    describe: 'describe',
-    it      : 'it',
-    suite   : 'suite',
+    assert  : 'assert()',
+    describe: 'describe()',
+    it      : 'it()',
+    suite   : 'default()',
 };
 
 /**
@@ -147,7 +147,7 @@ export default () => {
         let currentScope = currentEntry.scope;
 
         if (!allowed.includes(currentScope)) {
-            throw new TypeError(`${nextScope} cannot be called inside ${currentScope}`);
+            throw new TypeError(`${nextScope} must be called inside of ${allowed.join(' or ')}`);
         }
     };
 
