@@ -28,7 +28,7 @@ Example `/app/test/tests.app.js`:
 import app from '../app.js';
 
 export default ({ assert, describe, it }) => {
-    describe('#app', () => {
+    describe('app()', () => {
         describe('given the number `23`', () => {
             const result = app(23);
 

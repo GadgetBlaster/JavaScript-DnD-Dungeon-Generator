@@ -17,7 +17,7 @@ import {
  * @param {import('../unit.js').Utility}
  */
 export default ({ assert, describe, it }) => {
-    describe('#dot', () => {
+    describe('dot()', () => {
         it('should return a `span` element', () => {
             let el = dot({});
             assert(el.tagName).equals('SPAN');
@@ -38,7 +38,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#escapeHTML', () => {
+    describe('escapeHTML()', () => {
         describe('given an HTML string', () => {
             it('should return a string with escaped HTML', () => {
                 const html   = '<h1 class="logo">Sal\'s Soups &amp; Sandwiches</h1>';
@@ -48,7 +48,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#fail', () => {
+    describe('fail()', () => {
         describe('given a string', () => {
             it('should return the string wrapped in an `<li>` with the fail CSS class', () => {
                 assert(fail('failure')).equals('<li class="fail">failure</li>');
@@ -56,7 +56,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#info', () => {
+    describe('info()', () => {
         describe('given a string', () => {
             it('should return the string wrapped in an `<li>`', () => {
                 assert(info('info')).equals('<li>info</li>');
@@ -64,7 +64,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#link', () => {
+    describe('link()', () => {
         describe('given `label` and `href`', () => {
             it('should return an html link', () => {
                 assert(link('Mystic Waffle', 'https://www.mysticwaffle.com/'))
@@ -80,7 +80,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#log', () => {
+    describe('log()', () => {
         describe('given no results', () => {
             it('should return an empty string', () => {
                 assert(log([])).equals('');
@@ -126,7 +126,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#nav', () => {
+    describe('nav()', () => {
         describe('given no options', () => {
             const html = nav({});
 
@@ -184,7 +184,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#scopeList', () => {
+    describe('scopeList()', () => {
         describe('given an array of scopes', () => {
             const scopes = [ '/scope/one', '/scope/two' ];
             const html   = scopeList(scopes);
@@ -213,7 +213,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#render', () => {
+    describe('render()', () => {
         describe('given an element and an html string', () => {
             it('should set the html string to the element', () => {
                 const el = document.createElement('h1');
@@ -232,7 +232,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#resultMsg', () => {
+    describe('resultMsg()', () => {
         describe('given an empty array', () => {
             it('should return an empty string', () => {
                 assert(resultMsg([])).equals('');
@@ -267,7 +267,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#summary', () => {
+    describe('summary()', () => {
         describe('errors', () => {
             describe('given `0` errors', () => {
                 it('should return a string that does not contain `Errors`', () => {

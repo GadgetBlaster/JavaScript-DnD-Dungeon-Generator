@@ -8,7 +8,7 @@ import {
  * @param {import('../../../unit/unit.js').Utility}
  */
 export default ({ assert, describe, it }) => {
-    describe('#createAttrs', () => {
+    describe('createAttrs()', () => {
         it('should return a string', () => {
             assert(createAttrs({ class: 'css-class' })).isString();
         });
@@ -53,7 +53,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#element', () => {
+    describe('element()', () => {
         it('should return a string', () => {
             assert(element('p', '')).isString();
         });

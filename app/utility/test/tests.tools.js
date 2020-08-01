@@ -18,7 +18,7 @@ export default ({ assert, describe, it }) => {
 
     // -- Typography Tools ----------------------------------------------------
 
-    describe('#capitalize', () => {
+    describe('capitalize()', () => {
         describe('given a string that starts with a lowercase letter', () => {
             it('should capitalize the first letter in the string', () => {
                 assert(capitalize('joe bob')).equals('Joe bob');
@@ -26,7 +26,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#indefiniteArticle', () => {
+    describe('indefiniteArticle()', () => {
         describe('given a word that does not start with a vowel', () => {
             it('should return `a`', () => {
                 assert(indefiniteArticle('hammoc')).equals('a');
@@ -42,7 +42,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#listSentence', () => {
+    describe('listSentence()', () => {
         describe('given no items', () => {
             it('should return undefined', () => {
                 assert(listSentence([])).isUndefined();
@@ -74,7 +74,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#plural', () => {
+    describe('plural()', () => {
         describe('given a count of 1', () => {
             it('should return the string', () => {
                 assert(plural(1, 'cat')).equals('cat');
@@ -106,7 +106,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#toDash', () => {
+    describe('toDash()', () => {
         describe('given a string with spaces', () => {
             it('should return a lowercased string with the words dash separated', () => {
                 assert(toDash('Teleporting Mythical Creature')).equals('teleporting-mythical-creature');
@@ -114,7 +114,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#toWords', () => {
+    describe('toWords()', () => {
         describe('given a camel case string', () => {
             it('should return a lowercased string broken into multiple words', () => {
                 assert(toWords('bustedBulldozingBrachiosaurus')).equals('busted bulldozing brachiosaurus');
@@ -124,7 +124,7 @@ export default ({ assert, describe, it }) => {
 
     // -- Numeric Tools -------------------------------------------------------
 
-    describe('#isEven', () => {
+    describe('isEven()', () => {
         describe('given an odd number', () => {
             it('should return `false`', () => {
                 assert(isEven(3)).isFalse();
@@ -144,7 +144,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#isOdd', () => {
+    describe('isOdd()', () => {
         describe('given an odd number', () => {
             it('should return `true`', () => {
                 assert(isOdd(1)).isTrue();
@@ -166,7 +166,7 @@ export default ({ assert, describe, it }) => {
 
     // -- Array Tools ---------------------------------------------------------
 
-    describe('#chunk', () => {
+    describe('chunk()', () => {
         describe('given an empty array', () => {
             it('should return an empty array', () => {
                 let chunks = chunk([], 0);

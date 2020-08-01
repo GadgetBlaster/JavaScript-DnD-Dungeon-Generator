@@ -23,7 +23,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#runUnits', () => {
+    describe('runUnits()', () => {
         const { runUnits, getSummary } = unit();
 
         let called = false;
@@ -67,7 +67,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#onError', () => {
+    describe('onError()', () => {
         const { onError, getSummary } = unit();
 
         onError('Some unfortunate error');
@@ -135,7 +135,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#getSummary', () => {
+    describe('getSummary()', () => {
         describe('summary properties', () => {
             const { getSummary } = unit();
             const summary = getSummary();
@@ -377,7 +377,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#assert', () => {
+    describe('assert()', () => {
         unit().runUnits('/fake/suite', (utility) => {
             utility.describe('desc', () => {
                 utility.it('it', () => {
@@ -420,7 +420,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#_runAssert', () => {
+    describe('_runAssert()', () => {
         const { runUnits, getSummary } = unit();
 
         describe('when an assertion is made', () => {
@@ -498,7 +498,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#describe', () => {
+    describe('describe()', () => {
         describe('when one `describe` function is called', () => {
             const { runUnits, getSummary } = unit();
 
@@ -561,7 +561,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#it', () => {
+    describe('it()', () => {
         const { runUnits, getSummary } = unit();
 
         runUnits('/fake/suite', (utility) => {

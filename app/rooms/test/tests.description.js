@@ -19,7 +19,7 @@ import conditions from '../../attributes/condition.js';
  * @param {import('../../../unit/unit.js').Utility}
  */
 export default ({ assert, describe, it }) => {
-    describe('#getMapDescription', () => {
+    describe('getMapDescription()', () => {
         it('should include a title', () => {
             assert(getMapDescription()).stringIncludes('<h3>Map</h3>');
         });
@@ -32,7 +32,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#_getKeyDetail', () => {
+    describe('_getKeyDetail()', () => {
         [ ...lockable, 'Undefined key description for door type' ].forEach((type) => {
             describe(`key type \`${type}\``, () => {
                 const result = _getKeyDetail(type);
@@ -48,7 +48,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#getKeyDescription', () => {
+    describe('getKeyDescription()', () => {
         describe('given am array with two Key objects', () => {
             const keys = [
                 {
@@ -84,7 +84,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#getRoomTypeLabel', () => {
+    describe('getRoomTypeLabel()', () => {
         Object.values(roomTypes).forEach((type) => {
             describe(`room type \`${type}\``, () => {
                 const result = getRoomTypeLabel(type);
@@ -118,7 +118,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#_getDescription', () => {
+    describe('_getDescription()', () => {
         describe('given no parameters', () => {
             it('should return `You enter a room`', () => {
                 assert(_getDescription()).equals('You enter a room');

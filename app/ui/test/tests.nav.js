@@ -5,13 +5,13 @@ import { nav, setActive, getActive } from '../nav.js';
  * @param {import('../../../unit/unit.js').Utility}
  */
 export default ({ assert, describe, it }) => {
-    describe('#nav', () => {
+    describe('nav()', () => {
         it('should be a string', () => {
             assert(nav).isString();
         });
     });
 
-    describe('#setActive', () => {
+    describe('setActive()', () => {
         describe('given a container with three nav buttons', () => {
             const container = document.createElement('div');
             container.innerHTML = `
@@ -46,7 +46,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#getActive', () => {
+    describe('getActive()', () => {
         describe('given a container with three nav buttons', () => {
             const container = document.createElement('div');
             container.innerHTML = `

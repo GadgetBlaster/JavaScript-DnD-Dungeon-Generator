@@ -11,7 +11,7 @@ const defaults = {
  * @param {import('../../../unit/unit.js').Utility}
  */
 export default ({ assert, describe, it }) => {
-    describe('#getOutput', () => {
+    describe('getOutput()', () => {
         describe('given no assertions', () => {
             let output = getOutput({ ...defaults });
 

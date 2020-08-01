@@ -5,7 +5,7 @@ import { list } from '../list.js';
  * @param {import('../../../unit/unit.js').Utility}
  */
 export default ({ assert, describe, it }) => {
-    describe('#list', () => {
+    describe('list()', () => {
         describe('given no items', () => {
             it('should throw', () => {
                 assert(() => list()).throws();

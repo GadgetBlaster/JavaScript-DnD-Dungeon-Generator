@@ -5,7 +5,7 @@ import { button, infoLabel } from '../button.js';
  * @param {import('../../../unit/unit.js').Utility}
  */
 export default ({ assert, describe, it }) => {
-    describe('#button', () => {
+    describe('button()', () => {
         describe('given a `label` and an `action`', () => {
             it('should return an html button string', () => {
                 let result = button('click me', 'magic-missile');

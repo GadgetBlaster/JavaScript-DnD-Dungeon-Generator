@@ -14,7 +14,7 @@ import { typeSelect, typeNumber, typeRange } from '../../knobs.js';
  * @param {import('../../../unit/unit.js').Utility}
  */
 export default ({ assert, describe, it }) => {
-    describe('#submitButton', () => {
+    describe('submitButton()', () => {
         it('should be a string', () => {
             assert(submitButton).isString();
         });
@@ -32,7 +32,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#_getKnob', () => {
+    describe('_getKnob()', () => {
         describe('given an invalid type', () => {
             it('should throw', () => {
                 assert(() => _getKnob({ name: 'Tools' })).throws();
@@ -58,7 +58,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#_renderFields', () => {
+    describe('_renderFields()', () => {
         describe('given an empty array', () => {
             it('should return an empty string', () => {
                 assert(_renderFields([])).equals('');
@@ -150,7 +150,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#renderKnobs', () => {
+    describe('renderKnobs()', () => {
         describe('given an empty array', () => {
             it('should return an empty string', () => {
                 assert(renderKnobs([])).equals('');
@@ -221,7 +221,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#getFormData', () => {
+    describe('getFormData()', () => {
         describe('given an element with knob child elements', () => {
             const container = document.createElement('div');
 

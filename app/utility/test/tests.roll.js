@@ -10,7 +10,7 @@ import {
  * @param {import('../../../unit/unit.js').Utility}
  */
 export default ({ assert, describe, it }) => {
-    describe('#roll', () => {
+    describe('roll()', () => {
         it('should return a number', () => {
             assert(roll()).isNumber();
         });
@@ -53,7 +53,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#rollArrayItem', () => {
+    describe('rollArrayItem()', () => {
         describe('given an array with a single item', () => {
             it('should return the item', () => {
                 assert(rollArrayItem([ '20' ])).equals('20');
@@ -82,7 +82,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#rollPercentile', () => {
+    describe('rollPercentile()', () => {
         describe('given a float', () => {
             it('should throw', () => {
                 assert(() => { rollPercentile(3.1415); }).throws();
@@ -108,7 +108,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#createProbability', () => {
+    describe('createProbability()', () => {
         describe('given a valid `config`', () => {
             const probability = createProbability([[ 23, 'boats' ]]);
 

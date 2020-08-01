@@ -10,7 +10,7 @@ import {
  * @param {import('../../../unit/unit.js').Utility}
  */
 export default ({ assert, describe, it }) => {
-    describe('#fieldLabel', () => {
+    describe('fieldLabel()', () => {
         describe('given a `label`', () => {
             it('should return a string', () => {
                 assert(fieldLabel('Widget')).isString();
@@ -22,7 +22,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#input', () => {
+    describe('input()', () => {
         describe('given a `name`', () => {
             it('should return a string', () => {
                 assert(input('widget')).isString();
@@ -58,37 +58,35 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#select', () => {
-        describe('#select', () => {
-            describe('given a `name`', () => {
-                it('should return a string', () => {
-                    assert(select('widget', [])).isString();
-                });
-
-                it('should return an html select element string with `name="widget"`', () => {
-                    assert(select('widget', [])).equals('<select name="widget"></select>');
-                });
+    describe('select()', () => {
+        describe('given a `name`', () => {
+            it('should return a string', () => {
+                assert(select('widget', [])).isString();
             });
 
-            describe('given 3 select options', () => {
-                it('should return an html select element string three options', () => {
-                    let result = select('widget', [ 'a', 'two', 'pi' ]);
-                    let expect = '<select name="widget"><option value="a">a</option><option value="two">two</option><option value="pi">pi</option></select>';
-                    assert(result).equals(expect);
-               });
+            it('should return an html select element string with `name="widget"`', () => {
+                assert(select('widget', [])).equals('<select name="widget"></select>');
             });
+        });
 
-            describe('given a camelCase option', () => {
-                it('should convert the camelCase option to words on the option label', () => {
-                    let result = select('widget', [ 'bloodthirstyBarbarians' ]);
-                    let expect = '<select name="widget"><option value="bloodthirstyBarbarians">bloodthirsty barbarians</option></select>';
-                    assert(result).equals(expect);
-               });
+        describe('given 3 select options', () => {
+            it('should return an html select element string three options', () => {
+                let result = select('widget', [ 'a', 'two', 'pi' ]);
+                let expect = '<select name="widget"><option value="a">a</option><option value="two">two</option><option value="pi">pi</option></select>';
+                assert(result).equals(expect);
+            });
+        });
+
+        describe('given a camelCase option', () => {
+            it('should convert the camelCase option to words on the option label', () => {
+                let result = select('widget', [ 'bloodthirstyBarbarians' ]);
+                let expect = '<select name="widget"><option value="bloodthirstyBarbarians">bloodthirsty barbarians</option></select>';
+                assert(result).equals(expect);
             });
         });
     });
 
-    describe('#slider', () => {
+    describe('slider()', () => {
         describe('given a `name`', () => {
             it('should return a string', () => {
                 assert(slider('widget')).isString();

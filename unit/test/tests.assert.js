@@ -126,7 +126,7 @@ let nonUndefinedTypes = (() => excludingType('undefined'))();
  */
 export default ({ assert, describe, it }) => {
     assertions.forEach((func) => {
-        describe(`#${func.name}`, () => {
+        describe(`${func.name}()`, () => {
             let result = func();
 
             it('should return an Object', () => assert(result).isObject());
@@ -135,7 +135,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#equals', () => {
+    describe('equals()', () => {
         describe('given two strings that are equal', () => {
             it('should return a truthy `isOk` property', () => {
                 assert(equals('test', 'test').isOk).isTrue();
@@ -167,7 +167,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#equalsArray', () => {
+    describe('equalsArray()', () => {
         nonArrayTypes.forEach(([ key, value ]) => {
             describe(`given ${key}`, () => {
                 it('should return a falsy `isOk` property', () => {
@@ -207,7 +207,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#isArray', () => {
+    describe('isArray()', () => {
         Object.entries(groups.array).forEach(([ key, value ]) => {
             describe(`given ${key}`, () => {
                 it('should return a truthy `isOk` property', () => {
@@ -225,7 +225,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#isBoolean', () => {
+    describe('isBoolean()', () => {
         Object.entries(groups.boolean).forEach(([ key, value ]) => {
             describe(`given ${key}`, () => {
                 it('should return a truthy `isOk` property', () => {
@@ -243,7 +243,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#isFalse', () => {
+    describe('isFalse()', () => {
         describe('given `false`', () => {
             it('should return a truthy `isOk` property', () => {
                 assert(isFalse(false).isOk).isTrue();
@@ -265,7 +265,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#isFunction', () => {
+    describe('isFunction()', () => {
         Object.entries(groups.function).forEach(([ key, value ]) => {
             describe(`given ${key}`, () => {
                 it('should return a truthy `isOk` property', () => {
@@ -283,7 +283,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#isHtmlTag', () => {
+    describe('isHtmlTag()', () => {
         describe('given a string that is the desired html tag', () => {
             it('should return true', () => {
                 assert(isHtmlTag('<strong>Wizards!</strong>', 'strong').isOk).isTrue();
@@ -348,7 +348,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#isNull', () => {
+    describe('isNull()', () => {
         Object.entries(groups.null).forEach(([ key, value ]) => {
             describe(`given ${key}`, () => {
                 it('should return a truthy `isOk` property', () => {
@@ -366,7 +366,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#isNumber', () => {
+    describe('isNumber()', () => {
         Object.entries(groups.number).forEach(([ key, value ]) => {
             describe(`given ${key}`, () => {
                 it('should return a truthy `isOk` property', () => {
@@ -390,7 +390,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#isObject', () => {
+    describe('isObject()', () => {
         Object.entries(groups.object).forEach(([ key, value ]) => {
             describe(`given ${key}`, () => {
                 it('should return a truthy `isOk` property', () => {
@@ -408,7 +408,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#isString', () => {
+    describe('isString()', () => {
         Object.entries(groups.string).forEach(([ key, value ]) => {
             describe(`given ${key}`, () => {
                 it('should return a truthy `isOk` property', () => {
@@ -426,7 +426,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#isTrue', () => {
+    describe('isTrue()', () => {
         describe('given `true`', () => {
             it('should return a truthy `isOk` property', () => {
                 assert(isTrue(true).isOk).isTrue();
@@ -448,7 +448,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#isUndefined', () => {
+    describe('isUndefined()', () => {
         describe('given nothing', () => {
             it('should return a truthy `isOk` property', () => {
                 assert(isUndefined().isOk).isTrue();
@@ -472,7 +472,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#stringIncludes', () => {
+    describe('stringIncludes()', () => {
         describe('given a non-string type', () => {
             it('should return a falsy `isOk` property', () => {
                 assert(stringIncludes().isOk).isFalse();
@@ -492,7 +492,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#stringExcludes', () => {
+    describe('stringExcludes()', () => {
         describe('given a non-string type', () => {
             it('should return a falsy `isOk` property', () => {
                 assert(stringExcludes().isOk).isFalse();
@@ -512,7 +512,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#throws', () => {
+    describe('throws()', () => {
         describe('given a non-function', () => {
             it('should return a falsy `isOk` property', () => {
                 assert(throws().isOk).isFalse();

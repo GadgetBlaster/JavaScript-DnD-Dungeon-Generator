@@ -9,7 +9,7 @@ import {
  * @param {import('../../../unit/unit.js').Utility}
  */
 export default ({ assert, describe, it }) => {
-    describe('#attachActions', () => {
+    describe('attachActions()', () => {
         describe('given a container element and an `actions` object', () => {
             describe('when a child element is clicked', () => {
                 describe('when the child has a `data-action` attribute', () => {
@@ -47,7 +47,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#toggleAccordion', () => {
+    describe('toggleAccordion()', () => {
         describe('given a container', () => {
             describe('when there are 3 child accordion elements', () => {
                 const count     = 3;
@@ -113,7 +113,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('#toggleVisibility', () => {
+    describe('toggleVisibility()', () => {
         describe('given a container', () => {
             describe('when there is a child element', () => {
                 const target    = 'elf';
