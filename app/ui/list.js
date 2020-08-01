@@ -13,7 +13,7 @@ import { element } from '../utility/html.js';
  */
 export const list = (items, attrs) => {
     if (!items || !items.length) {
-        throw new Error('Items are required for lists');
+        throw new TypeError('Items are required for list');
     }
 
     let content = `<li>${items.join('</li><li>')}</li>`;

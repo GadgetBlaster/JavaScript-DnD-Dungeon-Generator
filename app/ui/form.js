@@ -16,7 +16,7 @@ import { typeSelect, typeNumber, typeRange } from '../knobs.js';
  *
  * @throws
  */
-const _throw = (message) => { throw new Error(message); };
+const _throw = (message) => { throw new TypeError(message); };
 
 /**
  * @typedef {import('../knobs.js').KnobSettings} KnobSettings
@@ -56,7 +56,7 @@ export const _getKnob = (settings) => {
         case typeRange:
             return slider(name, { min, max, value });
         default:
-            throw new Error('Invalid knob type');
+            throw new TypeError('Invalid knob type');
     }
 };
 

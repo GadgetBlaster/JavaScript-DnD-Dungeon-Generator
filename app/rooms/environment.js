@@ -80,7 +80,7 @@ const getStructureDesc = (settings, roomStructure) => {
             return `The stone ${type} is reinforced with wooden beams and pillars`;
 
         default:
-            throw 'Invalid structure';
+            throw new TypeError('Invalid structure type');
     }
 };
 
@@ -122,7 +122,7 @@ const getGroundDesc = () => {
             return 'The ground is extremely uneven';
 
         default:
-            throw 'Undefined ground';
+            throw new TypeError('Invalid ground type');
     }
 };
 
@@ -154,7 +154,7 @@ const getWallDesc = () => {
             return 'The walls are covered in thick spider webs';
 
         default:
-            throw 'Undefined wall';
+            throw new TypeError('Invalid wall type');
     }
 };
 
@@ -191,7 +191,7 @@ const getAirDesc = () => {
             return 'The room is filled with smoke from a hastily extinguished fire';
 
         default:
-            throw 'Undefined air';
+            throw new TypeError('Invalid air type');
     }
 };
 

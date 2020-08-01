@@ -54,7 +54,7 @@ export const button = (label, action, options = {}) => {
     } = options;
 
     if (!validSizes.has(size)) {
-        throw new Error(`Invalid button size: ${size}`);
+        throw new TypeError(`Invalid button size: ${size}`);
     }
 
     let dataAttrs = {

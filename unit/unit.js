@@ -141,13 +141,13 @@ export default () => {
         let currentEntry = current[current.length -1];
 
         if (!currentEntry) {
-            throw new Error('No test entries');
+            throw new TypeError('No test entries');
         }
 
         let currentScope = currentEntry.scope;
 
         if (!allowed.includes(currentScope)) {
-            throw new Error(`${nextScope} cannot be called inside ${currentScope}`);
+            throw new TypeError(`${nextScope} cannot be called inside ${currentScope}`);
         }
     };
 

@@ -197,7 +197,7 @@ const getDoorDirection = ([ x, y ], room) => {
     } else if (Number(x) === (room.x - 1)) {
         return directions.west;
     } else {
-        throw 'Invalid direction';
+        throw new TypeError('Invalid direction');
     }
 };
 

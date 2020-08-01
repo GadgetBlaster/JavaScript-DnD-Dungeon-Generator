@@ -58,7 +58,7 @@ const groups = {
     },
     function: {
         'a function': () => {},
-        'a function that throws': () => { throw new Error('Junk'); },
+        'a function that throws': () => { throw new TypeError('Junk'); },
     },
     null: {
         '`null`': null,
@@ -527,7 +527,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given a function that throws', () => {
             it('should return a truthy `isOk` property', () => {
-                assert(throws(() => { throw new Error('Junk'); }).isOk).isTrue();
+                assert(throws(() => { throw new TypeError('Junk'); }).isOk).isTrue();
             });
         });
     });

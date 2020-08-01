@@ -144,7 +144,7 @@ export default ({ assert, describe, it }) => {
 
         const onError  = (error) => { onErrorResult = error; };
         const runUnits = (_, tests) => { tests(); };
-        const suite    = { '/some/scope': () => { throw new Error('Whoops'); } };
+        const suite    = { '/some/scope': () => { throw new TypeError('Whoops'); } };
 
         runSuite({ ...mockUnit, onError, runUnits }, suite);
 
@@ -161,7 +161,7 @@ export default ({ assert, describe, it }) => {
 
         const onError  = (error) => { onErrorResult = error; };
         const runUnits = (_, tests) => { tests(); };
-        const suite    = { '/some/scope': () => { throw 'Something is wrong'; } };
+        const suite    = { '/some/scope': () => { throw new TypeError('Something is wrong'); } };
 
         runSuite({ ...mockUnit, onError, runUnits }, suite);
 

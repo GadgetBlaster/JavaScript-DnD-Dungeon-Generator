@@ -11,7 +11,7 @@ const maxPercent = 100;
  *
  * @throws
  */
-const _throw = (message) => { throw new Error(message); };
+const _throw = (message) => { throw new TypeError(message); };
 
 /**
  * Roll

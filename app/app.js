@@ -126,7 +126,7 @@ const generate = () => {
     let generator = generators[page];
 
     if (!generator) {
-        throw 'Invalid page';
+        throw new Error('Invalid page');
     }
 
     contentContainer.innerHTML = generator(settings);

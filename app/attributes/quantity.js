@@ -44,7 +44,7 @@ export const getRange = (value) => {
     let index = list.indexOf(value);
 
     if (index === -1) {
-        throw `Invalid quantity value: ${value}`;
+        throw new TypeError(`Invalid quantity, ${value}`);
     }
 
     let min = range[index];

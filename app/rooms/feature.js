@@ -131,7 +131,7 @@ const getFeatureDesc = (type) => {
             return 'The rom features a well that appears to have running water at the bottom';
 
         default:
-            throw 'Undefined feature';
+            throw new TypeError('Invalid feature type');
     }
 };
 

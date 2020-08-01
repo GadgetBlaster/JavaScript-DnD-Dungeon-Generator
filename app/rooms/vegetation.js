@@ -53,7 +53,7 @@ export const getVegetationDescription = () => {
                 return `vines ${roll() ? 'cover' : 'cling to '} the walls`;
 
             default:
-                throw 'Undefined vegetation';
+                throw new TypeError('Invalid vegetation type');
         }
     });
 

@@ -11,7 +11,7 @@ import { toWords } from '../utility/tools.js';
  *
  * @throws
  */
-const _throw = (message) => { throw new Error(message); };
+const _throw = (message) => { throw new TypeError(message); };
 
 /**
  * Field label
