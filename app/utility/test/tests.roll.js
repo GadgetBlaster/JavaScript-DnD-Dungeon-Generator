@@ -18,28 +18,28 @@ export default ({ assert, describe, it }) => {
         describe('given a float for `min`', () => {
             it('should throw', () => {
                 assert(() => { roll(3.1415); })
-                    .throws('Roll min must be an integer');
+                    .throws('Roll `min` must be an integer');
             });
         });
 
         describe('given a float for `max`', () => {
             it('should throw', () => {
                 assert(() => { roll(0, 3.1415); })
-                    .throws('Roll max must be an integer');
+                    .throws('Roll `max` must be an integer');
             });
         });
 
         describe('given a negative `min`', () => {
             it('should throw', () => {
                 assert(() => { roll(-100); })
-                    .throws('Roll min cannot be negative');
+                    .throws('Roll `min` cannot be negative');
             });
         });
 
         describe('given a `min` that is greater than `max`', () => {
             it('should throw', () => {
                 assert(() => { roll(100, 20); })
-                    .throws('Roll min must less than or equal to max');
+                    .throws('Roll `min` must less than or equal to `max`');
             });
         });
 
@@ -92,21 +92,21 @@ export default ({ assert, describe, it }) => {
         describe('given a float', () => {
             it('should throw', () => {
                 assert(() => { rollPercentile(3.1415); })
-                    .throws('Percent chance must be an integer');
+                    .throws('Percent `chance` must be an integer');
             });
         });
 
         describe('given an integer less than `1`', () => {
             it('should throw', () => {
                 assert(() => { rollPercentile(0); })
-                    .throws('Percent chance must be 1 or greater');
+                    .throws('Percent `chance` must be 1 or greater');
             });
         });
 
         describe('given an integer greater than `100`', () => {
             it('should throw', () => {
                 assert(() => { rollPercentile(216); })
-                    .throws('Percent chance cannot exceed 100');
+                    .throws('Percent `chance` cannot exceed 100');
             });
         });
 
@@ -168,7 +168,7 @@ export default ({ assert, describe, it }) => {
         describe('given a `config` that is not an array`', () => {
             it('should throw', () => {
                 assert(() => { createProbability('junk'); })
-                    .throws('Probability config must be an array');
+                    .throws('Probability `config` must be an array');
             });
         });
 

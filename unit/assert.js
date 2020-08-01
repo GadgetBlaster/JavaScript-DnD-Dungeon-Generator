@@ -204,7 +204,7 @@ export const throws = (func, expected) => {
             msg: `expected [ ${func.name} ] to throw`,
         };
     }
-
+    console.log(errorMsg);
     let isOk = errorMsg === expected;
     let msg  = `expected [ ${errorMsg} ] to equal [ ${expected} ]`;
 
