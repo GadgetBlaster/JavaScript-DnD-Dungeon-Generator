@@ -13,6 +13,18 @@ const rarity = {
 
 export default rarity;
 
+/**
+ * Indicate rarity
+ *
+ * @type {Set<string>}
+ */
+export const indicateRarity = new Set([
+    rarity.exotic,
+    rarity.legendary,
+    rarity.rare,
+    rarity.uncommon,
+]);
+
 export const list = Object.keys(rarity);
 
 let {

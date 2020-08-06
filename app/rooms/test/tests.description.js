@@ -1,19 +1,26 @@
 
 import {
+    _getContentDescription,
+    _getContentRarityDetail,
+    _getDescription,
+    _getFurnitureDetail,
     _getKeyDetail,
     getKeyDescription,
     getMapDescription,
     getRoomTypeLabel,
-    _getDescription,
 } from '../description.js';
 
-import { lockable } from '../door.js';
 import { directions } from '../../dungeons/map.js';
-import roomTypes, { appendRoomTypes } from '../../rooms/type.js';
+import { furnitureQuantity } from '../../items/types/furnishing.js';
 import { knobs } from '../../knobs.js';
-import sizes from '../../attributes/size.js';
-import quantity from '../../attributes/quantity.js';
+import { lockable } from '../door.js';
+import { random } from '../../utility/random.js';
 import conditions from '../../attributes/condition.js';
+import quantity, { list as quantityList } from '../../attributes/quantity.js';
+import rarities, { indicateRarity } from '../../attributes/rarity.js';
+import roomTypes, { appendRoomTypes } from '../../rooms/type.js';
+import sizes from '../../attributes/size.js';
+import rarity from '../../attributes/rarity.js';
 
 /**
  * @param {import('../../../unit/unit.js').Utility}
@@ -119,7 +126,7 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('_getDescription()', () => {
-        describe('given no parameters', () => {
+        describe('given no settings', () => {
             it('should return `You enter a room`', () => {
                 assert(_getDescription()).equals('You enter a room');
             });
@@ -194,9 +201,94 @@ export default ({ assert, describe, it }) => {
             });
 
             describe('given a room condition other than average', () => {
-                it('should return a description including `in`, the condition, and `condition`', () => {
-                    const settings = { [knobs.roomCondition]: conditions.busted };
-                    assert(_getDescription(settings)).stringIncludes('in busted condition');
+                Object.values(conditions).filter((condition) => condition !== conditions.average).forEach((condition) => {
+                    it(`should return a description including \`in ${condition} condition\``, () => {
+                        const settings = { [knobs.roomCondition]: condition };
+                        assert(_getDescription(settings)).stringIncludes(`in ${condition} condition`);
+                    });
+                });
+            });
+        });
+    });
+
+    describe('_getContentRarityDetail()', () => {
+        describe('given a rarity of `random`', () => {
+            it('should return an empty string', () => {
+                assert(_getContentRarityDetail(random)).equals('');
+            });
+        });
+
+        describe('given a rarity that should not be indicated', () => {
+            Object.values(rarities).filter((rarity) => !indicateRarity.has(rarity)).forEach((rarity) => {
+                it('should return `ordinary`', () => {
+                    assert(_getContentRarityDetail(rarity)).equals('ordinary');
+                });
+            });
+        });
+
+        describe('given a rarity that should be indicated', () => {
+            Object.values(rarities).filter((rarity) => indicateRarity.has(rarity)).forEach((rarity) => {
+                it('should return the rarity', () => {
+                    assert(_getContentRarityDetail(rarity)).equals(rarity);
+                });
+            });
+        });
+    });
+
+    describe('_getFurnitureDetail()', () => {
+        let details = {
+            [furnitureQuantity.none]: '',
+            [furnitureQuantity.minimum]: 'minimal furnishings',
+            [furnitureQuantity.sparse]: 'sparse furnishings',
+            [furnitureQuantity.average]: 'some furniture',
+            [furnitureQuantity.furnished]: 'some furniture',
+        };
+
+        Object.values(furnitureQuantity).forEach((roomFurnishing) => {
+            it(`should return ${details[roomFurnishing]}`, () => {
+                assert(_getFurnitureDetail(roomFurnishing)).equals(details[roomFurnishing]);
+            });
+        });
+    });
+
+    describe('_getContentsDescription()', () => {
+        describe('given no settings', () => {
+            it('should return `undefined`', () => {
+                assert(_getContentDescription()).isUndefined();
+            });
+        });
+
+        describe('given an item quantity of zero', () => {
+            it('should return `undefined`', () => {
+                assert(_getContentDescription({ [knobs.itemQuantity]: quantity.zero })).isUndefined();
+            });
+        });
+
+        quantityList.filter((itemQuantity) => itemQuantity !== quantity.zero).forEach((itemQuantity) => {
+            describe(`given an item rarity of \`rare\` and an item quantity of ${itemQuantity}`, () => {
+                it('should contain the word `rare`', () => {
+                    assert(_getContentDescription({
+                        [knobs.itemRarity]: rarity.rare,
+                        [knobs.itemQuantity]: itemQuantity,
+                    })).stringIncludes(rarity.rare);
+                });
+            });
+
+            describe(`given a room furnishing of \`furnished\` and an item quantity of ${itemQuantity}`, () => {
+                it('should contain the word `furniture`', () => {
+                    assert(_getContentDescription({
+                        [knobs.roomFurnishing]: furnitureQuantity.furnished,
+                        [knobs.itemQuantity]: itemQuantity,
+                    })).stringIncludes('furniture');
+                });
+            });
+
+            describe(`given a room type and an item quantity of ${itemQuantity}`, () => {
+                it('should contain the room type', () => {
+                    assert(_getContentDescription({
+                        [knobs.roomType]: 'fake room type',
+                        [knobs.itemQuantity]: itemQuantity,
+                    })).stringIncludes('fake room type');
                 });
             });
         });

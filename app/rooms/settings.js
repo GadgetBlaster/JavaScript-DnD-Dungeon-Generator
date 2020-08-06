@@ -18,7 +18,7 @@ const uniformRarityChance    = 10;
  *
  * @typedef {Object} RoomSettings
  *
- * @property {string} [knobs.itemCondition]
+ * @property {string} itemCondition
  * @property {string} itemQuantity
  * @property {string} itemQuantity
  * @property {string} itemRarity

@@ -9,17 +9,16 @@ import { list } from '../ui/list.js';
 
 import { knobs } from '../knobs.js';
 
+import { indicateRarity } from '../attributes/rarity.js';
 import condition from '../attributes/condition.js';
 import quantity from '../attributes/quantity.js';
-import rarity from '../attributes/rarity.js';
 import size from '../attributes/size.js';
 
 import { cellFeet } from '../dungeons/grid.js';
 
 import { furnitureQuantity } from '../items/types/furnishing.js';
 
-// TODO pluralize roomTypes, doorTypes, etc
-import roomType, { appendRoomTypes } from '../rooms/type.js';
+import roomTypes, { appendRoomTypes } from '../rooms/type.js';
 
 import { getEnvironmentDescription } from './environment.js';
 import doorType, { appendDoorway, outside } from './door.js';
@@ -110,7 +109,7 @@ export const getRoomTypeLabel = (type) => toWords(type) + (appendRoomTypes.has(t
 /**
  * Get description
  *
- * @param {RoomSettings} settings
+ * @param {RoomSettings} [settings]
  *
  * @returns {string}
  */
@@ -119,10 +118,10 @@ export const _getDescription = (settings = {}) => {
         [knobs.itemQuantity]:  itemQuantity,
         [knobs.roomCondition]: roomCondition,
         [knobs.roomSize]:      roomSize,
-        [knobs.roomType]:      type = roomType.room,
+        [knobs.roomType]:      roomType = roomTypes.room,
     } = settings;
 
-    let typeString = getRoomTypeLabel(type);
+    let typeString = getRoomTypeLabel(roomType);
 
     if (roomSize && roomSize === size.medium) {
         roomSize = 'medium sized';
@@ -139,41 +138,64 @@ export const _getDescription = (settings = {}) => {
     return sentence;
 };
 
-const contentsRarity = new Set([
-    rarity.exotic,
-    rarity.legendary,
-    rarity.rare,
-    rarity.uncommon,
-]);
+/**
+ * Get content rarity detail
+ *
+ * @param {string} rarity
+ *
+ * @returns {string}
+ */
+export const _getContentRarityDetail = (rarity) => {
+    let defaultRarity = rarity === random ? '' : 'ordinary';
+    return indicateRarity.has(rarity) ? rarity : defaultRarity;
+};
 
-const getContentsDesc = (settings) => {
-    let {
-        [knobs.itemQuantity]  : itemQuantity,
-        [knobs.itemRarity]    : itemRarity,
-        [knobs.roomFurnishing]: furnitureQuantitySetting,
-        [knobs.roomType]      : roomType,
-    } = settings;
-
-    let type = getRoomTypeLabel(roomType).toLowerCase();
-
-    let defaultRarity  = itemRarity === random ? '' : 'ordinary';
-    let rarity         = contentsRarity.has(itemRarity) ? itemRarity : defaultRarity;
-    let furniture      = '';
-
-    switch (furnitureQuantitySetting) {
+/**
+ * Get furniture detail
+ *
+ * @param {string} roomFurnishing
+ *
+ * @returns {string}
+ */
+export const _getFurnitureDetail = (roomFurnishing) => {
+    switch (roomFurnishing) {
         case furnitureQuantity.minimum:
-            furniture = 'minimal furnishings'
-            break;
+            return 'minimal furnishings';
 
         case furnitureQuantity.sparse:
-            furniture = 'sparse furnishings'
-            break;
+            return 'sparse furnishings';
 
         case furnitureQuantity.average:
         case furnitureQuantity.furnished:
-            furniture = 'some furniture';
-            break;
+            return 'some furniture';
+
+        default:
+            return '';
     }
+};
+
+/**
+ * Get contents description
+ *
+ * @param {RoomSettings} [settings]
+ *
+ * @returns {string}
+ */
+export const _getContentDescription = (settings = {}) => {
+    let {
+        [knobs.itemQuantity]  : itemQuantity,
+        [knobs.itemRarity]    : itemRarity,
+        [knobs.roomFurnishing]: roomFurnishing,
+        [knobs.roomType]      : roomType = roomTypes.room,
+    } = settings;
+
+    if (itemQuantity === quantity.zero) {
+        return;
+    }
+
+    let furniture = _getFurnitureDetail(roomFurnishing);
+    let rarity    = _getContentRarityDetail(itemRarity);
+    let type      = getRoomTypeLabel(roomType).toLowerCase();
 
     let furnitureText;
 
@@ -193,7 +215,7 @@ const getContentsDesc = (settings) => {
         case quantity.some:
         case quantity.several:
             furnitureText = furniture ? (furniture + ' and ' ) : '';
-            return `You can see ${furnitureText}${itemQuantity} ${rarity} items as you search around`;
+            return `You can see ${furnitureText}${itemQuantity} ${rarity} items as you search around the ${type}`;
 
         case quantity.many:
             furnitureText = furniture ? (' and ' + furniture) : '';
@@ -202,9 +224,6 @@ const getContentsDesc = (settings) => {
         case quantity.numerous:
             furnitureText = furniture ? (' amongst ' + furniture ) : '';
             return `There are numerous ${rarity} objects littering the ${type}${furnitureText}`;
-
-        case quantity.zero:
-            return;
 
         default:
             console.warn(`Undescribed item quantity: ${itemQuantity}`);
@@ -324,7 +343,7 @@ export const getRoomDescription = (room, roomDoors) => {
     } = settings;
 
     let numberLabel = roomCount > 1 ? ` ${roomNumber}` : '';
-    let typeLabel   = type !== roomType.room ? ` - ${capitalize(getRoomTypeLabel(type))}` : '';
+    let typeLabel   = type !== roomTypes.room ? ` - ${capitalize(getRoomTypeLabel(type))}` : '';
     let dimensions  = element('span', getRoomDimensions(room));
     let roomTitle   = title(`Room${numberLabel}${typeLabel}`);
     let header      = element('header', roomTitle + dimensions);
@@ -332,10 +351,10 @@ export const getRoomDescription = (room, roomDoors) => {
     let content = header + subtitle('Description') + paragraph([
         _getDescription(settings),
         ...getEnvironmentDescription(settings),
-        getContentsDesc(settings),
+        _getContentDescription(settings),
         getItemConditionDescription(settings),
         ...(roomDoors ? [ getDoorwayDescription(roomDoors) ] : []),
-    ].filter(Boolean).join('. ')+'.')
+    ].filter(Boolean).join('. ')+'.');
 
     return content;
 };
