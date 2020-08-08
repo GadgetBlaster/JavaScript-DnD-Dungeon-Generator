@@ -144,7 +144,7 @@ export default ({ assert, describe, it }) => {
             });
         });
 
-        describe('given a room size of medium', () => {
+        describe('given a room size of `medium`', () => {
             it('should return a description including `medium sized room`', () => {
                 assert(_getDescription({ [knobs.roomSize]: sizes.medium })).stringIncludes('medium sized room');
             });
@@ -157,7 +157,7 @@ export default ({ assert, describe, it }) => {
             });
         });
 
-        describe('given an item quantity of zero', () => {
+        describe('given an item quantity of `zero`', () => {
             it('should return a description including `an empty room`', () => {
                 assert(_getDescription({ [knobs.itemQuantity]: quantity.zero })).stringIncludes('an empty room');
             });
@@ -194,17 +194,18 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a room condition', () => {
-            describe('given a room condition of average', () => {
+            describe('given a room condition of `average`', () => {
                 it('should not include condition in the room description', () => {
                     assert(_getDescription({ [knobs.roomCondition]: conditions.average })).stringExcludes('condition');
                 });
             });
 
-            describe('given a room condition other than average', () => {
+            describe('given a room condition other than `average`', () => {
                 Object.values(conditions).filter((condition) => condition !== conditions.average).forEach((condition) => {
-                    it(`should return a description including \`in ${condition} condition\``, () => {
+                    let expect = `in ${condition} condition`;
+                    it(`should return a description including \`${expect}\``, () => {
                         const settings = { [knobs.roomCondition]: condition };
-                        assert(_getDescription(settings)).stringIncludes(`in ${condition} condition`);
+                        assert(_getDescription(settings)).stringIncludes(expect);
                     });
                 });
             });
@@ -245,8 +246,9 @@ export default ({ assert, describe, it }) => {
         };
 
         Object.values(furnitureQuantity).forEach((roomFurnishing) => {
-            it(`should return ${details[roomFurnishing]}`, () => {
-                assert(_getFurnitureDetail(roomFurnishing)).equals(details[roomFurnishing]);
+            let expect = details[roomFurnishing];
+            it(`should return \`${expect}\``, () => {
+                assert(_getFurnitureDetail(roomFurnishing)).equals(expect);
             });
         });
     });
@@ -258,37 +260,45 @@ export default ({ assert, describe, it }) => {
             });
         });
 
-        describe('given an item quantity of zero', () => {
+        describe('given no item quantity', () => {
             it('should return `undefined`', () => {
                 assert(_getContentDescription({ [knobs.itemQuantity]: quantity.zero })).isUndefined();
             });
         });
 
-        quantityList.filter((itemQuantity) => itemQuantity !== quantity.zero).forEach((itemQuantity) => {
-            describe(`given an item rarity of \`rare\` and an item quantity of ${itemQuantity}`, () => {
-                it('should contain the word `rare`', () => {
-                    assert(_getContentDescription({
-                        [knobs.itemRarity]: rarity.rare,
-                        [knobs.itemQuantity]: itemQuantity,
-                    })).stringIncludes(rarity.rare);
-                });
+        describe('given an item quantity of `zero`', () => {
+            it('should return `undefined`', () => {
+                assert(_getContentDescription({ [knobs.itemQuantity]: quantity.zero })).isUndefined();
             });
+        });
 
-            describe(`given a room furnishing of \`furnished\` and an item quantity of ${itemQuantity}`, () => {
-                it('should contain the word `furniture`', () => {
-                    assert(_getContentDescription({
-                        [knobs.roomFurnishing]: furnitureQuantity.furnished,
-                        [knobs.itemQuantity]: itemQuantity,
-                    })).stringIncludes('furniture');
+        describe('given an item quantity other than `zero`', () => {
+            quantityList.filter((itemQuantity) => itemQuantity !== quantity.zero).forEach((itemQuantity) => {
+                describe(`given an item rarity and an item quantity of \`${itemQuantity}\``, () => {
+                    it('should contain the word `rare`', () => {
+                        assert(_getContentDescription({
+                            [knobs.itemRarity]: rarity.rare,
+                            [knobs.itemQuantity]: itemQuantity,
+                        })).stringIncludes(rarity.rare);
+                    });
                 });
-            });
 
-            describe(`given a room type and an item quantity of ${itemQuantity}`, () => {
-                it('should contain the room type', () => {
-                    assert(_getContentDescription({
-                        [knobs.roomType]: 'fake room type',
-                        [knobs.itemQuantity]: itemQuantity,
-                    })).stringIncludes('fake room type');
+                describe(`given a room furnishing of \`furnished\` and an item quantity of \`${itemQuantity}\``, () => {
+                    it('should contain the word `furniture`', () => {
+                        assert(_getContentDescription({
+                            [knobs.roomFurnishing]: furnitureQuantity.furnished,
+                            [knobs.itemQuantity]: itemQuantity,
+                        })).stringIncludes('furniture');
+                    });
+                });
+
+                describe(`given a room type and an item quantity of \`${itemQuantity}\``, () => {
+                    it('should contain the room type', () => {
+                        assert(_getContentDescription({
+                            [knobs.roomType]: roomTypes.atrium,
+                            [knobs.itemQuantity]: itemQuantity,
+                        })).stringIncludes(roomTypes.atrium);
+                    });
                 });
             });
         });

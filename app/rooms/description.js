@@ -189,7 +189,7 @@ export const _getContentDescription = (settings = {}) => {
         [knobs.roomType]      : roomType = roomTypes.room,
     } = settings;
 
-    if (itemQuantity === quantity.zero) {
+    if (!itemQuantity || itemQuantity === quantity.zero) {
         return;
     }
 
@@ -224,10 +224,6 @@ export const _getContentDescription = (settings = {}) => {
         case quantity.numerous:
             furnitureText = furniture ? (' amongst ' + furniture ) : '';
             return `There are numerous ${rarity} objects littering the ${type}${furnitureText}`;
-
-        default:
-            console.warn(`Undescribed item quantity: ${itemQuantity}`);
-            return;
     }
 };
 
