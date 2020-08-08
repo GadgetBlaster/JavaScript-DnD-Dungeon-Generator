@@ -3,8 +3,11 @@ import {
     _getContentDescription,
     _getContentRarityDetail,
     _getDescription,
+    _getDoorwayDescription,
     _getFurnitureDetail,
+    _getItemConditionDescription,
     _getKeyDetail,
+    _getRoomDoorwayDescription,
     getKeyDescription,
     getMapDescription,
     getRoomTypeLabel,
@@ -13,9 +16,9 @@ import {
 import { directions } from '../../dungeons/map.js';
 import { furnitureQuantity } from '../../items/types/furnishing.js';
 import { knobs } from '../../knobs.js';
-import { lockable } from '../door.js';
+import doorType, { lockable, appendDoorway, outside } from '../door.js';
 import { random } from '../../utility/random.js';
-import conditions from '../../attributes/condition.js';
+import condition from '../../attributes/condition.js';
 import quantity, { list as quantityList } from '../../attributes/quantity.js';
 import rarities, { indicateRarity } from '../../attributes/rarity.js';
 import roomTypes, { appendRoomTypes } from '../../rooms/type.js';
@@ -40,19 +43,21 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('_getKeyDetail()', () => {
-        [ ...lockable, 'Undefined key description for door type' ].forEach((type) => {
-            describe(`key type \`${type}\``, () => {
-                const result = _getKeyDetail(type);
-
-                it('should return a string', () => {
-                    assert(result).isString();
-                });
-
-                it('should not be an empty string', () => {
-                    assert(result === '').isFalse();
+        describe('given a lockable door type other than `mechanical`', () => {
+            [ ... [ ...lockable ].filter((type) => type !== doorType.mechanical), 'Undefined key description for door type' ].forEach((type) => {
+                describe(`door type \`${type}\``, () => {
+                    it('should include the word `key`', () => {
+                        assert(_getKeyDetail(type).toLowerCase()).stringIncludes('key');
+                    });
                 });
             });
         });
+
+        describe('given a door type of `mechanical`', () => {
+            it('should contain the word `leaver`', () => {
+                assert(_getKeyDetail(doorType.mechanical)).stringIncludes('leaver');
+            });
+        })
     });
 
     describe('getKeyDescription()', () => {
@@ -196,15 +201,15 @@ export default ({ assert, describe, it }) => {
         describe('given a room condition', () => {
             describe('given a room condition of `average`', () => {
                 it('should not include condition in the room description', () => {
-                    assert(_getDescription({ [knobs.roomCondition]: conditions.average })).stringExcludes('condition');
+                    assert(_getDescription({ [knobs.roomCondition]: condition.average })).stringExcludes('condition');
                 });
             });
 
             describe('given a room condition other than `average`', () => {
-                Object.values(conditions).filter((condition) => condition !== conditions.average).forEach((condition) => {
-                    let expect = `in ${condition} condition`;
+                Object.values(condition).filter((roomCondition) => roomCondition !== condition.average).forEach((roomCondition) => {
+                    let expect = `in ${roomCondition} condition`;
                     it(`should return a description including \`${expect}\``, () => {
-                        const settings = { [knobs.roomCondition]: condition };
+                        const settings = { [knobs.roomCondition]: roomCondition };
                         assert(_getDescription(settings)).stringIncludes(expect);
                     });
                 });
@@ -299,6 +304,204 @@ export default ({ assert, describe, it }) => {
                             [knobs.itemQuantity]: itemQuantity,
                         })).stringIncludes(roomTypes.atrium);
                     });
+                });
+            });
+        });
+    });
+
+    describe('_getItemConditionDescription()', () => {
+        describe('given an item quantity of `zero`', () => {
+            it('should return `undefined`', () => {
+                assert(_getItemConditionDescription({ [knobs.itemQuantity]: quantity.zero })).isUndefined();
+            });
+        });
+
+        describe('given an item condition of `average`', () => {
+            it('should return `undefined`', () => {
+                assert(_getItemConditionDescription({
+                    [knobs.itemQuantity]: quantity.one,
+                    [knobs.itemCondition]: condition.average,
+                })).isUndefined();
+            });
+        });
+
+        describe('given an item condition other than `average`', () => {
+            Object.values(condition).filter((itemCondition) => itemCondition !== condition.average).map((itemCondition) => {
+                it('should return a string including the condition', () => {
+                    assert(_getItemConditionDescription({
+                        [knobs.itemQuantity]: quantity.one,
+                        [knobs.itemCondition]: itemCondition,
+                    })).stringIncludes(itemCondition);
+                });
+            });
+        });
+    });
+
+    describe('_getDoorwayDescription()', () => {
+        describe('given a size of `1`', () => {
+            it('should not contain a size description', () => {
+                assert(_getDoorwayDescription({ size: 1 }))
+                    .stringExcludes('double wide')
+                    .stringExcludes('large')
+                    .stringExcludes('massive');
+            });
+        });
+
+        describe('given a size of `2`', () => {
+            it('should contain the string `wide`', () => {
+                assert(_getDoorwayDescription({ size: 2 })).stringIncludes('wide');
+            });
+        });
+
+        describe('given a size of `3`', () => {
+            it('should contain a the string `large`', () => {
+                assert(_getDoorwayDescription({ size: 3 })).stringIncludes('large');
+            });
+        });
+
+        describe('given a size larger than `3`', () => {
+            it('should contain a the string `massive`', () => {
+                assert(_getDoorwayDescription({ size: 12 })).stringIncludes('massive');
+            });
+        });
+
+        describe('given a door type included in `appendDoorway`', () => {
+            [ ...appendDoorway ].forEach((type) => {
+                it('should contain the string `doorway`', () => {
+                    assert(_getDoorwayDescription({ type }))
+                        .stringIncludes('doorway');
+                });
+
+                describe('given a size of `2`', () => {
+                    it('should contain the string `double wide`', () => {
+                        assert(_getDoorwayDescription({ type, size: 2 })).stringIncludes('double wide');
+                    });
+                });
+            });
+        });
+
+        describe('given a truthy `locked` config', () => {
+            it('should contain the string `locked`', () => {
+                assert(_getDoorwayDescription({ locked: true })).stringIncludes('locked');
+            });
+        });
+
+        describe('given a falsy `locked` config', () => {
+            it('should not contain the string `locked`', () => {
+                assert(_getDoorwayDescription({ locked: false })).stringExcludes('locked');
+            });
+        });
+    });
+
+    describe('_getRoomDoorwayDescription()', () => {
+        describe('give only a concealed door', () => {
+            it('should return undefined', () => {
+                assert(_getRoomDoorwayDescription([ { type: doorType.concealed } ])).isUndefined();
+            });
+        });
+
+        describe('give only a secret door', () => {
+            it('should return undefined', () => {
+                assert(_getRoomDoorwayDescription([ { type: doorType.secret } ])).isUndefined();
+            });
+        });
+
+        describe('given a single door config', () => {
+            const config = {
+                type: doorType.passageway,
+                size: 1,
+                connection: { direction: directions.north, to: 2 },
+            };
+
+            const desc = _getRoomDoorwayDescription([ config ]);
+
+            it('should include the door description', () => {
+                assert(desc).stringIncludes(_getDoorwayDescription(config));
+            });
+
+            it('should include the word `single`', () => {
+                assert(desc).stringIncludes('single');
+            });
+
+            it('should include the door direction', () => {
+                assert(desc).stringIncludes('north');
+            });
+
+            it('should include the door type', () => {
+                assert(desc).stringIncludes(doorType.passageway);
+            });
+
+            it('should capitalize the sentence', () => {
+                assert(desc.startsWith('A')).isTrue()
+            });
+        });
+
+        describe('given a door config connected to the outside on the south wall', () => {
+            const config = [ {
+                type: doorType.passageway,
+                size: 1,
+                connection: { direction: directions.south, to: outside },
+            } ];
+
+            it('should include a description of the door to the outside', () => {
+                assert(_getRoomDoorwayDescription(config))
+                    .stringIncludes('leads south out of the dungeon');
+            });
+        });
+
+        describe('given a pair of doors', () => {
+            const config = [
+                {
+                    type: doorType.archway,
+                    size: 1,
+                    connection: { direction: directions.south, to: 2 },
+                },
+                {
+                    type: doorType.passageway,
+                    size: 1,
+                    connection: { direction: directions.north, to: 1 },
+                }
+            ];
+
+            describe('when the first door is of type `archway`', () => {
+                it('should prefix the doorway description type with `An`', () => {
+                    assert(_getRoomDoorwayDescription(config).startsWith('An')).isTrue()
+                });
+            });
+
+            describe('when the first door is of type `archway`', () => {
+                it('should join the descriptions with `and`', () => {
+                    assert(_getRoomDoorwayDescription(config))
+                        .stringIncludes(' and ');
+                });
+            });
+        });
+
+        describe('given a set of three doors', () => {
+            const config = [
+                {
+                    type: doorType.archway,
+                    size: 1,
+                    connection: { direction: directions.south, to: 2 },
+                },
+                {
+                    type: doorType.passageway,
+                    size: 1,
+                    connection: { direction: directions.north, to: 3 },
+                },
+                {
+                    type: doorType.iron,
+                    size: 1,
+                    connection: { direction: directions.east, to: 4 },
+                }
+            ];
+
+            describe('when the first door is of type `archway`', () => {
+                it('should separate the first two descriptions with a comma and the last with `and`', () => {
+                    assert(_getRoomDoorwayDescription(config))
+                        .stringIncludes(` ${doorType.archway} leads south,`)
+                        .stringIncludes(` ${doorType.passageway}`)
+                        .stringIncludes(` and an ${doorType.iron}`);
                 });
             });
         });

@@ -64,15 +64,6 @@ export const secretProbability = createProbability([
 export const lockedChance = 25;
 
 /**
- * Connection
- *
- * @typedef {Object} Connection
- *
- * @property {string} direction - north, east, south, or west
- * @property {number} to - Room number
- */
-
-/**
  * Key
  *
  * @typedef {Object} Key
@@ -81,7 +72,27 @@ export const lockedChance = 25;
  * @property {string} type - Door type
  */
 
-export const createDoorLookup = (doors) => {
+/**
+ * Room door
+ *
+ * @typedef {object} RoomDoor
+ *
+ * @property {string} rect
+ * @property {string} type
+ * @property {boolean} locked
+ * @property {object.<number, Connection>} connections // TODO drop
+ * @property {Connection} connection
+ * @property {number} size
+ */
+
+/**
+ * Get room door
+ *
+ * @param {import('../dungeons/map.js').Door[]}
+ *
+ * @returns {RoomDoor}
+ */
+export const getRoomDoor = (doors) => {
     let lookup = {};
     let keys   = [];
 
@@ -92,6 +103,7 @@ export const createDoorLookup = (doors) => {
             }
 
             let roomDoor = {
+                // TODO safe to drop unnecessary `connections` from config
                 ...door,
                 connection: door.connections[roomNumber],
             };

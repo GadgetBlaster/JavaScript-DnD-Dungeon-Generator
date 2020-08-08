@@ -260,7 +260,7 @@ export default ({ assert, describe, it }) => {
             });
 
             it('should indent each line with two spaces', () => {
-                assert(lines[0]).stringIncludes('');
+                assert(lines[0]).stringExcludes('  ');
                 assert(lines[1]).stringIncludes('  ');
                 assert(lines[2]).stringIncludes('    ');
             });

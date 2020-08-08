@@ -490,6 +490,12 @@ export default ({ assert, describe, it }) => {
                 assert(stringIncludes('moose in a bag of holding', 'bag of holding').isOk).isTrue();
             });
         });
+
+        describe('given an empty string', () => {
+            it('should return a falsy `isOk` property', () => {
+                assert(() => stringIncludes('long sword +1', '')).throws('Invalid empty string expected in `stringIncludes`');
+            });
+        });
     });
 
     describe('stringExcludes()', () => {

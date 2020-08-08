@@ -24,6 +24,8 @@ import { getEnvironmentDescription } from './environment.js';
 import doorType, { appendDoorway, outside } from './door.js';
 
 /**
+ * @typedef {import('../dungeons/map.js').Connection} Connection
+ * @typedef {import('./door.js').RoomDoor} RoomDoor
  * @typedef {import('./settings.js').RoomSettings} RoomSettings
  */
 
@@ -32,7 +34,7 @@ import doorType, { appendDoorway, outside } from './door.js';
  *
  * @type {string[]}
  */
-const mapDescriptions = [
+const _mapDescriptions = [
     'Searching the room reveals a map that appears to be of the dungeon.',
     'A large map of the dungeon is hanging on the wall.',
     'A map of the dungeon has crudely been carved in to the wall.',
@@ -40,14 +42,7 @@ const mapDescriptions = [
     'The floor of the room is etched with an intricate map of the dungeon.',
 ];
 
-/**
- * Get map description
- *
- * @returns {string}
- */
-export const getMapDescription = () => {
-    return subtitle('Map') + list([ rollArrayItem(mapDescriptions) ]);
-};
+// -- Private Methods ---------------------------------------------------------
 
 /**
  * Get key detail
@@ -80,31 +75,6 @@ export const _getKeyDetail = (type) => {
             return 'Key';
     }
 };
-
-/**
- * Get key description
- *
- * @param {import('./door.js').Key[]}
- *
- * @returns {string}
- */
-export const getKeyDescription = (keys) => {
-    return subtitle(`Keys (${keys.length})`) + list(keys.map((key) => {
-        let { connections, type } = key;
-        let [ from, to ] = Object.keys(connections);
-
-        return `${_getKeyDetail(type)} to room ${from} / ${to}`;
-    }));
-};
-
-/**
- * Get room type label
- *
- * @param {string} type
- *
- * @returns {string}
- */
-export const getRoomTypeLabel = (type) => toWords(type) + (appendRoomTypes.has(type) ? ' room' : '');
 
 /**
  * Get description
@@ -179,7 +149,7 @@ export const _getFurnitureDetail = (roomFurnishing) => {
  *
  * @param {RoomSettings} [settings]
  *
- * @returns {string}
+ * @returns {?string}
  */
 export const _getContentDescription = (settings = {}) => {
     let {
@@ -227,7 +197,14 @@ export const _getContentDescription = (settings = {}) => {
     }
 };
 
-const getItemConditionDescription = (settings) => {
+/**
+ * Get item condition description
+ *
+ * @param {RoomSettings} [settings]
+ *
+ * @returns {?string}
+ */
+export const _getItemConditionDescription = (settings) => {
     let {
         [knobs.itemQuantity] : itemQuantity,
         [knobs.itemCondition]: itemCondition,
@@ -255,12 +232,21 @@ const getItemConditionDescription = (settings) => {
     }
 };
 
-const getDoorwayDesc = ({ type, size, locked }) => {
+/**
+ * Get doorway description
+ *
+ * @param {RoomDoor} door
+ *
+ * @returns {string}
+ */
+export const _getDoorwayDescription = ({ type, size, locked }) => {
     let sizeDesc;
     let append = appendDoorway.has(type) && 'doorway';
 
-    if (size === 2 && append) {
-        sizeDesc = 'double wide';
+    // TODO guard against non-lockable doors
+
+    if (size === 2) {
+        sizeDesc = append ? 'double wide' : 'wide';
     } else if (size === 3) {
         sizeDesc = 'large';
     } else if (size > 3) {
@@ -272,21 +258,30 @@ const getDoorwayDesc = ({ type, size, locked }) => {
     return [ sizeDesc, lockedDesc, type, append ].filter(Boolean).join(' ');
 };
 
-const getDoorwayDescription = (roomDoors) => {
+/**
+ * Get room doorway description
+ *
+ * @param {RoomDoor[]} roomDoors
+ *
+ * @returns {?string}
+ */
+export const _getRoomDoorwayDescription = (roomDoors) => {
     let descParts = roomDoors.map(({ type, connection, size, locked }) => {
         if (type === doorType.concealed || type === doorType.secret) {
             return;
         }
 
+        /** @type {Connection} connection */
         let { direction, to } = connection;
 
-        let desc = getDoorwayDesc({ type, size, locked });
+        let desc = _getDoorwayDescription({ type, size, locked });
         let out  = to === outside ? ' out of the dungeon' : '';
 
-        let article = type === doorType.archway ? 'an' : 'a';
-        let single  = roomDoors.length === 1 ? 'single ' : '';
+        if (roomDoors.length === 1) {
+            desc = `single ${desc}`;
+        }
 
-        return `${article} ${single}${desc} leads ${direction}${out}`;
+        return `${indefiniteArticle(desc)} ${desc} leads ${direction}${out}`;
     }).filter(Boolean);
 
     if (descParts.length === 0) {
@@ -299,25 +294,7 @@ const getDoorwayDescription = (roomDoors) => {
         return capitalize(last);
     }
 
-    let comma = descParts.length > 1 ? ',' : '';
-
-    return `${capitalize(descParts.join(', '))}${comma} and ${last}`;
-};
-
-export const getDoorwayList = (roomDoors) => {
-    let doorList = roomDoors.map(({ type, connection, size, locked }) => {
-
-        let { direction, to } = connection;
-
-        let desc    = getDoorwayDesc({ type, size, locked });
-        let connect = to === outside ? 'leading out of the dungeon' : `to Room ${to}`;
-        let text    = `${capitalize(direction)} ${connect} (${em(desc)})`;
-        let secret  = type === doorType.concealed || type === doorType.secret;
-
-        return secret ? strong(text) : text;
-    });
-
-    return subtitle(`Doorways (${roomDoors.length})`) + list(doorList);
+    return `${capitalize(descParts.join(', '))} and ${last}`;
 };
 
 const getRoomDimensions = (room) => {
@@ -328,6 +305,52 @@ const getRoomDimensions = (room) => {
     let [ width, height ] = room.size;
 
     return `${width * cellFeet} x ${height * cellFeet} feet`;
+};
+
+// -- Public Methods ---------------------------------------------------------
+
+/**
+ *
+ */
+export const getDoorwayList = (roomDoors) => {
+    let doorList = roomDoors.map(({ type, connection, size, locked }) => {
+
+        let { direction, to } = connection;
+
+        let desc    = _getDoorwayDescription({ type, size, locked });
+        let connect = to === outside ? 'leading out of the dungeon' : `to Room ${to}`;
+        let text    = `${capitalize(direction)} ${connect} (${em(desc)})`;
+        let secret  = type === doorType.concealed || type === doorType.secret;
+
+        return secret ? strong(text) : text;
+    });
+
+    return subtitle(`Doorways (${roomDoors.length})`) + list(doorList);
+};
+
+/**
+ * Get key description
+ *
+ * @param {import('./door.js').Key[]}
+ *
+ * @returns {string}
+ */
+export const getKeyDescription = (keys) => {
+    return subtitle(`Keys (${keys.length})`) + list(keys.map((key) => {
+        let { connections, type } = key;
+        let [ from, to ] = Object.keys(connections);
+
+        return `${_getKeyDetail(type)} to room ${from} / ${to}`;
+    }));
+};
+
+/**
+ * Get map description
+ *
+ * @returns {string}
+ */
+export const getMapDescription = () => {
+    return subtitle('Map') + list([ rollArrayItem(_mapDescriptions) ]);
 };
 
 export const getRoomDescription = (room, roomDoors) => {
@@ -348,9 +371,18 @@ export const getRoomDescription = (room, roomDoors) => {
         _getDescription(settings),
         ...getEnvironmentDescription(settings),
         _getContentDescription(settings),
-        getItemConditionDescription(settings),
-        ...(roomDoors ? [ getDoorwayDescription(roomDoors) ] : []),
+        _getItemConditionDescription(settings),
+        ...(roomDoors ? [ _getRoomDoorwayDescription(roomDoors) ] : []),
     ].filter(Boolean).join('. ')+'.');
 
     return content;
 };
+
+/**
+ * Get room type label
+ *
+ * @param {string} type
+ *
+ * @returns {string}
+ */
+export const getRoomTypeLabel = (type) => toWords(type) + (appendRoomTypes.has(type) ? ' room' : '');

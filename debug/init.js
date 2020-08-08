@@ -3,7 +3,11 @@ import { list } from '../app/ui/list.js';
 import { element } from '../app/utility/html.js';
 import { toWords } from '../app/utility/tools.js';
 
-import { roomDescriptions } from './descriptions.js';
+import {
+    doorDescriptions,
+    roomDescriptions,
+    roomDoorDescriptions,
+} from './descriptions.js';
 
 const titleContainer   = document.getElementById('title');
 const contentContainer = document.getElementById('content');
@@ -27,10 +31,12 @@ const link = (label) => element('a', toWords(label), { href: `./debug.html?scope
 /**
  * Sections
  *
- * @returns {Object<string, array>}
+ * @returns {object<string, array>}
  */
 const sections = {
+    doorDescriptions,
     roomDescriptions,
+    roomDoorDescriptions,
 };
 
 /**

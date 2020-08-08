@@ -163,6 +163,10 @@ export const stringIncludes = (actual, includes) => {
         return checkType;
     }
 
+    if (includes === '') {
+        throw new TypeError('Invalid empty string expected in `stringIncludes`');
+    }
+
     let isOk = actual.includes(includes);
     let msg  = `expected [ ${actual} ] to include [ ${includes} ]`;
 

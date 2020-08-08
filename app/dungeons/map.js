@@ -59,7 +59,12 @@ export const directions = {
     west : 'west',
 };
 
-export const oppositeDirection = {
+/**
+ * Opposite direction lookup
+ *
+ * @type {Directions}
+ */
+const _oppositeDirectionLookup = {
     [directions.north]: directions.south,
     [directions.east] : directions.west,
     [directions.south]: directions.north,
@@ -201,6 +206,28 @@ const getDoorDirection = ([ x, y ], room) => {
     }
 };
 
+/**
+ * Connection
+ *
+ * @typedef {object} Connection
+ *
+ * @property {Directions} direction - north, east, south, or west
+ * @property {number|string} to - Room number or "outside"
+ */
+
+/**
+ * Door
+ *
+ * @typedef {object} Door
+ *
+ * @property {string} rect
+ * @property {string} type
+ * @property {boolean} locked
+ * @property {object.<number, Connection>} connections
+ * @property {Connection} connection
+ * @property {number} size
+ */
+
 const makeDoor = (doorAttrs, { from, to, direction, type }) => {
     if (!type) {
         type = doorProbability.roll();
@@ -214,7 +241,7 @@ const makeDoor = (doorAttrs, { from, to, direction, type }) => {
         locked,
         connections: {
             [from]: { direction, to },
-            [to]  : { direction: oppositeDirection[direction], to: from },
+            [to]  : { direction: _oppositeDirectionLookup[direction], to: from },
         },
         size: Math.max(doorAttrs.width, doorAttrs.height),
     };

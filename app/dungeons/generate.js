@@ -3,7 +3,7 @@ import { generateMap } from './map.js';
 import { generateRooms } from '../rooms/generate.js';
 import { knobs } from '../knobs.js';
 import { roll, rollArrayItem } from '../utility/roll.js';
-import { createDoorLookup } from '../rooms/door.js';
+import { getRoomDoor } from '../rooms/door.js';
 import trapList from '../rooms/trap.js';
 
 const complexityRoomCountMultiplier = 10;
@@ -77,7 +77,7 @@ export const generateDungeon = (settings) => {
     };
 
     let dungeon         = generateMap(mapSettings);
-    let { doors, keys } = createDoorLookup(dungeon.doors);
+    let { doors, keys } = getRoomDoor(dungeon.doors);
 
     keys.length && keys.forEach((key) => {
         let room = rollArrayItem(dungeon.rooms);
