@@ -14,24 +14,6 @@ import { typeSelect, typeNumber, typeRange } from '../../knobs.js';
  * @param {import('../../../unit/unit.js').Utility}
  */
 export default ({ assert, describe, it }) => {
-    describe('submitButton()', () => {
-        it('should be a string', () => {
-            assert(submitButton).isString();
-        });
-
-        it('should be an html button string', () => {
-            assert(submitButton).isHtmlTag('button');
-        });
-
-        it('should have a `type="submit"` attribute', () => {
-            assert(submitButton).stringIncludes('type="submit"');
-        });
-
-        it(`should have a \`data-action="${actions.generate}"\` attribute`, () => {
-            assert(submitButton).stringIncludes(`data-action="${actions.generate}"`);
-        });
-    });
-
     describe('_getKnob()', () => {
         describe('given an invalid type', () => {
             it('should throw', () => {
@@ -153,6 +135,40 @@ export default ({ assert, describe, it }) => {
         });
     });
 
+    describe('getFormData()', () => {
+        describe('given an element with knob child elements', () => {
+            const container = document.createElement('div');
+
+            const addKnob = (tag, name, value) => {
+                const knob = document.createElement(tag);
+                knob.name  = name;
+                knob.value = value;
+
+                if (tag === 'select') {
+                    knob.innerHTML = `<option value="${value}">${value}</option>`;
+                }
+
+                container.appendChild(knob);
+            };
+
+            addKnob('input', 'gopher', 'ralph');
+            addKnob('select', 'lion', 'bob');
+            addKnob('input', 'hats', 12);
+
+            const results = getFormData(container);
+
+            it('should return an object', () => {
+                assert(results).isObject();
+            });
+
+            it('should return an object of knob values keyed by knob name', () => {
+                assert(results.gopher).equals('ralph');
+                assert(results.lion).equals('bob');
+                assert(results.hats).equals('12');
+            });
+        });
+    });
+
     describe('renderKnobs()', () => {
         describe('given an empty array', () => {
             it('should return an empty string', () => {
@@ -224,37 +240,21 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('getFormData()', () => {
-        describe('given an element with knob child elements', () => {
-            const container = document.createElement('div');
+    describe('submitButton()', () => {
+        it('should be a string', () => {
+            assert(submitButton).isString();
+        });
 
-            const addKnob = (tag, name, value) => {
-                const knob = document.createElement(tag);
-                knob.name  = name;
-                knob.value = value;
+        it('should be an html button string', () => {
+            assert(submitButton).isHtmlTag('button');
+        });
 
-                if (tag === 'select') {
-                    knob.innerHTML = `<option value="${value}">${value}</option>`;
-                }
+        it('should have a `type="submit"` attribute', () => {
+            assert(submitButton).stringIncludes('type="submit"');
+        });
 
-                container.appendChild(knob);
-            };
-
-            addKnob('input', 'gopher', 'ralph');
-            addKnob('select', 'lion', 'bob');
-            addKnob('input', 'hats', 12);
-
-            const results = getFormData(container);
-
-            it('should return an object', () => {
-                assert(results).isObject();
-            });
-
-            it('should return an object of knob values keyed by knob name', () => {
-                assert(results.gopher).equals('ralph');
-                assert(results.lion).equals('bob');
-                assert(results.hats).equals('12');
-            });
+        it(`should have a \`data-action="${actions.generate}"\` attribute`, () => {
+            assert(submitButton).stringIncludes(`data-action="${actions.generate}"`);
         });
     });
 };

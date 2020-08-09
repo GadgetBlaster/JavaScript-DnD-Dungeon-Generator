@@ -3,6 +3,17 @@ const minPercent = 1;
 const maxPercent = 100;
 
 /**
+ * Probability
+ *
+ * @typedef {Object} Probability
+ *
+ * @property {string} description
+ * @property {() => string)} roll
+ */
+
+// -- Private Methods ---------------------------------------------------------
+
+/**
  * Throw
  *
  * @private
@@ -13,67 +24,7 @@ const maxPercent = 100;
  */
 const _throw = (message) => { throw new TypeError(message); };
 
-/**
- * Roll
- *
- * @param {number} [min=0]
- * @param {number} [max=1]
- *
- * @throws
- *
- * @returns {number}
- */
-export const roll = (min = 0, max = 1) => {
-    !Number.isInteger(min) && _throw('Roll `min` must be an integer');
-    !Number.isInteger(max) && _throw('Roll `max` must be an integer');
-
-    min < 0   && _throw('Roll `min` cannot be negative');
-    min > max && _throw('Roll `min` must less than or equal to `max`');
-
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-};
-
-/**
- * Roll array item
- *
- * @param {Array} array
- *
- * @throws
- *
- * @returns {*}
- */
-export const rollArrayItem = (array) => {
-    !Array.isArray(array) && _throw('Invalid roll array');
-    !array.length && _throw('Roll array must have values');
-
-    return array[Math.floor(Math.random() * array.length)];
-};
-
-/**
- * Roll percentile
- *
- * @param {number} change
- *
- * @throws
- *
- * @returns {boolean}
- */
-export const rollPercentile = (chance) => {
-    !Number.isInteger(chance) && _throw('Percent `chance` must be an integer');
-    chance < minPercent && _throw(`Percent \`chance\` must be ${minPercent} or greater`);
-    chance > maxPercent && _throw(`Percent \`chance\` cannot exceed ${maxPercent}`);
-
-    return roll(minPercent, maxPercent) <= chance;
-};
-
-/**
- * Probability
- *
- * @typedef {Object} Probability
- *
- * @property {string} description
- * @property {() => string)} roll
- */
+// -- Public Methods ---------------------------------------------------------
 
 /**
  * Create probability
@@ -129,4 +80,57 @@ export const createProbability = (config) => {
             return map.get(key);
         }
     };
+};
+
+/**
+ * Roll
+ *
+ * @param {number} [min=0]
+ * @param {number} [max=1]
+ *
+ * @throws
+ *
+ * @returns {number}
+ */
+export const roll = (min = 0, max = 1) => {
+    !Number.isInteger(min) && _throw('Roll `min` must be an integer');
+    !Number.isInteger(max) && _throw('Roll `max` must be an integer');
+
+    min < 0   && _throw('Roll `min` cannot be negative');
+    min > max && _throw('Roll `min` must less than or equal to `max`');
+
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+/**
+ * Roll array item
+ *
+ * @param {Array} array
+ *
+ * @throws
+ *
+ * @returns {*}
+ */
+export const rollArrayItem = (array) => {
+    !Array.isArray(array) && _throw('Invalid roll array');
+    !array.length && _throw('Roll array must have values');
+
+    return array[Math.floor(Math.random() * array.length)];
+};
+
+/**
+ * Roll percentile
+ *
+ * @param {number} change
+ *
+ * @throws
+ *
+ * @returns {boolean}
+ */
+export const rollPercentile = (chance) => {
+    !Number.isInteger(chance) && _throw('Percent `chance` must be an integer');
+    chance < minPercent && _throw(`Percent \`chance\` must be ${minPercent} or greater`);
+    chance > maxPercent && _throw(`Percent \`chance\` cannot exceed ${maxPercent}`);
+
+    return roll(minPercent, maxPercent) <= chance;
 };

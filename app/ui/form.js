@@ -8,6 +8,13 @@ import { toDash } from '../utility/tools.js';
 import { typeSelect, typeNumber, typeRange } from '../knobs.js';
 
 /**
+ * @typedef {import('../knobs.js').KnobSettings} KnobSettings
+ * @typedef {import('../knobs.js').KnobSet} KnobSet
+ */
+
+// -- Private Methods ---------------------------------------------------------
+
+/**
  * Throw
  *
  * @private
@@ -17,17 +24,6 @@ import { typeSelect, typeNumber, typeRange } from '../knobs.js';
  * @throws
  */
 const _throw = (message) => { throw new TypeError(message); };
-
-/**
- * @typedef {import('../knobs.js').KnobSettings} KnobSettings
- * @typedef {import('../knobs.js').KnobSet} KnobSet
- */
-
-/** @type {string} submitButton */
-export const submitButton = button('Generate', actions.generate, {
-    size: buttonSize.large,
-    type: 'submit',
-});
 
 /**
  * Get knob
@@ -84,6 +80,25 @@ export const _renderFields = (fields) => fields.map((settings) => {
     return div(knobLabel + descText + knob);
 }).join('');
 
+// -- Public Methods ---------------------------------------------------------
+
+/**
+ * Get form data
+ *
+ * @param {Element} knobContainer
+ *
+ * @returns {Object<string, *>}
+ */
+export const getFormData = (knobContainer) => {
+    return [ ...knobContainer.querySelectorAll('[name]') ].reduce((set, item) => {
+        let { name, value } = item;
+
+        set[name] = value;
+
+        return set;
+    }, {});
+};
+
 /**
  * Render knobs
  *
@@ -114,19 +129,8 @@ export const renderKnobs = (knobs, page) => knobs.map((knobConfig) => {
     return fieldset(handle + section(_renderFields(fields)), attrs);
 }).join('');
 
-/**
- * Get form data
- *
- * @param {Element} knobContainer
- *
- * @returns {Object<string, *>}
- */
-export const getFormData = (knobContainer) => {
-    return [ ...knobContainer.querySelectorAll('[name]') ].reduce((set, item) => {
-        let { name, value } = item;
-
-        set[name] = value;
-
-        return set;
-    }, {});
-};
+/** @type {string} submitButton */
+export const submitButton = button('Generate', actions.generate, {
+    size: buttonSize.large,
+    type: 'submit',
+});

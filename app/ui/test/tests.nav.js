@@ -11,6 +11,21 @@ export default ({ assert, describe, it }) => {
         });
     });
 
+    describe('getActive()', () => {
+        describe('given a container with three nav buttons', () => {
+            const container = document.createElement('div');
+            container.innerHTML = `
+                <button data-target="grog" data-active="true">Grog</button>
+                <button data-target="nog">Nog</button>
+                <button data-target="frog">Frog</button>
+            `;
+
+            it('should return the `data-target` value of the active element', () => {
+                assert(getActive(container)).equals('grog');
+            });
+        });
+    });
+
     describe('setActive()', () => {
         describe('given a container with three nav buttons', () => {
             const container = document.createElement('div');
@@ -42,21 +57,6 @@ export default ({ assert, describe, it }) => {
                 it('should be the only active element', () => {
                     assert(container.querySelectorAll('[data-active]').length).equals(1);
                 });
-            });
-        });
-    });
-
-    describe('getActive()', () => {
-        describe('given a container with three nav buttons', () => {
-            const container = document.createElement('div');
-            container.innerHTML = `
-                <button data-target="grog" data-active="true">Grog</button>
-                <button data-target="nog">Nog</button>
-                <button data-target="frog">Frog</button>
-            `;
-
-            it('should return the `data-target` value of the active element', () => {
-                assert(getActive(container)).equals('grog');
             });
         });
     });

@@ -1,6 +1,9 @@
 
-import { getOutput } from '../tests.js';
+import { _getOutput } from '../tests.js';
 
+/**
+ * @type {import('../../../unit/unit.js').Summary}
+ */
 const defaults = {
     assertions: 0,
     errors: [],
@@ -11,9 +14,9 @@ const defaults = {
  * @param {import('../../../unit/unit.js').Utility}
  */
 export default ({ assert, describe, it }) => {
-    describe('getOutput()', () => {
+    describe('_getOutput()', () => {
         describe('given no assertions', () => {
-            let output = getOutput({ ...defaults });
+            let output = _getOutput({ ...defaults });
 
             it('should return a string containing `0 mischievous kobolds`', () => {
                 assert(output).stringExcludes('0 mischievous kobolds');
@@ -21,7 +24,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a single assertion', () => {
-            let output = getOutput({ ...defaults, assertions: 1 });
+            let output = _getOutput({ ...defaults, assertions: 1 });
 
             it('should return a string containing `1 mischievous kobold`', () => {
                 assert(output).stringExcludes('1 mischievous kobold');
@@ -35,7 +38,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given two assertions', () => {
-            let output = getOutput({ ...defaults, assertions: 2 });
+            let output = _getOutput({ ...defaults, assertions: 2 });
 
             it('should return a string containing `2 mischievous kobolds`', () => {
                 assert(output).stringExcludes('2 mischievous kobolds');
@@ -49,7 +52,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given no failures', () => {
-            let output = getOutput({ ...defaults });
+            let output = _getOutput({ ...defaults });
 
             it('should return a string that does not contain `Encountered`', () => {
                 assert(output).stringExcludes('Encountered');
@@ -57,7 +60,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a single failure', () => {
-            let output = getOutput({ ...defaults, failures: 1 });
+            let output = _getOutput({ ...defaults, failures: 1 });
 
             it('should return a string containing `Encountered`', () => {
                 assert(output).stringIncludes('Encountered');
@@ -75,7 +78,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given two failures', () => {
-            let output = getOutput({ ...defaults, failures: 2 });
+            let output = _getOutput({ ...defaults, failures: 2 });
 
             it('should return a string containing `Encountered`', () => {
                 assert(output).stringIncludes('Encountered');
@@ -93,7 +96,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given no errors', () => {
-            let output = getOutput({ ...defaults });
+            let output = _getOutput({ ...defaults });
 
             it('should return a string that does not contain `Encountered`', () => {
                 assert(output).stringExcludes('Encountered');
@@ -101,7 +104,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a single error', () => {
-            let output = getOutput({ ...defaults, errors: [ 'lobster' ] });
+            let output = _getOutput({ ...defaults, errors: [ 'lobster' ] });
 
             it('should return a string containing `Encountered`', () => {
                 assert(output).stringIncludes('Encountered');
@@ -119,7 +122,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given two errors', () => {
-            let output = getOutput({ ...defaults, errors: [ 'broken', 'buggy' ] });
+            let output = _getOutput({ ...defaults, errors: [ 'broken', 'buggy' ] });
 
             it('should return a string containing `Encountered`', () => {
                 assert(output).stringIncludes('Encountered');
@@ -137,7 +140,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given two errors and two failures', () => {
-            let output = getOutput({ ...defaults, errors: [ 'broken', 'buggy' ], failures: 2 });
+            let output = _getOutput({ ...defaults, errors: [ 'broken', 'buggy' ], failures: 2 });
 
             it('should return a string containing `Encountered`', () => {
                 assert(output).stringIncludes('Encountered');

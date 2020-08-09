@@ -8,6 +8,8 @@ import { plural } from './../utility/tools.js';
 
 const unitUrl = './unit.html';
 
+// -- Private Methods ---------------------------------------------------------
+
 /**
  * Get output
  *
@@ -15,7 +17,7 @@ const unitUrl = './unit.html';
  *
  * @returns {string}
  */
-export const getOutput = ({ assertions, errors, failures }) => {
+export const _getOutput = ({ assertions, errors, failures }) => {
     let koboldsText = `mischievous ${plural(assertions, 'kobold')}`;
 
     if (failures || errors.length) {
@@ -39,9 +41,11 @@ export const getOutput = ({ assertions, errors, failures }) => {
     return element('p', `Checked for ${assertions} ${element('a', koboldsText, { href: unitUrl })}`);
 };
 
+// -- Public Methods ---------------------------------------------------------
+
 /**
  * Run tests and return the test summary UI
  *
  * @returns {string}
  */
-export default () => getOutput(runSuite(getUnit(), suite));
+export default () => _getOutput(runSuite(getUnit(), suite));

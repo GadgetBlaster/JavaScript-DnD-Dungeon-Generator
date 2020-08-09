@@ -2,6 +2,20 @@
 import { element, createAttrs } from '../utility/html.js';
 import { toWords } from '../utility/tools.js';
 
+// -- Private Methods ---------------------------------------------------------
+
+/**
+ * Option
+ *
+ * @private
+ *
+ * @param {string} label
+ * @param {string} type
+ *
+ * @returns {string}
+ */
+const _option = (value, label) => element('option', label, { value });
+
 /**
  * Throw
  *
@@ -12,6 +26,8 @@ import { toWords } from '../utility/tools.js';
  * @throws
  */
 const _throw = (message) => { throw new TypeError(message); };
+
+// -- Public Methods ---------------------------------------------------------
 
 /**
  * Field label
@@ -38,18 +54,6 @@ export const input = (name, attrs = {}) => {
 
     return `<input${createAttrs({ name, type: 'text', ...attrs })} />`;
 };
-
-/**
- * Option
- *
- * @private
- *
- * @param {string} label
- * @param {string} type
- *
- * @returns {string}
- */
-const _option = (value, label) => element('option', label, { value });
 
 /**
  * Input

@@ -294,7 +294,9 @@ export const _getRoomDoorwayDescription = (roomDoors) => {
         return capitalize(last);
     }
 
-    return `${capitalize(descParts.join(', '))} and ${last}`;
+    let comma = descParts.length > 1 ? ',' : '';
+
+    return `${capitalize(descParts.join(', '))}${comma} and ${last}`;
 };
 
 const getRoomDimensions = (room) => {

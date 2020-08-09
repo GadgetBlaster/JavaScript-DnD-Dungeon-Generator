@@ -28,6 +28,17 @@ export const nav = [
 ].join('');
 
 /**
+ * Get active
+ *
+ * @param {Element} navContainer
+ *
+ * @returns {string}
+ */
+export const getActive = (navContainer) => {
+    return [ ...navContainer.children ].find((btn) => btn.dataset.active).dataset.target;
+};
+
+/**
  * Set active
  *
  * @param {Element} target
@@ -38,15 +49,4 @@ export const setActive = (target) => {
     });
 
     target.dataset.active = true;
-};
-
-/**
- * Get active
- *
- * @param {Element} navContainer
- *
- * @returns {string}
- */
-export const getActive = (navContainer) => {
-    return [ ...navContainer.children ].find((btn) => btn.dataset.active).dataset.target;
 };

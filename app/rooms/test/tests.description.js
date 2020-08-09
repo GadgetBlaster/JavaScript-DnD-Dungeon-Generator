@@ -490,18 +490,18 @@ export default ({ assert, describe, it }) => {
                     connection: { direction: directions.north, to: 3 },
                 },
                 {
-                    type: doorType.iron,
+                    type: doorType.hole,
                     size: 1,
                     connection: { direction: directions.east, to: 4 },
                 }
             ];
 
             describe('when the first door is of type `archway`', () => {
-                it('should separate the first two descriptions with a comma and the last with `and`', () => {
+                it('should separate each description with a comma and the last with `and`', () => {
                     assert(_getRoomDoorwayDescription(config))
                         .stringIncludes(` ${doorType.archway} leads south,`)
-                        .stringIncludes(` ${doorType.passageway}`)
-                        .stringIncludes(` and an ${doorType.iron}`);
+                        .stringIncludes(` ${doorType.passageway} leads north,`)
+                        .stringIncludes(`, and a ${doorType.hole} leads east`);
                 });
             });
         });
