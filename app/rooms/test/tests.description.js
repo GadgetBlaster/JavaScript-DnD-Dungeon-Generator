@@ -463,16 +463,19 @@ export default ({ assert, describe, it }) => {
                 }
             ];
 
+            const desc = _getRoomDoorwayDescription(config);
+
             describe('when the first door is of type `archway`', () => {
                 it('should prefix the doorway description type with `An`', () => {
-                    assert(_getRoomDoorwayDescription(config).startsWith('An')).isTrue()
+                    assert(desc.startsWith('An')).isTrue();
                 });
             });
 
             describe('when the first door is of type `archway`', () => {
-                it('should join the descriptions with `and`', () => {
-                    assert(_getRoomDoorwayDescription(config))
-                        .stringIncludes(' and ');
+                it('should join the descriptions with `and` and contain no commas', () => {
+                    assert(desc)
+                        .stringIncludes(' and ')
+                        .stringExcludes(',');
                 });
             });
         });

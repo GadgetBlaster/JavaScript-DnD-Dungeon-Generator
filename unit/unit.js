@@ -95,11 +95,11 @@ const scope = {
 export default () => {
 
     /**
-     * Results
+     * Assertions
      *
-     * @type {Result[]}
+     * @type {number}
      */
-    let results = [];
+    let assertions = 0;
 
     /**
      * Current
@@ -116,18 +116,18 @@ export default () => {
     let errors = [];
 
     /**
-     * Assertions
-     *
-     * @type {number}
-     */
-    let assertions = 0;
-
-    /**
      * Failures
      *
      * @type {number}
      */
     let failures = 0;
+
+    /**
+     * Results
+     *
+     * @type {Result[]}
+     */
+    let results = [];
 
     /**
      * Check scope
@@ -188,7 +188,7 @@ export default () => {
      *
      * @returns {Assertions}
      */
-    const _runAssert = (actual, expected, assertion) => {
+    const runAssert = (actual, expected, assertion) => {
         checkScope(scope.assert, [ scope.it ]);
 
         let result = assertion(actual, expected);
@@ -223,7 +223,7 @@ export default () => {
      * @returns {Assertions}
      */
     const assert = (value) => Object.entries(assertFunctions).reduce((assertObj, [ key, assertion ]) => {
-        assertObj[key] = (expected) => _runAssert(value, expected, assertion);
+        assertObj[key] = (expected) => runAssert(value, expected, assertion);
         return assertObj;
     }, {});
 
@@ -273,7 +273,6 @@ export default () => {
         let result = { isOk: false, msg: error };
 
         results.push(result);
-
         errors.push(result);
     };
 

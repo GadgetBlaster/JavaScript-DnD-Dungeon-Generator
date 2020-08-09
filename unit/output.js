@@ -4,7 +4,7 @@
  *
  * @type {Object<string, string>}
  */
-const htmlEscapes = {
+const _htmlEscapes = {
     '"': '&quot;',
     '/': '&#x2F;',
     '&': '&amp;',
@@ -13,6 +13,8 @@ const htmlEscapes = {
     "'": '&#x27;',
 };
 
+// -- Private Methods ---------------------------------------------------------
+
 /**
  * Make params
  *
@@ -20,7 +22,7 @@ const htmlEscapes = {
  *
  * @returns {string}
  */
-const makeParams = (entries) => {
+const _makeParams = (entries) => {
     let params = Object.entries(entries)
         .filter(([ _, value ]) => Boolean(value))
         .map(([ key, value ]) => `${key}=${value}`)
@@ -29,14 +31,7 @@ const makeParams = (entries) => {
     return params && `?${params}`;
 };
 
-/**
- * Escape HTML
- *
- * @param {string} string
- *
- * @returns {string}
- */
-export const escapeHTML = (string) => string.replace(/[&<>"'\/]/g, (match) => htmlEscapes[match]);
+// -- Public Methods ---------------------------------------------------------
 
 /**
  * Dot
@@ -52,6 +47,15 @@ export const dot = ({ isOk }) => {
 
     return el;
 };
+
+/**
+ * Escape HTML
+ *
+ * @param {string} string
+ *
+ * @returns {string}
+ */
+export const escapeHTML = (string) => string.replace(/[&<>"'\/]/g, (match) => _htmlEscapes[match]);
 
 /**
  * Fail
@@ -112,10 +116,10 @@ export const log = (results, { verbose } = {}) => {
  * @returns {string}
  */
 export const nav = ({ scope, verbose }) => [
-    link('All', `./unit.html${makeParams({ scope: null, verbose })}`, { active: !scope }),
-    link('Tests', `./unit.html${makeParams({ scope: 'list', verbose })}`, { active: scope === 'list' }),
+    link('All', `./unit.html${_makeParams({ scope: null, verbose })}`, { active: !scope }),
+    link('Tests', `./unit.html${_makeParams({ scope: 'list', verbose })}`, { active: scope === 'list' }),
     '<span role="presentation" data-separator></span>',
-    link('Verbose', `./unit.html${makeParams({ scope, verbose: !verbose })}`, { active: verbose })
+    link('Verbose', `./unit.html${_makeParams({ scope, verbose: !verbose })}`, { active: verbose })
 ].join('');
 
 /**
@@ -150,7 +154,7 @@ export const resultMsg = (entries) => entries.reduce((accumulator, value, index)
  */
 export const scopeList = (scopes, { verbose } = {}) => {
     return scopes.map((scope) => {
-        return `<li>${link(scope, makeParams({ scope, verbose }))}</li>`;
+        return `<li>${link(scope, _makeParams({ scope, verbose }))}</li>`;
     }).join('');
 };
 

@@ -13,6 +13,13 @@ import {
 } from './output.js';
 
 /**
+ * Animation chunk division
+ *
+ * @type {number}
+ */
+const animationChunkDivision = 200;
+
+/**
  * URL params
  *
  * @type {URLSearchParams}
@@ -59,13 +66,6 @@ const delay = (ms = 0) => new Promise((resolve) => setTimeout(resolve, ms));
 const drawDot = (result) => dotsContainer.appendChild(dot(result));
 
 /**
- * Animation chunk division
- *
- * @type {number}
- */
-const animationChunkDivision = 200;
-
-/**
  * Animate dots
  *
  * @param {Result[]} results
@@ -98,7 +98,20 @@ const animateDots = (results) => new Promise(async (resolve) => {
  * @param {import('./unit.js').Summary}
  */
 const onComplete = async ({ assertions, errors, failures, results }) => {
+    if (failures) {
+        console.warn(`${failures} Failures`);
+    }
+
+    if (errors.length) {
+        console.warn(`${errors.length} Errors`);
+    }
+
+    if (!failures && !errors.length) {
+        console.log('Zero mischievous kobolds found 👏');
+    }
+
     await animateDots(results);
+
     render(statusContainer, 'Complete');
     render(summaryContainer, summary(assertions, failures, errors.length));
     render(logContainer, log(results, { verbose }));
