@@ -196,6 +196,7 @@ const getAirDesc = () => {
 };
 
 export const getEnvironmentDescription = (settings) => {
+    // TODO randomization should be injected
     let roomStructure = rollArrayItem(Object.keys(structure));
     let roomVegetation;
 

@@ -204,7 +204,7 @@ export const _getContentDescription = (settings = {}) => {
  *
  * @returns {?string}
  */
-export const _getItemConditionDescription = (settings) => {
+export const _getItemConditionDescription = (settings = {}) => {
     let {
         [knobs.itemQuantity] : itemQuantity,
         [knobs.itemCondition]: itemCondition,
@@ -299,12 +299,19 @@ export const _getRoomDoorwayDescription = (roomDoors) => {
     return `${capitalize(descParts.join(', '))}${comma} and ${last}`;
 };
 
-const getRoomDimensions = (room) => {
-    if (!room.size) {
+/**
+ * Get room dimensions
+ *
+ * @param {import('../typedefs.js').Size} roomSize
+ *
+ * @returns {string}
+ */
+export const _getRoomDimensions = (roomSize) => {
+    if (!roomSize) {
         return '';
     }
 
-    let [ width, height ] = room.size;
+    let [ width, height ] = roomSize;
 
     return `${width * cellFeet} x ${height * cellFeet} feet`;
 };
@@ -312,11 +319,14 @@ const getRoomDimensions = (room) => {
 // -- Public Methods ---------------------------------------------------------
 
 /**
+ * Get doorway list
  *
+ * @param {RoomDoor[]} roomDoors
+ *
+ * @returns {?string}
  */
 export const getDoorwayList = (roomDoors) => {
     let doorList = roomDoors.map(({ type, connection, size, locked }) => {
-
         let { direction, to } = connection;
 
         let desc    = _getDoorwayDescription({ type, size, locked });
@@ -355,8 +365,16 @@ export const getMapDescription = () => {
     return subtitle('Map') + list([ rollArrayItem(_mapDescriptions) ]);
 };
 
+/**
+ * Get room description
+ *
+ * @param {RoomSettings} room
+ * @param {RoomDoor[]} [roomDoors]
+ *
+ * @returns {string}
+ */
 export const getRoomDescription = (room, roomDoors) => {
-    let { settings, roomNumber } = room;
+    let { settings, roomNumber, size: roomDimensions } = room;
 
     let {
         [knobs.roomCount]: roomCount,
@@ -365,8 +383,8 @@ export const getRoomDescription = (room, roomDoors) => {
 
     let numberLabel = roomCount > 1 ? ` ${roomNumber}` : '';
     let typeLabel   = type !== roomTypes.room ? ` - ${capitalize(getRoomTypeLabel(type))}` : '';
-    let dimensions  = element('span', getRoomDimensions(room));
     let roomTitle   = title(`Room${numberLabel}${typeLabel}`);
+    let dimensions  = roomDimensions ? element('span', _getRoomDimensions(roomDimensions)) : '';
     let header      = element('header', roomTitle + dimensions);
 
     let content = header + subtitle('Description') + paragraph([

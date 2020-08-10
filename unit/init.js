@@ -11,6 +11,7 @@ import {
     scopeList,
     summary,
 } from './output.js';
+import { plural } from '../app/utility/tools.js';
 
 /**
  * Animation chunk division
@@ -99,11 +100,11 @@ const animateDots = (results) => new Promise(async (resolve) => {
  */
 const onComplete = async ({ assertions, errors, failures, results }) => {
     if (failures) {
-        console.warn(`${failures} Failures`);
+        console.error(`Encountered ${failures} ${plural(failures, 'ogre')}!`);
     }
 
     if (errors.length) {
-        console.warn(`${errors.length} Errors`);
+        console.error(`Encountered ${errors.length} ${plural(errors.length, 'dragon')}!`);
     }
 
     if (!failures && !errors.length) {
