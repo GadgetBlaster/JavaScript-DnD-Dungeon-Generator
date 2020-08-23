@@ -45,106 +45,6 @@ const _mapDescriptions = [
 // -- Private Methods ---------------------------------------------------------
 
 /**
- * Get key detail
- *
- * @private
- *
- * @param {string} type
- *
- * @returns {string}
- */
-export const _getKeyDetail = (type) => {
-    switch (type) {
-        case doorType.brass:
-        case doorType.iron:
-        case doorType.steel:
-        case doorType.stone:
-            return capitalize(type) + ' key';
-
-        case doorType.wooden:
-            return 'Wooden handled key';
-
-        case doorType.portcullis:
-            return 'Large rusty key';
-
-        case doorType.mechanical:
-            return 'A mechanical leaver';
-
-        default:
-            console.warn(`Undefined key description for lockable door type ${type}`);
-            return 'Key';
-    }
-};
-
-/**
- * Get description
- *
- * @param {RoomSettings} [settings]
- *
- * @returns {string}
- */
-export const _getDescription = (settings = {}) => {
-    let {
-        [knobs.itemQuantity]:  itemQuantity,
-        [knobs.roomCondition]: roomCondition,
-        [knobs.roomSize]:      roomSize,
-        [knobs.roomType]:      roomType = roomTypes.room,
-    } = settings;
-
-    let typeString = getRoomTypeLabel(roomType);
-
-    if (roomSize && roomSize === size.medium) {
-        roomSize = 'medium sized';
-    }
-
-    let empty    = itemQuantity === quantity.zero ? 'empty' : '';
-    let desc     = [ roomSize, empty, typeString ].filter(Boolean).join(' ');
-    let sentence = `You enter ${indefiniteArticle(desc)} ${desc}`;
-
-    if (roomCondition && roomCondition !== condition.average) {
-        sentence += ` in ${roomCondition} condition`;
-    }
-
-    return sentence;
-};
-
-/**
- * Get content rarity detail
- *
- * @param {string} rarity
- *
- * @returns {string}
- */
-export const _getContentRarityDetail = (rarity) => {
-    let defaultRarity = rarity === random ? '' : 'ordinary';
-    return indicateRarity.has(rarity) ? rarity : defaultRarity;
-};
-
-/**
- * Get furniture detail
- *
- * @param {string} roomFurnishing
- *
- * @returns {string}
- */
-export const _getFurnitureDetail = (roomFurnishing) => {
-    switch (roomFurnishing) {
-        case furnitureQuantity.minimum:
-            return 'minimal furnishings';
-
-        case furnitureQuantity.sparse:
-            return 'sparse furnishings';
-
-        case furnitureQuantity.average:
-        case furnitureQuantity.furnished:
-            return 'some furniture';
-
-        default:
-            return '';
-    }
-};
-
-/**
  * Get contents description
  *
  * @param {RoomSettings} [settings]
@@ -198,6 +98,100 @@ export const _getContentDescription = (settings = {}) => {
 };
 
 /**
+ * Get content rarity detail
+ *
+ * @param {string} rarity
+ *
+ * @returns {string}
+ */
+export const _getContentRarityDetail = (rarity) => {
+    let defaultRarity = rarity === random ? '' : 'ordinary';
+    return indicateRarity.has(rarity) ? rarity : defaultRarity;
+};
+
+/**
+ * Get description
+ *
+ * @param {RoomSettings} [settings]
+ *
+ * @returns {string}
+ */
+export const _getDescription = (settings = {}) => {
+    let {
+        [knobs.itemQuantity]:  itemQuantity,
+        [knobs.roomCondition]: roomCondition,
+        [knobs.roomSize]:      roomSize,
+        [knobs.roomType]:      roomType = roomTypes.room,
+    } = settings;
+
+    let typeString = getRoomTypeLabel(roomType);
+
+    if (roomSize && roomSize === size.medium) {
+        roomSize = 'medium sized';
+    }
+
+    let empty    = itemQuantity === quantity.zero ? 'empty' : '';
+    let desc     = [ roomSize, empty, typeString ].filter(Boolean).join(' ');
+    let sentence = `You enter ${indefiniteArticle(desc)} ${desc}`;
+
+    if (roomCondition && roomCondition !== condition.average) {
+        sentence += ` in ${roomCondition} condition`;
+    }
+
+    return sentence;
+};
+
+/**
+ * Get doorway description
+ *
+ * @param {RoomDoor} door
+ *
+ * @returns {string}
+ */
+export const _getDoorwayDescription = ({ type, size, locked }) => {
+    let sizeDesc;
+    let append = appendDoorway.has(type) && 'doorway';
+
+    // TODO guard against non-lockable doors
+
+    if (size === 2) {
+        sizeDesc = append ? 'double wide' : 'wide';
+    } else if (size === 3) {
+        sizeDesc = 'large';
+    } else if (size > 3) {
+        sizeDesc = 'massive';
+    }
+
+    let lockedDesc = locked ? 'locked' : '';
+
+    return [ sizeDesc, lockedDesc, type, append ].filter(Boolean).join(' ');
+};
+
+/**
+ * Get furniture detail
+ *
+ * @param {string} roomFurnishing
+ *
+ * @returns {string}
+ */
+export const _getFurnitureDetail = (roomFurnishing) => {
+    switch (roomFurnishing) {
+        case furnitureQuantity.minimum:
+            return 'minimal furnishings';
+
+        case furnitureQuantity.sparse:
+            return 'sparse furnishings';
+
+        case furnitureQuantity.average:
+        case furnitureQuantity.furnished:
+            return 'some furniture';
+
+        default:
+            return '';
+    }
+};
+
+/**
  * Get item condition description
  *
  * @param {RoomSettings} [settings]
@@ -233,29 +227,52 @@ export const _getItemConditionDescription = (settings = {}) => {
 };
 
 /**
- * Get doorway description
+ * Get key detail
  *
- * @param {RoomDoor} door
+ * @private
+ *
+ * @param {string} type
  *
  * @returns {string}
  */
-export const _getDoorwayDescription = ({ type, size, locked }) => {
-    let sizeDesc;
-    let append = appendDoorway.has(type) && 'doorway';
+export const _getKeyDetail = (type) => {
+    switch (type) {
+        case doorType.brass:
+        case doorType.iron:
+        case doorType.steel:
+        case doorType.stone:
+            return capitalize(type) + ' key';
 
-    // TODO guard against non-lockable doors
+        case doorType.wooden:
+            return 'Wooden handled key';
 
-    if (size === 2) {
-        sizeDesc = append ? 'double wide' : 'wide';
-    } else if (size === 3) {
-        sizeDesc = 'large';
-    } else if (size > 3) {
-        sizeDesc = 'massive';
+        case doorType.portcullis:
+            return 'Large rusty key';
+
+        case doorType.mechanical:
+            return 'A mechanical leaver';
+
+        default:
+            console.warn(`Undefined key description for lockable door type ${type}`);
+            return 'Key';
+    }
+};
+
+/**
+ * Get room dimensions
+ *
+ * @param {import('../typedefs.js').Size} roomSize
+ *
+ * @returns {string}
+ */
+export const _getRoomDimensions = (roomSize) => {
+    if (!roomSize) {
+        return '';
     }
 
-    let lockedDesc = locked ? 'locked' : '';
+    let [ width, height ] = roomSize;
 
-    return [ sizeDesc, lockedDesc, type, append ].filter(Boolean).join(' ');
+    return `${width * cellFeet} x ${height * cellFeet} feet`;
 };
 
 /**
@@ -297,23 +314,6 @@ export const _getRoomDoorwayDescription = (roomDoors) => {
     let comma = descParts.length > 1 ? ',' : '';
 
     return `${capitalize(descParts.join(', '))}${comma} and ${last}`;
-};
-
-/**
- * Get room dimensions
- *
- * @param {import('../typedefs.js').Size} roomSize
- *
- * @returns {string}
- */
-export const _getRoomDimensions = (roomSize) => {
-    if (!roomSize) {
-        return '';
-    }
-
-    let [ width, height ] = roomSize;
-
-    return `${width * cellFeet} x ${height * cellFeet} feet`;
 };
 
 // -- Public Methods ---------------------------------------------------------
