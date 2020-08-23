@@ -13,6 +13,9 @@ const rarity = {
 
 export default rarity;
 
+export const list = Object.keys(rarity); // deprecated TODO remove
+export const rarities = Object.values(rarity);
+
 /**
  * Indicate rarity
  *
@@ -24,8 +27,6 @@ export const indicateRarity = new Set([
     rarity.rare,
     rarity.uncommon,
 ]);
-
-export const list = Object.keys(rarity);
 
 let {
     abundant,

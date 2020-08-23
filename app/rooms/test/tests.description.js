@@ -23,11 +23,10 @@ import { knobs } from '../../knobs.js';
 import { random } from '../../utility/random.js';
 import condition from '../../attributes/condition.js';
 import doorType, { lockable, appendDoorway, outside } from '../door.js';
-import quantity, { list as quantityList } from '../../attributes/quantity.js';
-import rarities, { indicateRarity } from '../../attributes/rarity.js';
-import rarity from '../../attributes/rarity.js';
+import quantity, { quantities } from '../../attributes/quantity.js';
+import rarity, { indicateRarity, rarities } from '../../attributes/rarity.js';
 import roomType, { appendRoomTypes } from '../../rooms/type.js';
-import sizes from '../../attributes/size.js';
+import size from '../../attributes/size.js';
 
 /**
  * @param {import('../../../unit/unit.js').Utility}
@@ -53,7 +52,8 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given an item quantity other than `zero`', () => {
-            quantityList.filter((itemQuantity) => itemQuantity !== quantity.zero).forEach((itemQuantity) => {
+            let positiveQuantities = quantities.filter((itemQuantity) => itemQuantity !== quantity.zero);
+            positiveQuantities.forEach((itemQuantity) => {
                 describe(`given an item rarity and an item quantity of \`${itemQuantity}\``, () => {
                     it('should contain the word `rare`', () => {
                         assert(_getContentDescription({
@@ -92,17 +92,19 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a rarity that should not be indicated', () => {
-            Object.values(rarities).filter((rarity) => !indicateRarity.has(rarity)).forEach((rarity) => {
+            let notIndicated = rarities.filter((contentRarity) => !indicateRarity.has(contentRarity));
+            notIndicated.forEach((contentRarity) => {
                 it('should return `ordinary`', () => {
-                    assert(_getContentRarityDetail(rarity)).equals('ordinary');
+                    assert(_getContentRarityDetail(contentRarity)).equals('ordinary');
                 });
             });
         });
 
         describe('given a rarity that should be indicated', () => {
-            Object.values(rarities).filter((rarity) => indicateRarity.has(rarity)).forEach((rarity) => {
+            let indicated = rarities.filter((contentRarity) => indicateRarity.has(contentRarity));
+            indicated.forEach((contentRarity) => {
                 it('should return the rarity', () => {
-                    assert(_getContentRarityDetail(rarity)).equals(rarity);
+                    assert(_getContentRarityDetail(contentRarity)).equals(contentRarity);
                 });
             });
         });
@@ -123,18 +125,18 @@ export default ({ assert, describe, it }) => {
 
         describe('given a room size', () => {
             it('should return a description including the room size', () => {
-                assert(_getDescription({ [knobs.roomSize]: sizes.large })).stringIncludes('large room');
+                assert(_getDescription({ [knobs.roomSize]: size.large })).stringIncludes('large room');
             });
         });
 
         describe('given a room size of `medium`', () => {
             it('should return a description including `medium sized room`', () => {
-                assert(_getDescription({ [knobs.roomSize]: sizes.medium })).stringIncludes('medium sized room');
+                assert(_getDescription({ [knobs.roomSize]: size.medium })).stringIncludes('medium sized room');
             });
 
             describe('given a room type', () => {
                 it('should return a description including `medium sized` and the room type', () => {
-                    const settings = { [knobs.roomType]: roomType.smithy, [knobs.roomSize]: sizes.medium };
+                    const settings = { [knobs.roomType]: roomType.smithy, [knobs.roomSize]: size.medium };
                     assert(_getDescription(settings)).stringIncludes('medium sized smithy');
                 });
             });
@@ -156,7 +158,7 @@ export default ({ assert, describe, it }) => {
                 it('should return a description including the size and `empty room`', () => {
                     const settings = {
                         [knobs.itemQuantity]: quantity.zero,
-                        [knobs.roomSize]: sizes.massive,
+                        [knobs.roomSize]: size.massive,
                     };
 
                     assert(_getDescription(settings)).stringIncludes('massive empty room');
@@ -167,7 +169,7 @@ export default ({ assert, describe, it }) => {
                 it('should return a description including the size, `empty`, and the room type', () => {
                     const settings = {
                         [knobs.itemQuantity]: quantity.zero,
-                        [knobs.roomSize]: sizes.large,
+                        [knobs.roomSize]: size.large,
                         [knobs.roomType]: roomType.treasury,
                     };
 

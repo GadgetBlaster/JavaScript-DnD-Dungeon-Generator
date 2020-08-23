@@ -1,27 +1,20 @@
 
+import { capitalize, indefiniteArticle, toWords } from '../utility/tools.js';
+import { cellFeet } from '../dungeons/grid.js';
 import { element } from '../utility/html.js';
+import { em, paragraph, strong, subtitle, title } from '../ui/typography.js';
+import { furnitureQuantity } from '../items/types/furnishing.js';
+import { getEnvironmentDescription } from './environment.js';
+import { indicateRarity } from '../attributes/rarity.js';
+import { knobs } from '../knobs.js';
+import { list } from '../ui/list.js';
 import { random } from '../utility/random.js';
 import { rollArrayItem } from '../utility/roll.js';
-import { toWords, capitalize, indefiniteArticle } from '../utility/tools.js';
-
-import { em, paragraph, strong, subtitle, title } from '../ui/typography.js';
-import { list } from '../ui/list.js';
-
-import { knobs } from '../knobs.js';
-
-import { indicateRarity } from '../attributes/rarity.js';
 import condition from '../attributes/condition.js';
-import quantity from '../attributes/quantity.js';
-import size from '../attributes/size.js';
-
-import { cellFeet } from '../dungeons/grid.js';
-
-import { furnitureQuantity } from '../items/types/furnishing.js';
-
-import roomTypes, { appendRoomTypes } from '../rooms/type.js';
-
-import { getEnvironmentDescription } from './environment.js';
 import doorType, { appendDoorway, outside } from './door.js';
+import quantity from '../attributes/quantity.js';
+import roomTypes, { appendRoomTypes } from '../rooms/type.js';
+import size from '../attributes/size.js';
 
 /**
  * @typedef {import('../dungeons/map.js').Connection} Connection

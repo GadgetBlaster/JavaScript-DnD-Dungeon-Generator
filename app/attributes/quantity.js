@@ -14,7 +14,8 @@ const quantity = {
 
 export default quantity;
 
-export const list = Object.keys(quantity);
+export const list = Object.keys(quantity); // deprecated TODO remove
+export const quantities = Object.values(quantity);
 
 let {
     zero,
