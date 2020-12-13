@@ -49,13 +49,15 @@ export default ({ assert, describe, it }) => {
 
         describe('given an item quantity of `quantity.zero`', () => {
             it('should return `undefined`', () => {
-                assert(_getContentDescription({ [knobs.itemQuantity]: quantity.zero }))
-                    .isUndefined();
+                assert(_getContentDescription({
+                    [knobs.itemQuantity]: quantity.zero
+                })).isUndefined();
             });
         });
 
         describe('given an item quantity other than `quantity.zero`', () => {
-            let positiveQuantities = quantities.filter((itemQuantity) => itemQuantity !== quantity.zero);
+            let positiveQuantities = quantities
+                .filter((itemQuantity) => itemQuantity !== quantity.zero);
 
             positiveQuantities.forEach((itemQuantity) => {
                 describe(`given an item quantity of \`quantity.${itemQuantity}\``, () => {

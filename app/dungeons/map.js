@@ -83,6 +83,7 @@ const getRoomDimensions = (mapSettings, roomConfig) => {
     let roomHeight;
 
     if (customDimensions[roomType]) {
+        // TODO should return an array
         ({ roomWidth, roomHeight } = customDimensions[roomType](roomSize));
     } else {
         let [ min, max ] = dimensionRanges[roomSize];

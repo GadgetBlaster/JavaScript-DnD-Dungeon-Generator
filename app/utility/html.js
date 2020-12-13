@@ -1,8 +1,10 @@
 
 /**
- * Create attrs
+ * Create html attributes
  *
  * @param {Object<string, string>} [attrs]
+ *     An object with html attribute names as the keys and attribute values as
+ *     the values.
  *
  * @returns {string}
  */

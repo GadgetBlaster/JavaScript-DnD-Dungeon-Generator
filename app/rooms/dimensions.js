@@ -12,10 +12,20 @@ let {
     massive,
 } = size;
 
-const hallLengthMin = 3;
-const hallWidthMin  = 1;
-const hallWidthMax  = 1;
+// TODO rename to not confuse "width" with x-axis
+export const _hallLengthMin = 3;
+export const _hallWidthMin  = 1;
+export const _hallWidthMax  = 1;
 
+/**
+ * @typedef {[number, number]} RoomDimensions
+ */
+
+/**
+ * Dimension ranges
+ *
+ * @type {Object.<string, RoomDimensions>}
+ */
 export const dimensionRanges = {
     [tiny]   : [ 2, 3  ],
     [small]  : [ 2, 4  ],
@@ -24,6 +34,11 @@ export const dimensionRanges = {
     [massive]: [ 5, 15 ],
 };
 
+/**
+ * Room sizes
+ *
+ * @type {Object.<string, string[]>}
+ */
 const roomSizes = {
     [type.ballroom] : [ medium, large, massive ],
     [type.bathhouse]: [ small, medium, large, massive ],
@@ -37,22 +52,31 @@ const roomSizes = {
     [type.torture]  : [ tiny, small, medium ],
 };
 
+/**
+ * Custom room dimensions
+ *
+ * @type {{
+ *     hallway: (roomSize: string, { isHorizontal: number }) => RoomDimensions
+ * }}
+ */
 export const customDimensions = {
-    hallway: (roomSize) => {
+    hallway: (roomSize, { isHorizontal = roll() } = {}) => {
         let [ min, max ] = dimensionRanges[roomSize];
 
-        let isHorizontal = roll();
-
-        let length = roll(Math.max(hallLengthMin, min), max);
-        let width  = roll(hallWidthMin, hallWidthMax);
+        let length = roll(Math.max(_hallLengthMin, min), max);
+        let width  = roll(_hallWidthMin, _hallWidthMax);
 
         let roomWidth  = isHorizontal ? length : width;
         let roomHeight = isHorizontal ? width  : length;
 
+        // TODO should return an array
         return { roomWidth, roomHeight };
     },
 };
 
+/**
+ *
+ */
 export const roomTypeSizes = roomTypes.reduce((obj, type) => {
     let validSizes = roomSizes[type] || sizes;
 

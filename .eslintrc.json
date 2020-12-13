@@ -11,10 +11,11 @@
         "sourceType": "module"
     },
     "rules": {
-        "semi": [ "warn", "always" ],
-        "quotes": [ "warn", "single",  { "allowTemplateLiterals": true, "avoidEscape": true } ],
+        "max-len": [ "warn", { "code": 120, "comments": 80 } ],
         "no-shadow": "warn",
+        "no-undef": [ "error" ],
         "no-unused-vars": [ "error" ],
-        "no-undef": [ "error" ]
+        "quotes": [ "warn", "single",  { "allowTemplateLiterals": true, "avoidEscape": true } ],
+        "semi": [ "warn", "always" ]
     }
 }
