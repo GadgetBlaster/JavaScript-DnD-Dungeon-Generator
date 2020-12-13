@@ -27,6 +27,7 @@ import quantity, { quantities } from '../../attributes/quantity.js';
 import rarity, { indicateRarity, rarities } from '../../attributes/rarity.js';
 import roomType, { appendRoomTypes } from '../../rooms/type.js';
 import size from '../../attributes/size.js';
+import roomTypes from '../../rooms/type.js';
 
 /**
  * @param {import('../../../unit/unit.js').Utility}
@@ -92,20 +93,16 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a rarity that should not be indicated', () => {
-            let notIndicated = rarities.filter((contentRarity) => !indicateRarity.has(contentRarity));
-            notIndicated.forEach((contentRarity) => {
-                it('should return `ordinary`', () => {
-                    assert(_getContentRarityDetail(contentRarity)).equals('ordinary');
-                });
+            let rarityNotIndicated = rarities.find((contentRarity) => !indicateRarity.has(contentRarity));
+            it('should return `ordinary`', () => {
+                assert(_getContentRarityDetail(rarityNotIndicated)).equals('ordinary');
             });
         });
 
         describe('given a rarity that should be indicated', () => {
-            let indicated = rarities.filter((contentRarity) => indicateRarity.has(contentRarity));
-            indicated.forEach((contentRarity) => {
-                it('should return the rarity', () => {
-                    assert(_getContentRarityDetail(contentRarity)).equals(contentRarity);
-                });
+            let rarityIndicated = [ ...indicateRarity ].pop();
+            it('should return the rarity', () => {
+                assert(_getContentRarityDetail(rarityIndicated)).equals(rarityIndicated);
             });
         });
     });
@@ -186,12 +183,9 @@ export default ({ assert, describe, it }) => {
             });
 
             describe('given a room condition other than `average`', () => {
-                Object.values(condition).filter((roomCondition) => roomCondition !== condition.average).forEach((roomCondition) => {
-                    let expect = `in ${roomCondition} condition`;
-                    it(`should return a description including \`${expect}\``, () => {
-                        const settings = { [knobs.roomCondition]: roomCondition };
-                        assert(_getDescription(settings)).stringIncludes(expect);
-                    });
+                it(`should return a description including the condition`, () => {
+                    const settings = { [knobs.roomCondition]: condition.busted };
+                    assert(_getDescription(settings)).stringIncludes(condition.busted);
                 });
             });
         });
@@ -226,16 +220,16 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a door type included in `appendDoorway`', () => {
-            [ ...appendDoorway ].forEach((type) => {
-                it('should contain the string `doorway`', () => {
-                    assert(_getDoorwayDescription({ type }))
-                        .stringIncludes('doorway');
-                });
+            let appendDoorwayType = [ ...appendDoorway ].pop();
 
-                describe('given a size of `2`', () => {
-                    it('should contain the string `double wide`', () => {
-                        assert(_getDoorwayDescription({ type, size: 2 })).stringIncludes('double wide');
-                    });
+            it('should contain the string `doorway`', () => {
+                assert(_getDoorwayDescription({ type: appendDoorwayType }))
+                    .stringIncludes('doorway');
+            });
+
+            describe('given a size of `2`', () => {
+                it('should contain the string `double wide`', () => {
+                    assert(_getDoorwayDescription({ type: appendDoorwayType, size: 2 })).stringIncludes('double wide');
                 });
             });
         });
@@ -254,7 +248,7 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('_getFurnitureDetail()', () => {
-        let details = {
+        let quantityExpectations = {
             [furnitureQuantity.none]: '',
             [furnitureQuantity.minimum]: 'minimal furnishings',
             [furnitureQuantity.sparse]: 'sparse furnishings',
@@ -263,8 +257,8 @@ export default ({ assert, describe, it }) => {
         };
 
         Object.values(furnitureQuantity).forEach((roomFurnishing) => {
-            let expect = details[roomFurnishing];
-            it(`should return \`${expect}\``, () => {
+            let expect = quantityExpectations[roomFurnishing];
+            it(`should return a string including \`${expect}\``, () => {
                 assert(_getFurnitureDetail(roomFurnishing)).equals(expect);
             });
         });
@@ -678,14 +672,8 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getRoomTypeLabel()', () => {
-        Object.values(roomType).forEach((type) => {
-            describe(`room type \`${type}\``, () => {
-                const result = getRoomTypeLabel(type);
-
-                it('should be a string', () => {
-                    assert(result).isString();
-                });
-            });
+        it('should return a string', () => {
+            assert(roomTypes.armory).isString();
         });
 
         describe('given a camel cased room type', () => {
@@ -701,12 +689,8 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a room type included in `appendRoomTypes`', () => {
-            appendRoomTypes.forEach((type) => {
-                describe(`room type \`${type}\``, () => {
-                    it('should include the word ` room`', () => {
-                        assert(getRoomTypeLabel(type)).stringIncludes(' room');
-                    });
-                });
+            it('should include the word ` room`', () => {
+                assert(getRoomTypeLabel([ ...appendRoomTypes ].pop())).stringIncludes(' room');
             });
         });
     });
