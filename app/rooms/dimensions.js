@@ -77,7 +77,7 @@ export const customDimensions = {
 };
 
 /**
- * Get room sizes by room type.
+ * Room sizes by room type.
  *
  * All room sizes are returned if the room type is not limited to a sub-set of
  * sizes defined in `roomSizes`.
@@ -86,10 +86,8 @@ export const customDimensions = {
  *
  * @type {Object.<string, string[]>}
  */
-export const roomTypeSizes = roomTypes.reduce((obj, type) => {
-    let validSizes = roomSizes[type] || sizes;
-
-    obj[type] = validSizes;
+export const roomTypeSizes = roomTypes.reduce((obj, roomType) => {
+    obj[roomType] = roomSizes[roomType] || sizes;
 
     return obj;
 }, {});
