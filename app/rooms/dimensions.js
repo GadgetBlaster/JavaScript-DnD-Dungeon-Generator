@@ -37,6 +37,8 @@ export const dimensionRanges = {
 /**
  * Room sizes
  *
+ * TODO make into Sets?
+ *
  * @type {Object.<string, string[]>}
  */
 const roomSizes = {
@@ -75,7 +77,14 @@ export const customDimensions = {
 };
 
 /**
+ * Get room sizes by room type.
  *
+ * All room sizes are returned if the room type is not limited to a sub-set of
+ * sizes defined in `roomSizes`.
+ *
+ * Rename to `roomSizesByType` & combine with constant object
+ *
+ * @type {Object.<string, string[]>}
  */
 export const roomTypeSizes = roomTypes.reduce((obj, type) => {
     let validSizes = roomSizes[type] || sizes;

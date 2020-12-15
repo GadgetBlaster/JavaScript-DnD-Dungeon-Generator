@@ -1,4 +1,5 @@
 
+// TODO freeze
 const size = {
     tiny   : 'tiny',
     small  : 'small',

@@ -1,23 +1,31 @@
 
-import size from '../../attributes/size.js';
+import size, { list as sizes } from '../../attributes/size.js';
+import roomType, { list as roomTypes } from '../type.js';
 import {
     _hallLengthMin,
     _hallWidthMax,
     _hallWidthMin,
     customDimensions,
     dimensionRanges,
+    roomTypeSizes,
 } from '../dimensions.js';
 
 /**
  * @param {import('../../../unit/unit.js').Utility}
  */
 export default ({ assert, describe, it }) => {
-    describe('each value in `dimensionRanges`', () => {
-        Object.values(dimensionRanges).forEach((dimensions) => {
-            it('should be an array of two numbers', () => {
-                assert(dimensions.length).equals(2);
-                assert(dimensions[0]).isNumber();
-                assert(dimensions[1]).isNumber();
+    describe('`dimensionRanges`', () => {
+        it('should hae an entry for each size', () => {
+            assert(Object.keys(dimensionRanges)).equalsArray(sizes);
+        });
+
+        describe('each value in `dimensionRanges`', () => {
+            Object.values(dimensionRanges).forEach((dimensions) => {
+                it('should be an array of two numbers', () => {
+                    assert(dimensions.length).equals(2);
+                    assert(dimensions[0]).isNumber();
+                    assert(dimensions[1]).isNumber();
+                });
             });
         });
     });
@@ -82,6 +90,30 @@ export default ({ assert, describe, it }) => {
 
                     it('height should be less than width', () => {
                         assert(roomDimensions.roomHeight < roomDimensions.roomWidth).isTrue();
+                    });
+                });
+            });
+        });
+    });
+
+    describe('`roomTypeSizes`', () => {
+        it('should hae an entry for room type', () => {
+            assert(Object.keys(roomTypeSizes)).equalsArray(roomTypes);
+        });
+
+        describe('each entry in `roomTypeSizes`', () => {
+            Object.entries(roomTypeSizes).forEach(([ room, allowedSizes ]) => {
+                describe(`entry with key \`${room}\``, () => {
+                    it('should be an array', () => {
+                        assert(allowedSizes).isArray();
+                    });
+
+                    it('should contain only valid sizes', () => {
+                        let invalidSizes = allowedSizes.find((roomSize) => {
+                            !sizes.includes(roomSize);
+                        });
+
+                        assert(invalidSizes).isUndefined();
                     });
                 });
             });
