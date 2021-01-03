@@ -1,6 +1,6 @@
 
 import size, { list as sizes } from '../../attributes/size.js';
-import roomType, { list as roomTypes } from '../type.js';
+import { list as roomTypes } from '../type.js';
 import {
     _hallLengthMin,
     _hallWidthMax,
@@ -15,7 +15,7 @@ import {
  */
 export default ({ assert, describe, it }) => {
     describe('`dimensionRanges`', () => {
-        it('should hae an entry for each size', () => {
+        it('should have an entry for each size', () => {
             assert(Object.keys(dimensionRanges)).equalsArray(sizes);
         });
 

@@ -20,11 +20,12 @@ import {
 } from './draw.js';
 
 import { dimensionRanges, customDimensions } from '../rooms/dimensions.js';
-import { probability as doorProbability,
-    outside,
-    secretProbability,
+import {
     lockable,
     lockedChance,
+    outside,
+    probability as doorProbability,
+    secretProbability,
 } from '../rooms/door.js';
 
 import { knobs } from '../knobs.js';

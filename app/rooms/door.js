@@ -73,24 +73,26 @@ export const lockedChance = 25;
  */
 
 /**
+ * @typedef {import('../dungeons/map.js').Door} Door
+ */
+
+/**
  * Room door
  *
- * @typedef {object} RoomDoor
+ * @typedef {object} RoomDoors
  *
- * @property {string} rect
- * @property {string} type
- * @property {boolean} locked
- * @property {object.<number, Connection>} connections // TODO drop
- * @property {Connection} connection
- * @property {number} size
+ * @property {Key[]} keys
+ * @property {{ roomNumber: Door[] }} doors
  */
 
 /**
  * Get room door
  *
+ * TODO rename
+ *
  * @param {import('../dungeons/map.js').Door[]}
  *
- * @returns {RoomDoor}
+ * @returns {RoomDoors}
  */
 export const getRoomDoor = (doors) => {
     let lookup = {};
@@ -103,7 +105,8 @@ export const getRoomDoor = (doors) => {
             }
 
             let roomDoor = {
-                // TODO safe to drop unnecessary `connections` from config
+                // TODO safe to drop unnecessary `connections` from config?
+                // Is it already there?
                 ...door,
                 connection: door.connections[roomNumber],
             };
