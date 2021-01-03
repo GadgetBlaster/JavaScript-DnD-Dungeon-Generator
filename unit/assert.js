@@ -33,7 +33,7 @@ const emptyElements = [
 /** @type {Function} equals */
 export const equals = (actual, expected) => {
     let isOk = expected === actual;
-    let msg  = `expected [ ${actual} ] to equal [ ${expected} ]`;
+    let msg  = `expected "${actual}" to equal "${expected}"`;
 
     return { msg, isOk };
 };
@@ -48,12 +48,12 @@ export const equalsArray = (actual, expected) => {
 
     if (actual.length !== expected.length) {
         return {
-            msg: `expected array length [ ${actual.length} ] to equal [ ${expected.length} ]`,
+            msg: `expected array length of ${actual.length} to be ${expected.length}`,
             isOk: false,
         };
     }
 
-    let msg  = `expected [ ${actual} ] to equal [ ${expected} ]`;
+    let msg  = `expected [ ${actual.join(', ')} ] to equal [ ${expected.join(', ')} ]`;
     let isOk = actual.filter((a, i) => a === expected[i]).length === actual.length;
 
     return { msg, isOk };
@@ -72,14 +72,14 @@ export const equalsObject = (actual, expected) => {
 
     if (actualKeys.length !== expectedKeys.length) {
         return {
-            msg: `expected object keys length [ ${actualKeys.length} ] to equal [ ${expectedKeys.length} ]`,
+            msg: `expected object keys length of ${actualKeys.length} to be ${expectedKeys.length}`,
             isOk: false,
         };
     }
 
     if (actualKeys.filter((a, i) => a === expectedKeys[i]).length !== actualKeys.length) {
         return {
-            msg: `expected object keys [ ${actualKeys} ] to equal [ ${expectedKeys} ]`,
+            msg: `expected object keys [ ${actualKeys.join(', ')} ] to equal [ ${expectedKeys.join(', ')} ]`,
             isOk: false,
         };
     }
@@ -97,15 +97,8 @@ export const equalsObject = (actual, expected) => {
         return a === expectedValue;
     });
 
-    if (matchingValues.length !== actualValues.length) {
-        return {
-            msg: `expected object values [ ${actualValues} ] to equal [ ${expectedValues} ]`,
-            isOk: false,
-        };
-    }
-
-    let msg  = `expected [ ${actual} ] to equal [ ${expected} ]`;
-    let isOk = true;
+    let msg  = `expected object values [ ${actualValues.join(', ')} ] to equal [ ${expectedValues.join(', ')} ]`;
+    let isOk = matchingValues.length === actualValues.length;
 
     return { msg, isOk };
 };
@@ -113,7 +106,7 @@ export const equalsObject = (actual, expected) => {
 /** @type {Function} isArray */
 export const isArray = (value) => {
     let isOk = Array.isArray(value);
-    let msg  = `expected [ ${value} ] to be an array`;
+    let msg  = `expected "${value}" to be an array`;
 
     return { msg, isOk };
 };
@@ -121,7 +114,7 @@ export const isArray = (value) => {
 /** @type {Function} isBoolean */
 export const isBoolean = (value) => {
     let isOk = typeof value === 'boolean';
-    let msg  = `expected [ ${value} ] to be a boolean`;
+    let msg  = `expected "${value}" to be boolean`;
 
     return { msg, isOk };
 };
@@ -129,7 +122,7 @@ export const isBoolean = (value) => {
 /** @type {Function} isFalse */
 export const isFalse = (value) => {
     let isOk = value === false;
-    let msg  = `expected [ ${value} ] to be false`;
+    let msg  = `expected "${value}" to be false`;
 
     return { msg, isOk };
 };
@@ -137,7 +130,7 @@ export const isFalse = (value) => {
 /** @type {Function} isFunction */
 export const isFunction = (value) => {
     let isOk = typeof value === 'function';
-    let msg  = `expected [ ${value} ] to be a function`;
+    let msg  = `expected "${value}" to be a function`;
 
     return { msg, isOk };
 };
@@ -153,7 +146,7 @@ export const isHtmlTag = (string, tag) => {
     let regExp  = new RegExp('^<'+tag+'(?:>| [^>]+>)', 'g');
     let isEmpty = emptyElements.includes(tag);
     let isOk    = regExp.test(string) && string.endsWith(isEmpty ? ' />' : `</${tag}>`);
-    let msg     = `expected [ ${string} ] to be an html tag string [ ${tag} ]`;
+    let msg     = `expected "${string}" to be an html tag string of ${isEmpty ? `<${tag} />` : `<${tag}>*</${tag}>`}`;
 
     return { msg, isOk };
 };
@@ -161,7 +154,7 @@ export const isHtmlTag = (string, tag) => {
 /** @type {Function} isNull */
 export const isNull = (value) => {
     let isOk = value === null;
-    let msg  = `expected [ ${value} ] to be a null`;
+    let msg  = `expected "${value}" to be a null`;
 
     return { msg, isOk };
 };
@@ -169,7 +162,7 @@ export const isNull = (value) => {
 /** @type {Function} isNumber */
 export const isNumber = (value) => {
     let isOk = typeof value === 'number' && !isNaN(value);
-    let msg  = `expected [ ${value} ] to be a number`;
+    let msg  = `expected "${value}" to be a number`;
 
     return { msg, isOk };
 };
@@ -177,7 +170,7 @@ export const isNumber = (value) => {
 /** @type {Function} isObject */
 export const isObject = (value) => {
     let isOk = !!value && typeof value === 'object' && !Array.isArray(value);
-    let msg  = `expected [ ${value} ] to be an object`;
+    let msg  = `expected "${value}" to be an object`;
 
     return { msg, isOk };
 };
@@ -185,7 +178,7 @@ export const isObject = (value) => {
 /** @type {Function} isString */
 export const isString = (value) => {
     let isOk = typeof value === 'string';
-    let msg  = `expected [ ${value} ] to be a string`;
+    let msg  = `expected "${value}" to be a string`;
 
     return { msg, isOk };
 };
@@ -193,7 +186,7 @@ export const isString = (value) => {
 /** @type {Function} isTrue */
 export const isTrue = (value) => {
     let isOk = value === true;
-    let msg  = `expected [ ${value} ] to be true`;
+    let msg  = `expected "${value}" to be true`;
 
     return { msg, isOk };
 };
@@ -201,7 +194,7 @@ export const isTrue = (value) => {
 /** @type {Function} isUndefined */
 export const isUndefined = (value) => {
     let isOk = value === undefined;
-    let msg  = `expected [ ${value} ] to be undefined`;
+    let msg  = `expected "${value}" to be undefined`;
 
     return { msg, isOk };
 };
@@ -219,7 +212,7 @@ export const stringIncludes = (actual, includes) => {
     }
 
     let isOk = actual.includes(includes);
-    let msg  = `expected [ ${actual} ] to include [ ${includes} ]`;
+    let msg  = `expected "${actual}" to include "${includes}"`;
 
     return { msg, isOk };
 };
@@ -256,12 +249,12 @@ export const throws = (func, expected) => {
     if (!errorMsg) {
         return {
             isOk: false,
-            msg: `expected [ ${func.name} ] to throw`,
+            msg: `expected function "${func.name}" to throw`,
         };
     }
 
     let isOk = errorMsg === expected;
-    let msg  = `expected [ ${errorMsg} ] to equal [ ${expected} ]`;
+    let msg  = `expected "${errorMsg}" to equal "${expected}"`;
 
     return { msg, isOk };
 };
