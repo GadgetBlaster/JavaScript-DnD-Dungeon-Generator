@@ -67,38 +67,8 @@ export const equalsObject = (actual, expected) => {
         return checkType;
     }
 
-    let actualKeys = Object.keys(actual);
-    let expectedKeys = Object.keys(expected);
-
-    if (actualKeys.length !== expectedKeys.length) {
-        return {
-            msg: `expected object keys length of ${actualKeys.length} to be ${expectedKeys.length}`,
-            isOk: false,
-        };
-    }
-
-    if (actualKeys.filter((a, i) => a === expectedKeys[i]).length !== actualKeys.length) {
-        return {
-            msg: `expected object keys [ ${actualKeys.join(', ')} ] to equal [ ${expectedKeys.join(', ')} ]`,
-            isOk: false,
-        };
-    }
-
-    let actualValues   = Object.values(actual);
-    let expectedValues = Object.values(expected);
-
-    let matchingValues = actualValues.filter((a, i) => {
-        let expectedValue = expectedValues[i];
-
-        if (isObject(a).isOk) {
-            return equalsObject(a, expectedValue).isOk;
-        }
-
-        return a === expectedValue;
-    });
-
-    let msg  = `expected object values [ ${actualValues.join(', ')} ] to equal [ ${expectedValues.join(', ')} ]`;
-    let isOk = matchingValues.length === actualValues.length;
+    let isOk = JSON.stringify(actual) === JSON.stringify(expected);
+    let msg  = `expected object\n\n${JSON.stringify(actual, null, 1)}\n\nto equal\n\n${JSON.stringify(expected, null, 1)}`;
 
     return { msg, isOk };
 };

@@ -63,8 +63,10 @@ export default ({ assert, describe, it }) => {
                 it('should return a RoomDoors object with a doors lookup', () => {
                     let roomDoors = getRoomDoor(dungeonDoors).doors;
 
-                    assert(roomDoors[1][0].type).equals(door.archway);
-                    assert(roomDoors[2][0].type).equals(door.archway);
+                    assert(roomDoors).equalsObject({
+                        1: [ { ...dungeonDoors[0], connection: { direction: directions.north, to: 2 } } ],
+                        2: [ { ...dungeonDoors[0], connection: { direction: directions.south, to: 1 } } ],
+                    });
                 });
             });
 
@@ -76,9 +78,13 @@ export default ({ assert, describe, it }) => {
                 it('should return a RoomDoors object with an array of Keys', () => {
                     let roomDoorKeys = getRoomDoor(dungeonDoors).keys;
 
-                    assert(roomDoorKeys[0].type).equals(door.wooden);
-                    assert(roomDoorKeys[0].connections[1].to).equals(2);
-                    assert(roomDoorKeys[0].connections[2].to).equals(1);
+                    assert(roomDoorKeys[0]).equalsObject({
+                        type: door.wooden,
+                        connections: {
+                            1: { direction: directions.north, to: 2 },
+                            2: { direction: directions.south, to: 1 },
+                        },
+                    });
                 });
             });
         });

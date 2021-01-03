@@ -245,6 +245,15 @@ export default ({ assert, describe, it }) => {
                         { joey: { occupation: 'spell caster' } }
                     ).isOk).isTrue();
                 });
+
+                describe('when there is a nested array of objects', () => {
+                    it('should return true', () => {
+                        assert(equalsObject(
+                            { party: [ { joey: 'spell caster' }, { pablo: 'the spell caster' } ] },
+                            { party: [ { joey: 'spell caster' }, { pablo: 'the spell caster' } ] },
+                        ).isOk).isTrue();
+                    });
+                });
             });
 
             describe('when the nested objects are different', () => {
@@ -260,6 +269,15 @@ export default ({ assert, describe, it }) => {
                         assert(equalsObject(
                             { joey: { occupation: 'spell caster', attributes: { height: 12, eyes: 'blue' } } },
                             { joey: { occupation: 'spell caster', attributes: { height: 12, eyes: 'green' } } }
+                        ).isOk).isFalse();
+                    });
+                });
+
+                describe('when there is a nested array of objects', () => {
+                    it('should return true', () => {
+                        assert(equalsObject(
+                            { party: [ { joey: 'spell caster' }, { pablo: 'the spell caster' } ] },
+                            { party: [ { joey: 'the rogue' }, { pablo: 'the rogue' } ] },
                         ).isOk).isFalse();
                     });
                 });

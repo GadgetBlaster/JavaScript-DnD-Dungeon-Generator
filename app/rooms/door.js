@@ -88,7 +88,7 @@ export const lockedChance = 25;
 /**
  * Get room door
  *
- * TODO rename
+ * TODO rename & simplify?
  *
  * @param {import('../dungeons/map.js').Door[]}
  *
