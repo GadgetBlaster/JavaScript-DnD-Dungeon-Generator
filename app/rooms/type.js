@@ -2,6 +2,11 @@
 import { createProbability } from '../utility/roll.js';
 import { random } from '../utility/random.js';
 
+/**
+ * Room types
+ *
+ * @type {object.<string, string>}
+ */
 const roomTypes = {
     armory    : 'armory',
     atrium    : 'atrium',
@@ -31,8 +36,19 @@ const roomTypes = {
 
 export default roomTypes;
 
+/**
+ * Room type list
+ *
+ * @type {string[]}
+ */
 export const list = Object.keys(roomTypes);
 
+/**
+ * Set of room types that should have the word "room" appended to their
+ * descriptions.
+ *
+ * @type {Set<string>}
+ */
 export const appendRoomTypes = new Set([
     roomTypes.dining,
     roomTypes.shrine,
@@ -41,6 +57,11 @@ export const appendRoomTypes = new Set([
     roomTypes.torture,
 ]);
 
+/**
+ * Probability distribution table of room types.
+ *
+ * @type {Probability}
+ */
 export const probability = createProbability([
     [ 40,  roomTypes.hallway ],
     [ 65,  roomTypes.room    ],

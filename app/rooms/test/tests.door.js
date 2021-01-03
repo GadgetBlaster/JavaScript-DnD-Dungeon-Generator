@@ -12,6 +12,15 @@ import { directions } from '../../dungeons/map.js';
  * @param {import('../../../unit/unit.js').Utility}
  */
 export default ({ assert, describe, it }) => {
+    describe('`door`', () => {
+        it('should be an object of strings', () => {
+            assert(door).isObject();
+
+            let invalidDoor = Object.values(door).find((value) => typeof value !== 'string');
+            assert(invalidDoor).isUndefined();
+        });
+    });
+
     describe('`appendDoorway`', () => {
         it('should be a set of door types', () => {
             let invalidDoor = [ ...appendDoorway ].find((appendDoor) => !door[appendDoor]);

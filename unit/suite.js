@@ -25,6 +25,9 @@ import environment from '../app/rooms/test/tests.environment.js';
 import feature from '../app/rooms/test/tests.feature.js';
 import generate from '../app/rooms/test/tests.generate.js';
 import settings from '../app/rooms/test/tests.settings.js';
+import trap from '../app/rooms/test/tests.trap.js';
+import type from '../app/rooms/test/tests.type.js';
+import vegetation from '../app/rooms/test/tests.vegetation.js';
 
 export default {
     '/unit/test/tests.assert.js': assert,
@@ -53,4 +56,7 @@ export default {
     '/app/rooms/test/tests.feature.js'    : feature,
     '/app/rooms/test/tests.generate.js'   : generate,
     '/app/rooms/test/tests.settings.js'   : settings,
+    '/app/rooms/test/tests.trap.js'       : trap,
+    '/app/rooms/test/tests.type.js'       : type,
+    '/app/rooms/test/tests.vegetation.js' : vegetation,
 };

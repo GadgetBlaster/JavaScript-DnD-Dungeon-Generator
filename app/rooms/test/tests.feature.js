@@ -12,6 +12,15 @@ import roomType from '../type.js';
  * @param {import('../../../unit/unit.js').Utility}
  */
 export default ({ assert, describe, it }) => {
+    describe('`feature`', () => {
+        it('should be an object of strings', () => {
+            assert(feature).isObject();
+
+            let invalidFeature = Object.values(feature).find((value) => typeof value !== 'string');
+            assert(invalidFeature).isUndefined();
+        });
+    });
+
     describe('_getFeatureDesc()', () => {
         Object.values(feature).forEach((roomFeature) => {
             describe(`given a room feature of \`${roomFeature}\``, () => {

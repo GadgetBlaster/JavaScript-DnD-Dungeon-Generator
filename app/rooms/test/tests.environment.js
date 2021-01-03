@@ -17,6 +17,15 @@ import size from '../../attributes/size.js';
  * @param {import('../../../unit/unit.js').Utility}
  */
 export default ({ assert, describe, it }) => {
+    describe('`structure`', () => {
+        it('should be an object of strings', () => {
+            assert(structure).isObject();
+
+            let invalidStructure = Object.values(structure).find((value) => typeof value !== 'string');
+            assert(invalidStructure).isUndefined();
+        });
+    });
+
     describe('_getStructureDesc()', () => {
         Object.values(structure).forEach((roomStructure) => {
             describe(`given a room structure of \`${roomStructure}\``, () => {
@@ -112,9 +121,8 @@ export default ({ assert, describe, it }) => {
 
             assert(descriptionParts).isArray();
 
-            descriptionParts.forEach((desc) => {
-                assert(desc).isString();
-            });
+            let invalidDescription = descriptionParts.find((desc) => typeof desc !== 'string');
+            assert(invalidDescription).isUndefined();
         });
     });
 };

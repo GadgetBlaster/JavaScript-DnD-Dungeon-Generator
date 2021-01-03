@@ -1,4 +1,9 @@
 
+/**
+ * Trap descriptions
+ *
+ * @type {string[]}
+ */
 const traps = [
     'Collapsing roof triggered by a tripwire',
     'Falling cage triggered by a tripwire',

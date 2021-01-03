@@ -85,7 +85,7 @@ export const lockable = new Set([
 ]);
 
 /**
- * Door type probability distribution table
+ * Probability distribution table of door types.
  *
  * @type {Probability}
  */
@@ -104,7 +104,7 @@ export const probability = createProbability([
 ]);
 
 /**
- * Secret door probability distribution table
+ * Probability distribution table for secret doors.
  *
  * @type {Probability}
  */

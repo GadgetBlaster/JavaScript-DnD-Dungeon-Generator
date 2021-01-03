@@ -2,9 +2,27 @@
 import { capitalize, listSentence } from '../utility/tools.js';
 import { roll, rollPercentile, rollArrayItem } from '../utility/roll.js';
 
-const vegetationChance = 60;
-const maxVegetation    = 3;
+// -- Config -------------------------------------------------------------------
 
+/**
+ * Percentile chance to include a vegetation description with a room.
+ *
+ * @type {number}
+ */
+const vegetationChance = 60;
+
+/**
+ * Maximum number of vegetations for a room.
+ *
+ * @type {number}
+ */
+const maxVegetation = 3;
+
+/**
+ * Vegetation types
+ *
+ * @type {object.<string, string>}
+ */
 const vegetation = {
     ferns    : 'ferns',
     flowers  : 'flowers',
@@ -15,6 +33,15 @@ const vegetation = {
     vines    : 'vines',
 };
 
+// -- Public Functions ---------------------------------------------------------
+
+/**
+ * Generate vegetation description
+ *
+ * TODO inject randomization.
+ *
+ * @returns {string}
+ */
 export const getVegetationDescription = () => {
     if (!rollPercentile(vegetationChance)) {
         return;
