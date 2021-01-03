@@ -16,7 +16,7 @@ import { createProbability } from '../utility/roll.js';
  * @typedef {object} RoomDoors
  *
  * @property {Key[]} keys
- * @property {{ roomNumber: Door[] }} doors
+ * @property {object.<number, Door[]>} doors
  */
 
 /**

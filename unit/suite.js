@@ -24,6 +24,7 @@ import door from '../app/rooms/test/tests.door.js';
 import environment from '../app/rooms/test/tests.environment.js';
 import feature from '../app/rooms/test/tests.feature.js';
 import generate from '../app/rooms/test/tests.generate.js';
+import settings from '../app/rooms/test/tests.settings.js';
 
 export default {
     '/unit/test/tests.assert.js': assert,
@@ -51,4 +52,5 @@ export default {
     '/app/rooms/test/tests.environment.js': environment,
     '/app/rooms/test/tests.feature.js'    : feature,
     '/app/rooms/test/tests.generate.js'   : generate,
+    '/app/rooms/test/tests.settings.js'   : settings,
 };
