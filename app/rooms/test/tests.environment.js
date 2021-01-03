@@ -19,17 +19,19 @@ import size from '../../attributes/size.js';
 export default ({ assert, describe, it }) => {
     describe('_getStructureDesc()', () => {
         Object.values(structure).forEach((roomStructure) => {
-            let desc = _getStructureDesc({
-                [knobs.roomType]: roomType.bedroom,
-                [knobs.roomSize]: size.medium,
-            }, roomStructure);
+            describe(`given a room structure of \`${roomStructure}\``, () => {
+                let desc = _getStructureDesc({
+                    [knobs.roomType]: roomType.bedroom,
+                    [knobs.roomSize]: size.medium,
+                }, roomStructure);
 
-            it('should return a string', () => {
-                assert(desc).isString();
-            });
+                it('should return a string', () => {
+                    assert(desc).isString();
+                });
 
-            it('should include the room type label', () => {
-                assert(desc).stringIncludes(getRoomTypeLabel(roomType.bedroom));
+                it('should include the room type label', () => {
+                    assert(desc).stringIncludes(getRoomTypeLabel(roomType.bedroom));
+                });
             });
         });
 

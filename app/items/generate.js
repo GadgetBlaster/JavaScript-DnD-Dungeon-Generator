@@ -66,9 +66,26 @@ export const generateItems = (settings) => {
         [knobs.itemCondition] : itemCondition,
         [knobs.itemQuantity]  : itemQuantity,
         [knobs.itemRarity]    : itemRarity,
+        [knobs.itemType]      : itemType,
         [knobs.roomFurnishing]: furnitureQuantity,
         [knobs.roomCondition] : roomCondition,
     } = settings;
+
+    if (!itemQuantity) {
+        throw new TypeError('Item quantity is required in generateItems()');
+    }
+
+    if (!itemRarity) {
+        throw new TypeError('Item rarity is required in generateItems()');
+    }
+
+    if (!itemType) {
+        throw new TypeError('Item type is required in generateItems()');
+    }
+
+    if (!itemCondition) {
+        throw new TypeError('Item condition is required in generateItems()');
+    }
 
     if (itemQuantity === random) {
         itemQuantity = quantityProbability.roll();

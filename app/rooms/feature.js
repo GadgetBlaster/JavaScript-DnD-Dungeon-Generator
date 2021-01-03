@@ -3,10 +3,28 @@ import { knobs } from '../knobs.js';
 import { roll, rollArrayItem, rollPercentile } from '../utility/roll.js';
 import roomType from './type.js';
 
-const featureChance = 50;
-const maxFeatures   = 3;
+// -- Config -------------------------------------------------------------------
 
-const feature = {
+/**
+ * Percentile chance to include a room feature.
+ *
+ * @type {number}
+ */
+const featureChance = 50;
+
+/**
+ * Maximum number of features for a room.
+ *
+ * @type {number}
+ */
+const maxFeatures = 3;
+
+/**
+ * Room feature types
+ *
+ * @type {Object.<string, string>}
+ */
+export const feature = {
     altar     : 'altar',
     beetles   : 'beetles',
     cage      : 'cage',
@@ -37,7 +55,16 @@ const feature = {
     well      : 'well',
 };
 
-const getFeatureDesc = (type) => {
+// -- Private Methods ----------------------------------------------------------
+
+/**
+ * Get feature description
+ *
+ * @param {string} type
+ *
+ * @returns {string}
+ */
+export const _getFeatureDesc = (type) => {
     switch (type) {
         case feature.altar:
             let location = roll() ? 'in the center' : 'to one side';
@@ -131,10 +158,21 @@ const getFeatureDesc = (type) => {
             return 'The rom features a well that appears to have running water at the bottom';
 
         default:
-            throw new TypeError('Invalid feature type');
+            throw new TypeError('Invalid room feature');
     }
 };
 
+// -- Public Methods -----------------------------------------------------------
+
+/**
+ * Get feature description
+ *
+ * TODO inject probability
+ *
+ * @param {import('./settings.js').RoomSettings} settings
+ *
+ * @returns {string[]}
+ */
 export const getRoomFeatures = (settings) => {
     let {
         [knobs.roomType]: roomTypeSetting,
@@ -156,7 +194,7 @@ export const getRoomFeatures = (settings) => {
     }
 
     let roomFeatures = [ ...types ].map((type) => {
-        return getFeatureDesc(type);
+        return _getFeatureDesc(type);
     });
 
     return roomFeatures;

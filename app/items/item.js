@@ -79,7 +79,8 @@ export const generateItem = (settings) => {
     if (itemType === random) {
         randomItem = rollArrayItem(groupByRarity[itemRarity]);
     } else {
-        randomItem = rollArrayItem(groupByType[itemType][itemRarity]);
+        let itemsByTypeAndRarity = groupByType[itemType][itemRarity];
+        randomItem = itemsByTypeAndRarity.length && rollArrayItem(itemsByTypeAndRarity);
     }
 
     let item = randomItem || { name: 'Mysterious object' };
