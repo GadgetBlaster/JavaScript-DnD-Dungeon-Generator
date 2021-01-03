@@ -48,13 +48,64 @@ export const equalsArray = (actual, expected) => {
 
     if (actual.length !== expected.length) {
         return {
-            msg: `expected array length [ ${actual} ] to equal array length [ ${expected} ]`,
+            msg: `expected array length [ ${actual.length} ] to equal [ ${expected.length} ]`,
             isOk: false,
         };
     }
 
     let msg  = `expected [ ${actual} ] to equal [ ${expected} ]`;
-    let isOk = actual.filter((e, i) => e === expected[i]).length === actual.length;
+    let isOk = actual.filter((a, i) => a === expected[i]).length === actual.length;
+
+    return { msg, isOk };
+};
+
+/** @type {Function} equalsObject */
+export const equalsObject = (actual, expected) => {
+    let checkType = isObject(actual);
+
+    if (!checkType.isOk) {
+        return checkType;
+    }
+
+    let actualKeys = Object.keys(actual);
+    let expectedKeys = Object.keys(expected);
+
+    if (actualKeys.length !== expectedKeys.length) {
+        return {
+            msg: `expected object keys length [ ${actualKeys.length} ] to equal [ ${expectedKeys.length} ]`,
+            isOk: false,
+        };
+    }
+
+    if (actualKeys.filter((a, i) => a === expectedKeys[i]).length !== actualKeys.length) {
+        return {
+            msg: `expected object keys [ ${actualKeys} ] to equal [ ${expectedKeys} ]`,
+            isOk: false,
+        };
+    }
+
+    let actualValues   = Object.values(actual);
+    let expectedValues = Object.values(expected);
+
+    let matchingValues = actualValues.filter((a, i) => {
+        let expectedValue = expectedValues[i];
+
+        if (isObject(a).isOk) {
+            return equalsObject(a, expectedValue).isOk;
+        }
+
+        return a === expectedValue;
+    });
+
+    if (matchingValues.length !== actualValues.length) {
+        return {
+            msg: `expected object values [ ${actualValues} ] to equal [ ${expectedValues} ]`,
+            isOk: false,
+        };
+    }
+
+    let msg  = `expected [ ${actual} ] to equal [ ${expected} ]`;
+    let isOk = true;
 
     return { msg, isOk };
 };

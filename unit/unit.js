@@ -26,6 +26,7 @@ import { resultMsg } from './output.js';
  *
  * @property {Expectation} equals
  * @property {Expectation} equalsArray
+ * @property {Expectation} equalsObject
  * @property {Expectation} isArray
  * @property {Expectation} isBoolean
  * @property {Expectation} isFalse

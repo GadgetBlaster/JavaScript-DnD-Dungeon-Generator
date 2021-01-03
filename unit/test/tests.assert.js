@@ -2,6 +2,7 @@
 import {
     equals,
     equalsArray,
+    equalsObject,
     isArray,
     isBoolean,
     isFalse,
@@ -168,17 +169,15 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('equalsArray()', () => {
-        nonArrayTypes.forEach(([ key, value ]) => {
-            describe(`given ${key}`, () => {
-                it('should return a falsy `isOk` property', () => {
-                    assert(isArray(value).isOk).isFalse();
-                });
+        describe('given a value that is not an array', () => {
+            it('should return a falsy `isOk` property', () => {
+                assert(equalsArray('jumping hobgoblins', []).isOk).isFalse();
             });
         });
 
         describe('given empty arrays', () => {
             it('should return true', () => {
-                assert(equalsArray([ ], [ ]).isOk).isTrue();
+                assert(equalsArray([], []).isOk).isTrue();
             });
         });
 
@@ -203,6 +202,67 @@ export default ({ assert, describe, it }) => {
         describe('given arrays with different values', () => {
             it('should return false', () => {
                 assert(equalsArray([ 'joey' ], [ 'paul' ]).isOk).isFalse();
+            });
+        });
+    });
+
+    describe('equalsObject()', () => {
+        describe('given a value that is not a object', () => {
+            it('should return a falsy `isOk` property', () => {
+                assert(equalsObject('sinking hippogryphs').isOk).isFalse();
+            });
+        });
+
+        describe('given empty objects', () => {
+            it('should return true', () => {
+                assert(equalsObject({}, {}).isOk).isTrue();
+            });
+        });
+
+        describe('given objects that are equal', () => {
+            it('should return true', () => {
+                assert(equalsObject({ joey: 'the spell caster' }, { joey: 'the spell caster' }).isOk).isTrue();
+            });
+        });
+
+        describe('given objects with different keys', () => {
+            it('should return true', () => {
+                assert(equalsObject({ joey: 'the spell caster' }, { pablo: 'the spell caster' }).isOk).isFalse();
+            });
+        });
+
+        describe('given objects with different values', () => {
+            it('should return true', () => {
+                assert(equalsObject({ joey: 'the spell caster' }, { joey: 'the rogue' }).isOk).isFalse();
+            });
+        });
+
+        describe('given objects with nested objects', () => {
+            describe('when the nested objects are the same', () => {
+                it('should return true', () => {
+                    assert(equalsObject(
+                        { joey: { occupation: 'spell caster' } },
+                        { joey: { occupation: 'spell caster' } }
+                    ).isOk).isTrue();
+                });
+            });
+
+            describe('when the nested objects are different', () => {
+                it('should return true', () => {
+                    assert(equalsObject(
+                        { joey: { occupation: 'spell caster' } },
+                        { joey: { occupation: 'rogue' } }
+                    ).isOk).isFalse();
+                });
+
+                describe('when there are 3 levels of nested objects', () => {
+                    it('should return true', () => {
+                        assert(equalsObject(
+                            { joey: { occupation: 'spell caster', attributes: { height: 12, eyes: 'blue' } } },
+                            { joey: { occupation: 'spell caster', attributes: { height: 12, eyes: 'green' } } }
+                        ).isOk).isFalse();
+                    });
+                });
             });
         });
     });
