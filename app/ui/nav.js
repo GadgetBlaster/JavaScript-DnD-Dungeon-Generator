@@ -2,6 +2,8 @@
 import { actions } from './action.js';
 import { button } from './button.js';
 
+// -- Config -------------------------------------------------------------------
+
 /**
  * Pages
  *
@@ -26,6 +28,8 @@ export const nav = [
     button('Rooms', navigate, { target: room }),
     button('Items', navigate, { target: items }),
 ].join('');
+
+// -- Public Methods -----------------------------------------------------------
 
 /**
  * Get active

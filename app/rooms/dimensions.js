@@ -12,14 +12,16 @@ let {
     massive,
 } = size;
 
+/**
+ * @typedef {[number, number]} RoomDimensions
+ */
+
+// -- Config -------------------------------------------------------------------
+
 // TODO rename to not confuse "width" with x-axis
 export const _hallLengthMin = 3;
 export const _hallWidthMin  = 1;
 export const _hallWidthMax  = 1;
-
-/**
- * @typedef {[number, number]} RoomDimensions
- */
 
 /**
  * Dimension ranges

@@ -21,6 +21,7 @@ import typography from '../app/ui/test/tests.typography.js';
 import roomDescription from '../app/rooms/test/tests.description.js';
 import roomDimensions from '../app/rooms/test/tests.dimensions.js';
 import door from '../app/rooms/test/tests.door.js';
+import environment from '../app/rooms/test/tests.environment.js';
 
 export default {
     '/unit/test/tests.assert.js': assert,
@@ -45,4 +46,5 @@ export default {
     '/app/rooms/test/tests.description.js': roomDescription,
     '/app/rooms/test/tests.dimensions.js' : roomDimensions,
     '/app/rooms/test/tests.door.js'       : door,
+    '/app/rooms/test/tests.environment.js': environment,
 };

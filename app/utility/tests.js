@@ -6,9 +6,11 @@ import suite from '../../unit/suite.js';
 import { element } from './../utility/html.js';
 import { plural } from './../utility/tools.js';
 
+// -- Config -------------------------------------------------------------------
+
 const unitUrl = './unit.html';
 
-// -- Private Methods ---------------------------------------------------------
+// -- Private Methods ----------------------------------------------------------
 
 /**
  * Get output
@@ -41,7 +43,7 @@ export const _getOutput = ({ assertions, errors, failures }) => {
     return element('p', `Checked for ${assertions} ${element('a', koboldsText, { href: unitUrl })}`);
 };
 
-// -- Public Methods ---------------------------------------------------------
+// -- Public Methods -----------------------------------------------------------
 
 /**
  * Run tests and return the test summary UI

@@ -1,6 +1,36 @@
 
 import { createProbability } from '../utility/roll.js';
 
+/**
+ * Key
+ *
+ * @typedef {Object} Key
+ *
+ * @property {Object<number, Connection>} connections
+ * @property {string} type - Door type
+ */
+
+/**
+ * Room door
+ *
+ * @typedef {object} RoomDoors
+ *
+ * @property {Key[]} keys
+ * @property {{ roomNumber: Door[] }} doors
+ */
+
+/**
+ * @typedef {import('../dungeons/map.js').Door} Door
+ * @typedef {import('../utility/roll.js').Probability} Probability
+ */
+
+// -- Config -------------------------------------------------------------------
+
+/**
+ * Door types
+ *
+ * @type {Object.<string, string>}
+ */
 const door = {
     archway   : 'archway',
     brass     : 'brass',
@@ -21,8 +51,15 @@ export default door;
 
 export const list = Object.keys(door);
 
+// TODO Move to directions?
 export const outside = 'outside';
 
+/**
+ * Set of doorway types that should have "doorway" appended to their
+ * description.
+ *
+ * @type {Set<string>}
+ */
 export const appendDoorway = new Set([
     door.brass,
     door.iron,
@@ -32,6 +69,11 @@ export const appendDoorway = new Set([
     door.wooden,
 ]);
 
+/**
+ * Set of doorway types that can be locked and hae an associated key.
+ *
+ * @type {Set<string>}
+ */
 export const lockable = new Set([
     door.brass,
     door.iron,
@@ -42,6 +84,11 @@ export const lockable = new Set([
     door.wooden,
 ]);
 
+/**
+ * Door type probability distribution table
+ *
+ * @type {Probability}
+ */
 export const probability = createProbability([
     [ 20,  door.passageway ],
     [ 40,  door.archway    ],
@@ -56,34 +103,24 @@ export const probability = createProbability([
     [ 100, door.portal     ],
 ]);
 
+/**
+ * Secret door probability distribution table
+ *
+ * @type {Probability}
+ */
 export const secretProbability = createProbability([
     [ 15, door.concealed ],
     [ 30, door.secret    ],
 ]);
 
+/**
+ * Percentile chance that a lockable door will be locked.
+ *
+ * @type {number}
+ */
 export const lockedChance = 25;
 
-/**
- * Key
- *
- * @typedef {Object} Key
- *
- * @property {Object<number, Connection>} connections
- * @property {string} type - Door type
- */
-
-/**
- * @typedef {import('../dungeons/map.js').Door} Door
- */
-
-/**
- * Room door
- *
- * @typedef {object} RoomDoors
- *
- * @property {Key[]} keys
- * @property {{ roomNumber: Door[] }} doors
- */
+// -- Public Methods -----------------------------------------------------------
 
 /**
  * Get room door

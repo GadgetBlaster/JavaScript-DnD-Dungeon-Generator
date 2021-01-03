@@ -1,4 +1,6 @@
 
+// -- Config -------------------------------------------------------------------
+
 /**
  * Actions
  *
@@ -11,6 +13,8 @@ export const actions = {
     navigate : 'navigate',
     showHide : 'showHide',
 };
+
+// -- Public Methods -----------------------------------------------------------
 
 /**
  * Attach actions

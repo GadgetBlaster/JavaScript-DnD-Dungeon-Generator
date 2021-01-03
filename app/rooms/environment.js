@@ -7,9 +7,21 @@ import roomType from './type.js';
 import size from '../attributes/size.js';
 import { getRoomFeatures } from './feature.js';
 
+// -- Config -------------------------------------------------------------------
+
+/**
+ * Percentile chance to include an environment detail with a room.
+ *
+ * @type {number}
+ */
 const detailChance = 50;
 
-const structure = {
+/**
+ * Room structure types
+ *
+ * @type {Object.<string, string>}
+ */
+export const structure = {
     cave     : 'cave',
     ice      : 'ice',
     marble   : 'marble',
@@ -18,6 +30,11 @@ const structure = {
     wood     : 'wood',
 };
 
+/**
+ * Set of room types that may contain vegetation.
+ *
+ * @type {Set<string>}
+ */
 const supportsVegetation = new Set([
     structure.cave,
     structure.stone,
@@ -25,6 +42,11 @@ const supportsVegetation = new Set([
     structure.wood,
 ]);
 
+/**
+ * Air environment types
+ *
+ * @type {Object.<string, string>}
+ */
 const air = {
     damp  : 'damp',
     misty : 'misty',
@@ -32,6 +54,11 @@ const air = {
     smokey: 'smokey',
 };
 
+/**
+ * Ground environment types
+ *
+ * @type {Object.<string, string>}
+ */
 const ground = {
     ashes   : 'ashes',
     bloody  : 'bloody',
@@ -44,6 +71,11 @@ const ground = {
     uneven  : 'uneven',
 };
 
+/**
+ * Wall environment types
+ *
+ * @type {Object.<string, string>}
+ */
 const wall = {
     bloody   : 'bloody',
     cracked  : 'cracked',
@@ -53,7 +85,17 @@ const wall = {
     webs     : 'webs',
 };
 
-const getStructureDesc = (settings, roomStructure) => {
+// -- Private Methods ----------------------------------------------------------
+
+/**
+ * Get structure description
+ *
+ * @param {import('./settings.js').RoomSettings}
+ * @param {string} roomStructure
+ *
+ * @returns {string}
+ */
+export const _getStructureDesc = (settings, roomStructure) => {
     let {
         [knobs.roomType]: typeSetting,
         [knobs.roomSize]: roomSize,
@@ -80,11 +122,18 @@ const getStructureDesc = (settings, roomStructure) => {
             return `The stone ${type} is reinforced with wooden beams and pillars`;
 
         default:
-            throw new TypeError('Invalid structure type');
+            throw new TypeError('Invalid room structure');
     }
 };
 
-const getGroundDesc = () => {
+/**
+ * Returns a ground description for a room
+ *
+ * TODO inject all probabilities
+ *
+ @returns {string}
+ */
+export const _getGroundDesc = () => {
     if (!rollPercentile(detailChance)) {
         return;
     }
@@ -126,7 +175,14 @@ const getGroundDesc = () => {
     }
 };
 
-const getWallDesc = () => {
+/**
+ * Get wall description
+ *
+ * TODO inject all probabilities
+ *
+ * @returns {string}
+ */
+export const _getWallDesc = () => {
     if (!rollPercentile(detailChance)) {
         return;
     }
@@ -158,7 +214,14 @@ const getWallDesc = () => {
     }
 };
 
-const getAirDesc = () => {
+/**
+ * Get air description
+ *
+ * TODO inject all probabilities
+ *
+ * @returns {string}
+ */
+export const _getAirDesc = () => {
     if (!rollPercentile(detailChance)) {
         return;
     }
@@ -195,6 +258,13 @@ const getAirDesc = () => {
     }
 };
 
+// -- Public Methods -----------------------------------------------------------
+
+/**
+ * Get environment description
+ *
+ * @returns {string}
+ */
 export const getEnvironmentDescription = (settings) => {
     // TODO randomization should be injected
     let roomStructure = rollArrayItem(Object.keys(structure));
@@ -205,11 +275,11 @@ export const getEnvironmentDescription = (settings) => {
     }
 
     return [
-        getStructureDesc(settings, roomStructure),
-        getGroundDesc(),
-        getWallDesc(),
+        _getStructureDesc(settings, roomStructure),
+        _getGroundDesc(),
+        _getWallDesc(),
         roomVegetation,
-        getAirDesc(),
+        _getAirDesc(),
         ...getRoomFeatures(settings),
     ].filter(Boolean);
 };

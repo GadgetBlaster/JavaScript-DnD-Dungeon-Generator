@@ -1,6 +1,19 @@
 
 import { element } from '../utility/html.js';
 
+/**
+ * Button options
+ *
+ * @typedef {Object} ButtonOptions
+ *      @property {boolean} active
+ *      @property {string} size
+ *      @property {string} target
+ *      @property {string} value
+ *      @property {string} type
+ */
+
+// -- Config -------------------------------------------------------------------
+
 /** @type {string} infoLabel */
 export const infoLabel = '?';
 
@@ -22,16 +35,7 @@ export const buttonSize = {
  */
 const validSizes = new Set(Object.values(buttonSize));
 
-/**
- * Button options
- *
- * @typedef {Object} ButtonOptions
- *      @property {boolean} active
- *      @property {string} size
- *      @property {string} target
- *      @property {string} value
- *      @property {string} type
- */
+// -- Public Methods -----------------------------------------------------------
 
 /**
  * Button

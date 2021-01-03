@@ -12,7 +12,7 @@ import { typeSelect, typeNumber, typeRange } from '../knobs.js';
  * @typedef {import('../knobs.js').KnobSet} KnobSet
  */
 
-// -- Private Methods ---------------------------------------------------------
+// -- Private Methods ----------------------------------------------------------
 
 /**
  * Throw
@@ -80,7 +80,7 @@ export const _renderFields = (fields) => fields.map((settings) => {
     return div(knobLabel + descText + knob);
 }).join('');
 
-// -- Public Methods ---------------------------------------------------------
+// -- Public Methods -----------------------------------------------------------
 
 /**
  * Get form data

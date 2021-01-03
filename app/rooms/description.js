@@ -22,6 +22,8 @@ import size from '../attributes/size.js';
  * @typedef {import('./settings.js').RoomSettings} RoomSettings
  */
 
+// -- Config -------------------------------------------------------------------
+
 /**
  * Map descriptions
  *
@@ -35,7 +37,7 @@ const _mapDescriptions = [
     'The floor of the room is etched with an intricate map of the dungeon.',
 ];
 
-// -- Private Methods ---------------------------------------------------------
+// -- Private Methods ----------------------------------------------------------
 
 /**
  * Get contents description
