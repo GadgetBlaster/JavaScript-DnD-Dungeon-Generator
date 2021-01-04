@@ -35,7 +35,7 @@ export const buttonSize = {
  */
 const validSizes = new Set(Object.values(buttonSize));
 
-// -- Public Methods -----------------------------------------------------------
+// -- Public Functions ---------------------------------------------------------
 
 /**
  * Button

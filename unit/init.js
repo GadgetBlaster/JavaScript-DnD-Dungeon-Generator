@@ -13,6 +13,8 @@ import {
 } from './output.js';
 import { plural } from '../app/utility/tools.js';
 
+// -- Config -------------------------------------------------------------------
+
 /**
  * Animation chunk division
  *
@@ -47,6 +49,8 @@ const logContainer     = document.getElementById('log');
 const navContainer     = document.getElementById('nav');
 const statusContainer  = document.getElementById('status');
 const summaryContainer = document.getElementById('summary');
+
+// -- Private Functions --------------------------------------------------------
 
 /**
  * Delay
@@ -122,6 +126,8 @@ render(navContainer, nav({
     scope,
     verbose,
 }));
+
+// -- Initialization -----------------------------------------------------------
 
 (() => {
     const list = Object.keys(suite);

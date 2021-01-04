@@ -1,4 +1,5 @@
 
+import './typedefs.js';
 import { chunk, toDash } from './utility/tools.js';
 import tests from './utility/tests.js';
 

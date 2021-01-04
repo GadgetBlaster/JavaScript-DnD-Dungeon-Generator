@@ -13,7 +13,7 @@ const maxPercent = 100;
  * @property {() => string)} roll
  */
 
-// -- Private Methods ----------------------------------------------------------
+// -- Private Functions --------------------------------------------------------
 
 /**
  * Throw
@@ -26,7 +26,7 @@ const maxPercent = 100;
  */
 const _throw = (message) => { throw new TypeError(message); };
 
-// -- Public Methods -----------------------------------------------------------
+// -- Public Functions ---------------------------------------------------------
 
 /**
  * Create probability

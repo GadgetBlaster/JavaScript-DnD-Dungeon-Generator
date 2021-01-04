@@ -37,7 +37,7 @@ const _mapDescriptions = [
     'The floor of the room is etched with an intricate map of the dungeon.',
 ];
 
-// -- Private Methods ----------------------------------------------------------
+// -- Private Functions --------------------------------------------------------
 
 /**
  * Get contents description
@@ -311,7 +311,7 @@ export const _getRoomDoorwayDescription = (roomDoors) => {
     return `${capitalize(descParts.join(', '))}${comma} and ${last}`;
 };
 
-// -- Public Methods ---------------------------------------------------------
+// -- Public Functions ---------------------------------------------------------
 
 /**
  * Get doorway list

@@ -2,7 +2,7 @@
 import { element, createAttrs } from '../utility/html.js';
 import { toWords } from '../utility/tools.js';
 
-// -- Private Methods ----------------------------------------------------------
+// -- Private Functions --------------------------------------------------------
 
 /**
  * Option
@@ -27,7 +27,7 @@ const _option = (value, label) => element('option', label, { value });
  */
 const _throw = (message) => { throw new TypeError(message); };
 
-// -- Public Methods -----------------------------------------------------------
+// -- Public Functions ---------------------------------------------------------
 
 /**
  * Field label

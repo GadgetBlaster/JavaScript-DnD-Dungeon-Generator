@@ -55,7 +55,7 @@ export const feature = {
     well      : 'well',
 };
 
-// -- Private Methods ----------------------------------------------------------
+// -- Private Functions --------------------------------------------------------
 
 /**
  * Get feature description
@@ -162,7 +162,7 @@ export const _getFeatureDesc = (type) => {
     }
 };
 
-// -- Public Methods -----------------------------------------------------------
+// -- Public Functions ---------------------------------------------------------
 
 /**
  * Get feature description

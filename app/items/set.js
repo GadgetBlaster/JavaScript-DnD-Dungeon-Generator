@@ -1,4 +1,6 @@
 
+// Rename file to `manifest.js`
+
 import ammo from './types/ammo.js';
 import armor from './types/armor.js';
 import chancery from './types/chancery.js';

@@ -14,7 +14,7 @@ export const actions = {
     showHide : 'showHide',
 };
 
-// -- Public Methods -----------------------------------------------------------
+// -- Public Functions ---------------------------------------------------------
 
 /**
  * Attach actions

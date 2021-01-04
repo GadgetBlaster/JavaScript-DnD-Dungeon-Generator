@@ -39,7 +39,20 @@ export const probability = createProbability([
     [ 100, numerous ],
 ]);
 
-const range = [ 0, 1, 2, 3, 5, 8, 14, 25, 99 ];
+export const quantityMinimum = {
+    zero    : 0,
+    one     : 1,
+    couple  : 2,
+    few     : 3,
+    some    : 5,
+    several : 8,
+    many    : 14,
+    numerous: 25,
+};
+
+export const quantityMaximum = 100;
+
+const range = [ ...Object.values(quantityMinimum), quantityMaximum ];
 
 export const getRange = (value) => {
     let index = list.indexOf(value);

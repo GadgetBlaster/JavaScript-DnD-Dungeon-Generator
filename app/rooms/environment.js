@@ -85,7 +85,7 @@ const wall = {
     webs     : 'webs',
 };
 
-// -- Private Methods ----------------------------------------------------------
+// -- Private Functions --------------------------------------------------------
 
 /**
  * Get structure description
@@ -258,7 +258,7 @@ export const _getAirDesc = () => {
     }
 };
 
-// -- Public Methods -----------------------------------------------------------
+// -- Public Functions ---------------------------------------------------------
 
 /**
  * Get environment description

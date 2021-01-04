@@ -8,8 +8,12 @@
  * @property {boolean} isOk
  */
 
+// -- Config -------------------------------------------------------------------
+
  /**
   * Empty elements
+  *
+  * TODO rename to `selfClosingElements`
   *
   * @type {string[]}
   */
@@ -29,6 +33,8 @@ const emptyElements = [
     'track',
     'wbr',
 ];
+
+// -- Public Functions ---------------------------------------------------------
 
 /** @type {Function} equals */
 export const equals = (actual, expected) => {

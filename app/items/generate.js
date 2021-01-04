@@ -10,22 +10,43 @@ import { random } from '../utility/random.js';
 import { roll } from '../utility/roll.js';
 import { em, paragraph, subtitle,  } from '../ui/typography.js';
 import condition from '../attributes/condition.js';
-import itemType from './type.js';
 import quantity, { getRange, probability as quantityProbability } from '../attributes/quantity.js';
 import size from '../attributes/size.js';
 
-const debugContainerFill = false;
+// -- Config -------------------------------------------------------------------
 
+/**
+ * Maximum number of columns for dungeon item lists.
+ *
+ * TODO rename.
+ *
+ * @type {number}
+ */
 const maxColumnsItems = 4;
-const maxColumnsRoom  = 2;
 
-const getItemCount = (itemQuantity) => {
+/**
+ * Maximum number of columns for non-dungeon room item lists.
+ *
+ * @type {number}
+ */
+const maxColumnsRoom = 2;
+
+// -- Private Functions --------------------------------------------------------
+
+/**
+ * Get item count based on quantity config.
+ *
+ * @param {string} itemQuantity
+ *
+ * @returns {number}
+ */
+export const _getItemCount = (itemQuantity) => {
     let { min, max } = getRange(itemQuantity);
 
     return roll(min, max);
 };
 
-const generateItemObjects = (count, settings) => [ ...Array(count) ].reduce((obj) => {
+export const _generateItemObjects = (count, settings) => [ ...Array(count) ].reduce((obj) => {
     let item  = generateItem(settings);
     let label = item.label;
 
@@ -59,6 +80,8 @@ const getFurnishingObjects = (furnishings, roomCondition) => furnishings.reduce(
 
     return obj;
 }, {});
+
+// -- Public Functions ---------------------------------------------------------
 
 export const generateItems = (settings) => {
     let {
@@ -97,8 +120,8 @@ export const generateItems = (settings) => {
         return inRoom ? [] : [ subtitle('Items (0)') ];
     }
 
-    let count = getItemCount(itemQuantity);
-    let items = generateItemObjects(count, settings);
+    let count = _getItemCount(itemQuantity);
+    let items = _generateItemObjects(count, settings);
 
     let containers = [];
     let smallItems = [];
@@ -159,7 +182,6 @@ export const generateItems = (settings) => {
             }
 
             if (item.quantity > maxItemQuantitySmall) {
-                debugContainerFill && console.log(`${item.label} quantity of ${item.quantity} is too many for ${container.label}`);
                 continue;
             }
 
@@ -167,13 +189,10 @@ export const generateItems = (settings) => {
             let spaceAfterAdded   = remainingSpace - spaceRequired;
 
             if (spaceAfterAdded < 0) {
-                debugContainerFill && console.log(`${container.label} capacity of ${capacity[container.size]} is too small for ${item.label} of size ${spaceRequired}`);
                 continue;
             }
 
             remainingSpace = spaceAfterAdded;
-
-            debugContainerFill && console.log(`placed ${item.label} of size ${spaceRequired} into ${container.label} of size ${capacity[container.size]}, remaining space ${remainingSpace}`);
 
             contents.push(smallItems.shift());
         };

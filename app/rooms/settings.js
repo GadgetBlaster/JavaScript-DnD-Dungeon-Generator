@@ -56,7 +56,7 @@ const roomRandomizations = {
     [knobs.roomType]      : () => rollRoomType(),
 };
 
-// -- Private Methods ----------------------------------------------------------
+// -- Private Functions --------------------------------------------------------
 
 /**
  * Returns a randomly selected appropriate room size for a room type.
@@ -84,7 +84,7 @@ const rollRoomType = () => {
     return type;
 };
 
-// -- Public Methods -----------------------------------------------------------
+// -- Public Functions ---------------------------------------------------------
 
 // TODO combine with applyRoomRandomization
 const applyRandomization = (config, randomizations) => {

@@ -10,7 +10,7 @@ import { plural } from './../utility/tools.js';
 
 const unitUrl = './unit.html';
 
-// -- Private Methods ----------------------------------------------------------
+// -- Private Functions --------------------------------------------------------
 
 /**
  * Get output
@@ -43,7 +43,7 @@ export const _getOutput = ({ assertions, errors, failures }) => {
     return element('p', `Checked for ${assertions} ${element('a', koboldsText, { href: unitUrl })}`);
 };
 
-// -- Public Methods -----------------------------------------------------------
+// -- Public Functions ---------------------------------------------------------
 
 /**
  * Run tests and return the test summary UI

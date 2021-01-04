@@ -23,11 +23,14 @@ import roomDimensions from '../app/rooms/test/tests.dimensions.js';
 import door from '../app/rooms/test/tests.door.js';
 import environment from '../app/rooms/test/tests.environment.js';
 import feature from '../app/rooms/test/tests.feature.js';
-import generate from '../app/rooms/test/tests.generate.js';
+import generateRooms from '../app/rooms/test/tests.generate.js';
 import settings from '../app/rooms/test/tests.settings.js';
 import trap from '../app/rooms/test/tests.trap.js';
 import type from '../app/rooms/test/tests.type.js';
 import vegetation from '../app/rooms/test/tests.vegetation.js';
+
+import itemDescription from '../app/items/test/tests.description.js';
+import generateItems from '../app/items/test/tests.generate.js';
 
 export default {
     '/unit/test/tests.assert.js': assert,
@@ -54,9 +57,12 @@ export default {
     '/app/rooms/test/tests.door.js'       : door,
     '/app/rooms/test/tests.environment.js': environment,
     '/app/rooms/test/tests.feature.js'    : feature,
-    '/app/rooms/test/tests.generate.js'   : generate,
+    '/app/rooms/test/tests.generate.js'   : generateRooms,
     '/app/rooms/test/tests.settings.js'   : settings,
     '/app/rooms/test/tests.trap.js'       : trap,
     '/app/rooms/test/tests.type.js'       : type,
     '/app/rooms/test/tests.vegetation.js' : vegetation,
+
+    '/app/item/test/tests.description.js' : itemDescription,
+    '/app/item/test/tests.generate.js'    : generateItems,
 };

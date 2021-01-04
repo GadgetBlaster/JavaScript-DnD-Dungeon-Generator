@@ -29,7 +29,7 @@ export const nav = [
     button('Items', navigate, { target: items }),
 ].join('');
 
-// -- Public Methods -----------------------------------------------------------
+// -- Public Functions ---------------------------------------------------------
 
 /**
  * Get active

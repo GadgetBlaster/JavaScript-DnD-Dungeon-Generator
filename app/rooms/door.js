@@ -120,7 +120,7 @@ export const secretProbability = createProbability([
  */
 export const lockedChance = 25;
 
-// -- Public Methods -----------------------------------------------------------
+// -- Public Functions ---------------------------------------------------------
 
 /**
  * Get room door

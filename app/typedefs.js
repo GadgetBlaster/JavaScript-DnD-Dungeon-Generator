@@ -3,4 +3,15 @@
  * @typedef {[ number, number ]} Size
  */
 
- export default {};
+/**
+ * @typedef {object} Item
+ *
+ * @property {number} count
+ * @property {number} quantity
+ * @property {string} label
+ * @property {string} rarity
+ * @property {string} size
+ * @property {string} type
+ */
+
+export default {};

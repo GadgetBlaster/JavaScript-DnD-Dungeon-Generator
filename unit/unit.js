@@ -78,6 +78,8 @@ import { resultMsg } from './output.js';
  * @typedef {import('./assert.js').Result}
  */
 
+// -- Config -------------------------------------------------------------------
+
 /**
  * Scope
  *
@@ -89,6 +91,8 @@ const scope = {
     it      : 'it()',
     suite   : 'default()',
 };
+
+// -- Public Functions ---------------------------------------------------------
 
 /**
  * @type {Unit}

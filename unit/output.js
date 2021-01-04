@@ -1,8 +1,10 @@
 
+// -- Config -------------------------------------------------------------------
+
 /**
  * HTML escapes
  *
- * @type {Object<string, string>}
+ * @type {object<string, string>}
  */
 const _htmlEscapes = {
     '"': '&quot;',
@@ -13,12 +15,12 @@ const _htmlEscapes = {
     "'": '&#x27;',
 };
 
-// -- Private Methods ---------------------------------------------------------
+// -- Private Functions --------------------------------------------------------
 
 /**
  * Make params
  *
- * @param {Object} entries
+ * @param {object} entries
  *
  * @returns {string}
  */
@@ -31,7 +33,7 @@ const _makeParams = (entries) => {
     return params && `?${params}`;
 };
 
-// -- Public Methods ---------------------------------------------------------
+// -- Public Functions ---------------------------------------------------------
 
 /**
  * Dot
@@ -80,7 +82,7 @@ export const info = (msg) => `<li>${escapeHTML(msg)}</li>`;
  *
  * @param {string} label
  * @param {string} href
- * @param {boolean} [options]
+ * @param {object} [options]
  *     @param {boolean} [options.active]
  *
  * @returns {string}
@@ -91,7 +93,7 @@ export const link = (label, href, { active } = {}) => `<a href="${href}"${active
  * Result log
  *
  * @param {Result[]} results
- * @param {Object} [options]
+ * @param {object} [options]
  *     @param {boolean} [options.verbose]
  *
  * @returns {string}
