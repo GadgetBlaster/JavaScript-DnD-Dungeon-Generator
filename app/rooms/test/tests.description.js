@@ -27,7 +27,6 @@ import doorType, { lockable, appendDoorway, outside } from '../door.js';
 import quantity, { quantities } from '../../attributes/quantity.js';
 import rarity, { indicateRarity, rarities } from '../../attributes/rarity.js';
 import roomType, { appendRoomTypes } from '../../rooms/type.js';
-import roomTypes from '../../rooms/type.js';
 import size from '../../attributes/size.js';
 
 /**
@@ -766,7 +765,7 @@ export default ({ assert, describe, it }) => {
 
     describe('getRoomTypeLabel()', () => {
         it('should return a string', () => {
-            assert(roomTypes.armory).isString();
+            assert(roomType.armory).isString();
         });
 
         describe('given a camel cased room type', () => {

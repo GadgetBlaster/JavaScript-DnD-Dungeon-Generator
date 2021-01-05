@@ -11,6 +11,7 @@ const type = {
     kitchen      : 'kitchen',
     liquid       : 'liquid',
     miscellaneous: 'miscellaneous',
+    mysterious   : 'mysterious',
     mythic       : 'mythic',
     potion       : 'potion',
     survival     : 'survival',

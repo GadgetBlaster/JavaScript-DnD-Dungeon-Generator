@@ -12,14 +12,15 @@ import type, { list as itemTypes } from './type.js';
 
 /**
  * Item
- *
+ * TODO duplicate
  * @typedef {Item}
- *  @property {string} name
- *  @property {string} type
- *  @property {string} rarity
- *  @property {number} quantity - Max number of item found
- *  @property {number} [capacity] - Max number of small items found inside
- *  @property {string[]} [variants] - Array of variations
+ *
+ * @property {string} name
+ * @property {string} type
+ * @property {string} rarity
+ * @property {number} quantity - Max number of item found
+ * @property {number} [capacity] - Max number of small items found inside
+ * @property {string[]} [variants] - Array of variations
  */
 
 const defaults = {
@@ -67,6 +68,23 @@ export const generateItem = (settings) => {
         [knobs.itemType]     : itemType,
     } = settings;
 
+    // TODO collapse
+    if (!conditionSetting) {
+        throw new TypeError('Item condition is required in generateItem()');
+    }
+
+    if (!quantitySetting) {
+        throw new TypeError('Item quantity is required in generateItem()');
+    }
+
+    if (!raritySetting) {
+        throw new TypeError('Item rarity is required in generateItem()');
+    }
+
+    if (!itemType) {
+        throw new TypeError('Item type is required in generateItem()');
+    }
+
     let itemRarity    = raritySetting;
     let itemCondition = conditionSetting;
 
@@ -83,7 +101,7 @@ export const generateItem = (settings) => {
         randomItem = itemsByTypeAndRarity.length && rollArrayItem(itemsByTypeAndRarity);
     }
 
-    let item = randomItem || { name: 'Mysterious object' };
+    let item = randomItem || { name: 'Mysterious object' }; // TODO use mysterious type
 
     if (detailsHidden.has(item.type)) {
         itemCondition = condition.average;

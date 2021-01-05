@@ -11,6 +11,7 @@ import food from './types/food.js';
 import kitchen from './types/kitchen.js';
 import liquid from './types/liquid.js';
 import miscellaneous from './types/miscellaneous.js';
+import mysterious from './types/mysterious.js';
 import mythic from './types/mythic.js';
 import potion from './types/potion.js';
 import survival from './types/survival.js';
@@ -31,6 +32,7 @@ export default [
     ...kitchen,
     ...liquid,
     ...miscellaneous,
+    ...mysterious,
     ...mythic,
     ...potion,
     ...survival,

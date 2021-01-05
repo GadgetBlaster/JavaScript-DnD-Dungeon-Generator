@@ -86,7 +86,7 @@ export const customDimensions = {
  *
  * Rename to `roomSizesByType` & combine with constant object
  *
- * @type {Object.<string, string[]>}
+ * @type {object.<string, string[]>}
  */
 export const roomTypeSizes = roomTypes.reduce((obj, roomType) => {
     obj[roomType] = roomSizes[roomType] || sizes;

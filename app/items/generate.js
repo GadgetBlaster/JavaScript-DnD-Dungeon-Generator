@@ -13,6 +13,8 @@ import condition from '../attributes/condition.js';
 import quantity, { getRange, probability as quantityProbability } from '../attributes/quantity.js';
 import size from '../attributes/size.js';
 
+/** @typedef {import('../typedefs.js').Settings} */
+
 // -- Config -------------------------------------------------------------------
 
 /**
@@ -46,10 +48,19 @@ export const _getItemCount = (itemQuantity) => {
     return roll(min, max);
 };
 
+/**
+ * Generate item objects
+ *
+ * @param {number} count
+ * @param {Settings} settings
+ *
+ * @returns {object.<string, Item>}
+ */
 export const _generateItemObjects = (count, settings) => [ ...Array(count) ].reduce((obj) => {
     let item  = generateItem(settings);
     let label = item.label;
 
+    // TODO return and use a uid instead of label?
     if (!obj[label]) {
         obj[label] = { ...item };
         obj[label].count = 1;
@@ -59,7 +70,7 @@ export const _generateItemObjects = (count, settings) => [ ...Array(count) ].red
 
     obj[label].count++;
 
-    return obj;
+    return obj; // TODO rename to `items`
 }, {});
 
 const getFurnishingObjects = (furnishings, roomCondition) => furnishings.reduce((obj, item) => {
@@ -94,6 +105,7 @@ export const generateItems = (settings) => {
         [knobs.roomCondition] : roomCondition,
     } = settings;
 
+    // TODO collapse
     if (!itemQuantity) {
         throw new TypeError('Item quantity is required in generateItems()');
     }

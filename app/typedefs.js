@@ -4,6 +4,24 @@
  */
 
 /**
+ * @typedef {object} Settings
+ *
+ * @property {number} dungeonComplexity
+ * @property {number} dungeonConnections
+ * @property {number} dungeonMaps
+ * @property {number} dungeonTraps
+ * @property {string} itemCondition
+ * @property {string} itemQuantity
+ * @property {string} itemRarity
+ * @property {string} itemType
+ * @property {string} roomCondition
+ * @property {number} roomCount
+ * @property {string} roomFurnishing
+ * @property {string} roomSize
+ * @property {string} roomType
+ */
+
+/**
  * @typedef {object} Item
  *
  * @property {number} count
