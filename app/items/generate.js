@@ -60,7 +60,7 @@ export const _generateItemObjects = (count, settings) => [ ...Array(count) ].red
     let item  = generateItem(settings);
     let label = item.label;
 
-    // TODO return and use a uid instead of label?
+    // TODO use an identifier instead of label?
     if (!obj[label]) {
         obj[label] = { ...item };
         obj[label].count = 1;
@@ -73,13 +73,25 @@ export const _generateItemObjects = (count, settings) => [ ...Array(count) ].red
     return obj; // TODO rename to `items`
 }, {});
 
-const getFurnishingObjects = (furnishings, roomCondition) => furnishings.reduce((obj, item) => {
+/**
+ * Get furnishing objects
+ *
+ * TODO rename to `getFurnishing()`
+ * TODO move to furnishing.js
+ *
+ * @param {Item[]} furnishings
+ * @param {string} roomCondition
+ *
+ * @returns {{ [label: string]: Item }}
+ */
+export const getFurnishingObjects = (furnishings, roomCondition) => furnishings.reduce((obj, item) => {
     let label = item.label;
 
     if (roomCondition !== condition.average) {
         label += ` (${em(roomCondition)})`;
     }
 
+    // TODO use an identifier instead of label?
     if (!obj[label]) {
         obj[label] = { ...item, label };
         obj[label].count = 1;

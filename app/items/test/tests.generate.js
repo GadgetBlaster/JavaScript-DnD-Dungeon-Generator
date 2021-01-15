@@ -2,6 +2,7 @@
 import {
     _generateItemObjects,
     _getItemCount,
+    getFurnishingObjects,
 } from '../generate.js';
 
 import { knobs } from '../../knobs.js';
@@ -63,6 +64,8 @@ export default ({ assert, describe, it }) => {
                 assert(items).isObject();
                 assert(entries.length).equals(1);
                 assert(item).isObject();
+                assert(item.name).isString();
+                assert(item.label).isString();
             });
 
             it('should return an object keyed by the item\'s label', () => {
@@ -97,12 +100,104 @@ export default ({ assert, describe, it }) => {
             let entries = Object.entries(items);
             let [ key, item ] = [ ...entries ].pop();
 
-            it('should return an object keyed by the item\'s labels', () => {
+            it('should return an object with the items consolidated', () => {
+                assert(entries.length).equals(1);
+            });
+
+            it('should return an object keyed by the item\'s label', () => {
                 assert(key).equals(item.label);
             });
 
             it('should return an item object with a count of duplicates', () => {
                 assert(item.count).equals(3);
+            });
+        });
+    });
+
+    describe('getFurnishingObjects()', () => {
+        describe('given a single furnishing object', () => {
+            let furnishings = getFurnishingObjects(
+                [ { name: 'Table', label: 'Table' } ],
+                condition.average
+            );
+
+            let entries = Object.entries(furnishings);
+            let [ key, furnishing ] = [ ...entries ].pop();
+
+            it('should return an object with a single furnishing', () => {
+                assert(furnishings).isObject();
+                assert(entries.length).equals(1);
+                assert(furnishing).isObject();
+                assert(furnishing.label).equals('Table');
+                assert(furnishing.name).equals('Table');
+            });
+
+            it('should return an object keyed by the item\'s label', () => {
+                assert(key).equals(furnishing.label);
+            });
+        });
+
+        describe('given multiple furnishing objects', () => {
+            let furnishings = getFurnishingObjects(
+                [ { name: 'Table', label: 'Table' }, { name: 'Chair', label: 'Chair' } ],
+                condition.average
+            );
+
+            let entries = Object.entries(furnishings);
+
+            it('should return an object keyed by the item\'s labels', () => {
+                let invalidKeys = entries.find(([ key, item ]) => key !== item.label);
+                assert(invalidKeys).isUndefined();
+            });
+        });
+
+        describe('given duplicate furnishing objects', () => {
+            let furnishings = getFurnishingObjects(
+                [ { name: 'Table', label: 'Table' }, { name: 'Table', label: 'Table' } ],
+                condition.average
+            );
+
+            let entries = Object.entries(furnishings);
+            let [ key, item ] = [ ...entries ].pop();
+
+            it('should return an object with the furnishings consolidated', () => {
+                assert(entries.length).equals(1);
+            });
+
+            it('should return an object keyed by the furnishing\'s label', () => {
+                assert(key).equals(item.label);
+            });
+
+            it('should return a furnishing object with a count of duplicates', () => {
+                assert(item.count).equals(2);
+            });
+        });
+
+        describe('given a room condition of average', () => {
+            let furnishings = getFurnishingObjects(
+                [ { name: 'Table', label: 'Table' } ],
+                condition.average
+            );
+
+            let entries = Object.values(furnishings);
+            let furnishing = [ ...entries ].pop();
+
+            it('should not include the room condition in the furnishing\'s label', () => {
+                assert(furnishing.label).stringExcludes(condition.average);
+            });
+        });
+
+        describe('given a room condition other than average', () => {
+            let furnishings = getFurnishingObjects(
+                [ { name: 'Table', label: 'Table' } ],
+                condition.rare
+            );
+
+            let entries = Object.values(furnishings);
+            let furnishing = [ ...entries ].pop();
+
+            it('should include the room condition in the furnishing\'s label', () => {
+                assert(furnishing.label).stringIncludes(condition.rare);
             });
         });
     });

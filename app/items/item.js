@@ -151,6 +151,7 @@ export const generateItem = (settings) => {
 
     return {
         label: name + noteText,
+        name,
         quantity: itemQuantity,
         rarity: itemRarity,
         size: item.size,
