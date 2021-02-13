@@ -190,8 +190,8 @@ export default ({ assert, describe, it }) => {
             const html   = scopeList(scopes);
 
             it('should return an html list with an `<li>` and `</li>` for each scope', () => {
-                assert((html.match(/<li>/g) || []).length).equals(scopes.length);
-                assert((html.match(/<\/li>/g) || []).length).equals(scopes.length);
+                assert((html.match(/<li>/g)).length).equals(scopes.length);
+                assert((html.match(/<\/li>/g)).length).equals(scopes.length);
             });
 
             it('should return an html link with `?scope=scope` as the link\'s `href`', () => {
@@ -199,7 +199,7 @@ export default ({ assert, describe, it }) => {
                     assert(html).stringIncludes(`<a href="?scope=${scope}">`);
                 });
 
-                assert((html.match(/<\/a>/g) || []).length).equals(scopes.length);
+                assert((html.match(/<\/a>/g)).length).equals(scopes.length);
             });
         });
 
@@ -208,7 +208,7 @@ export default ({ assert, describe, it }) => {
             const html   = scopeList(scopes, { verbose: true });
 
             it('should return an html list with `&verbose=true` for each scope', () => {
-                assert((html.match(/&verbose=true/g) || []).length).equals(scopes.length);
+                assert((html.match(/&verbose=true/g)).length).equals(scopes.length);
             });
         });
     });
