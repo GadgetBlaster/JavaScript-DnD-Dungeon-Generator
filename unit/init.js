@@ -30,14 +30,14 @@ const animationChunkDivision = 200;
 const urlParams = new URLSearchParams(window.location.search);
 
 /**
- * Scope
+ * URL parameter to run a specific test file.
  *
  * @type {string}
  */
 const scope = urlParams.get('scope');
 
 /**
- * Verbose
+ * URL parameter to include verbose output.
  *
  * @type {boolean}
  */
