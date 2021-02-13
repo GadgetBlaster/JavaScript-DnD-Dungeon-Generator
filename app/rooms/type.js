@@ -4,8 +4,6 @@ import { random } from '../utility/random.js';
 
 /**
  * Room types
- *
- * @type {object.<string, string>}
  */
 const roomTypes = {
     armory    : 'armory',

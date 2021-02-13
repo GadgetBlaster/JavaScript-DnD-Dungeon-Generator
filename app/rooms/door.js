@@ -28,8 +28,6 @@ import { createProbability } from '../utility/roll.js';
 
 /**
  * Door types
- *
- * @type {Object.<string, string>}
  */
 const door = {
     archway   : 'archway',

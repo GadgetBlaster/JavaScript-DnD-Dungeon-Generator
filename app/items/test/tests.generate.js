@@ -1,8 +1,9 @@
 
 import {
     _generateItemObjects,
+    _getFurnishingObjects,
     _getItemCount,
-    getFurnishingObjects,
+    generateItems,
 } from '../generate.js';
 
 import { knobs } from '../../knobs.js';
@@ -11,6 +12,8 @@ import condition from '../../attributes/condition.js';
 import itemType from '../type.js';
 import quantity, { quantityMinimum, quantityMaximum } from '../../attributes/quantity.js';
 import rarity from '../../attributes/rarity.js';
+import roomTypes from '../../rooms/type.js';
+import { requiredRoomFurniture } from '../types/furnishing.js';
 
 /**
  * @param {import('../../../unit/unit.js').Utility}
@@ -114,9 +117,9 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('getFurnishingObjects()', () => {
+    describe('_getFurnishingObjects()', () => {
         describe('given a single furnishing object', () => {
-            let furnishings = getFurnishingObjects(
+            let furnishings = _getFurnishingObjects(
                 [ { name: 'Table', label: 'Table' } ],
                 condition.average
             );
@@ -138,7 +141,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given multiple furnishing objects', () => {
-            let furnishings = getFurnishingObjects(
+            let furnishings = _getFurnishingObjects(
                 [ { name: 'Table', label: 'Table' }, { name: 'Chair', label: 'Chair' } ],
                 condition.average
             );
@@ -152,7 +155,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given duplicate furnishing objects', () => {
-            let furnishings = getFurnishingObjects(
+            let furnishings = _getFurnishingObjects(
                 [ { name: 'Table', label: 'Table' }, { name: 'Table', label: 'Table' } ],
                 condition.average
             );
@@ -174,7 +177,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a room condition of average', () => {
-            let furnishings = getFurnishingObjects(
+            let furnishings = _getFurnishingObjects(
                 [ { name: 'Table', label: 'Table' } ],
                 condition.average
             );
@@ -188,7 +191,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a room condition other than average', () => {
-            let furnishings = getFurnishingObjects(
+            let furnishings = _getFurnishingObjects(
                 [ { name: 'Table', label: 'Table' } ],
                 condition.rare
             );
@@ -200,5 +203,123 @@ export default ({ assert, describe, it }) => {
                 assert(furnishing.label).stringIncludes(condition.rare);
             });
         });
+    });
+
+    describe('generateItems()', () => {
+        let settings = {
+            [knobs.itemCondition] : condition.average,
+            [knobs.itemQuantity]  : quantity.one,
+            [knobs.itemRarity]    : rarity.average,
+            [knobs.itemType]      : itemType.clothing,
+        };
+
+        it('should return an array of strings', () => {
+            let results = generateItems(settings);
+            assert(results).isArray();
+            assert(results.find((item) => typeof item !== 'string')).isUndefined();
+        });
+
+        it('the first item should be a title containing the number of Items', () => {
+            assert(generateItems(settings).shift()).stringIncludes('Items (1)');
+        });
+
+        describe('given no `itemQuantity`', () => {
+            it('should throw', () => {
+                let sansItemQuantity = { ...settings };
+                delete sansItemQuantity[knobs.itemQuantity];
+                assert(() => generateItems(sansItemQuantity)).throws('Item quantity is required in generateItems()');
+            });
+        });
+
+        describe('given no `itemRarity`', () => {
+            it('should throw', () => {
+                let sansItemRarity = { ...settings };
+                delete sansItemRarity[knobs.itemRarity];
+                assert(() => generateItems(sansItemRarity)).throws('Item rarity is required in generateItems()');
+            });
+        });
+
+        describe('given no `itemRarity`', () => {
+            it('should throw', () => {
+                let sansItemRarity = { ...settings };
+                delete sansItemRarity[knobs.itemRarity];
+                assert(() => generateItems(sansItemRarity)).throws('Item rarity is required in generateItems()');
+            });
+        });
+
+        describe('given no `itemType`', () => {
+            it('should throw', () => {
+                let sansItemType = { ...settings };
+                delete sansItemType[knobs.itemType];
+                assert(() => generateItems(sansItemType)).throws('Item type is required in generateItems()');
+            });
+        });
+
+        describe('given no `itemCondition`', () => {
+            it('should throw', () => {
+                let sansItemCondition = { ...settings };
+                delete sansItemCondition[knobs.itemCondition];
+                assert(() => generateItems(sansItemCondition)).throws('Item condition is required in generateItems()');
+            });
+        });
+
+        describe('given a `roomType` and no `roomCondition`', () => {
+            it('should throw', () => {
+                assert(() => generateItems({ ...settings, [knobs.roomType]: roomTypes.room }))
+                    .throws('Room condition is required for room in generateItems()');
+            });
+        });
+
+        describe('given a random `itemQuantity`', () => {
+            it('should return an array of strings', () => {
+                let results = generateItems({ ...settings, [knobs.itemQuantity]: random });
+                assert(results).isArray();
+                assert(results.find((item) => typeof item !== 'string')).isUndefined();
+            });
+        });
+
+        describe('given an `itemQuantity` of zero', () => {
+            describe('when there is no room', () => {
+                it('should return an array with only a title', () => {
+                    let results = generateItems({ ...settings, [knobs.itemQuantity]: quantity.zero });
+                    assert(results).isArray();
+                    assert(results.pop()).stringIncludes('Items (0)');
+                });
+            });
+
+            describe('when there is a room', () => {
+                it('should return an empty array', () => {
+                    let results = generateItems({
+                        ...settings,
+                        [knobs.itemQuantity]: quantity.zero,
+                        [knobs.roomType]: roomTypes.room,
+                        [knobs.roomCondition]: condition.average,
+                    });
+                    assert(results).isArray();
+                    assert(results.length).equals(0);
+                });
+            });
+        });
+
+        describe('given a furniture quantity', () => {
+            describe('when there is a room', () => {
+                it('should include any required room furniture', () => {
+                    let result = generateItems({
+                        ...settings,
+                        [knobs.roomFurnishing]: quantity.several,
+                        // `roomTypes.kitchen` satisfies both conditions for an
+                        // item with capacity and one without.
+                        [knobs.roomType]: roomTypes.kitchen,
+                        [knobs.roomCondition]: condition.average,
+                    }).join('');
+
+                    requiredRoomFurniture[roomTypes.kitchen].forEach(({ name: itemName }) => {
+                        assert(result).stringIncludes(itemName);
+                    });
+                });
+            });
+        });
+
+        // TODO incomplete test coverage
     });
 };

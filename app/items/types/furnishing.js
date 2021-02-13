@@ -121,7 +121,10 @@ const byRoomType = {
     [roomType.treasury]  : [ carpet, desk, lamp, mirror, rack, tableLg, tableSm ],
 };
 
-const required = {
+/**
+ * Furniture that must be included in a specific room type.
+ */
+export const requiredRoomFurniture = {
     [roomType.armory]    : [ rack ],
     [roomType.bedroom]   : [ bed ],
     [roomType.dining]    : [ tableLg ],
@@ -147,6 +150,8 @@ export const furnitureQuantity = {
     furnished: 'furnished',
 };
 
+export const furnitureQuantityList = Object.keys(furnitureQuantity);
+
 export const probability = createProbability([
     [ 25,  furnitureQuantity.none      ],
     [ 75,  furnitureQuantity.minimum   ],
@@ -154,8 +159,6 @@ export const probability = createProbability([
     [ 98,  furnitureQuantity.average   ],
     [ 100, furnitureQuantity.furnished ],
 ]);
-
-export const furnitureQuantityList = Object.keys(furnitureQuantity);
 
 const quantityRanges = {
     [furnitureQuantity.minimum]  : 1,
@@ -171,8 +174,8 @@ export const generateFurnishings = (type, quantity) => {
         return furniture;
     }
 
-    if (required[type]) {
-        required[type].forEach((item) => {
+    if (requiredRoomFurniture[type]) {
+        requiredRoomFurniture[type].forEach((item) => {
             furniture.push(item);
         });
     }

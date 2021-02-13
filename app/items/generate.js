@@ -13,6 +13,8 @@ import condition from '../attributes/condition.js';
 import quantity, { getRange, probability as quantityProbability } from '../attributes/quantity.js';
 import size from '../attributes/size.js';
 
+// TODO incomplete test coverage
+
 /** @typedef {import('../typedefs.js').Settings} */
 
 // -- Config -------------------------------------------------------------------
@@ -84,7 +86,7 @@ export const _generateItemObjects = (count, settings) => [ ...Array(count) ].red
  *
  * @returns {{ [label: string]: Item }}
  */
-export const getFurnishingObjects = (furnishings, roomCondition) => furnishings.reduce((obj, item) => {
+export const _getFurnishingObjects = (furnishings, roomCondition) => furnishings.reduce((obj, item) => {
     let label = item.label;
 
     if (roomCondition !== condition.average) {
@@ -106,6 +108,15 @@ export const getFurnishingObjects = (furnishings, roomCondition) => furnishings.
 
 // -- Public Functions ---------------------------------------------------------
 
+/**
+ * Generate items
+ *
+ * @param {import('../typedefs.js').Settings}
+ *
+ * TODO separate HTMl from generation logic
+ *
+ * @returns {string[]}
+ */
 export const generateItems = (settings) => {
     let {
         [knobs.roomType]      : roomType,
@@ -134,11 +145,15 @@ export const generateItems = (settings) => {
         throw new TypeError('Item condition is required in generateItems()');
     }
 
+    let inRoom = Boolean(roomType); // TODO Boolean cast necessary?
+
+    if (inRoom && !roomCondition) {
+        throw new TypeError('Room condition is required for room in generateItems()');
+    }
+
     if (itemQuantity === random) {
         itemQuantity = quantityProbability.roll();
     }
-
-    let inRoom = Boolean(roomType);
 
     if (itemQuantity === quantity.zero) {
         return inRoom ? [] : [ subtitle('Items (0)') ];
@@ -152,10 +167,11 @@ export const generateItems = (settings) => {
     let remaining  = [];
 
     let furnishings   = inRoom ? generateFurnishings(roomType, furnitureQuantity) : [];
-    let furnishingObj = getFurnishingObjects(furnishings, roomCondition);
+    let furnishingObj = _getFurnishingObjects(furnishings, roomCondition);
 
     let total = count + furnishings.length;
 
+    // TODO break out into function for testing
     Object.keys(furnishingObj).forEach((key) => {
         let item = furnishingObj[key];
 
@@ -167,6 +183,7 @@ export const generateItems = (settings) => {
         remaining.push(item);
     });
 
+    // TODO break out into function for testing
     Object.keys(items).forEach((key) => {
         let item = items[key];
 
@@ -183,6 +200,7 @@ export const generateItems = (settings) => {
         remaining.push(item);
     });
 
+    // TODO break out into function for testing
     containers.forEach((_, index, array) => {
         let container = array[index];
 

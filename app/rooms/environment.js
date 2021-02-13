@@ -18,8 +18,6 @@ const detailChance = 50;
 
 /**
  * Room structure types
- *
- * @type {Object.<string, string>}
  */
 export const structure = {
     cave     : 'cave',

@@ -21,8 +21,6 @@ const maxFeatures = 3;
 
 /**
  * Room feature types
- *
- * @type {Object.<string, string>}
  */
 export const feature = {
     altar     : 'altar',
