@@ -3,6 +3,7 @@ import {
     attachActions,
     toggleAccordion,
     toggleVisibility,
+    actions,
 } from '../action.js';
 
 /**
@@ -17,19 +18,19 @@ export default ({ assert, describe, it }) => {
                         const container = document.createElement('div');
                         const button    = document.createElement('button');
 
-                        button.dataset.action = 'superFly';
+                        button.dataset.action = actions.home;
 
                         container.appendChild(button);
 
                         let event;
 
-                        const actions = {
-                            superFly: (e) => {
+                        const triggers = {
+                            [actions.home]: (e) => {
                                 event = e;
                             },
                         };
 
-                        attachActions(container, actions);
+                        attachActions(container, triggers);
 
                         button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
 

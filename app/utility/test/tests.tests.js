@@ -1,5 +1,5 @@
 
-import { _getOutput } from '../tests.js';
+import { formatSummary } from '../tests.js';
 
 /**
  * @type {import('../../../unit/unit.js').Summary}
@@ -14,137 +14,109 @@ const defaults = {
  * @param {import('../../../unit/unit.js').Utility}
  */
 export default ({ assert, describe, it }) => {
-    describe('_getOutput()', () => {
-        describe('given no assertions', () => {
-            let output = _getOutput({ ...defaults });
+    describe('formatSummary()', () => {
+        it('should return a link to `./unit.html', () => {
+            assert(formatSummary({ ...defaults }))
+                .stringIncludes('<a href="./unit.html">')
+                .stringIncludes('</a>');
+        });
 
+        describe('given no assertions', () => {
             it('should return a string containing `0 mischievous kobolds`', () => {
-                assert(output).stringExcludes('0 mischievous kobolds');
+                assert(formatSummary({ ...defaults }))
+                    .stringIncludes('0')
+                    .stringIncludes('mischievous kobolds');
             });
         });
 
         describe('given a single assertion', () => {
-            let output = _getOutput({ ...defaults, assertions: 1 });
-
             it('should return a string containing `1 mischievous kobold`', () => {
-                assert(output).stringExcludes('1 mischievous kobold');
-            });
-
-            it('should return a link to `./unit.html`', () => {
-                assert(output)
-                    .stringIncludes('<a href="./unit.html">')
-                    .stringIncludes('</a>');
+                assert(formatSummary({ ...defaults, assertions: 1 }))
+                    .stringIncludes('1')
+                    .stringIncludes('mischievous kobold')
+                    .stringExcludes('kobolds');
             });
         });
 
         describe('given two assertions', () => {
-            let output = _getOutput({ ...defaults, assertions: 2 });
-
             it('should return a string containing `2 mischievous kobolds`', () => {
-                assert(output).stringExcludes('2 mischievous kobolds');
-            });
-
-            it('should return a link to `./unit.html`', () => {
-                assert(output)
-                    .stringIncludes('<a href="./unit.html">')
-                    .stringIncludes('</a>');
+                assert(formatSummary({ ...defaults, assertions: 2 }))
+                    .stringIncludes('2')
+                    .stringIncludes('mischievous kobolds');
             });
         });
 
         describe('given no failures', () => {
-            let output = _getOutput({ ...defaults });
-
             it('should return a string that does not contain `Encountered`', () => {
-                assert(output).stringExcludes('Encountered');
+                assert(formatSummary({ ...defaults })).stringExcludes('Encountered');
+            });
+        });
+
+        describe('given failures', () => {
+            let output = formatSummary({ ...defaults, failures: 10 });
+
+            it('should return a link to `./unit.html` with a `data-error` attribute', () => {
+                assert(output)
+                    .stringIncludes('<a href="./unit.html" data-error="true">')
+                    .stringIncludes('</a>');
+            });
+
+            it('should return a string containing `Encountered`', () => {
+                assert(output).stringIncludes('Encountered');
             });
         });
 
         describe('given a single failure', () => {
-            let output = _getOutput({ ...defaults, failures: 1 });
-
-            it('should return a string containing `Encountered`', () => {
-                assert(output).stringIncludes('Encountered');
-            });
-
             it('should return a string containing `1 ogre`', () => {
-                assert(output).stringIncludes('1 ogre');
-            });
-
-            it('should return a link to `./unit.html` with a `data-error` attribute', () => {
-                assert(output)
-                    .stringIncludes('<a href="./unit.html" data-error="true">')
-                    .stringIncludes('</a>');
+                assert(formatSummary({ ...defaults, failures: 1 }))
+                    .stringIncludes('1 ogre')
+                    .stringExcludes('ogres');
             });
         });
 
         describe('given two failures', () => {
-            let output = _getOutput({ ...defaults, failures: 2 });
-
-            it('should return a string containing `Encountered`', () => {
-                assert(output).stringIncludes('Encountered');
-            });
-
             it('should return a string containing `2 ogres`', () => {
-                assert(output).stringIncludes('2 ogres');
-            });
-
-            it('should return a link to `./unit.html` with a `data-error` attribute', () => {
-                assert(output)
-                    .stringIncludes('<a href="./unit.html" data-error="true">')
-                    .stringIncludes('</a>');
+                assert(formatSummary({ ...defaults, failures: 2 })).stringIncludes('2 ogres');
             });
         });
 
         describe('given no errors', () => {
-            let output = _getOutput({ ...defaults });
-
             it('should return a string that does not contain `Encountered`', () => {
-                assert(output).stringExcludes('Encountered');
+                assert(formatSummary({ ...defaults })).stringExcludes('Encountered');
+            });
+        });
+
+        describe('given errors', () => {
+            let output = formatSummary({ ...defaults, errors: [ 'boots', 'towers', 'jalapeño' ] });
+
+            it('should return a string containing `Encountered`', () => {
+                assert(output).stringIncludes('Encountered');
+            });
+
+            it('should return a link to `./unit.html` with a `data-error` attribute', () => {
+                assert(output)
+                    .stringIncludes('<a href="./unit.html" data-error="true">')
+                    .stringIncludes('</a>');
             });
         });
 
         describe('given a single error', () => {
-            let output = _getOutput({ ...defaults, errors: [ 'lobster' ] });
-
-            it('should return a string containing `Encountered`', () => {
-                assert(output).stringIncludes('Encountered');
-            });
-
             it('should return a string containing `1 dragon`', () => {
-                assert(output).stringIncludes('1 dragon');
-            });
-
-            it('should return a link to `./unit.html` with a `data-error` attribute', () => {
-                assert(output)
-                    .stringIncludes('<a href="./unit.html" data-error="true">')
-                    .stringIncludes('</a>');
+                assert(formatSummary({ ...defaults, errors: [ 'lobster' ] }))
+                    .stringIncludes('1 dragon')
+                    .stringExcludes('dragons');
             });
         });
 
         describe('given two errors', () => {
-            let output = _getOutput({ ...defaults, errors: [ 'broken', 'buggy' ] });
-
-            it('should return a string containing `Encountered`', () => {
-                assert(output).stringIncludes('Encountered');
-            });
-
             it('should return a string containing `2 dragons`', () => {
-                assert(output).stringIncludes('2 dragons');
-            });
-
-            it('should return a link to `./unit.html` with a `data-error` attribute', () => {
-                assert(output)
-                    .stringIncludes('<a href="./unit.html" data-error="true">')
-                    .stringIncludes('</a>');
+                assert(formatSummary({ ...defaults, errors: [ 'broken', 'buggy' ] }))
+                    .stringIncludes('2 dragons');
             });
         });
 
         describe('given two errors and two failures', () => {
-            let output = _getOutput({ ...defaults, errors: [ 'broken', 'buggy' ], failures: 2 });
-
-            it('should return a string containing `Encountered`', () => {
-                assert(output).stringIncludes('Encountered');
-            });
+            let output = formatSummary({ ...defaults, errors: [ 'broken', 'buggy' ], failures: 2 });
 
             it('should return a string containing `2 ogres`', () => {
                 assert(output).stringIncludes('2 ogres');
@@ -152,12 +124,6 @@ export default ({ assert, describe, it }) => {
 
             it('should return a string containing `2 dragons`', () => {
                 assert(output).stringIncludes('2 dragons');
-            });
-
-            it('should return a link to `./unit.html` with a `data-error` attribute', () => {
-                assert(output)
-                    .stringIncludes('<a href="./unit.html" data-error="true">')
-                    .stringIncludes('</a>');
             });
         });
     });

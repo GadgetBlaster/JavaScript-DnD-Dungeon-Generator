@@ -10,7 +10,7 @@ import {
     render,
     resultMsg,
     scopeList,
-    summary,
+    formatSummary,
 } from '../output.js';
 
 /**
@@ -267,23 +267,41 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('summary()', () => {
+    describe('formatSummary()', () => {
+        let summary = {
+            assertions: 0,
+            failures: 0,
+            errors: [],
+        };
+
         describe('errors', () => {
             describe('given `0` errors', () => {
                 it('should return a string that does not contain `Errors`', () => {
-                    assert(summary(2, 1, 0)).stringExcludes('Errors');
+                    assert(formatSummary({
+                        ...summary,
+                        assertions: 2,
+                        failures: 1,
+                    })).stringExcludes('Errors');
                 });
             });
 
             describe('given `1` error', () => {
                 it('should return a string containing `1 Error`', () => {
-                    assert(summary(1, 1, 1)).stringIncludes('1 Error');
+                    assert(formatSummary({
+                        assertions: 1,
+                        failures: 1,
+                        errors: [ 'junk' ],
+                    })).stringIncludes('1 Error');
                 });
             });
 
             describe('given `10` errors', () => {
                 it('should return a string containing `10 Errors`', () => {
-                    assert(summary(1, 1, 10)).stringIncludes('10 Errors');
+                    assert(formatSummary({
+                        assertions: 1,
+                        failures: 1,
+                        errors: [ 'sarah', 'fred', 'jain', 'bob', 'sally', 'joe', 'juniper', 'ted', 'snow', 'ralph' ],
+                    })).stringIncludes('10 Errors');
                 });
             });
         });
@@ -291,19 +309,21 @@ export default ({ assert, describe, it }) => {
         describe('assertions', () => {
             describe('given `0` assertions', () => {
                 it('should return a string containing `0 Assertions`', () => {
-                    assert(summary(0, 0, 0)).stringIncludes('0 Assertions');
+                    assert(formatSummary(summary)).stringIncludes('0 Assertions');
                 });
             });
 
             describe('given `1` assertion', () => {
                 it('should return a string containing `1 Assertion`', () => {
-                    assert(summary(1, 0, 0)).stringIncludes('1 Assertion');
+                    assert(formatSummary({ ...summary, assertions: 1 }))
+                        .stringIncludes('1 Assertion');
                 });
             });
 
             describe('given `2` assertions', () => {
                 it('should return a string containing `2 Assertions`', () => {
-                    assert(summary(2, 0, 0)).stringIncludes('2 Assertion');
+                    assert(formatSummary({ ...summary, assertions: 2 }))
+                        .stringIncludes('2 Assertion');
                 });
             });
         });
@@ -311,11 +331,12 @@ export default ({ assert, describe, it }) => {
         describe('failures', () => {
             describe('given no failures', () => {
                 it('should return a string containing `0 Failures`', () => {
-                    assert(summary(1, 0, 0)).stringIncludes('0 Failures');
+                    assert(formatSummary({ ...summary, assertions: 1 }))
+                        .stringIncludes('0 Failures');
                 });
 
                 it('should return a `<span>` with the `ok` css class', () => {
-                    assert(summary(1, 0, 0))
+                    assert(formatSummary({ ...summary, assertions: 1 }))
                         .stringIncludes('<span class="ok">')
                         .stringIncludes('</span>');
                 });
@@ -323,20 +344,22 @@ export default ({ assert, describe, it }) => {
 
             describe('given failures', () => {
                 it('should return a `<span>` with the `fail` css class', () => {
-                    assert(summary(1, 1, 0))
+                    assert(formatSummary({ ...summary, assertions: 1, failures: 1 }))
                         .stringIncludes('<span class="fail">')
                         .stringIncludes('</span>');
                 });
 
                 describe('given `1` failure', () => {
                     it('should return a string containing `1 Failure`', () => {
-                        assert(summary(1, 1, 0)).stringIncludes('1 Failure');
+                        assert(formatSummary({ ...summary, assertions: 1, failures: 1 }))
+                            .stringIncludes('1 Failure');
                     });
                 });
 
                 describe('given `2` failures', () => {
                     it('should return a string containing `2 Failures`', () => {
-                        assert(summary(1, 2, 0)).stringIncludes('2 Failures');
+                        assert(formatSummary({ ...summary, assertions: 1, failures: 2 }))
+                            .stringIncludes('2 Failures');
                     });
                 });
             });

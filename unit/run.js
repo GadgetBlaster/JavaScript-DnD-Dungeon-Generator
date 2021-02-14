@@ -3,7 +3,7 @@
  * Run suite
  *
  * @param {Unit} unit
- * @param {Object<string, Function>} suite
+ * @param {object.<string, function>} suite
  * @param {string} [scope]
  *
  * @returns {import('./unit').Summary}

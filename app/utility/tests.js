@@ -1,8 +1,4 @@
 
-import getUnit from '../../unit/unit.js';
-import runSuite from '../../unit/run.js';
-import suite from '../../unit/suite.js';
-
 import { element } from './../utility/html.js';
 import { plural } from './../utility/tools.js';
 
@@ -10,16 +6,16 @@ import { plural } from './../utility/tools.js';
 
 const unitUrl = './unit.html';
 
-// -- Private Functions --------------------------------------------------------
+// -- Public Functions ---------------------------------------------------------
 
 /**
- * Get output
+ * Get test result summary
  *
  * @param {import('../../unit/unit.js').Summary} summary
  *
  * @returns {string}
  */
-export const _getOutput = ({ assertions, errors, failures }) => {
+export const formatSummary = ({ assertions, errors, failures }) => {
     let koboldsText = `mischievous ${plural(assertions, 'kobold')}`;
 
     if (failures || errors.length) {
@@ -42,12 +38,3 @@ export const _getOutput = ({ assertions, errors, failures }) => {
 
     return element('p', `Checked for ${assertions} ${element('a', koboldsText, { href: unitUrl })}`);
 };
-
-// -- Public Functions ---------------------------------------------------------
-
-/**
- * Run tests and return the test summary UI
- *
- * @returns {string}
- */
-export default () => _getOutput(runSuite(getUnit(), suite));

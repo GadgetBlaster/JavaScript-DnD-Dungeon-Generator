@@ -1,7 +1,10 @@
 
 import './typedefs.js';
 import { chunk, toDash } from './utility/tools.js';
-import tests from './utility/tests.js';
+import { formatSummary } from './utility/tests.js';
+import getUnit from '../unit/unit.js';
+import runSuite from '../unit/run.js';
+import suite from '../unit/suite.js';
 
 import {
     actions,
@@ -37,7 +40,7 @@ const footerContainer  = document.getElementById('footer');
 const knobContainer    = document.getElementById('knobs');
 const navContainer     = document.getElementById('nav');
 
-footerContainer.insertAdjacentHTML('afterbegin', tests());
+footerContainer.insertAdjacentHTML('afterbegin', formatSummary(runSuite(getUnit(), suite)));
 
 const homeContent = contentContainer.innerHTML;
 

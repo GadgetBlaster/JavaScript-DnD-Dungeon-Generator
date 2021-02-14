@@ -9,8 +9,9 @@ import {
     nav,
     render,
     scopeList,
-    summary,
+    formatSummary,
 } from './output.js';
+
 import { plural } from '../app/utility/tools.js';
 
 // -- Config -------------------------------------------------------------------
@@ -102,7 +103,9 @@ const animateDots = (results) => new Promise(async (resolve) => {
  *
  * @param {import('./unit.js').Summary}
  */
-const onComplete = async ({ assertions, errors, failures, results }) => {
+const onComplete = async (summary) => {
+    let { errors, failures, results } = summary;
+
     if (failures) {
         console.error(`Encountered ${failures} ${plural(failures, 'ogre')}!`);
     }
@@ -118,7 +121,7 @@ const onComplete = async ({ assertions, errors, failures, results }) => {
     await animateDots(results);
 
     render(statusContainer, 'Complete');
-    render(summaryContainer, summary(assertions, failures, errors.length));
+    render(summaryContainer, formatSummary(summary));
     render(logContainer, log(results, { verbose }));
 };
 

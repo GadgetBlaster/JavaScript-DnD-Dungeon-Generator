@@ -1,10 +1,12 @@
 
 import runSuite from '../run.js';
 
+const noop = () => {};
+
 const mockUnit = {
-    getSummary: () => {},
-    onError   : () => {},
-    runUnits  : () => {},
+    getSummary: noop,
+    onError   : noop,
+    runUnits  : noop,
 };
 
 /**
@@ -16,8 +18,8 @@ export default ({ assert, describe, it }) => {
         let functions = [];
 
         const suite = {
-            '/test/tests.mock1.js': () => {},
-            '/test/tests.mock2.js': () => {},
+            '/test/tests.mock1.js': noop,
+            '/test/tests.mock2.js': noop,
         };
 
         const runUnits = (name, tests) => {
@@ -94,7 +96,7 @@ export default ({ assert, describe, it }) => {
         let names = [];
 
         const scope = '/some/scope';
-        const suite = { [scope]: () => {} };
+        const suite = { [scope]: noop };
 
         const runUnits = (name) => { names.push(name); };
 
@@ -110,7 +112,7 @@ export default ({ assert, describe, it }) => {
         let onErrorResult;
 
         const onError = (error) => { onErrorResult = error; };
-        const suite   = { '/some/scope': () => {} };
+        const suite   = { '/some/scope': noop };
         const scope   = '/invalid/scope';
 
         runSuite({ ...mockUnit, onError }, suite, scope);

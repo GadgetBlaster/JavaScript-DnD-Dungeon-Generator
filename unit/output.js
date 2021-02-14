@@ -161,17 +161,15 @@ export const scopeList = (scopes, { verbose } = {}) => {
 };
 
 /**
- * Summary
+ * Format summary
  *
- * @param {number} assertions
- * @param {number} failures
- * @param {number} errors
+ * @param {Summary} summary
  *
  * @returns {string}
  */
-export const summary = (assertions, failures, errors) => {
-    if (errors) {
-        return `<span class="fail">${errors} Error${errors === 1 ? '' : 's'} 😕</span>`;
+export const formatSummary = ({ assertions, failures, errors }) => {
+    if (errors.length) {
+        return `<span class="fail">${errors.length} Error${errors.length === 1 ? '' : 's'} 😕</span>`;
     }
 
     let out = [];
