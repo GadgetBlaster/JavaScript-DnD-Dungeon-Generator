@@ -1,5 +1,5 @@
 
-import runSuite from './run.js';
+import run from './run.js';
 import suite from './suite.js';
 import unit from './unit.js';
 
@@ -12,7 +12,9 @@ import {
     formatSummary,
 } from './output.js';
 
-import { plural } from '../app/utility/tools.js';
+import { plural } from '../utility/tools.js';
+
+// TODO break out into testable files.
 
 // -- Config -------------------------------------------------------------------
 
@@ -146,5 +148,5 @@ render(navContainer, nav({
     render(statusContainer, 'Running tests');
     render(infoContainer, `Tests: ${testScope ? scope : 'All'}`);
 
-    onComplete(runSuite(unit(), suite, testScope));
+    onComplete(run(unit(), suite, testScope));
 })();

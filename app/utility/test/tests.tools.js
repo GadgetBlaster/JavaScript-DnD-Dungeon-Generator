@@ -12,7 +12,7 @@ import {
  } from '../tools.js';
 
 /**
- * @param {import('../../../unit/unit.js').Utility}
+ * @param {import('../../unit/unit.js').Utility}
  */
 export default ({ assert, describe, it }) => {
 
@@ -28,14 +28,14 @@ export default ({ assert, describe, it }) => {
 
     describe('indefiniteArticle()', () => {
         describe('given a word that does not start with a vowel', () => {
-            it('should return `a`', () => {
-                assert(indefiniteArticle('hammoc')).equals('a');
+            it('should return "a"', () => {
+                assert(indefiniteArticle('hammock')).equals('a');
             });
         });
 
         [ 'apple', 'elephant', 'igloo', 'otter', 'udder' ].forEach((word) => {
             describe('given a word that starts with a vowel', () => {
-                it('should return `an`', () => {
+                it('should return "an"', () => {
                     assert(indefiniteArticle(word)).equals('an');
                 });
             });
