@@ -98,10 +98,10 @@ export default ({ assert, describe, it }) => {
                 it('should throw', () => {
                     assert(() => {
                         createProbability([
-                            [ 0,  'backpack' ],
+                            [ -10,  'backpack' ],
                             [ 50, 'belt pouch' ]
                         ]);
-                    }).throws('Probability key "0" must be 1 or greater');
+                    }).throws('Probability key "-10" must be 0 or greater');
                 });
             });
 
@@ -204,10 +204,10 @@ export default ({ assert, describe, it }) => {
             });
         });
 
-        describe('given an integer less than `1`', () => {
+        describe('given an integer less than `0`', () => {
             it('should throw', () => {
-                assert(() => { rollPercentile(0); })
-                    .throws('Percent `chance` must be 1 or greater');
+                assert(() => { rollPercentile(-5); })
+                    .throws('Percent `chance` must be 0 or greater');
             });
         });
 

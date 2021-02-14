@@ -38,8 +38,8 @@ const assertions = [
     isString,
     isTrue,
     isUndefined,
-    stringIncludes,
     stringExcludes,
+    stringIncludes,
     throws,
 ];
 
@@ -58,8 +58,7 @@ const groups = {
         '`true`': true,
     },
     function: {
-        'a function': () => {},
-        'a function that throws': () => { throw new TypeError('Junk'); },
+        'a function': equals, // Any function will do
     },
     null: {
         '`null`': null,

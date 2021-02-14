@@ -1,17 +1,10 @@
 
+/** @typedef {import('../typedefs.js').Probability} Probability */
+
 // -- Config -------------------------------------------------------------------
 
-const minPercent = 1;
+const minPercent = 0;
 const maxPercent = 100;
-
-/**
- * Probability distribution table
- *
- * @typedef {Object} Probability
- *
- * @property {string} description
- * @property {() => string)} roll
- */
 
 // -- Private Functions --------------------------------------------------------
 

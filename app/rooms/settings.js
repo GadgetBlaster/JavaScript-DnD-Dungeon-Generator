@@ -26,6 +26,8 @@ import roomType, { list as roomTypes, probability as roomTypeProbability } from 
  * @property {string} roomType
  */
 
+/** @typedef {import('../typedefs.js').Probability} Probability */
+
 // -- Config -------------------------------------------------------------------
 
 /**
@@ -43,17 +45,17 @@ const uniformConditionChance = 10;
 const uniformRarityChance = 10;
 
 /**
- * An object of randomization functions for KnobSettings.
+ * An object of randomization functions for room specific `KnobSettings`.
  *
- * @type {object.<string, () => string>}
+ * @type {{ [knobSetting: string]: () => string }}
  */
 const roomRandomizations = {
-    [knobs.itemCondition] : () => rollPercentile(uniformConditionChance) && conditionProbability.roll(),
+    [knobs.itemCondition] : () => _rollUniformity(uniformConditionChance, conditionProbability),
     [knobs.itemQuantity]  : () => quantityProbability.roll(),
-    [knobs.itemRarity]    : () => rollPercentile(uniformRarityChance) && rarityProbability.roll(),
+    [knobs.itemRarity]    : () => _rollUniformity(uniformRarityChance, rarityProbability),
     [knobs.roomCondition] : () => conditionProbability.roll(),
     [knobs.roomFurnishing]: () => furnitureQuantityProbability.roll(),
-    [knobs.roomType]      : () => rollRoomType(),
+    [knobs.roomType]      : () => _rollRoomType(roomTypeProbability.roll()),
 };
 
 // -- Private Functions --------------------------------------------------------
@@ -65,18 +67,18 @@ const roomRandomizations = {
  *
  * @returns {string} size
  */
-const rollRoomSize = (type) => {
+const _rollRoomSize = (type) => {
     return rollArrayItem(roomTypeSizes[type]);
 };
 
 /**
  * Returns a random room type using the room type probability table.
  *
+ * @param {string} type
+ *
  * @returns {string} roomType
  */
-const rollRoomType = () => {
-    let type = roomTypeProbability.roll();
-
+export const _rollRoomType = (type) => {
     if (type === random) {
         return rollArrayItem(roomTypes);
     }
@@ -84,9 +86,29 @@ const rollRoomType = () => {
     return type;
 };
 
+/**
+ * Returns a random condition for all items in the room, or null to indicate
+ * each item should have a random condition.
+ *
+ * @param {number} uniformityChance
+ *     Returns null to indicate all items in the room should have a uniform
+ *     condition.
+ *
+ * @param {Probability} probability
+ *
+ * @returns {string|null} itemCondition
+ */
+export const _rollUniformity = (uniformityChance, probability) => {
+    if (!rollPercentile(uniformityChance)) {
+        return null;
+    }
+
+    return probability.roll();
+};
+
 // -- Public Functions ---------------------------------------------------------
 
-// TODO combine with applyRoomRandomization
+// TODO consolidate with applyRoomRandomization
 const applyRandomization = (config, randomizations) => {
     let settings = { ...config };
 
@@ -103,7 +125,7 @@ const applyRandomization = (config, randomizations) => {
     });
 
     if (settings[knobs.roomSize] === random) {
-        settings[knobs.roomSize] = rollRoomSize(settings[knobs.roomType]);
+        settings[knobs.roomSize] = _rollRoomSize(settings[knobs.roomType]);
     }
 
     if (settings[knobs.roomType] === roomType.hallway && settings[knobs.itemQuantity] === quantity.numerous) {

@@ -1,5 +1,7 @@
 
 import {
+    _rollRoomType,
+    _rollUniformity,
     applyRoomRandomization,
 } from '../settings.js';
 
@@ -16,6 +18,35 @@ import roomType, { list as roomTypes } from '../type.js';
  * @param {import('../../unit/unit.js').Utility}
  */
 export default ({ assert, describe, it }) => {
+    describe('_rollRoomType()', () => {
+        describe('given a room type other than `random`', () => {
+            it('should return it', () => {
+                assert(_rollRoomType(roomType.smithy)).equals(roomType.smithy);
+            });
+        });
+
+        describe('given a room type of `random`', () => {
+            it('should return a random room type', () => {
+                assert(roomType[_rollRoomType(random)] !== undefined).isTrue();
+            });
+        });
+    });
+
+    describe('_rollUniformity()', () => {
+        describe('given a uniformity condition of 100%', () => {
+            it('should call `roll()` on the probability object', () => {
+                let result = _rollUniformity(100, { roll: () => 'fake result' });
+                assert(result).equals('fake result');
+            });
+        });
+
+        describe('given a uniformity condition of 0%', () => {
+            it('should return null', () => {
+                assert(_rollUniformity(0)).isNull();
+            });
+        });
+    });
+
     describe('applyRoomRandomization()', () => {
         describe('given a `KnobSettings` object', () => {
             it('should return a `RoomConfig` object', () => {

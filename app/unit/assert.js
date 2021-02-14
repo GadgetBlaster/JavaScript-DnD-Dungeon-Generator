@@ -36,7 +36,7 @@ const emptyElements = [
 
 // -- Public Functions ---------------------------------------------------------
 
-/** @type {Function} equals */
+/** @type {(actual: *, expected: *) => Result} equals */
 export const equals = (actual, expected) => {
     let isOk = expected === actual;
     let msg  = `expected "${actual}" to equal "${expected}"`;
@@ -44,7 +44,7 @@ export const equals = (actual, expected) => {
     return { msg, isOk };
 };
 
-/** @type {Function} equalsArray */
+/** @type {(actual: *, expected: *) => Result} equalsArray */
 export const equalsArray = (actual, expected) => {
     let checkType = isArray(actual);
 
@@ -65,7 +65,7 @@ export const equalsArray = (actual, expected) => {
     return { msg, isOk };
 };
 
-/** @type {Function} equalsObject */
+/** @type {(actual: *, expected: *) => Result} equalsObject */
 export const equalsObject = (actual, expected) => {
     let checkType = isObject(actual);
 
@@ -79,7 +79,7 @@ export const equalsObject = (actual, expected) => {
     return { msg, isOk };
 };
 
-/** @type {Function} isArray */
+/** @type {(value: *) => Result} isArray */
 export const isArray = (value) => {
     let isOk = Array.isArray(value);
     let msg  = `expected "${value}" to be an array`;
@@ -87,7 +87,7 @@ export const isArray = (value) => {
     return { msg, isOk };
 };
 
-/** @type {Function} isBoolean */
+/** @type {(value: *) => Result} isBoolean */
 export const isBoolean = (value) => {
     let isOk = typeof value === 'boolean';
     let msg  = `expected "${value}" to be boolean`;
@@ -95,7 +95,7 @@ export const isBoolean = (value) => {
     return { msg, isOk };
 };
 
-/** @type {Function} isFalse */
+/** @type {(value: *) => Result} isFalse */
 export const isFalse = (value) => {
     let isOk = value === false;
     let msg  = `expected "${value}" to be false`;
@@ -103,7 +103,7 @@ export const isFalse = (value) => {
     return { msg, isOk };
 };
 
-/** @type {Function} isFunction */
+/** @type {(value: *) => Result} isFunction */
 export const isFunction = (value) => {
     let isOk = typeof value === 'function';
     let msg  = `expected "${value}" to be a function`;
@@ -111,9 +111,9 @@ export const isFunction = (value) => {
     return { msg, isOk };
 };
 
-/** @type {Function} isHtmlTag */
-export const isHtmlTag = (string, tag) => {
-    let checkType = isString(string);
+/** @type {(value: *, tag: string) => Result} isHtmlTag */
+export const isHtmlTag = (value, tag) => {
+    let checkType = isString(value);
 
     if (!checkType.isOk) {
         return checkType;
@@ -121,13 +121,13 @@ export const isHtmlTag = (string, tag) => {
 
     let regExp  = new RegExp('^<'+tag+'(?:>| [^>]+>)', 'g');
     let isEmpty = emptyElements.includes(tag);
-    let isOk    = regExp.test(string) && string.endsWith(isEmpty ? ' />' : `</${tag}>`);
-    let msg     = `expected "${string}" to be an html tag string of ${isEmpty ? `<${tag} />` : `<${tag}>*</${tag}>`}`;
+    let isOk    = regExp.test(value) && value.endsWith(isEmpty ? ' />' : `</${tag}>`);
+    let msg     = `expected "${value}" to be an html tag string of ${isEmpty ? `<${tag} />` : `<${tag}>*</${tag}>`}`;
 
     return { msg, isOk };
 };
 
-/** @type {Function} isNull */
+/** @type {(value: *) => Result} isNull */
 export const isNull = (value) => {
     let isOk = value === null;
     let msg  = `expected "${value}" to be a null`;
@@ -135,7 +135,7 @@ export const isNull = (value) => {
     return { msg, isOk };
 };
 
-/** @type {Function} isNumber */
+/** @type {(value: *) => Result} isNumber */
 export const isNumber = (value) => {
     let isOk = typeof value === 'number' && !isNaN(value);
     let msg  = `expected "${value}" to be a number`;
@@ -143,7 +143,7 @@ export const isNumber = (value) => {
     return { msg, isOk };
 };
 
-/** @type {Function} isObject */
+/** @type {(value: *) => Result} isObject */
 export const isObject = (value) => {
     let isOk = !!value && typeof value === 'object' && !Array.isArray(value);
     let msg  = `expected "${value}" to be an object`;
@@ -151,7 +151,7 @@ export const isObject = (value) => {
     return { msg, isOk };
 };
 
-/** @type {Function} isString */
+/** @type {(value: *) => Result} isString */
 export const isString = (value) => {
     let isOk = typeof value === 'string';
     let msg  = `expected "${value}" to be a string`;
@@ -159,7 +159,7 @@ export const isString = (value) => {
     return { msg, isOk };
 };
 
-/** @type {Function} isTrue */
+/** @type {(value: *) => Result} isTrue */
 export const isTrue = (value) => {
     let isOk = value === true;
     let msg  = `expected "${value}" to be true`;
@@ -167,7 +167,7 @@ export const isTrue = (value) => {
     return { msg, isOk };
 };
 
-/** @type {Function} isUndefined */
+/** @type {(value: *) => Result} isUndefined */
 export const isUndefined = (value) => {
     let isOk = value === undefined;
     let msg  = `expected "${value}" to be undefined`;
@@ -175,7 +175,7 @@ export const isUndefined = (value) => {
     return { msg, isOk };
 };
 
-/** @type {Function} stringIncludes */
+/** @type {(actual: *, includes: string) => Result} stringIncludes */
 export const stringIncludes = (actual, includes) => {
     let checkType = isString(actual);
 
@@ -193,7 +193,7 @@ export const stringIncludes = (actual, includes) => {
     return { msg, isOk };
 };
 
-/** @type {Function} stringExcludes */
+/** @type {(actual: *, excludes: *) => Result} stringExcludes */
 export const stringExcludes = (actual, excludes) => {
     let checkType = isString(actual);
 
@@ -206,8 +206,8 @@ export const stringExcludes = (actual, excludes) => {
     return { msg, isOk: !isOk };
 };
 
-/** @type {Function} throws */
-export const throws = (func, expected) => {
+/** @type {(function: *, expectedErrorMsg: string) => Result} throws */
+export const throws = (func, expectedErrorMsg) => {
     let checkFunc = isFunction(func);
 
     if (!checkFunc.isOk) {
@@ -229,8 +229,8 @@ export const throws = (func, expected) => {
         };
     }
 
-    let isOk = errorMsg === expected;
-    let msg  = `expected "${errorMsg}" to equal "${expected}"`;
+    let isOk = errorMsg === expectedErrorMsg;
+    let msg  = `expected "${errorMsg}" to equal "${expectedErrorMsg}"`;
 
     return { msg, isOk };
 };

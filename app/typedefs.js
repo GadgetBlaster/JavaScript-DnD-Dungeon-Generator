@@ -4,6 +4,25 @@
  */
 
 /**
+ * @typedef {object} Item
+ *
+ * @property {number} count
+ * @property {number} quantity
+ * @property {string} label
+ * @property {string} rarity
+ * @property {string} size
+ * @property {string} type
+ */
+
+/**
+ * @typedef {object} Probability
+ *     Probability distribution table.
+ *
+ * @property {string} description
+ * @property {() => string} roll
+ */
+
+/**
  * @typedef {[ number, number ]} Size
  */
 
@@ -23,17 +42,6 @@
  * @property {string} roomFurnishing
  * @property {string} roomSize
  * @property {string} roomType
- */
-
-/**
- * @typedef {object} Item
- *
- * @property {number} count
- * @property {number} quantity
- * @property {string} label
- * @property {string} rarity
- * @property {string} size
- * @property {string} type
  */
 
 export default {};
