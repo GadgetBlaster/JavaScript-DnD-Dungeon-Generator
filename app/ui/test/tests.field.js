@@ -7,29 +7,35 @@ import {
 } from '../field.js';
 
 /**
- * @param {import('../../../unit/unit.js').Utility}
+ * @param {import('../../unit/unit.js').Utility}
  */
 export default ({ assert, describe, it }) => {
     describe('fieldLabel()', () => {
         describe('given a `label`', () => {
-            it('should return a string', () => {
-                assert(fieldLabel('Widget')).isString();
+            it('should return an html button element string', () => {
+                assert(fieldLabel('Widget')).isHtmlTag('label');
             });
 
-            it('should return an html label element string with the `label` content', () => {
-                assert(fieldLabel('Widget')).equals('<label>Widget</label>');
+            it('should contain the provided `label` content', () => {
+                assert(fieldLabel('Widget')).stringIncludes('Widget');
             });
         });
     });
 
     describe('input()', () => {
         describe('given a `name`', () => {
-            it('should return a string', () => {
-                assert(input('widget')).isString();
+            let inputHtml = input('widget');
+
+            it('should return an html input element string', () => {
+                assert(inputHtml).isHtmlTag('input');
             });
 
-            it('should return an html input element string with the given `name` attribute and `type="text"` attribute by default', () => {
-                assert(input('widget')).equals('<input name="widget" type="text" />');
+            it('should contain the correct `name` attribute', () => {
+                assert(inputHtml).stringIncludes('name="widget"');
+            });
+
+            it('should contain the `type="text"` attribute by default', () => {
+                assert(inputHtml).stringIncludes('type="text"');
             });
         });
 
@@ -61,12 +67,14 @@ export default ({ assert, describe, it }) => {
 
     describe('select()', () => {
         describe('given a `name`', () => {
-            it('should return a string', () => {
-                assert(select('widget', [])).isString();
+            let selectHtml = select('widget', []);
+
+            it('should return an html select element string', () => {
+                assert(selectHtml).isHtmlTag('select');
             });
 
-            it('should return an html select element string with `name="widget"`', () => {
-                assert(select('widget', [])).equals('<select name="widget"></select>');
+            it('should contain the correct `name` attribute', () => {
+                assert(selectHtml).stringIncludes('name="widget"');
             });
         });
 

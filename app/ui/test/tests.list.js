@@ -2,7 +2,7 @@
 import { list } from '../list.js';
 
 /**
- * @param {import('../../../unit/unit.js').Utility}
+ * @param {import('../../unit/unit.js').Utility}
  */
 export default ({ assert, describe, it }) => {
     describe('list()', () => {
@@ -21,15 +21,11 @@ export default ({ assert, describe, it }) => {
         describe('given a single list item', () => {
             const results = list([ 'Pompous Wizards' ]);
 
-            it('should return a string', () => {
-                assert(results).isString();
-            });
-
-            it('should return an unordered list html string', () => {
+            it('should return an html unordered list element string', () => {
                 assert(results).isHtmlTag('ul');
             });
 
-            it('should include a single html list item string with the given content', () => {
+            it('should include a single html list item element string with the given content', () => {
                 assert(results).stringIncludes('<li>Pompous Wizards</li>');
             });
         });

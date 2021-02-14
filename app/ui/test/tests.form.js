@@ -11,7 +11,7 @@ import { actions } from '../action.js';
 import { typeSelect, typeNumber, typeRange } from '../../knobs.js';
 
 /**
- * @param {import('../../../unit/unit.js').Utility}
+ * @param {import('../../unit/unit.js').Utility}
  */
 export default ({ assert, describe, it }) => {
     describe('_getKnob()', () => {
@@ -23,19 +23,19 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a type of `typeSelect`', () => {
-            it('should return an html select string', () => {
+            it('should return an html select element string', () => {
                 assert(_getKnob({ type: typeSelect, values: [] })).isHtmlTag('select');
             });
         });
 
         describe('given a type of `typeNumber`', () => {
-            it('should return an html input string', () => {
+            it('should return an html input element string', () => {
                 assert(_getKnob({ type: typeNumber })).isHtmlTag('input');
             });
         });
 
         describe('given a type of `typeRange`', () => {
-            it('should return an html input string', () => {
+            it('should return an html input element string', () => {
                 assert(_getKnob({ type: typeRange })).isHtmlTag('input');
             });
         });
@@ -179,7 +179,7 @@ export default ({ assert, describe, it }) => {
         describe('given a knob config', () => {
             const result = renderKnobs([ { label: 'Shovels', fields: [] } ]);
 
-            it('should return an html fieldset string', () => {
+            it('should return an html fieldset element string', () => {
                 assert(result).isHtmlTag('fieldset');
             });
 
@@ -245,7 +245,7 @@ export default ({ assert, describe, it }) => {
             assert(submitButton).isString();
         });
 
-        it('should be an html button string', () => {
+        it('should be an html button element string', () => {
             assert(submitButton).isHtmlTag('button');
         });
 

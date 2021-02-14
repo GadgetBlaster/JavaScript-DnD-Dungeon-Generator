@@ -23,7 +23,7 @@ const type = {
 };
 
 /**
- * @param {import('../../../unit/unit.js').Utility}
+ * @param {import('../../unit/unit.js').Utility}
  */
 export default ({ assert, describe, it }) => {
     describe('type', () => {
@@ -32,11 +32,7 @@ export default ({ assert, describe, it }) => {
                 describe('when called', () => {
                     let result = func('');
 
-                    it('should return a string', () => {
-                        assert(result).isString();
-                    });
-
-                    it('should return an html string with the correct the tag name', () => {
+                    it('should return an html element string with the correct the tag name', () => {
                         assert(result).isHtmlTag(name);
                     });
                 });

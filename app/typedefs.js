@@ -1,5 +1,9 @@
 
 /**
+ * @typedef {{ [attribute: string]: string }} Attrs
+ */
+
+/**
  * @typedef {[ number, number ]} Size
  */
 

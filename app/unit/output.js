@@ -1,10 +1,11 @@
 
+import { element } from '../utility/html.js';
+import { link } from '../ui/link.js';
+
 // -- Config -------------------------------------------------------------------
 
 /**
  * HTML escapes
- *
- * @type {object<string, string>}
  */
 const _htmlEscapes = {
     '"': '&quot;',
@@ -26,7 +27,7 @@ const _htmlEscapes = {
  */
 const _makeParams = (entries) => {
     let params = Object.entries(entries)
-        .filter(([ _, value ]) => Boolean(value))
+        .filter(([ , value ]) => Boolean(value))
         .map(([ key, value ]) => `${key}=${value}`)
         .join('&');
 
@@ -66,7 +67,7 @@ export const escapeHTML = (string) => string.replace(/[&<>"'\/]/g, (match) => _h
  *
  * @returns {string}
  */
-export const fail = (msg) => `<li class="fail">${escapeHTML(msg)}</li>`;
+export const fail = (msg) => element('li', escapeHTML(msg), { class: 'fail' });
 
 /**
  * Info
@@ -75,19 +76,7 @@ export const fail = (msg) => `<li class="fail">${escapeHTML(msg)}</li>`;
  *
  * @returns {string}
  */
-export const info = (msg) => `<li>${escapeHTML(msg)}</li>`;
-
-/**
- * Link
- *
- * @param {string} label
- * @param {string} href
- * @param {object} [options]
- *     @param {boolean} [options.active]
- *
- * @returns {string}
- */
-export const link = (label, href, { active } = {}) => `<a href="${href}"${active ? ' data-active' : ''}>${label}</a>`;
+export const info = (msg) => element('li', escapeHTML(msg));
 
 /**
  * Result log
@@ -118,10 +107,10 @@ export const log = (results, { verbose } = {}) => {
  * @returns {string}
  */
 export const nav = ({ scope, verbose }) => [
-    link('All', `./unit.html${_makeParams({ scope: null, verbose })}`, { active: !scope }),
-    link('Tests', `./unit.html${_makeParams({ scope: 'list', verbose })}`, { active: scope === 'list' }),
-    '<span role="presentation" data-separator></span>',
-    link('Verbose', `./unit.html${_makeParams({ scope, verbose: !verbose })}`, { active: verbose })
+    link('All', `./unit.html${_makeParams({ scope: null, verbose })}`, !scope ? { 'data-active': true } : null),
+    link('Tests', `./unit.html${_makeParams({ scope: 'list', verbose })}`, scope === 'list' ? { 'data-active': true } : null),
+    element('span', '', { role: 'presentation', 'data-separator': true }),
+    link('Verbose', `./unit.html${_makeParams({ scope, verbose: !verbose })}`, verbose ? { 'data-active': verbose } : null)
 ].join('');
 
 /**
@@ -156,7 +145,7 @@ export const resultMsg = (entries) => entries.reduce((accumulator, value, index)
  */
 export const scopeList = (scopes, { verbose } = {}) => {
     return scopes.map((scope) => {
-        return `<li>${link(scope, _makeParams({ scope, verbose }))}</li>`;
+        return element('li', link(scope, _makeParams({ scope, verbose })));
     }).join('');
 };
 
@@ -169,7 +158,8 @@ export const scopeList = (scopes, { verbose } = {}) => {
  */
 export const formatSummary = ({ assertions, failures, errors }) => {
     if (errors.length) {
-        return `<span class="fail">${errors.length} Error${errors.length === 1 ? '' : 's'} 😕</span>`;
+        let content = `${errors.length} Error${errors.length === 1 ? '' : 's'} 😕`;
+        return element('span', content, { class: 'fail' });
     }
 
     let out = [];
@@ -182,9 +172,9 @@ export const formatSummary = ({ assertions, failures, errors }) => {
 
     out.push(((count) => {
         switch (count) {
-            case 0:  return '<span class="ok">0 Failures, nice job 👏</span>';
-            case 1:  return '<span class="fail">1 Failure</span>';
-            default: return `<span class="fail">${count} Failures</span>`;
+            case 0:  return element('span', '0 Failures, nice job 👏', { class: 'ok' });
+            case 1:  return element('span', '1 Failure', { class: 'fail' });
+            default: return element('span', `${count} Failures`, { class: 'fail' });
         }
     })(failures));
 

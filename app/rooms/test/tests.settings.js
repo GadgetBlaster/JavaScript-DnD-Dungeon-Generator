@@ -13,7 +13,7 @@ import quantity, { quantities } from '../../attributes/quantity.js';
 import roomType, { list as roomTypes } from '../type.js';
 
 /**
- * @param {import('../../../unit/unit.js').Utility}
+ * @param {import('../../unit/unit.js').Utility}
  */
 export default ({ assert, describe, it }) => {
     describe('applyRoomRandomization()', () => {

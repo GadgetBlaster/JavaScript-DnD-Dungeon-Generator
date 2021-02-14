@@ -4,7 +4,6 @@ import {
     escapeHTML,
     fail,
     info,
-    link,
     log,
     nav,
     render,
@@ -60,22 +59,6 @@ export default ({ assert, describe, it }) => {
         describe('given a string', () => {
             it('should return the string wrapped in an `<li>`', () => {
                 assert(info('info')).equals('<li>info</li>');
-            });
-        });
-    });
-
-    describe('link()', () => {
-        describe('given `label` and `href`', () => {
-            it('should return an html link', () => {
-                assert(link('Mystic Waffle', 'https://www.mysticwaffle.com/'))
-                    .equals('<a href="https://www.mysticwaffle.com/">Mystic Waffle</a>');
-            });
-        });
-
-        describe('given at truthy `active` option', () => {
-            it('should return an html link with a `data-active` attribute', () => {
-                assert(link('Mystic Waffle', 'https://www.mysticwaffle.com/', { active: true }))
-                    .stringIncludes(' data-active');
             });
         });
     });
@@ -139,9 +122,13 @@ export default ({ assert, describe, it }) => {
                     assert(html).stringIncludes(url);
                 });
             });
+
+            it('should mark the "All" link as active', () => {
+                assert(html).stringIncludes('<a data-active="true" href="./unit.html">All</a>');
+            });
         });
 
-        describe('given an `scope` string option', () => {
+        describe('given a `scope` option', () => {
             const html = nav({ scope: 'fake' });
 
             it('should contain the urls', () => {
@@ -152,6 +139,17 @@ export default ({ assert, describe, it }) => {
                 ].forEach((url) => {
                     assert(html).stringIncludes(url);
                 });
+            });
+
+            it('should not mark the "All" link as active', () => {
+                assert(html).stringIncludes('<a href="./unit.html">All</a>');
+            });
+        });
+
+        describe('given a `scope` option of "list"', () => {
+            it('should mark the "Tests" link as active', () => {
+                assert(nav({ scope: 'list' }))
+                    .stringIncludes('<a data-active="true" href="./unit.html?scope=list">Tests</a>');
             });
         });
 
@@ -167,9 +165,14 @@ export default ({ assert, describe, it }) => {
                     assert(html).stringIncludes(url);
                 });
             });
+
+            it('should mark the "Verbose" link as active', () => {
+                assert(nav({ verbose: true }))
+                    .stringIncludes('<a data-active="true" href="./unit.html">Verbose</a>');
+            });
         });
 
-        describe('given an `scope` string and truthy `verbose` options', () => {
+        describe('given a `scope` and truthy `verbose` options', () => {
             const html = nav({ scope: 'fake', verbose: true });
 
             it('should contain the urls', () => {

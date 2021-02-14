@@ -2,7 +2,7 @@
 import { formatSummary } from '../tests.js';
 
 /**
- * @type {import('../../../unit/unit.js').Summary}
+ * @type {import('../../unit/unit.js').Summary}
  */
 const defaults = {
     assertions: 0,

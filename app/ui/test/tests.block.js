@@ -19,21 +19,15 @@ const blocks = {
 };
 
 /**
- * @param {import('../../../unit/unit.js').Utility}
+ * @param {import('../../unit/unit.js').Utility}
  */
 export default ({ assert, describe, it }) => {
     describe('blocks', () => {
         Object.entries(blocks).forEach(([ name, func ]) => {
             describe(`#${name}`, () => {
                 describe('when called', () => {
-                    let result = func('');
-
-                    it('should return a string', () => {
-                        assert(result).isString();
-                    });
-
-                    it('should return an html string with the correct the tag name', () => {
-                        assert(result).isHtmlTag(name);
+                    it('should return the correct html element string', () => {
+                        assert(func('')).isHtmlTag(name);
                     });
                 });
 

@@ -11,7 +11,7 @@ import {
 } from '../dimensions.js';
 
 /**
- * @param {import('../../../unit/unit.js').Utility}
+ * @param {import('../../unit/unit.js').Utility}
  */
 export default ({ assert, describe, it }) => {
     describe('`dimensionRanges`', () => {
