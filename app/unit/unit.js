@@ -59,8 +59,8 @@ import { resultMsg } from './output.js';
  * @typedef {Object} Unit
  *
  * @property {() => Summary} getSummary
- * @property {Function} runUnits
- * @property {onError} onError
+ * @property {(error: string) => undefined} onError
+ * @property {(path: string, tests: Function) => undefined} runUnits
  */
 
 /**

@@ -1,5 +1,5 @@
 
-import runSuite from '../run.js';
+import run from '../run.js';
 
 const noop = () => {};
 
@@ -29,7 +29,7 @@ export default ({ assert, describe, it }) => {
 
         const getSummary = () => 'success';
 
-        const results = runSuite({ ...mockUnit, runUnits, getSummary }, suite);
+        const results = run({ ...mockUnit, runUnits, getSummary }, suite);
 
         it('should call `runUnits` for each function in the suite', () => {
             const keys = Object.keys(suite);
@@ -55,7 +55,7 @@ export default ({ assert, describe, it }) => {
 
         const onError = (error) => { onErrorResult = error; };
 
-        runSuite({ ...mockUnit, onError });
+        run({ ...mockUnit, onError });
 
         it('should call `onError` returning a string containing `Invalid`', () => {
             assert(onErrorResult)
@@ -69,7 +69,7 @@ export default ({ assert, describe, it }) => {
 
         const onError = (error) => { onErrorResult = error; };
 
-        runSuite({ ...mockUnit, onError }, 'junk');
+        run({ ...mockUnit, onError }, 'junk');
 
         it('should call `onError` returning a string containing `Invalid`', () => {
             assert(onErrorResult)
@@ -83,7 +83,7 @@ export default ({ assert, describe, it }) => {
 
         const onError = (error) => { onErrorResult = error; };
 
-        runSuite({ ...mockUnit, onError }, {});
+        run({ ...mockUnit, onError }, {});
 
         it('should call `onError` and return a string containing `Empty`', () => {
             assert(onErrorResult)
@@ -93,18 +93,21 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('given a `scope`', () => {
-        let names = [];
+        let unitsRun = [];
 
         const scope = '/some/scope';
-        const suite = { [scope]: noop };
+        const suite = {
+            [scope]: noop,
+            '/some/other/scope': noop,
+        };
 
-        const runUnits = (name) => { names.push(name); };
+        const runUnits = (name) => { unitsRun.push(name); };
 
-        runSuite({ ...mockUnit, runUnits }, suite);
+        run({ ...mockUnit, runUnits }, suite, scope);
 
         it('should call `runUnits` once for the scoped function', () => {
-            assert(names.length).equals(1);
-            assert(names[0]).equals(scope);
+            assert(unitsRun.length).equals(1);
+            assert(unitsRun[0]).equals(scope);
         });
     });
 
@@ -115,7 +118,7 @@ export default ({ assert, describe, it }) => {
         const suite   = { '/some/scope': noop };
         const scope   = '/invalid/scope';
 
-        runSuite({ ...mockUnit, onError }, suite, scope);
+        run({ ...mockUnit, onError }, suite, scope);
 
         it('should call `onError` returning a string containing `Invalid` and `scope`', () => {
             assert(onErrorResult)
@@ -131,7 +134,7 @@ export default ({ assert, describe, it }) => {
         const onError = (error) => { onErrorResult = error; };
         const suite   = { '/some/scope': undefined };
 
-        runSuite({ ...mockUnit, onError }, suite);
+        run({ ...mockUnit, onError }, suite);
 
         it('should call `onError` returning a string containing `Invalid` and `scope`', () => {
             assert(onErrorResult)
@@ -148,7 +151,7 @@ export default ({ assert, describe, it }) => {
         const runUnits = (_, tests) => { tests(); };
         const suite    = { '/some/scope': () => { throw new TypeError('Whoops'); } };
 
-        runSuite({ ...mockUnit, onError, runUnits }, suite);
+        run({ ...mockUnit, onError, runUnits }, suite);
 
         it('should call `onError` returning a string containing an error', () => {
             assert(onErrorResult)
@@ -165,7 +168,7 @@ export default ({ assert, describe, it }) => {
         const runUnits = (_, tests) => { tests(); };
         const suite    = { '/some/scope': () => { throw 'Something is wrong'; } };
 
-        runSuite({ ...mockUnit, onError, runUnits }, suite);
+        run({ ...mockUnit, onError, runUnits }, suite);
 
         it('should call `onError` returning the error string', () => {
             assert(onErrorResult)

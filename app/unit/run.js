@@ -2,8 +2,8 @@
 /**
  * Run suite
  *
- * @param {Unit} unit
- * @param {object.<string, function>} suite
+ * @param {import('./unit').Unit} unit
+ * @param {{ [path: string], [tests: function] }} suite
  * @param {string} [scope]
  *
  * @returns {import('./unit').Summary}
