@@ -1,5 +1,6 @@
 
 import {
+    _generateFurnishings,
     _generateItemObjects,
     _getFurnishingObjects,
     _getItemCount,
@@ -13,7 +14,7 @@ import itemType from '../type.js';
 import quantity, { quantityMinimum, quantityMaximum } from '../../attributes/quantity.js';
 import rarity from '../../attributes/rarity.js';
 import roomTypes from '../../rooms/type.js';
-import { requiredRoomFurniture } from '../types/furnishing.js';
+import { requiredRoomFurniture, furnitureQuantity } from '../types/furnishing.js';
 
 /**
  * @param {import('../../unit/unit.js').Utility}
@@ -115,6 +116,29 @@ export default ({ assert, describe, it }) => {
                 assert(item.count).equals(3);
             });
         });
+    });
+
+    describe('_generateFurnishings()', () => {
+        describe('given `furnitureQuantity.none`', () => {
+            it('should return an empty array', () => {
+                let items = _generateFurnishings(roomTypes.smithy, furnitureQuantity.none);
+                assert(items).isArray();
+                assert(items.length).equals(0);
+            });
+        });
+
+        describe('given a `roomType` that requires furniture', () => {
+            let items = _generateFurnishings(roomTypes.smithy, furnitureQuantity.minimum)
+                .map(({ name }) => name);
+
+            it('should include all required furniture', () => {
+                requiredRoomFurniture[roomTypes.smithy].forEach(({ name }) => {
+                    assert(items.includes(name)).isTrue();
+                });
+            });
+        });
+
+        // TODO needs more coverage
     });
 
     describe('_getFurnishingObjects()', () => {
@@ -297,25 +321,6 @@ export default ({ assert, describe, it }) => {
                     });
                     assert(results).isArray();
                     assert(results.length).equals(0);
-                });
-            });
-        });
-
-        describe('given a furniture quantity', () => {
-            describe('when there is a room', () => {
-                it('should include any required room furniture', () => {
-                    let result = generateItems({
-                        ...settings,
-                        [knobs.roomFurnishing]: quantity.several,
-                        // `roomTypes.kitchen` satisfies both conditions for an
-                        // item with capacity and one without.
-                        [knobs.roomType]: roomTypes.kitchen,
-                        [knobs.roomCondition]: condition.average,
-                    }).join('');
-
-                    requiredRoomFurniture[roomTypes.kitchen].forEach(({ name: itemName }) => {
-                        assert(result).stringIncludes(itemName);
-                    });
                 });
             });
         });

@@ -1,6 +1,6 @@
 
 import { capacity } from './container.js';
-import { roll, rollArrayItem, createProbability } from '../../utility/roll.js';
+import { rollArrayItem, createProbability } from '../../utility/roll.js';
 import itemType from '../type.js';
 import rarity from '../../attributes/rarity.js';
 import roomType from '../../rooms/type.js';
@@ -53,6 +53,7 @@ Object.keys(furnishing).forEach((key) => {
     let label = item.name;
 
     if (item.variants) {
+        // TODO this should but randomized when fetched...
         let variant = rollArrayItem(item.variants);
         label += `, ${variant}`;
     }
@@ -63,6 +64,8 @@ Object.keys(furnishing).forEach((key) => {
         label,
     };
 });
+
+export default furnishing;
 
 let {
     alchemy,
@@ -95,7 +98,7 @@ let {
     workbench,
 } = furnishing;
 
-const byRoomType = {
+export const furnishingByRoomType = {
     [roomType.armory]    : [ anvil, bench, cabinet, forge, lamp, rack, tableLg, shelf, torch, workbench ],
     [roomType.atrium]    : [ bench, carpet, pillar ],
     [roomType.ballroom]  : [ bench, carpet, chair, fireplace, lamp, tableLg, tableSm ],
@@ -140,8 +143,9 @@ export const requiredRoomFurniture = {
     [roomType.throne]    : [ throne ],
 };
 
-const anyRoom = [ painting, tapestry ];
+export const anyRoomFurniture = [ painting, tapestry ];
 
+// TODO use standard quantities
 export const furnitureQuantity = {
     none     : 'none',
     minimum  : 'minimum',
@@ -160,32 +164,9 @@ export const probability = createProbability([
     [ 100, furnitureQuantity.furnished ],
 ]);
 
-const quantityRanges = {
+export const furnishingQuantityRanges = {
     [furnitureQuantity.minimum]  : 1,
     [furnitureQuantity.sparse]   : 2,
     [furnitureQuantity.average]  : 4,
     [furnitureQuantity.furnished]: 6,
-};
-
-export const generateFurnishings = (type, quantity) => {
-    let furniture = [];
-
-    if (quantity === furnitureQuantity.none) {
-        return furniture;
-    }
-
-    if (requiredRoomFurniture[type]) {
-        requiredRoomFurniture[type].forEach((item) => {
-            furniture.push(item);
-        });
-    }
-
-    let extraItems = roll(1, quantityRanges[quantity])
-    let itemSet    = byRoomType[type] ? anyRoom.concat(byRoomType[type]) : Object.values(furnishing);
-
-    for (let i = 0; i < extraItems; i++) {
-        furniture.push(rollArrayItem(itemSet));
-    }
-
-    return furniture;
 };

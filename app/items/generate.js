@@ -1,13 +1,19 @@
 
 import { article } from '../ui/block.js';
 import { capacity, itemSizeSpace, maxItemQuantitySmall } from './types/container.js';
-import { generateFurnishings } from './types/furnishing.js';
+import furnishing, {
+    anyRoomFurniture,
+    furnishingByRoomType,
+    furnishingQuantityRanges,
+    furnitureQuantity, // TODO rename?
+    requiredRoomFurniture,
+} from './types/furnishing.js';
 import { generateItem } from './item.js';
 import { getRarityDescription, getConditionDescription, getItemDescription } from './description.js';
 import { knobs } from '../knobs.js';
 import { list } from '../ui/list.js';
 import { random } from '../utility/random.js';
-import { roll } from '../utility/roll.js';
+import { roll, rollArrayItem } from '../utility/roll.js';
 import { em, paragraph, subtitle,  } from '../ui/typography.js';
 import condition from '../attributes/condition.js';
 import quantity, { getRange, probability as quantityProbability } from '../attributes/quantity.js';
@@ -15,7 +21,10 @@ import size from '../attributes/size.js';
 
 // TODO incomplete test coverage
 
-/** @typedef {import('../typedefs.js').Settings} */
+/**
+ * @typedef {import('../typedefs.js').Settings} Settings
+ * @typedef {import('../typedefs.js').Item} Item
+ */
 
 // -- Config -------------------------------------------------------------------
 
@@ -74,6 +83,40 @@ export const _generateItemObjects = (count, settings) => [ ...Array(count) ].red
 
     return obj; // TODO rename to `items`
 }, {});
+
+/**
+ * Generates furnishings by room type.
+ *
+ * @param {string} roomType
+ * @param {string} quantity
+ *
+ * @returns {Item[]}
+ */
+export const _generateFurnishings = (roomType, quantity) => {
+    let furniture = [];
+
+    if (quantity === furnitureQuantity.none) {
+        return furniture;
+    }
+
+    if (requiredRoomFurniture[roomType]) {
+        requiredRoomFurniture[roomType].forEach((item) => {
+            furniture.push(item);
+        });
+    }
+
+    let extraItems = roll(1, furnishingQuantityRanges[quantity]);
+    let itemSet    = furnishingByRoomType[roomType]
+        ? anyRoomFurniture.concat(furnishingByRoomType[roomType])
+        : Object.values(furnishing);
+
+    for (let i = 0; i < extraItems; i++) {
+        furniture.push(rollArrayItem(itemSet));
+    }
+
+    return furniture;
+};
+
 
 /**
  * Get furnishing objects
@@ -166,7 +209,7 @@ export const generateItems = (settings) => {
     let smallItems = [];
     let remaining  = [];
 
-    let furnishings   = inRoom ? generateFurnishings(roomType, furnitureQuantity) : [];
+    let furnishings   = inRoom ? _generateFurnishings(roomType, furnitureQuantity) : [];
     let furnishingObj = _getFurnishingObjects(furnishings, roomCondition);
 
     let total = count + furnishings.length;
