@@ -143,12 +143,7 @@ export default () => {
      * @throws
      */
     const checkScope = (nextScope, allowed) => {
-        let currentEntry = current[current.length -1];
-
-        if (!currentEntry) {
-            throw new TypeError('No test entries');
-        }
-
+        let currentEntry = current[current.length - 1];
         let currentScope = currentEntry.scope;
 
         if (!allowed.includes(currentScope)) {
