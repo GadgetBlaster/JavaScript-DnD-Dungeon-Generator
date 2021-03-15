@@ -23,7 +23,7 @@ const maxVegetation = 3;
  *
  * @type {object.<string, string>}
  */
-const vegetation = {
+export const vegetation = {
     ferns    : 'ferns',
     flowers  : 'flowers',
     grass    : 'grass',
@@ -33,56 +33,87 @@ const vegetation = {
     vines    : 'vines',
 };
 
+// -- Private Functions --------------------------------------------------------
+
+/**
+ * Get vegetation description
+ *
+ * @param {string} type
+ * @param {object} [options]
+ *     @param {boolean} [options.variation = *]
+ *
+ * @returns {string}
+ */
+export const _getVegetationDescription = (type, { variation = Boolean(roll()) } = {}) => {
+    switch (type) {
+        case vegetation.ferns:
+        case vegetation.flowers: {
+            let description = variation
+                ? 'are somehow growing here'
+                : 'are growing from cracks in the walls';
+
+            return `${type} ${description}`;
+        }
+
+        case vegetation.grass:
+            return variation
+                ? 'grass pokes through cracks in the floor'
+                : 'patches of grass decorate the ground';
+
+        case vegetation.moss:
+            return variation
+                ? 'moss covers the entire room'
+                : 'damp moss clings to the walls';
+
+        case vegetation.mushrooms:
+            return variation
+                ? 'glowing mushrooms illuminate your surroundings'
+                : 'strange mushrooms are scattered about';
+
+        case vegetation.roots:
+            return variation
+                ? 'roots push through the walls and ceiling'
+                : 'roots disrupt the ground';
+
+        case vegetation.vines:
+            return `vines ${variation ? 'cover' : 'cling to'} the walls`;
+
+        default:
+            throw new TypeError('Invalid vegetation type');
+    }
+};
+
 // -- Public Functions ---------------------------------------------------------
 
 /**
  * Generate vegetation description
  *
- * TODO inject randomization.
+ * TODO extract noop to caller
+ * TODO rename to getRoomVegetation()
+ * TODO hook up room settings
+ *
+ * @param {import('./settings.js').RoomSettings} settings
+ * @param {object} [options]
+ *     @param {number} [options.count = *]
  *
  * @returns {string}
  */
-export const getVegetationDescription = () => {
+export const getVegetationDescription = (settings, { count = roll(1, maxVegetation) } = {}) => {
     if (!rollPercentile(vegetationChance)) {
         return;
     }
 
-    let vegetationCount = roll(1, maxVegetation);
+    if (count < 1 || count > maxVegetation) {
+        throw new TypeError('Invalid vegetation count');
+    }
+
     let types = new Set();
 
-    for (let i = 0; i < vegetationCount; i++) {
+    for (let i = 0; i < count; i++) {
         types.add(rollArrayItem(Object.keys(vegetation)));
     }
 
-    let roomVegetation = [ ...types ].map((type) => {
-        switch (type) {
-            case vegetation.ferns:
-            case vegetation.flowers:
-                return `${type} are somehow growing here`;
-
-            case vegetation.grass:
-                return 'grass pokes through the floor';
-
-            case vegetation.moss:
-                return 'moss covers the entire room';
-
-            case vegetation.mushrooms:
-                if (roll()) {
-                    return 'glowing mushrooms illuminate your surroundings'
-                }
-
-                return 'strange mushrooms are scattered about';
-
-            case vegetation.roots:
-                return 'roots push through the walls and ceiling';
-
-            case vegetation.vines:
-                return `vines ${roll() ? 'cover' : 'cling to '} the walls`;
-
-            default:
-                throw new TypeError('Invalid vegetation type');
-        }
-    });
+    let roomVegetation = [ ...types ].map((type) => _getVegetationDescription(type));
 
     return capitalize(listSentence(roomVegetation));
 };

@@ -25,7 +25,13 @@ export default ({ assert, describe, it }) => {
         Object.values(feature).forEach((roomFeature) => {
             describe(`given a room feature of \`${roomFeature}\``, () => {
                 it('should return a string', () => {
-                    assert(_getFeatureDesc(roomFeature)).isString();
+                    assert(_getFeatureDesc(roomFeature, { variation: false })).isString();
+                });
+            });
+
+            describe('variations', () => {
+                it('should return a string', () => {
+                    assert(_getFeatureDesc(roomFeature, { variation: true })).isString();
                 });
             });
         });
@@ -39,7 +45,7 @@ export default ({ assert, describe, it }) => {
 
     describe('_getFeatureDesc()', () => {
         describe('given a room type of `roomType.hallway`', () => {
-            it('should return an empy array', () => {
+            it('should return an empty array', () => {
                 assert(getRoomFeatures({ [knobs.roomType]: roomType.hallway, })).equalsArray([]);
             });
         });
