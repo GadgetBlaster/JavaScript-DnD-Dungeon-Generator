@@ -16,6 +16,7 @@
         "no-undef": [ "error" ],
         "no-unused-vars": [ "error" ],
         "quotes": [ "warn", "single",  { "allowTemplateLiterals": true, "avoidEscape": true } ],
-        "semi": [ "warn", "always" ]
+        "semi": [ "warn", "always" ],
+        "no-case-declarations": [ "warn" ]
     }
 }
