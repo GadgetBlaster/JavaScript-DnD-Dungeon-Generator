@@ -1,29 +1,9 @@
 
-import run from './run.js';
+import { render } from './render.js';
+import { useState } from './state.js';
 import suite from './suite.js';
-import unit from './unit.js';
-
-import {
-    dot,
-    log,
-    nav,
-    render,
-    scopeList,
-    formatSummary,
-} from './output.js';
-
-import { plural } from '../utility/tools.js';
-
-// TODO break out into testable files.
 
 // -- Config -------------------------------------------------------------------
-
-/**
- * Animation chunk division
- *
- * @type {number}
- */
-const animationChunkDivision = 200;
 
 /**
  * URL params
@@ -46,107 +26,14 @@ const scope = urlParams.get('scope');
  */
 const verbose = Boolean(urlParams.get('verbose'));
 
-const dotsContainer    = document.getElementById('dots');
-const infoContainer    = document.getElementById('info');
-const logContainer     = document.getElementById('log');
-const navContainer     = document.getElementById('nav');
-const statusContainer  = document.getElementById('status');
-const summaryContainer = document.getElementById('summary');
-
-// -- Private Functions --------------------------------------------------------
-
-/**
- * Delay
- *
- * @param {number} [ms=0]
- *
- * @returns {Promise}
- */
-const delay = (ms = 0) => new Promise((resolve) => setTimeout(resolve, ms));
-
-/**
- * Append
- *
- * @param {Result} result
- *
- * @returns {Element}
- */
-const drawDot = (result) => dotsContainer.appendChild(dot(result));
-
-/**
- * Animate dots
- *
- * @param {Result[]} results
- *
- * @returns {Promise}
- */
-const animateDots = (results) => new Promise(async (resolve) => {
-    let chunkSize = Math.ceil(results.length / animationChunkDivision);
-    let current   = 0;
-
-    for (let i = 0; i < Math.ceil(results.length / chunkSize); i++) {
-        await delay();
-
-        for (let x = 0; x < chunkSize; x++) {
-            if (!results[current]) {
-                break;
-            }
-
-            drawDot(results[current]);
-            current++;
-        }
-    }
-
-    resolve();
-});
-
-/**
- * On complete
- *
- * @param {import('./unit.js').Summary}
- */
-const onComplete = async (summary) => {
-    let { errors, failures, results } = summary;
-
-    if (failures) {
-        console.error(`Encountered ${failures} ${plural(failures, 'ogre')}!`);
-    }
-
-    if (errors.length) {
-        console.error(`Encountered ${errors.length} ${plural(errors.length, 'dragon')}!`);
-    }
-
-    if (!failures && !errors.length) {
-        console.log('Zero mischievous kobolds found 👏');
-    }
-
-    await animateDots(results);
-
-    render(statusContainer, 'Complete');
-    render(summaryContainer, formatSummary(summary));
-    render(logContainer, log(results, { verbose }));
+const elements = {
+    dotsContainer   : document.getElementById('dots'),
+    infoContainer   : document.getElementById('info'),
+    listContainer   : document.getElementById('list'),
+    navContainer    : document.getElementById('nav'),
+    headerContainer : document.getElementById('header'),
 };
-
-render(navContainer, nav({
-    scope,
-    verbose,
-}));
 
 // -- Initialization -----------------------------------------------------------
 
-(() => {
-    const list = Object.keys(suite);
-
-    if (scope === 'list') {
-        render(statusContainer, 'Tests');
-        render(logContainer, scopeList(list, { verbose }));
-        return;
-    }
-
-    let testScope = list.includes(scope) ? scope : undefined;
-
-    render(statusContainer, 'Running tests');
-    render(infoContainer, `Tests: ${testScope ? scope : 'All'}`);
-
-    onComplete(run(unit(), suite, testScope));
-})();
+render(elements, suite, useState(), { scope, verbose });

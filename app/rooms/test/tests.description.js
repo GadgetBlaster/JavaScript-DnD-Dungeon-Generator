@@ -30,7 +30,7 @@ import roomType, { appendRoomTypes } from '../../rooms/type.js';
 import size from '../../attributes/size.js';
 
 /**
- * @param {import('../../unit/unit.js').Utility}
+ * @param {import('../../unit/state.js').Utility}
  */
 export default ({ assert, describe, it }) => {
     describe('_getContentsDescription()', () => {

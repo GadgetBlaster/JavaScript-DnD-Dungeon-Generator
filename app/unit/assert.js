@@ -36,45 +36,45 @@ const emptyElements = [
 
 // -- Public Functions ---------------------------------------------------------
 
-/** @type {(actual: *, expected: *) => Result} equals */
-export const equals = (actual, expected) => {
-    let isOk = expected === actual;
-    let msg  = `expected "${actual}" to equal "${expected}"`;
+/** @type {(value: *, expected: *) => Result} equals */
+export const equals = (value, expected) => {
+    let isOk = expected === value;
+    let msg  = `expected "${value}" to equal "${expected}"`;
 
     return { msg, isOk };
 };
 
-/** @type {(actual: *, expected: *) => Result} equalsArray */
-export const equalsArray = (actual, expected) => {
-    let checkType = isArray(actual);
+/** @type {(value: *, expected: *[]) => Result} equalsArray */
+export const equalsArray = (value, expected) => {
+    let checkType = isArray(value);
 
     if (!checkType.isOk) {
         return checkType;
     }
 
-    if (actual.length !== expected.length) {
+    if (value.length !== expected.length) {
         return {
-            msg: `expected array length of ${actual.length} to be ${expected.length}`,
+            msg: `expected array length of ${value.length} to be ${expected.length}`,
             isOk: false,
         };
     }
 
-    let msg  = `expected [ ${actual.join(', ')} ] to equal [ ${expected.join(', ')} ]`;
-    let isOk = actual.filter((a, i) => a === expected[i]).length === actual.length;
+    let msg  = `expected [ ${value.join(', ')} ] to equal [ ${expected.join(', ')} ]`;
+    let isOk = value.filter((a, i) => a === expected[i]).length === value.length;
 
     return { msg, isOk };
 };
 
-/** @type {(actual: *, expected: *) => Result} equalsObject */
-export const equalsObject = (actual, expected) => {
-    let checkType = isObject(actual);
+/** @type {(value: *, expected: object) => Result} equalsObject */
+export const equalsObject = (value, expected) => {
+    let checkType = isObject(value);
 
     if (!checkType.isOk) {
         return checkType;
     }
 
-    let isOk = JSON.stringify(actual) === JSON.stringify(expected);
-    let msg  = `expected object\n\n${JSON.stringify(actual, null, 1)}\n\nto equal\n\n${JSON.stringify(expected, null, 1)}`;
+    let isOk = JSON.stringify(value) === JSON.stringify(expected);
+    let msg  = `expected object\n\n${JSON.stringify(value, null, 1)}\n\nto equal\n\n${JSON.stringify(expected, null, 1)}`;
 
     return { msg, isOk };
 };
@@ -175,9 +175,9 @@ export const isUndefined = (value) => {
     return { msg, isOk };
 };
 
-/** @type {(actual: *, includes: string) => Result} stringIncludes */
-export const stringIncludes = (actual, includes) => {
-    let checkType = isString(actual);
+/** @type {(value: *, includes: string) => Result} stringIncludes */
+export const stringIncludes = (value, includes) => {
+    let checkType = isString(value);
 
     if (!checkType.isOk) {
         return checkType;
@@ -187,26 +187,26 @@ export const stringIncludes = (actual, includes) => {
         throw new TypeError('Invalid empty string expected in `stringIncludes`');
     }
 
-    let isOk = actual.includes(includes);
-    let msg  = `expected "${actual}" to include "${includes}"`;
+    let isOk = value.includes(includes);
+    let msg  = `expected "${value}" to include "${includes}"`;
 
     return { msg, isOk };
 };
 
-/** @type {(actual: *, excludes: *) => Result} stringExcludes */
-export const stringExcludes = (actual, excludes) => {
-    let checkType = isString(actual);
+/** @type {(value: *, excludes: string) => Result} stringExcludes */
+export const stringExcludes = (value, excludes) => {
+    let checkType = isString(value);
 
     if (!checkType.isOk) {
         return checkType;
     }
 
-    let { isOk, msg } = stringIncludes(actual, excludes);
+    let { isOk, msg } = stringIncludes(value, excludes);
 
     return { msg, isOk: !isOk };
 };
 
-/** @type {(function: *, expectedErrorMsg: string) => Result} throws */
+/** @type {(func: *, expectedErrorMsg: string) => Result} throws */
 export const throws = (func, expectedErrorMsg) => {
     let checkFunc = isFunction(func);
 

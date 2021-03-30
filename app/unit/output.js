@@ -1,6 +1,7 @@
 
 import { element } from '../utility/html.js';
 import { link } from '../ui/link.js';
+import { plural } from '../utility/tools.js';
 
 // -- Config -------------------------------------------------------------------
 
@@ -15,6 +16,13 @@ const _htmlEscapes = {
     '>': '&gt;',
     "'": '&#x27;',
 };
+
+/**
+ * URL to the unit test interface.
+ *
+ * @type {string}
+ */
+const unitUrl = './unit.html';
 
 // -- Private Functions --------------------------------------------------------
 
@@ -37,22 +45,7 @@ const _makeParams = (entries) => {
 // -- Public Functions ---------------------------------------------------------
 
 /**
- * Dot
- *
- * @param {Result} result
- *
- * @returns {Element}
- */
-export const dot = ({ isOk }) => {
-    let el = document.createElement('span');
-
-    el.className = `dot dot-${isOk ? 'ok' : 'fail'}`;
-
-    return el;
-};
-
-/**
- * Escape HTML
+ * Escape HTML for output as text content.
  *
  * @param {string} string
  *
@@ -150,33 +143,94 @@ export const scopeList = (scopes, { verbose } = {}) => {
 };
 
 /**
- * Format summary
+ * Get test summary parts.
  *
- * @param {Summary} summary
+ * @param {import('./state.js').Summary} summary
+ *
+ * @returns {{
+ *     assertionsText: string,
+ *     checkedForText: string,
+ *     issuesText: string?,
+ * }}
+ */
+export const _getSummaryParts = (summary = {}) => {
+    let { assertions, errors, failures } = summary;
+
+    let checkedForText = `Checked for ${assertions}`;
+    let assertionsText = `mischievous ${plural(assertions, 'kobold')}`;
+
+    if (failures || errors.length) {
+        let failureText = ` ${failures} ${plural(failures, 'ogre')}`;
+        let errorText   = ` ${errors.length} ${plural(errors.length, 'dragon')}`;
+
+        let issuesText = 'Encountered';
+        issuesText += failures ? failureText : '';
+        issuesText += failures && errors.length ? ' and' : '';
+        issuesText += errors.length ? errorText : '';
+        issuesText += errors.length ? '!' : '.';
+
+        return {
+            assertionsText,
+            checkedForText,
+            issuesText,
+        };
+    }
+
+    return {
+        assertionsText,
+        checkedForText,
+    };
+};
+
+/**
+ * Get test summary link.
+ *
+ * @param {import('./state.js').Summary} summary
  *
  * @returns {string}
  */
-export const formatSummary = ({ assertions, failures, errors }) => {
-    if (errors.length) {
-        let content = `${errors.length} Error${errors.length === 1 ? '' : 's'} 😕`;
-        return element('span', content, { class: 'fail' });
+export function getSummaryLink(summary) {
+    let {
+        assertionsText,
+        checkedForText,
+        issuesText,
+    } = _getSummaryParts(summary);
+
+    if (issuesText) {
+        let assertionContent = element('p', `${checkedForText} ${assertionsText}.`);
+        let encounterContent = element('p', link(issuesText, unitUrl, {
+            'data-error': true,
+        }));
+
+        return assertionContent + encounterContent;
     }
 
-    let out = [];
+    return element('p', `${checkedForText} ${link(assertionsText, unitUrl)}.`);
+}
 
-    out.push(`${assertions} Assertion${assertions === 1 ? '' : 's'}`);
+/**
+ * Get test summary.
+ *
+ * @param {import('./state.js').Summary} summary
+ *
+ * @returns {string}
+ */
+export function getSummary(summary, { delay = 0 } = {}) {
+    let {
+        assertionsText,
+        checkedForText,
+        issuesText,
+    } = _getSummaryParts(summary);
 
-    if (!assertions) {
-        return out.join(', ');
+    let content = `${checkedForText} ${assertionsText}. `;
+
+    if (issuesText) {
+        return element('p', content + element('span', `${issuesText} 😕`, { class: 'fail' }));
     }
 
-    out.push(((count) => {
-        switch (count) {
-            case 0:  return element('span', '0 Failures, nice job 👏', { class: 'ok' });
-            case 1:  return element('span', '1 Failure', { class: 'fail' });
-            default: return element('span', `${count} Failures`, { class: 'fail' });
-        }
-    })(failures));
-
-    return out.join(', ');
-};
+    content += element('span', '0 Encounters, nice job 👏', { class: 'ok' });
+    return element('p', content, {
+        class: 'delay',
+        style: `animation-delay: ${delay}ms`,
+    });
+}

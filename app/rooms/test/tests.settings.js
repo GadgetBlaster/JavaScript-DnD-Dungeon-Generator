@@ -15,7 +15,7 @@ import quantity, { quantities } from '../../attributes/quantity.js';
 import roomType, { list as roomTypes } from '../type.js';
 
 /**
- * @param {import('../../unit/unit.js').Utility}
+ * @param {import('../../unit/state.js').Utility}
  */
 export default ({ assert, describe, it }) => {
     describe('_rollRoomType()', () => {
@@ -42,7 +42,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given a uniformity condition of 0%', () => {
             it('should return null', () => {
-                assert(_rollUniformity(0)).isNull();
+                assert(_rollUniformity(0, { roll: () => 'fake result' })).isNull();
             });
         });
     });

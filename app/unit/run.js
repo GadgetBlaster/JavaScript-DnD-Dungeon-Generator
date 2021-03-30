@@ -2,11 +2,11 @@
 /**
  * Run suite
  *
- * @param {import('./unit').Unit} unit
+ * @param {import('./state').Unit} unit
  * @param {{ [path: string], [tests: function] }} suite
  * @param {string} [scope]
  *
- * @returns {import('./unit').Summary}
+ * @returns {import('./state').Summary}
  */
 export default ({ getSummary, onError, runUnits }, suite, scope) => {
     if (!suite || typeof suite !== 'object') {

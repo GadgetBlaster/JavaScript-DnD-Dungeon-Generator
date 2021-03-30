@@ -2,7 +2,7 @@
 import { button, infoLabel } from '../button.js';
 
 /**
- * @param {import('../../unit/unit.js').Utility}
+ * @param {import('../../unit/state.js').Utility}
  */
 export default ({ assert, describe, it }) => {
     describe('button()', () => {

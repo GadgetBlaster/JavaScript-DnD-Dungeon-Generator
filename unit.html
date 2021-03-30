@@ -10,6 +10,7 @@
             .ok { color: #14c80f; }
             .dot-ok { background: #14c80f; }
             .dot-fail { background: #db0f0f; }
+
             .dot {
                 width: 6px;
                 height: 6px;
@@ -17,10 +18,22 @@
                 display: inline-block;
                 margin: 2px;
             }
-            .log {
+
+            .delay {
+                visibility: hidden;
+                animation: delay ease 0ms;
+                animation-fill-mode: forwards;
+            }
+
+            .list {
                 white-space: pre-wrap;
                 font-size: 15px;
                 font-family: monospace;
+            }
+
+            @keyframes delay {
+                0% { visibility: hidden; }
+                100% { visibility: visible; }
             }
         </style>
     </head>
@@ -33,11 +46,10 @@
 
         <main>
             <section>
-                <h1 id="status"></h1>
+                <h1 id="header"></h1>
                 <p id="info"></p>
-                <p id="dots"></p>
-                <p id="summary"></p>
-                <ul id="log" class="log"></ul>
+                <div id="dots"></div>
+                <ul id="list" class="list"></ul>
             </section>
         </main>
 

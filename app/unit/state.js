@@ -5,7 +5,7 @@ import { resultMsg } from './output.js';
 /**
  * Summary
  *
- * @typedef {Object} Summary
+ * @typedef {object} Summary
  *
  * @property {number} assertions
  * @property {number} failures
@@ -14,49 +14,49 @@ import { resultMsg } from './output.js';
  */
 
 /**
- * Expectation
+ * Assertion
  *
- * @typedef {(expected:*) => Assertions} Expectation
+ * @typedef {(value: *, expected?: *) => Result} Assertion
  */
 
 /**
  * Assertions
  *
- * @typedef {Object} Assertions
+ * @typedef {object} Assertions
  *
- * @property {Expectation} equals
- * @property {Expectation} equalsArray
- * @property {Expectation} equalsObject
- * @property {Expectation} isArray
- * @property {Expectation} isBoolean
- * @property {Expectation} isFalse
- * @property {Expectation} isFunction
- * @property {Expectation} isHtmlTag
- * @property {Expectation} isNull
- * @property {Expectation} isNumber
- * @property {Expectation} isObject
- * @property {Expectation} isString
- * @property {Expectation} isTrue
- * @property {Expectation} isUndefined
- * @property {Expectation} stringExcludes
- * @property {Expectation} stringIncludes
- * @property {Expectation} throws
+ * @property {Assertion} equals
+ * @property {Assertion} equalsArray
+ * @property {Assertion} equalsObject
+ * @property {Assertion} isArray
+ * @property {Assertion} isBoolean
+ * @property {Assertion} isFalse
+ * @property {Assertion} isFunction
+ * @property {Assertion} isHtmlTag
+ * @property {Assertion} isNull
+ * @property {Assertion} isNumber
+ * @property {Assertion} isObject
+ * @property {Assertion} isString
+ * @property {Assertion} isTrue
+ * @property {Assertion} isUndefined
+ * @property {Assertion} stringExcludes
+ * @property {Assertion} stringIncludes
+ * @property {Assertion} throws
  */
 
 /**
  * Utility
  *
- * @typedef {Object} Utility
+ * @typedef {object} Utility
  *
- * @property {(value:*) => Assertions} utility.assert
- * @property {Function} utility.describe
- * @property {Function} utility.it
+ * @property {(value:*) => Assertions} assert
+ * @property {Function} describe
+ * @property {Function} it
  */
 
 /**
- * Unit
+ * State
  *
- * @typedef {Object} Unit
+ * @typedef {object} State
  *
  * @property {() => Summary} getSummary
  * @property {(error: string) => undefined} onError
@@ -66,7 +66,7 @@ import { resultMsg } from './output.js';
 /**
  * Entry
  *
- * @typedef {Object} Entry
+ * @typedef {object} Entry
  *
  * @property {string} msg
  * @property {boolean} isOk
@@ -83,7 +83,7 @@ import { resultMsg } from './output.js';
 /**
  * Scope
  *
- * @type {Object<string, string>}
+ * @type {object.<string, string>}
  */
 const scope = {
     assert  : 'assert()',
@@ -95,9 +95,12 @@ const scope = {
 // -- Public Functions ---------------------------------------------------------
 
 /**
- * @type {Unit}
+ * Creates a closure containing unit test state: assertions, errors, and
+ * failures. Returns an object of unit test operations.
+ *
+ * @type {State}
  */
-export default () => {
+export function useState() {
 
     /**
      * Assertions
@@ -242,7 +245,7 @@ export default () => {
      * Run units
      *
      * @param {string} path
-     * @param {Function} tests
+     * @param {function} tests
      */
     const runUnits = (path, tests) => {
         current.push({ scope: scope.suite, msg: path });

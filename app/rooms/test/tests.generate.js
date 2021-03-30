@@ -10,7 +10,7 @@ import rarity from '../../attributes/rarity.js';
 import condition from '../../attributes/condition.js';
 
 /**
- * @param {import('../../unit/unit.js').Utility}
+ * @param {import('../../unit/state.js').Utility}
  */
 export default ({ assert, describe, it }) => {
     describe('generateRooms()', () => {

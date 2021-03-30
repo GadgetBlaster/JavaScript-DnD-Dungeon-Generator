@@ -1,12 +1,12 @@
 
 import assert from './test/tests.assert.js';
 import output from './test/tests.output.js';
+import render from './test/tests.render.js';
 import run from './test/tests.run.js';
-import unit from './test/tests.unit.js';
+import state from './test/tests.state.js';
 
 import html from '../utility/test/tests.html.js';
 import roll from '../utility/test/tests.roll.js';
-import tests from '../utility/test/tests.tests.js';
 import tools from '../utility/test/tests.tools.js';
 
 import action from '../ui/test/tests.action.js';
@@ -36,12 +36,12 @@ import generateItems from '../items/test/tests.generate.js';
 export default {
     '/app/unit/test/tests.assert.js': assert,
     '/app/unit/test/tests.output.js': output,
+    '/app/unit/test/tests.render.js': render,
     '/app/unit/test/tests.run.js'   : run,
-    '/app/unit/test/tests.unit.js'  : unit,
+    '/app/unit/test/tests.state.js' : state,
 
     '/app/utility/test/tests.html.js' : html,
     '/app/utility/test/tests.roll.js' : roll,
-    '/app/utility/test/tests.tests.js': tests,
     '/app/utility/test/tests.tools.js': tools,
 
     '/app/ui/test/tests.action.js'    : action,

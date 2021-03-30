@@ -10,7 +10,7 @@ const mockUnit = {
 };
 
 /**
- * @param {import('../unit.js').Utility}
+ * @param {import('../state.js').Utility}
  */
 export default ({ assert, describe, it }) => {
     describe('given a suite of test functions', () => {

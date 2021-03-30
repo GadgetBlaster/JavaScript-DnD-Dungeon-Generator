@@ -122,7 +122,7 @@ let nonStringTypes = (() => excludingType('string'))();
 let nonUndefinedTypes = (() => excludingType('undefined'))();
 
 /**
- * @param {import('../unit.js').Utility}
+ * @param {import('../state.js').Utility}
  */
 export default ({ assert, describe, it }) => {
     assertions.forEach((func) => {
