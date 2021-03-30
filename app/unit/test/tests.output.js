@@ -6,7 +6,7 @@ import {
     getSummary,
     getSummaryLink,
     info,
-    log,
+    getLog,
     nav,
     render,
     resultMsg,
@@ -43,10 +43,10 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('log()', () => {
+    describe('getLog()', () => {
         describe('given no results', () => {
             it('should return an empty string', () => {
-                assert(log([])).equals('');
+                assert(getLog([])).equals('');
             });
         });
 
@@ -57,13 +57,13 @@ export default ({ assert, describe, it }) => {
             ];
 
             it('should return only the failure', () => {
-                assert(log(results)).equals(fail('failure'));
+                assert(getLog(results)).equals(fail('failure'));
             });
 
             describe('given the verbose flag', () => {
                 it('should return the success and the failure', () => {
                     const expect = info('success') + fail('failure');
-                    assert(log(results, { verbose: true })).equals(expect);
+                    assert(getLog(results, { verbose: true })).equals(expect);
                 });
             });
         });
@@ -77,13 +77,13 @@ export default ({ assert, describe, it }) => {
             ];
 
             it('should return only the two failures', () => {
-                assert(log(results)).equals(fail('nope') + fail('no way'));
+                assert(getLog(results)).equals(fail('nope') + fail('no way'));
             });
 
             describe('given the verbose flag', () => {
                 it('should return the two success then the two failures', () => {
                     const expect = info('yep') + info('you bet') + fail('nope') + fail('no way');
-                    assert(log(results, { verbose: true })).equals(expect);
+                    assert(getLog(results, { verbose: true })).equals(expect);
                 });
             });
         });

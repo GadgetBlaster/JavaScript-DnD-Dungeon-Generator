@@ -26,14 +26,20 @@ const scope = urlParams.get('scope');
  */
 const verbose = Boolean(urlParams.get('verbose'));
 
-const elements = {
-    dotsContainer   : document.getElementById('dots'),
-    infoContainer   : document.getElementById('info'),
-    listContainer   : document.getElementById('list'),
-    navContainer    : document.getElementById('nav'),
-    headerContainer : document.getElementById('header'),
-};
+/**
+ * Container unit test output is rendered to.
+ *
+ * @type {Element}
+ */
+ const contentContainer = document.getElementById('content');
+
+ /**
+ * Container unit test navigation is rendered to.
+ *
+ * @type {Element}
+ */
+ const navContainer = document.getElementById('nav');
 
 // -- Initialization -----------------------------------------------------------
 
-render(elements, suite, useState(), { scope, verbose });
+render({ contentContainer, navContainer }, suite, useState(), { scope, verbose });

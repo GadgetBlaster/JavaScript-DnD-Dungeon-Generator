@@ -72,7 +72,7 @@ export const fail = (msg) => element('li', escapeHTML(msg), { class: 'fail' });
 export const info = (msg) => element('li', escapeHTML(msg));
 
 /**
- * Result log
+ * Get result log
  *
  * @param {Result[]} results
  * @param {object} [options]
@@ -80,7 +80,7 @@ export const info = (msg) => element('li', escapeHTML(msg));
  *
  * @returns {string}
  */
-export const log = (results, { verbose } = {}) => {
+export const getLog = (results, { verbose } = {}) => {
     return results.map(({ isOk, msg }) => {
         if (verbose && isOk) {
             return info(msg);
@@ -215,7 +215,7 @@ export function getSummaryLink(summary) {
  *
  * @returns {string}
  */
-export function getSummary(summary, { delay = 0 } = {}) {
+export function getSummary(summary) {
     let {
         assertionsText,
         checkedForText,
@@ -225,12 +225,8 @@ export function getSummary(summary, { delay = 0 } = {}) {
     let content = `${checkedForText} ${assertionsText}. `;
 
     if (issuesText) {
-        return element('p', content + element('span', `${issuesText} 😕`, { class: 'fail' }));
+        return content + element('span', `${issuesText} 😕`, { class: 'fail' });
     }
 
-    content += element('span', '0 Encounters, nice job 👏', { class: 'ok' });
-    return element('p', content, {
-        class: 'delay',
-        style: `animation-delay: ${delay}ms`,
-    });
+    return content + element('span', '0 Encounters, nice job 👏', { class: 'ok' });
 }

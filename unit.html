@@ -19,37 +19,43 @@
                 margin: 2px;
             }
 
-            .delay {
+            [data-animate="show"] {
                 visibility: hidden;
-                animation: delay ease 0ms;
+                animation: animate-show ease 0ms;
                 animation-fill-mode: forwards;
             }
 
-            .list {
+            [data-animate="hide"] {
+                animation: animate-hide ease 0ms;
+                animation-fill-mode: forwards;
+            }
+
+            ul {
                 white-space: pre-wrap;
                 font-size: 15px;
                 font-family: monospace;
             }
 
-            @keyframes delay {
+            @keyframes animate-show {
                 0% { visibility: hidden; }
                 100% { visibility: visible; }
+            }
+
+            @keyframes animate-hide {
+                100% { display: none; }
             }
         </style>
     </head>
     <body>
 
-        <header data-no-print>
+        <header>
             <a href="./">D&D Dungeon Generator: Unit Tests</a>
             <nav id="nav"></nav>
         </header>
 
         <main>
-            <section>
-                <h1 id="header"></h1>
-                <p id="info"></p>
-                <div id="dots"></div>
-                <ul id="list" class="list"></ul>
+            <section id="content">
+                <h1>Mumbling incantations</h1>
             </section>
         </main>
 
