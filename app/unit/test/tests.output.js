@@ -1,43 +1,27 @@
 
 import {
+    _escapeHTML,
+    getLog,
+    _getSuiteList,
     _getSummaryParts,
-    escapeHTML,
     fail,
     getSummary,
     getSummaryLink,
     info,
-    getLog,
-    nav,
+    getNav,
     resultMsg,
-    scopeList,
 } from '../output.js';
 
 /**
  * @param {import('../state.js').Utility}
  */
 export default ({ assert, describe, it }) => {
-    describe('escapeHTML()', () => {
+    describe('_escapeHTML()', () => {
         describe('given an HTML string', () => {
             it('should return a string with escaped HTML', () => {
                 const html   = '<h1 class="logo">Sal\'s Soups &amp; Sandwiches</h1>';
                 const expect = '&lt;h1 class=&quot;logo&quot;&gt;Sal&#x27;s Soups &amp;amp; Sandwiches&lt;&#x2F;h1&gt;';
-                assert(escapeHTML(html)).equals(expect);
-            });
-        });
-    });
-
-    describe('fail()', () => {
-        describe('given a string', () => {
-            it('should return the string wrapped in an `<li>` with the fail CSS class', () => {
-                assert(fail('failure')).equals('<li class="fail">failure</li>');
-            });
-        });
-    });
-
-    describe('info()', () => {
-        describe('given a string', () => {
-            it('should return the string wrapped in an `<li>`', () => {
-                assert(info('info')).equals('<li>info</li>');
+                assert(_escapeHTML(html)).equals(expect);
             });
         });
     });
@@ -56,13 +40,18 @@ export default ({ assert, describe, it }) => {
             ];
 
             it('should return only the failure', () => {
-                assert(getLog(results)).equals(fail('failure'));
+                assert(getLog(results))
+                    .equals('<li class="fail">failure</li>');
             });
 
             describe('given the verbose flag', () => {
                 it('should return the success and the failure', () => {
-                    const expect = info('success') + fail('failure');
-                    assert(getLog(results, { verbose: true })).equals(expect);
+                    assert(getLog(results, { verbose: true }))
+                        .equals([
+                            '<li>success</li>',
+                            '<li class="fail">failure</li>'
+                        ].join('')
+                    );
                 });
             });
         });
@@ -76,21 +65,32 @@ export default ({ assert, describe, it }) => {
             ];
 
             it('should return only the two failures', () => {
-                assert(getLog(results)).equals(fail('nope') + fail('no way'));
+                assert(getLog(results))
+                    .equals([
+                        '<li class="fail">nope</li>',
+                        '<li class="fail">no way</li>',
+                    ].join('')
+                );
             });
 
             describe('given the verbose flag', () => {
-                it('should return the two success then the two failures', () => {
-                    const expect = info('yep') + info('you bet') + fail('nope') + fail('no way');
-                    assert(getLog(results, { verbose: true })).equals(expect);
+                it('should return the two success and the two failures', () => {
+                    assert(getLog(results, { verbose: true }))
+                        .equals([
+                            '<li>yep</li>',
+                            '<li>you bet</li>',
+                            '<li class="fail">nope</li>',
+                            '<li class="fail">no way</li>',
+                        ].join('')
+                    );
                 });
             });
         });
     });
 
-    describe('nav()', () => {
+    describe('getNav()', () => {
         describe('given no options', () => {
-            const html = nav({});
+            const html = getNav({});
 
             it('should contain the urls', () => {
                 [
@@ -108,7 +108,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a `scope` option', () => {
-            const html = nav({ scope: 'fake' });
+            const html = getNav({ scope: 'fake' });
 
             it('should contain the urls', () => {
                 [
@@ -127,13 +127,13 @@ export default ({ assert, describe, it }) => {
 
         describe('given a `scope` option of "list"', () => {
             it('should mark the "Tests" link as active', () => {
-                assert(nav({ scope: 'list' }))
+                assert(getNav({ scope: 'list' }))
                     .stringIncludes('<a data-active="true" href="./unit.html?scope=list">Tests</a>');
             });
         });
 
         describe('given a truthy `verbose` option', () => {
-            const html = nav({ verbose: true });
+            const html = getNav({ verbose: true });
 
             it('should contain the urls', () => {
                 [
@@ -146,13 +146,13 @@ export default ({ assert, describe, it }) => {
             });
 
             it('should mark the "Verbose" link as active', () => {
-                assert(nav({ verbose: true }))
+                assert(getNav({ verbose: true }))
                     .stringIncludes('<a data-active="true" href="./unit.html">Verbose</a>');
             });
         });
 
         describe('given a `scope` and truthy `verbose` options', () => {
-            const html = nav({ scope: 'fake', verbose: true });
+            const html = getNav({ scope: 'fake', verbose: true });
 
             it('should contain the urls', () => {
                 [
@@ -166,10 +166,10 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('scopeList()', () => {
+    describe('_getSuiteList()', () => {
         describe('given an array of scopes', () => {
             const scopes = [ '/scope/one', '/scope/two' ];
-            const html   = scopeList(scopes);
+            const html   = _getSuiteList(scopes);
 
             it('should return an html list with an `<li>` and `</li>` for each scope', () => {
                 assert((html.match(/<li>/g)).length).equals(scopes.length);
@@ -187,7 +187,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given the `verbose` option', () => {
             const scopes = [ '/scope/one', '/scope/two' ];
-            const html   = scopeList(scopes, { verbose: true });
+            const html   = _getSuiteList(scopes, { verbose: true });
 
             it('should return an html list with `&verbose=true` for each scope', () => {
                 assert((html.match(/&verbose=true/g)).length).equals(scopes.length);

@@ -1,9 +1,23 @@
 
-import { render } from './output.js';
+import { getNav, getOutput } from './output.js';
 import { useState } from './state.js';
 import suite from './suite.js';
 
 // -- Config -------------------------------------------------------------------
+
+/**
+ * Container unit test output is rendered to.
+ *
+ * @type {Element}
+ */
+ const contentContainer = document.getElementById('content');
+
+ /**
+ * Container unit test navigation is rendered to.
+ *
+ * @type {Element}
+ */
+ const navContainer = document.getElementById('nav');
 
 /**
  * URL params
@@ -26,20 +40,8 @@ const scope = urlParams.get('scope');
  */
 const verbose = Boolean(urlParams.get('verbose'));
 
-/**
- * Container unit test output is rendered to.
- *
- * @type {Element}
- */
- const contentContainer = document.getElementById('content');
-
- /**
- * Container unit test navigation is rendered to.
- *
- * @type {Element}
- */
- const navContainer = document.getElementById('nav');
-
 // -- Initialization -----------------------------------------------------------
 
-render({ contentContainer, navContainer }, suite, useState(), { scope, verbose });
+navContainer.innerHTML = getNav({ scope, verbose });
+contentContainer.innerHTML = getOutput(suite, useState(), { scope, verbose });
+// render({ contentContainer, navContainer }, suite, useState(), { scope, verbose });
