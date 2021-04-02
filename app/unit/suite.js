@@ -1,7 +1,6 @@
 
 import assert from './test/tests.assert.js';
 import output from './test/tests.output.js';
-import render from './test/tests.render.js';
 import run from './test/tests.run.js';
 import state from './test/tests.state.js';
 
@@ -36,7 +35,6 @@ import generateItems from '../items/test/tests.generate.js';
 export default {
     '/app/unit/test/tests.assert.js': assert,
     '/app/unit/test/tests.output.js': output,
-    '/app/unit/test/tests.render.js': render,
     '/app/unit/test/tests.run.js'   : run,
     '/app/unit/test/tests.state.js' : state,
 

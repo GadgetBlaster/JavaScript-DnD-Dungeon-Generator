@@ -1,5 +1,5 @@
 
-import { render } from './render.js';
+import { render } from './output.js';
 import { useState } from './state.js';
 import suite from './suite.js';
 

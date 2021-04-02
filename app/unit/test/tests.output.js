@@ -8,7 +8,6 @@ import {
     info,
     getLog,
     nav,
-    render,
     resultMsg,
     scopeList,
 } from '../output.js';
@@ -192,25 +191,6 @@ export default ({ assert, describe, it }) => {
 
             it('should return an html list with `&verbose=true` for each scope', () => {
                 assert((html.match(/&verbose=true/g)).length).equals(scopes.length);
-            });
-        });
-    });
-
-    describe('render()', () => {
-        describe('given an element and an html string', () => {
-            it('should set the html string to the element', () => {
-                const el = document.createElement('h1');
-                render(el, '<strong>buff</strong>');
-                assert(el.innerHTML).equals('<strong>buff</strong>');
-            });
-        });
-
-        describe('called multiple times', () => {
-            it('should replace the element\'s content with the last html string', () => {
-                const el = document.createElement('section');
-                render(el, '<p>first wizard</p>');
-                render(el, '<p>second wizard</p>');
-                assert(el.innerHTML).equals('<p>second wizard</p>');
             });
         });
     });
