@@ -1,6 +1,6 @@
 
 import * as assertFunctions from './assert.js';
-import { resultMsg } from './output.js';
+import { getResultMessage } from './output.js';
 
 /**
  * Summary
@@ -210,7 +210,7 @@ export function useState() {
 
         results.push({
             isOk,
-            msg: resultMsg(current),
+            msg: getResultMessage(current),
         });
 
         current.pop();

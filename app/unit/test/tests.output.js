@@ -1,27 +1,28 @@
 
 import {
-    _escapeHTML,
+    escapeHTML,
     getLog,
-    _getSuiteList,
-    _getSummaryParts,
-    fail,
+    getNav,
+    getOutput, // TODO
+    getResultMessage,
+    getResults, // TODO
+    getSuiteList,
     getSummary,
     getSummaryLink,
-    info,
-    getNav,
-    resultMsg,
+    getSummaryParts,
+    getTestList, // TODO
 } from '../output.js';
 
 /**
  * @param {import('../state.js').Utility}
  */
 export default ({ assert, describe, it }) => {
-    describe('_escapeHTML()', () => {
+    describe('escapeHTML()', () => {
         describe('given an HTML string', () => {
             it('should return a string with escaped HTML', () => {
                 const html   = '<h1 class="logo">Sal\'s Soups &amp; Sandwiches</h1>';
                 const expect = '&lt;h1 class=&quot;logo&quot;&gt;Sal&#x27;s Soups &amp;amp; Sandwiches&lt;&#x2F;h1&gt;';
-                assert(_escapeHTML(html)).equals(expect);
+                assert(escapeHTML(html)).equals(expect);
             });
         });
     });
@@ -166,51 +167,25 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('_getSuiteList()', () => {
-        describe('given an array of scopes', () => {
-            const scopes = [ '/scope/one', '/scope/two' ];
-            const html   = _getSuiteList(scopes);
-
-            it('should return an html list with an `<li>` and `</li>` for each scope', () => {
-                assert((html.match(/<li>/g)).length).equals(scopes.length);
-                assert((html.match(/<\/li>/g)).length).equals(scopes.length);
-            });
-
-            it('should return an html link with `?scope=scope` as the link\'s `href`', () => {
-                scopes.forEach((scope) => {
-                    assert(html).stringIncludes(`<a href="?scope=${scope}">`);
-                });
-
-                assert((html.match(/<\/a>/g)).length).equals(scopes.length);
-            });
-        });
-
-        describe('given the `verbose` option', () => {
-            const scopes = [ '/scope/one', '/scope/two' ];
-            const html   = _getSuiteList(scopes, { verbose: true });
-
-            it('should return an html list with `&verbose=true` for each scope', () => {
-                assert((html.match(/&verbose=true/g)).length).equals(scopes.length);
-            });
-        });
+    describe('getOutput()', () => {
     });
 
-    describe('resultMsg()', () => {
+    describe('getResultMessage()', () => {
         describe('given an empty array', () => {
             it('should return an empty string', () => {
-                assert(resultMsg([])).equals('');
+                assert(getResultMessage([])).equals('');
             });
         });
 
         describe('given a single entry', () => {
             it('should return the entry', () => {
-                assert(resultMsg([ { msg: 'just us chickens' } ]))
+                assert(getResultMessage([ { msg: 'just us chickens' } ]))
                     .equals('just us chickens');
             });
         });
 
         describe('given three entries', () => {
-            const entries = resultMsg([
+            const entries = getResultMessage([
                 { msg: 'jimmy' }, { msg: 'joey' }, { msg: 'sarah' },
             ]);
 
@@ -230,172 +205,34 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('_getSummaryParts()', () => {
-        const defaultSummary = {
-            assertions: 0,
-            errors: [],
-            failures: 0,
-        };
-
-        it('should return an object with `assertionsText` and `checkedForText` string properties', () => {
-            let result = _getSummaryParts({ ...defaultSummary });
-            assert(result).isObject();
-            assert(result.assertionsText).isString();
-            assert(result.checkedForText).isString();
-        });
-
-        describe('given no assertions', () => {
-            let result = _getSummaryParts({ ...defaultSummary });
-
-            describe('`assertionsText`', () => {
-                it('should contain "0"', () => {
-                    assert(result.checkedForText).stringIncludes('0');
-                });
-            });
-
-            describe('`checkedForText`', () => {
-                it('"kobolds" should be plural', () => {
-                    assert(result.assertionsText).stringIncludes('kobolds');
-                });
-            });
-        });
-
-        describe('given a single assertion', () => {
-            let result = _getSummaryParts({ ...defaultSummary, assertions: 1 });
-
-            describe('`assertionsText`', () => {
-                it('should contain "1"', () => {
-                    assert(result.checkedForText).stringIncludes('1');
-                });
-            });
-
-            describe('`checkedForText`', () => {
-                it('"kobold" should be singular', () => {
-                    assert(result.assertionsText)
-                        .stringIncludes('kobold')
-                        .stringExcludes('kobolds');
-                });
-            });
-        });
-
-        describe('given two assertions', () => {
-            let result = _getSummaryParts({ ...defaultSummary, assertions: 2 });
-
-            describe('`assertionsText`', () => {
-                it('should contain "2"', () => {
-                    assert(result.checkedForText).stringIncludes('2');
-                });
-            });
-
-            describe('`checkedForText`', () => {
-                it('"kobolds" should be plural', () => {
-                    assert(result.assertionsText).stringIncludes('kobolds');
-                });
-            });
-        });
-
-        describe('given no errors or failures', () => {
-            it('should not return a `issuesText` property', () => {
-                assert(_getSummaryParts({ ...defaultSummary }).issuesText)
-                    .isUndefined();
-            });
-        });
-
-        describe('given failures', () => {
-            it('should return an object with `issuesText` string property', () => {
-                let result = _getSummaryParts({ ...defaultSummary, failures: 10 });
-                assert(result.issuesText).isString();
-            });
-
-            describe('`issuesText`', () => {
-                describe('given a single failure', () => {
-                    it('should contain "1 ogre"', () => {
-                        assert(_getSummaryParts({ ...defaultSummary, failures: 1 }).issuesText)
-                            .stringIncludes('1 ogre')
-                            .stringExcludes('ogres');
-                    });
-                });
-
-                describe('given two failures', () => {
-                    it('should contain "2 ogres"', () => {
-                        assert(_getSummaryParts({ ...defaultSummary, failures: 2 }).issuesText)
-                            .stringIncludes('2 ogres');
-                    });
-                });
-            });
-        });
-
-        describe('given errors', () => {
-            it('should return an object with `issuesText` string property', () => {
-                let result = _getSummaryParts({ ...defaultSummary, errors: [ 'boots', 'towers', 'jalapeño' ] });
-                assert(result.issuesText).isString();
-            });
-
-            describe('`issuesText`', () => {
-                describe('given a single error', () => {
-                    it('should contain "1 dragon"', () => {
-                        assert(_getSummaryParts({ ...defaultSummary, errors: [ 'lobster' ] }).issuesText)
-                            .stringIncludes('1 dragon')
-                            .stringExcludes('dragons');
-                    });
-                });
-
-                describe('given two errors', () => {
-                    it('should contain "2 dragons"', () => {
-                        assert(_getSummaryParts({ ...defaultSummary, errors: [ 'broken', 'buggy' ] }).issuesText)
-                            .stringIncludes('2 dragons');
-                    });
-                });
-            });
-        });
-
-        describe('given two errors and two failures', () => {
-            let result = _getSummaryParts({
-                ...defaultSummary,
-                errors: [ 'broken', 'buggy' ],
-                failures: 2,
-            }).issuesText;
-
-            describe('`issuesText`', () => {
-                it('should contain "2 ogres"', () => {
-                    assert(result).stringIncludes('2 ogres');
-                });
-
-                it('should return a string containing "2 dragons"', () => {
-                    assert(result).stringIncludes('2 dragons');
-                });
-            });
-        });
+    describe('getResults()', () => {
     });
 
-    describe('getSummaryLink()', () => {
-        const defaultSummary = {
-            assertions: 0,
-            errors: [],
-            failures: 0,
-        };
+    describe('getSuiteList()', () => {
+        describe('given an array of scopes', () => {
+            const scopes = [ '/scope/one', '/scope/two' ];
+            const html   = getSuiteList(scopes);
 
-        it('should return a string', () => {
-            assert(getSummaryLink({ ...defaultSummary })).isString();
-        });
+            it('should return an html list with an `<li>` and `</li>` for each scope', () => {
+                assert((html.match(/<li>/g)).length).equals(scopes.length);
+                assert((html.match(/<\/li>/g)).length).equals(scopes.length);
+            });
 
-        it('should return a link to `./unit.html', () => {
-            assert(getSummaryLink({ ...defaultSummary }))
-                .stringIncludes('<a href="./unit.html">')
-                .stringIncludes('</a>');
-        });
+            it('should return an html link with `?scope=scope` as the link\'s `href`', () => {
+                scopes.forEach((scope) => {
+                    assert(html).stringIncludes(`<a href="?scope=${scope}">`);
+                });
 
-        describe('given errors', () => {
-            it('the link should include a `data-error` attribute', () => {
-                assert(getSummaryLink({ ...defaultSummary, errors: [ 'Bad dates' ] }))
-                    .stringIncludes('<a data-error="true" href="./unit.html">');
+                assert((html.match(/<\/a>/g)).length).equals(scopes.length);
             });
         });
 
-        describe('given failures', () => {
-            it('the link should include a `data-error` attribute', () => {
-                assert(getSummaryLink({ ...defaultSummary, failures: 1 }))
-                    .stringIncludes('<a data-error="true" href="./unit.html">');
+        describe('given the `verbose` option', () => {
+            const scopes = [ '/scope/one', '/scope/two' ];
+            const html   = getSuiteList(scopes, { verbose: true });
+
+            it('should return an html list with `&verbose=true` for each scope', () => {
+                assert((html.match(/&verbose=true/g)).length).equals(scopes.length);
             });
         });
     });
@@ -432,5 +269,179 @@ export default ({ assert, describe, it }) => {
                     .stringIncludes('</span>');
             });
         });
+    });
+
+    describe('getSummaryLink()', () => {
+        const defaultSummary = {
+            assertions: 0,
+            errors: [],
+            failures: 0,
+        };
+
+        it('should return a string', () => {
+            assert(getSummaryLink({ ...defaultSummary })).isString();
+        });
+
+        it('should return a link to `./unit.html', () => {
+            assert(getSummaryLink({ ...defaultSummary }))
+                .stringIncludes('<a href="./unit.html">')
+                .stringIncludes('</a>');
+        });
+
+        describe('given errors', () => {
+            it('the link should include a `data-error` attribute', () => {
+                assert(getSummaryLink({ ...defaultSummary, errors: [ 'Bad dates' ] }))
+                    .stringIncludes('<a data-error="true" href="./unit.html">');
+            });
+        });
+
+        describe('given failures', () => {
+            it('the link should include a `data-error` attribute', () => {
+                assert(getSummaryLink({ ...defaultSummary, failures: 1 }))
+                    .stringIncludes('<a data-error="true" href="./unit.html">');
+            });
+        });
+    });
+
+    describe('getSummaryParts()', () => {
+        const defaultSummary = {
+            assertions: 0,
+            errors: [],
+            failures: 0,
+        };
+
+        it('should return an object with `assertionsText` and `checkedForText` string properties', () => {
+            let result = getSummaryParts({ ...defaultSummary });
+            assert(result).isObject();
+            assert(result.assertionsText).isString();
+            assert(result.checkedForText).isString();
+        });
+
+        describe('given no assertions', () => {
+            let result = getSummaryParts({ ...defaultSummary });
+
+            describe('`assertionsText`', () => {
+                it('should contain "0"', () => {
+                    assert(result.checkedForText).stringIncludes('0');
+                });
+            });
+
+            describe('`checkedForText`', () => {
+                it('"kobolds" should be plural', () => {
+                    assert(result.assertionsText).stringIncludes('kobolds');
+                });
+            });
+        });
+
+        describe('given a single assertion', () => {
+            let result = getSummaryParts({ ...defaultSummary, assertions: 1 });
+
+            describe('`assertionsText`', () => {
+                it('should contain "1"', () => {
+                    assert(result.checkedForText).stringIncludes('1');
+                });
+            });
+
+            describe('`checkedForText`', () => {
+                it('"kobold" should be singular', () => {
+                    assert(result.assertionsText)
+                        .stringIncludes('kobold')
+                        .stringExcludes('kobolds');
+                });
+            });
+        });
+
+        describe('given two assertions', () => {
+            let result = getSummaryParts({ ...defaultSummary, assertions: 2 });
+
+            describe('`assertionsText`', () => {
+                it('should contain "2"', () => {
+                    assert(result.checkedForText).stringIncludes('2');
+                });
+            });
+
+            describe('`checkedForText`', () => {
+                it('"kobolds" should be plural', () => {
+                    assert(result.assertionsText).stringIncludes('kobolds');
+                });
+            });
+        });
+
+        describe('given no errors or failures', () => {
+            it('should not return a `issuesText` property', () => {
+                assert(getSummaryParts({ ...defaultSummary }).issuesText)
+                    .isUndefined();
+            });
+        });
+
+        describe('given failures', () => {
+            it('should return an object with `issuesText` string property', () => {
+                let result = getSummaryParts({ ...defaultSummary, failures: 10 });
+                assert(result.issuesText).isString();
+            });
+
+            describe('`issuesText`', () => {
+                describe('given a single failure', () => {
+                    it('should contain "1 ogre"', () => {
+                        assert(getSummaryParts({ ...defaultSummary, failures: 1 }).issuesText)
+                            .stringIncludes('1 ogre')
+                            .stringExcludes('ogres');
+                    });
+                });
+
+                describe('given two failures', () => {
+                    it('should contain "2 ogres"', () => {
+                        assert(getSummaryParts({ ...defaultSummary, failures: 2 }).issuesText)
+                            .stringIncludes('2 ogres');
+                    });
+                });
+            });
+        });
+
+        describe('given errors', () => {
+            it('should return an object with `issuesText` string property', () => {
+                let result = getSummaryParts({ ...defaultSummary, errors: [ 'boots', 'towers', 'jalapeño' ] });
+                assert(result.issuesText).isString();
+            });
+
+            describe('`issuesText`', () => {
+                describe('given a single error', () => {
+                    it('should contain "1 dragon"', () => {
+                        assert(getSummaryParts({ ...defaultSummary, errors: [ 'lobster' ] }).issuesText)
+                            .stringIncludes('1 dragon')
+                            .stringExcludes('dragons');
+                    });
+                });
+
+                describe('given two errors', () => {
+                    it('should contain "2 dragons"', () => {
+                        assert(getSummaryParts({ ...defaultSummary, errors: [ 'broken', 'buggy' ] }).issuesText)
+                            .stringIncludes('2 dragons');
+                    });
+                });
+            });
+        });
+
+        describe('given two errors and two failures', () => {
+            let result = getSummaryParts({
+                ...defaultSummary,
+                errors: [ 'broken', 'buggy' ],
+                failures: 2,
+            }).issuesText;
+
+            describe('`issuesText`', () => {
+                it('should contain "2 ogres"', () => {
+                    assert(result).stringIncludes('2 ogres');
+                });
+
+                it('should return a string containing "2 dragons"', () => {
+                    assert(result).stringIncludes('2 dragons');
+                });
+            });
+        });
+    });
+
+    describe('getTestList()', () => {
+
     });
 };

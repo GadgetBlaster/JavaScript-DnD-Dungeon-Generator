@@ -4,9 +4,10 @@ import { link } from '../ui/link.js';
 import { plural } from '../utility/tools.js';
 import run from './run.js';
 
-/** @typedef {import('./state.js').Summary} Summary */
+/** @typedef {import('../utility/html.js').Attrs} Attrs */
 /** @typedef {import('./assert.js').Result} Result */
 /** @typedef {import('./state.js').State} State */
+/** @typedef {import('./state.js').Summary} Summary */
 
 /**
  * @typedef {object} OutputOptions
@@ -46,6 +47,16 @@ const unitUrl = './unit.html';
 // -- Private Functions --------------------------------------------------------
 
 /**
+ * Log entry
+ *
+ * @param {string} msg
+ * @param {Attrs} attrs
+ *
+ * @returns {string}
+ */
+const logEntry = (msg, attrs) => element('li', escapeHTML(msg), attrs);
+
+/**
  * Make params
  *
  * @param {object} entries
@@ -70,7 +81,7 @@ const unitUrl = './unit.html';
  *
  * @returns {string}
  */
-export function _escapeHTML(string) {
+export function escapeHTML(string) {
     return string.replace(/[&<>"'\/]/g, (match) => _htmlEscapes[match]);
 }
 
@@ -86,67 +97,62 @@ export function _escapeHTML(string) {
  export function getLog(results, { verbose } = {}) {
     return results.map(({ isOk, msg }) => {
         if (verbose && isOk) {
-            return element('li', _escapeHTML(msg));
+            return logEntry(msg);
         }
 
-        return !isOk && element('li', _escapeHTML(msg), { class: 'fail' });
+        return !isOk && logEntry(msg, { class: 'fail' });
     }).filter(Boolean).join('');
 };
 
 /**
- * Get test summary parts.
+ * Get navigation
  *
- * @param {import('./state.js').Summary} summary
- *
- * @returns {{
- *     assertionsText: string,
- *     checkedForText: string,
- *     issuesText: string?,
- * }}
- */
-export const _getSummaryParts = (summary = {}) => {
-    let { assertions, errors, failures } = summary;
-
-    let checkedForText = `Checked for ${assertions}`;
-    let assertionsText = `mischievous ${plural(assertions, 'kobold')}`;
-
-    if (failures || errors.length) {
-        let failureText = ` ${failures} ${plural(failures, 'ogre')}`;
-        let errorText   = ` ${errors.length} ${plural(errors.length, 'dragon')}`;
-
-        let issuesText = 'Encountered';
-        issuesText += failures ? failureText : '';
-        issuesText += failures && errors.length ? ' and' : '';
-        issuesText += errors.length ? errorText : '';
-        issuesText += errors.length ? '!' : '.';
-
-        return {
-            assertionsText,
-            checkedForText,
-            issuesText,
-        };
-    }
-
-    return {
-        assertionsText,
-        checkedForText,
-    };
-};
-
-/**
- * Get test suite list
- *
- * @param {string[]} scopes
- * @param {options} [options]
+ * @param {options} options
+ *     @param {string} [options.scope]
  *     @param {boolean} [options.verbose]
  *
  * @returns {string}
  */
- export function _getSuiteList(scopes, { verbose } = {}) {
-    return scopes.map((scope) => {
-        return element('li', link(scope, makeParams({ scope, verbose })));
-    }).join('');
+ export const getNav = ({ scope, verbose }) => [
+    link('All', unitUrl + makeParams({ scope: null, verbose }), !scope ? { 'data-active': true } : null),
+    link('Tests', unitUrl + makeParams({ scope: 'list', verbose }), scope === 'list' ? { 'data-active': true } : null),
+    element('span', '', { role: 'presentation', 'data-separator': true }),
+    link('Verbose', unitUrl + makeParams({ scope, verbose: !verbose }), verbose ? { 'data-active': verbose } : null)
+].join('');
+
+/**
+ * Get unit test output.
+ *
+ * TODO test
+ *
+ * @param {object} suite
+ * @param {State} state
+ * @param {OutputOptions} options
+ */
+ export const getOutput = (suite, state, options = {}) => {
+    let { scope } = options;
+
+    if (scope === 'list') {
+        return getTestList(suite, options);
+    }
+
+    let list = Object.keys(suite);
+    let testScope = list.includes(scope) ? scope : undefined;
+    let summary = run(state, suite, testScope);
+
+    return getResults(summary, options);
 };
+
+/**
+ * Result Msg
+ * TODO get
+ * @param {Entry[]} entries
+ *
+ * @returns {string}
+ */
+ export const getResultMessage = (entries) => entries.reduce((accumulator, value, index) => {
+    return `${accumulator}${'  '.repeat(index)}${value.msg}\n`;
+}, '').trim();
 
 /**
  * Get test results
@@ -156,7 +162,7 @@ export const _getSummaryParts = (summary = {}) => {
  * @param {Summary} summary
  * @param {OutputOptions} options
  */
-export function getResults(summary, { scope, verbose }) {
+ export function getResults(summary, { scope, verbose }) {
     let { failures, errors } = summary;
 
     if (failures) {
@@ -192,89 +198,42 @@ export function getResults(summary, { scope, verbose }) {
 }
 
 /**
- * Get unit test list
+ * Get test suite list
  *
- * TODO test
- *
- * @param {object} suite
- * @param {OutputOptions} options
- */
-export function getTestList(suite, { verbose }) {
-    let list = _getSuiteList(Object.keys(suite), { verbose });
-
-    return `
-        <h1>Spell book</h1>
-        <ul>${list}</ul>
-    `;
-}
-
-/**
- * Fail
- *
- * @param {string} msg
- *
- * @returns {string}
- */
-export const fail = (msg) => element('li', _escapeHTML(msg), { class: 'fail' });
-
-/**
- * Info
- *
- * @param {string} msg
- *
- * @returns {string}
- */
-export const info = (msg) => element('li', _escapeHTML(msg));
-
-/**
- * Path list
- *
- * @param {options} options
- *     @param {string} [options.scope]
+ * @param {string[]} scopes
+ * @param {options} [options]
  *     @param {boolean} [options.verbose]
  *
  * @returns {string}
  */
-export const getNav = ({ scope, verbose }) => [
-    link('All', unitUrl + makeParams({ scope: null, verbose }), !scope ? { 'data-active': true } : null),
-    link('Tests', unitUrl + makeParams({ scope: 'list', verbose }), scope === 'list' ? { 'data-active': true } : null),
-    element('span', '', { role: 'presentation', 'data-separator': true }),
-    link('Verbose', unitUrl + makeParams({ scope, verbose: !verbose }), verbose ? { 'data-active': verbose } : null)
-].join('');
-
-/**
- * Get unit test output.
- *
- * TODO test
- *
- * @param {object} suite
- * @param {State} state
- * @param {OutputOptions} options
- */
-export const getOutput = (suite, state, options = {}) => {
-    let { scope } = options;
-
-    if (scope === 'list') {
-        return getTestList(suite, options);
-    }
-
-    let list = Object.keys(suite);
-    let testScope = list.includes(scope) ? scope : undefined;
-    let summary = run(state, suite, testScope);
-
-    return getResults(summary, options);
+ export function getSuiteList(scopes, { verbose } = {}) {
+    return scopes.map((scope) => {
+        return element('li', link(scope, makeParams({ scope, verbose })));
+    }).join('');
 };
 
 /**
- * Result Msg
+ * Get test summary.
  *
- * @param {Entry[]} entries
+ * @param {import('./state.js').Summary} summary
  *
  * @returns {string}
  */
-export const resultMsg = (entries) => entries.reduce((accumulator, value, index) => {
-    return `${accumulator}${'  '.repeat(index)}${value.msg}\n`;
-}, '').trim();
+ export function getSummary(summary) {
+    let {
+        assertionsText,
+        checkedForText,
+        issuesText,
+    } = getSummaryParts(summary);
+
+    let content = `${checkedForText} ${assertionsText}. `;
+
+    if (issuesText) {
+        return content + element('span', `${issuesText} 😕`, { class: 'fail' });
+    }
+
+    return content + element('span', '0 Encounters, nice job 👏', { class: 'ok' });
+}
 
 /**
  * Get test summary link.
@@ -283,12 +242,12 @@ export const resultMsg = (entries) => entries.reduce((accumulator, value, index)
  *
  * @returns {string}
  */
-export function getSummaryLink(summary) {
+ export function getSummaryLink(summary) {
     let {
         assertionsText,
         checkedForText,
         issuesText,
-    } = _getSummaryParts(summary);
+    } = getSummaryParts(summary);
 
     if (issuesText) {
         let assertionContent = element('p', `${checkedForText} ${assertionsText}.`);
@@ -303,24 +262,58 @@ export function getSummaryLink(summary) {
 }
 
 /**
- * Get test summary.
+ * Get test summary parts.
  *
  * @param {import('./state.js').Summary} summary
  *
- * @returns {string}
+ * @returns {{
+ *     assertionsText: string,
+ *     checkedForText: string,
+ *     issuesText: string?,
+ * }}
  */
-export function getSummary(summary) {
-    let {
-        assertionsText,
-        checkedForText,
-        issuesText,
-    } = _getSummaryParts(summary);
+export const getSummaryParts = (summary = {}) => {
+    let { assertions, errors, failures } = summary;
 
-    let content = `${checkedForText} ${assertionsText}. `;
+    let checkedForText = `Checked for ${assertions}`;
+    let assertionsText = `mischievous ${plural(assertions, 'kobold')}`;
 
-    if (issuesText) {
-        return content + element('span', `${issuesText} 😕`, { class: 'fail' });
+    if (failures || errors.length) {
+        let failureText = ` ${failures} ${plural(failures, 'ogre')}`;
+        let errorText   = ` ${errors.length} ${plural(errors.length, 'dragon')}`;
+
+        let issuesText = 'Encountered';
+        issuesText += failures ? failureText : '';
+        issuesText += failures && errors.length ? ' and' : '';
+        issuesText += errors.length ? errorText : '';
+        issuesText += errors.length ? '!' : '.';
+
+        return {
+            assertionsText,
+            checkedForText,
+            issuesText,
+        };
     }
 
-    return content + element('span', '0 Encounters, nice job 👏', { class: 'ok' });
+    return {
+        assertionsText,
+        checkedForText,
+    };
+};
+
+/**
+ * Get unit test list
+ *
+ * TODO test
+ *
+ * @param {object} suite
+ * @param {OutputOptions} options
+ */
+export function getTestList(suite, { verbose }) {
+    let list = getSuiteList(Object.keys(suite), { verbose });
+
+    return `
+        <h1>Spell book</h1>
+        <ul>${list}</ul>
+    `;
 }
