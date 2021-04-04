@@ -8,8 +8,6 @@
         <style>
             .fail { color: #db0f0f; }
             .ok { color: #14c80f; }
-            .dot-ok { background: #14c80f; }
-            .dot-fail { background: #db0f0f; }
 
             .dot {
                 width: 6px;
@@ -18,6 +16,9 @@
                 display: inline-block;
                 margin: 2px;
             }
+
+            .dot.ok { background: #14c80f; }
+            .dot.fail { background: #db0f0f; }
 
             [data-animate="show"] {
                 visibility: hidden;

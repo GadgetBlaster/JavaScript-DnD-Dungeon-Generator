@@ -3,15 +3,17 @@ import {
     escapeHTML,
     getLog,
     getNav,
-    getOutput, // TODO
+    getOutput,
     getResultMessage,
-    getResults, // TODO
+    getResults,
     getSuiteList,
     getSummary,
     getSummaryLink,
     getSummaryParts,
-    getTestList, // TODO
+    getTestList,
 } from '../output.js';
+
+const noop = () => {};
 
 /**
  * @param {import('../state.js').Utility}
@@ -91,7 +93,7 @@ export default ({ assert, describe, it }) => {
 
     describe('getNav()', () => {
         describe('given no options', () => {
-            const html = getNav({});
+            const nav = getNav({});
 
             it('should contain the urls', () => {
                 [
@@ -99,17 +101,17 @@ export default ({ assert, describe, it }) => {
                     './unit.html?scope=list',
                     './unit.html?verbose=true',
                 ].forEach((url) => {
-                    assert(html).stringIncludes(url);
+                    assert(nav).stringIncludes(url);
                 });
             });
 
             it('should mark the "All" link as active', () => {
-                assert(html).stringIncludes('<a data-active="true" href="./unit.html">All</a>');
+                assert(nav).stringIncludes('<a data-active="true" href="./unit.html">All</a>');
             });
         });
 
         describe('given a `scope` option', () => {
-            const html = getNav({ scope: 'fake' });
+            const nav = getNav({ scope: 'fake' });
 
             it('should contain the urls', () => {
                 [
@@ -117,12 +119,12 @@ export default ({ assert, describe, it }) => {
                     './unit.html?scope=list',
                     './unit.html?scope=fake&verbose=true',
                 ].forEach((url) => {
-                    assert(html).stringIncludes(url);
+                    assert(nav).stringIncludes(url);
                 });
             });
 
             it('should not mark the "All" link as active', () => {
-                assert(html).stringIncludes('<a href="./unit.html">All</a>');
+                assert(nav).stringIncludes('<a href="./unit.html">All</a>');
             });
         });
 
@@ -134,7 +136,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a truthy `verbose` option', () => {
-            const html = getNav({ verbose: true });
+            const nav = getNav({ verbose: true });
 
             it('should contain the urls', () => {
                 [
@@ -142,7 +144,7 @@ export default ({ assert, describe, it }) => {
                     './unit.html?scope=list&verbose=true',
                     './unit.html',
                 ].forEach((url) => {
-                    assert(html).stringIncludes(url);
+                    assert(nav).stringIncludes(url);
                 });
             });
 
@@ -168,6 +170,50 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getOutput()', () => {
+        let suite = { '/test/tests.fake.js': noop };
+        let state = {
+            getSummary: () => ({
+                assertions: 1,
+                errors: [],
+                failures: 0,
+                results: [ { isOk: true, msg: 'fake test result' } ],
+            }),
+            runUnits: noop,
+        };
+
+        it('should return test results', () => {
+            assert(getOutput(suite, state)).stringIncludes('Mumbling incantations');
+        });
+
+        describe('given a `scope` option of `list`', () => {
+            it('should return a list of tests', () => {
+                assert(getOutput(suite, state, { scope: 'list' }))
+                    .stringIncludes('<ul><li><a href="?scope=/test/tests.fake.js">/test/tests.fake.js</a></li></ul>');
+            });
+        });
+
+        describe('given a `scope` option for a specific test', () => {
+            it('should only call `runUnits()` on the `scope` test path', () => {
+                let scopesCalled = [];
+
+                let scopedSuite = {
+                    '/test/tests.fake.js': noop,
+                    '/test/tests.fake2.js': noop,
+                };
+
+                let scopedState = {
+                    ...state,
+                    runUnits: (path) => {
+                        scopesCalled.push(path);
+                    },
+                };
+
+                getOutput(scopedSuite, scopedState, { scope: '/test/tests.fake.js' });
+
+                assert(scopesCalled.length).equals(1);
+                assert(scopesCalled[0]).equals('/test/tests.fake.js');
+            });
+        });
     });
 
     describe('getResultMessage()', () => {
@@ -206,6 +252,150 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getResults()', () => {
+        describe('given one passing result', () => {
+            let summary = {
+                assertions: 1,
+                errors: [],
+                failures: 0,
+                results: [ { isOk: true, msg: 'fake success result' } ],
+            };
+
+            let result = getResults(summary);
+
+            it('should render one passing dot', () => {
+                assert(result)
+                    .stringIncludes('<span data-animate="show" class="dot ok" style="animation-delay: 0ms"></span>');
+            });
+
+            it('should render a summary', () => {
+                assert(result).stringIncludes('Checked for 1 mischievous kobold');
+            });
+
+            describe('given no options', () => {
+                it('should output "All Tests"', () => {
+                    assert(result).stringIncludes('All Tests');
+                });
+
+                it('should not output passing log entries', () => {
+                    assert(result).stringExcludes('fake success result');
+                });
+            });
+
+            describe('given the `verbose` option', () => {
+                it('should output the log with successful entries', () => {
+                    assert(getResults(summary, { verbose: true }))
+                        .stringIncludes('fake success result');
+                });
+            });
+
+            describe('given the `scope` option', () => {
+                it('should output the scope', () => {
+                    assert(getResults(summary, { scope: '/test/tests.fake.js' }))
+                        .stringIncludes('/test/tests.fake.js');
+                });
+
+                it('should not output "All Tests"', () => {
+                    assert(getResults(summary, { scope: '/test/tests.fake.js' }))
+                        .stringExcludes('All Tests');
+                });
+            });
+
+            describe('given an `onSuccess` option', () => {
+                it('should call `onSuccess` and return the success message', () => {
+                    let successLog;
+
+                    getResults(summary, { onSuccess: (msg) => { successLog = msg; }});
+
+                    assert(successLog).equals('Zero mischievous kobolds found 👏');
+                });
+            });
+        });
+
+        describe('given multiple results', () => {
+            let summary = {
+                assertions: 2,
+                errors: [],
+                failures: 0,
+                results: [
+                    { isOk: true, msg: 'fake success result' },
+                    { isOk: true, msg: 'another success result' },
+                ],
+            };
+
+            it('should render two passing dots', () => {
+                assert(getResults(summary))
+                    .stringIncludes('<span data-animate="show" class="dot ok" style="animation-delay: 0ms"></span>')
+                    .stringIncludes('<span data-animate="show" class="dot ok" style="animation-delay: 2ms"></span>');
+            });
+
+            describe('given the `verbose` option', () => {
+                it('should output the log with all entries', () => {
+                    assert(getResults(summary, { verbose: true }))
+                        .stringIncludes('fake success result')
+                        .stringIncludes('another success result');
+                });
+            });
+        });
+
+        describe('given a failing results', () => {
+            let summary = {
+                assertions: 1,
+                errors: [],
+                failures: 1,
+                results: [ { isOk: false, msg: 'fake failure' } ],
+            };
+
+            let result = getResults(summary);
+
+            it('should render one failing dot', () => {
+                assert(result)
+                    .stringIncludes('<span data-animate="show" class="dot fail" style="animation-delay: 0ms"></span>');
+            });
+
+            it('should output the log with the failure entries', () => {
+                assert(result).stringIncludes('fake failure');
+            });
+
+            describe('given an `onError` option', () => {
+                it('should call `onError` and return the failure message', () => {
+                    let errorLog;
+
+                    getResults(summary, { onError: (msg) => { errorLog = msg; }});
+
+                    assert(errorLog).equals('Encountered 1 ogre!');
+                });
+            });
+        });
+
+        describe('given a result containing an error', () => {
+            let summary = {
+                assertions: 1,
+                errors: [ 'this is fine' ],
+                failures: 0,
+                results: [ { isOk: false, msg: 'fake error' } ],
+            };
+
+            let result = getResults(summary);
+
+            it('should render one failing dot', () => {
+                assert(result)
+                    .stringIncludes('<span data-animate="show" class="dot fail" style="animation-delay: 0ms"></span>');
+            });
+
+            it('should output the log with the error entry', () => {
+                assert(result).stringIncludes('fake error');
+            });
+
+            describe('given an `onError` option', () => {
+                it('should call `onError` and return the error message', () => {
+                    let errorLog;
+
+                    getResults(summary, { onError: (msg) => { errorLog = msg; }});
+
+                    assert(errorLog).equals('Encountered 1 dragon!');
+                });
+            });
+        });
     });
 
     describe('getSuiteList()', () => {
@@ -242,6 +432,7 @@ export default ({ assert, describe, it }) => {
             assertions: 0,
             errors: [],
             failures: 0,
+            results: [],
         };
 
         it('should return a string', () => {
@@ -276,6 +467,7 @@ export default ({ assert, describe, it }) => {
             assertions: 0,
             errors: [],
             failures: 0,
+            results: [],
         };
 
         it('should return a string', () => {
@@ -442,6 +634,12 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getTestList()', () => {
-
+        it('should return an html list with an entry for each test in the suite', () => {
+            assert(getTestList({
+                '/test/tests.fake.js': noop,
+                '/test/tests.fake2.js': noop,
+            })).stringIncludes('<li><a href="?scope=/test/tests.fake.js">/test/tests.fake.js</a></li>')
+                .stringIncludes('<li><a href="?scope=/test/tests.fake2.js">/test/tests.fake2.js</a></li>');
+        });
     });
 };

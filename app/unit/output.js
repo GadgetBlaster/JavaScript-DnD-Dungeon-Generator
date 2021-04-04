@@ -12,6 +12,8 @@ import run from './run.js';
 /**
  * @typedef {object} OutputOptions
  *
+ * @property {function} [onError]
+ * @property {function} [onSuccess]
  * @property {string} [scope]
  * @property {boolean} [verbose]
  */
@@ -28,7 +30,7 @@ import run from './run.js';
 /**
  * HTML escapes
  */
-const _htmlEscapes = {
+const htmlEscapes = {
     '"': '&quot;',
     '/': '&#x2F;',
     '&': '&amp;',
@@ -63,7 +65,7 @@ const logEntry = (msg, attrs) => element('li', escapeHTML(msg), attrs);
  *
  * @returns {string}
  */
- const makeParams = (entries) => {
+const makeParams = (entries) => {
     let params = Object.entries(entries)
         .filter(([ , value ]) => Boolean(value))
         .map(([ key, value ]) => `${key}=${value}`)
@@ -82,7 +84,7 @@ const logEntry = (msg, attrs) => element('li', escapeHTML(msg), attrs);
  * @returns {string}
  */
 export function escapeHTML(string) {
-    return string.replace(/[&<>"'\/]/g, (match) => _htmlEscapes[match]);
+    return string.replace(/[&<>"'\/]/g, (match) => htmlEscapes[match]);
 }
 
 /**
@@ -123,11 +125,9 @@ export function escapeHTML(string) {
 /**
  * Get unit test output.
  *
- * TODO test
- *
  * @param {object} suite
  * @param {State} state
- * @param {OutputOptions} options
+ * @param {OutputOptions} [options]
  */
  export const getOutput = (suite, state, options = {}) => {
     let { scope } = options;
@@ -157,36 +157,45 @@ export function escapeHTML(string) {
 /**
  * Get test results
  *
- * TODO test
- *
  * @param {Summary} summary
- * @param {OutputOptions} options
+ * @param {OutputOptions} [options]
  */
- export function getResults(summary, { scope, verbose }) {
-    let { failures, errors } = summary;
+ export function getResults(summary, options = {}) {
+    let {
+        errors,
+        failures,
+        results,
+    } = summary;
 
-    if (failures) {
-        console.error(`Encountered ${failures} ${plural(failures, 'ogre')}!`);
+    let {
+        onError,
+        onSuccess,
+        scope,
+        verbose,
+    } = options;
+
+    if (onError && failures) {
+        onError(`Encountered ${failures} ${plural(failures, 'ogre')}!`);
     }
 
-    if (errors.length) {
-        console.error(`Encountered ${errors.length} ${plural(errors.length, 'dragon')}!`);
+    if (onError && errors.length) {
+        onError(`Encountered ${errors.length} ${plural(errors.length, 'dragon')}!`);
     }
 
-    if (!failures && !errors.length) {
-        console.log('Zero mischievous kobolds found 👏');
+    if (onSuccess && !failures && !errors.length) {
+        onSuccess('Zero mischievous kobolds found 👏');
     }
 
-    let dots = summary.results.map(({ isOk  }, i) => {
+    let dots = results.map(({ isOk  }, i) => {
         return element('span', '', {
             'data-animate': 'show',
-            class: `dot dot-${isOk ? 'ok' : 'fail'}`,
+            class: `dot ${isOk ? 'ok' : 'fail'}`,
             style: `animation-delay: ${i * animationDelay}ms`,
         });
     }).join('');
 
     let delayStyle = `animation-delay: ${summary.results.length * animationDelay}ms`;
-    let log = getLog(summary.results, { verbose });
+    let log = getLog(results, { verbose });
 
     return `
         <h1>Mumbling incantations</h1>
@@ -272,7 +281,7 @@ export function escapeHTML(string) {
  *     issuesText: string?,
  * }}
  */
-export const getSummaryParts = (summary = {}) => {
+export const getSummaryParts = (summary) => {
     let { assertions, errors, failures } = summary;
 
     let checkedForText = `Checked for ${assertions}`;
@@ -304,12 +313,10 @@ export const getSummaryParts = (summary = {}) => {
 /**
  * Get unit test list
  *
- * TODO test
- *
  * @param {object} suite
- * @param {OutputOptions} options
+ * @param {OutputOptions} [options]
  */
-export function getTestList(suite, { verbose }) {
+export function getTestList(suite, { verbose } = {}) {
     let list = getSuiteList(Object.keys(suite), { verbose });
 
     return `

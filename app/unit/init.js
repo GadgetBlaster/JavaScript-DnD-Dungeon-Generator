@@ -43,4 +43,9 @@ const verbose = Boolean(urlParams.get('verbose'));
 // -- Initialization -----------------------------------------------------------
 
 navContainer.innerHTML     = getNav({ scope, verbose });
-contentContainer.innerHTML = getOutput(suite, useState(), { scope, verbose });
+contentContainer.innerHTML = getOutput(suite, useState(), {
+    scope,
+    verbose,
+    onError: console.error,
+    onSuccess: console.log,
+});
