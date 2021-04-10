@@ -21,7 +21,7 @@ import { knobs } from '../knobs.js';
  *
  * @returns {RoomConfig[]}
  */
-export const generateRooms = (settings) => {
+export function generateRooms(settings) {
     let { [knobs.roomCount]: roomCount } = settings;
 
     let count = Math.floor(Number(roomCount));
@@ -34,4 +34,4 @@ export const generateRooms = (settings) => {
             items: generateItems(roomSettings),
         };
     });
-};
+}

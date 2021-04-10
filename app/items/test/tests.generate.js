@@ -1,9 +1,6 @@
 
 import {
-    _generateFurnishings,
-    _generateItemObjects,
-    _getFurnishingObjects,
-    _getItemCount,
+    _private,
     generateItems,
 } from '../generate.js';
 
@@ -16,45 +13,46 @@ import rarity from '../../attributes/rarity.js';
 import roomTypes from '../../rooms/type.js';
 import { requiredRoomFurniture, furnitureQuantity } from '../types/furnishing.js';
 
+const {
+    generateFurnishings,
+    generateItemObjects,
+    getFurnishingObjects,
+    getItemCount,
+} = _private;
+
 /**
  * @param {import('../../unit/state.js').Utility}
  */
 export default ({ assert, describe, it }) => {
-    describe('_getItemCount()', () => {
-        describe('given a quantity of `quantity.zero`', () => {
-            it('should return 0', () => {
-                assert(_getItemCount(quantity.zero)).equals(0);
+
+    // -- Private Functions ----------------------------------------------------
+
+    describe('generateFurnishings()', () => {
+        describe('given `furnitureQuantity.none`', () => {
+            it('should return an empty array', () => {
+                let items = generateFurnishings(roomTypes.smithy, furnitureQuantity.none);
+                assert(items).isArray();
+                assert(items.length).equals(0);
             });
         });
 
-        describe('given a quantity of `quantity.one`', () => {
-            it('should return 1', () => {
-                assert(_getItemCount(quantity.one)).equals(1);
+        describe('given a `roomType` that requires furniture', () => {
+            let items = generateFurnishings(roomTypes.smithy, furnitureQuantity.minimum)
+                .map(({ name }) => name);
+
+            it('should include all required furniture', () => {
+                requiredRoomFurniture[roomTypes.smithy].forEach(({ name }) => {
+                    assert(items.includes(name)).isTrue();
+                });
             });
         });
 
-        describe('given a quantity of `quantity.few`', () => {
-            it('should return a value between `quantityMinimum.numerous` and `quantityMinimum.some` ', () => {
-                let count     = _getItemCount(quantity.few);
-                let isInRange = count >= quantityMinimum.few && count < quantityMinimum.some;
-
-                assert(isInRange).isTrue();
-            });
-        });
-
-        describe('given a quantity of `quantity.numerous`', () => {
-            it('should return a value between `quantityMinimum.numerous` and `quantityMaximum` ', () => {
-                let count     = _getItemCount(quantity.numerous);
-                let isInRange = count >= quantityMinimum.numerous && count < quantityMaximum;
-
-                assert(isInRange).isTrue();
-            });
-        });
+        // TODO needs more coverage
     });
 
-    describe('_generateItemObjects()', () => {
+    describe('generateItemObjects()', () => {
         describe('given a count of 1', () => {
-            let items = _generateItemObjects(1, {
+            let items = generateItemObjects(1, {
                 [knobs.itemCondition]: random,
                 [knobs.itemQuantity] : quantity.one,
                 [knobs.itemRarity]   : random,
@@ -78,7 +76,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a count greater than 1', () => {
-            let items = _generateItemObjects(3, {
+            let items = generateItemObjects(3, {
                 [knobs.itemCondition]: random,
                 [knobs.itemQuantity] : quantity.one,
                 [knobs.itemRarity]   : random,
@@ -94,7 +92,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('when duplicates of the same item are generated', () => {
-            let items = _generateItemObjects(3, {
+            let items = generateItemObjects(3, {
                 [knobs.itemCondition]: condition.average,
                 [knobs.itemQuantity] : quantity.one,
                 [knobs.itemRarity]   : rarity.common,
@@ -118,32 +116,9 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('_generateFurnishings()', () => {
-        describe('given `furnitureQuantity.none`', () => {
-            it('should return an empty array', () => {
-                let items = _generateFurnishings(roomTypes.smithy, furnitureQuantity.none);
-                assert(items).isArray();
-                assert(items.length).equals(0);
-            });
-        });
-
-        describe('given a `roomType` that requires furniture', () => {
-            let items = _generateFurnishings(roomTypes.smithy, furnitureQuantity.minimum)
-                .map(({ name }) => name);
-
-            it('should include all required furniture', () => {
-                requiredRoomFurniture[roomTypes.smithy].forEach(({ name }) => {
-                    assert(items.includes(name)).isTrue();
-                });
-            });
-        });
-
-        // TODO needs more coverage
-    });
-
-    describe('_getFurnishingObjects()', () => {
+    describe('getFurnishingObjects()', () => {
         describe('given a single furnishing object', () => {
-            let furnishings = _getFurnishingObjects(
+            let furnishings = getFurnishingObjects(
                 [ { name: 'Table', label: 'Table' } ],
                 condition.average
             );
@@ -165,7 +140,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given multiple furnishing objects', () => {
-            let furnishings = _getFurnishingObjects(
+            let furnishings = getFurnishingObjects(
                 [ { name: 'Table', label: 'Table' }, { name: 'Chair', label: 'Chair' } ],
                 condition.average
             );
@@ -179,7 +154,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given duplicate furnishing objects', () => {
-            let furnishings = _getFurnishingObjects(
+            let furnishings = getFurnishingObjects(
                 [ { name: 'Table', label: 'Table' }, { name: 'Table', label: 'Table' } ],
                 condition.average
             );
@@ -201,7 +176,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a room condition of average', () => {
-            let furnishings = _getFurnishingObjects(
+            let furnishings = getFurnishingObjects(
                 [ { name: 'Table', label: 'Table' } ],
                 condition.average
             );
@@ -215,7 +190,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a room condition other than average', () => {
-            let furnishings = _getFurnishingObjects(
+            let furnishings = getFurnishingObjects(
                 [ { name: 'Table', label: 'Table' } ],
                 condition.rare
             );
@@ -228,6 +203,40 @@ export default ({ assert, describe, it }) => {
             });
         });
     });
+
+    describe('getItemCount()', () => {
+        describe('given a quantity of `quantity.zero`', () => {
+            it('should return 0', () => {
+                assert(getItemCount(quantity.zero)).equals(0);
+            });
+        });
+
+        describe('given a quantity of `quantity.one`', () => {
+            it('should return 1', () => {
+                assert(getItemCount(quantity.one)).equals(1);
+            });
+        });
+
+        describe('given a quantity of `quantity.few`', () => {
+            it('should return a value between `quantityMinimum.numerous` and `quantityMinimum.some` ', () => {
+                let count     = getItemCount(quantity.few);
+                let isInRange = count >= quantityMinimum.few && count < quantityMinimum.some;
+
+                assert(isInRange).isTrue();
+            });
+        });
+
+        describe('given a quantity of `quantity.numerous`', () => {
+            it('should return a value between `quantityMinimum.numerous` and `quantityMaximum` ', () => {
+                let count     = getItemCount(quantity.numerous);
+                let isInRange = count >= quantityMinimum.numerous && count < quantityMaximum;
+
+                assert(isInRange).isTrue();
+            });
+        });
+    });
+
+    // -- Public Functions -----------------------------------------------------
 
     describe('generateItems()', () => {
         let settings = {

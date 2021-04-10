@@ -93,7 +93,7 @@ const wall = {
  *
  * @returns {string}
  */
-export const _getStructureDesc = (settings, roomStructure) => {
+function getStructureDesc(settings, roomStructure) {
     let {
         [knobs.roomType]: typeSetting,
         [knobs.roomSize]: roomSize,
@@ -102,9 +102,10 @@ export const _getStructureDesc = (settings, roomStructure) => {
     let type = getRoomTypeLabel(typeSetting);
 
     switch (roomStructure) {
-        case structure.cave:
+        case structure.cave: {
             let isCavern = roomSize === size.massive && typeSetting !== roomType.hallway;
             return `The ${type} is formed by a ${isCavern ? 'cavern' : 'cave'}`;
+        }
 
         case structure.ice:
             return `The ${type} is made entirely of ice`;
@@ -122,7 +123,7 @@ export const _getStructureDesc = (settings, roomStructure) => {
         default:
             throw new TypeError('Invalid room structure');
     }
-};
+}
 
 /**
  * Returns a ground description for a room
@@ -131,7 +132,7 @@ export const _getStructureDesc = (settings, roomStructure) => {
  *
  @returns {string}
  */
-export const _getGroundDesc = () => {
+function getGroundDesc() {
     if (!rollPercentile(detailChance)) {
         return;
     }
@@ -142,16 +143,18 @@ export const _getGroundDesc = () => {
         case ground.ashes:
             return 'The floor is covered with ashes';
 
-        case ground.bloody:
+        case ground.bloody: {
             let isFresh = roll() ? 'Fresh blood' : 'Blood stains';
             return `${isFresh} can be seen on the floor`;
+        }
 
         case ground.dirt:
             return 'Dirt covers the ground';
 
-        case ground.flooded:
+        case ground.flooded: {
             let inches = roll();
             return `The room is ${inches ? '' : 'completely '}flooded with a few ${inches ? 'inches' : 'feet'} of water`;
+        }
 
         case ground.muddy:
             return 'The floor is sticky with mud';
@@ -171,7 +174,7 @@ export const _getGroundDesc = () => {
         default:
             throw new TypeError('Invalid ground type');
     }
-};
+}
 
 /**
  * Get wall description
@@ -180,7 +183,7 @@ export const _getGroundDesc = () => {
  *
  * @returns {string}
  */
-export const _getWallDesc = () => {
+function getWallDesc() {
     if (!rollPercentile(detailChance)) {
         return;
     }
@@ -188,9 +191,10 @@ export const _getWallDesc = () => {
     let random = rollArrayItem(Object.keys(wall));
 
     switch (random) {
-        case wall.bloody:
+        case wall.bloody: {
             let isFresh = roll() ? 'Fresh blood is' : 'Blood stains are';
             return `${isFresh} splattered across the walls`;
+        }
 
         case wall.cracked:
             return 'The walls are cracked';
@@ -210,7 +214,7 @@ export const _getWallDesc = () => {
         default:
             throw new TypeError('Invalid wall type');
     }
-};
+}
 
 /**
  * Get air description
@@ -219,7 +223,7 @@ export const _getWallDesc = () => {
  *
  * @returns {string}
  */
-export const _getAirDesc = () => {
+function getAirDesc() {
     if (!rollPercentile(detailChance)) {
         return;
     }
@@ -254,6 +258,13 @@ export const _getAirDesc = () => {
         default:
             throw new TypeError('Invalid air type');
     }
+}
+
+export const _private = {
+    getStructureDesc,
+    getGroundDesc,
+    getWallDesc,
+    getAirDesc,
 };
 
 // -- Public Functions ---------------------------------------------------------
@@ -263,7 +274,7 @@ export const _getAirDesc = () => {
  *
  * @returns {string}
  */
-export const getEnvironmentDescription = (settings) => {
+export function getEnvironmentDescription(settings) {
     // TODO randomization should be injected
     let roomStructure = rollArrayItem(Object.keys(structure));
     let roomVegetation;
@@ -273,11 +284,11 @@ export const getEnvironmentDescription = (settings) => {
     }
 
     return [
-        _getStructureDesc(settings, roomStructure),
-        _getGroundDesc(),
-        _getWallDesc(),
+        getStructureDesc(settings, roomStructure),
+        getGroundDesc(),
+        getWallDesc(),
         roomVegetation,
-        _getAirDesc(),
+        getAirDesc(),
         ...getRoomFeatures(settings),
     ].filter(Boolean);
-};
+}

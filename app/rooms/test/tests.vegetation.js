@@ -1,48 +1,48 @@
 
 import {
-    _getVegetationDescription,
+    _private,
     getVegetationDescription,
     vegetation,
 } from '../vegetation.js';
 
 import { knobs } from '../../knobs.js';
 
+const {
+    getDescription
+} = _private;
+
 /**
  * @param {import('../../unit/state.js').Utility}
  */
 export default ({ assert, describe, it }) => {
-    describe('`vegetation`', () => {
-        it('should be an object of strings', () => {
-            assert(vegetation).isObject();
 
-            let invalidVegetation = Object.values(vegetation).find((value) => typeof value !== 'string');
-            assert(invalidVegetation).isUndefined();
-        });
-    });
+    // -- Private Functions ----------------------------------------------------
 
-    describe('_getVegetationDescription()', () => {
+    describe('getDescription()', () => {
         Object.values(vegetation).forEach((roomVegetation) => {
             describe(`given a room vegetation of \`${roomVegetation}\``, () => {
                 it('should return a string', () => {
-                    assert(_getVegetationDescription(roomVegetation, { variation: false })).isString();
+                    assert(getDescription(roomVegetation, { variation: false })).isString();
                 });
             });
 
             describe('variations', () => {
                 it('should return a string', () => {
-                    assert(_getVegetationDescription(roomVegetation, { variation: true })).isString();
+                    assert(getDescription(roomVegetation, { variation: true })).isString();
                 });
             });
         });
 
         describe('given an invalid room vegetation', () => {
             it('should throw', () => {
-                assert(() => _getVegetationDescription('bowling balls')).throws('Invalid vegetation type');
+                assert(() => getDescription('bowling balls')).throws('Invalid vegetation type');
             });
         });
     });
 
-    describe('_getFeatureDesc()', () => {
+    // -- Public Functions -----------------------------------------------------
+
+    describe('getVegetationDescription()', () => {
         /*
         describe('given a count of one', () => {
             it('should return a single vegetation description', () => {

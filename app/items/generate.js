@@ -47,44 +47,6 @@ const maxColumnsRoom = 2;
 // -- Private Functions --------------------------------------------------------
 
 /**
- * Get item count based on quantity config.
- *
- * @param {string} itemQuantity
- *
- * @returns {number}
- */
-export const _getItemCount = (itemQuantity) => {
-    let { min, max } = getRange(itemQuantity);
-
-    return roll(min, max);
-};
-
-/**
- * Generate item objects
- *
- * @param {number} count
- * @param {Settings} settings
- *
- * @returns {object.<string, Item>}
- */
-export const _generateItemObjects = (count, settings) => [ ...Array(count) ].reduce((obj) => {
-    let item  = generateItem(settings);
-    let label = item.label;
-
-    // TODO use an identifier instead of label?
-    if (!obj[label]) {
-        obj[label] = { ...item };
-        obj[label].count = 1;
-
-        return obj;
-    }
-
-    obj[label].count++;
-
-    return obj; // TODO rename to `items`
-}, {});
-
-/**
  * Generates furnishings by room type.
  *
  * @param {string} roomType
@@ -92,7 +54,7 @@ export const _generateItemObjects = (count, settings) => [ ...Array(count) ].red
  *
  * @returns {Item[]}
  */
-export const _generateFurnishings = (roomType, quantity) => {
+ function generateFurnishings(roomType, quantity) {
     let furniture = [];
 
     if (quantity === furnitureQuantity.none) {
@@ -115,8 +77,32 @@ export const _generateFurnishings = (roomType, quantity) => {
     }
 
     return furniture;
-};
+}
 
+/**
+ * Generate item objects
+ *
+ * @param {number} count
+ * @param {Settings} settings
+ *
+ * @returns {object.<string, Item>}
+ */
+const generateItemObjects = (count, settings) => [ ...Array(count) ].reduce((obj) => {
+    let item  = generateItem(settings);
+    let label = item.label;
+
+    // TODO use an identifier instead of label?
+    if (!obj[label]) {
+        obj[label] = { ...item };
+        obj[label].count = 1;
+
+        return obj;
+    }
+
+    obj[label].count++;
+
+    return obj; // TODO rename to `items`
+}, {});
 
 /**
  * Get furnishing objects
@@ -129,7 +115,7 @@ export const _generateFurnishings = (roomType, quantity) => {
  *
  * @returns {{ [label: string]: Item }}
  */
-export const _getFurnishingObjects = (furnishings, roomCondition) => furnishings.reduce((obj, item) => {
+const getFurnishingObjects = (furnishings, roomCondition) => furnishings.reduce((obj, item) => {
     let label = item.label;
 
     if (roomCondition !== condition.average) {
@@ -149,6 +135,26 @@ export const _getFurnishingObjects = (furnishings, roomCondition) => furnishings
     return obj;
 }, {});
 
+/**
+ * Get item count based on quantity config.
+ *
+ * @param {string} itemQuantity
+ *
+ * @returns {number}
+ */
+ function getItemCount(itemQuantity) {
+    let { min, max } = getRange(itemQuantity);
+
+    return roll(min, max);
+}
+
+export const _private = {
+    generateFurnishings,
+    generateItemObjects,
+    getFurnishingObjects,
+    getItemCount,
+};
+
 // -- Public Functions ---------------------------------------------------------
 
 /**
@@ -160,7 +166,7 @@ export const _getFurnishingObjects = (furnishings, roomCondition) => furnishings
  *
  * @returns {string[]}
  */
-export const generateItems = (settings) => {
+export function generateItems(settings) {
     let {
         [knobs.roomType]      : roomType,
         [knobs.itemCondition] : itemCondition,
@@ -202,15 +208,15 @@ export const generateItems = (settings) => {
         return inRoom ? [] : [ subtitle('Items (0)') ];
     }
 
-    let count = _getItemCount(itemQuantity);
-    let items = _generateItemObjects(count, settings);
+    let count = getItemCount(itemQuantity);
+    let items = generateItemObjects(count, settings);
 
     let containers = [];
     let smallItems = [];
     let remaining  = [];
 
-    let furnishings   = inRoom ? _generateFurnishings(roomType, furnitureQuantity) : [];
-    let furnishingObj = _getFurnishingObjects(furnishings, roomCondition);
+    let furnishings   = inRoom ? generateFurnishings(roomType, furnitureQuantity) : [];
+    let furnishingObj = getFurnishingObjects(furnishings, roomCondition);
 
     let total = count + furnishings.length;
 
@@ -332,4 +338,4 @@ export const generateItems = (settings) => {
         description,
         itemList,
     ].filter(Boolean);
-};
+}

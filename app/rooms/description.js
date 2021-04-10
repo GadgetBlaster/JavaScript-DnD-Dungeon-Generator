@@ -29,7 +29,7 @@ import size from '../attributes/size.js';
  *
  * @type {string[]}
  */
-const _mapDescriptions = [
+const mapDescriptions = [
     'Searching the room reveals a map that appears to be of the dungeon.',
     'A large map of the dungeon is hanging on the wall.',
     'A map of the dungeon has crudely been carved in to the wall.',
@@ -46,7 +46,7 @@ const _mapDescriptions = [
  *
  * @returns {?string}
  */
-export const _getContentDescription = (settings = {}) => {
+function getContentDescription(settings = {}) {
     let {
         [knobs.itemQuantity]  : itemQuantity,
         [knobs.itemRarity]    : itemRarity,
@@ -58,8 +58,8 @@ export const _getContentDescription = (settings = {}) => {
         return;
     }
 
-    let furniture = _getFurnitureDetail(roomFurnishing);
-    let rarity    = _getContentRarityDetail(itemRarity);
+    let furniture = getFurnitureDetail(roomFurnishing);
+    let rarity    = getContentRarityDetail(itemRarity);
     let type      = getRoomTypeLabel(roomType).toLowerCase();
 
     let furnitureText;
@@ -90,7 +90,7 @@ export const _getContentDescription = (settings = {}) => {
             furnitureText = furniture ? (' amongst ' + furniture ) : '';
             return `There are numerous ${rarity} objects littering the ${type}${furnitureText}`;
     }
-};
+}
 
 /**
  * Get content rarity detail
@@ -99,10 +99,10 @@ export const _getContentDescription = (settings = {}) => {
  *
  * @returns {string}
  */
-export const _getContentRarityDetail = (rarity) => {
+function getContentRarityDetail(rarity) {
     let defaultRarity = rarity === random ? '' : 'ordinary';
     return indicateRarity.has(rarity) ? rarity : defaultRarity;
-};
+}
 
 /**
  * Get description
@@ -111,7 +111,7 @@ export const _getContentRarityDetail = (rarity) => {
  *
  * @returns {string}
  */
-export const _getDescription = (settings = {}) => {
+function getDescription(settings = {}) {
     let {
         [knobs.itemQuantity]:  itemQuantity,
         [knobs.roomCondition]: roomCondition,
@@ -134,7 +134,7 @@ export const _getDescription = (settings = {}) => {
     }
 
     return sentence;
-};
+}
 
 /**
  * Get doorway description
@@ -143,7 +143,7 @@ export const _getDescription = (settings = {}) => {
  *
  * @returns {string}
  */
-export const _getDoorwayDescription = ({ type, size, locked }) => {
+function getDoorwayDescription({ type, size, locked }) {
     let sizeDesc;
     let append = appendDoorway.has(type) && 'doorway';
 
@@ -160,7 +160,7 @@ export const _getDoorwayDescription = ({ type, size, locked }) => {
     let lockedDesc = locked ? 'locked' : '';
 
     return [ sizeDesc, lockedDesc, type, append ].filter(Boolean).join(' ');
-};
+}
 
 /**
  * Get furniture detail
@@ -169,7 +169,7 @@ export const _getDoorwayDescription = ({ type, size, locked }) => {
  *
  * @returns {string}
  */
-export const _getFurnitureDetail = (roomFurnishing) => {
+function getFurnitureDetail(roomFurnishing) {
     switch (roomFurnishing) {
         case furnitureQuantity.minimum:
             return 'minimal furnishings';
@@ -184,7 +184,7 @@ export const _getFurnitureDetail = (roomFurnishing) => {
         default:
             return '';
     }
-};
+}
 
 /**
  * Get item condition description
@@ -193,7 +193,7 @@ export const _getFurnitureDetail = (roomFurnishing) => {
  *
  * @returns {?string}
  */
-export const _getItemConditionDescription = (settings = {}) => {
+function getItemConditionDescription(settings = {}) {
     let {
         [knobs.itemQuantity] : itemQuantity,
         [knobs.itemCondition]: itemCondition,
@@ -219,7 +219,7 @@ export const _getItemConditionDescription = (settings = {}) => {
         default:
             return;
     }
-};
+}
 
 /**
  * Get key detail
@@ -230,7 +230,7 @@ export const _getItemConditionDescription = (settings = {}) => {
  *
  * @returns {string}
  */
-export const _getKeyDetail = (type) => {
+function getKeyDetail(type) {
     switch (type) {
         case doorType.brass:
         case doorType.iron:
@@ -251,7 +251,7 @@ export const _getKeyDetail = (type) => {
             console.warn(`Undefined key description for lockable door type ${type}`);
             return 'Key';
     }
-};
+}
 
 /**
  * Get room dimensions
@@ -260,7 +260,7 @@ export const _getKeyDetail = (type) => {
  *
  * @returns {string}
  */
-export const _getRoomDimensions = (roomSize) => {
+function getRoomDimensions(roomSize) {
     if (!roomSize) {
         return '';
     }
@@ -268,7 +268,7 @@ export const _getRoomDimensions = (roomSize) => {
     let [ width, height ] = roomSize;
 
     return `${width * cellFeet} x ${height * cellFeet} feet`;
-};
+}
 
 /**
  * Get room doorway description
@@ -277,7 +277,7 @@ export const _getRoomDimensions = (roomSize) => {
  *
  * @returns {?string}
  */
-export const _getRoomDoorwayDescription = (roomDoors) => {
+function getRoomDoorwayDescription(roomDoors) {
     let descParts = roomDoors.map(({ type, connection, size, locked }) => {
         if (type === doorType.concealed || type === doorType.secret) {
             return;
@@ -286,7 +286,7 @@ export const _getRoomDoorwayDescription = (roomDoors) => {
         /** @type {Connection} connection */
         let { direction, to } = connection;
 
-        let desc = _getDoorwayDescription({ type, size, locked });
+        let desc = getDoorwayDescription({ type, size, locked });
         let out  = to === outside ? ' out of the dungeon' : '';
 
         if (roomDoors.length === 1) {
@@ -309,6 +309,18 @@ export const _getRoomDoorwayDescription = (roomDoors) => {
     let comma = descParts.length > 1 ? ',' : '';
 
     return `${capitalize(descParts.join(', '))}${comma} and ${last}`;
+}
+
+export const _private = {
+    getContentDescription,
+    getContentRarityDetail,
+    getDescription,
+    getDoorwayDescription,
+    getFurnitureDetail,
+    getItemConditionDescription,
+    getKeyDetail,
+    getRoomDimensions,
+    getRoomDoorwayDescription,
 };
 
 // -- Public Functions ---------------------------------------------------------
@@ -324,7 +336,7 @@ export const getDoorwayList = (roomDoors) => {
     let doorList = roomDoors.map(({ type, connection, size, locked }) => {
         let { direction, to } = connection;
 
-        let desc    = _getDoorwayDescription({ type, size, locked });
+        let desc    = getDoorwayDescription({ type, size, locked });
         let connect = to === outside ? 'leading out of the dungeon' : `to Room ${to}`;
         let text    = `${capitalize(direction)} ${connect} (${em(desc)})`;
         let secret  = type === doorType.concealed || type === doorType.secret;
@@ -347,7 +359,7 @@ export const getKeyDescription = (keys) => {
         let { connections, type } = key;
         let [ from, to ] = Object.keys(connections);
 
-        return `${_getKeyDetail(type)} to room ${from} / ${to}`;
+        return `${getKeyDetail(type)} to room ${from} / ${to}`;
     }));
 };
 
@@ -357,7 +369,7 @@ export const getKeyDescription = (keys) => {
  * @returns {string}
  */
 export const getMapDescription = () => {
-    return subtitle('Map') + list([ rollArrayItem(_mapDescriptions) ]);
+    return subtitle('Map') + list([ rollArrayItem(mapDescriptions) ]);
 };
 
 /**
@@ -368,7 +380,7 @@ export const getMapDescription = () => {
  *
  * @returns {string}
  */
-export const getRoomDescription = (room, roomDoors) => {
+export function getRoomDescription(room, roomDoors) {
     let { settings, roomNumber, size: roomDimensions } = room;
 
     let {
@@ -379,19 +391,19 @@ export const getRoomDescription = (room, roomDoors) => {
     let numberLabel = roomCount > 1 ? ` ${roomNumber}` : '';
     let typeLabel   = type !== roomTypes.room ? ` - ${capitalize(getRoomTypeLabel(type))}` : '';
     let roomTitle   = title(`Room${numberLabel}${typeLabel}`);
-    let dimensions  = roomDimensions ? element('span', _getRoomDimensions(roomDimensions)) : '';
+    let dimensions  = roomDimensions ? element('span', getRoomDimensions(roomDimensions)) : '';
     let header      = element('header', roomTitle + dimensions);
 
     let content = header + subtitle('Description') + paragraph([
-        _getDescription(settings),
+        getDescription(settings),
         ...getEnvironmentDescription(settings),
-        _getContentDescription(settings),
-        _getItemConditionDescription(settings),
-        ...(roomDoors ? [ _getRoomDoorwayDescription(roomDoors) ] : []),
+        getContentDescription(settings),
+        getItemConditionDescription(settings),
+        ...(roomDoors ? [ getRoomDoorwayDescription(roomDoors) ] : []),
     ].filter(Boolean).join('. ')+'.');
 
     return content;
-};
+}
 
 /**
  * Get room type label

@@ -4,7 +4,7 @@
  *
  * @type {string[]}
  */
-const traps = [
+const trap = [
     'Collapsing roof triggered by a tripwire',
     'Falling cage triggered by a tripwire',
     'Falling net triggered by a tripwire',
@@ -24,4 +24,4 @@ const traps = [
     'Simple spiked pit trap covered and camouflaged',
 ];
 
-export default traps;
+export default trap;

@@ -1,9 +1,6 @@
 
 import {
-    _getAirDesc,
-    _getGroundDesc,
-    _getStructureDesc,
-    _getWallDesc,
+    _private,
     getEnvironmentDescription,
     structure,
 } from '../environment.js';
@@ -13,23 +10,24 @@ import { knobs } from '../../knobs.js';
 import roomType from '../type.js';
 import size from '../../attributes/size.js';
 
+const {
+    getStructureDesc,
+    getGroundDesc,
+    getWallDesc,
+    getAirDesc,
+} = _private;
+
 /**
  * @param {import('../../unit/state.js').Utility}
  */
 export default ({ assert, describe, it }) => {
-    describe('`structure`', () => {
-        it('should be an object of strings', () => {
-            assert(structure).isObject();
 
-            let invalidStructure = Object.values(structure).find((value) => typeof value !== 'string');
-            assert(invalidStructure).isUndefined();
-        });
-    });
+    // -- Private Functions ----------------------------------------------------
 
-    describe('_getStructureDesc()', () => {
+    describe('getStructureDesc()', () => {
         Object.values(structure).forEach((roomStructure) => {
             describe(`given a room structure of \`${roomStructure}\``, () => {
-                let desc = _getStructureDesc({
+                let desc = getStructureDesc({
                     [knobs.roomType]: roomType.bedroom,
                     [knobs.roomSize]: size.medium,
                 }, roomStructure);
@@ -46,7 +44,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given an invalid structure', () => {
             it('should throw', () => {
-                assert(() => _getStructureDesc({
+                assert(() => getStructureDesc({
                     [knobs.roomType]: roomType.bedroom,
                     [knobs.roomSize]: size.medium,
                 }, 'very small rocks')).throws('Invalid room structure');
@@ -56,7 +54,7 @@ export default ({ assert, describe, it }) => {
         describe('given a room structure of `structure.cave`', () => {
             describe('when the room size is `size.massive`', () => {
                 it('should include "cavern" and not "cave"', () => {
-                    let desc = _getStructureDesc({
+                    let desc = getStructureDesc({
                         [knobs.roomType]: roomType.room,
                         [knobs.roomSize]: size.massive,
                     }, structure.cave);
@@ -66,7 +64,7 @@ export default ({ assert, describe, it }) => {
 
                 describe('when the room type is `roomType.hallway`', () => {
                     it('should include "cave" and not "cavern"', () => {
-                        let desc = _getStructureDesc({
+                        let desc = getStructureDesc({
                             [knobs.roomType]: roomType.hallway,
                             [knobs.roomSize]: size.massive,
                         }, structure.cave);
@@ -79,7 +77,7 @@ export default ({ assert, describe, it }) => {
 
             describe('when the room size is not `size.massive`', () => {
                 it('should include "cave" and not "cavern"', () => {
-                    let desc = _getStructureDesc({
+                    let desc = getStructureDesc({
                         [knobs.roomType]: roomType.room,
                         [knobs.roomSize]: size.medium,
                     }, structure.cave);
@@ -91,26 +89,28 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('_getGroundDesc()', () => {
+    describe('getGroundDesc()', () => {
         // TODO inject probabilities
         // it('should return a string', () => {
-        //     assert(_getGroundDesc()).isString();
+        //     assert(getGroundDesc()).isString();
         // });
     });
 
-    describe('_getWallDesc()', () => {
+    describe('getWallDesc()', () => {
         // TODO inject probabilities
         // it('should return a string', () => {
-        //     assert(_getWallDesc()).isString();
+        //     assert(getWallDesc()).isString();
         // });
     });
 
-    describe('_getAirDesc()', () => {
+    describe('getAirDesc()', () => {
         // TODO inject probabilities
         // it('should return a string', () => {
-        //     assert(_getAirDesc()).isString();
+        //     assert(getAirDesc()).isString();
         // });
     });
+
+    // -- Public Functions -----------------------------------------------------
 
     describe('getEnvironmentDescription()', () => {
         it('should return an array of strings', () => {

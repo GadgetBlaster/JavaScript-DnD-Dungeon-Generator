@@ -1,5 +1,5 @@
 
-// -- Typography Tools --------------------------------------------------------
+// -- Typography ---------------------------------------------------------------
 
 /**
  * Capitalize string
@@ -17,13 +17,13 @@ export const capitalize = (text) => text.charAt(0).toUpperCase() + text.slice(1)
  *
  * @returns {string}
  */
-export const indefiniteArticle = (word) => {
+export function indefiniteArticle(word) {
     if ('aeiou'.indexOf(word[0].toLowerCase()) >= 0) {
         return 'an';
     }
 
     return 'a';
-};
+}
 
 /**
  * List sentence
@@ -32,7 +32,7 @@ export const indefiniteArticle = (word) => {
  *
  * @returns {string}
  */
-export const listSentence = (parts) => {
+export function listSentence(parts) {
     if (parts.length === 0) {
         return;
     }
@@ -46,7 +46,7 @@ export const listSentence = (parts) => {
     let comma = parts.length > 1 ? ',' : '';
 
     return `${parts.join(', ')}${comma} and ${last}`;
-};
+}
 
 /**
  * Plural
@@ -59,9 +59,9 @@ export const listSentence = (parts) => {
  *
  * @returns {string}
  */
-export const plural = (count, string, suffix = 's') => {
+export function plural(count, string, suffix = 's') {
     return `${string}${count !== 1 ? suffix : ''}`;
-};
+}
 
 /**
  * Convert spaces to dashes
@@ -81,7 +81,7 @@ export const toDash = (text) => text.replace(/\s+/g, '-').toLowerCase();
  */
 export const toWords = (text) => text.replace(/([A-Z])/g, ' $1').toLowerCase();
 
-// -- Numeric Tools -----------------------------------------------------------
+// -- Numeric ------------------------------------------------------------------
 
 /**
  * Is odd
@@ -101,7 +101,7 @@ export const isEven = (num)  => num % 2 === 0;
  */
 export const isOdd = (num)  => num % 2 !== 0;
 
-// -- Array Tools -------------------------------------------------------------
+// -- Array --------------------------------------------------------------------
 
 /**
  * Chunk

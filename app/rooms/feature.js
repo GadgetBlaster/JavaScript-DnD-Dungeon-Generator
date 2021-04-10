@@ -64,7 +64,7 @@ export const feature = {
  *
  * @returns {string}
  */
-export const _getFeatureDesc = (type, { variation = Boolean(roll()) } = {}) => {
+function getFeatureDesc(type, { variation = Boolean(roll()) } = {}) {
     switch (type) {
         case feature.altar: {
             let location = variation ? 'in the center' : 'to one side';
@@ -212,6 +212,10 @@ export const _getFeatureDesc = (type, { variation = Boolean(roll()) } = {}) => {
         default:
             throw new TypeError('Invalid room feature');
     }
+}
+
+export const _private = {
+    getFeatureDesc,
 };
 
 // -- Public Functions ---------------------------------------------------------
@@ -226,7 +230,7 @@ export const _getFeatureDesc = (type, { variation = Boolean(roll()) } = {}) => {
  *
  * @returns {string[]}
  */
-export const getRoomFeatures = (settings) => {
+export function getRoomFeatures(settings) {
     let {
         [knobs.roomType]: roomTypeSetting,
     } = settings;
@@ -248,8 +252,8 @@ export const getRoomFeatures = (settings) => {
     }
 
     let roomFeatures = [ ...types ].map((type) => {
-        return _getFeatureDesc(type);
+        return getFeatureDesc(type);
     });
 
     return roomFeatures;
-};
+}

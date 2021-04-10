@@ -2,13 +2,17 @@
 import size, { list as sizes } from '../../attributes/size.js';
 import { list as roomTypes } from '../type.js';
 import {
-    _hallLengthMin,
-    _hallWidthMax,
-    _hallWidthMin,
+    _private,
     customDimensions,
     dimensionRanges,
     roomTypeSizes,
 } from '../dimensions.js';
+
+const {
+    hallLengthMin,
+    hallWidthMax,
+    hallWidthMin,
+} = _private;
 
 /**
  * @param {import('../../unit/state.js').Utility}
@@ -42,20 +46,20 @@ export default ({ assert, describe, it }) => {
                         assert(roomDimensions.roomHeight).isNumber();
                     });
 
-                    it('should not have a height less than `_hallLengthMin`', () => {
-                        assert(roomDimensions.roomHeight >= _hallLengthMin).isTrue();
+                    it('should not have a height less than `hallLengthMin`', () => {
+                        assert(roomDimensions.roomHeight >= hallLengthMin).isTrue();
                     });
 
                     it('should not have a height greater than the room\'s max dimension', () => {
                         assert(roomDimensions.roomHeight <= dimensionRanges.massive[1]).isTrue();
                     });
 
-                    it('should not have a width greater than `_hallWidthMax`', () => {
-                        assert(roomDimensions.roomWidth <= _hallWidthMax).isTrue();
+                    it('should not have a width greater than `hallWidthMax`', () => {
+                        assert(roomDimensions.roomWidth <= hallWidthMax).isTrue();
                     });
 
-                    it('should not have a width less than `_hallWidthMin`', () => {
-                        assert(roomDimensions.roomWidth >= _hallWidthMin).isTrue();
+                    it('should not have a width less than `hallWidthMin`', () => {
+                        assert(roomDimensions.roomWidth >= hallWidthMin).isTrue();
                     });
 
                     it('width should be less than height', () => {
@@ -72,20 +76,20 @@ export default ({ assert, describe, it }) => {
                         assert(roomDimensions.roomHeight).isNumber();
                     });
 
-                    it('should not have a width less than `_hallLengthMin`', () => {
-                        assert(roomDimensions.roomWidth >= _hallLengthMin).isTrue();
+                    it('should not have a width less than `hallLengthMin`', () => {
+                        assert(roomDimensions.roomWidth >= hallLengthMin).isTrue();
                     });
 
                     it('should not have a width greater than the room\'s max dimension', () => {
                         assert(roomDimensions.roomWidth <= dimensionRanges.massive[1]).isTrue();
                     });
 
-                    it('should not have a height greater than `_hallWidthMax`', () => {
-                        assert(roomDimensions.roomHeight <= _hallWidthMax).isTrue();
+                    it('should not have a height greater than `hallWidthMax`', () => {
+                        assert(roomDimensions.roomHeight <= hallWidthMax).isTrue();
                     });
 
-                    it('should not have a height less than `_hallWidthMin`', () => {
-                        assert(roomDimensions.roomHeight >= _hallWidthMin).isTrue();
+                    it('should not have a height less than `hallWidthMin`', () => {
+                        assert(roomDimensions.roomHeight >= hallWidthMin).isTrue();
                     });
 
                     it('height should be less than width', () => {

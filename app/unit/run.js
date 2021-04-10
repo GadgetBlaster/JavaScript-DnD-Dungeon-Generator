@@ -8,7 +8,7 @@
  *
  * @returns {import('./state').Summary}
  */
-export default ({ getSummary, onError, runUnits }, suite, scope) => {
+export default function ({ getSummary, onError, runUnits }, suite, scope) {
     if (!suite || typeof suite !== 'object') {
         onError('Invalid test suite');
         return;
@@ -48,4 +48,4 @@ export default ({ getSummary, onError, runUnits }, suite, scope) => {
     });
 
     return getSummary();
-};
+}

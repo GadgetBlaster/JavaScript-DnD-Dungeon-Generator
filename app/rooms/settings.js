@@ -50,12 +50,12 @@ const uniformRarityChance = 10;
  * @type {{ [knobSetting: string]: () => string }}
  */
 const roomRandomizations = {
-    [knobs.itemCondition] : () => _rollUniformity(uniformConditionChance, conditionProbability),
+    [knobs.itemCondition] : () => rollUniformity(uniformConditionChance, conditionProbability),
     [knobs.itemQuantity]  : () => quantityProbability.roll(),
-    [knobs.itemRarity]    : () => _rollUniformity(uniformRarityChance, rarityProbability),
+    [knobs.itemRarity]    : () => rollUniformity(uniformRarityChance, rarityProbability),
     [knobs.roomCondition] : () => conditionProbability.roll(),
     [knobs.roomFurnishing]: () => furnitureQuantityProbability.roll(),
-    [knobs.roomType]      : () => _rollRoomType(roomTypeProbability.roll()),
+    [knobs.roomType]      : () => rollRoomType(roomTypeProbability.roll()),
 };
 
 // -- Private Functions --------------------------------------------------------
@@ -67,9 +67,7 @@ const roomRandomizations = {
  *
  * @returns {string} size
  */
-const _rollRoomSize = (type) => {
-    return rollArrayItem(roomTypeSizes[type]);
-};
+const rollRoomSize = (type) => rollArrayItem(roomTypeSizes[type]);
 
 /**
  * Returns a random room type using the room type probability table.
@@ -78,7 +76,7 @@ const _rollRoomSize = (type) => {
  *
  * @returns {string} roomType
  */
-export const _rollRoomType = (type) => {
+function rollRoomType(type) {
     if (type === random) {
         return rollArrayItem(roomTypes);
     }
@@ -98,18 +96,23 @@ export const _rollRoomType = (type) => {
  *
  * @returns {string|null} itemCondition
  */
-export const _rollUniformity = (uniformityChance, probability) => {
+function rollUniformity(uniformityChance, probability) {
     if (!rollPercentile(uniformityChance)) {
         return null;
     }
 
     return probability.roll();
+}
+
+export const _private = {
+    rollRoomType,
+    rollUniformity,
 };
 
 // -- Public Functions ---------------------------------------------------------
 
 // TODO consolidate with applyRoomRandomization
-const applyRandomization = (config, randomizations) => {
+function applyRandomization(config, randomizations) {
     let settings = { ...config };
 
     Object.keys(settings).forEach((key) => {
@@ -125,7 +128,7 @@ const applyRandomization = (config, randomizations) => {
     });
 
     if (settings[knobs.roomSize] === random) {
-        settings[knobs.roomSize] = _rollRoomSize(settings[knobs.roomType]);
+        settings[knobs.roomSize] = rollRoomSize(settings[knobs.roomType]);
     }
 
     if (settings[knobs.roomType] === roomType.hallway && settings[knobs.itemQuantity] === quantity.numerous) {
@@ -133,7 +136,7 @@ const applyRandomization = (config, randomizations) => {
     }
 
     return settings;
-};
+}
 
 /**
  * Apply room randomizations
@@ -145,6 +148,6 @@ const applyRandomization = (config, randomizations) => {
  *
  * @returns {import('./generate.js').RoomConfig}
  */
-export const applyRoomRandomization = (config) => {
+export function applyRoomRandomization(config) {
     return applyRandomization(config, roomRandomizations);
-};
+}

@@ -1,7 +1,6 @@
 
 import {
-    _rollRoomType,
-    _rollUniformity,
+    _private,
     applyRoomRandomization,
 } from '../settings.js';
 
@@ -14,38 +13,48 @@ import { random } from '../../utility/random.js';
 import quantity, { quantities } from '../../attributes/quantity.js';
 import roomType, { list as roomTypes } from '../type.js';
 
+const {
+    rollRoomType,
+    rollUniformity,
+} = _private;
+
 /**
  * @param {import('../../unit/state.js').Utility}
  */
 export default ({ assert, describe, it }) => {
-    describe('_rollRoomType()', () => {
+
+    // -- Private Functions ----------------------------------------------------
+
+    describe('rollRoomType()', () => {
         describe('given a room type other than `random`', () => {
             it('should return it', () => {
-                assert(_rollRoomType(roomType.smithy)).equals(roomType.smithy);
+                assert(rollRoomType(roomType.smithy)).equals(roomType.smithy);
             });
         });
 
         describe('given a room type of `random`', () => {
             it('should return a random room type', () => {
-                assert(roomType[_rollRoomType(random)] !== undefined).isTrue();
+                assert(roomType[rollRoomType(random)] !== undefined).isTrue();
             });
         });
     });
 
-    describe('_rollUniformity()', () => {
+    describe('rollUniformity()', () => {
         describe('given a uniformity condition of 100%', () => {
             it('should call `roll()` on the probability object', () => {
-                let result = _rollUniformity(100, { roll: () => 'fake result' });
+                let result = rollUniformity(100, { roll: () => 'fake result' });
                 assert(result).equals('fake result');
             });
         });
 
         describe('given a uniformity condition of 0%', () => {
             it('should return null', () => {
-                assert(_rollUniformity(0, { roll: () => 'fake result' })).isNull();
+                assert(rollUniformity(0)).isNull();
             });
         });
     });
+
+    // -- Public Functions -----------------------------------------------------
 
     describe('applyRoomRandomization()', () => {
         describe('given a `KnobSettings` object', () => {

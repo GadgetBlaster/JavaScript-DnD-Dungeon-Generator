@@ -34,7 +34,7 @@ const _throw = (message) => { throw new TypeError(message); };
  *
  * @returns {string}
  */
-export const _getKnob = (settings) => {
+function getKnob(settings) {
     let {
         name,
         type,
@@ -54,7 +54,7 @@ export const _getKnob = (settings) => {
         default:
             throw new TypeError('Invalid knob type');
     }
-};
+}
 
 /**
  * Render fields
@@ -65,13 +65,13 @@ export const _getKnob = (settings) => {
  *
  * @returns {string}
  */
-export const _renderFields = (fields) => fields.map((settings) => {
+const renderFields = (fields) => fields.map((settings) => {
     let { desc, label, name } = settings;
 
     !name  && _throw('Missing required knob name');
     !label && _throw('Missing required knob label');
 
-    let knob       = _getKnob(settings);
+    let knob       = getKnob(settings);
     let descId     = desc && `info-${name}`;
     let descButton = desc ? button(infoLabel, actions.showHide, { target: descId, size: buttonSize.auto }) : '';
     let descText   = desc ? paragraph(small(desc), { hidden: true, 'data-id': descId }) : '';
@@ -79,6 +79,11 @@ export const _renderFields = (fields) => fields.map((settings) => {
 
     return div(knobLabel + descText + knob);
 }).join('');
+
+export const _private = {
+    getKnob,
+    renderFields,
+};
 
 // -- Public Functions ---------------------------------------------------------
 
@@ -89,7 +94,7 @@ export const _renderFields = (fields) => fields.map((settings) => {
  *
  * @returns {Object<string, *>}
  */
-export const getFormData = (knobContainer) => {
+export function getFormData(knobContainer) {
     return [ ...knobContainer.querySelectorAll('[name]') ].reduce((set, item) => {
         let { name, value } = item;
 
@@ -97,7 +102,7 @@ export const getFormData = (knobContainer) => {
 
         return set;
     }, {});
-};
+}
 
 /**
  * Render knobs
@@ -126,10 +131,11 @@ export const renderKnobs = (knobs, page) => knobs.map((knobConfig) => {
         'data-id': fieldsetId,
     };
 
-    return fieldset(handle + section(_renderFields(fields)), attrs);
+    return fieldset(handle + section(renderFields(fields)), attrs);
 }).join('');
 
 /** @type {string} submitButton */
+// TODO move to point of use
 export const submitButton = button('Generate', actions.generate, {
     size: buttonSize.large,
     type: 'submit',

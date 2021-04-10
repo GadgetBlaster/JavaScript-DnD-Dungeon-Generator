@@ -2,7 +2,7 @@
 import './typedefs.js';
 import { chunk, toDash } from './utility/tools.js';
 
-import { formatSummaryLink } from './unit/output.js';
+import { getSummaryLink } from './unit/output.js';
 import { useState } from './unit/state.js';
 import run from './unit/run.js';
 import suite from './unit/suite.js';
@@ -41,7 +41,7 @@ const footerContainer  = document.getElementById('footer');
 const knobContainer    = document.getElementById('knobs');
 const navContainer     = document.getElementById('nav');
 
-const testSummary = formatSummaryLink(run(useState(), suite), { asLink: true });
+const testSummary = getSummaryLink(run(useState(), suite), { asLink: true });
 footerContainer.insertAdjacentHTML('afterbegin', testSummary);
 
 const homeContent = contentContainer.innerHTML;

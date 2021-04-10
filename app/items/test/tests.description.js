@@ -11,6 +11,20 @@ import rarity from '../../attributes/rarity.js';
  * @param {import('../../unit/state.js').Utility}
  */
 export default ({ assert, describe, it }) => {
+    describe('getConditionDescription()', () => {
+        describe('given an item condition of `condition.average`', () => {
+            it('should return undefined', () => {
+                assert(getConditionDescription(condition.average)).isFalse();
+            });
+        });
+
+        describe('given an item condition other than `condition.average`', () => {
+            it('should return a string containing the condition', () => {
+                assert(getConditionDescription(condition.exquisite)).stringIncludes(condition.exquisite);
+            });
+        });
+    });
+
     describe('getItemDescription()', () => {
         describe('given an item count of 1', () => {
             it('should return the item label', () => {
@@ -27,20 +41,6 @@ export default ({ assert, describe, it }) => {
                     label: 'Bubbling goblin juice',
                     count: 12,
                 })).equals('Bubbling goblin juice (12)');
-            });
-        });
-    });
-
-    describe('getConditionDescription()', () => {
-        describe('given an item condition of `condition.average`', () => {
-            it('should return undefined', () => {
-                assert(getConditionDescription(condition.average)).isFalse();
-            });
-        });
-
-        describe('given an item condition other than `condition.average`', () => {
-            it('should return a string containing the condition', () => {
-                assert(getConditionDescription(condition.exquisite)).stringIncludes(condition.exquisite);
             });
         });
     });

@@ -25,8 +25,6 @@ import environment from '../rooms/test/tests.environment.js';
 import feature from '../rooms/test/tests.feature.js';
 import generateRooms from '../rooms/test/tests.generate.js';
 import settings from '../rooms/test/tests.settings.js';
-import trap from '../rooms/test/tests.trap.js';
-import type from '../rooms/test/tests.type.js';
 import vegetation from '../rooms/test/tests.vegetation.js';
 
 import itemDescription from '../items/test/tests.description.js';
@@ -59,8 +57,6 @@ export default {
     '/app/rooms/test/tests.feature.js'    : feature,
     '/app/rooms/test/tests.generate.js'   : generateRooms,
     '/app/rooms/test/tests.settings.js'   : settings,
-    '/app/rooms/test/tests.trap.js'       : trap,
-    '/app/rooms/test/tests.type.js'       : type,
     '/app/rooms/test/tests.vegetation.js' : vegetation,
 
     '/app/item/test/tests.description.js' : itemDescription,

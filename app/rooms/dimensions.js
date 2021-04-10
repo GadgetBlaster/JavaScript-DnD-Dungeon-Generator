@@ -19,9 +19,9 @@ let {
 // -- Config -------------------------------------------------------------------
 
 // TODO rename to not confuse "width" with x-axis
-export const _hallLengthMin = 3;
-export const _hallWidthMin  = 1;
-export const _hallWidthMax  = 1;
+const hallLengthMin = 3;
+const hallWidthMin  = 1;
+const hallWidthMax  = 1;
 
 /**
  * Dimension ranges
@@ -67,8 +67,8 @@ export const customDimensions = {
     hallway: (roomSize, { isHorizontal = roll() } = {}) => {
         let [ min, max ] = dimensionRanges[roomSize];
 
-        let length = roll(Math.max(_hallLengthMin, min), max);
-        let width  = roll(_hallWidthMin, _hallWidthMax);
+        let length = roll(Math.max(hallLengthMin, min), max);
+        let width  = roll(hallWidthMin, hallWidthMax);
 
         let roomWidth  = isHorizontal ? length : width;
         let roomHeight = isHorizontal ? width  : length;
@@ -93,3 +93,9 @@ export const roomTypeSizes = roomTypes.reduce((obj, roomType) => {
 
     return obj;
 }, {});
+
+export const _private = {
+    hallLengthMin,
+    hallWidthMin,
+    hallWidthMax,
+};

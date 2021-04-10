@@ -22,7 +22,7 @@ export const actions = {
  * @param {Element} container
  * @param {Object<string, function>} triggers
  */
-export const attachActions = (container, triggers) => {
+export function attachActions(container, triggers) {
     container.addEventListener('click', (e) => {
         let action = e.target.dataset.action;
 
@@ -32,7 +32,7 @@ export const attachActions = (container, triggers) => {
 
         triggers[action] && triggers[action](e);
     });
-};
+}
 
 /**
  * Toggle accordion
@@ -40,7 +40,7 @@ export const attachActions = (container, triggers) => {
  * @param {Element} container
  * @param {Event} e
  */
-export const toggleAccordion = (container, e) => {
+export function toggleAccordion(container, e) {
     let target = e.target.dataset.target;
 
     let accordions = container.querySelectorAll('[data-collapsed]');
@@ -55,7 +55,7 @@ export const toggleAccordion = (container, e) => {
     let collapsed = targetEl.dataset.collapsed === 'true';
 
     targetEl.dataset.collapsed = collapsed === true ? false : true;
-};
+}
 
 /**
  * Toggle visibility
@@ -63,9 +63,9 @@ export const toggleAccordion = (container, e) => {
  * @param {Element} container
  * @param {Event} e
  */
-export const toggleVisibility = (container, e) => {
+export function toggleVisibility(container, e) {
     let target   = e.target.dataset.target;
     let targetEl = container.querySelector(`[data-id="${target}"]`);
 
     targetEl.hidden = !targetEl.hidden;
-};
+}

@@ -1,7 +1,6 @@
 
 import {
-    _getKnob,
-    _renderFields,
+    _private,
     getFormData,
     renderKnobs,
     submitButton,
@@ -10,54 +9,62 @@ import {
 import { actions } from '../action.js';
 import { typeSelect, typeNumber, typeRange } from '../../knobs.js';
 
+const {
+    getKnob,
+    renderFields,
+} = _private;
+
 /**
  * @param {import('../../unit/state.js').Utility}
  */
 export default ({ assert, describe, it }) => {
-    describe('_getKnob()', () => {
+
+    // -- Private Functions ----------------------------------------------------
+
+    describe('getKnob()', () => {
         describe('given an invalid type', () => {
             it('should throw', () => {
-                assert(() => _getKnob({ name: 'Tools' }))
+                assert(() => getKnob({ name: 'Tools' }))
                     .throws('Invalid knob type');
             });
         });
 
         describe('given a type of `typeSelect`', () => {
             it('should return an html select element string', () => {
-                assert(_getKnob({ type: typeSelect, values: [] })).isHtmlTag('select');
+                assert(getKnob({ type: typeSelect, values: [] })).isHtmlTag('select');
             });
         });
 
         describe('given a type of `typeNumber`', () => {
             it('should return an html input element string', () => {
-                assert(_getKnob({ type: typeNumber })).isHtmlTag('input');
+                assert(getKnob({ type: typeNumber })).isHtmlTag('input');
             });
         });
 
         describe('given a type of `typeRange`', () => {
             it('should return an html input element string', () => {
-                assert(_getKnob({ type: typeRange })).isHtmlTag('input');
+                assert(getKnob({ type: typeRange })).isHtmlTag('input');
             });
         });
     });
 
-    describe('_renderFields()', () => {
+    describe('renderFields()', () => {
         describe('given an empty array', () => {
             it('should return an empty string', () => {
-                assert(_renderFields([])).equals('');
+                assert(renderFields([])).equals('');
             });
         });
 
         describe('given no name', () => {
             it('should throw', () => {
-                assert(() => _renderFields([ { label: 'Pirates' } ]))
+                assert(() => renderFields([ { label: 'Pirates' } ]))
                     .throws('Missing required knob name');
             });
         });
 
         describe('given no label', () => {
             it('should throw', () => {
-                assert(() => _renderFields([ { name: 'Pirates' } ]))
+                assert(() => renderFields([ { name: 'Pirates' } ]))
                     .throws('Missing required knob label');
             });
         });
@@ -66,7 +73,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given settings for a single knob', () => {
             describe('given a name, label, and type', () => {
-                const result = _renderFields([ numberSettings ]);
+                const result = renderFields([ numberSettings ]);
 
                 it('should return a string', () => {
                     assert(result).isString();
@@ -86,7 +93,7 @@ export default ({ assert, describe, it }) => {
             });
 
             describe('given no description', () => {
-                const result = _renderFields([ numberSettings ]);
+                const result = renderFields([ numberSettings ]);
 
                 it('should not include an html info button string', () => {
                     assert(result).stringExcludes('<button');
@@ -98,7 +105,7 @@ export default ({ assert, describe, it }) => {
             });
 
             describe('given a description', () => {
-                const result = _renderFields([ { ...numberSettings, desc: 'Toad\'s tenacity'} ]);
+                const result = renderFields([ { ...numberSettings, desc: 'Toad\'s tenacity'} ]);
 
                 it('should include an html info button string', () => {
                     const snapshot = '<button data-action="showHide" data-size="auto" data-target="info-size" data-info="true" type="button">?</button>';
@@ -113,7 +120,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given settings for multiple knobs', () => {
-            const result = _renderFields([
+            const result = renderFields([
                 { name: 'size', label: 'Size', type: typeNumber },
                 { name: 'shape', label: 'Shape', type: typeRange },
                 { name: 'squishiness', label: 'Squishiness', type: typeSelect, values: [] },
@@ -134,6 +141,8 @@ export default ({ assert, describe, it }) => {
             });
         });
     });
+
+    // -- Public Functions -----------------------------------------------------
 
     describe('getFormData()', () => {
         describe('given an element with knob child elements', () => {

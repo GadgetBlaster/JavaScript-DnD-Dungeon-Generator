@@ -1,14 +1,6 @@
 
 import {
-    _getContentDescription,
-    _getContentRarityDetail,
-    _getDescription,
-    _getDoorwayDescription,
-    _getFurnitureDetail,
-    _getItemConditionDescription,
-    _getKeyDetail,
-    _getRoomDimensions,
-    _getRoomDoorwayDescription,
+    _private,
     getDoorwayList,
     getKeyDescription,
     getMapDescription,
@@ -29,26 +21,41 @@ import rarity, { indicateRarity, rarities } from '../../attributes/rarity.js';
 import roomType, { appendRoomTypes } from '../../rooms/type.js';
 import size from '../../attributes/size.js';
 
+const {
+    getContentDescription,
+    getContentRarityDetail,
+    getDescription,
+    getDoorwayDescription,
+    getFurnitureDetail,
+    getItemConditionDescription,
+    getKeyDetail,
+    getRoomDimensions,
+    getRoomDoorwayDescription,
+} = _private;
+
 /**
  * @param {import('../../unit/state.js').Utility}
  */
 export default ({ assert, describe, it }) => {
-    describe('_getContentsDescription()', () => {
+
+    // -- Private Functions ----------------------------------------------------
+
+    describe('getContentsDescription()', () => {
         describe('given no settings', () => {
             it('should return `undefined`', () => {
-                assert(_getContentDescription()).isUndefined();
+                assert(getContentDescription()).isUndefined();
             });
         });
 
         describe('given no item quantity', () => {
             it('should return `undefined`', () => {
-                assert(_getContentDescription({})).isUndefined();
+                assert(getContentDescription({})).isUndefined();
             });
         });
 
         describe('given an item quantity of `quantity.zero`', () => {
             it('should return `undefined`', () => {
-                assert(_getContentDescription({
+                assert(getContentDescription({
                     [knobs.itemQuantity]: quantity.zero
                 })).isUndefined();
             });
@@ -61,7 +68,7 @@ export default ({ assert, describe, it }) => {
             positiveQuantities.forEach((itemQuantity) => {
                 describe(`given an item quantity of \`quantity.${itemQuantity}\``, () => {
                     it('should contain the given room type', () => {
-                        assert(_getContentDescription({
+                        assert(getContentDescription({
                             [knobs.roomType]: roomType.atrium,
                             [knobs.itemQuantity]: itemQuantity,
                         })).stringIncludes(roomType.atrium);
@@ -69,7 +76,7 @@ export default ({ assert, describe, it }) => {
 
                     describe('given an item rarity of `rarity.rare`', () => {
                         it('should contain the word "rare"', () => {
-                            assert(_getContentDescription({
+                            assert(getContentDescription({
                                 [knobs.itemRarity]: rarity.rare,
                                 [knobs.itemQuantity]: itemQuantity,
                             })).stringIncludes(rarity.rare);
@@ -78,7 +85,7 @@ export default ({ assert, describe, it }) => {
 
                     describe('given a room furnishing of `furnitureQuantity.furnished`', () => {
                         it('should contain the word "furniture"', () => {
-                            assert(_getContentDescription({
+                            assert(getContentDescription({
                                 [knobs.roomFurnishing]: furnitureQuantity.furnished,
                                 [knobs.itemQuantity]: itemQuantity,
                             })).stringIncludes('furniture');
@@ -87,7 +94,7 @@ export default ({ assert, describe, it }) => {
 
                     describe('given no room furnishing', () => {
                         it('should not contain the word "furniture" or "furnishings"', () => {
-                            assert(_getContentDescription({ [knobs.itemQuantity]: itemQuantity }))
+                            assert(getContentDescription({ [knobs.itemQuantity]: itemQuantity }))
                                 .stringExcludes('furniture')
                                 .stringExcludes('furnishings');
                         });
@@ -97,10 +104,10 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('_getContentRarityDetail()', () => {
+    describe('getContentRarityDetail()', () => {
         describe('given a rarity of `random`', () => {
             it('should return an empty string', () => {
-                assert(_getContentRarityDetail(random)).equals('');
+                assert(getContentRarityDetail(random)).equals('');
             });
         });
 
@@ -108,7 +115,7 @@ export default ({ assert, describe, it }) => {
             let rarityNotIndicated = rarities.find((contentRarity) => !indicateRarity.has(contentRarity));
 
             it('should return "ordinary"', () => {
-                assert(_getContentRarityDetail(rarityNotIndicated)).equals('ordinary');
+                assert(getContentRarityDetail(rarityNotIndicated)).equals('ordinary');
             });
         });
 
@@ -116,35 +123,35 @@ export default ({ assert, describe, it }) => {
             let rarityIndicated = [ ...indicateRarity ].pop();
 
             it('should return the rarity', () => {
-                assert(_getContentRarityDetail(rarityIndicated)).equals(rarityIndicated);
+                assert(getContentRarityDetail(rarityIndicated)).equals(rarityIndicated);
             });
         });
     });
 
-    describe('_getDescription()', () => {
+    describe('getDescription()', () => {
         describe('given no settings', () => {
             it('should return "You enter a room"', () => {
-                assert(_getDescription()).equals('You enter a room');
+                assert(getDescription()).equals('You enter a room');
             });
         });
 
         describe('given a room type', () => {
             it('should return a description including the room type', () => {
-                assert(_getDescription({ [knobs.roomType]: roomType.library }))
+                assert(getDescription({ [knobs.roomType]: roomType.library }))
                     .stringIncludes('library');
             });
         });
 
         describe('given a room size', () => {
             it('should return a description including the room size', () => {
-                assert(_getDescription({ [knobs.roomSize]: size.large }))
+                assert(getDescription({ [knobs.roomSize]: size.large }))
                     .stringIncludes('large room');
             });
         });
 
         describe('given a room size of `size.medium`', () => {
             it(`should return a description including "${size.medium} sized room"`, () => {
-                assert(_getDescription({ [knobs.roomSize]: size.medium }))
+                assert(getDescription({ [knobs.roomSize]: size.medium }))
                     .stringIncludes(`${size.medium} sized room`);
             });
 
@@ -155,7 +162,7 @@ export default ({ assert, describe, it }) => {
                         [knobs.roomSize]: size.medium
                     };
 
-                    assert(_getDescription(settings))
+                    assert(getDescription(settings))
                         .stringIncludes(`${size.medium} sized ${roomType.smithy}`);
                 });
             });
@@ -163,7 +170,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given item `quantity.zero`', () => {
             it('should return a description including "an empty room"', () => {
-                assert(_getDescription({ [knobs.itemQuantity]: quantity.zero }))
+                assert(getDescription({ [knobs.itemQuantity]: quantity.zero }))
                     .stringIncludes('an empty room');
             });
 
@@ -174,7 +181,7 @@ export default ({ assert, describe, it }) => {
                         [knobs.itemQuantity]: quantity.zero
                     };
 
-                    assert(_getDescription(settings))
+                    assert(getDescription(settings))
                         .stringIncludes(`empty ${roomType.study}`);
                 });
             });
@@ -186,7 +193,7 @@ export default ({ assert, describe, it }) => {
                         [knobs.roomSize]: size.massive,
                     };
 
-                    assert(_getDescription(settings))
+                    assert(getDescription(settings))
                         .stringIncludes(`${size.massive} empty room`);
                 });
             });
@@ -199,7 +206,7 @@ export default ({ assert, describe, it }) => {
                         [knobs.roomType]: roomType.treasury,
                     };
 
-                    assert(_getDescription(settings))
+                    assert(getDescription(settings))
                         .stringIncludes(`${size.large} empty ${roomType.treasury}`);
                 });
             });
@@ -208,7 +215,7 @@ export default ({ assert, describe, it }) => {
         describe('given a room condition', () => {
             describe('given a room condition of `condition.average`', () => {
                 it('should not include "condition" in the room description', () => {
-                    assert(_getDescription({ [knobs.roomCondition]: condition.average }))
+                    assert(getDescription({ [knobs.roomCondition]: condition.average }))
                         .stringExcludes('condition');
                 });
             });
@@ -217,16 +224,16 @@ export default ({ assert, describe, it }) => {
                 it(`should return a description including the condition`, () => {
                     const settings = { [knobs.roomCondition]: condition.busted };
 
-                    assert(_getDescription(settings)).stringIncludes(condition.busted);
+                    assert(getDescription(settings)).stringIncludes(condition.busted);
                 });
             });
         });
     });
 
-    describe('_getDoorwayDescription()', () => {
+    describe('getDoorwayDescription()', () => {
         describe('given a size of `1`', () => {
             it('should not contain a size description', () => {
-                assert(_getDoorwayDescription({ size: 1 }))
+                assert(getDoorwayDescription({ size: 1 }))
                     .stringExcludes('double wide')
                     .stringExcludes('large')
                     .stringExcludes('massive');
@@ -235,19 +242,19 @@ export default ({ assert, describe, it }) => {
 
         describe('given a size of `2`', () => {
             it('should contain the string "wide"', () => {
-                assert(_getDoorwayDescription({ size: 2 })).stringIncludes('wide');
+                assert(getDoorwayDescription({ size: 2 })).stringIncludes('wide');
             });
         });
 
         describe('given a size of `3`', () => {
             it('should contain a the string "large"', () => {
-                assert(_getDoorwayDescription({ size: 3 })).stringIncludes('large');
+                assert(getDoorwayDescription({ size: 3 })).stringIncludes('large');
             });
         });
 
         describe('given a size larger than `3`', () => {
             it('should contain a the string "massive"', () => {
-                assert(_getDoorwayDescription({ size: 12 })).stringIncludes('massive');
+                assert(getDoorwayDescription({ size: 12 })).stringIncludes('massive');
             });
         });
 
@@ -255,34 +262,34 @@ export default ({ assert, describe, it }) => {
             let appendDoorwayType = [ ...appendDoorway ].pop();
 
             it('should contain the string "doorway"', () => {
-                assert(_getDoorwayDescription({ type: appendDoorwayType }))
+                assert(getDoorwayDescription({ type: appendDoorwayType }))
                     .stringIncludes('doorway');
             });
 
             describe('given a size of `2`', () => {
                 it('should contain the string `double wide`', () => {
-                    assert(_getDoorwayDescription({ type: appendDoorwayType, size: 2 })).stringIncludes('double wide');
+                    assert(getDoorwayDescription({ type: appendDoorwayType, size: 2 })).stringIncludes('double wide');
                 });
             });
         });
 
         describe('given an object with a truthy `locked` property', () => {
             it('should contain the string "locked"', () => {
-                assert(_getDoorwayDescription({ locked: true })).stringIncludes('locked');
+                assert(getDoorwayDescription({ locked: true })).stringIncludes('locked');
             });
         });
 
         describe('given an object with a falsy `locked` property', () => {
             it('should not contain the string "locked"', () => {
-                assert(_getDoorwayDescription({ locked: false })).stringExcludes('locked');
+                assert(getDoorwayDescription({ locked: false })).stringExcludes('locked');
             });
         });
     });
 
-    describe('_getFurnitureDetail()', () => {
+    describe('getFurnitureDetail()', () => {
         describe('given `furnitureQuantity.none`', () => {
             it('should return an empty string', () => {
-                assert(_getFurnitureDetail(furnitureQuantity.none)).equals('');
+                assert(getFurnitureDetail(furnitureQuantity.none)).equals('');
             });
         });
 
@@ -292,7 +299,7 @@ export default ({ assert, describe, it }) => {
 
             positiveFurnitureQuantities.forEach((roomFurnishing) => {
                 it('should return a string including "furniture" or "furnishings"', () => {
-                    let detail = _getFurnitureDetail(roomFurnishing);
+                    let detail = getFurnitureDetail(roomFurnishing);
                     let isOk = detail.includes('furniture') || detail.includes('furnishings');
                     assert(isOk).isTrue();
                 });
@@ -300,29 +307,29 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('_getItemConditionDescription()', () => {
+    describe('getItemConditionDescription()', () => {
         describe('given no settings', () => {
             it('should return `undefined`', () => {
-                assert(_getItemConditionDescription()).isUndefined();
+                assert(getItemConditionDescription()).isUndefined();
             });
         });
 
         describe('given no item quantity', () => {
             it('should return `undefined`', () => {
-                assert(_getItemConditionDescription({})).isUndefined();
+                assert(getItemConditionDescription({})).isUndefined();
             });
         });
 
         describe('given an item quantity of `quantity.zero`', () => {
             it('should return `undefined`', () => {
-                assert(_getItemConditionDescription({ [knobs.itemQuantity]: quantity.zero }))
+                assert(getItemConditionDescription({ [knobs.itemQuantity]: quantity.zero }))
                     .isUndefined();
             });
         });
 
         describe('given an item with `condition.average`', () => {
             it('should return `undefined`', () => {
-                assert(_getItemConditionDescription({
+                assert(getItemConditionDescription({
                     [knobs.itemQuantity]: quantity.one,
                     [knobs.itemCondition]: condition.average,
                 })).isUndefined();
@@ -335,7 +342,7 @@ export default ({ assert, describe, it }) => {
 
             nonAverageConditions.forEach((itemCondition) => {
                 it('should return a string including the condition', () => {
-                    assert(_getItemConditionDescription({
+                    assert(getItemConditionDescription({
                         [knobs.itemQuantity]: quantity.one,
                         [knobs.itemCondition]: itemCondition,
                     })).stringIncludes(itemCondition);
@@ -344,10 +351,10 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('_getKeyDetail()', () => {
+    describe('getKeyDetail()', () => {
         describe('given `doorType.mechanical`', () => {
             it('should contain the word "leaver"', () => {
-                assert(_getKeyDetail(doorType.mechanical)).stringIncludes('leaver');
+                assert(getKeyDetail(doorType.mechanical)).stringIncludes('leaver');
             });
         });
 
@@ -358,7 +365,7 @@ export default ({ assert, describe, it }) => {
             lockableNonMechanicalDoorTypes.forEach((type) => {
                 describe(`door type \`${type}\``, () => {
                     it('should include the word "key"', () => {
-                        assert(_getKeyDetail(type)).stringIncludes('key');
+                        assert(getKeyDetail(type)).stringIncludes('key');
                     });
                 });
             });
@@ -366,22 +373,22 @@ export default ({ assert, describe, it }) => {
 
         describe('given an undefined `doorType`', () => {
             it('should include the word "Key"', () => {
-                assert(_getKeyDetail('Undefined key type')).stringIncludes('Key');
+                assert(getKeyDetail('Undefined key type')).stringIncludes('Key');
             });
         });
     });
 
-    describe('_getRoomDoorwayDescription()', () => {
+    describe('getRoomDoorwayDescription()', () => {
         describe('give a single `doorType.concealed`', () => {
             it('should return undefined', () => {
-                assert(_getRoomDoorwayDescription([ { type: doorType.concealed } ]))
+                assert(getRoomDoorwayDescription([ { type: doorType.concealed } ]))
                     .isUndefined();
             });
         });
 
         describe('give a single `doorType.secret`', () => {
             it('should return undefined', () => {
-                assert(_getRoomDoorwayDescription([ { type: doorType.secret } ]))
+                assert(getRoomDoorwayDescription([ { type: doorType.secret } ]))
                     .isUndefined();
             });
         });
@@ -393,10 +400,10 @@ export default ({ assert, describe, it }) => {
                 connection: { direction: directions.north, to: 2 },
             };
 
-            const desc = _getRoomDoorwayDescription([ config ]);
+            const desc = getRoomDoorwayDescription([ config ]);
 
             it('should include the door description', () => {
-                assert(desc).stringIncludes(_getDoorwayDescription(config));
+                assert(desc).stringIncludes(getDoorwayDescription(config));
             });
 
             it('should include the word "single"', () => {
@@ -424,7 +431,7 @@ export default ({ assert, describe, it }) => {
             }];
 
             it('should include a description of the door to the outside', () => {
-                assert(_getRoomDoorwayDescription(config))
+                assert(getRoomDoorwayDescription(config))
                     .stringIncludes('leads south out of the dungeon');
             });
         });
@@ -443,7 +450,7 @@ export default ({ assert, describe, it }) => {
                 }
             ];
 
-            const desc = _getRoomDoorwayDescription(config);
+            const desc = getRoomDoorwayDescription(config);
 
             it('should join the descriptions with "and" and contain no commas', () => {
                 assert(desc)
@@ -490,7 +497,7 @@ export default ({ assert, describe, it }) => {
             ];
 
             it('should separate each description with a comma and the last with `and`', () => {
-                assert(_getRoomDoorwayDescription(config))
+                assert(getRoomDoorwayDescription(config))
                     .stringIncludes(` ${doorType.archway} leads south,`)
                     .stringIncludes(` ${doorType.passageway} leads north,`)
                     .stringIncludes(`, and a ${doorType.hole} leads east`);
@@ -498,21 +505,23 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('_getRoomDimensions()', () => {
+    describe('getRoomDimensions()', () => {
         describe('given no room size', () => {
             it('should return an empty string', () => {
-                assert(_getRoomDimensions()).equals('');
+                assert(getRoomDimensions()).equals('');
             });
         });
 
         describe('given a room size of 2 x 3', () => {
             it('should return a string with the dimensions multiplied by `cellFeet`', () => {
-                assert(_getRoomDimensions([ 2, 3]))
+                assert(getRoomDimensions([ 2, 3]))
                     .stringIncludes(`${2 * cellFeet}`)
                     .stringIncludes(`${3 * cellFeet}`);
             });
         });
     });
+
+    // -- Public Functions -----------------------------------------------------
 
     describe('getDoorwayList()', () => {
         describe('given two door configs', () => {
@@ -700,7 +709,7 @@ export default ({ assert, describe, it }) => {
                     };
 
                     assert(getRoomDescription(room))
-                        .stringIncludes(`<span>${_getRoomDimensions(room.size)}</span>`);
+                        .stringIncludes(`<span>${getRoomDimensions(room.size)}</span>`);
                 });
             });
         });

@@ -19,29 +19,29 @@ const indicateRarity = new Set([
 // -- Public Functions ---------------------------------------------------------
 
 /**
- * Get item description
- *
- * @param {import('../typedefs.js').Item}
- *
- * @returns {string}
- */
-export const getItemDescription = (item) => {
-    let { label, count } = item;
-
-    return count === 1 ? label : `${label} (${count})`;
-};
-
-/**
  * Get condition description for a group of items.
  *
  * @param {string} itemCondition
  *
  * @returns {string|false}
  */
-export const getConditionDescription = (itemCondition) => {
+ export function getConditionDescription(itemCondition) {
     let showCondition = itemCondition !== condition.average;
     return showCondition && `Item Condition: ${itemCondition}`;
-};
+}
+
+/**
+ * Get item description
+ *
+ * @param {import('../typedefs.js').Item}
+ *
+ * @returns {string}
+ */
+export function getItemDescription(item) {
+    let { label, count } = item;
+
+    return count === 1 ? label : `${label} (${count})`;
+}
 
 /**
  * Get rarity description for a group of items.
@@ -50,7 +50,7 @@ export const getConditionDescription = (itemCondition) => {
  *
  * @returns {string|false}
  */
-export const getRarityDescription = (itemRarity) => {
+export function getRarityDescription(itemRarity) {
     let showRarity = indicateRarity.has(itemRarity);
     return showRarity && `Item Rarity: ${itemRarity}`;
-};
+}

@@ -12,7 +12,7 @@ import { roll, rollPercentile, rollArrayItem } from '../utility/roll.js';
 const vegetationChance = 60;
 
 /**
- * Maximum number of vegetations for a room.
+ * Maximum number of vegetation for a room.
  *
  * @type {number}
  */
@@ -44,7 +44,7 @@ export const vegetation = {
  *
  * @returns {string}
  */
-export const _getVegetationDescription = (type, { variation = Boolean(roll()) } = {}) => {
+function getDescription(type, { variation = Boolean(roll()) } = {}) {
     switch (type) {
         case vegetation.ferns:
         case vegetation.flowers: {
@@ -81,6 +81,10 @@ export const _getVegetationDescription = (type, { variation = Boolean(roll()) } 
         default:
             throw new TypeError('Invalid vegetation type');
     }
+}
+
+export const _private = {
+    getDescription
 };
 
 // -- Public Functions ---------------------------------------------------------
@@ -98,7 +102,7 @@ export const _getVegetationDescription = (type, { variation = Boolean(roll()) } 
  *
  * @returns {string}
  */
-export const getVegetationDescription = (settings, { count = roll(1, maxVegetation) } = {}) => {
+export function getVegetationDescription(settings, { count = roll(1, maxVegetation) } = {}) {
     if (!rollPercentile(vegetationChance)) {
         return;
     }
@@ -113,7 +117,7 @@ export const getVegetationDescription = (settings, { count = roll(1, maxVegetati
         types.add(rollArrayItem(Object.keys(vegetation)));
     }
 
-    let roomVegetation = [ ...types ].map((type) => _getVegetationDescription(type));
+    let roomVegetation = [ ...types ].map((type) => getDescription(type));
 
     return capitalize(listSentence(roomVegetation));
-};
+}

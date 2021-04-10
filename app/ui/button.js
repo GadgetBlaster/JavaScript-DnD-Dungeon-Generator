@@ -48,7 +48,7 @@ const validSizes = new Set(Object.values(buttonSize));
  *
  * @returns {string}
  */
-export const button = (label, action, options = {}) => {
+export function button(label, action, options = {}) {
     let {
         active,
         size = buttonSize.small,
@@ -78,4 +78,4 @@ export const button = (label, action, options = {}) => {
     attributes['type'] = type;
 
     return element('button', label, attributes);
-};
+}

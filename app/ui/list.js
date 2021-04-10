@@ -11,7 +11,7 @@ import { element } from '../utility/html.js';
  *
  * @returns {string}
  */
-export const list = (items, attrs) => {
+export function list(items, attrs) {
     if (!items || !items.length) {
         throw new TypeError('Items are required for list');
     }
@@ -19,4 +19,4 @@ export const list = (items, attrs) => {
     let content = `<li>${items.join('</li><li>')}</li>`;
 
     return element('ul', content, attrs);
-};
+}

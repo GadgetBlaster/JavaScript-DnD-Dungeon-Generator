@@ -38,19 +38,19 @@ export const nav = [
  *
  * @returns {string}
  */
-export const getActive = (navContainer) => {
+export function getActive(navContainer) {
     return [ ...navContainer.children ].find((btn) => btn.dataset.active).dataset.target;
-};
+}
 
 /**
  * Set active
  *
  * @param {Element} target
  */
-export const setActive = (target) => {
+export function setActive(target) {
     [ ...target.parentNode.children ].forEach((btn) => {
         delete btn.dataset.active;
     });
 
     target.dataset.active = true;
-};
+}

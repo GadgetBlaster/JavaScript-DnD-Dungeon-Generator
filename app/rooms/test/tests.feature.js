@@ -1,6 +1,6 @@
 
 import {
-    _getFeatureDesc,
+    _private,
     feature,
     getRoomFeatures,
 } from '../feature.js';
@@ -8,42 +8,40 @@ import {
 import { knobs } from '../../knobs.js';
 import roomType from '../type.js';
 
+const {
+    getFeatureDesc,
+} = _private;
+
 /**
  * @param {import('../../unit/state.js').Utility}
  */
 export default ({ assert, describe, it }) => {
-    describe('`feature`', () => {
-        it('should be an object of strings', () => {
-            assert(feature).isObject();
 
-            let invalidFeature = Object.values(feature).find((value) => typeof value !== 'string');
-            assert(invalidFeature).isUndefined();
-        });
-    });
+    // -- Private Functions ----------------------------------------------------
 
-    describe('_getFeatureDesc()', () => {
+    describe('getFeatureDesc()', () => {
         Object.values(feature).forEach((roomFeature) => {
             describe(`given a room feature of \`${roomFeature}\``, () => {
                 it('should return a string', () => {
-                    assert(_getFeatureDesc(roomFeature, { variation: false })).isString();
+                    assert(getFeatureDesc(roomFeature, { variation: false })).isString();
                 });
             });
 
             describe('variations', () => {
                 it('should return a string', () => {
-                    assert(_getFeatureDesc(roomFeature, { variation: true })).isString();
+                    assert(getFeatureDesc(roomFeature, { variation: true })).isString();
                 });
             });
         });
 
         describe('given an invalid room feature', () => {
             it('should throw', () => {
-                assert(() => _getFeatureDesc('captain jim jam')).throws('Invalid room feature');
+                assert(() => getFeatureDesc('captain jim jam')).throws('Invalid room feature');
             });
         });
     });
 
-    describe('_getFeatureDesc()', () => {
+    describe('getFeatureDesc()', () => {
         describe('given a room type of `roomType.hallway`', () => {
             it('should return an empty array', () => {
                 assert(getRoomFeatures({ [knobs.roomType]: roomType.hallway, })).equalsArray([]);
@@ -52,4 +50,11 @@ export default ({ assert, describe, it }) => {
 
         // TODO inject probability before adding test coverage.
     });
+
+    // -- Public Functions -----------------------------------------------------
+
+    describe('getRoomFeatures()', () => {
+        // TODO
+    });
+
 };

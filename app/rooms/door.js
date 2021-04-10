@@ -129,7 +129,7 @@ export const lockedChance = 25;
  *
  * @returns {RoomDoors}
  */
-export const getRoomDoor = (doors) => {
+export function getRoomDoor(doors) {
     let lookup = {};
     let keys   = [];
 
@@ -161,4 +161,4 @@ export const getRoomDoor = (doors) => {
         keys,
         doors: lookup,
     };
-};
+}

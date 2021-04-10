@@ -10,11 +10,11 @@
  *
  * @returns {string}
  */
-export const createAttrs = (attrs = {}) => {
+export function createAttrs(attrs = {}) {
     return Object.keys(attrs).map((key) => {
         return ` ${key}="${attrs[key]}"`;
     }).join('');
-};
+}
 
 /**
  * Element
@@ -25,6 +25,6 @@ export const createAttrs = (attrs = {}) => {
  *
  * @returns {string}
  */
-export const element = (tag, content, attrs) => {
+export function element(tag, content, attrs) {
     return `<${tag}${createAttrs(attrs)}>${content}</${tag}>`;
-};
+}

@@ -25,7 +25,7 @@ import run from './run.js';
  *
  * @type {number}
  */
- const animationDelay = 2;
+const animationDelay = 2;
 
 /**
  * HTML escapes
@@ -65,17 +65,17 @@ const logEntry = (msg, attrs) => element('li', escapeHTML(msg), attrs);
  *
  * @returns {string}
  */
-const makeParams = (entries) => {
+function makeParams(entries) {
     let params = Object.entries(entries)
         .filter(([ , value ]) => Boolean(value))
         .map(([ key, value ]) => `${key}=${value}`)
         .join('&');
 
     return params && `?${params}`;
-};
+}
 
 // -- Public Functions ---------------------------------------------------------
-
+// TODO private funcs
 /**
  * Escape HTML for output as text content.
  *
@@ -96,7 +96,7 @@ export function escapeHTML(string) {
  *
  * @returns {string}
  */
- export function getLog(results, { verbose } = {}) {
+export function getLog(results, { verbose } = {}) {
     return results.map(({ isOk, msg }) => {
         if (verbose && isOk) {
             return logEntry(msg);
@@ -104,7 +104,7 @@ export function escapeHTML(string) {
 
         return !isOk && logEntry(msg, { class: 'fail' });
     }).filter(Boolean).join('');
-};
+}
 
 /**
  * Get navigation
@@ -115,7 +115,7 @@ export function escapeHTML(string) {
  *
  * @returns {string}
  */
- export const getNav = ({ scope, verbose }) => [
+export const getNav = ({ scope, verbose }) => [
     link('All', unitUrl + makeParams({ scope: null, verbose }), !scope ? { 'data-active': true } : null),
     link('Tests', unitUrl + makeParams({ scope: 'list', verbose }), scope === 'list' ? { 'data-active': true } : null),
     element('span', '', { role: 'presentation', 'data-separator': true }),
@@ -129,7 +129,7 @@ export function escapeHTML(string) {
  * @param {State} state
  * @param {OutputOptions} [options]
  */
- export const getOutput = (suite, state, options = {}) => {
+ export function getOutput(suite, state, options = {}) {
     let { scope } = options;
 
     if (scope === 'list') {
@@ -141,7 +141,7 @@ export function escapeHTML(string) {
     let summary = run(state, suite, testScope);
 
     return getResults(summary, options);
-};
+}
 
 /**
  * Result Msg
@@ -150,7 +150,7 @@ export function escapeHTML(string) {
  *
  * @returns {string}
  */
- export const getResultMessage = (entries) => entries.reduce((accumulator, value, index) => {
+export const getResultMessage = (entries) => entries.reduce((accumulator, value, index) => {
     return `${accumulator}${'  '.repeat(index)}${value.msg}\n`;
 }, '').trim();
 
@@ -160,7 +160,7 @@ export function escapeHTML(string) {
  * @param {Summary} summary
  * @param {OutputOptions} [options]
  */
- export function getResults(summary, options = {}) {
+export function getResults(summary, options = {}) {
     let {
         errors,
         failures,
@@ -215,11 +215,11 @@ export function escapeHTML(string) {
  *
  * @returns {string}
  */
- export function getSuiteList(scopes, { verbose } = {}) {
+export function getSuiteList(scopes, { verbose } = {}) {
     return scopes.map((scope) => {
         return element('li', link(scope, makeParams({ scope, verbose })));
     }).join('');
-};
+}
 
 /**
  * Get test summary.
@@ -228,7 +228,7 @@ export function escapeHTML(string) {
  *
  * @returns {string}
  */
- export function getSummary(summary) {
+export function getSummary(summary) {
     let {
         assertionsText,
         checkedForText,
@@ -251,7 +251,7 @@ export function escapeHTML(string) {
  *
  * @returns {string}
  */
- export function getSummaryLink(summary) {
+export function getSummaryLink(summary) {
     let {
         assertionsText,
         checkedForText,
@@ -259,7 +259,7 @@ export function escapeHTML(string) {
     } = getSummaryParts(summary);
 
     if (issuesText) {
-        let assertionContent = element('p', `${checkedForText} ${assertionsText}.`);
+        let assertionContent = element('p', `${checkedForText} ${assertionsText}`);
         let encounterContent = element('p', link(issuesText, unitUrl, {
             'data-error': true,
         }));
@@ -267,7 +267,7 @@ export function escapeHTML(string) {
         return assertionContent + encounterContent;
     }
 
-    return element('p', `${checkedForText} ${link(assertionsText, unitUrl)}.`);
+    return element('p', `${checkedForText} ${link(assertionsText, unitUrl)}`);
 }
 
 /**
@@ -281,7 +281,7 @@ export function escapeHTML(string) {
  *     issuesText: string?,
  * }}
  */
-export const getSummaryParts = (summary) => {
+export function getSummaryParts(summary) {
     let { assertions, errors, failures } = summary;
 
     let checkedForText = `Checked for ${assertions}`;
@@ -308,7 +308,7 @@ export const getSummaryParts = (summary) => {
         assertionsText,
         checkedForText,
     };
-};
+}
 
 /**
  * Get unit test list
