@@ -43,6 +43,7 @@ export default ({ assert, describe, it }) => {
     // -- Public Functions -----------------------------------------------------
 
     describe('getVegetationDescription()', () => {
+        // TODO inject probability before adding test coverage.
         /*
         describe('given a count of one', () => {
             it('should return a single vegetation description', () => {
@@ -64,7 +65,5 @@ export default ({ assert, describe, it }) => {
             });
         });
         */
-
-        // TODO inject probability before adding test coverage.
     });
 };
