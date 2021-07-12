@@ -12,7 +12,9 @@ import type, { list as itemTypes } from './type.js';
 
 /**
  * Item
- * TODO duplicate
+ *
+ * @TODO duplicate typedef. Consolidate and standardize
+ *
  * @typedef {Item}
  *
  * @property {string} name
@@ -21,6 +23,10 @@ import type, { list as itemTypes } from './type.js';
  * @property {number} quantity - Max number of item found
  * @property {number} [capacity] - Max number of small items found inside
  * @property {string[]} [variants] - Array of variations
+ */
+
+/**
+ * @typedef {import('../typedefs.js').Settings} Settings
  */
 
 // -- Config -------------------------------------------------------------------
@@ -69,6 +75,17 @@ export const _private = {
 
 // -- Public Functions ---------------------------------------------------------
 
+// TODO extract
+
+/**
+ * Generates an item config based on room settings.
+ *
+ * @TODO break out or inject randomization logic for testing.
+ *
+ * @param {Settings} settings
+ *
+ * @returns {Item}
+ */
 export const generateItem = (settings) => {
     let {
         [knobs.itemCondition]: conditionSetting,
@@ -84,6 +101,10 @@ export const generateItem = (settings) => {
 
     if (!quantitySetting) {
         throw new TypeError('Item quantity is required in generateItem()');
+    }
+
+    if (quantitySetting === quantity.zero) {
+        throw new TypeError('Item quantity cannot be zero');
     }
 
     if (!raritySetting) {
@@ -110,7 +131,10 @@ export const generateItem = (settings) => {
         randomItem = itemsByTypeAndRarity.length && rollArrayItem(itemsByTypeAndRarity);
     }
 
-    let item = randomItem || { name: 'Mysterious object' }; // TODO use mysterious type
+    let item = randomItem || {
+        name: 'Mysterious object',
+        type: type.mysterious,
+    };
 
     if (detailsHidden.has(item.type)) {
         itemCondition = condition.average;
