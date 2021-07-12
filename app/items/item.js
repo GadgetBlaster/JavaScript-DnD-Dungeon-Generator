@@ -75,8 +75,6 @@ export const _private = {
 
 // -- Public Functions ---------------------------------------------------------
 
-// TODO extract
-
 /**
  * Generates an item config based on room settings.
  *

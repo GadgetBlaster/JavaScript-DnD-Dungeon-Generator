@@ -59,8 +59,8 @@ import { getResultMessage } from './output.js';
  * @typedef {object} State
  *
  * @property {() => Summary} getSummary
- * @property {(error: string) => undefined} onError
- * @property {(path: string, tests: Function) => undefined} runUnits
+ * @property {(error: string) => void} onError
+ * @property {(path: string, tests: Function) => void} runUnits
  */
 
 /**

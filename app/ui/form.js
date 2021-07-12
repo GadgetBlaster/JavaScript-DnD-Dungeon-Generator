@@ -80,9 +80,9 @@ const renderFields = (fields) => fields.map((settings) => {
     return div(knobLabel + descText + knob);
 }).join('');
 
-export const _private = {
-    getKnob,
-    renderFields,
+export {
+    getKnob as testGetKnob,
+    renderFields as testRenderFields,
 };
 
 // -- Public Functions ---------------------------------------------------------

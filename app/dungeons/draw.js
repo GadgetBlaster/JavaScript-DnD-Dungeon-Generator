@@ -4,6 +4,8 @@ import { directions } from './map.js';
 import { wallSize } from './grid.js';
 import doorType, { lockable } from '../rooms/door.js';
 
+// -- Config -------------------------------------------------------------------
+
 export const pxBorder   = 2;
 export const pxCell     = 24;
 export const pxGridLine = 1;
@@ -38,9 +40,23 @@ const pillarThreshold = 6;
 const fontSizeNormal = 14;
 const fontSizeSmall  = 10;
 
-const drawText = (text, [ x, y ], { fontSize = fontSizeNormal, fill = colorText } = {}) => {
+// -- Private Functions --------------------------------------------------------
+
+/**
+ * Draw text SVG element
+ *
+ * @param {string} text
+ * @param {[ x: number, y: number ]} cords
+ * @param {object} [options]
+ *     @param {number} [options.fontSize = 14]
+ *     @param {string} [options.fill = '#666666']
+ *
+ * @returns {string}
+ */
+function drawText(text, [ x, y ], { fontSize = fontSizeNormal, fill = colorText } = {}) {
     let attrs = createAttrs({
-        x, y: y + 2,
+        x,
+        y: y + 2,
         fill,
         'alignment-baseline': 'middle',
         'font-family': 'monospace',
@@ -49,7 +65,7 @@ const drawText = (text, [ x, y ], { fontSize = fontSizeNormal, fill = colorText 
     });
 
     return `<text ${attrs}>${text}</text>`;
-};
+}
 
 const drawLine = ({ x1, y1, x2, y2, color, width, dashed }) => {
     let attrs = createAttrs({
@@ -125,6 +141,47 @@ const drawTrapText = (rectAttrs) => {
     return drawText(trapLabel, [ middleX, middleY ], { fill: colorTrapFill });
 };
 
+const drawPillarCell = ([ x, y ]) => {
+    let px = getRectAttrs({ x, y, width: wallSize, height: wallSize });
+    let cx = px.x + (px.width / 2);
+    let cy = px.y + (px.height / 2);
+
+    return drawPillar({ cx, cy, stroke: colorPillarStroke });
+};
+
+const drawPillars = ({ x, y, width, height }) => {
+    let pillars = [];
+
+    if (width < pillarThreshold || height < pillarThreshold) {
+        return pillars;
+    }
+
+    let innerWidth  = width - 2;
+    let innerHeight = height - 2;
+
+    pillars.push(drawPillarCell([ x + 1, y + 1 ]));
+    pillars.push(drawPillarCell([ x + innerWidth, y + 1 ]));
+    pillars.push(drawPillarCell([ x + 1, y + innerHeight ]));
+    pillars.push(drawPillarCell([ x + innerWidth, y + innerHeight ]));
+
+    return pillars;
+};
+
+export {
+    drawText as testDrawText,
+    drawLine as testDrawLine,
+    drawCircle as testDrawCircle,
+    drawRect as testDrawRect,
+    drawPillar as testDrawPillar,
+    getRectAttrs as testDetRectAttrs,
+    drawRoomText as testDrawRoomText,
+    drawTrapText as testDrawTrapText,
+    drawPillarCell as testDrawPillarCell,
+    drawPillars as testDrawPillars,
+};
+
+// -- Public Functions ---------------------------------------------------------
+
 export const drawGrid = ({ gridWidth, gridHeight }) => {
     let lines = '';
 
@@ -158,32 +215,6 @@ export const drawGrid = ({ gridWidth, gridHeight }) => {
     }
 
     return lines;
-};
-
-const drawPillarCell = ([ x, y ]) => {
-    let px = getRectAttrs({ x, y, width: wallSize, height: wallSize });
-    let cx = px.x + (px.width / 2);
-    let cy = px.y + (px.height / 2);
-
-    return drawPillar({ cx, cy, stroke: colorPillarStroke });
-};
-
-const drawPillars = ({ x, y, width, height }) => {
-    let pillars = [];
-
-    if (width < pillarThreshold || height < pillarThreshold) {
-        return pillars;
-    }
-
-    let innerWidth  = width - 2;
-    let innerHeight = height - 2;
-
-    pillars.push(drawPillarCell([ x + 1, y + 1 ]));
-    pillars.push(drawPillarCell([ x + innerWidth, y + 1 ]));
-    pillars.push(drawPillarCell([ x + 1, y + innerHeight ]));
-    pillars.push(drawPillarCell([ x + innerWidth, y + innerHeight ]));
-
-    return pillars;
 };
 
 export const drawRoom = (roomAttrs, roomTextConfig, { hasTraps } = {}) => {

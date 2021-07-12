@@ -31,6 +31,8 @@ import itemDescription from '../items/test/tests.description.js';
 import generateItems from '../items/test/tests.generate.js';
 import item from '../items/test/tests.item.js';
 
+import draw from '../dungeons/test/tests.draw.js';
+
 export default {
     '/app/unit/test/tests.assert.js': assert,
     '/app/unit/test/tests.output.js': output,
@@ -63,4 +65,6 @@ export default {
     '/app/item/test/tests.description.js' : itemDescription,
     '/app/item/test/tests.generate.js'    : generateItems,
     '/app/item/test/tests.item.js'        : item,
+
+    '/app/dungeons/test/tests.draw.js' : draw,
 };

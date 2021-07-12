@@ -1,6 +1,9 @@
 
 import {
-    _private,
+    // Private Functions
+    testGetKnob as getKnob,
+    testRenderFields as renderFields,
+    // Public Functions
     getFormData,
     renderKnobs,
     submitButton,
@@ -8,11 +11,6 @@ import {
 
 import { actions } from '../action.js';
 import { typeSelect, typeNumber, typeRange } from '../../knobs.js';
-
-const {
-    getKnob,
-    renderFields,
-} = _private;
 
 /**
  * @param {import('../../unit/state.js').Utility}
