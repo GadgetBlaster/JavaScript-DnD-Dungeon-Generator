@@ -19,8 +19,6 @@ import condition from '../attributes/condition.js';
 import quantity, { getRange, probability as quantityProbability } from '../attributes/quantity.js';
 import size from '../attributes/size.js';
 
-// TODO incomplete test coverage
-
 /**
  * @typedef {import('../typedefs.js').Settings} Settings
  * @typedef {import('../typedefs.js').Item} Item
@@ -54,7 +52,7 @@ const maxColumnsRoom = 2;
  *
  * @returns {Item[]}
  */
- function generateFurnishings(roomType, quantity) {
+function generateFurnishings(roomType, quantity) {
     let furniture = [];
 
     if (quantity === furnitureQuantity.none) {
@@ -142,7 +140,7 @@ const getFurnishingObjects = (furnishings, roomCondition) => furnishings.reduce(
  *
  * @returns {number}
  */
- function getItemCount(itemQuantity) {
+function getItemCount(itemQuantity) {
     let { min, max } = getRange(itemQuantity);
 
     return roll(min, max);

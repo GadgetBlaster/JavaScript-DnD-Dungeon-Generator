@@ -23,6 +23,8 @@ import type, { list as itemTypes } from './type.js';
  * @property {string[]} [variants] - Array of variations
  */
 
+// -- Config -------------------------------------------------------------------
+
 const defaults = {
     quantity: 1,
     rarity: rarity.average,
@@ -41,12 +43,12 @@ const detailsHidden = new Set([
     type.treasure,
 ]);
 
-const items = set.map((item) => ({ ...defaults, ...item }));
-
 const makeGroup = (groups) => groups.reduce((obj, group) => {
     obj[group] = [];
     return obj;
 }, {});
+
+const items = set.map((item) => ({ ...defaults, ...item }));
 
 const groupByRarity = makeGroup(rarities);
 const groupByType   = makeGroup(itemTypes);
@@ -59,6 +61,13 @@ items.forEach((item) => {
     groupByRarity[item.rarity].push(item);
     groupByType[item.type][item.rarity].push(item);
 });
+
+export const _private = {
+    groupByRarity,
+    groupByType,
+};
+
+// -- Public Functions ---------------------------------------------------------
 
 export const generateItem = (settings) => {
     let {

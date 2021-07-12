@@ -29,6 +29,7 @@ import vegetation from '../rooms/test/tests.vegetation.js';
 
 import itemDescription from '../items/test/tests.description.js';
 import generateItems from '../items/test/tests.generate.js';
+import item from '../items/test/tests.item.js';
 
 export default {
     '/app/unit/test/tests.assert.js': assert,
@@ -61,4 +62,5 @@ export default {
 
     '/app/item/test/tests.description.js' : itemDescription,
     '/app/item/test/tests.generate.js'    : generateItems,
+    '/app/item/test/tests.item.js'        : item,
 };
