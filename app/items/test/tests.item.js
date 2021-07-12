@@ -3,13 +3,13 @@ import {
     _private,
     generateItem,
 } from '../item.js';
-import { knobs } from '../knobs.js';
+import { knobs } from '../../knobs.js';
 
 import { list as rarities } from '../../attributes/rarity.js';
-import { list as itemTypes } from '../type.js';
-import condition from '../attributes/condition.js';
-import quantity from '../attributes/quantity.js';
-import rarity from '../attributes/rarity.js';
+import itemType, { list as itemTypes } from '../type.js';
+import condition from '../../attributes/condition.js';
+import quantity from '../../attributes/quantity.js';
+import rarity from '../../attributes/rarity.js';
 
 
 const {
@@ -57,7 +57,7 @@ export default ({ assert, describe, it }) => {
     // -- Public Functions -----------------------------------------------------
 
     describe('generateItem()', () => {
-        const itemSettings = generateRooms({
+        const itemSettings = generateItem({
             [knobs.itemCondition]: condition.average,
             [knobs.itemQuantity]: quantity.zero,
             [knobs.itemRarity]: rarity.exotic,
@@ -66,8 +66,13 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given no `itemCondition` setting', () => {
-            it('should return `undefined`', () => {
-                assert(getContentDescription()).isUndefined();
+            let {
+                [knobs.itemCondition]: itemCondition,
+                ...settings
+            } = itemSettings;
+
+            it('should throw', () => {
+                assert(() => generateItem(settings)).throws('Item condition is required in generateItem()');
             });
         });
     });
