@@ -18,7 +18,7 @@ run in modern browsers.
 All HTML elements are generated via template literals.
 
 A multi-dimensional array is generated to represent the dungeon grid. Rooms and
-doorway connections are procedurally generated on the grid and drawn as as SVG
+doorway connections are procedurally generated on the grid and drawn as a SVG
 element. Room descriptions, traps, condition, and contents are randomly
 assigned to each room based on conditional probability tables for attributes
 such as rarity, condition, and quantity.
