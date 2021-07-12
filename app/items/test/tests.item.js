@@ -57,22 +57,47 @@ export default ({ assert, describe, it }) => {
     // -- Public Functions -----------------------------------------------------
 
     describe('generateItem()', () => {
-        const itemSettings = generateItem({
+        const itemSettings = {
             [knobs.itemCondition]: condition.average,
             [knobs.itemQuantity]: quantity.zero,
             [knobs.itemRarity]: rarity.exotic,
             [knobs.itemType]: itemType.treasure,
             [knobs.roomCount]: 2,
-        });
+        };
 
         describe('given no `itemCondition` setting', () => {
-            let {
-                [knobs.itemCondition]: itemCondition,
-                ...settings
-            } = itemSettings;
+            let settings = { ...itemSettings };
+            delete settings[knobs.itemCondition];
 
             it('should throw', () => {
                 assert(() => generateItem(settings)).throws('Item condition is required in generateItem()');
+            });
+        });
+
+        describe('given no `itemQuantity` setting', () => {
+            let settings = { ...itemSettings };
+            delete settings[knobs.itemQuantity];
+
+            it('should throw', () => {
+                assert(() => generateItem(settings)).throws('Item quantity is required in generateItem()');
+            });
+        });
+
+        describe('given no `itemQuantity` setting', () => {
+            let settings = { ...itemSettings };
+            delete settings[knobs.itemRarity];
+
+            it('should throw', () => {
+                assert(() => generateItem(settings)).throws('Item rarity is required in generateItem()');
+            });
+        });
+
+        describe('given no `itemQuantity` setting', () => {
+            let settings = { ...itemSettings };
+            delete settings[knobs.itemType];
+
+            it('should throw', () => {
+                assert(() => generateItem(settings)).throws('Item type is required in generateItem()');
             });
         });
     });
