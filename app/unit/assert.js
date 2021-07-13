@@ -18,6 +18,7 @@
   * @type {string[]}
   */
 const emptyElements = [
+    // HTML elements
     'area',
     'base',
     'br',
@@ -32,6 +33,11 @@ const emptyElements = [
     'source',
     'track',
     'wbr',
+
+    // SVG elements
+    'circle',
+    'line',
+    'rect',
 ];
 
 // -- Public Functions ---------------------------------------------------------
@@ -111,6 +117,7 @@ export function isFunction(value) {
     return { msg, isOk };
 }
 
+// TODO rename to isElementTag because SVG are tags too
 /** @type {(value: *, tag: string) => Result} isHtmlTag */
 export function isHtmlTag(value, tag) {
     let checkType = isString(value);

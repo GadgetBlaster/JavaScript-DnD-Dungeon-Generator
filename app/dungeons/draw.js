@@ -10,6 +10,8 @@ export const pxBorder   = 2;
 export const pxCell     = 24;
 export const pxGridLine = 1;
 
+const pxTextOffset = 2;
+
 const colorGridFill     = '#f0f0f0';
 const colorGridStroke   = '#cfcfcf';
 const colorLockedFill   = '#cccccc';
@@ -43,7 +45,7 @@ const fontSizeSmall  = 10;
 // -- Private Functions --------------------------------------------------------
 
 /**
- * Draw text SVG element
+ * Returns an SVG text element string.
  *
  * @param {string} text
  * @param {[ x: number, y: number ]} cords
@@ -56,7 +58,7 @@ const fontSizeSmall  = 10;
 function drawText(text, [ x, y ], { fontSize = fontSizeNormal, fill = colorText } = {}) {
     let attrs = createAttrs({
         x,
-        y: y + 2,
+        y: y + pxTextOffset,
         fill,
         'alignment-baseline': 'middle',
         'font-family': 'monospace',
@@ -64,12 +66,30 @@ function drawText(text, [ x, y ], { fontSize = fontSizeNormal, fill = colorText 
         'text-anchor': 'middle',
     });
 
+    // TODO remove space before `${attrs}` in all methods
     return `<text ${attrs}>${text}</text>`;
 }
 
+/**
+ * Returns an SVG line element string.
+ *
+ * @param {object} args
+ *     @param {number} args.x1
+ *     @param {number} args.y1
+ *     @param {number} args.x2
+ *     @param {number} args.y2
+ *     @param {string} args.color
+ *     @param {number} args.width
+ *     @param {boolean} [args.dashed] // TODO move to an `options` param
+ *
+ * @returns {string}
+ */
 const drawLine = ({ x1, y1, x2, y2, color, width, dashed }) => {
     let attrs = createAttrs({
-        x1, y1, x2, y2,
+        x1,
+        y1,
+        x2,
+        y2,
         stroke: color,
         'shape-rendering': 'crispEdges',
         'stroke-linecap': 'square',
@@ -80,9 +100,23 @@ const drawLine = ({ x1, y1, x2, y2, color, width, dashed }) => {
     return `<line ${attrs} />`;
 };
 
+/**
+ * Returns an SVG circle element string.
+ *
+ * @param {object} args
+ *     @param {number} args.cx
+ *     @param {number} args.cy
+ *     @param {number} args.r
+ *     @param {boolean} [args.stroke] // TODO move to an `options` param
+ *     @param {string} args.fill
+ *
+ * @returns {string}
+ */
 const drawCircle = ({ cx, cy, r, stroke, fill }) => {
     let attrs = createAttrs({
-        cx, cy, r,
+        cx,
+        cy,
+        r,
         fill,
         'shape-rendering': 'geometricPrecision',
         ...(stroke && { stroke, 'stroke-width': 2 })
@@ -91,12 +125,26 @@ const drawCircle = ({ cx, cy, r, stroke, fill }) => {
     return `<circle ${attrs} />`;
 };
 
+/**
+ * Returns an SVG rectangle element string.
+ *
+ * @param {object} [rectAttrs] // TODO typedef
+ *
+ * @returns {string}
+ */
 const drawRect = (rectAttrs) => {
     let attrs = createAttrs(rectAttrs);
 
     return `<rect ${attrs} />`;
 };
 
+/**
+ * Draws an map pillar.
+ *
+ * @param {object} [attrs]
+ *
+ * @returns {string}
+ */
 const drawPillar = (attrs) => {
     return drawCircle({
         r: radiusPillar,
@@ -106,6 +154,17 @@ const drawPillar = (attrs) => {
     });
 };
 
+/**
+ * Get rectangle attributes.
+ *
+ * @param {object} args
+ *     @param {number} args.x
+ *     @param {number} args.y
+ *     @param {number} args.width
+ *     @param {number} args.height
+ *
+ * @returns {object}
+ */
 const getRectAttrs = ({ x, y, width, height }) => {
     let xPx = x * pxCell;
     let yPx = y * pxCell;
@@ -116,6 +175,16 @@ const getRectAttrs = ({ x, y, width, height }) => {
     return { x: xPx, y: yPx, width: widthPx, height: heightPx }
 };
 
+/**
+ * Returns a map room label.
+ *
+ * @param {object} rectAttrs
+ * @param {object} args
+ *     @param {object} args.roomNumber
+ *     @param {object} [args.roomLabel]
+ *
+ * @returns {string}
+ */
 const drawRoomText = (rectAttrs, { roomNumber, roomLabel }) => {
     let middleX = (rectAttrs.x + (rectAttrs.width  / 2));
     let middleY = (rectAttrs.y + (rectAttrs.height / 2));
@@ -168,16 +237,16 @@ const drawPillars = ({ x, y, width, height }) => {
 };
 
 export {
-    drawText as testDrawText,
-    drawLine as testDrawLine,
-    drawCircle as testDrawCircle,
-    drawRect as testDrawRect,
-    drawPillar as testDrawPillar,
-    getRectAttrs as testDetRectAttrs,
-    drawRoomText as testDrawRoomText,
-    drawTrapText as testDrawTrapText,
+    drawCircle     as testDrawCircle,
+    drawLine       as testDrawLine,
+    drawPillar     as testDrawPillar,
     drawPillarCell as testDrawPillarCell,
-    drawPillars as testDrawPillars,
+    drawPillars    as testDrawPillars,
+    drawRect       as testDrawRect,
+    drawRoomText   as testDrawRoomText,
+    drawText       as testDrawText,
+    drawTrapText   as testDrawTrapText,
+    getRectAttrs   as testDetRectAttrs,
 };
 
 // -- Public Functions ---------------------------------------------------------
