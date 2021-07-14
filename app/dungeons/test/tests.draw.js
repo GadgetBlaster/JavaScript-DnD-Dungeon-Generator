@@ -1,6 +1,7 @@
 
 import {
     pxCell,
+    pxTextOffset,
 
     // Private Functions
     testDrawText as drawText,
@@ -165,18 +166,23 @@ export default ({ assert, describe, it }) => {
             assert(drawPillar()).isHtmlTag('circle');
         });
 
+        it('it should have the correct `cx` and `cy` attributes', () => {
+            let pillar = drawPillar({ cx: 114, cy: 214 });
+
+            assert(pillar)
+                .stringIncludes('cx="114"')
+                .stringIncludes('cy="214"')
+        });
+
         describe('given attributes', () => {
             it('should add to or override the default attributes', () => {
                 let pillar = drawPillar({
-                    cx: 114,
-                    cy: 214,
+                    cx: 10,
+                    cy: 20,
                     stroke: 'red',
                 });
 
-                assert(pillar)
-                    .stringIncludes('cx="114"')
-                    .stringIncludes('cy="214"')
-                    .stringIncludes('stroke="red"');
+                assert(pillar).stringIncludes('stroke="red"');
             });
         });
     });
@@ -222,7 +228,8 @@ export default ({ assert, describe, it }) => {
         });
 
         it('the `y` coordinate should be the vertical center of the room rect plus the `pxTextOffset`', () => {
-            assert(roomText).stringIncludes('y="47"');
+            let y = 45 + pxTextOffset;
+            assert(roomText).stringIncludes(`y="${y}"`);
         });
 
         describe('given a `roomLabel`', () => {
@@ -243,6 +250,48 @@ export default ({ assert, describe, it }) => {
 
             it('should contain the roomLabel as the content', () => {
                 assert(roomTextWithLabel).stringIncludes('>Thar be dragons<');
+            });
+        });
+    });
+
+    describe('drawTrapText()', () => {
+        let trapText = drawTrapText({
+            x: 10,
+            y: 10,
+            width: 40,
+            height: 60,
+        });
+
+        it('should return a `<text>` element string', () => {
+            assert(trapText).isHtmlTag('text');
+        });
+
+        it('the `x` and `y` coordinates should be the center of the lower left cell of the room', () => {
+            let pxHalfCell = (pxCell / 2);
+            let x = 10 + pxHalfCell;
+            let y = 70 - pxHalfCell + pxTextOffset;
+
+            assert(trapText).stringIncludes(`x="${x}"`);
+            assert(trapText).stringIncludes(`y="${y}"`);
+        });
+    });
+
+    describe('drawPillarCell()', () => {
+        let pillarCell = drawPillarCell([ 15, 25 ]);
+
+        it('should return a `<circle />` element string', () => {
+            assert(pillarCell).isHtmlTag('circle');
+        });
+
+        describe('given attributes', () => {
+            it('it should have `cx` and `cy` attributes in the center of the cell', () => {
+                let pxHalfCell = (pxCell / 2);
+                let cx = (15 * pxCell) + pxHalfCell;
+                let cy = (25 * pxCell) + pxHalfCell;
+
+                assert(pillarCell)
+                    .stringIncludes(`cx="${cx}"`)
+                    .stringIncludes(`cy="${cy}"`);
             });
         });
     });

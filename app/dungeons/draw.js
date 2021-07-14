@@ -1,16 +1,17 @@
 
 import { createAttrs } from '../utility/html.js';
 import { directions } from './map.js';
-import { wallSize } from './grid.js';
 import doorType, { lockable } from '../rooms/door.js';
+
+// TODO differentiate between grid x, y, width, & height, and pixel x, y, width
+// and height in variable names.
 
 // -- Config -------------------------------------------------------------------
 
-export const pxBorder   = 2;
-export const pxCell     = 24;
-export const pxGridLine = 1;
-
-const pxTextOffset = 2;
+export const pxBorder     = 2;
+export const pxCell       = 24;
+export const pxGridLine   = 1;
+export const pxTextOffset = 2;
 
 const colorGridFill     = '#f0f0f0';
 const colorGridStroke   = '#cfcfcf';
@@ -176,7 +177,7 @@ const getRectAttrs = ({ x, y, width, height }) => {
 };
 
 /**
- * Returns a map room label.
+ * Returns a map room label SVG text element string.
  *
  * @param {object} rectAttrs
  * @param {object} args
@@ -203,6 +204,13 @@ const drawRoomText = (rectAttrs, { roomNumber, roomLabel }) => {
     return text;
 };
 
+/**
+ * Returns a trap label SVG text element string.
+ *
+ * @param {object} rectAttrs
+ *
+ * @returns {string}
+ */
 const drawTrapText = (rectAttrs) => {
     let middleX = (rectAttrs.x + (pxCell  / 2));
     let middleY = (rectAttrs.y + (rectAttrs.height - (pxCell / 2)));
@@ -210,10 +218,17 @@ const drawTrapText = (rectAttrs) => {
     return drawText(trapLabel, [ middleX, middleY ], { fill: colorTrapFill });
 };
 
+/**
+ * Draws an map pillar cell.
+ *
+ * {[ x: number, y: number ]} cords
+ *
+ * @returns {string}
+ */
 const drawPillarCell = ([ x, y ]) => {
-    let px = getRectAttrs({ x, y, width: wallSize, height: wallSize });
-    let cx = px.x + (px.width / 2);
-    let cy = px.y + (px.height / 2);
+    let rect = getRectAttrs({ x, y, width: 1, height: 1 });
+    let cx = rect.x + (rect.width / 2);
+    let cy = rect.y + (rect.height / 2);
 
     return drawPillar({ cx, cy, stroke: colorPillarStroke });
 };
