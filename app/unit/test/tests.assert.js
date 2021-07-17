@@ -407,12 +407,27 @@ export default ({ assert, describe, it }) => {
                 assert(isHtmlTag('<p>Pixies</>', 'p').isOk).isFalse();
                 assert(isHtmlTag('<p>Pixies</p', 'p').isOk).isFalse();
                 assert(isHtmlTag('<input>', 'input').isOk).isFalse();
+                assert(isHtmlTag('<input', 'input').isOk).isFalse();
+                assert(isHtmlTag('<input /', 'input').isOk).isFalse();
+                assert(isHtmlTag('input />', 'input').isOk).isFalse();
             });
         });
 
         describe('given a self closing html tag', () => {
             it('should return true', () => {
                 assert(isHtmlTag('<input name="ted" />', 'input').isOk).isTrue();
+            });
+        });
+
+        describe('given multiple tags', () => {
+            it('should return false', () => {
+                assert(isHtmlTag('<p>Hello</p><p>Dungeon</p>', 'input').isOk).isFalse();
+            });
+        });
+
+        describe('given multiple self closing tags', () => {
+            it('should return false', () => {
+                assert(isHtmlTag('<input /><input />', 'input').isOk).isFalse();
             });
         });
 

@@ -5,6 +5,9 @@ import doorType, { lockable } from '../rooms/door.js';
 
 // TODO differentiate between grid x, y, width, & height, and pixel x, y, width
 // and height in variable names.
+// TODO create svg() method.
+
+/** @typedef {import('./map').Directions} Directions */
 
 // -- Config -------------------------------------------------------------------
 
@@ -198,7 +201,7 @@ function drawRect(rectAttrs) {
 }
 
 /**
- * Returns a map room label SVG text element string.
+ * Returns one or more SVG text element strings to label rooms on the map.
  *
  * @param {object} rectAttrs
  * @param {object} args
@@ -279,60 +282,17 @@ export {
 
 // -- Public Functions ---------------------------------------------------------
 
-export const drawGrid = ({ gridWidth, gridHeight }) => {
-    let lines = '';
-
-    let gridLineAttrs = {
-        color: colorGridStroke,
-        width: pxGridLine,
-    };
-
-    for (let i = 0; i <= gridHeight; i++) {
-        let unit = i * pxCell;
-
-        lines += drawLine({
-            ...gridLineAttrs,
-            x1: 0,
-            y1: unit,
-            x2: gridWidth * pxCell,
-            y2: unit,
-        });
-    }
-
-    for (let i = 0; i <= gridWidth; i++) {
-        let unit = i * pxCell;
-
-        lines += drawLine({
-            ...gridLineAttrs,
-            x1: unit,
-            y1: 0,
-            x2: unit,
-            y2: gridHeight * pxCell,
-        });
-    }
-
-    return lines;
-};
-
-export const drawRoom = (roomAttrs, roomTextConfig, { hasTraps } = {}) => {
-    let rectAttrs = getRectAttrs(roomAttrs);
-
-    let attrs = {
-        ...rectAttrs,
-        fill: colorRoomFill,
-        stroke: colorRoomStroke,
-        'shape-rendering': 'crispEdges',
-        'stroke-width': pxBorder,
-    };
-
-    let rect    = drawRect(attrs);
-    let pillars = drawPillars(roomAttrs) || [];
-    let text    = drawRoomText(rectAttrs, roomTextConfig);
-    let trap    = hasTraps ? drawTrapText(rectAttrs) : '';
-
-    return rect + pillars.join('') + text + trap;
-};
-
+/**
+ * Returns a door cell SVG element string for the given door type.
+ *
+ * @param {object} doorAttrs
+ * @param {object} args
+ *     @param {"north" | "east" | "south" | "west"} args.direction
+ *     @param {string} args.type
+ *     @param {boolean} args.locked // TODO move to options param
+ *
+ * @returns {string}
+ */
 export const drawDoor = (doorAttrs, { direction, type, locked }) => {
     let rectAttrs = getRectAttrs(doorAttrs);
     let isSecret  = type === doorType.secret || type === doorType.concealed;
@@ -345,7 +305,7 @@ export const drawDoor = (doorAttrs, { direction, type, locked }) => {
         'stroke-width': pxBorder,
     });
 
-    let rect = `<rect ${attrs} />`;
+    let rect = `<rect${attrs} />`;
 
     let { x, y, width, height } = rectAttrs;
 
@@ -363,6 +323,7 @@ export const drawDoor = (doorAttrs, { direction, type, locked }) => {
     let xRight  = x + width
     let yBottom = y + height
 
+    // Draw walls
     if (isVertical) {
         let y2 = y + height;
 
@@ -436,7 +397,71 @@ export const drawDoor = (doorAttrs, { direction, type, locked }) => {
 
     let lines = lineCords.map((cords) => drawLine({ ...lineAttrs, ...cords })).join('');
 
-    return rect + lines + details.join();
+    return rect + lines + details.join(); // TODO fix comma from join
+};
+
+/**
+ * Returns horizontal and vertical grid SVG element line strings for the given
+ * grid width and height.
+ *
+ * @param {object} args
+ *     @param {number} args.gridWidth
+ *     @param {number} args.gridHeight
+ *
+ * @returns {string}
+ */
+export function drawGrid({ gridWidth, gridHeight }) {
+    let lines = '';
+
+    let gridLineAttrs = {
+        color: colorGridStroke,
+        width: pxGridLine,
+    };
+
+    for (let i = 0; i <= gridHeight; i++) {
+        let unit = i * pxCell;
+
+        lines += drawLine({
+            ...gridLineAttrs,
+            x1: 0,
+            y1: unit,
+            x2: gridWidth * pxCell,
+            y2: unit,
+        });
+    }
+
+    for (let i = 0; i <= gridWidth; i++) {
+        let unit = i * pxCell;
+
+        lines += drawLine({
+            ...gridLineAttrs,
+            x1: unit,
+            y1: 0,
+            x2: unit,
+            y2: gridHeight * pxCell,
+        });
+    }
+
+    return lines;
+};
+
+export const drawRoom = (roomAttrs, roomTextConfig, { hasTraps } = {}) => {
+    let rectAttrs = getRectAttrs(roomAttrs);
+
+    let attrs = {
+        ...rectAttrs,
+        fill: colorRoomFill,
+        stroke: colorRoomStroke,
+        'shape-rendering': 'crispEdges',
+        'stroke-width': pxBorder,
+    };
+
+    let rect    = drawRect(attrs);
+    let pillars = drawPillars(roomAttrs) || [];
+    let text    = drawRoomText(rectAttrs, roomTextConfig);
+    let trap    = hasTraps ? drawTrapText(rectAttrs) : '';
+
+    return rect + pillars.join('') + text + trap;
 };
 
 export const drawMap = ({ gridWidth, gridHeight }, content) => {

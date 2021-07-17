@@ -77,10 +77,6 @@ export default ({ assert, describe, it }) => {
                     assert(result).isString();
                 });
 
-                it('should return an html div wrapper', () => {
-                    assert(result).isHtmlTag('div');
-                });
-
                 it('should include an html input string', () => {
                     assert(result).stringIncludes('<input name="size" type="number" />');
                 });
@@ -187,7 +183,9 @@ export default ({ assert, describe, it }) => {
             const result = renderKnobs([ { label: 'Shovels', fields: [] } ]);
 
             it('should return an html fieldset element string', () => {
-                assert(result).isHtmlTag('fieldset');
+                assert(result)
+                    .stringIncludes('<fieldset')
+                    .stringIncludes('</fieldset>');
             });
 
             it('should contain the correct data-id', () => {

@@ -40,16 +40,18 @@ const maxDoorWidth = 4;
 /**
  * Directions
  *
- * @typedef {Object} Directions
+ * @typedef {object} Directions
  *
- * @property {string} north
- * @property {string} east
- * @property {string} south
- * @property {string} west
+ * @property {"north"} north
+ * @property {"east"} east
+ * @property {"south"} south
+ * @property {"west"} west
  */
 
 /**
  * Directions
+ *
+ * TODO freeze all lookup objects
  *
  * @type {Directions}
  */

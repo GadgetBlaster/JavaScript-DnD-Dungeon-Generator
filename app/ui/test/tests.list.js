@@ -22,7 +22,8 @@ export default ({ assert, describe, it }) => {
             const results = list([ 'Pompous Wizards' ]);
 
             it('should return an html unordered list element string', () => {
-                assert(results).isHtmlTag('ul');
+                assert(results).stringIncludes('<ul>')
+                    .stringIncludes('</ul>');
             });
 
             it('should include a single html list item element string with the given content', () => {
