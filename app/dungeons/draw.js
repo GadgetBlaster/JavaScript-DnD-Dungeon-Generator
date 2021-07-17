@@ -38,7 +38,8 @@ const trapLabel = 'T';
 export const labelMinWidth  = 3;
 export const labelMinHeight = 2;
 
-const pillarThreshold = 6;
+export const pillarThreshold = 6;
+export const pillarInset = 1;
 
 const fontSizeNormal = 14;
 const fontSizeSmall  = 10;
@@ -219,7 +220,7 @@ const drawTrapText = (rectAttrs) => {
 };
 
 /**
- * Draws an map pillar cell.
+ * Returns a map pillar cell.
  *
  * {[ x: number, y: number ]} cords
  *
@@ -233,6 +234,18 @@ const drawPillarCell = ([ x, y ]) => {
     return drawPillar({ cx, cy, stroke: colorPillarStroke });
 };
 
+/**
+ * Returns pillars for a room with x & y dimensions greater than
+ * `pillarThreshold`.
+ *
+ * @param {object} args
+ *     @param {number} args.x
+ *     @param {number} args.y
+ *     @param {number} args.width
+ *     @param {number} args.height
+ *
+ * @returns {string[]}
+ */
 const drawPillars = ({ x, y, width, height }) => {
     let pillars = [];
 
@@ -240,7 +253,7 @@ const drawPillars = ({ x, y, width, height }) => {
         return pillars;
     }
 
-    let innerWidth  = width - 2;
+    let innerWidth  = width - 2; // Use `pillarInset` constant
     let innerHeight = height - 2;
 
     pillars.push(drawPillarCell([ x + 1, y + 1 ]));

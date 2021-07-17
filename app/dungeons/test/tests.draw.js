@@ -2,6 +2,8 @@
 import {
     pxCell,
     pxTextOffset,
+    pillarThreshold,
+    pillarInset,
 
     // Private Functions
     testDrawText as drawText,
@@ -292,6 +294,68 @@ export default ({ assert, describe, it }) => {
                 assert(pillarCell)
                     .stringIncludes(`cx="${cx}"`)
                     .stringIncludes(`cy="${cy}"`);
+            });
+        });
+    });
+
+    describe('drawPillars()', () => {
+        let roomConfig = {
+            x: 10,
+            y: 10,
+            width: 10,
+            height: 10,
+        };
+
+        describe('given a room `width` less than `pillarThreshold`', () => {
+            it('should return an empty array', () => {
+                let pillars = drawPillars({
+                    ...roomConfig,
+                    width: pillarThreshold - 1,
+                });
+
+                assert(pillars).isArray();
+                assert(pillars.length).equals(0);
+            });
+        });
+
+        describe('given a room `height` less than `pillarThreshold`', () => {
+            it('should return an empty array', () => {
+                let pillars = drawPillars({
+                    ...roomConfig,
+                    height: pillarThreshold - 1,
+                });
+
+                assert(pillars).isArray();
+                assert(pillars.length).equals(0);
+            });
+        });
+
+        describe('given a room `width` and `height` of at least `pillarThreshold`', () => {
+            let pillars = drawPillars(roomConfig);
+
+            it('should an array of four `<circle />` element strings', () => {
+                assert(pillars.length).equals(4);
+                pillars.forEach((pillar) => {
+                    assert(pillar).isHtmlTag('circle');
+                });
+            });
+
+            it('should place pillar in the center of each inset corner cell of the room', () => {
+                let { x, y, width, height } = roomConfig;
+
+                let innerWidth  = width - (pillarInset * 2);
+                let innerHeight = height - (pillarInset * 2);
+
+                let xLeft   = ((x + pillarInset) * pxCell) + (pxCell / 2);
+                let xRight  = ((x + innerWidth)  * pxCell) + (pxCell / 2);
+                let yTop    = ((y + pillarInset) * pxCell) + (pxCell / 2);
+                let yBottom = ((y + innerHeight) * pxCell) + (pxCell / 2);
+
+                assert(pillars.join(''))
+                    .stringIncludes(`cx="${xLeft}" cy="${yTop}"`)
+                    .stringIncludes(`cx="${xRight}" cy="${yTop}"`)
+                    .stringIncludes(`cx="${xLeft}" cy="${yBottom}"`)
+                    .stringIncludes(`cx="${xRight}" cy="${yBottom}"`);
             });
         });
     });
