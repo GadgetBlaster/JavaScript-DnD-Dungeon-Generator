@@ -11,10 +11,11 @@ import doorType, { lockable } from '../rooms/door.js';
 
 // -- Config -------------------------------------------------------------------
 
-export const pxBorder     = 2;
-export const pxCell       = 24;
-export const pxGridLine   = 1;
-export const pxTextOffset = 2;
+export const pxCell = 24;
+
+const pxBorder     = 2;
+const pxGridLine   = 1;
+const pxTextOffset = 2;
 
 const colorGridFill     = '#f0f0f0';
 const colorGridStroke   = '#cfcfcf';
@@ -30,22 +31,31 @@ const colorTrapFill     = 'rgba(207, 207, 207, 0.8)';
 const radiusPillar = 4;
 const radiusHole   = 6;
 
-const doorWidth    = 8;
 const doorInset    = 12;
+const doorWidth    = 8; // TODO rename to door size
 
 const doorSecretLabel    = 'S';
 const doorConcealedLabel = 'C';
 
 const trapLabel = 'T';
 
+// TODO move to map.js
 export const labelMinWidth  = 3;
 export const labelMinHeight = 2;
 
-export const pillarThreshold = 6;
-export const pillarInset = 1;
+const pillarThreshold = 6;
+const pillarInset = 1;
 
 const fontSizeNormal = 14;
 const fontSizeSmall  = 10;
+
+export {
+    doorInset       as testDoorInset,
+    doorWidth       as testDoorWidth,
+    pillarInset     as testPillarInset,
+    pillarThreshold as testPillarThreshold,
+    pxTextOffset    as testPxTextOffset,
+};
 
 // -- Private Functions --------------------------------------------------------
 
@@ -294,6 +304,8 @@ export {
  * @returns {string}
  */
 export const drawDoor = (doorAttrs, { direction, type, locked }) => {
+    // TODO doors should only ever be 1 wide or 1 tall depending on direction
+
     let rectAttrs = getRectAttrs(doorAttrs);
     let isSecret  = type === doorType.secret || type === doorType.concealed;
     let color     = isSecret ? colorTransparent : colorRoomFill;
@@ -355,7 +367,7 @@ export const drawDoor = (doorAttrs, { direction, type, locked }) => {
         let halfInset = doorInset / 2;
         let halfWidth = doorWidth / 2;
 
-        let rectWidth  = isVertical ? inset : doorWidth;
+        let rectWidth  = isVertical ? inset     : doorWidth;
         let rectHeight = isVertical ? doorWidth : inset;
 
         let rectX = isVertical ? (x1 + halfInset) : (x1 - halfWidth);
@@ -379,7 +391,6 @@ export const drawDoor = (doorAttrs, { direction, type, locked }) => {
 
         details.push(drawPillar({ cx, cy }));
         details.push(drawPillar({ cx: cx2, cy: cy2 }));
-
     } else if (type === doorType.hole) {
         lineCords.push(divisionLineCords);
 

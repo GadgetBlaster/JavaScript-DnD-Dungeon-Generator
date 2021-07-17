@@ -1,22 +1,24 @@
 // @ts-check
 import {
     // Config
-    pillarInset,
-    pillarThreshold,
     pxCell,
-    pxTextOffset,
+    testDoorInset       as doorInset,
+    testDoorWidth       as doorWidth,
+    testPillarInset     as pillarInset,
+    testPillarThreshold as pillarThreshold,
+    testPxTextOffset    as pxTextOffset,
 
     // Private Functions
-    testDetRectAttrs as getRectAttrs,
-    testDrawCircle as drawCircle,
-    testDrawLine as drawLine,
-    testDrawPillar as drawPillar,
+    testDetRectAttrs   as getRectAttrs,
+    testDrawCircle     as drawCircle,
+    testDrawLine       as drawLine,
+    testDrawPillar     as drawPillar,
     testDrawPillarCell as drawPillarCell,
-    testDrawPillars as drawPillars,
-    testDrawRect as drawRect,
-    testDrawRoomText as drawRoomText,
-    testDrawText as drawText,
-    testDrawTrapText as drawTrapText,
+    testDrawPillars    as drawPillars,
+    testDrawRect       as drawRect,
+    testDrawRoomText   as drawRoomText,
+    testDrawText       as drawText,
+    testDrawTrapText   as drawTrapText,
 
     // Public functions
     drawDoor,
@@ -24,10 +26,10 @@ import {
 } from '../draw.js';
 
 import { directions } from '../map.js';
-import doorType, { lockable } from '../../rooms/door.js';
+import doorType from '../../rooms/door.js';
 
 /**
- * @param {import('../../unit/state.js').Utility}
+ * @param {import('../../unit/state.js').Utility} utility
  */
 export default ({ assert, describe, it }) => {
 
@@ -140,7 +142,7 @@ export default ({ assert, describe, it }) => {
 
             assert(pillar)
                 .stringIncludes('cx="114"')
-                .stringIncludes('cy="214"')
+                .stringIncludes('cy="214"');
         });
 
         describe('given attributes', () => {
@@ -369,13 +371,14 @@ export default ({ assert, describe, it }) => {
     // -- Public Functions -----------------------------------------------------
 
     describe('drawDoor()', () => {
-        const doorAttrs = { x: 10, y: 20, width: 1, height: 2 };
-        const door = drawDoor(doorAttrs, {
+        const doorAttrs = { x: 10, y: 20, width: 1, height: 1 };
+        const doorArgs  = {
             direction: directions.north,
             locked: false,
             type: doorType.passageway,
-        });
+        };
 
+        const door     = drawDoor(doorAttrs, doorArgs);
         const doorRect = door.slice(0, door.indexOf('/>') + 2);
 
         it('should return a string starting with a `<rect />` element string', () => {
@@ -398,90 +401,151 @@ export default ({ assert, describe, it }) => {
                 .stringIncludes(`height="${height * pxCell}"`);
         });
 
+        const northSouthDoorAttrs = { x: 10, y: 20, width: 1, height: 2 };
+        const northSouthDoorArgs  = { ...doorArgs, direction: directions.north};
 
-        describe('door wall lines', () => {
-            describe('when the door is horizontal', () => {
-                it('should include two vertical wall lines with correct coordinate attributes', () => {
-                    const { x, y, width, height } = doorAttrs;
+        const eastWestDoorAttrs = { x: 10, y: 20, width: 2, height: 1 };
+        const eastWestDoorArgs  = { ...doorArgs, direction: directions.east };
 
-                    const line1x = x * pxCell;
-                    const line2x = (x + width) * pxCell;
+        describe('door orientations', () => {
+            describe('door wall lines', () => {
+                describe('when the door direction is north or south', () => {
+                    it('should include two horizontal wall lines with correct coordinate attributes', () => {
+                        const { x, y, width, height } = northSouthDoorAttrs;
 
-                    const y1 = y * pxCell;
-                    const y2 = (y + height) * pxCell;
+                        const line1x = x * pxCell;
+                        const line2x = (x + width) * pxCell;
 
-                    assert(door)
-                        .stringIncludes(`<line x1="${line1x}" y1="${y1}" x2="${line1x}" y2="${y2}"`)
-                        .stringIncludes(`<line x1="${line2x}" y1="${y1}" x2="${line2x}" y2="${y2}"`);
+                        const y1 = y * pxCell;
+                        const y2 = (y + height) * pxCell;
+
+                        assert(drawDoor(northSouthDoorAttrs, northSouthDoorArgs))
+                            .stringIncludes(`<line x1="${line1x}" y1="${y1}" x2="${line1x}" y2="${y2}"`)
+                            .stringIncludes(`<line x1="${line2x}" y1="${y1}" x2="${line2x}" y2="${y2}"`);
+                    });
+                });
+
+                describe('when the door direction is east or west', () => {
+                    it('should include two horizontal wall lines with correct coordinate attributes', () => {
+                        const { x, y, width, height } = eastWestDoorAttrs;
+
+                        const x1 = x * pxCell;
+                        const x2 = (x + width) * pxCell;
+
+                        const line1y = y * pxCell;
+                        const line2y = (y + height) * pxCell;
+
+                        assert(drawDoor(eastWestDoorAttrs, eastWestDoorArgs))
+                            .stringIncludes(`<line x1="${x1}" y1="${line1y}" x2="${x2}" y2="${line1y}"`)
+                            .stringIncludes(`<line x1="${x1}" y1="${line2y}" x2="${x2}" y2="${line2y}"`);
+                    });
                 });
             });
 
-            describe('when the door is vertical', () => {
-                const verticalDoor = drawDoor(doorAttrs, {
-                    direction: directions.east,
-                    locked: false,
-                    type: doorType.passageway,
+            describe('when the door type is lockable', () => {
+                describe('when the door direction is north or south', () => {
+                    const { x, y, width, height } = northSouthDoorAttrs;
+                    const lockableDoor = drawDoor(northSouthDoorAttrs, {
+                        ...northSouthDoorArgs,
+                        type: doorType.wooden,
+                    });
+
+                    it('should include a horizontal line in the center of the cell ', () => {
+                        const x1 = x * pxCell;
+                        const x2 = (x + width) * pxCell;
+                        const y1 = (y + (height / 2)) * pxCell;
+                        const y2 = y1;
+
+                        assert(lockableDoor)
+                            .stringIncludes(`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"`);
+                    });
+
+                    it('should include a horizontal inset rectangle representing the door', () => {
+                        const rectCenterX = (x * pxCell) + ((width  * pxCell) / 2);
+                        const rectCenterY = (y * pxCell) + ((height * pxCell) / 2);
+
+                        const rectX = rectCenterX - (doorInset / 2);
+                        const rectY = rectCenterY - (doorWidth / 2);
+
+                        const rectW = (width * pxCell) - doorInset;
+                        const rectH = doorWidth;
+
+                        assert(rectW > rectH).isTrue();
+                        assert(lockableDoor)
+                            .stringIncludes(`<rect x="${rectX}" y="${rectY}" width="${rectW}" height="${rectH}"`);
+                    });
                 });
 
-                it('should include two horizontal wall lines with correct coordinate attributes', () => {
-                    const { x, y, width, height } = doorAttrs;
+                describe('when the door direction is east or west', () => {
+                    const { x, y, width, height } = eastWestDoorAttrs;
+                    const lockableDoor = drawDoor(eastWestDoorAttrs, {
+                        ...eastWestDoorArgs,
+                        type: doorType.wooden,
+                    });
 
-                    const x1 = x * pxCell;
-                    const x2 = (x + width) * pxCell;
+                    it('should include a horizontal line in the center of the cell ', () => {
+                        const x1 = (x + (width / 2)) * pxCell;
+                        const x2 = x1;
+                        const y1 = y * pxCell;
+                        const y2 = (y + height) * pxCell;
 
-                    const line1y = y * pxCell;
-                    const line2y = (y + height) * pxCell;
+                        assert(lockableDoor)
+                            .stringIncludes(`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"`);
+                    });
 
-                    assert(verticalDoor)
-                        .stringIncludes(`<line x1="${x1}" y1="${line1y}" x2="${x2}" y2="${line1y}"`)
-                        .stringIncludes(`<line x1="${x1}" y1="${line2y}" x2="${x2}" y2="${line2y}"`);
+                    it('should include a vertical inset rectangle representing the door', () => {
+                        const rectCenterX = (x * pxCell) + ((width  * pxCell) / 2);
+                        const rectCenterY = (y * pxCell) + ((height * pxCell) / 2);
+
+                        const rectX = rectCenterX - (doorWidth / 2);
+                        const rectY = rectCenterY - (doorInset / 2);
+
+                        const rectW = doorWidth;
+                        const rectH = (height * pxCell) - doorInset;
+
+                        assert(rectH > rectW).isTrue();
+                        assert(lockableDoor)
+                            .stringIncludes(`<rect x="${rectX}" y="${rectY}" width="${rectW}" height="${rectH}"`);
+                    });
                 });
             });
-        });
 
-        describe('when the door type is lockable', () => {
-            describe('when the door is horizontal', () => {
-                const lockableDoor = drawDoor(doorAttrs, {
-                    direction: directions.north,
-                    locked: false,
-                    type: doorType.wooden,
+            describe('when the door is an archway', () => {
+                describe('when the door direction is north or south', () => {
+                    it('should draw two vertically centered pillars on the left and right of the cell', () => {
+                        const { x, y, width, height } = northSouthDoorAttrs;
+                        const archwayDoor = drawDoor(northSouthDoorAttrs, {
+                            ...northSouthDoorArgs,
+                            type: doorType.archway
+                        });
+
+                        const cx1 = x * pxCell;
+                        const cx2 = (x * pxCell) + (width  * pxCell);
+                        const cy  = (y * pxCell) + ((height /2) * pxCell);
+
+                        assert(archwayDoor)
+                            .stringIncludes(`<circle cx="${cx1}" cy="${cy}"`)
+                            .stringIncludes(`<circle cx="${cx2}" cy="${cy}"`);
+                    });
                 });
 
-                it('should include a horizontal line in the center of the cell ', () => {
-                    let { x, y, width, height } = doorAttrs;
+                describe('when the door direction is east or west', () => {
+                    it('should draw two horizontally centered pillars at the top and bottom of the cell', () => {
+                        const { x, y, width, height } = eastWestDoorAttrs;
+                        const archwayDoor = drawDoor(eastWestDoorAttrs, {
+                            ...eastWestDoorArgs,
+                            type: doorType.archway
+                        });
 
-                    let x1 = x * pxCell;
-                    let x2 = (x + width) * pxCell;
-                    let y1 = (y + (height / 2)) * pxCell;
-                    let y2 = y1;
+                        const cx  = (x * pxCell) + ((width / 2) * pxCell);
+                        const cy1 = y * pxCell;
+                        const cy2 = (y * pxCell) + (height * pxCell);
 
-                    assert(lockableDoor)
-                        .stringIncludes(`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"`);
+                        assert(archwayDoor)
+                            .stringIncludes(`<circle cx="${cx}" cy="${cy1}"`)
+                            .stringIncludes(`<circle cx="${cx}" cy="${cy2}"`);
+                    });
                 });
-
-                // TODO rect
-            });
-
-            describe('when the door is vertical', () => {
-                const lockableDoor = drawDoor(doorAttrs, {
-                    direction: directions.east,
-                    locked: false,
-                    type: doorType.wooden,
-                });
-
-                it('should include a vertical line in the center of the cell ', () => {
-                    let { x, y, width, height } = doorAttrs;
-
-                    let x1 = (x + (width / 2)) * pxCell;
-                    let x2 = x1;
-                    let y1 = y * pxCell;
-                    let y2 = (y + height) * pxCell;
-
-                    assert(lockableDoor)
-                        .stringIncludes(`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"`);
-                });
-
-                // TODO rect
             });
         });
     });
