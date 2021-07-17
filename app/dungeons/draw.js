@@ -47,6 +47,185 @@ const fontSizeSmall  = 10;
 // -- Private Functions --------------------------------------------------------
 
 /**
+ * Get rectangle attributes.
+ *
+ * @param {object} args
+ *     @param {number} args.x
+ *     @param {number} args.y
+ *     @param {number} args.width
+ *     @param {number} args.height
+ *
+ * @returns {object}
+ */
+function getRectAttrs({ x, y, width, height }) {
+    let xPx = x * pxCell;
+    let yPx = y * pxCell;
+
+    let widthPx  = width * pxCell;
+    let heightPx = height * pxCell;
+
+    return { x: xPx, y: yPx, width: widthPx, height: heightPx };
+}
+
+/**
+ * Returns an SVG circle element string.
+ *
+ * @param {object} args
+ *     @param {number} args.cx
+ *     @param {number} args.cy
+ *     @param {number} args.r
+ *     @param {boolean} [args.stroke] // TODO move to an `options` param
+ *     @param {string} args.fill
+ *
+ * @returns {string}
+ */
+function drawCircle({ cx, cy, r, stroke, fill }) {
+    let attrs = createAttrs({
+        cx,
+        cy,
+        r,
+        fill,
+        'shape-rendering': 'geometricPrecision',
+        ...(stroke && { stroke, 'stroke-width': 2 })
+    });
+
+    return `<circle${attrs} />`;
+}
+
+/**
+ * Returns an SVG line element string.
+ *
+ * @param {object} args
+ *     @param {number} args.x1
+ *     @param {number} args.y1
+ *     @param {number} args.x2
+ *     @param {number} args.y2
+ *     @param {string} args.color
+ *     @param {number} args.width
+ *     @param {boolean} [args.dashed] // TODO move to an `options` param
+ *
+ * @returns {string}
+ */
+function drawLine({ x1, y1, x2, y2, color, width, dashed }) {
+    let attrs = createAttrs({
+        x1,
+        y1,
+        x2,
+        y2,
+        stroke: color,
+        'shape-rendering': 'crispEdges',
+        'stroke-linecap': 'square',
+        'stroke-width': width,
+        ...(dashed && { 'stroke-dasharray': 5 }),
+    });
+
+    return `<line${attrs} />`;
+}
+
+/**
+ * Draws an map pillar.
+ *
+ * @param {object} [attrs]
+ *
+ * @returns {string}
+ */
+function drawPillar(attrs) {
+    return drawCircle({
+        r: radiusPillar,
+        stroke: colorRoomStroke,
+        fill: colorPillarFill,
+        ...attrs,
+    });
+}
+
+/**
+ * Returns a map pillar cell.
+ *
+ * {[ x: number, y: number ]} cords
+ *
+ * @returns {string}
+ */
+function drawPillarCell([ x, y ]) {
+    let rect = getRectAttrs({ x, y, width: 1, height: 1 });
+
+    let cx = rect.x + (rect.width / 2);
+    let cy = rect.y + (rect.height / 2);
+
+    return drawPillar({ cx, cy, stroke: colorPillarStroke });
+}
+
+/**
+ * Returns pillars for a room with x & y dimensions greater than
+ * `pillarThreshold`.
+ *
+ * @param {object} args
+ *     @param {number} args.x
+ *     @param {number} args.y
+ *     @param {number} args.width
+ *     @param {number} args.height
+ *
+ * @returns {string[]}
+ */
+function drawPillars({ x, y, width, height }) {
+    let pillars = [];
+
+    if (width < pillarThreshold || height < pillarThreshold) {
+        return pillars;
+    }
+
+    let innerWidth  = width - (pillarInset * 2);
+    let innerHeight = height - (pillarInset * 2);
+
+    pillars.push(drawPillarCell([ x + pillarInset, y + pillarInset ]));
+    pillars.push(drawPillarCell([ x + innerWidth,  y + pillarInset ]));
+    pillars.push(drawPillarCell([ x + pillarInset, y + innerHeight ]));
+    pillars.push(drawPillarCell([ x + innerWidth,  y + innerHeight ]));
+
+    return pillars;
+}
+
+/**
+ * Returns an SVG rectangle element string.
+ *
+ * @param {object} [rectAttrs] // TODO typedef
+ *
+ * @returns {string}
+ */
+function drawRect(rectAttrs) {
+    let attrs = createAttrs(rectAttrs);
+
+    return `<rect${attrs} />`;
+}
+
+/**
+ * Returns a map room label SVG text element string.
+ *
+ * @param {object} rectAttrs
+ * @param {object} args
+ *     @param {object} args.roomNumber
+ *     @param {object} [args.roomLabel]
+ *
+ * @returns {string}
+ */
+function drawRoomText(rectAttrs, { roomNumber, roomLabel }) {
+    let middleX = (rectAttrs.x + (rectAttrs.width  / 2));
+    let middleY = (rectAttrs.y + (rectAttrs.height / 2));
+
+    let fontSize = fontSizeNormal;
+    let labelY   = roomLabel ? middleY - (fontSize / 2) : middleY;
+
+    let text = drawText(roomNumber, [ middleX, labelY ], { fontSize });
+
+    if (roomLabel) {
+        let roomLabelY = labelY + fontSize;
+
+        text += drawText(roomLabel, [ middleX, roomLabelY ], { fontSize: fontSizeSmall });
+    }
+
+    return text;
+}
+
+/**
  * Returns an SVG text element string.
  *
  * @param {string} text
@@ -68,142 +247,8 @@ function drawText(text, [ x, y ], { fontSize = fontSizeNormal, fill = colorText 
         'text-anchor': 'middle',
     });
 
-    // TODO remove space before `${attrs}` in all methods
-    return `<text ${attrs}>${text}</text>`;
+    return `<text${attrs}>${text}</text>`;
 }
-
-/**
- * Returns an SVG line element string.
- *
- * @param {object} args
- *     @param {number} args.x1
- *     @param {number} args.y1
- *     @param {number} args.x2
- *     @param {number} args.y2
- *     @param {string} args.color
- *     @param {number} args.width
- *     @param {boolean} [args.dashed] // TODO move to an `options` param
- *
- * @returns {string}
- */
-const drawLine = ({ x1, y1, x2, y2, color, width, dashed }) => {
-    let attrs = createAttrs({
-        x1,
-        y1,
-        x2,
-        y2,
-        stroke: color,
-        'shape-rendering': 'crispEdges',
-        'stroke-linecap': 'square',
-        'stroke-width': width,
-        ...(dashed && { 'stroke-dasharray': 5 }),
-    });
-
-    return `<line ${attrs} />`;
-};
-
-/**
- * Returns an SVG circle element string.
- *
- * @param {object} args
- *     @param {number} args.cx
- *     @param {number} args.cy
- *     @param {number} args.r
- *     @param {boolean} [args.stroke] // TODO move to an `options` param
- *     @param {string} args.fill
- *
- * @returns {string}
- */
-const drawCircle = ({ cx, cy, r, stroke, fill }) => {
-    let attrs = createAttrs({
-        cx,
-        cy,
-        r,
-        fill,
-        'shape-rendering': 'geometricPrecision',
-        ...(stroke && { stroke, 'stroke-width': 2 })
-    });
-
-    return `<circle ${attrs} />`;
-};
-
-/**
- * Returns an SVG rectangle element string.
- *
- * @param {object} [rectAttrs] // TODO typedef
- *
- * @returns {string}
- */
-const drawRect = (rectAttrs) => {
-    let attrs = createAttrs(rectAttrs);
-
-    return `<rect ${attrs} />`;
-};
-
-/**
- * Draws an map pillar.
- *
- * @param {object} [attrs]
- *
- * @returns {string}
- */
-const drawPillar = (attrs) => {
-    return drawCircle({
-        r: radiusPillar,
-        stroke: colorRoomStroke,
-        fill: colorPillarFill,
-        ...attrs,
-    });
-};
-
-/**
- * Get rectangle attributes.
- *
- * @param {object} args
- *     @param {number} args.x
- *     @param {number} args.y
- *     @param {number} args.width
- *     @param {number} args.height
- *
- * @returns {object}
- */
-const getRectAttrs = ({ x, y, width, height }) => {
-    let xPx = x * pxCell;
-    let yPx = y * pxCell;
-
-    let widthPx  = width * pxCell;
-    let heightPx = height * pxCell;
-
-    return { x: xPx, y: yPx, width: widthPx, height: heightPx }
-};
-
-/**
- * Returns a map room label SVG text element string.
- *
- * @param {object} rectAttrs
- * @param {object} args
- *     @param {object} args.roomNumber
- *     @param {object} [args.roomLabel]
- *
- * @returns {string}
- */
-const drawRoomText = (rectAttrs, { roomNumber, roomLabel }) => {
-    let middleX = (rectAttrs.x + (rectAttrs.width  / 2));
-    let middleY = (rectAttrs.y + (rectAttrs.height / 2));
-
-    let fontSize = fontSizeNormal;
-    let labelY   = roomLabel ? middleY - (fontSize / 2) : middleY;
-
-    let text = drawText(roomNumber, [ middleX, labelY ], { fontSize });
-
-    if (roomLabel) {
-        let roomLabelY = labelY + fontSize;
-
-        text += drawText(roomLabel, [ middleX, roomLabelY ], { fontSize: fontSizeSmall });
-    }
-
-    return text;
-};
 
 /**
  * Returns a trap label SVG text element string.
@@ -212,57 +257,12 @@ const drawRoomText = (rectAttrs, { roomNumber, roomLabel }) => {
  *
  * @returns {string}
  */
-const drawTrapText = (rectAttrs) => {
-    let middleX = (rectAttrs.x + (pxCell  / 2));
+function drawTrapText(rectAttrs) {
+    let middleX = (rectAttrs.x + (pxCell / 2));
     let middleY = (rectAttrs.y + (rectAttrs.height - (pxCell / 2)));
 
     return drawText(trapLabel, [ middleX, middleY ], { fill: colorTrapFill });
-};
-
-/**
- * Returns a map pillar cell.
- *
- * {[ x: number, y: number ]} cords
- *
- * @returns {string}
- */
-const drawPillarCell = ([ x, y ]) => {
-    let rect = getRectAttrs({ x, y, width: 1, height: 1 });
-    let cx = rect.x + (rect.width / 2);
-    let cy = rect.y + (rect.height / 2);
-
-    return drawPillar({ cx, cy, stroke: colorPillarStroke });
-};
-
-/**
- * Returns pillars for a room with x & y dimensions greater than
- * `pillarThreshold`.
- *
- * @param {object} args
- *     @param {number} args.x
- *     @param {number} args.y
- *     @param {number} args.width
- *     @param {number} args.height
- *
- * @returns {string[]}
- */
-const drawPillars = ({ x, y, width, height }) => {
-    let pillars = [];
-
-    if (width < pillarThreshold || height < pillarThreshold) {
-        return pillars;
-    }
-
-    let innerWidth  = width - 2; // Use `pillarInset` constant
-    let innerHeight = height - 2;
-
-    pillars.push(drawPillarCell([ x + 1, y + 1 ]));
-    pillars.push(drawPillarCell([ x + innerWidth, y + 1 ]));
-    pillars.push(drawPillarCell([ x + 1, y + innerHeight ]));
-    pillars.push(drawPillarCell([ x + innerWidth, y + innerHeight ]));
-
-    return pillars;
-};
+}
 
 export {
     drawCircle     as testDrawCircle,
