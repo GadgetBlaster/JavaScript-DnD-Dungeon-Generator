@@ -11,12 +11,13 @@
         "sourceType": "module"
     },
     "rules": {
-        "max-len": [ "warn", { "code": 120, "comments": 80 } ],
-        "no-shadow": "warn",
-        "no-undef": [ "error" ],
-        "no-unused-vars": [ "error" ],
-        "quotes": [ "warn", "single",  { "allowTemplateLiterals": true, "avoidEscape": true } ],
-        "semi": [ "warn", "always" ],
-        "no-case-declarations": [ "warn" ]
+        "comma-dangle":         [ "warn", "always-multiline" ],
+        "max-len":              [ "warn", { "code": 120, "comments": 80 } ],
+        "no-case-declarations": [ "warn" ],
+        "no-shadow":            "warn",
+        "no-undef":             [ "error" ],
+        "no-unused-vars":       [ "error" ],
+        "quotes":               [ "warn", "single",  { "allowTemplateLiterals": true, "avoidEscape": true } ],
+        "semi":                 [ "warn", "always" ]
     }
 }

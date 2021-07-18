@@ -50,11 +50,13 @@ const fontSizeNormal = 14;
 const fontSizeSmall  = 10;
 
 export {
-    doorInset       as testDoorInset,
-    doorWidth       as testDoorWidth,
-    pillarInset     as testPillarInset,
-    pillarThreshold as testPillarThreshold,
-    pxTextOffset    as testPxTextOffset,
+    doorConcealedLabel as testDoorConcealedLabel,
+    doorInset          as testDoorInset,
+    doorSecretLabel    as testDoorSecretLabel,
+    doorWidth          as testDoorWidth,
+    pillarInset        as testPillarInset,
+    pillarThreshold    as testPillarThreshold,
+    pxTextOffset       as testPxTextOffset,
 };
 
 // -- Private Functions --------------------------------------------------------
@@ -408,7 +410,7 @@ export const drawDoor = (doorAttrs, { direction, type, locked }) => {
 
     let lines = lineCords.map((cords) => drawLine({ ...lineAttrs, ...cords })).join('');
 
-    return rect + lines + details.join(); // TODO fix comma from join
+    return rect + lines + details.join('');
 };
 
 /**

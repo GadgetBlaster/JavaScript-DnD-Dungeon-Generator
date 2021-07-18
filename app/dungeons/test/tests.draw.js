@@ -2,11 +2,14 @@
 import {
     // Config
     pxCell,
-    testDoorInset       as doorInset,
-    testDoorWidth       as doorWidth,
-    testPillarInset     as pillarInset,
-    testPillarThreshold as pillarThreshold,
-    testPxTextOffset    as pxTextOffset,
+    testDoorInset          as doorInset,
+    testDoorWidth          as doorWidth,
+    testPillarInset        as pillarInset,
+    testPillarThreshold    as pillarThreshold,
+    testPxTextOffset       as pxTextOffset,
+    testDoorConcealedLabel as doorConcealedLabel,
+    testDoorSecretLabel    as doorSecretLabel,
+
 
     // Private Functions
     testDetRectAttrs   as getRectAttrs,
@@ -516,7 +519,7 @@ export default ({ assert, describe, it }) => {
                         const { x, y, width, height } = northSouthDoorAttrs;
                         const archwayDoor = drawDoor(northSouthDoorAttrs, {
                             ...northSouthDoorArgs,
-                            type: doorType.archway
+                            type: doorType.archway,
                         });
 
                         const cx1 = x * pxCell;
@@ -534,7 +537,7 @@ export default ({ assert, describe, it }) => {
                         const { x, y, width, height } = eastWestDoorAttrs;
                         const archwayDoor = drawDoor(eastWestDoorAttrs, {
                             ...eastWestDoorArgs,
-                            type: doorType.archway
+                            type: doorType.archway,
                         });
 
                         const cx  = (x * pxCell) + ((width / 2) * pxCell);
@@ -545,6 +548,72 @@ export default ({ assert, describe, it }) => {
                             .stringIncludes(`<circle cx="${cx}" cy="${cy1}"`)
                             .stringIncludes(`<circle cx="${cx}" cy="${cy2}"`);
                     });
+                });
+            });
+
+            describe('when the door is a hole', () => {
+                describe('when the door direction is north or south', () => {
+                    it('should draw a circle centered horizontally', () => {
+                        const { x, y, width, height } = northSouthDoorAttrs;
+                        const archwayDoor = drawDoor(northSouthDoorAttrs, {
+                            ...northSouthDoorArgs,
+                            type: doorType.hole,
+                        });
+
+                        const cx = (x + (width  / 2)) * pxCell;
+                        const cy = (y + (height / 2)) * pxCell;
+
+                        assert(archwayDoor).stringIncludes(`<circle cx="${cx}" cy="${cy}"`);
+                    });
+                });
+
+                describe('when the door direction is east or west', () => {
+                    it('should draw a circle centered vertically', () => {
+                        const { x, y, width, height } = eastWestDoorAttrs;
+                        const archwayDoor = drawDoor(eastWestDoorAttrs, {
+                            ...eastWestDoorArgs,
+                            type: doorType.hole,
+                        });
+
+                        const cx = (x + (width  / 2)) * pxCell;
+                        const cy = (y + (height / 2)) * pxCell;
+
+                        assert(archwayDoor).stringIncludes(`<circle cx="${cx}" cy="${cy}"`);
+                    });
+                });
+            });
+
+            describe('when the door is a secret door', () => {
+                const secretDoor = drawDoor(doorAttrs, { ...doorArgs, type: doorType.secret });
+                const secretDoorRect = secretDoor.slice(0, secretDoor.indexOf('/>') + 2);
+
+                it('should have a transparent fill color', () => {
+                    assert(secretDoorRect)
+                        .stringIncludes('fill="transparent"')
+                        .stringIncludes('stroke="transparent"');
+                });
+
+                it('should include the secret door label', () => {
+                    assert(secretDoor)
+                        .stringIncludes(`<text`)
+                        .stringIncludes(`>${doorSecretLabel}</text>`);
+                });
+            });
+
+            describe('when the door is a concealed door', () => {
+                const concealedDoor = drawDoor(doorAttrs, { ...doorArgs, type: doorType.concealed });
+                const concealedDoorRect = concealedDoor.slice(0, concealedDoor.indexOf('/>') + 2);
+
+                it('should have a transparent fill color', () => {
+                    assert(concealedDoorRect)
+                        .stringIncludes('fill="transparent"')
+                        .stringIncludes('stroke="transparent"');
+                });
+
+                it('should include the concealed door label', () => {
+                    assert(concealedDoor)
+                        .stringIncludes(`<text`)
+                        .stringIncludes(`>${doorConcealedLabel}</text`);
                 });
             });
         });
