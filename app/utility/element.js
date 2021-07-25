@@ -36,7 +36,7 @@ export const selfClosingElements = Object.freeze([
     'rect',
 ]);
 
-// -- Public Functions ---------------------------------------------------------
+// -- Private Functions --------------------------------------------------------
 
 /**
  * Create html attributes
@@ -47,11 +47,15 @@ export const selfClosingElements = Object.freeze([
  *
  * @returns {string}
  */
-export function createAttrs(attributes = {}) {
+function createAttributes(attributes = {}) {
     return Object.keys(attributes).map((key) => {
         return ` ${key}="${attributes[key]}"`;
     }).join('');
 }
+
+export { createAttributes as testCreateAttributes };
+
+// -- Public Functions ---------------------------------------------------------
 
 /**
  * Element
@@ -63,10 +67,12 @@ export function createAttrs(attributes = {}) {
  * @returns {string}
  */
 export function element(tag, content = '', attributes = {}) {
+    let elementAttributes = createAttributes(attributes);
+
     if (selfClosingElements.includes(tag)) {
         content && toss('Content is not allowed in self closing elements');
-        return `<${tag}${createAttrs(attributes)} />`;
+        return `<${tag}${elementAttributes} />`;
     }
 
-    return `<${tag}${createAttrs(attributes)}>${content}</${tag}>`;
+    return `<${tag}${elementAttributes}>${content}</${tag}>`;
 }

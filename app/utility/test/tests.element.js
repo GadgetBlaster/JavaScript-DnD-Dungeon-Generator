@@ -1,56 +1,61 @@
 
 import {
-    createAttrs,
     element,
+    testCreateAttributes as createAttributes,
 } from '../element.js';
 
 /**
  * @param {import('../../unit/state.js').Utility}
  */
 export default ({ assert, describe, it }) => {
-    describe('createAttrs()', () => {
+
+    // -- Private Functions ----------------------------------------------------
+
+    describe('createAttributes()', () => {
         it('should return a string', () => {
-            assert(createAttrs({ class: 'css-class' })).isString();
+            assert(createAttributes({ class: 'css-class' })).isString();
         });
 
         describe('given nothing', () => {
             it('should return an empty string', () => {
-                assert(createAttrs()).equals('');
+                assert(createAttributes()).equals('');
             });
         });
 
         describe('given an empty object', () => {
             it('should return an empty string', () => {
-                assert(createAttrs({})).equals('');
+                assert(createAttributes({})).equals('');
             });
         });
 
         describe('given an object with a single key value pair', () => {
             it('should return the key and value formatted as an HTML attribute string', () => {
-                assert(createAttrs({ role: 'presentation' })).equals(' role="presentation"');
+                assert(createAttributes({ role: 'presentation' })).equals(' role="presentation"');
             });
         });
 
         describe('given an object with a boolean value', () => {
             it('should format the value as a string', () => {
-                assert(createAttrs({ hidden: true })).equals(' hidden="true"');
+                assert(createAttributes({ hidden: true })).equals(' hidden="true"');
             });
         });
 
         describe('given an object with a numeric value', () => {
             it('should format the value as a string', () => {
-                assert(createAttrs({ 'data-columns': 2 })).equals(' data-columns="2"');
+                assert(createAttributes({ 'data-columns': 2 })).equals(' data-columns="2"');
             });
         });
 
         describe('given an object with multiple key value pairs', () => {
             it('should return the key and value pairs formatted as an HTML attribute string', () => {
                 const object = { 'data-target': 'kitten', id: 'jet-pack', type: 'submit' };
-                assert(createAttrs(object))
+                assert(createAttributes(object))
                     .equals(' data-target="kitten" id="jet-pack" type="submit"');
             });
         });
     });
+
+    // -- Public Functions -----------------------------------------------------
 
     describe('element()', () => {
         it('should return a string', () => {
