@@ -1,3 +1,4 @@
+// @ts-check
 
 import assert from './test/tests.assert.js';
 import output from './test/tests.output.js';

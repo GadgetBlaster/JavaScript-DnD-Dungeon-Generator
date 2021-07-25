@@ -10,6 +10,28 @@ import { selfClosingElements } from '../utility/element.js';
  * @property {boolean} isOk
  */
 
+/**
+ * @typedef {object} Assertions
+ *
+ * @property {Assertion} equals
+ * @property {Assertion} equalsArray
+ * @property {Assertion} equalsObject
+ * @property {Assertion} isArray
+ * @property {Assertion} isBoolean
+ * @property {Assertion} isFalse
+ * @property {Assertion} isFunction
+ * @property {Assertion} isHtmlTag
+ * @property {Assertion} isNull
+ * @property {Assertion} isNumber
+ * @property {Assertion} isObject
+ * @property {Assertion} isString
+ * @property {Assertion} isTrue
+ * @property {Assertion} isUndefined
+ * @property {Assertion} stringExcludes
+ * @property {Assertion} stringIncludes
+ * @property {Assertion} throws
+ */
+
 // -- Public Functions ---------------------------------------------------------
 
 /** @type {(value: *, expected: *) => Result} equals */

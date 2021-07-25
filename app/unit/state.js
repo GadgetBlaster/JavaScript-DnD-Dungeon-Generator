@@ -1,10 +1,12 @@
+// @ts-check
 
 import * as assertFunctions from './assert.js';
 import { getResultMessage } from './output.js';
 
+/** @typedef {import('./assert.js').Result} Result */
+/** @typedef {import('./assert.js').Assertions} Assertions */
+
 /**
- * Summary
- *
  * @typedef {object} Summary
  *
  * @property {number} assertions
@@ -13,39 +15,9 @@ import { getResultMessage } from './output.js';
  * @property {string[]} errors
  */
 
-/**
- * Assertion
- *
- * @typedef {(value: *, expected?: *) => Result} Assertion
- */
+/** @typedef {(value: *, expected?: *) => Result} Assertion */
 
 /**
- * Assertions
- *
- * @typedef {object} Assertions
- *
- * @property {Assertion} equals
- * @property {Assertion} equalsArray
- * @property {Assertion} equalsObject
- * @property {Assertion} isArray
- * @property {Assertion} isBoolean
- * @property {Assertion} isFalse
- * @property {Assertion} isFunction
- * @property {Assertion} isHtmlTag
- * @property {Assertion} isNull
- * @property {Assertion} isNumber
- * @property {Assertion} isObject
- * @property {Assertion} isString
- * @property {Assertion} isTrue
- * @property {Assertion} isUndefined
- * @property {Assertion} stringExcludes
- * @property {Assertion} stringIncludes
- * @property {Assertion} throws
- */
-
-/**
- * Utility
- *
  * @typedef {object} Utility
  *
  * @property {(value:*) => Assertions} assert
@@ -54,8 +26,6 @@ import { getResultMessage } from './output.js';
  */
 
 /**
- * State
- *
  * @typedef {object} State
  *
  * @property {() => Summary} getSummary
@@ -64,27 +34,17 @@ import { getResultMessage } from './output.js';
  */
 
 /**
- * Entry
- *
  * @typedef {object} Entry
  *
  * @property {string} msg
  * @property {boolean} isOk
  */
 
-/**
- * Result
- *
- * @typedef {import('./assert.js').Result}
- */
+/** @typedef {"assert()" | "describe()" | "it()" | "default()"} Scope */
 
 // -- Config -------------------------------------------------------------------
 
-/**
- * Scope
- *
- * @type {object.<string, string>}
- */
+/** @type {{ [key: string]: Scope }} */
 const scope = {
     assert  : 'assert()',
     describe: 'describe()',
@@ -98,7 +58,7 @@ const scope = {
  * Creates a closure containing unit test state: assertions, errors, and
  * failures. Returns an object of unit test operations.
  *
- * @type {State}
+ * @returns {State}
  */
 export function useState() {
 
@@ -112,7 +72,7 @@ export function useState() {
     /**
      * Current
      *
-     * @type {Entry[]}
+     * @type {{ scope: Scope; msg: string }[]}
      */
     let current = [];
 
@@ -141,7 +101,7 @@ export function useState() {
      * Check scope
      *
      * @param {string} nextScope
-     * @param {string[] array
+     * @param {string[]} allowed
      *
      * @throws
      */
@@ -183,7 +143,7 @@ export function useState() {
     };
 
     /**
-     * Run assert
+     * Run assertion
      *
      * @param {*} actual
      * @param {*} expected
@@ -191,7 +151,7 @@ export function useState() {
      *
      * @returns {Assertions}
      */
-    const runAssert = (actual, expected, assertion) => {
+    const runAssertion = (actual, expected, assertion) => {
         checkScope(scope.assert, [ scope.it ]);
 
         let result = assertion(actual, expected);
@@ -205,7 +165,7 @@ export function useState() {
 
         current.push({
             scope: scope.assert,
-            msg: `${isOk ? 'Pass:' : 'Failure:'} ${msg}`
+            msg: `${isOk ? 'Pass:' : 'Failure:'} ${msg}`,
         });
 
         results.push({
@@ -221,12 +181,12 @@ export function useState() {
     /**
      * Assert
      *
-     * @param {*} value
+     * @param {any} value
      *
      * @returns {Assertions}
      */
     const assert = (value) => Object.entries(assertFunctions).reduce((assertObj, [ key, assertion ]) => {
-        assertObj[key] = (expected) => runAssert(value, expected, assertion);
+        assertObj[key] = (expected) => runAssertion(value, expected, assertion);
         return assertObj;
     }, {});
 
@@ -276,7 +236,7 @@ export function useState() {
         let result = { isOk: false, msg: error };
 
         results.push(result);
-        errors.push(result);
+        errors.push(result); // TODO
     };
 
     return {
