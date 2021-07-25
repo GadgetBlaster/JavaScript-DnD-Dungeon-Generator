@@ -35,13 +35,13 @@ export default ({ assert, describe, it }) => {
 
     describe('generateFurnishings()', () => {
         it('should return an array', () => {
-            let furniture = generateFurnishings(roomTypes.room, furnitureQuantity.minimum);
+            const furniture = generateFurnishings(roomTypes.room, furnitureQuantity.minimum);
             assert(furniture).isArray();
         });
 
         describe('given `furnitureQuantity.none`', () => {
             it('should return an empty array', () => {
-                let furniture = generateFurnishings(roomTypes.smithy, furnitureQuantity.none);
+                const furniture = generateFurnishings(roomTypes.smithy, furnitureQuantity.none);
                 assert(furniture).isArray();
                 assert(furniture.length).equals(0);
             });
@@ -53,16 +53,16 @@ export default ({ assert, describe, it }) => {
                 // `requiredRoomFurniture`.
                 assert(requiredRoomFurniture[roomTypes.room]).isUndefined();
 
-                let furniture = generateFurnishings(roomTypes.room, furnitureQuantity.furnished);
-                let count = furniture.length;
-                let max = furnishingQuantityRanges[furnitureQuantity.furnished];
+                const furniture = generateFurnishings(roomTypes.room, furnitureQuantity.furnished);
+                const count = furniture.length;
+                const max = furnishingQuantityRanges[furnitureQuantity.furnished];
 
                 assert(count >= 1 && count <= max).isTrue();
             });
         });
 
         describe('given a `roomType` that requires furniture', () => {
-            let furniture = generateFurnishings(roomTypes.smithy, furnitureQuantity.minimum)
+            const furniture = generateFurnishings(roomTypes.smithy, furnitureQuantity.minimum)
                 .map(({ name }) => name);
 
             it('should return an array including all required room type furniture', () => {
@@ -78,7 +78,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given a room type included in `furnishingByRoomType`', () => {
             it('should include only furniture appropriate to the room type', () => {
-                let validFurniture = furnishingByRoomType[roomTypes.room].concat(anyRoomFurniture)
+                const validFurniture = furnishingByRoomType[roomTypes.room].concat(anyRoomFurniture)
                     .map(({ name }) => name);
 
                 generateFurnishings(roomTypes.room, furnitureQuantity.furnished)
@@ -94,7 +94,7 @@ export default ({ assert, describe, it }) => {
                 // `furnishingByRoomType`.
                 assert(furnishingByRoomType.newRoomType).isUndefined();
 
-                let furniture = generateFurnishings('newRoomType', furnitureQuantity.minimum).pop();
+                const furniture = generateFurnishings('newRoomType', furnitureQuantity.minimum).pop();
                 assert(furniture).isObject();
                 assert(furniture.name).isString();
             });
@@ -103,15 +103,15 @@ export default ({ assert, describe, it }) => {
 
     describe('generateItemObjects()', () => {
         describe('given a count of 1', () => {
-            let items = generateItemObjects(1, {
+            const items = generateItemObjects(1, {
                 [knobs.itemCondition]: random,
                 [knobs.itemQuantity] : quantity.one,
                 [knobs.itemRarity]   : random,
                 [knobs.itemType]     : random,
             });
 
-            let entries = Object.entries(items);
-            let [ key, item ] = [ ...entries ].pop();
+            const entries = Object.entries(items);
+            const [ key, item ] = [ ...entries ].pop();
 
             it('should return an object with a single item', () => {
                 assert(items).isObject();
@@ -127,31 +127,31 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a count greater than 1', () => {
-            let items = generateItemObjects(3, {
+            const items = generateItemObjects(3, {
                 [knobs.itemCondition]: random,
                 [knobs.itemQuantity] : quantity.one,
                 [knobs.itemRarity]   : random,
                 [knobs.itemType]     : random,
             });
 
-            let entries = Object.entries(items);
+            const entries = Object.entries(items);
 
             it('should return an object keyed by the item\'s labels', () => {
-                let invalidKeys = entries.find(([ key, item ]) => key !== item.label);
+                const invalidKeys = entries.find(([ key, item ]) => key !== item.label);
                 assert(invalidKeys).isUndefined();
             });
         });
 
         describe('when duplicates of the same item are generated', () => {
-            let items = generateItemObjects(3, {
+            const items = generateItemObjects(3, {
                 [knobs.itemCondition]: condition.average,
                 [knobs.itemQuantity] : quantity.one,
                 [knobs.itemRarity]   : rarity.common,
                 [knobs.itemType]     : itemType.mysterious,
             });
 
-            let entries = Object.entries(items);
-            let [ key, item ] = [ ...entries ].pop();
+            const entries = Object.entries(items);
+            const [ key, item ] = [ ...entries ].pop();
 
             it('should return an object with the items consolidated', () => {
                 assert(entries.length).equals(1);
@@ -169,13 +169,13 @@ export default ({ assert, describe, it }) => {
 
     describe('getFurnishingObjects()', () => {
         describe('given a single furnishing object', () => {
-            let furnishings = getFurnishingObjects(
+            const furnishings = getFurnishingObjects(
                 [ { name: 'Table', label: 'Table' } ],
                 condition.average
             );
 
-            let entries = Object.entries(furnishings);
-            let [ key, furnishing ] = [ ...entries ].pop();
+            const entries = Object.entries(furnishings);
+            const [ key, furnishing ] = [ ...entries ].pop();
 
             it('should return an object with a single furnishing', () => {
                 assert(furnishings).isObject();
@@ -191,27 +191,27 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given multiple furnishing objects', () => {
-            let furnishings = getFurnishingObjects(
+            const furnishings = getFurnishingObjects(
                 [ { name: 'Table', label: 'Table' }, { name: 'Chair', label: 'Chair' } ],
                 condition.average
             );
 
-            let entries = Object.entries(furnishings);
+            const entries = Object.entries(furnishings);
 
             it('should return an object keyed by the item\'s labels', () => {
-                let invalidKeys = entries.find(([ key, item ]) => key !== item.label);
+                const invalidKeys = entries.find(([ key, item ]) => key !== item.label);
                 assert(invalidKeys).isUndefined();
             });
         });
 
         describe('given duplicate furnishing objects', () => {
-            let furnishings = getFurnishingObjects(
+            const furnishings = getFurnishingObjects(
                 [ { name: 'Table', label: 'Table' }, { name: 'Table', label: 'Table' } ],
                 condition.average
             );
 
-            let entries = Object.entries(furnishings);
-            let [ key, item ] = [ ...entries ].pop();
+            const entries = Object.entries(furnishings);
+            const [ key, item ] = [ ...entries ].pop();
 
             it('should return an object with the furnishings consolidated', () => {
                 assert(entries.length).equals(1);
@@ -227,13 +227,13 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a room condition of average', () => {
-            let furnishings = getFurnishingObjects(
+            const furnishings = getFurnishingObjects(
                 [ { name: 'Table', label: 'Table' } ],
                 condition.average
             );
 
-            let entries = Object.values(furnishings);
-            let furnishing = [ ...entries ].pop();
+            const entries = Object.values(furnishings);
+            const furnishing = [ ...entries ].pop();
 
             it('should not include the room condition in the furnishing\'s label', () => {
                 assert(furnishing.label).stringExcludes(condition.average);
@@ -241,13 +241,13 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a room condition other than average', () => {
-            let furnishings = getFurnishingObjects(
+            const furnishings = getFurnishingObjects(
                 [ { name: 'Table', label: 'Table' } ],
                 condition.decaying
             );
 
-            let entries = Object.values(furnishings);
-            let furnishing = [ ...entries ].pop();
+            const entries = Object.values(furnishings);
+            const furnishing = [ ...entries ].pop();
 
             it('should include the room condition in the furnishing\'s label', () => {
                 assert(furnishing.label).stringIncludes(condition.decaying);
@@ -270,8 +270,8 @@ export default ({ assert, describe, it }) => {
 
         describe('given a quantity of `quantity.few`', () => {
             it('should return a value between `quantityMinimum.numerous` and `quantityMinimum.some` ', () => {
-                let count     = getItemCount(quantity.few);
-                let isInRange = count >= quantityMinimum.few && count < quantityMinimum.some;
+                const count     = getItemCount(quantity.few);
+                const isInRange = count >= quantityMinimum.few && count < quantityMinimum.some;
 
                 assert(isInRange).isTrue();
             });
@@ -279,8 +279,8 @@ export default ({ assert, describe, it }) => {
 
         describe('given a quantity of `quantity.numerous`', () => {
             it('should return a value between `quantityMinimum.numerous` and `quantityMaximum` ', () => {
-                let count     = getItemCount(quantity.numerous);
-                let isInRange = count >= quantityMinimum.numerous && count < quantityMaximum;
+                const count     = getItemCount(quantity.numerous);
+                const isInRange = count >= quantityMinimum.numerous && count < quantityMaximum;
 
                 assert(isInRange).isTrue();
             });
@@ -290,7 +290,7 @@ export default ({ assert, describe, it }) => {
     // -- Public Functions -----------------------------------------------------
 
     describe('generateItems()', () => {
-        let settings = {
+        const settings = {
             [knobs.itemCondition] : condition.average,
             [knobs.itemQuantity]  : quantity.one,
             [knobs.itemRarity]    : rarity.average,
@@ -298,7 +298,7 @@ export default ({ assert, describe, it }) => {
         };
 
         it('should return an array of strings', () => {
-            let results = generateItems(settings);
+            const results = generateItems(settings);
             assert(results).isArray();
             assert(results.find((item) => typeof item !== 'string')).isUndefined();
         });
@@ -309,7 +309,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given no `itemQuantity`', () => {
             it('should throw', () => {
-                let sansItemQuantity = { ...settings };
+                const sansItemQuantity = { ...settings };
                 delete sansItemQuantity[knobs.itemQuantity];
                 assert(() => generateItems(sansItemQuantity)).throws('Item quantity is required in generateItems()');
             });
@@ -317,7 +317,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given no `itemRarity`', () => {
             it('should throw', () => {
-                let sansItemRarity = { ...settings };
+                const sansItemRarity = { ...settings };
                 delete sansItemRarity[knobs.itemRarity];
                 assert(() => generateItems(sansItemRarity)).throws('Item rarity is required in generateItems()');
             });
@@ -325,7 +325,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given no `itemRarity`', () => {
             it('should throw', () => {
-                let sansItemRarity = { ...settings };
+                const sansItemRarity = { ...settings };
                 delete sansItemRarity[knobs.itemRarity];
                 assert(() => generateItems(sansItemRarity)).throws('Item rarity is required in generateItems()');
             });
@@ -333,7 +333,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given no `itemType`', () => {
             it('should throw', () => {
-                let sansItemType = { ...settings };
+                const sansItemType = { ...settings };
                 delete sansItemType[knobs.itemType];
                 assert(() => generateItems(sansItemType)).throws('Item type is required in generateItems()');
             });
@@ -341,7 +341,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given no `itemCondition`', () => {
             it('should throw', () => {
-                let sansItemCondition = { ...settings };
+                const sansItemCondition = { ...settings };
                 delete sansItemCondition[knobs.itemCondition];
                 assert(() => generateItems(sansItemCondition)).throws('Item condition is required in generateItems()');
             });
@@ -356,7 +356,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given a random `itemQuantity`', () => {
             it('should return an array of strings', () => {
-                let results = generateItems({ ...settings, [knobs.itemQuantity]: random });
+                const results = generateItems({ ...settings, [knobs.itemQuantity]: random });
                 assert(results).isArray();
                 assert(results.find((item) => typeof item !== 'string')).isUndefined();
             });
@@ -365,7 +365,7 @@ export default ({ assert, describe, it }) => {
         describe('given an `itemQuantity` of zero', () => {
             describe('when there is no room', () => {
                 it('should return an array with only a title', () => {
-                    let results = generateItems({ ...settings, [knobs.itemQuantity]: quantity.zero });
+                    const results = generateItems({ ...settings, [knobs.itemQuantity]: quantity.zero });
                     assert(results).isArray();
                     assert(results.pop()).stringIncludes('Items (0)');
                 });
@@ -373,7 +373,7 @@ export default ({ assert, describe, it }) => {
 
             describe('when there is a room', () => {
                 it('should return an empty array', () => {
-                    let results = generateItems({
+                    const results = generateItems({
                         ...settings,
                         [knobs.itemQuantity]: quantity.zero,
                         [knobs.roomType]: roomTypes.room,

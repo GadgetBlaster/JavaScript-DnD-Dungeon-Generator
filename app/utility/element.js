@@ -2,14 +2,17 @@
 
 import { toss } from './tools.js';
 
+/**
+ * @typedef {{ [attribute: string]: string | number | boolean }} Attrs
+ */
+
 // -- Config -------------------------------------------------------------------
 
-/** @typedef {import('../typedefs.js').Attrs} Attrs */
- /**
-  * Empty elements
-  *
-  * @type {readonly string[]}
-  */
+/**
+ * Empty elements
+ *
+ * @type {readonly string[]}
+ */
 export const selfClosingElements = Object.freeze([
     // HTML elements
     'area',
@@ -38,15 +41,15 @@ export const selfClosingElements = Object.freeze([
 /**
  * Create html attributes
  *
- * @param {Attrs} [attrs]
+ * @param {Attrs} [attributes]
  *     An object with HTML attribute names as the keys and attribute values as
  *     the values.
  *
  * @returns {string}
  */
-export function createAttrs(attrs = {}) {
-    return Object.keys(attrs).map((key) => {
-        return ` ${key}="${attrs[key]}"`;
+export function createAttrs(attributes = {}) {
+    return Object.keys(attributes).map((key) => {
+        return ` ${key}="${attributes[key]}"`;
     }).join('');
 }
 
@@ -55,15 +58,15 @@ export function createAttrs(attrs = {}) {
  *
  * @param {string} tag
  * @param {string} [content]
- * @param {Attrs} [attrs]
+ * @param {Attrs} [attributes]
  *
  * @returns {string}
  */
-export function element(tag, content = '', attrs = {}) {
+export function element(tag, content = '', attributes = {}) {
     if (selfClosingElements.includes(tag)) {
         content && toss('Content is not allowed in self closing elements');
-        return `<${tag}${createAttrs(attrs)} />`;
+        return `<${tag}${createAttrs(attributes)} />`;
     }
 
-    return `<${tag}${createAttrs(attrs)}>${content}</${tag}>`;
+    return `<${tag}${createAttrs(attributes)}>${content}</${tag}>`;
 }

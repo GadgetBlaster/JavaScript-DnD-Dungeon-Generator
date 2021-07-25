@@ -1,5 +1,5 @@
 // @ts-check
-import { createAttrs } from '../utility/element.js';
+import { element } from '../utility/element.js';
 import { directions } from './map.js';
 import doorType, { lockable } from '../rooms/door.js';
 
@@ -96,16 +96,16 @@ export {
  * @returns {string}
  */
 function drawCircle({ cx, cy, r, stroke, fill }) {
-    let attrs = createAttrs({
+    let attributes = {
         cx,
         cy,
         r,
         fill,
         'shape-rendering': 'geometricPrecision',
         ...(stroke && { stroke, 'stroke-width': 2 }),
-    });
+    };
 
-    return `<circle${attrs} />`;
+    return element('circle', null, attributes);
 }
 
 /**
@@ -125,7 +125,7 @@ function drawCircle({ cx, cy, r, stroke, fill }) {
  * @returns {string}
  */
 function drawLine({ x1, y1, x2, y2, color, width, dashed }) {
-    let attrs = createAttrs({
+    let attributes = {
         x1,
         y1,
         x2,
@@ -135,9 +135,9 @@ function drawLine({ x1, y1, x2, y2, color, width, dashed }) {
         'stroke-linecap': 'square',
         'stroke-width': width,
         ...(dashed && { 'stroke-dasharray': 5 }),
-    });
+    };
 
-    return `<line${attrs} />`;
+    return element('line', null, attributes);
 }
 
 /**
@@ -216,9 +216,7 @@ function drawPillars({ x, y, width, height }) {
  * @returns {string}
  */
 function drawRect(rect) {
-    let attrs = createAttrs(rect);
-
-    return `<rect${attrs} />`;
+    return element('rect', null, rect);
 }
 
 /**
@@ -263,7 +261,7 @@ function drawRoomText(rect, { roomNumber, roomLabel }) {
  * @returns {string}
  */
 function drawText(text, [ x, y ], { fontSize = fontSizeNormal, fill = colorText } = {}) {
-    let attrs = createAttrs({
+    let attributes = {
         x,
         y: y + pxTextOffset,
         fill,
@@ -271,9 +269,9 @@ function drawText(text, [ x, y ], { fontSize = fontSizeNormal, fill = colorText 
         'font-family': 'monospace',
         'font-size': `${fontSize}px`,
         'text-anchor': 'middle',
-    });
+    };
 
-    return `<text${attrs}>${text}</text>`;
+    return element('text', text, attributes);
 }
 
 /**
@@ -340,18 +338,18 @@ export {
 export const drawDoor = (rect, { direction, type, locked }) => {
     // TODO doors should only ever be 1 wide or 1 tall depending on direction
 
-    let rectAttrs = getRectAttrs(rect);
+    let rectAttributes = getRectAttrs(rect);
     let isSecret  = type === doorType.secret || type === doorType.concealed;
     let color     = isSecret ? colorTransparent : colorRoomFill;
 
-    let attrs = createAttrs({
-        ...rectAttrs,
+    let attributes = {
+        ...rectAttributes,
         fill: color,
         stroke: color,
         'stroke-width': pxBorder,
-    });
+    };
 
-    let { x, y, width, height } = rectAttrs;
+    let { x, y, width, height } = rectAttributes;
 
     let lineAttrs = {
         color: colorRoomStroke,
@@ -440,7 +438,7 @@ export const drawDoor = (rect, { direction, type, locked }) => {
 
     let lines = lineCords.map((cords) => drawLine({ ...lineAttrs, ...cords })).join('');
 
-    return `<rect${attrs} />` + lines + details.join('');
+    return element('rect', null, attributes) + lines + details.join('');
 };
 
 /**
@@ -497,13 +495,13 @@ export function drawGrid({ gridWidth, gridHeight }) {
  * @returns {string}
  */
  export const drawMap = ({ gridWidth, gridHeight }, content) => {
-    let attrs = createAttrs({
+    let attributes = {
         width : (gridWidth * pxCell),
         height: (gridHeight * pxCell),
         style : `background: ${colorGridFill}; overflow: visible;`,
-    });
+    };
 
-    return `<svg ${attrs}>${content}</svg>`;
+    return element('svg', content, attributes);
 };
 
 /**

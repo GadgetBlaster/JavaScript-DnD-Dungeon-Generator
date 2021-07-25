@@ -1,9 +1,5 @@
 
 /**
- * @typedef {{ [attribute: string]: string }} Attrs
- */
-
-/**
  * @typedef {object} Item
  *
  * @property {number} count
