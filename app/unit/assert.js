@@ -129,7 +129,7 @@ export function isHtmlTag(value, tag) {
     let regExp  = new RegExp('^<'+tag+'(?:>| [^>]+>)', 'g');
     let isEmpty = emptyElements.includes(tag);
     let isTag   = regExp.test(value) && value.endsWith(isEmpty ? ' />' : `</${tag}>`);
-    let msg     = `expected "${value}" to be an html tag string of ${isEmpty ? `<${tag} />` : `<${tag}>*</${tag}>`}`;
+    let msg     = `expected "${value}" to be an element tag string of ${isEmpty ? `<${tag} />` : `<${tag}>*</${tag}>`}`;
 
     if (!isTag) {
         return { msg, isOk: false };

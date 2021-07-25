@@ -9,6 +9,22 @@ import doorType, { lockable } from '../rooms/door.js';
 
 /** @typedef {import('./map').Directions} Directions */
 
+/**
+ * @typedef Rectangle
+ *
+ * @property {number} x
+ * @property {number} y
+ * @property {number} width
+ * @property {number} height
+ */
+
+/**
+ * @typedef RoomText
+ *
+ * @property {number} roomNumber
+ * @property {string} [roomLabel]
+ */
+
 // -- Config -------------------------------------------------------------------
 
 export const pxCell = 24;
@@ -28,10 +44,10 @@ const colorText         = '#666666';
 const colorTransparent  = 'transparent';
 const colorTrapFill     = 'rgba(207, 207, 207, 0.8)';
 
-const radiusPillar = 4;
+const radiusPillar = 4; // TODO rename to pillarRadius & holeRadius
 const radiusHole   = 6;
 
-const doorInset    = 12;
+const doorInset    = 12; // In px?
 const doorWidth    = 8; // TODO rename to door size
 
 const doorSecretLabel    = 'S';
@@ -57,6 +73,9 @@ export {
     pillarInset        as testPillarInset,
     pillarThreshold    as testPillarThreshold,
     pxTextOffset       as testPxTextOffset,
+    radiusHole         as testRadiusHole,
+    radiusPillar       as testRadiusPillar,
+    trapLabel          as testTrapLabel,
 };
 
 // -- Private Functions --------------------------------------------------------
@@ -64,11 +83,7 @@ export {
 /**
  * Get rectangle attributes.
  *
- * @param {object} args
- *     @param {number} args.x
- *     @param {number} args.y
- *     @param {number} args.width
- *     @param {number} args.height
+ * @param {Rectangle} rect
  *
  * @returns {object}
  */
@@ -101,7 +116,7 @@ function drawCircle({ cx, cy, r, stroke, fill }) {
         r,
         fill,
         'shape-rendering': 'geometricPrecision',
-        ...(stroke && { stroke, 'stroke-width': 2 })
+        ...(stroke && { stroke, 'stroke-width': 2 }),
     });
 
     return `<circle${attrs} />`;
@@ -140,6 +155,8 @@ function drawLine({ x1, y1, x2, y2, color, width, dashed }) {
 /**
  * Draws an map pillar.
  *
+ * TODO require cx & cy attrs
+ *
  * @param {object} [attrs]
  *
  * @returns {string}
@@ -156,7 +173,7 @@ function drawPillar(attrs) {
 /**
  * Returns a map pillar cell.
  *
- * {[ x: number, y: number ]} cords
+ * @param {[ x: number, y: number ]} cords
  *
  * @returns {string}
  */
@@ -173,11 +190,7 @@ function drawPillarCell([ x, y ]) {
  * Returns pillars for a room with x & y dimensions greater than
  * `pillarThreshold`.
  *
- * @param {object} args
- *     @param {number} args.x
- *     @param {number} args.y
- *     @param {number} args.width
- *     @param {number} args.height
+ * @param {Rectangle} rect
  *
  * @returns {string[]}
  */
@@ -202,12 +215,12 @@ function drawPillars({ x, y, width, height }) {
 /**
  * Returns an SVG rectangle element string.
  *
- * @param {object} [rectAttrs] // TODO typedef
+ * @param {Rectangle} rect
  *
  * @returns {string}
  */
-function drawRect(rectAttrs) {
-    let attrs = createAttrs(rectAttrs);
+function drawRect(rect) {
+    let attrs = createAttrs(rect);
 
     return `<rect${attrs} />`;
 }
@@ -215,16 +228,14 @@ function drawRect(rectAttrs) {
 /**
  * Returns one or more SVG text element strings to label rooms on the map.
  *
- * @param {object} rectAttrs
- * @param {object} args
- *     @param {object} args.roomNumber
- *     @param {object} [args.roomLabel]
+ * @param {Rectangle} rect
+ * @param {RoomText} roomText
  *
  * @returns {string}
  */
-function drawRoomText(rectAttrs, { roomNumber, roomLabel }) {
-    let middleX = (rectAttrs.x + (rectAttrs.width  / 2));
-    let middleY = (rectAttrs.y + (rectAttrs.height / 2));
+function drawRoomText(rect, { roomNumber, roomLabel }) {
+    let middleX = (rect.x + (rect.width  / 2));
+    let middleY = (rect.y + (rect.height / 2));
 
     let fontSize = fontSizeNormal;
     let labelY   = roomLabel ? middleY - (fontSize / 2) : middleY;
@@ -268,13 +279,13 @@ function drawText(text, [ x, y ], { fontSize = fontSizeNormal, fill = colorText 
 /**
  * Returns a trap label SVG text element string.
  *
- * @param {object} rectAttrs
+ * @param {Rectangle} rect
  *
  * @returns {string}
  */
-function drawTrapText(rectAttrs) {
-    let middleX = (rectAttrs.x + (pxCell / 2));
-    let middleY = (rectAttrs.y + (rectAttrs.height - (pxCell / 2)));
+function drawTrapText(rect) {
+    let middleX = (rect.x + (pxCell / 2));
+    let middleY = (rect.y + (rect.height - (pxCell / 2)));
 
     return drawText(trapLabel, [ middleX, middleY ], { fill: colorTrapFill });
 }
@@ -295,9 +306,9 @@ export {
 // -- Public Functions ---------------------------------------------------------
 
 /**
- * Returns a door cell SVG element string for the given door type.
+ * Returns a door SVG element strings for the given door type and dimensions.
  *
- * @param {object} doorAttrs
+ * @param {Rectangle} rect
  * @param {object} args
  *     @param {"north" | "east" | "south" | "west"} args.direction
  *     @param {string} args.type
@@ -305,10 +316,10 @@ export {
  *
  * @returns {string}
  */
-export const drawDoor = (doorAttrs, { direction, type, locked }) => {
+export const drawDoor = (rect, { direction, type, locked }) => {
     // TODO doors should only ever be 1 wide or 1 tall depending on direction
 
-    let rectAttrs = getRectAttrs(doorAttrs);
+    let rectAttrs = getRectAttrs(rect);
     let isSecret  = type === doorType.secret || type === doorType.concealed;
     let color     = isSecret ? colorTransparent : colorRoomFill;
 
@@ -318,8 +329,6 @@ export const drawDoor = (doorAttrs, { direction, type, locked }) => {
         stroke: color,
         'stroke-width': pxBorder,
     });
-
-    let rect = `<rect${attrs} />`;
 
     let { x, y, width, height } = rectAttrs;
 
@@ -334,8 +343,8 @@ export const drawDoor = (doorAttrs, { direction, type, locked }) => {
 
     let xHalf   = x + (width / 2);
     let yHalf   = y + (height / 2);
-    let xRight  = x + width
-    let yBottom = y + height
+    let xRight  = x + width;
+    let yBottom = y + height;
 
     // Draw walls
     if (isVertical) {
@@ -410,12 +419,12 @@ export const drawDoor = (doorAttrs, { direction, type, locked }) => {
 
     let lines = lineCords.map((cords) => drawLine({ ...lineAttrs, ...cords })).join('');
 
-    return rect + lines + details.join('');
+    return `<rect${attrs} />` + lines + details.join('');
 };
 
 /**
- * Returns horizontal and vertical grid SVG element line strings for the given
- * grid width and height.
+ * Returns a grid of horizontal and vertical SVG element line strings for the
+ * given width and height.
  *
  * @param {object} args
  *     @param {number} args.gridWidth
@@ -458,6 +467,16 @@ export function drawGrid({ gridWidth, gridHeight }) {
     return lines;
 };
 
+/**
+ * Returns a room SVG element strings for the given room configs.
+ *
+ * @param {object} roomAttrs
+ * @param {RoomText} roomTextConfig
+ * @param {object} [options]
+ *     @param {boolean} [options.hasTraps]
+ *
+ * @returns {string}
+ */
 export const drawRoom = (roomAttrs, roomTextConfig, { hasTraps } = {}) => {
     let rectAttrs = getRectAttrs(roomAttrs);
 
@@ -470,7 +489,7 @@ export const drawRoom = (roomAttrs, roomTextConfig, { hasTraps } = {}) => {
     };
 
     let rect    = drawRect(attrs);
-    let pillars = drawPillars(roomAttrs) || [];
+    let pillars = drawPillars(roomAttrs);
     let text    = drawRoomText(rectAttrs, roomTextConfig);
     let trap    = hasTraps ? drawTrapText(rectAttrs) : '';
 
