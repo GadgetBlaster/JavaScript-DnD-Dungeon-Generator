@@ -26,7 +26,7 @@ import roomType, { list as roomTypes, probability as roomTypeProbability } from 
  * @property {string} roomType
  */
 
-/** @typedef {import('../typedefs.js').Probability} Probability */
+/** @typedef {import('../utility/roll.js').Probability} Probability */
 
 // -- Config -------------------------------------------------------------------
 

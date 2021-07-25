@@ -1,4 +1,6 @@
 
+// TODO Move these to relevant files
+
 /**
  * @typedef {object} Item
  *
@@ -8,14 +10,6 @@
  * @property {string} rarity
  * @property {string} size
  * @property {string} type
- */
-
-/**
- * @typedef {object} Probability
- *     Probability distribution table.
- *
- * @property {string} description
- * @property {() => string} roll
  */
 
 /**

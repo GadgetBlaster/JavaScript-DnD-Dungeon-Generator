@@ -1,4 +1,6 @@
 
+// TODO break out into modules and add tests
+
 import './typedefs.js';
 import { chunk, toDash } from './utility/tools.js';
 

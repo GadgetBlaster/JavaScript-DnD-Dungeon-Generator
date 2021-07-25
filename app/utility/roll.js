@@ -1,23 +1,20 @@
 
-/** @typedef {import('../typedefs.js').Probability} Probability */
+// @ts-check
+
+import { toss } from './tools.js';
+
+/**
+ * @typedef {object} Probability
+ *     Probability distribution table.
+ *
+ * @property {string} description
+ * @property {() => string} roll
+ */
 
 // -- Config -------------------------------------------------------------------
 
 const minPercent = 0;
 const maxPercent = 100;
-
-// -- Private Functions --------------------------------------------------------
-
-/**
- * Throw
- *
- * @private
- *
- * @param {string} message
- *
- * @throws
- */
-const _throw = (message) => { throw new TypeError(message); };
 
 // -- Public Functions ---------------------------------------------------------
 
@@ -36,8 +33,8 @@ const _throw = (message) => { throw new TypeError(message); };
  * @returns {Probability}
  */
 export function createProbability(config) {
-    !Array.isArray(config) && _throw('Probability `config` must be an array');
-    !config.length && _throw('Probability config must have values');
+    !Array.isArray(config) && toss('Probability `config` must be an array');
+    !config.length && toss('Probability config must have values');
 
     let map;
 
@@ -48,10 +45,10 @@ export function createProbability(config) {
     }
 
     map.forEach((value, key) => {
-        typeof value !== 'string' && _throw(`Probability value "${value}" must be a string`);
-        !Number.isInteger(key) && _throw(`Probability key "${key}" must be an integer`);
-        key < minPercent && _throw(`Probability key "${key}" must be ${minPercent} or greater`);
-        key > maxPercent && _throw(`Probability key "${key}" exceeds ${maxPercent}`);
+        typeof value !== 'string' && toss(`Probability value "${value}" must be a string`);
+        !Number.isInteger(key) && toss(`Probability key "${key}" must be an integer`);
+        key < minPercent && toss(`Probability key "${key}" must be ${minPercent} or greater`);
+        key > maxPercent && toss(`Probability key "${key}" exceeds ${maxPercent}`);
     });
 
     let sorted = [ ...map.keys() ].sort((a, b) => a - b);
@@ -73,26 +70,26 @@ export function createProbability(config) {
             let key    = sorted.find((val) => result <= val);
 
             return map.get(key);
-        }
+        },
     };
 }
 
 /**
  * Roll
  *
- * @param {number} [min=0]
- * @param {number} [max=1]
+ * @param {number} [min = 0]
+ * @param {number} [max = 1]
  *
  * @throws
  *
  * @returns {number}
  */
 export function roll(min = 0, max = 1) {
-    !Number.isInteger(min) && _throw('Roll `min` must be an integer');
-    !Number.isInteger(max) && _throw('Roll `max` must be an integer');
+    !Number.isInteger(min) && toss('Roll `min` must be an integer');
+    !Number.isInteger(max) && toss('Roll `max` must be an integer');
 
-    min < 0   && _throw('Roll `min` cannot be negative');
-    min > max && _throw('Roll `min` must less than or equal to `max`');
+    min < 0   && toss('Roll `min` cannot be negative');
+    min > max && toss('Roll `min` must less than or equal to `max`');
 
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -107,8 +104,8 @@ export function roll(min = 0, max = 1) {
  * @returns {*}
  */
 export function rollArrayItem(array) {
-    !Array.isArray(array) && _throw('Invalid roll array');
-    !array.length && _throw('Roll array must have values');
+    !Array.isArray(array) && toss('Invalid roll array');
+    !array.length && toss('Roll array must have values');
 
     return array[Math.floor(Math.random() * array.length)];
 }
@@ -116,16 +113,16 @@ export function rollArrayItem(array) {
 /**
  * Roll percentile
  *
- * @param {number} change
+ * @param {number} chance
  *
  * @throws
  *
  * @returns {boolean}
  */
 export function rollPercentile(chance) {
-    !Number.isInteger(chance) && _throw('Percent `chance` must be an integer');
-    chance < minPercent && _throw(`Percent \`chance\` must be ${minPercent} or greater`);
-    chance > maxPercent && _throw(`Percent \`chance\` cannot exceed ${maxPercent}`);
+    !Number.isInteger(chance) && toss('Percent `chance` must be an integer');
+    chance < minPercent && toss(`Percent \`chance\` must be ${minPercent} or greater`);
+    chance > maxPercent && toss(`Percent \`chance\` cannot exceed ${maxPercent}`);
 
     return roll(minPercent, maxPercent) <= chance;
 }

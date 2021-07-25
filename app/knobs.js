@@ -1,4 +1,6 @@
 
+// TODO move to ui.js and add unit tests
+
 import { furnitureQuantityList, probability as furnitureQuantityProbability } from './items/types/furnishing.js';
 import { list as conditions, probability as conditionProbability } from './attributes/condition.js';
 import { list as itemTypes } from './items/type.js';
