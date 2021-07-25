@@ -1,4 +1,4 @@
-
+// @ts-check
 import { createAttrs } from '../utility/html.js';
 import { directions } from './map.js';
 import doorType, { lockable } from '../rooms/door.js';
@@ -66,6 +66,7 @@ const fontSizeNormal = 14;
 const fontSizeSmall  = 10;
 
 export {
+    colorLockedFill    as testColorLockedFill,
     doorConcealedLabel as testDoorConcealedLabel,
     doorInset          as testDoorInset,
     doorSecretLabel    as testDoorSecretLabel,
@@ -79,23 +80,6 @@ export {
 };
 
 // -- Private Functions --------------------------------------------------------
-
-/**
- * Get rectangle attributes.
- *
- * @param {Rectangle} rect
- *
- * @returns {object}
- */
-function getRectAttrs({ x, y, width, height }) {
-    let xPx = x * pxCell;
-    let yPx = y * pxCell;
-
-    let widthPx  = width * pxCell;
-    let heightPx = height * pxCell;
-
-    return { x: xPx, y: yPx, width: widthPx, height: heightPx };
-}
 
 /**
  * Returns an SVG circle element string.
@@ -290,6 +274,23 @@ function drawTrapText(rect) {
     return drawText(trapLabel, [ middleX, middleY ], { fill: colorTrapFill });
 }
 
+/**
+ * Get rectangle attributes.
+ *
+ * @param {Rectangle} rect
+ *
+ * @returns {object}
+ */
+ function getRectAttrs({ x, y, width, height }) {
+    let xPx = x * pxCell;
+    let yPx = y * pxCell;
+
+    let widthPx  = width * pxCell;
+    let heightPx = height * pxCell;
+
+    return { x: xPx, y: yPx, width: widthPx, height: heightPx };
+}
+
 export {
     drawCircle     as testDrawCircle,
     drawLine       as testDrawLine,
@@ -300,7 +301,7 @@ export {
     drawRoomText   as testDrawRoomText,
     drawText       as testDrawText,
     drawTrapText   as testDrawTrapText,
-    getRectAttrs   as testDetRectAttrs,
+    getRectAttrs   as testGetRectAttrs,
 };
 
 // -- Public Functions ---------------------------------------------------------
@@ -468,6 +469,24 @@ export function drawGrid({ gridWidth, gridHeight }) {
 };
 
 /**
+ * Returns map SVG content wrapped in an SVG element with the given dimensions.
+ *
+ * @param {*} param
+ * @param {string} content
+ *
+ * @returns {string}
+ */
+ export const drawMap = ({ gridWidth, gridHeight }, content) => {
+    let attrs = createAttrs({
+        width : (gridWidth * pxCell),
+        height: (gridHeight * pxCell),
+        style : `background: ${colorGridFill}; overflow: visible;`,
+    });
+
+    return `<svg ${attrs}>${content}</svg>`;
+};
+
+/**
  * Returns a room SVG element strings for the given room configs.
  *
  * @param {object} roomAttrs
@@ -489,19 +508,9 @@ export const drawRoom = (roomAttrs, roomTextConfig, { hasTraps } = {}) => {
     };
 
     let rect    = drawRect(attrs);
-    let pillars = drawPillars(roomAttrs);
+    let pillars = drawPillars(roomAttrs); // TODO return string
     let text    = drawRoomText(rectAttrs, roomTextConfig);
     let trap    = hasTraps ? drawTrapText(rectAttrs) : '';
 
     return rect + pillars.join('') + text + trap;
-};
-
-export const drawMap = ({ gridWidth, gridHeight }, content) => {
-    let attrs = createAttrs({
-        width : (gridWidth * pxCell),
-        height: (gridHeight * pxCell),
-        style : `background: ${colorGridFill}; overflow: visible;`,
-    });
-
-    return `<svg ${attrs}>${content}</svg>`;
 };

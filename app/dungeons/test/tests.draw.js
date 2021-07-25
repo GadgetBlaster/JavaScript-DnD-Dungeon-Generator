@@ -2,6 +2,7 @@
 import {
     // Config
     pxCell,
+    testColorLockedFill    as colorLockedFill,
     testDoorConcealedLabel as doorConcealedLabel,
     testDoorInset          as doorInset,
     testDoorSecretLabel    as doorSecretLabel,
@@ -14,7 +15,6 @@ import {
     testTrapLabel          as trapLabel,
 
     // Private Functions
-    testDetRectAttrs   as getRectAttrs,
     testDrawCircle     as drawCircle,
     testDrawLine       as drawLine,
     testDrawPillar     as drawPillar,
@@ -24,10 +24,12 @@ import {
     testDrawRoomText   as drawRoomText,
     testDrawText       as drawText,
     testDrawTrapText   as drawTrapText,
+    testGetRectAttrs   as getRectAttrs,
 
     // Public functions
     drawDoor,
     drawGrid,
+    drawMap,
     drawRoom,
 } from '../draw.js';
 
@@ -40,22 +42,6 @@ import doorType from '../../rooms/door.js';
 export default ({ assert, describe, it }) => {
 
     // -- Private Functions ----------------------------------------------------
-
-    describe('getRectAttrs()', () => {
-        it('should return each value multiplied by `pxCell`', () => {
-            const { x, y, width, height } = getRectAttrs({
-                x: 12,
-                y: 13,
-                width: 444,
-                height: 555,
-            });
-
-            assert(x).equals(12 * pxCell);
-            assert(y).equals(13 * pxCell);
-            assert(width).equals(444 * pxCell);
-            assert(height).equals(555 * pxCell);
-        });
-    });
 
     describe('drawCircle()', () => {
         const circleSettings = {
@@ -380,12 +366,28 @@ export default ({ assert, describe, it }) => {
         });
     });
 
+    describe('getRectAttrs()', () => {
+        it('should return each value multiplied by `pxCell`', () => {
+            const { x, y, width, height } = getRectAttrs({
+                x: 12,
+                y: 13,
+                width: 444,
+                height: 555,
+            });
+
+            assert(x).equals(12 * pxCell);
+            assert(y).equals(13 * pxCell);
+            assert(width).equals(444 * pxCell);
+            assert(height).equals(555 * pxCell);
+        });
+    });
+
     // -- Public Functions -----------------------------------------------------
 
     describe('drawDoor()', () => {
         const doorAttrs = { x: 10, y: 20, width: 1, height: 1 };
         const doorArgs  = {
-            direction: directions.north,
+            direction: directions.south,
             locked: false,
             type: doorType.passageway,
         };
@@ -414,7 +416,7 @@ export default ({ assert, describe, it }) => {
         });
 
         const northSouthDoorAttrs = { x: 10, y: 20, width: 2, height: 1 };
-        const northSouthDoorArgs  = { ...doorArgs, direction: directions.north};
+        const northSouthDoorArgs  = { ...doorArgs, direction: directions.north };
 
         const eastWestDoorAttrs = { x: 10, y: 20, width: 1, height: 2 };
         const eastWestDoorArgs  = { ...doorArgs, direction: directions.east };
@@ -477,6 +479,18 @@ export default ({ assert, describe, it }) => {
             });
 
             describe('when the door type is lockable', () => {
+                describe('when the door is locked', () => {
+                    it('should set the door rectangle fill to `colorLockedFill`', () => {
+                        const lockedDoor = drawDoor(doorAttrs, {
+                            ...doorArgs,
+                            locked: true,
+                            type: doorType.wooden,
+                        });
+
+                        assert(RegExp(`<rect(.+?)fill="${colorLockedFill}"(.+?)>`).test(lockedDoor)).isTrue();
+                    });
+                });
+
                 describe('when the door direction is north or south', () => {
                     const { x, y, width, height } = northSouthDoorAttrs;
                     const lockableDoor = drawDoor(northSouthDoorAttrs, {
@@ -724,6 +738,31 @@ export default ({ assert, describe, it }) => {
                     .stringIncludes(`y1="${y}"`)
                     .stringIncludes(`y2="${y}"`);
             });
+        });
+    });
+
+    describe('drawMap()', () => {
+        const dimensions = { gridWidth: 12, gridHeight: 14 };
+        const map = drawMap(dimensions, '');
+
+        it('should return an SVG element string', () => {
+            assert(map).isHtmlTag('svg');
+        });
+
+        it('should have correct width and heigh attributes', () => {
+            const width = dimensions.gridWidth * pxCell;
+            const height = dimensions.gridHeight * pxCell;
+
+            assert(map)
+                .stringIncludes(`width="${width}"`)
+                .stringIncludes(`height="${height}"`);
+        });
+
+        it('should include the content', () => {
+            const content = drawRect({ x: 0, y: 0, width: 10, height: 10 });
+            const mapWithContent = drawMap(dimensions, content);
+
+            assert(RegExp(`<svg(.+?)>${content}</svg>`).test(mapWithContent)).isTrue();
         });
     });
 
