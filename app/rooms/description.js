@@ -1,7 +1,7 @@
 
 import { capitalize, indefiniteArticle, toWords } from '../utility/tools.js';
 import { cellFeet } from '../dungeons/grid.js';
-import { element } from '../utility/html.js';
+import { element } from '../utility/element.js';
 import { em, paragraph, strong, subtitle, title } from '../ui/typography.js';
 import { furnitureQuantity } from '../items/types/furnishing.js';
 import { getEnvironmentDescription } from './environment.js';

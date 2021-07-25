@@ -1,5 +1,5 @@
 
-import { element, createAttrs } from '../utility/html.js';
+import { element, createAttrs } from '../utility/element.js';
 import { toWords } from '../utility/tools.js';
 
 /** @typedef {import('../typedefs.js').Attrs} Attrs */
@@ -15,7 +15,7 @@ import { toWords } from '../utility/tools.js';
  *
  * @throws
  */
- const _throw = (message) => { throw new TypeError(message); };
+const _throw = (message) => { throw new TypeError(message); };
 
 /**
  * Option

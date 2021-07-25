@@ -2,7 +2,7 @@
 import {
     createAttrs,
     element,
-} from '../html.js';
+} from '../element.js';
 
 /**
  * @param {import('../../unit/state.js').Utility}
@@ -45,37 +45,58 @@ export default ({ assert, describe, it }) => {
 
         describe('given an object with multiple key value pairs', () => {
             it('should return the key and value pairs formatted as an HTML attribute string', () => {
-                let object = { 'data-target': 'kitten', id: 'jet-pack', type: 'submit' };
-                let expect = ' data-target="kitten" id="jet-pack" type="submit"';
-
-                assert(createAttrs(object)).equals(expect);
+                const object = { 'data-target': 'kitten', id: 'jet-pack', type: 'submit' };
+                assert(createAttrs(object))
+                    .equals(' data-target="kitten" id="jet-pack" type="submit"');
             });
         });
     });
 
     describe('element()', () => {
         it('should return a string', () => {
-            assert(element('p', '')).isString();
+            assert(element('p')).isString();
         });
 
         describe('given the tag `section`', () => {
             it('should return a `section` html element string', () => {
-                assert(element('section', '')).equals('<section></section>');
+                assert(element('section')).equals('<section></section>');
             });
         });
 
         describe('given a non-empty `content` string', () => {
             it('should render the content string inside the element string', () => {
-                assert(element('h1', 'howdy partner')).equals('<h1>howdy partner</h1>');
+                assert(element('h1', 'Howdy Partner')).equals('<h1>Howdy Partner</h1>');
             });
         });
 
         describe('given an `attrs` object', () => {
             it('should render the element string with correct attributes', () => {
-                let el     = element('div', 'Always out numbered', { 'data-type': 'ranger' });
-                let expect = '<div data-type="ranger">Always out numbered</div>';
+                const el = element('div', 'Always out numbered', { 'data-type': 'ranger' });
+                assert(el).equals('<div data-type="ranger">Always out numbered</div>');
+            });
+        });
 
-                assert(el).equals(expect);
+        describe('given a self closing tag', () => {
+            it('should return a self closing html element string', () => {
+                assert(element('input')).equals('<input />');
+            });
+
+            describe('given an `attrs` object', () => {
+                it('should render the element string with correct attributes', () => {
+                    const el = element('img', null, {
+                        'alt': 'Dragons of Twilight',
+                        'src': 'dragons.jpg',
+                    });
+
+                    assert(el).equals('<img alt="Dragons of Twilight" src="dragons.jpg" />');
+                });
+            });
+
+            describe('given content', () => {
+                it('should throw', () => {
+                    assert(() => element('img', 'I do not belong here'))
+                        .throws('Content is not allowed in self closing elements');
+                });
             });
         });
     });

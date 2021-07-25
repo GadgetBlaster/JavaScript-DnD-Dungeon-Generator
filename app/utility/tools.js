@@ -122,3 +122,14 @@ export const chunk = (array, size) => array.reduce((newArray, item, index) => {
 
     return newArray;
 }, []);
+
+// -- Throw --------------------------------------------------------------------
+
+/**
+ * Throws a type error.
+ *
+ * @param {string} message
+ *
+ * @throws
+ */
+export const toss = (message) => { throw new TypeError(message); };

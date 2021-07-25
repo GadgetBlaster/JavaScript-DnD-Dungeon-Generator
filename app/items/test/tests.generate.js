@@ -243,14 +243,14 @@ export default ({ assert, describe, it }) => {
         describe('given a room condition other than average', () => {
             let furnishings = getFurnishingObjects(
                 [ { name: 'Table', label: 'Table' } ],
-                condition.rare
+                condition.decaying
             );
 
             let entries = Object.values(furnishings);
             let furnishing = [ ...entries ].pop();
 
             it('should include the room condition in the furnishing\'s label', () => {
-                assert(furnishing.label).stringIncludes(condition.rare);
+                assert(furnishing.label).stringIncludes(condition.decaying);
             });
         });
     });

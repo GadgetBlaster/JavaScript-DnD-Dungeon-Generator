@@ -1,5 +1,5 @@
 
-import { element } from '../utility/html.js';
+import { element } from '../utility/element.js';
 
 /** @typedef {import('../typedefs.js').Attrs} Attrs */
 

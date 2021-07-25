@@ -1,3 +1,4 @@
+// @ts-check
 
 import {
     capitalize,
@@ -9,14 +10,15 @@ import {
     plural,
     toDash,
     toWords,
+    toss,
  } from '../tools.js';
 
 /**
- * @param {import('../../unit/state.js').Utility}
+ * @param {import('../../unit/state.js').Utility} utility
  */
 export default ({ assert, describe, it }) => {
 
-    // -- Typography Tools ----------------------------------------------------
+    // -- Typography -----------------------------------------------------------
 
     describe('capitalize()', () => {
         describe('given a string that starts with a lowercase letter', () => {
@@ -63,7 +65,8 @@ export default ({ assert, describe, it }) => {
 
         describe('given an array of three strings', () => {
             it('should return the strings joined by commas with `and` between the last two', () => {
-                assert(listSentence([ 'hammers', 'polar bears', 'walruses' ])).equals('hammers, polar bears, and walruses');
+                assert(listSentence([ 'hammers', 'polar bears', 'walruses' ]))
+                    .equals('hammers, polar bears, and walruses');
             });
         });
 
@@ -122,7 +125,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    // -- Numeric Tools -------------------------------------------------------
+    // -- Numeric --------------------------------------------------------------
 
     describe('isEven()', () => {
         describe('given an odd number', () => {
@@ -164,7 +167,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    // -- Array Tools ---------------------------------------------------------
+    // -- Array ----------------------------------------------------------------
 
     describe('chunk()', () => {
         describe('given an empty array', () => {
@@ -242,6 +245,15 @@ export default ({ assert, describe, it }) => {
                 let chunks = chunk(Array.from(Array(3).keys()), 4);
                 assert(chunks[0]).equalsArray([ 0, 1, 2 ]);
             });
+        });
+    });
+
+    // -- Throw ----------------------------------------------------------------
+
+    describe('toss()', () => {
+        it('should throw a type error', () => {
+            assert(() => toss('These aren\'t the droids you are looking for.'))
+                .throws('These aren\'t the droids you are looking for.');
         });
     });
 };

@@ -1,4 +1,6 @@
 
+import { selfClosingElements } from '../utility/element.js';
+
 /**
  * Result
  *
@@ -7,38 +9,6 @@
  * @property {string} msg
  * @property {boolean} isOk
  */
-
-// -- Config -------------------------------------------------------------------
-
- /**
-  * Empty elements
-  *
-  * TODO rename to `selfClosingElements`
-  *
-  * @type {string[]}
-  */
-const emptyElements = [
-    // HTML elements
-    'area',
-    'base',
-    'br',
-    'col',
-    'embed',
-    'hr',
-    'img',
-    'input',
-    'link',
-    'meta',
-    'param',
-    'source',
-    'track',
-    'wbr',
-
-    // SVG elements
-    'circle',
-    'line',
-    'rect',
-];
 
 // -- Public Functions ---------------------------------------------------------
 
@@ -127,7 +97,7 @@ export function isHtmlTag(value, tag) {
     }
 
     let regExp  = new RegExp('^<'+tag+'(?:>| [^>]+>)', 'g');
-    let isEmpty = emptyElements.includes(tag);
+    let isEmpty = selfClosingElements.includes(tag);
     let isTag   = regExp.test(value) && value.endsWith(isEmpty ? ' />' : `</${tag}>`);
     let msg     = `expected "${value}" to be an element tag string of ${isEmpty ? `<${tag} />` : `<${tag}>*</${tag}>`}`;
 

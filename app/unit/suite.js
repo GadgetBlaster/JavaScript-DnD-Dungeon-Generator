@@ -4,7 +4,7 @@ import output from './test/tests.output.js';
 import run from './test/tests.run.js';
 import state from './test/tests.state.js';
 
-import html from '../utility/test/tests.html.js';
+import element from '../utility/test/tests.element.js';
 import roll from '../utility/test/tests.roll.js';
 import tools from '../utility/test/tests.tools.js';
 
@@ -39,9 +39,9 @@ export default {
     '/app/unit/test/tests.run.js'   : run,
     '/app/unit/test/tests.state.js' : state,
 
-    '/app/utility/test/tests.html.js' : html,
-    '/app/utility/test/tests.roll.js' : roll,
-    '/app/utility/test/tests.tools.js': tools,
+    '/app/utility/test/tests.element.js': element,
+    '/app/utility/test/tests.roll.js'   : roll,
+    '/app/utility/test/tests.tools.js'  : tools,
 
     '/app/ui/test/tests.action.js'    : action,
     '/app/ui/test/tests.block.js'     : block,

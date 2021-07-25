@@ -1,10 +1,10 @@
 
-import { element } from '../utility/html.js';
+import { element } from '../utility/element.js';
 import { link } from '../ui/link.js';
 import { plural } from '../utility/tools.js';
 import run from './run.js';
 
-/** @typedef {import('../utility/html.js').Attrs} Attrs */
+/** @typedef {import('../utility/element.js').Attrs} Attrs */
 /** @typedef {import('./assert.js').Result} Result */
 /** @typedef {import('./state.js').State} State */
 /** @typedef {import('./state.js').Summary} Summary */

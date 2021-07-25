@@ -1,5 +1,5 @@
 // @ts-check
-import { createAttrs } from '../utility/html.js';
+import { createAttrs } from '../utility/element.js';
 import { directions } from './map.js';
 import doorType, { lockable } from '../rooms/door.js';
 
@@ -84,6 +84,8 @@ export {
 /**
  * Returns an SVG circle element string.
  *
+ * @private
+ *
  * @param {object} args
  *     @param {number} args.cx
  *     @param {number} args.cy
@@ -108,6 +110,8 @@ function drawCircle({ cx, cy, r, stroke, fill }) {
 
 /**
  * Returns an SVG line element string.
+ *
+ * @private
  *
  * @param {object} args
  *     @param {number} args.x1
@@ -139,6 +143,8 @@ function drawLine({ x1, y1, x2, y2, color, width, dashed }) {
 /**
  * Draws an map pillar.
  *
+ * @private
+ *
  * TODO require cx & cy attrs
  *
  * @param {object} [attrs]
@@ -157,6 +163,8 @@ function drawPillar(attrs) {
 /**
  * Returns a map pillar cell.
  *
+ * @private
+ *
  * @param {[ x: number, y: number ]} cords
  *
  * @returns {string}
@@ -173,6 +181,8 @@ function drawPillarCell([ x, y ]) {
 /**
  * Returns pillars for a room with x & y dimensions greater than
  * `pillarThreshold`.
+ *
+ * @private
  *
  * @param {Rectangle} rect
  *
@@ -199,6 +209,8 @@ function drawPillars({ x, y, width, height }) {
 /**
  * Returns an SVG rectangle element string.
  *
+ * @private
+ *
  * @param {Rectangle} rect
  *
  * @returns {string}
@@ -211,6 +223,8 @@ function drawRect(rect) {
 
 /**
  * Returns one or more SVG text element strings to label rooms on the map.
+ *
+ * @private
  *
  * @param {Rectangle} rect
  * @param {RoomText} roomText
@@ -238,6 +252,8 @@ function drawRoomText(rect, { roomNumber, roomLabel }) {
 /**
  * Returns an SVG text element string.
  *
+ * @private
+ *
  * @param {string} text
  * @param {[ x: number, y: number ]} cords
  * @param {object} [options]
@@ -263,6 +279,8 @@ function drawText(text, [ x, y ], { fontSize = fontSizeNormal, fill = colorText 
 /**
  * Returns a trap label SVG text element string.
  *
+ * @private
+ *
  * @param {Rectangle} rect
  *
  * @returns {string}
@@ -276,6 +294,8 @@ function drawTrapText(rect) {
 
 /**
  * Get rectangle attributes.
+ *
+ * @private
  *
  * @param {Rectangle} rect
  *
