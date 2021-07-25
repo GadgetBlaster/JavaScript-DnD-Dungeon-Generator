@@ -1,22 +1,72 @@
 // @ts-check
-import { element } from '../utility/element.js';
 import { directions } from './map.js';
+import { element } from '../utility/element.js';
+import { isRequired } from '../utility/tools.js';
 import doorType, { lockable } from '../rooms/door.js';
 
 // TODO differentiate between grid x, y, width, & height, and pixel x, y, width
 // and height in variable names.
-// TODO create svg() method.
 
 /** @typedef {import('./map').Directions} Directions */
 
+// -- Unit Defs ----------------------------------------------------------------
+
 /**
- * @typedef Rectangle
+ * @typedef UnitCoordinates
+ *
+ * @property {number} unitX
+ * @property {number} unitY
+ */
+
+/**
+ * @typedef UnitDimensions
+ *
+ * @property {number} unitWidth
+ * @property {number} unitHeight
+ */
+
+// -- Pixel Defs ---------------------------------------------------------------
+
+/**
+ * @typedef PixelCoordinates
  *
  * @property {number} x
  * @property {number} y
+ */
+
+/**
+ * @typedef PixelDimensions
+ *
  * @property {number} width
  * @property {number} height
  */
+
+// -- Shape Defs ---------------------------------------------------------------
+
+/**
+ * @typedef Circle
+ *
+ * @property {number} cx
+ * @property {number} cy
+ * @property {number} r
+ */
+
+/**
+ * @typedef Line
+ *
+ * @property {number} x1
+ * @property {number} y1
+ * @property {number} x2
+ * @property {number} y2
+ * @property {string} color
+ * @property {number} width
+ */
+
+/**
+ * @typedef {PixelCoordinates & PixelDimensions} Rectangle
+ */
+
+// -- Room Defs ----------------------------------------------------------------
 
 /**
  * @typedef RoomText
@@ -65,12 +115,17 @@ const pillarInset = 1;
 const fontSizeNormal = 14;
 const fontSizeSmall  = 10;
 
+const lineDashLength = 5;
+
 export {
     colorLockedFill    as testColorLockedFill,
+    colorPillarFill    as testColorPillarFill,
+    colorRoomStroke    as testColorRoomStroke,
     doorConcealedLabel as testDoorConcealedLabel,
     doorInset          as testDoorInset,
     doorSecretLabel    as testDoorSecretLabel,
     doorWidth          as testDoorWidth,
+    lineDashLength     as testLineDashLength,
     pillarInset        as testPillarInset,
     pillarThreshold    as testPillarThreshold,
     pxTextOffset       as testPxTextOffset,
@@ -86,16 +141,18 @@ export {
  *
  * @private
  *
- * @param {object} args
- *     @param {number} args.cx
- *     @param {number} args.cy
- *     @param {number} args.r
- *     @param {boolean} [args.stroke] // TODO move to an `options` param
- *     @param {string} args.fill
+ * @param {Circle} circle
+ * @param {object} [options]
+ *     @param {string} [options.fill]
+ *     @param {string} [options.stroke]
  *
  * @returns {string}
  */
-function drawCircle({ cx, cy, r, stroke, fill }) {
+function drawCircle({ cx, cy, r }, { fill, stroke } = {}) {
+    isRequired(cx, 'cx is required by drawCircle()');
+    isRequired(cy, 'cy is required by drawCircle()');
+    isRequired(r,  'r is required by drawCircle()');
+
     let attributes = {
         cx,
         cy,
@@ -113,18 +170,20 @@ function drawCircle({ cx, cy, r, stroke, fill }) {
  *
  * @private
  *
- * @param {object} args
- *     @param {number} args.x1
- *     @param {number} args.y1
- *     @param {number} args.x2
- *     @param {number} args.y2
- *     @param {string} args.color
- *     @param {number} args.width
- *     @param {boolean} [args.dashed] // TODO move to an `options` param
+ * @param {Line} args
+ * @param {object} [options = {}]
+ *     @param {boolean} [options.dashed]
  *
  * @returns {string}
  */
-function drawLine({ x1, y1, x2, y2, color, width, dashed }) {
+function drawLine({ x1, y1, x2, y2, color, width }, { dashed } = {}) {
+    isRequired(x1,    'x1 is required by drawLine()');
+    isRequired(y1,    'y1 is required by drawLine()');
+    isRequired(x2,    'x2 is required by drawLine()');
+    isRequired(y2,    'y2 is required by drawLine()');
+    isRequired(color, 'color is required by drawLine()');
+    isRequired(width, 'width is required by drawLine()');
+
     let attributes = {
         x1,
         y1,
@@ -134,7 +193,7 @@ function drawLine({ x1, y1, x2, y2, color, width, dashed }) {
         'shape-rendering': 'crispEdges',
         'stroke-linecap': 'square',
         'stroke-width': width,
-        ...(dashed && { 'stroke-dasharray': 5 }),
+        ...(dashed && { 'stroke-dasharray': lineDashLength }),
     };
 
     return element('line', null, attributes);
@@ -145,18 +204,19 @@ function drawLine({ x1, y1, x2, y2, color, width, dashed }) {
  *
  * @private
  *
- * TODO require cx & cy attrs
- *
- * @param {object} [attrs]
+ * @param {Pick<Circle, "cx" | "cy">} coordinates
+ * @param {{ stroke?: string }} [options = {}]
  *
  * @returns {string}
  */
-function drawPillar(attrs) {
+function drawPillar({ cx, cy }, { stroke } = {}) {
     return drawCircle({
+        cx,
+        cy,
         r: radiusPillar,
-        stroke: colorRoomStroke,
+    }, {
         fill: colorPillarFill,
-        ...attrs,
+        stroke: stroke || colorRoomStroke,
     });
 }
 
@@ -165,17 +225,17 @@ function drawPillar(attrs) {
  *
  * @private
  *
- * @param {[ x: number, y: number ]} cords
+ * @param {PixelCoordinates} cords
  *
  * @returns {string}
  */
-function drawPillarCell([ x, y ]) {
+function drawPillarCell({ x, y }) {
     let rect = getRectAttrs({ x, y, width: 1, height: 1 });
 
     let cx = rect.x + (rect.width / 2);
     let cy = rect.y + (rect.height / 2);
 
-    return drawPillar({ cx, cy, stroke: colorPillarStroke });
+    return drawPillar({ cx, cy }, { stroke: colorPillarStroke });
 }
 
 /**
@@ -184,12 +244,12 @@ function drawPillarCell([ x, y ]) {
  *
  * @private
  *
- * @param {Rectangle} rect
+ * @param {Rectangle} rectangle
  *
- * @returns {string[]}
+ * @returns {string}
  */
 function drawPillars({ x, y, width, height }) {
-    let pillars = [];
+    let pillars = '';
 
     if (width < pillarThreshold || height < pillarThreshold) {
         return pillars;
@@ -198,10 +258,10 @@ function drawPillars({ x, y, width, height }) {
     let innerWidth  = width - (pillarInset * 2);
     let innerHeight = height - (pillarInset * 2);
 
-    pillars.push(drawPillarCell([ x + pillarInset, y + pillarInset ]));
-    pillars.push(drawPillarCell([ x + innerWidth,  y + pillarInset ]));
-    pillars.push(drawPillarCell([ x + pillarInset, y + innerHeight ]));
-    pillars.push(drawPillarCell([ x + innerWidth,  y + innerHeight ]));
+    pillars += drawPillarCell({ x: (x + pillarInset), y: (y + pillarInset) });
+    pillars += drawPillarCell({ x: (x + innerWidth),  y: (y + pillarInset) });
+    pillars += drawPillarCell({ x: (x + pillarInset), y: (y + innerHeight) });
+    pillars += drawPillarCell({ x: (x + innerWidth),  y: (y + innerHeight) });
 
     return pillars;
 }
@@ -212,15 +272,23 @@ function drawPillars({ x, y, width, height }) {
  * @private
  *
  * @param {Rectangle} rect
+ * @param {{ [key: string]: string | number | boolean }} [attributes]
  *
  * @returns {string}
  */
-function drawRect(rect) {
-    return element('rect', null, rect);
+function drawRect({ x, y, width, height }, attributes = {}) {
+    isRequired(x,      'x is required by drawRect()');
+    isRequired(y,      'y is required by drawRect()');
+    isRequired(width,  'width is required by drawRect()');
+    isRequired(height, 'height is required by drawRect()');
+
+    return element('rect', null, { x, y, width, height, ...attributes });
 }
 
 /**
  * Returns one or more SVG text element strings to label rooms on the map.
+ *
+ * TODO paused here
  *
  * @private
  *
@@ -351,12 +419,6 @@ export const drawDoor = (rect, { direction, type, locked }) => {
 
     let { x, y, width, height } = rectAttributes;
 
-    let lineAttrs = {
-        color: colorRoomStroke,
-        width: pxBorder,
-        dashed: isSecret,
-    };
-
     let lineCords = [];
     let isVertical = direction === directions.north || direction === directions.south;
 
@@ -408,6 +470,7 @@ export const drawDoor = (rect, { direction, type, locked }) => {
             y: rectY,
             width: rectWidth,
             height: rectHeight,
+        }, {
             fill: locked ? colorLockedFill : colorPillarFill,
             stroke: colorRoomStroke,
             'stroke-width': pxBorder,
@@ -429,14 +492,16 @@ export const drawDoor = (rect, { direction, type, locked }) => {
         let cx = isVertical ? xHalf : x1;
         let cy = isVertical ? y1 : yHalf;
 
-        details.push(drawCircle({ cx, cy, r: radiusHole, fill: colorPillarFill }));
+        details.push(drawCircle({ cx, cy, r: radiusHole }, { fill: colorPillarFill }));
     } else if (type === doorType.secret) {
         details.push(drawText(doorSecretLabel, [ xHalf, yHalf ]));
     } else if (type === doorType.concealed) {
         details.push(drawText(doorConcealedLabel, [ xHalf, yHalf ]));
     }
 
-    let lines = lineCords.map((cords) => drawLine({ ...lineAttrs, ...cords })).join('');
+    let lineAttrs   = { color: colorRoomStroke, width: pxBorder };
+    let lineOptions = { dashed: isSecret };
+    let lines       = lineCords.map((cords) => drawLine({ ...cords, ...lineAttrs }, lineOptions)).join('');
 
     return element('rect', null, attributes) + lines + details.join('');
 };
@@ -463,11 +528,11 @@ export function drawGrid({ gridWidth, gridHeight }) {
         let unit = i * pxCell;
 
         lines += drawLine({
-            ...gridLineAttrs,
             x1: 0,
             y1: unit,
             x2: gridWidth * pxCell,
             y2: unit,
+            ...gridLineAttrs,
         });
     }
 
@@ -475,11 +540,11 @@ export function drawGrid({ gridWidth, gridHeight }) {
         let unit = i * pxCell;
 
         lines += drawLine({
-            ...gridLineAttrs,
             x1: unit,
             y1: 0,
             x2: unit,
             y2: gridHeight * pxCell,
+            ...gridLineAttrs,
         });
     }
 
@@ -517,18 +582,16 @@ export function drawGrid({ gridWidth, gridHeight }) {
 export const drawRoom = (roomAttrs, roomTextConfig, { hasTraps } = {}) => {
     let rectAttrs = getRectAttrs(roomAttrs);
 
-    let attrs = {
-        ...rectAttrs,
+    let rect = drawRect(rectAttrs, {
         fill: colorRoomFill,
         stroke: colorRoomStroke,
         'shape-rendering': 'crispEdges',
         'stroke-width': pxBorder,
-    };
+    });
 
-    let rect    = drawRect(attrs);
-    let pillars = drawPillars(roomAttrs); // TODO return string
+    let pillars = drawPillars(roomAttrs);
     let text    = drawRoomText(rectAttrs, roomTextConfig);
     let trap    = hasTraps ? drawTrapText(rectAttrs) : '';
 
-    return rect + pillars.join('') + text + trap;
+    return rect + pillars + text + trap;
 };

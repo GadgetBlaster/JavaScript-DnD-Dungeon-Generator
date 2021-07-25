@@ -13,6 +13,9 @@ import {
     testRadiusHole         as radiusHole,
     testRadiusPillar       as radiusPillar,
     testTrapLabel          as trapLabel,
+    testColorPillarFill    as colorPillarFill,
+    testColorRoomStroke    as colorRoomStroke,
+    testLineDashLength     as lineDashLength,
 
     // Private Functions
     testDrawCircle     as drawCircle,
@@ -44,14 +47,7 @@ export default ({ assert, describe, it }) => {
     // -- Private Functions ----------------------------------------------------
 
     describe('drawCircle()', () => {
-        const circleSettings = {
-            cx: 110,
-            cy: 210,
-            r: 310,
-            fill: 'pink',
-            width: 2,
-        };
-
+        const circleSettings = { cx: 110, cy: 210, r: 310 };
         const circle = drawCircle(circleSettings);
 
         it('should return a `<circle />` element string', () => {
@@ -64,16 +60,31 @@ export default ({ assert, describe, it }) => {
                 .stringIncludes('cy="210"');
         });
 
-        it('should have the correct `fill` color attribute', () => {
-            assert(circle).stringIncludes('fill="pink"');
+        describe('given a `fill` color', () => {
+            it('should have a `fill` color attributes', () => {
+                assert(drawCircle(circleSettings, { fill: 'pink' }))
+                    .stringIncludes('fill="pink"');
+            });
         });
 
-        describe('given a truthy `stroke` option', () => {
-            it('should have the `stroke-width` attribute', () => {
-                assert(drawCircle({
-                    ...circleSettings,
-                    stroke: true,
-                })).stringIncludes('stroke-width="2"');
+        describe('given a `stroke` color', () => {
+            it('should have `stroke` color and `stroke-width` attributes', () => {
+                assert(drawCircle(circleSettings, { stroke: 'blue' }))
+                    .stringIncludes('stroke-width="2"')
+                    .stringIncludes('stroke="blue"');
+            });
+        });
+
+        describe('invalid configuration', () => {
+            Object.keys(circleSettings).forEach((required) => {
+                let settings = { ...circleSettings };
+                delete settings[required];
+
+                describe(`when \`${required}\` is omitted`, () => {
+                    it('should throw', () => {
+                        assert(() => drawCircle(settings)).throws(`${required} is required by drawCircle()`);
+                    });
+                });
             });
         });
     });
@@ -116,14 +127,28 @@ export default ({ assert, describe, it }) => {
 
         describe('given a truthy `dashed` option', () => {
             it('should have the `stroke-dasharray` attribute', () => {
-                assert(drawLine({ ...lineSettings, dashed: true }))
-                    .stringIncludes('stroke-dasharray="5"');
+                assert(drawLine(lineSettings, { dashed: true }))
+                    .stringIncludes(`stroke-dasharray="${lineDashLength}"`);
+            });
+        });
+
+        describe('invalid configuration', () => {
+            Object.keys(lineSettings).forEach((required) => {
+                let settings = { ...lineSettings };
+                delete settings[required];
+
+                describe(`when \`${required}\` is omitted`, () => {
+                    it('should throw', () => {
+                        assert(() => drawLine(settings)).throws(`${required} is required by drawLine()`);
+                    });
+                });
             });
         });
     });
 
     describe('drawPillar()', () => {
-        const pillar = drawPillar({ cx: 114, cy: 214 });
+        const pillarCoordinates = { cx: 114, cy: 214 };
+        const pillar = drawPillar(pillarCoordinates);
 
         it('should return a `<circle />` element string', () => {
             assert(pillar).isHtmlTag('circle');
@@ -135,16 +160,24 @@ export default ({ assert, describe, it }) => {
                 .stringIncludes('cy="214"');
         });
 
-        describe('given attributes', () => {
+        it('it should have pillar fill color', () => {
+            assert(pillar).stringIncludes(`fill="${colorPillarFill}"`);
+        });
+
+        it('it should have the room stroke color by default', () => {
+            assert(pillar).stringIncludes(`stroke="${colorRoomStroke}"`);
+        });
+
+        describe('given a stroke option', () => {
             it('should add to or override the default attributes', () => {
-                const redPillar = drawPillar({ cx: 10, cy: 20, stroke: 'red' });
+                const redPillar = drawPillar(pillarCoordinates, { stroke: 'red' });
                 assert(redPillar).stringIncludes('stroke="red"');
             });
         });
     });
 
     describe('drawPillarCell()', () => {
-        const pillarCell = drawPillarCell([ 15, 25 ]);
+        const pillarCell = drawPillarCell({ x: 15, y: 25 });
 
         it('should return a `<circle />` element string', () => {
             assert(pillarCell).isHtmlTag('circle');
@@ -173,38 +206,34 @@ export default ({ assert, describe, it }) => {
         };
 
         describe('given a room `width` less than `pillarThreshold`', () => {
-            it('should return an empty array', () => {
+            it('should return an empty string', () => {
                 const pillars = drawPillars({
                     ...roomConfig,
                     width: pillarThreshold - 1,
                 });
 
-                assert(pillars).isArray();
-                assert(pillars.length).equals(0);
+                assert(pillars).equals('');
             });
         });
 
         describe('given a room `height` less than `pillarThreshold`', () => {
-            it('should return an empty array', () => {
+            it('should return an empty string', () => {
                 const pillars = drawPillars({
                     ...roomConfig,
                     height: pillarThreshold - 1,
                 });
 
-                assert(pillars).isArray();
-                assert(pillars.length).equals(0);
+                assert(pillars).equals('');
             });
         });
 
         describe('given a room `width` and `height` of at least `pillarThreshold`', () => {
             const pillars = drawPillars(roomConfig);
+            const matches = pillars.match(/<circle(.+?)\/>/g);
 
-            it('should return an array of four `<circle />` element strings', () => {
-                assert(pillars.length).equals(4);
-
-                pillars.forEach((pillar) => {
-                    assert(pillar).isHtmlTag('circle');
-                });
+            it('should return four `<circle />` element strings', () => {
+                assert(matches).isArray();
+                matches && assert(matches.length).equals(4);
             });
 
             it('should place a pillar in the center of each corner cell of the room, inset by `pillarInset`', () => {
@@ -218,19 +247,19 @@ export default ({ assert, describe, it }) => {
                 const yTop    = ((y + pillarInset) * pxCell) + (pxCell / 2);
                 const yBottom = ((y + innerHeight) * pxCell) + (pxCell / 2);
 
-                assert(pillars.shift())
+                matches && assert(matches.shift())
                     .stringIncludes(`cx="${xLeft}"`)
                     .stringIncludes(`cy="${yTop}"`);
 
-                assert(pillars.shift())
+                matches && assert(matches.shift())
                     .stringIncludes(`cx="${xRight}"`)
                     .stringIncludes(`cy="${yTop}"`);
 
-                assert(pillars.shift())
+                matches && assert(matches.shift())
                     .stringIncludes(`cx="${xLeft}"`)
                     .stringIncludes(`cy="${yBottom}"`);
 
-                assert(pillars.shift())
+                matches && assert(matches.shift())
                     .stringIncludes(`cx="${xRight}"`)
                     .stringIncludes(`cy="${yBottom}"`);
             });
@@ -238,12 +267,8 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('drawRect()', () => {
-        const rect = drawRect({
-            x: 24,
-            y: 48,
-            width: 72,
-            height: 96,
-        });
+        const rectSettings = { x: 24, y: 48, width: 72, height: 96 };
+        const rect = drawRect(rectSettings);
 
         it('should return a `<rect />` element string', () => {
             assert(rect).isHtmlTag('rect');
@@ -255,6 +280,27 @@ export default ({ assert, describe, it }) => {
                 .stringIncludes('y="48"')
                 .stringIncludes('width="72"')
                 .stringIncludes('height="96"');
+        });
+
+        describe('given extra attributes', () => {
+            it('should include the attributes on the element', () => {
+                assert(drawRect(rectSettings, { stroke: 'red', fill: 'purple' }))
+                    .stringIncludes('stroke="red"')
+                    .stringIncludes('fill="purple"');
+            });
+        });
+
+        describe('invalid configuration', () => {
+            Object.keys(rectSettings).forEach((required) => {
+                let settings = { ...rectSettings };
+                delete settings[required];
+
+                describe(`when \`${required}\` is omitted`, () => {
+                    it('should throw', () => {
+                        assert(() => drawRect(settings)).throws(`${required} is required by drawRect()`);
+                    });
+                });
+            });
         });
     });
 
@@ -436,13 +482,15 @@ export default ({ assert, describe, it }) => {
                         const doorLines = drawDoor(northSouthDoorAttrs, northSouthDoorArgs)
                             .match(/<line(.+?) \/>/g);
 
-                        assert(doorLines.shift())
+                        assert(doorLines).isArray();
+
+                        doorLines && assert(doorLines.shift())
                             .stringIncludes(`x1="${line1x}"`)
                             .stringIncludes(`y1="${y1}"`)
                             .stringIncludes(`x2="${line1x}"`)
                             .stringIncludes(`y2="${y2}"`);
 
-                        assert(doorLines.shift())
+                        doorLines && assert(doorLines.shift())
                             .stringIncludes(`x1="${line2x}"`)
                             .stringIncludes(`y1="${y1}"`)
                             .stringIncludes(`x2="${line2x}"`)
@@ -463,13 +511,15 @@ export default ({ assert, describe, it }) => {
                         const doorLines = drawDoor(eastWestDoorAttrs, eastWestDoorArgs)
                             .match(/<line(.+?) \/>/g);
 
-                        assert(doorLines.shift())
+                        assert(doorLines).isArray();
+
+                        doorLines && assert(doorLines.shift())
                             .stringIncludes(`x1="${x1}"`)
                             .stringIncludes(`y1="${line1y}"`)
                             .stringIncludes(`x2="${x2}"`)
                             .stringIncludes(`y2="${line1y}"`);
 
-                        assert(doorLines.shift())
+                        doorLines && assert(doorLines.shift())
                             .stringIncludes(`x1="${x1}"`)
                             .stringIncludes(`y1="${line2y}"`)
                             .stringIncludes(`x2="${x2}"`)
@@ -504,8 +554,12 @@ export default ({ assert, describe, it }) => {
                         const y1 = (y + (height / 2)) * pxCell;
                         const y2 = y1;
 
+                        const matches = lockableDoor.match(/<line(.+?) \/>/g);
+
                         assert(x2 > x1).isTrue();
-                        assert(lockableDoor.match(/<line(.+?) \/>/g).filter((line) =>
+                        assert(matches).isArray();
+
+                        matches && assert(matches.filter((line) =>
                             line.includes(`x1="${x1}"`) &&
                             line.includes(`y1="${y1}"`) &&
                             line.includes(`x2="${x2}"`) &&
@@ -521,8 +575,12 @@ export default ({ assert, describe, it }) => {
                         const rectW = (width * pxCell) - doorInset;
                         const rectH = doorWidth;
 
+                        const matches = lockableDoor.match(/<rect(.+?) \/>/g);
+
                         assert(rectW > rectH).isTrue();
-                        assert(lockableDoor.match(/<rect(.+?) \/>/g).filter((line) =>
+                        assert(matches).isArray();
+
+                        matches && assert(matches.filter((line) =>
                             line.includes(`x="${rectX}"`) &&
                             line.includes(`y="${rectY}"`) &&
                             line.includes(`width="${rectW}"`) &&
@@ -543,8 +601,12 @@ export default ({ assert, describe, it }) => {
                         const y1 = y * pxCell;
                         const y2 = (y + height) * pxCell;
 
+                        const matches = lockableDoor.match(/<line(.+?) \/>/g);
+
                         assert(y2 > y1).isTrue();
-                        assert(lockableDoor.match(/<line(.+?) \/>/g).filter((line) =>
+                        assert(matches).isArray();
+
+                        matches && assert(matches.filter((line) =>
                             line.includes(`x1="${x1}"`) &&
                             line.includes(`y1="${y1}"`) &&
                             line.includes(`x2="${x2}"`) &&
@@ -560,8 +622,12 @@ export default ({ assert, describe, it }) => {
                         const rectW = doorWidth;
                         const rectH = (height * pxCell) - doorInset;
 
+                        const matches = lockableDoor.match(/<rect(.+?) \/>/g);
+
                         assert(rectH > rectW).isTrue();
-                        assert(lockableDoor.match(/<rect(.+?) \/>/g).filter((line) =>
+                        assert(matches).isArray();
+
+                        matches && assert(matches.filter((line) =>
                             line.includes(`x="${rectX}"`) &&
                             line.includes(`y="${rectY}"`) &&
                             line.includes(`width="${rectW}"`) &&
@@ -583,13 +649,15 @@ export default ({ assert, describe, it }) => {
                         const cx2 = (x * pxCell) + (width  * pxCell);
                         const cy  = (y * pxCell) + ((height /2) * pxCell);
 
-                        const pillars = archwayDoor.match(RegExp(`<circle(.+?)r="${radiusPillar}"(.+?) />`, 'g'));
+                        const pillars = archwayDoor.match(RegExp(`<circle(.+?)r="${radiusPillar}"(.+?)/>`, 'g'));
 
-                        assert(pillars.shift())
+                        assert(pillars).isArray();
+
+                        pillars && assert(pillars.shift())
                             .stringIncludes(`cx="${cx1}"`)
                             .stringIncludes(`cy="${cy}"`);
 
-                        assert(pillars.shift())
+                        pillars && assert(pillars.shift())
                             .stringIncludes(`cx="${cx2}"`)
                             .stringIncludes(`cy="${cy}"`);
                     });
@@ -607,13 +675,15 @@ export default ({ assert, describe, it }) => {
                         const cy1 = y * pxCell;
                         const cy2 = (y * pxCell) + (height * pxCell);
 
-                        const pillars = archwayDoor.match(RegExp(`<circle(.+?)r="${radiusPillar}"(.+?) />`, 'g'));
+                        const pillars = archwayDoor.match(RegExp(`<circle(.+?)r="${radiusPillar}"(.+?)/>`, 'g'));
 
-                        assert(pillars.shift())
+                        assert(pillars).isArray();
+
+                        pillars && assert(pillars.shift())
                             .stringIncludes(`cx="${cx}"`)
                             .stringIncludes(`cy="${cy1}"`);
 
-                        assert(pillars.shift())
+                        pillars && assert(pillars.shift())
                             .stringIncludes(`cx="${cx}"`)
                             .stringIncludes(`cy="${cy2}"`);
                     });
@@ -632,10 +702,13 @@ export default ({ assert, describe, it }) => {
                         const cx = (x + (width  / 2)) * pxCell;
                         const cy = (y + (height / 2)) * pxCell;
 
-                        const hole = archwayDoor.match(RegExp(`<circle(.+?)r="${radiusHole}"(.+?) />`, 'g'));
+                        const hole = archwayDoor.match(RegExp(`<circle(.+?)r="${radiusHole}"(.+?)/>`, 'g'));
 
-                        assert(hole.length).equals(1);
-                        assert(hole.shift())
+                        assert(hole).isArray();
+
+                        hole && assert(hole.length).equals(1);
+
+                        hole && assert(hole.shift())
                             .stringIncludes(`cx="${cx}"`)
                             .stringIncludes(`cy="${cy}"`);
                     });
@@ -652,10 +725,13 @@ export default ({ assert, describe, it }) => {
                         const cx = (x + (width  / 2)) * pxCell;
                         const cy = (y + (height / 2)) * pxCell;
 
-                        const hole = archwayDoor.match(RegExp(`<circle(.+?)r="${radiusHole}"(.+?) />`, 'g'));
+                        const hole = archwayDoor.match(RegExp(`<circle(.+?)r="${radiusHole}"(.+?)/>`, 'g'));
 
-                        assert(hole.length).equals(1);
-                        assert(hole.shift())
+                        assert(hole).isArray();
+
+                        hole && assert(hole.length).equals(1);
+
+                        hole && assert(hole.shift())
                             .stringIncludes(`cx="${cx}"`)
                             .stringIncludes(`cy="${cy}"`);
                     });
@@ -674,6 +750,14 @@ export default ({ assert, describe, it }) => {
 
                 it('should include the secret door label', () => {
                     assert(RegExp(`<text(.+?)>${doorSecretLabel}</text>`, 'g').test(secretDoor)).isTrue();
+                });
+
+                it('should have dashed lines for the walls', () => {
+                    const matches = secretDoor
+                        .match(RegExp(`<line(.+?)stroke-dasharray="${lineDashLength}"(.+?)/>`, 'g'));
+
+                    assert(matches).isArray();
+                    matches && assert(matches.length).equals(2);
                 });
             });
 
@@ -703,7 +787,9 @@ export default ({ assert, describe, it }) => {
 
         it('returns the correct number of `<line />` element strings', () => {
             const lineCount = gridWidth + 1 + gridHeight + 1;
-            assert(lines.length).equals(lineCount);
+
+            assert(lines).isArray();
+            lines && assert(lines.length).equals(lineCount);
         });
 
         it('returns a vertical `<line />` element string for each horizontal grid cell and the outer edge', () => {
@@ -805,7 +891,7 @@ export default ({ assert, describe, it }) => {
 
                 const roomWithPillars = drawRoom({ ...attrs, width, height }, text);
 
-                const matches = roomWithPillars.match(RegExp(`<circle(.+?)r="${radiusPillar}"(.+?) />`, 'g'));
+                const matches = roomWithPillars.match(RegExp(`<circle(.+?)r="${radiusPillar}"(.+?)/>`, 'g'));
 
                 assert(matches).isArray();
                 matches && assert(matches.length).equals(4);

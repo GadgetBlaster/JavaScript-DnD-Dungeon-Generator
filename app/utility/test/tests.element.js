@@ -1,3 +1,4 @@
+// @ts-check
 
 import {
     element,
@@ -5,7 +6,7 @@ import {
 } from '../element.js';
 
 /**
- * @param {import('../../unit/state.js').Utility}
+ * @param {import('../../unit/state.js').Utility} utility
  */
 export default ({ assert, describe, it }) => {
 

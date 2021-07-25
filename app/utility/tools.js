@@ -133,3 +133,14 @@ export const chunk = (array, size) => array.reduce((newArray, item, index) => {
  * @throws
  */
 export const toss = (message) => { throw new TypeError(message); };
+
+/**
+ * Throws a type error if the given value is undefined.
+ *
+ * @param {any} value
+ *
+ * @throws
+ */
+export function isRequired(value, message) {
+    typeof value === 'undefined' && toss(message);
+}

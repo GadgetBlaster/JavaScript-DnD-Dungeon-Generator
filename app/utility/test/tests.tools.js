@@ -6,11 +6,12 @@ import {
     indefiniteArticle,
     isEven,
     isOdd,
+    isRequired,
     listSentence,
     plural,
     toDash,
-    toWords,
     toss,
+    toWords,
  } from '../tools.js';
 
 /**
@@ -254,6 +255,20 @@ export default ({ assert, describe, it }) => {
         it('should throw a type error', () => {
             assert(() => toss('These aren\'t the droids you are looking for.'))
                 .throws('These aren\'t the droids you are looking for.');
+        });
+    });
+
+    describe('isRequired()', () => {
+        describe('given an undefined value', () => {
+            it('should throw the given message', () => {
+                assert(() => isRequired(undefined, 'No good dude')).throws('No good dude');
+            });
+        });
+
+        describe('given defined value', () => {
+            it('should return undefined', () => {
+                assert(isRequired('Good stuff', 'No good dude')).equals(undefined);
+            });
         });
     });
 };
