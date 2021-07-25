@@ -1,31 +1,13 @@
 // @ts-check
+
 import { directions } from './map.js';
 import { element } from '../utility/element.js';
 import { isRequired } from '../utility/tools.js';
 import doorType, { lockable } from '../rooms/door.js';
 
-// TODO differentiate between grid x, y, width, & height, and pixel x, y, width
-// and height in variable names.
-
 /** @typedef {import('./map').Directions} Directions */
 
-// -- Unit Defs ----------------------------------------------------------------
-
-/**
- * @typedef UnitCoordinates
- *
- * @property {number} unitX
- * @property {number} unitY
- */
-
-/**
- * @typedef UnitDimensions
- *
- * @property {number} unitWidth
- * @property {number} unitHeight
- */
-
-// -- Pixel Defs ---------------------------------------------------------------
+// -- Pixel Definitions --------------------------------------------------------
 
 /**
  * @typedef PixelCoordinates
@@ -41,7 +23,7 @@ import doorType, { lockable } from '../rooms/door.js';
  * @property {number} height
  */
 
-// -- Shape Defs ---------------------------------------------------------------
+// -- Shape Definitions --------------------------------------------------------
 
 /**
  * @typedef Circle
@@ -66,12 +48,32 @@ import doorType, { lockable } from '../rooms/door.js';
  * @typedef {PixelCoordinates & PixelDimensions} Rectangle
  */
 
+// -- Grid Definitions ---------------------------------------------------------
+
+/**
+ * @typedef GridCoordinates
+ *
+ * @property {number} gridX
+ * @property {number} gridY
+ */
+
+/**
+ * @typedef GridDimensions
+ *
+ * @property {number} gridWidth
+ * @property {number} gridHeight
+ */
+
+/**
+ * @typedef {GridCoordinates & GridDimensions} GridRectangle
+ */
+
 // -- Room Defs ----------------------------------------------------------------
 
 /**
  * @typedef RoomText
  *
- * @property {number} roomNumber
+ * @property {number | string} roomNumber
  * @property {string} [roomLabel]
  */
 
@@ -109,8 +111,8 @@ const trapLabel = 'T';
 export const labelMinWidth  = 3;
 export const labelMinHeight = 2;
 
-const pillarThreshold = 6;
-const pillarInset = 1;
+const pillarGridThreshold = 6;
+const pillarGridInset     = 1;
 
 const fontSizeNormal = 14;
 const fontSizeSmall  = 10;
@@ -118,20 +120,20 @@ const fontSizeSmall  = 10;
 const lineDashLength = 5;
 
 export {
-    colorLockedFill    as testColorLockedFill,
-    colorPillarFill    as testColorPillarFill,
-    colorRoomStroke    as testColorRoomStroke,
-    doorConcealedLabel as testDoorConcealedLabel,
-    doorInset          as testDoorInset,
-    doorSecretLabel    as testDoorSecretLabel,
-    doorWidth          as testDoorWidth,
-    lineDashLength     as testLineDashLength,
-    pillarInset        as testPillarInset,
-    pillarThreshold    as testPillarThreshold,
-    pxTextOffset       as testPxTextOffset,
-    radiusHole         as testRadiusHole,
-    radiusPillar       as testRadiusPillar,
-    trapLabel          as testTrapLabel,
+    colorLockedFill     as testColorLockedFill,
+    colorPillarFill     as testColorPillarFill,
+    colorRoomStroke     as testColorRoomStroke,
+    doorConcealedLabel  as testDoorConcealedLabel,
+    doorInset           as testDoorInset,
+    doorSecretLabel     as testDoorSecretLabel,
+    doorWidth           as testDoorWidth,
+    lineDashLength      as testLineDashLength,
+    pillarGridInset     as testPillarGridInset,
+    pillarGridThreshold as testPillarGridThreshold,
+    pxTextOffset        as testPxTextOffset,
+    radiusHole          as testRadiusHole,
+    radiusPillar        as testRadiusPillar,
+    trapLabel           as testTrapLabel,
 };
 
 // -- Private Functions --------------------------------------------------------
@@ -204,7 +206,7 @@ function drawLine({ x1, y1, x2, y2, color, width }, { dashed } = {}) {
  *
  * @private
  *
- * @param {Pick<Circle, "cx" | "cy">} coordinates
+ * @param {Pick<Circle, "cx" | "cy">} circleCoordinates
  * @param {{ stroke?: string }} [options = {}]
  *
  * @returns {string}
@@ -225,12 +227,12 @@ function drawPillar({ cx, cy }, { stroke } = {}) {
  *
  * @private
  *
- * @param {PixelCoordinates} cords
+ * @param {GridCoordinates} coordinates
  *
  * @returns {string}
  */
-function drawPillarCell({ x, y }) {
-    let rect = getRectAttrs({ x, y, width: 1, height: 1 });
+function drawPillarCell({ gridX, gridY }) {
+    let rect = getRectAttrs({ gridX, gridY, gridWidth: 1, gridHeight: 1 });
 
     let cx = rect.x + (rect.width / 2);
     let cy = rect.y + (rect.height / 2);
@@ -239,39 +241,11 @@ function drawPillarCell({ x, y }) {
 }
 
 /**
- * Returns pillars for a room with x & y dimensions greater than
- * `pillarThreshold`.
- *
- * @private
- *
- * @param {Rectangle} rectangle
- *
- * @returns {string}
- */
-function drawPillars({ x, y, width, height }) {
-    let pillars = '';
-
-    if (width < pillarThreshold || height < pillarThreshold) {
-        return pillars;
-    }
-
-    let innerWidth  = width - (pillarInset * 2);
-    let innerHeight = height - (pillarInset * 2);
-
-    pillars += drawPillarCell({ x: (x + pillarInset), y: (y + pillarInset) });
-    pillars += drawPillarCell({ x: (x + innerWidth),  y: (y + pillarInset) });
-    pillars += drawPillarCell({ x: (x + pillarInset), y: (y + innerHeight) });
-    pillars += drawPillarCell({ x: (x + innerWidth),  y: (y + innerHeight) });
-
-    return pillars;
-}
-
-/**
  * Returns an SVG rectangle element string.
  *
  * @private
  *
- * @param {Rectangle} rect
+ * @param {Rectangle} rectangle
  * @param {{ [key: string]: string | number | boolean }} [attributes]
  *
  * @returns {string}
@@ -285,29 +259,58 @@ function drawRect({ x, y, width, height }, attributes = {}) {
     return element('rect', null, { x, y, width, height, ...attributes });
 }
 
+
+/**
+ * Returns pillars for a room with x & y dimensions greater than
+ * `pillarThreshold`.
+ *
+ * @private
+ *
+ * @param {GridRectangle} rectangle
+ *
+ * @returns {string}
+ */
+ function drawRoomPillars({ gridX, gridY, gridWidth, gridHeight }) {
+    let pillars = '';
+
+    if (gridWidth < pillarGridThreshold || gridHeight < pillarGridThreshold) {
+        return pillars;
+    }
+
+    let innerWidth  = gridWidth  - (pillarGridInset * 2);
+    let innerHeight = gridHeight - (pillarGridInset * 2);
+
+    pillars += drawPillarCell({ gridX: (gridX + pillarGridInset), gridY: (gridY + pillarGridInset) });
+    pillars += drawPillarCell({ gridX: (gridX + innerWidth),      gridY: (gridY + pillarGridInset) });
+    pillars += drawPillarCell({ gridX: (gridX + pillarGridInset), gridY: (gridY + innerHeight) });
+    pillars += drawPillarCell({ gridX: (gridX + innerWidth),      gridY: (gridY + innerHeight) });
+
+    return pillars;
+}
+
 /**
  * Returns one or more SVG text element strings to label rooms on the map.
  *
  * @private
  *
- * @param {Rectangle} rect
+ * @param {Rectangle} rectangle
  * @param {RoomText} roomText
  *
  * @returns {string}
  */
-function drawRoomText(rect, { roomNumber, roomLabel }) {
-    let middleX = (rect.x + (rect.width  / 2));
-    let middleY = (rect.y + (rect.height / 2));
+function drawRoomText({ x, y, width, height }, { roomNumber, roomLabel }) {
+    let middleX = (x + (width  / 2));
+    let middleY = (y + (height / 2));
 
     let fontSize = fontSizeNormal;
     let labelY   = roomLabel ? middleY - (fontSize / 2) : middleY;
 
-    let text = drawText(roomNumber, [ middleX, labelY ], { fontSize });
+    let text = drawText(roomNumber, { x: middleX, y: labelY }, { fontSize });
 
     if (roomLabel) {
         let roomLabelY = labelY + fontSize;
 
-        text += drawText(roomLabel, [ middleX, roomLabelY ], { fontSize: fontSizeSmall });
+        text += drawText(roomLabel, { x: middleX, y: roomLabelY }, { fontSize: fontSizeSmall });
     }
 
     return text;
@@ -319,14 +322,14 @@ function drawRoomText(rect, { roomNumber, roomLabel }) {
  * @private
  *
  * @param {string | number} text
- * @param {[ x: number, y: number ]} cords
+ * @param {PixelCoordinates} coordinates
  * @param {object} [options]
  *     @param {number} [options.fontSize = 14]
  *     @param {string} [options.fill = '#666666']
  *
  * @returns {string}
  */
-function drawText(text, [ x, y ], { fontSize = fontSizeNormal, fill = colorText } = {}) {
+function drawText(text, { x, y }, { fontSize = fontSizeNormal, fill = colorText } = {}) {
     let attributes = {
         x,
         y: y + pxTextOffset,
@@ -349,11 +352,11 @@ function drawText(text, [ x, y ], { fontSize = fontSizeNormal, fill = colorText 
  *
  * @returns {string}
  */
-function drawTrapText(rect) {
-    let middleX = (rect.x + (pxCell / 2));
-    let middleY = (rect.y + (rect.height - (pxCell / 2)));
+function drawTrapText({ x, y, height }) {
+    let middleX = (x + (pxCell / 2));
+    let middleY = (y + (height - (pxCell / 2)));
 
-    return drawText(trapLabel, [ middleX, middleY ], { fill: colorTrapFill });
+    return drawText(trapLabel, { x: middleX, y: middleY }, { fill: colorTrapFill });
 }
 
 /**
@@ -361,31 +364,31 @@ function drawTrapText(rect) {
  *
  * @private
  *
- * @param {Rectangle} rect
+ * @param {GridRectangle} rect
  *
- * @returns {object}
+ * @returns {Rectangle}
  */
- function getRectAttrs({ x, y, width, height }) {
-    let xPx = x * pxCell;
-    let yPx = y * pxCell;
+ function getRectAttrs({ gridX, gridY, gridWidth, gridHeight }) {
+    let xPx = gridX * pxCell;
+    let yPx = gridY * pxCell;
 
-    let widthPx  = width * pxCell;
-    let heightPx = height * pxCell;
+    let widthPx  = gridWidth  * pxCell;
+    let heightPx = gridHeight * pxCell;
 
     return { x: xPx, y: yPx, width: widthPx, height: heightPx };
 }
 
 export {
-    drawCircle     as testDrawCircle,
-    drawLine       as testDrawLine,
-    drawPillar     as testDrawPillar,
-    drawPillarCell as testDrawPillarCell,
-    drawPillars    as testDrawPillars,
-    drawRect       as testDrawRect,
-    drawRoomText   as testDrawRoomText,
-    drawText       as testDrawText,
-    drawTrapText   as testDrawTrapText,
-    getRectAttrs   as testGetRectAttrs,
+    drawCircle      as testDrawCircle,
+    drawLine        as testDrawLine,
+    drawPillar      as testDrawPillar,
+    drawPillarCell  as testDrawPillarCell,
+    drawRect        as testDrawRect,
+    drawRoomPillars as testDrawRoomPillars,
+    drawRoomText    as testDrawRoomText,
+    drawText        as testDrawText,
+    drawTrapText    as testDrawTrapText,
+    getRectAttrs    as testGetRectAttrs,
 };
 
 // -- Public Functions ---------------------------------------------------------
@@ -393,18 +396,18 @@ export {
 /**
  * Returns a door SVG element strings for the given door type and dimensions.
  *
- * @param {Rectangle} rect
+ * @param {GridRectangle} gridRectangle
  * @param {object} args
  *     @param {"north" | "east" | "south" | "west"} args.direction
  *     @param {string} args.type
- *     @param {boolean} args.locked // TODO move to options param
+ *     @param {boolean} [args.locked] // TODO move to options param
  *
  * @returns {string}
  */
-export const drawDoor = (rect, { direction, type, locked }) => {
+export const drawDoor = (gridRectangle, { direction, type, locked }) => {
     // TODO doors should only ever be 1 wide or 1 tall depending on direction
 
-    let rectAttributes = getRectAttrs(rect);
+    let rectAttributes = getRectAttrs(gridRectangle);
     let isSecret  = type === doorType.secret || type === doorType.concealed;
     let color     = isSecret ? colorTransparent : colorRoomFill;
 
@@ -492,9 +495,9 @@ export const drawDoor = (rect, { direction, type, locked }) => {
 
         details.push(drawCircle({ cx, cy, r: radiusHole }, { fill: colorPillarFill }));
     } else if (type === doorType.secret) {
-        details.push(drawText(doorSecretLabel, [ xHalf, yHalf ]));
+        details.push(drawText(doorSecretLabel, { x: xHalf, y: yHalf }));
     } else if (type === doorType.concealed) {
-        details.push(drawText(doorConcealedLabel, [ xHalf, yHalf ]));
+        details.push(drawText(doorConcealedLabel, { x: xHalf, y: yHalf }));
     }
 
     let lineAttrs   = { color: colorRoomStroke, width: pxBorder };
@@ -508,9 +511,7 @@ export const drawDoor = (rect, { direction, type, locked }) => {
  * Returns a grid of horizontal and vertical SVG element line strings for the
  * given width and height.
  *
- * @param {object} args
- *     @param {number} args.gridWidth
- *     @param {number} args.gridHeight
+ * @param {GridDimensions} gridDimensions
  *
  * @returns {string}
  */
@@ -552,7 +553,7 @@ export function drawGrid({ gridWidth, gridHeight }) {
 /**
  * Returns map SVG content wrapped in an SVG element with the given dimensions.
  *
- * @param {*} param
+ * @param {GridDimensions} gridDimensions
  * @param {string} content
  *
  * @returns {string}
@@ -570,15 +571,17 @@ export function drawGrid({ gridWidth, gridHeight }) {
 /**
  * Returns a room SVG element strings for the given room configs.
  *
- * @param {object} roomAttrs
+ * @param {GridRectangle} gridRectangle
  * @param {RoomText} roomTextConfig
  * @param {object} [options]
  *     @param {boolean} [options.hasTraps]
  *
  * @returns {string}
+ *
+ * TODO audit callers for new `gridRectangle` shape
  */
-export const drawRoom = (roomAttrs, roomTextConfig, { hasTraps } = {}) => {
-    let rectAttrs = getRectAttrs(roomAttrs);
+export const drawRoom = (gridRectangle, roomTextConfig, { hasTraps } = {}) => {
+    let rectAttrs = getRectAttrs(gridRectangle);
 
     let rect = drawRect(rectAttrs, {
         fill: colorRoomFill,
@@ -587,7 +590,7 @@ export const drawRoom = (roomAttrs, roomTextConfig, { hasTraps } = {}) => {
         'stroke-width': pxBorder,
     });
 
-    let pillars = drawPillars(roomAttrs);
+    let pillars = drawRoomPillars(gridRectangle);
     let text    = drawRoomText(rectAttrs, roomTextConfig);
     let trap    = hasTraps ? drawTrapText(rectAttrs) : '';
 

@@ -33,6 +33,8 @@ import { roll, rollArrayItem, rollPercentile } from '../utility/roll.js';
 import { toWords } from '../utility/tools.js';
 import roomType from '../rooms/type.js';
 
+/** @typedef {import('./draw.js').GridRectangle} GridRectangle */
+
 const debug = false;
 
 const maxDoorWidth = 4;
@@ -140,11 +142,12 @@ const getRoom = (grid, room, { hasTraps }) => {
         }
     }
 
-    let roomAttrs     = { x, y, width, height };
+    /** @type {GridRectangle} */
+    let roomRectangle = { gridX: x, gridY: y, gridWidth: width, gridHeight: height };
     let showRoomLabel = type !== roomType.room && width >= labelMinWidth && height >= labelMinHeight;
     let roomLabel     = showRoomLabel && toWords(type);
 
-    let rect = drawRoom(roomAttrs, { roomNumber, roomLabel }, { hasTraps });
+    let rect = drawRoom(roomRectangle, { roomNumber, roomLabel }, { hasTraps });
 
     return {
         rect,
@@ -232,7 +235,7 @@ const getDoorDirection = ([ x, y ], room) => {
  * @property {number} size
  */
 
-const makeDoor = (doorAttrs, { from, to, direction, type }) => {
+const makeDoor = (doorRectangle, { from, to, direction, type }) => {
     if (!type) {
         type = doorProbability.roll();
     }
@@ -240,14 +243,14 @@ const makeDoor = (doorAttrs, { from, to, direction, type }) => {
     let locked = lockable.has(type) && rollPercentile(lockedChance);
 
     return {
-        rect: drawDoor(doorAttrs, { direction, type, locked }),
+        rect: drawDoor(doorRectangle, { direction, type, locked }),
         type,
         locked,
         connections: {
             [from]: { direction, to },
             [to]  : { direction: _oppositeDirectionLookup[direction], to: from },
         },
-        size: Math.max(doorAttrs.width, doorAttrs.height),
+        size: Math.max(doorRectangle.width, doorRectangle.height),
     };
 };
 
@@ -274,12 +277,13 @@ const getDoor = (grid, room, prevRoom, { allowSecret }) => {
         }
     });
 
-    let doorAttrs  = { x, y, width, height };
+    /** @type {GridRectangle} doorRectangle */
+    let doorRectangle = { gridX: x, gridY: y, gridWidth: width, gridHeight: height }; // TODO cleanup
     let from       = room.roomNumber;
     let to         = prevRoom ? prevRoom.roomNumber : outside;
     let type       = allowSecret && secretProbability.roll();
 
-    return makeDoor(doorAttrs, { from, to, direction, type });
+    return makeDoor(doorRectangle, { from, to, direction, type });
 };
 
 const checkAdjacentDoor = (grid, [ x, y ]) => {
@@ -333,7 +337,8 @@ const getExtraDoors = (grid, rooms, existingDoors) => {
             }
 
             [ -1, 1 ].forEach((adjust) => {
-                let doorAttrs = { x, y, width: wallSize, height: wallSize };
+                /** @type {GridRectangle} */
+                let doorRectangle = { gridX: x, gridY: y, gridWidth: wallSize, gridHeight: wallSize };
 
                 let xAdjust = x + adjust;
                 let yAdjust = y + adjust;
@@ -352,7 +357,7 @@ const getExtraDoors = (grid, rooms, existingDoors) => {
                     let direction = adjust === -1 ? directions.west : directions.east;
                     let type      = secretProbability.roll();
 
-                    doors.push(makeDoor(doorAttrs, { from: roomNumber, to: xConnect, direction, type }));
+                    doors.push(makeDoor(doorRectangle, { from: roomNumber, to: xConnect, direction, type }));
                 }
 
                 let yConnect    = yCell && Number.isInteger(yCell) && yCell;
@@ -366,7 +371,7 @@ const getExtraDoors = (grid, rooms, existingDoors) => {
                     let direction = adjust === -1 ? directions.north : directions.south;
                     let type      = secretProbability.roll();
 
-                    doors.push(makeDoor(doorAttrs, { from: roomNumber, to: yConnect, direction, type }));
+                    doors.push(makeDoor(doorRectangle, { from: roomNumber, to: yConnect, direction, type }));
                 }
             });
         });
