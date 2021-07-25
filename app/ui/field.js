@@ -2,7 +2,7 @@
 import { element } from '../utility/element.js';
 import { toWords, toss } from '../utility/tools.js';
 
-/** @typedef {import('../typedefs.js').Attrs} Attrs */
+/** @typedef {import('../utility/element').Attributes} Attributes */
 
 // -- Private Functions --------------------------------------------------------
 
@@ -33,7 +33,7 @@ export const fieldLabel = (label) => element('label', label);
  * Input
  *
  * @param {string} name
- * @param {Attrs} [attributes]
+ * @param {Attributes} [attributes]
  *
  * @throws
  *

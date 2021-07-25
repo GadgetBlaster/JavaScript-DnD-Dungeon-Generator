@@ -288,8 +288,6 @@ function drawRect({ x, y, width, height }, attributes = {}) {
 /**
  * Returns one or more SVG text element strings to label rooms on the map.
  *
- * TODO paused here
- *
  * @private
  *
  * @param {Rectangle} rect
@@ -320,7 +318,7 @@ function drawRoomText(rect, { roomNumber, roomLabel }) {
  *
  * @private
  *
- * @param {string} text
+ * @param {string | number} text
  * @param {[ x: number, y: number ]} cords
  * @param {object} [options]
  *     @param {number} [options.fontSize = 14]

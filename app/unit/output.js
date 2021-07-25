@@ -4,7 +4,7 @@ import { link } from '../ui/link.js';
 import { plural } from '../utility/tools.js';
 import run from './run.js';
 
-/** @typedef {import('../utility/element.js').Attrs} Attrs */
+/** @typedef {import('../utility/element').Attributes} Attributes */
 /** @typedef {import('./assert.js').Result} Result */
 /** @typedef {import('./state.js').State} State */
 /** @typedef {import('./state.js').Summary} Summary */
@@ -51,12 +51,12 @@ const unitUrl = './unit.html';
 /**
  * Log entry
  *
- * @param {string} msg
- * @param {Attrs} attrs
+ * @param {string} message
+ * @param {Attributes} attributes
  *
  * @returns {string}
  */
-const logEntry = (msg, attrs) => element('li', escapeHTML(msg), attrs);
+const logEntry = (message, attributes) => element('li', escapeHTML(message), attributes);
 
 /**
  * Make params

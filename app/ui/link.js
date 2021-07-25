@@ -1,18 +1,18 @@
 
 import { element } from '../utility/element.js';
 
-/** @typedef {import('../typedefs.js').Attrs} Attrs */
+/** @typedef {import('../utility/element').Attributes} Attributes */
 
 /**
  * Link
  *
- * @param {string} [label=""]
+ * @param {string} [label = ""]
  * @param {string} [href]
- * @param {Attrs} [attrs]
+ * @param {Attributes} [attributes]
  *
  * @returns {string}
  */
-export const link = (label = '', href, attrs) => element('a', label, {
-    ...attrs,
+export const link = (label = '', href, attributes) => element('a', label, {
+    ...attributes,
     ...(href && { href }),
 });

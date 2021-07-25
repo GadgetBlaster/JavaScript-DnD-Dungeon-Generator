@@ -3,7 +3,7 @@
 import { toss } from './tools.js';
 
 /**
- * @typedef {{ [attribute: string]: string | number | boolean }} Attrs
+ * @typedef {{ [attribute: string]: string | number | boolean }} Attributes
  */
 
 // -- Config -------------------------------------------------------------------
@@ -41,7 +41,7 @@ export const selfClosingElements = Object.freeze([
 /**
  * Create html attributes
  *
- * @param {Attrs} [attributes]
+ * @param {Attributes} [attributes]
  *     An object with HTML attribute names as the keys and attribute values as
  *     the values.
  *
@@ -61,8 +61,8 @@ export { createAttributes as testCreateAttributes };
  * Element
  *
  * @param {string} tag
- * @param {string} [content]
- * @param {Attrs} [attributes]
+ * @param {string | number} [content]
+ * @param {Attributes} [attributes]
  *
  * @returns {string}
  */
