@@ -13,7 +13,7 @@ export default ({ assert, describe, it }) => {
     describe('fieldLabel()', () => {
         describe('given a `label`', () => {
             it('should return an html button element string', () => {
-                assert(fieldLabel('Widget')).isHtmlTag('label');
+                assert(fieldLabel('Widget')).isElementTag('label');
             });
 
             it('should contain the provided `label` content', () => {
@@ -27,7 +27,7 @@ export default ({ assert, describe, it }) => {
             let inputHtml = input('widget');
 
             it('should return an html input element string', () => {
-                assert(inputHtml).isHtmlTag('input');
+                assert(inputHtml).isElementTag('input');
             });
 
             it('should contain the correct `name` attribute', () => {
@@ -70,7 +70,7 @@ export default ({ assert, describe, it }) => {
             let selectHtml = select('widget', []);
 
             it('should return an html select element string', () => {
-                assert(selectHtml).isHtmlTag('select');
+                assert(selectHtml).isElementTag('select');
             });
 
             it('should contain the correct `name` attribute', () => {

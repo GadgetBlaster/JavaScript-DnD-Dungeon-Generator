@@ -7,7 +7,7 @@ import { link } from '../link.js';
 export default ({ assert, describe, it }) => {
     describe('link()', () => {
         it('should return an html anchor element string', () => {
-            assert(link()).isHtmlTag('a');
+            assert(link()).isElementTag('a');
         });
 
         describe('given a label', () => {

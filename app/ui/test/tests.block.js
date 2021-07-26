@@ -27,7 +27,7 @@ export default ({ assert, describe, it }) => {
             describe(`#${name}`, () => {
                 describe('when called', () => {
                     it('should return the correct html element string', () => {
-                        assert(func('')).isHtmlTag(name);
+                        assert(func('')).isElementTag(name);
                     });
                 });
 

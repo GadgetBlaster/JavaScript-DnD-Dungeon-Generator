@@ -59,7 +59,7 @@ export default ({ assert, describe, it }) => {
         const circle = drawCircle(circleSettings);
 
         it('should return a `<circle />` element string', () => {
-            assert(circle).isHtmlTag('circle');
+            assert(circle).isElementTag('circle');
         });
 
         it('should have the correct `cx` and `cy`, attributes', () => {
@@ -111,7 +111,7 @@ export default ({ assert, describe, it }) => {
         const line = drawLine(lineSettings);
 
         it('should return a `<line />` element string', () => {
-            assert(line).isHtmlTag('line');
+            assert(line).isElementTag('line');
         });
 
         it('should have the correct `x1`, `y1`, `x2`, and `y2` attributes', () => {
@@ -161,7 +161,7 @@ export default ({ assert, describe, it }) => {
         const pillar = drawPillar(pillarCoordinates);
 
         it('should return a `<circle />` element string', () => {
-            assert(pillar).isHtmlTag('circle');
+            assert(pillar).isElementTag('circle');
         });
 
         it('it should have the correct `cx` and `cy` attributes', () => {
@@ -190,7 +190,7 @@ export default ({ assert, describe, it }) => {
         const pillarCell = drawPillarCell({ gridX: 15, gridY: 25 });
 
         it('should return a `<circle />` element string', () => {
-            assert(pillarCell).isHtmlTag('circle');
+            assert(pillarCell).isElementTag('circle');
         });
 
         describe('given attributes', () => {
@@ -213,7 +213,7 @@ export default ({ assert, describe, it }) => {
         const rect = drawRect(rectSettings);
 
         it('should return a `<rect />` element string', () => {
-            assert(rect).isHtmlTag('rect');
+            assert(rect).isElementTag('rect');
         });
 
         it('should have correct attributes', () => {
@@ -330,7 +330,7 @@ export default ({ assert, describe, it }) => {
         const roomText = drawRoomText(roomTextConfig, { roomNumber: 42 });
 
         it('should return a single `<text>` element string', () => {
-            assert(roomText).isHtmlTag('text');
+            assert(roomText).isElementTag('text');
         });
 
         it('should contain the roomLabel as the content', () => {
@@ -370,7 +370,7 @@ export default ({ assert, describe, it }) => {
         const textElement = drawText('Wizard Tower', { x: 20, y: 20 });
 
         it('should return a `<text>` element string', () => {
-            assert(textElement).isHtmlTag('text');
+            assert(textElement).isElementTag('text');
         });
 
         it('should have the correct `x` attribute', () => {
@@ -409,7 +409,7 @@ export default ({ assert, describe, it }) => {
         });
 
         it('should return a `<text>` element string', () => {
-            assert(trapText).isHtmlTag('text');
+            assert(trapText).isElementTag('text');
         });
 
         it('should contain the trap label', () => {
@@ -459,7 +459,7 @@ export default ({ assert, describe, it }) => {
         const doorRect = door.slice(0, door.indexOf('/>') + 2);
 
         it('should return a string starting with a `<rect />` element string', () => {
-            assert(doorRect).isHtmlTag('rect');
+            assert(doorRect).isElementTag('rect');
         });
 
         it('the `<rect />` should have the correct `x` and `y` attributes', () => {
@@ -851,7 +851,7 @@ export default ({ assert, describe, it }) => {
         const map = drawMap(dimensions, '');
 
         it('should return an SVG element string', () => {
-            assert(map).isHtmlTag('svg');
+            assert(map).isElementTag('svg');
         });
 
         it('should have correct width and heigh attributes', () => {
@@ -882,7 +882,7 @@ export default ({ assert, describe, it }) => {
         const roomRect = room.slice(0, room.indexOf('/>') + 2);
 
         it('should include a `<rect />` element string', () => {
-            assert(roomRect).isHtmlTag('rect');
+            assert(roomRect).isElementTag('rect');
         });
 
         describe('the rect element', () => {

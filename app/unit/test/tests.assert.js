@@ -5,9 +5,9 @@ import {
     equalsObject,
     isArray,
     isBoolean,
+    isElementTag,
     isFalse,
     isFunction,
-    isHtmlTag,
     isNull,
     isNumber,
     isObject,
@@ -29,9 +29,9 @@ const assertions = [
     equalsArray,
     isArray,
     isBoolean,
+    isElementTag,
     isFalse,
     isFunction,
-    isHtmlTag,
     isNull,
     isNumber,
     isObject,
@@ -360,74 +360,74 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('isHtmlTag()', () => {
+    describe('isElementTag()', () => {
         describe('given a string that is the desired html tag', () => {
             it('should return true', () => {
-                assert(isHtmlTag('<strong>Wizards!</strong>', 'strong').isOk).isTrue();
+                assert(isElementTag('<strong>Wizards!</strong>', 'strong').isOk).isTrue();
             });
         });
 
         describe('given a string that is the desired html tag with attributes', () => {
             it('should return true', () => {
-                assert(isHtmlTag('<strong data-type="goblin">Goblins</strong>', 'strong').isOk).isTrue();
+                assert(isElementTag('<strong data-type="goblin">Goblins</strong>', 'strong').isOk).isTrue();
             });
         });
 
         describe('given a string that is not an html tag', () => {
             it('should return false', () => {
-                assert(isHtmlTag('Grumpy wizards', 'b').isOk).isFalse();
+                assert(isElementTag('Grumpy wizards', 'b').isOk).isFalse();
             });
         });
 
         describe('given a string that is not the desired html tag', () => {
             it('should return false', () => {
-                assert(isHtmlTag('<div>Goblins</div>', 'b').isOk).isFalse();
+                assert(isElementTag('<div>Goblins</div>', 'b').isOk).isFalse();
             });
         });
 
         describe('given a string that does not start with an html tag', () => {
             it('should return false', () => {
-                assert(isHtmlTag('The crafty <span>Pixie</span>', 'span').isOk).isFalse();
+                assert(isElementTag('The crafty <span>Pixie</span>', 'span').isOk).isFalse();
             });
         });
 
         describe('given a string that does not end with an html tag', () => {
             it('should return false', () => {
-                assert(isHtmlTag('<span>Pixies</span> can turn invisible', 'span').isOk).isFalse();
+                assert(isElementTag('<span>Pixies</span> can turn invisible', 'span').isOk).isFalse();
             });
         });
 
         describe('given a string that is a malformed html tag', () => {
             it('should return false', () => {
-                assert(isHtmlTag('p>Pixies</p>', 'p').isOk).isFalse();
-                assert(isHtmlTag('<>Pixies</p>', 'p').isOk).isFalse();
-                assert(isHtmlTag('<pPixies</p>', 'p').isOk).isFalse();
-                assert(isHtmlTag('<p>Pixies/p>', 'p').isOk).isFalse();
-                assert(isHtmlTag('<p>Pixies<p>', 'p').isOk).isFalse();
-                assert(isHtmlTag('<p>Pixies</>', 'p').isOk).isFalse();
-                assert(isHtmlTag('<p>Pixies</p', 'p').isOk).isFalse();
-                assert(isHtmlTag('<input>', 'input').isOk).isFalse();
-                assert(isHtmlTag('<input', 'input').isOk).isFalse();
-                assert(isHtmlTag('<input /', 'input').isOk).isFalse();
-                assert(isHtmlTag('input />', 'input').isOk).isFalse();
+                assert(isElementTag('p>Pixies</p>', 'p').isOk).isFalse();
+                assert(isElementTag('<>Pixies</p>', 'p').isOk).isFalse();
+                assert(isElementTag('<pPixies</p>', 'p').isOk).isFalse();
+                assert(isElementTag('<p>Pixies/p>', 'p').isOk).isFalse();
+                assert(isElementTag('<p>Pixies<p>', 'p').isOk).isFalse();
+                assert(isElementTag('<p>Pixies</>', 'p').isOk).isFalse();
+                assert(isElementTag('<p>Pixies</p', 'p').isOk).isFalse();
+                assert(isElementTag('<input>', 'input').isOk).isFalse();
+                assert(isElementTag('<input', 'input').isOk).isFalse();
+                assert(isElementTag('<input /', 'input').isOk).isFalse();
+                assert(isElementTag('input />', 'input').isOk).isFalse();
             });
         });
 
         describe('given a self closing html tag', () => {
             it('should return true', () => {
-                assert(isHtmlTag('<input name="ted" />', 'input').isOk).isTrue();
+                assert(isElementTag('<input name="ted" />', 'input').isOk).isTrue();
             });
         });
 
         describe('given multiple tags', () => {
             it('should return false', () => {
-                assert(isHtmlTag('<p>Hello</p><p>Dungeon</p>', 'input').isOk).isFalse();
+                assert(isElementTag('<p>Hello</p><p>Dungeon</p>', 'input').isOk).isFalse();
             });
         });
 
         describe('given multiple self closing tags', () => {
             it('should return false', () => {
-                assert(isHtmlTag('<input /><input />', 'input').isOk).isFalse();
+                assert(isElementTag('<input /><input />', 'input').isOk).isFalse();
             });
         });
 

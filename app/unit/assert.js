@@ -75,25 +75,8 @@ export function isBoolean(value) {
     return { msg, isOk };
 }
 
-/** @type {(value: *) => Result} isFalse */
-export function isFalse(value) {
-    let isOk = value === false;
-    let msg  = `expected "${value}" to be false`;
-
-    return { msg, isOk };
-}
-
-/** @type {(value: *) => Result} isFunction */
-export function isFunction(value) {
-    let isOk = typeof value === 'function';
-    let msg  = `expected "${value}" to be a function`;
-
-    return { msg, isOk };
-}
-
-// TODO rename to isElementTag because SVG are tags too
-/** @type {(value: *, tag: string) => Result} isHtmlTag */
-export function isHtmlTag(value, tag) {
+/** @type {(value: *, tag: string) => Result} isElementTag */
+export function isElementTag(value, tag) {
     let checkType = isString(value);
 
     if (!checkType.isOk) {
@@ -113,6 +96,22 @@ export function isHtmlTag(value, tag) {
     let isSingleTag = value.match(/</g).length === brackets && value.match(/>/g).length === brackets;
 
     return { msg, isOk: isSingleTag };
+}
+
+/** @type {(value: *) => Result} isFalse */
+export function isFalse(value) {
+    let isOk = value === false;
+    let msg  = `expected "${value}" to be false`;
+
+    return { msg, isOk };
+}
+
+/** @type {(value: *) => Result} isFunction */
+export function isFunction(value) {
+    let isOk = typeof value === 'function';
+    let msg  = `expected "${value}" to be a function`;
+
+    return { msg, isOk };
 }
 
 /** @type {(value: *) => Result} isNull */

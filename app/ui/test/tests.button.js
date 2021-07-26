@@ -9,7 +9,7 @@ export default ({ assert, describe, it }) => {
         let buttonHtml = button('click me');
 
         it('should return an html button element string', () => {
-            assert(buttonHtml).isHtmlTag('button');
+            assert(buttonHtml).isElementTag('button');
         });
 
         it('should have a `data-size="small"` attribute by default', () => {

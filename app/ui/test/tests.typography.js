@@ -33,7 +33,7 @@ export default ({ assert, describe, it }) => {
                     let result = func('');
 
                     it('should return an html element string with the correct the tag name', () => {
-                        assert(result).isHtmlTag(name);
+                        assert(result).isElementTag(name);
                     });
                 });
 

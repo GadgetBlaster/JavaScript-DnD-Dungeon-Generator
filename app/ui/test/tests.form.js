@@ -29,19 +29,19 @@ export default ({ assert, describe, it }) => {
 
         describe('given a type of `typeSelect`', () => {
             it('should return an html select element string', () => {
-                assert(getKnob({ type: typeSelect, values: [] })).isHtmlTag('select');
+                assert(getKnob({ type: typeSelect, values: [] })).isElementTag('select');
             });
         });
 
         describe('given a type of `typeNumber`', () => {
             it('should return an html input element string', () => {
-                assert(getKnob({ type: typeNumber })).isHtmlTag('input');
+                assert(getKnob({ type: typeNumber })).isElementTag('input');
             });
         });
 
         describe('given a type of `typeRange`', () => {
             it('should return an html input element string', () => {
-                assert(getKnob({ type: typeRange })).isHtmlTag('input');
+                assert(getKnob({ type: typeRange })).isElementTag('input');
             });
         });
     });
@@ -251,7 +251,7 @@ export default ({ assert, describe, it }) => {
         });
 
         it('should be an html button element string', () => {
-            assert(submitButton).isHtmlTag('button');
+            assert(submitButton).isElementTag('button');
         });
 
         it('should have a `type="submit"` attribute', () => {
