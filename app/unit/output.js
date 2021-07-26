@@ -1,3 +1,4 @@
+// @ts-check
 
 import { element } from '../utility/element.js';
 import { link } from '../ui/link.js';
@@ -6,6 +7,7 @@ import run from './run.js';
 
 /** @typedef {import('../utility/element').Attributes} Attributes */
 /** @typedef {import('./assert.js').Result} Result */
+/** @typedef {import('./state.js').Entry} Entry */
 /** @typedef {import('./state.js').State} State */
 /** @typedef {import('./state.js').Summary} Summary */
 
@@ -52,7 +54,7 @@ const unitUrl = './unit.html';
  * Log entry
  *
  * @param {string} message
- * @param {Attributes} attributes
+ * @param {Attributes} [attributes]
  *
  * @returns {string}
  */
@@ -109,7 +111,7 @@ export function getLog(results, { verbose } = {}) {
 /**
  * Get navigation
  *
- * @param {options} options
+ * @param {object} options
  *     @param {string} [options.scope]
  *     @param {boolean} [options.verbose]
  *
@@ -145,7 +147,7 @@ export const getNav = ({ scope, verbose }) => [
 
 /**
  * Result Msg
- * TODO get
+ *
  * @param {Entry[]} entries
  *
  * @returns {string}
@@ -210,7 +212,7 @@ export function getResults(summary, options = {}) {
  * Get test suite list
  *
  * @param {string[]} scopes
- * @param {options} [options]
+ * @param {object} [options]
  *     @param {boolean} [options.verbose]
  *
  * @returns {string}
@@ -224,7 +226,7 @@ export function getSuiteList(scopes, { verbose } = {}) {
 /**
  * Get test summary.
  *
- * @param {import('./state.js').Summary} summary
+ * @param {Summary} summary
  *
  * @returns {string}
  */
@@ -247,7 +249,7 @@ export function getSummary(summary) {
 /**
  * Get test summary link.
  *
- * @param {import('./state.js').Summary} summary
+ * @param {Summary} summary
  *
  * @returns {string}
  */
@@ -273,12 +275,12 @@ export function getSummaryLink(summary) {
 /**
  * Get test summary parts.
  *
- * @param {import('./state.js').Summary} summary
+ * @param {Summary} summary
  *
  * @returns {{
- *     assertionsText: string,
- *     checkedForText: string,
- *     issuesText: string?,
+ *     assertionsText: string;
+ *     checkedForText: string;
+ *     issuesText?: string;
  * }}
  */
 export function getSummaryParts(summary) {

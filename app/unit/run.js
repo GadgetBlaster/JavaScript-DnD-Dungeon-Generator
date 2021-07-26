@@ -1,12 +1,17 @@
+// @ts-check
+
+/** @typedef {import('./state.js').Utility} Utility */
+/** @typedef {import('./state').State} State */
+/** @typedef {import('./state').Summary} Summary */
 
 /**
  * Run suite
  *
- * @param {import('./state').Unit} unit
- * @param {{ [path: string], [tests: function] }} suite
+ * @param {State} state
+ * @param {{ [path: string]: (Utility) => void }} suite
  * @param {string} [scope]
  *
- * @returns {import('./state').Summary}
+ * @returns {Summary}
  */
 export default function ({ getSummary, onError, runUnits }, suite, scope) {
     if (!suite || typeof suite !== 'object') {
