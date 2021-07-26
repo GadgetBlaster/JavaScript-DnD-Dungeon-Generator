@@ -81,7 +81,7 @@ const scope = {
  *
  * @returns {State}
  */
-export function useState() {
+export function unitState() {
 
     /**
      * Assertions

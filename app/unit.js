@@ -1,7 +1,7 @@
 // @ts-check
 
 import { getNav, getOutput } from './unit/output.js';
-import { useState } from './unit/state.js'; // TODO rename to `unitState`?
+import { unitState } from './unit/state.js';
 import suite from './unit/suite.js';
 
 // -- Config -------------------------------------------------------------------
@@ -34,7 +34,7 @@ const verbose = Boolean(urlParams.get('verbose'));
 // -- Initialization -----------------------------------------------------------
 
 navContainer.innerHTML     = getNav({ scope, verbose });
-contentContainer.innerHTML = getOutput(suite, useState(), {
+contentContainer.innerHTML = getOutput(suite, unitState(), {
     scope,
     verbose,
     onError: console.error,
