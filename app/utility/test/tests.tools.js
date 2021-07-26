@@ -112,7 +112,7 @@ export default ({ assert, describe, it }) => {
 
     describe('toDash()', () => {
         describe('given a string with spaces', () => {
-            it('should return a lowercased string with the words dash separated', () => {
+            it('should return a lower cased string with the words dash separated', () => {
                 assert(toDash('Teleporting Mythical Creature')).equals('teleporting-mythical-creature');
             });
         });
@@ -120,7 +120,7 @@ export default ({ assert, describe, it }) => {
 
     describe('toWords()', () => {
         describe('given a camel case string', () => {
-            it('should return a lowercased string broken into multiple words', () => {
+            it('should return a lower cased string broken into multiple words', () => {
                 assert(toWords('bustedBulldozingBrachiosaurus')).equals('busted bulldozing brachiosaurus');
             });
         });

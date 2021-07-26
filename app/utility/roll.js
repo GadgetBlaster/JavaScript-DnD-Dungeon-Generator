@@ -28,7 +28,7 @@ const maxPercent = 100;
  *     `[[ 20, 'boats' ], [ 30, 'horses' ]]` for 1-20: boats, 21-30: horses
  *     Then sort by largest % first and validate the total is 100 or less.
  *
- * @param {[number, string][]} config
+ * @param {[ number, string ][]} config
  *
  * @returns {Probability}
  */

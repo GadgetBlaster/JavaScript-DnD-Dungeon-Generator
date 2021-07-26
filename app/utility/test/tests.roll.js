@@ -1,3 +1,4 @@
+// @ts-check
 
 import {
     createProbability,
@@ -7,7 +8,7 @@ import {
 } from '../roll.js';
 
 /**
- * @param {import('../../unit/state.js').Utility}
+ * @param {import('../../unit/state.js').Utility} utility
  */
 export default ({ assert, describe, it }) => {
     describe('createProbability()', () => {
@@ -58,8 +59,9 @@ export default ({ assert, describe, it }) => {
             assert(createProbability([[ 23, 'boats' ]])).isObject();
         });
 
-        describe('given a `config` that is not an array`', () => {
+        describe('given a `config` that is not an array', () => {
             it('should throw', () => {
+                // @ts-expect-error
                 assert(() => { createProbability('junk'); })
                     .throws('Probability `config` must be an array');
             });
@@ -74,6 +76,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given a `config` that is not a 2 dimensional array', () => {
             it('should throw', () => {
+                // @ts-expect-error
                 assert(() => { createProbability([ 'junk' ]); })
                     .throws('Invalid `config` for Map');
             });
@@ -81,6 +84,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given a `config` with invalid map keys', () => {
             it('should throw', () => {
+                // @ts-expect-error
                 assert(() => { createProbability([[ 'bad', 'panda' ]]); })
                     .throws('Probability key "bad" must be an integer');
             });
@@ -88,6 +92,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given a `config` with invalid map values', () => {
             it('should throw', () => {
+                // @ts-expect-error
                 assert(() => { createProbability([[ 23, 99 ]]); })
                     .throws('Probability value "99" must be a string');
             });
@@ -99,7 +104,7 @@ export default ({ assert, describe, it }) => {
                     assert(() => {
                         createProbability([
                             [ -10,  'backpack' ],
-                            [ 50, 'belt pouch' ]
+                            [ 50, 'belt pouch' ],
                         ]);
                     }).throws('Probability key "-10" must be 0 or greater');
                 });
@@ -110,7 +115,7 @@ export default ({ assert, describe, it }) => {
                     assert(() => {
                         createProbability([
                             [ 1,  'backpack' ],
-                            [ 102, 'belt pouch' ]
+                            [ 102, 'belt pouch' ],
                         ]);
                     }).throws('Probability key "102" exceeds 100');
                 });
@@ -183,6 +188,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given no value', () => {
             it('should throw', () => {
+                // @ts-expect-error
                 assert(() => { rollArrayItem(); })
                     .throws('Invalid roll array');
             });
