@@ -1,7 +1,7 @@
 // @ts-check
 
 import { getNav, getOutput } from './unit/output.js';
-import { useState } from './unit/state.js';
+import { useState } from './unit/state.js'; // TODO rename to `unitState`?
 import suite from './unit/suite.js';
 
 // -- Config -------------------------------------------------------------------

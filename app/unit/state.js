@@ -4,33 +4,29 @@ import * as assertFunctions from './assert.js';
 import { getResultMessage } from './output.js';
 
 /** @typedef {import('./assert.js').Result} Result */
-/** @typedef {import('./assert.js').Assertions} Assertions */
+
+/** @typedef {(value: any) => Assertions} Assertion */
 
 /**
- * @typedef {object} Summary
+ * @typedef {object} Assertions
  *
- * @property {number} assertions
- * @property {number} failures
- * @property {Result[]} results
- * @property {string[]} errors
- */
-
-/** @typedef {(value: *, expected?: *) => Result} Assertion */
-
-/**
- * @typedef {object} Utility
- *
- * @property {(value:*) => Assertions} assert
- * @property {Function} describe
- * @property {Function} it
- */
-
-/**
- * @typedef {object} State
- *
- * @property {() => Summary} getSummary
- * @property {(error: string) => void} onError
- * @property {(path: string, tests: Function) => void} runUnits
+ * @property {Assertion} equals
+ * @property {Assertion} equalsArray
+ * @property {Assertion} equalsObject
+ * @property {Assertion} isArray
+ * @property {Assertion} isBoolean
+ * @property {Assertion} isFalse
+ * @property {Assertion} isFunction
+ * @property {Assertion} isHtmlTag
+ * @property {Assertion} isNull
+ * @property {Assertion} isNumber
+ * @property {Assertion} isObject
+ * @property {Assertion} isString
+ * @property {Assertion} isTrue
+ * @property {Assertion} isUndefined
+ * @property {Assertion} stringExcludes
+ * @property {Assertion} stringIncludes
+ * @property {Assertion} throws
  */
 
 /**
@@ -41,6 +37,31 @@ import { getResultMessage } from './output.js';
  */
 
 /** @typedef {"assert()" | "describe()" | "it()" | "default()"} Scope */
+
+/**
+ * @typedef {object} State
+ *
+ * @property {() => Summary} getSummary
+ * @property {(error: string) => void} onError
+ * @property {(path: string, tests: Function) => void} runUnits
+ */
+
+/**
+ * @typedef {object} Summary
+ *
+ * @property {number} assertions
+ * @property {number} failures
+ * @property {Result[]} results
+ * @property {Result[]} errors
+ */
+
+/**
+ * @typedef {object} Utility
+ *
+ * @property {(value: any) => Assertions} assert
+ * @property {Function} describe
+ * @property {Function} it
+ */
 
 // -- Config -------------------------------------------------------------------
 
@@ -79,7 +100,7 @@ export function useState() {
     /**
      * Errors
      *
-     * @type {string[]}
+     * @type {Result[]}
      */
     let errors = [];
 
@@ -149,7 +170,7 @@ export function useState() {
      * @param {*} expected
      * @param {Function} assertion
      *
-     * @returns {Assertions}
+     * @returns {{ [key: string]: Assertion }}
      */
     const runAssertion = (actual, expected, assertion) => {
         checkScope(scope.assert, [ scope.it ]);
@@ -183,7 +204,7 @@ export function useState() {
      *
      * @param {any} value
      *
-     * @returns {Assertions}
+     * @returns {ReturnType<Assertions>}
      */
     const assert = (value) => Object.entries(assertFunctions).reduce((assertObj, [ key, assertion ]) => {
         assertObj[key] = (expected) => runAssertion(value, expected, assertion);
@@ -236,7 +257,7 @@ export function useState() {
         let result = { isOk: false, msg: error };
 
         results.push(result);
-        errors.push(result); // TODO
+        errors.push(result);
     };
 
     return {
