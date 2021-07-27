@@ -4,12 +4,13 @@ import { element } from '../utility/element.js';
 /**
  * Button options
  *
- * @typedef {Object} ButtonOptions
- *      @property {boolean} active
- *      @property {string} size
- *      @property {string} target
- *      @property {string} value
- *      @property {string} type
+ * @typedef {object} ButtonOptions
+ *
+ * @property {boolean} [active]
+ * @property {string} [size]
+ * @property {string} [target]
+ * @property {string} [value]
+ * @property {string} [type]
  */
 
 // -- Config -------------------------------------------------------------------
@@ -42,7 +43,7 @@ const validSizes = new Set(Object.values(buttonSize));
  *
  * @param {string} label
  * @param {string} action
- * @param {ButtonOptions} options
+ * @param {ButtonOptions} [options]
  *
  * @throws
  *
