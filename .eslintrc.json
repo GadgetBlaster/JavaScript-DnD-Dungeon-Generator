@@ -12,6 +12,7 @@
     },
     "rules": {
         "comma-dangle":         [ "warn", "always-multiline" ],
+        "keyword-spacing":      [ "warn", { "before": true } ],
         "max-len":              [ "warn", { "code": 120, "comments": 80 } ],
         "no-case-declarations": [ "warn" ],
         "no-shadow":            "warn",

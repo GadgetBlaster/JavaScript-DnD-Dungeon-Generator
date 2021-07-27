@@ -27,7 +27,9 @@ import { getResultMessage } from './output.js';
  * @property {Assertion} stringExcludes
  * @property {Assertion} stringIncludes
  * @property {Assertion} throws
- */
+*/
+
+/** @typedef {{ scope: Scope; msg: string }} CurrentScope */
 
 /**
  * @typedef {object} Entry
@@ -93,7 +95,7 @@ export function unitState() {
     /**
      * Current
      *
-     * @type {{ scope: Scope; msg: string }[]}
+     * @type {CurrentScope[]}
      */
     let current = [];
 

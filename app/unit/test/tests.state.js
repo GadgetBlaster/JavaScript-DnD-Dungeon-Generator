@@ -1,8 +1,9 @@
+// @ts-check
 
 import { unitState } from '../state.js';
 
 /**
- * @param {import('../state.js').Utility}
+ * @param {import('../state.js').Utility} utility
  */
 export default ({ assert, describe, it }) => {
     describe('returns', () => {
@@ -368,7 +369,7 @@ export default ({ assert, describe, it }) => {
                     });
                 });
 
-                describe('the secon error in the summary', () => {
+                describe('the second error in the summary', () => {
                     it('should have a falsy `isOk` property', () => {
                         assert(errors[1].isOk).isFalse();
                     });
@@ -407,11 +408,12 @@ export default ({ assert, describe, it }) => {
                                         assert(chainObj).isObject();
                                     });
 
-                                    it('should return an object with the same keys and values as `assertEntries`', () => {
-                                        const objectsDiffer = Object.entries(chainObj).some(([ key1, value1 ], index) => {
-                                            let [ key2, value2 ] = assertEntries[index];
-                                            return key1 !== key2 || value1.name !== value2.name;
-                                        });
+                                    it('should return an object with the same keys & values as `assertEntries`', () => {
+                                        const objectsDiffer = Object.entries(chainObj)
+                                            .some(([ key1, value1 ], index) => {
+                                                const [ key2, value2 ] = assertEntries[index];
+                                                return key1 !== key2 || value1.name !== value2.name;
+                                            });
 
                                         assert(objectsDiffer).isFalse();
                                     });

@@ -1,4 +1,3 @@
-
 // @ts-check
 
 import { toss } from './tools.js';

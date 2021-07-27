@@ -1,12 +1,15 @@
 // @ts-check
 
+import { div } from '../ui/block.js';
 import { element } from '../utility/element.js';
 import { link } from '../ui/link.js';
+import { paragraph } from '../ui/typography.js';
 import { plural } from '../utility/tools.js';
 import run from './run.js';
 
 /** @typedef {import('../utility/element').Attributes} Attributes */
 /** @typedef {import('./assert.js').Result} Result */
+/** @typedef {import('./state.js').CurrentScope} CurrentScope */
 /** @typedef {import('./state.js').Entry} Entry */
 /** @typedef {import('./state.js').State} State */
 /** @typedef {import('./state.js').Summary} Summary */
@@ -148,7 +151,7 @@ export const getNav = ({ scope, verbose }) => [
 /**
  * Result Msg
  *
- * @param {Entry[]} entries
+ * @param {CurrentScope[]} entries
  *
  * @returns {string}
  */
@@ -199,13 +202,11 @@ export function getResults(summary, options = {}) {
     let delayStyle = `animation-delay: ${summary.results.length * animationDelay}ms`;
     let log = getLog(results, { verbose });
 
-    return `
-        <h1>Mumbling incantations</h1>
-        <p>${scope || 'All Tests'}</p>
-        <div>${dots}</div>
-        <p data-animate="show" style="${delayStyle}">${getSummary(summary)}</p>
-        <ul data-animate="show" style="${delayStyle}">${log}</ul>
-    `;
+    return element('h1', 'Mumbling incantations')
+        + paragraph(scope || 'All Tests')
+        + div(dots)
+        + paragraph(getSummary(summary), { 'data-animate': 'show', style: delayStyle })
+        + element('ul', log, { 'data-animate': 'show', style: delayStyle });
 }
 
 /**
@@ -269,7 +270,7 @@ export function getSummaryLink(summary) {
         return assertionContent + encounterContent;
     }
 
-    return element('p', `${checkedForText} ${link(assertionsText, unitUrl)}`);
+    return paragraph(`${checkedForText} ${link(assertionsText, unitUrl)}`);
 }
 
 /**
@@ -321,8 +322,5 @@ export function getSummaryParts(summary) {
 export function getTestList(suite, { verbose } = {}) {
     let list = getSuiteList(Object.keys(suite), { verbose });
 
-    return `
-        <h1>Spell book</h1>
-        <ul>${list}</ul>
-    `;
+    return element('h1', 'Spell book') + element('ul', list);
 }

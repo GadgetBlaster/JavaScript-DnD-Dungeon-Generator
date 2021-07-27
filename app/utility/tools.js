@@ -1,3 +1,4 @@
+// @ts-check
 
 // -- Typography ---------------------------------------------------------------
 
@@ -88,7 +89,7 @@ export const toWords = (text) => text.replace(/([A-Z])/g, ' $1').toLowerCase();
  *
  * @param {number} num
  *
- * @returns {string}
+ * @returns {boolean}
  */
 export const isEven = (num)  => num % 2 === 0;
 
@@ -114,7 +115,7 @@ export const isOdd = (num)  => num % 2 !== 0;
 export const chunk = (array, size) => array.reduce((newArray, item, index) => {
     let chunkIndex = Math.floor(index / size);
 
-    if(!newArray[chunkIndex]) {
+    if (!newArray[chunkIndex]) {
         newArray[chunkIndex] = [];
     }
 

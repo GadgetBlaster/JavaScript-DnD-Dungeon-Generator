@@ -1,16 +1,24 @@
+// @ts-check
 
 import run from '../run.js';
 
 const noop = () => {};
 
+const mockSummary = {
+    assertions: 0,
+    failures  : 0,
+    results   : [],
+    errors    : [],
+};
+
 const mockUnit = {
-    getSummary: noop,
+    getSummary: () => mockSummary,
     onError   : noop,
     runUnits  : noop,
 };
 
 /**
- * @param {import('../state.js').Utility}
+ * @param {import('../state.js').Utility} utility
  */
 export default ({ assert, describe, it }) => {
     describe('given a suite of test functions', () => {
@@ -27,7 +35,7 @@ export default ({ assert, describe, it }) => {
             functions.push(tests);
         };
 
-        const getSummary = () => 'success';
+        const getSummary = () => mockSummary;
 
         const results = run({ ...mockUnit, runUnits, getSummary }, suite);
 
@@ -46,7 +54,7 @@ export default ({ assert, describe, it }) => {
         });
 
         it('should call `getSummary` returning the test summary', () => {
-            assert(results).equals('success');
+            assert(results).equalsObject(mockSummary);
         });
     });
 
@@ -55,6 +63,7 @@ export default ({ assert, describe, it }) => {
 
         const onError = (error) => { onErrorResult = error; };
 
+        // @ts-expect-error
         run({ ...mockUnit, onError });
 
         it('should call `onError` returning a string containing `Invalid`', () => {
@@ -69,6 +78,7 @@ export default ({ assert, describe, it }) => {
 
         const onError = (error) => { onErrorResult = error; };
 
+        // @ts-expect-error
         run({ ...mockUnit, onError }, 'junk');
 
         it('should call `onError` returning a string containing `Invalid`', () => {

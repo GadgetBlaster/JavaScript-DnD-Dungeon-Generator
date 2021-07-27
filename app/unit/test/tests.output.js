@@ -1,3 +1,4 @@
+// @ts-check
 
 import {
     escapeHTML,
@@ -16,7 +17,7 @@ import {
 const noop = () => {};
 
 /**
- * @param {import('../state.js').Utility}
+ * @param {import('../state.js').Utility} utility
  */
 export default ({ assert, describe, it }) => {
     describe('escapeHTML()', () => {
@@ -24,6 +25,7 @@ export default ({ assert, describe, it }) => {
             it('should return a string with escaped HTML', () => {
                 const html   = '<h1 class="logo">Sal\'s Soups &amp; Sandwiches</h1>';
                 const expect = '&lt;h1 class=&quot;logo&quot;&gt;Sal&#x27;s Soups &amp;amp; Sandwiches&lt;&#x2F;h1&gt;';
+
                 assert(escapeHTML(html)).equals(expect);
             });
         });
@@ -52,9 +54,8 @@ export default ({ assert, describe, it }) => {
                     assert(getLog(results, { verbose: true }))
                         .equals([
                             '<li>success</li>',
-                            '<li class="fail">failure</li>'
-                        ].join('')
-                    );
+                            '<li class="fail">failure</li>',
+                        ].join(''));
                 });
             });
         });
@@ -72,8 +73,7 @@ export default ({ assert, describe, it }) => {
                     .equals([
                         '<li class="fail">nope</li>',
                         '<li class="fail">no way</li>',
-                    ].join('')
-                );
+                    ].join(''));
             });
 
             describe('given the verbose flag', () => {
@@ -84,8 +84,7 @@ export default ({ assert, describe, it }) => {
                             '<li>you bet</li>',
                             '<li class="fail">nope</li>',
                             '<li class="fail">no way</li>',
-                        ].join('')
-                    );
+                        ].join(''));
                 });
             });
         });
@@ -170,14 +169,15 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getOutput()', () => {
-        let suite = { '/test/tests.fake.js': noop };
-        let state = {
+        const suite = { '/test/tests.fake.js': noop };
+        const state = {
             getSummary: () => ({
                 assertions: 1,
-                errors: [],
-                failures: 0,
-                results: [ { isOk: true, msg: 'fake test result' } ],
+                errors    : [],
+                failures  : 0,
+                results   : [ { isOk: true, msg: 'fake test result' } ],
             }),
+            onError: noop,
             runUnits: noop,
         };
 
@@ -196,16 +196,14 @@ export default ({ assert, describe, it }) => {
             it('should only call `runUnits()` on the `scope` test path', () => {
                 let scopesCalled = [];
 
-                let scopedSuite = {
-                    '/test/tests.fake.js': noop,
+                const scopedSuite = {
+                    '/test/tests.fake.js' : noop,
                     '/test/tests.fake2.js': noop,
                 };
 
-                let scopedState = {
+                const scopedState = {
                     ...state,
-                    runUnits: (path) => {
-                        scopesCalled.push(path);
-                    },
+                    runUnits: (path) => { scopesCalled.push(path); },
                 };
 
                 getOutput(scopedSuite, scopedState, { scope: '/test/tests.fake.js' });
@@ -225,14 +223,18 @@ export default ({ assert, describe, it }) => {
 
         describe('given a single entry', () => {
             it('should return the entry', () => {
-                assert(getResultMessage([ { msg: 'just us chickens' } ]))
-                    .equals('just us chickens');
+                assert(getResultMessage([ {
+                    msg  : 'just us chickens',
+                    scope: 'describe()',
+                } ])).equals('just us chickens');
             });
         });
 
         describe('given three entries', () => {
             const entries = getResultMessage([
-                { msg: 'jimmy' }, { msg: 'joey' }, { msg: 'sarah' },
+                { msg: 'jimmy', scope: 'default()'  },
+                { msg: 'joey',  scope: 'describe()' },
+                { msg: 'sarah', scope: 'it()'       },
             ]);
 
             const lines = entries.split(`\n`);
@@ -255,16 +257,19 @@ export default ({ assert, describe, it }) => {
         describe('given one passing result', () => {
             let summary = {
                 assertions: 1,
-                errors: [],
-                failures: 0,
-                results: [ { isOk: true, msg: 'fake success result' } ],
+                errors    : [],
+                failures  : 0,
+                results   : [ { isOk: true, msg: 'fake success result' } ],
             };
 
             let result = getResults(summary);
 
             it('should render one passing dot', () => {
-                assert(result)
-                    .stringIncludes('<span data-animate="show" class="dot ok" style="animation-delay: 0ms"></span>');
+                const matches = result
+                    .match(/<span data-animate="show" class="dot ok" style="animation-delay: (.)ms"><\/span>/g);
+
+                assert(matches).isArray();
+                matches && assert(matches.length).equals(1);
             });
 
             it('should render a summary', () => {
@@ -314,18 +319,20 @@ export default ({ assert, describe, it }) => {
         describe('given multiple results', () => {
             let summary = {
                 assertions: 2,
-                errors: [],
-                failures: 0,
-                results: [
-                    { isOk: true, msg: 'fake success result' },
+                errors    : [],
+                failures  : 0,
+                results   : [
+                    { isOk: true, msg: 'fake success result'    },
                     { isOk: true, msg: 'another success result' },
                 ],
             };
 
             it('should render two passing dots', () => {
-                assert(getResults(summary))
-                    .stringIncludes('<span data-animate="show" class="dot ok" style="animation-delay: 0ms"></span>')
-                    .stringIncludes('<span data-animate="show" class="dot ok" style="animation-delay: 2ms"></span>');
+                const matches = getResults(summary)
+                    .match(/<span data-animate="show" class="dot ok" style="animation-delay: (.)ms"><\/span>/g);
+
+                assert(matches).isArray();
+                matches && assert(matches.length).equals(2);
             });
 
             describe('given the `verbose` option', () => {
@@ -337,19 +344,22 @@ export default ({ assert, describe, it }) => {
             });
         });
 
-        describe('given a failing results', () => {
+        describe('given a failing result', () => {
             let summary = {
                 assertions: 1,
-                errors: [],
-                failures: 1,
-                results: [ { isOk: false, msg: 'fake failure' } ],
+                errors    : [],
+                failures  : 1,
+                results   : [ { isOk: false, msg: 'fake failure' } ],
             };
 
             let result = getResults(summary);
 
             it('should render one failing dot', () => {
-                assert(result)
-                    .stringIncludes('<span data-animate="show" class="dot fail" style="animation-delay: 0ms"></span>');
+                const matches = result
+                    .match(/<span data-animate="show" class="dot fail" style="animation-delay: (.)ms"><\/span>/g);
+
+                assert(matches).isArray();
+                matches && assert(matches.length).equals(1);
             });
 
             it('should output the log with the failure entries', () => {
@@ -370,16 +380,19 @@ export default ({ assert, describe, it }) => {
         describe('given a result containing an error', () => {
             let summary = {
                 assertions: 1,
-                errors: [ 'this is fine' ],
-                failures: 0,
-                results: [ { isOk: false, msg: 'fake error' } ],
+                errors    : [ { isOk: false, msg: 'this is fine' } ],
+                failures  : 0,
+                results   : [ { isOk: false, msg: 'fake error' } ],
             };
 
             let result = getResults(summary);
 
             it('should render one failing dot', () => {
-                assert(result)
-                    .stringIncludes('<span data-animate="show" class="dot fail" style="animation-delay: 0ms"></span>');
+                const matches = result
+                    .match(/<span data-animate="show" class="dot fail" style="animation-delay: (.)ms"><\/span>/g);
+
+                assert(matches).isArray();
+                matches && assert(matches.length).equals(1);
             });
 
             it('should output the log with the error entry', () => {
@@ -404,8 +417,10 @@ export default ({ assert, describe, it }) => {
             const html   = getSuiteList(scopes);
 
             it('should return an html list with an `<li>` and `</li>` for each scope', () => {
-                assert((html.match(/<li>/g)).length).equals(scopes.length);
-                assert((html.match(/<\/li>/g)).length).equals(scopes.length);
+                const matches = html.match(/<li>(.+?)<\/li>/g);
+
+                assert(matches).isArray();
+                matches && assert(matches.length).equals(scopes.length);
             });
 
             it('should return an html link with `?scope=scope` as the link\'s `href`', () => {
@@ -413,7 +428,10 @@ export default ({ assert, describe, it }) => {
                     assert(html).stringIncludes(`<a href="?scope=${scope}">`);
                 });
 
-                assert((html.match(/<\/a>/g)).length).equals(scopes.length);
+                const matches = html.match(/<\/a>/g);
+
+                assert(matches).isArray();
+                matches && assert(matches.length).equals(scopes.length);
             });
         });
 
@@ -422,7 +440,10 @@ export default ({ assert, describe, it }) => {
             const html   = getSuiteList(scopes, { verbose: true });
 
             it('should return an html list with `&verbose=true` for each scope', () => {
-                assert((html.match(/&verbose=true/g)).length).equals(scopes.length);
+                const matches = html.match(/&verbose=true/g);
+
+                assert(matches).isArray();
+                matches && assert(matches.length).equals(scopes.length);
             });
         });
     });
@@ -430,9 +451,9 @@ export default ({ assert, describe, it }) => {
     describe('getSummary()', () => {
         const defaultSummary = {
             assertions: 0,
-            errors: [],
-            failures: 0,
-            results: [],
+            errors    : [],
+            failures  : 0,
+            results   : [],
         };
 
         it('should return a string', () => {
@@ -440,24 +461,25 @@ export default ({ assert, describe, it }) => {
         });
 
         it('should return a span with the "ok" class', () => {
-            assert(getSummary({ ...defaultSummary }))
-                .stringIncludes('<span class="ok">')
-                .stringIncludes('</span>');
+            const summary = getSummary({ ...defaultSummary });
+            assert(/<span class="ok">(.+?)<\/span>/.test(summary)).isTrue();
         });
 
         describe('given errors', () => {
             it('should return a span with the "fail" class', () => {
-                assert(getSummary({ ...defaultSummary, errors: [ 'Bad dates' ] }))
-                    .stringIncludes('<span class="fail">')
-                    .stringIncludes('</span>');
+                const summary = getSummary({
+                    ...defaultSummary,
+                    errors: [ { isOk: false, msg: 'Bad dates' } ],
+                });
+
+                assert(/<span class="fail">(.+?)<\/span>/.test(summary)).isTrue();
             });
         });
 
         describe('given failures', () => {
             it('should return a span with the "fail" class', () => {
-                assert(getSummary({ ...defaultSummary, failures: 1 }))
-                    .stringIncludes('<span class="fail">')
-                    .stringIncludes('</span>');
+                const summary = getSummary({ ...defaultSummary, failures: 1 });
+                assert(/<span class="fail">(.+?)<\/span>/.test(summary)).isTrue();
             });
         });
     });
@@ -465,9 +487,9 @@ export default ({ assert, describe, it }) => {
     describe('getSummaryLink()', () => {
         const defaultSummary = {
             assertions: 0,
-            errors: [],
-            failures: 0,
-            results: [],
+            errors    : [],
+            failures  : 0,
+            results   : [],
         };
 
         it('should return a string', () => {
@@ -475,22 +497,25 @@ export default ({ assert, describe, it }) => {
         });
 
         it('should return a link to `./unit.html', () => {
-            assert(getSummaryLink({ ...defaultSummary }))
-                .stringIncludes('<a href="./unit.html">')
-                .stringIncludes('</a>');
+            const summary = getSummaryLink({ ...defaultSummary });
+            assert(/<a href=".\/unit.html">(.+?)<\/a>/.test(summary)).isTrue();
         });
 
         describe('given errors', () => {
             it('the link should include a `data-error` attribute', () => {
-                assert(getSummaryLink({ ...defaultSummary, errors: [ 'Bad dates' ] }))
-                    .stringIncludes('<a data-error="true" href="./unit.html">');
+                const summary = getSummaryLink({
+                    ...defaultSummary,
+                    errors: [ { isOk: false, msg: 'Bad dates' } ],
+                });
+
+                assert(/<a data-error="true" href=".\/unit.html">(.+?)<\/a>/.test(summary)).isTrue();
             });
         });
 
         describe('given failures', () => {
             it('the link should include a `data-error` attribute', () => {
-                assert(getSummaryLink({ ...defaultSummary, failures: 1 }))
-                    .stringIncludes('<a data-error="true" href="./unit.html">');
+                const summary = getSummaryLink({ ...defaultSummary, failures: 1 });
+                assert(/<a data-error="true" href=".\/unit.html">(.+?)<\/a>/.test(summary)).isTrue();
             });
         });
     });
@@ -498,19 +523,21 @@ export default ({ assert, describe, it }) => {
     describe('getSummaryParts()', () => {
         const defaultSummary = {
             assertions: 0,
-            errors: [],
-            failures: 0,
+            errors    : [],
+            failures  : 0,
+            results   : [],
         };
 
         it('should return an object with `assertionsText` and `checkedForText` string properties', () => {
-            let result = getSummaryParts({ ...defaultSummary });
+            const result = getSummaryParts({ ...defaultSummary });
+
             assert(result).isObject();
             assert(result.assertionsText).isString();
             assert(result.checkedForText).isString();
         });
 
         describe('given no assertions', () => {
-            let result = getSummaryParts({ ...defaultSummary });
+            const result = getSummaryParts({ ...defaultSummary });
 
             describe('`assertionsText`', () => {
                 it('should contain "0"', () => {
@@ -526,7 +553,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a single assertion', () => {
-            let result = getSummaryParts({ ...defaultSummary, assertions: 1 });
+            const result = getSummaryParts({ ...defaultSummary, assertions: 1 });
 
             describe('`assertionsText`', () => {
                 it('should contain "1"', () => {
@@ -544,7 +571,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given two assertions', () => {
-            let result = getSummaryParts({ ...defaultSummary, assertions: 2 });
+            const result = getSummaryParts({ ...defaultSummary, assertions: 2 });
 
             describe('`assertionsText`', () => {
                 it('should contain "2"', () => {
@@ -568,7 +595,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given failures', () => {
             it('should return an object with `issuesText` string property', () => {
-                let result = getSummaryParts({ ...defaultSummary, failures: 10 });
+                const result = getSummaryParts({ ...defaultSummary, failures: 10 });
                 assert(result.issuesText).isString();
             });
 
@@ -592,14 +619,25 @@ export default ({ assert, describe, it }) => {
 
         describe('given errors', () => {
             it('should return an object with `issuesText` string property', () => {
-                let result = getSummaryParts({ ...defaultSummary, errors: [ 'boots', 'towers', 'jalapeño' ] });
+                const result = getSummaryParts({
+                    ...defaultSummary,
+                    errors: [
+                        { isOk: false, msg: 'boots'    },
+                        { isOk: false, msg: 'towers'   },
+                        { isOk: false, msg: 'jalapeño' },
+                    ],
+                });
+
                 assert(result.issuesText).isString();
             });
 
             describe('`issuesText`', () => {
                 describe('given a single error', () => {
                     it('should contain "1 dragon"', () => {
-                        assert(getSummaryParts({ ...defaultSummary, errors: [ 'lobster' ] }).issuesText)
+                        assert(getSummaryParts({
+                            ...defaultSummary,
+                            errors: [ { isOk: false, msg: 'lobster' } ],
+                        }).issuesText)
                             .stringIncludes('1 dragon')
                             .stringExcludes('dragons');
                     });
@@ -607,17 +645,25 @@ export default ({ assert, describe, it }) => {
 
                 describe('given two errors', () => {
                     it('should contain "2 dragons"', () => {
-                        assert(getSummaryParts({ ...defaultSummary, errors: [ 'broken', 'buggy' ] }).issuesText)
-                            .stringIncludes('2 dragons');
+                        assert(getSummaryParts({
+                            ...defaultSummary,
+                            errors: [
+                                { isOk: false, msg: 'broken' },
+                                { isOk: false, msg: 'buggy'  },
+                            ],
+                        }).issuesText).stringIncludes('2 dragons');
                     });
                 });
             });
         });
 
         describe('given two errors and two failures', () => {
-            let result = getSummaryParts({
+            const result = getSummaryParts({
                 ...defaultSummary,
-                errors: [ 'broken', 'buggy' ],
+                errors: [
+                    { isOk: false, msg: 'broken' },
+                    { isOk: false, msg: 'buggy'  },
+                ],
                 failures: 2,
             }).issuesText;
 
