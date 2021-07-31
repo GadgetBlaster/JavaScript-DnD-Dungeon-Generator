@@ -1,3 +1,4 @@
+// @ts-check
 
 import { element } from '../utility/element.js';
 

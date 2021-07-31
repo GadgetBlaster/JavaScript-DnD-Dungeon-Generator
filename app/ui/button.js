@@ -1,3 +1,4 @@
+// @ts-check
 
 import { element } from '../utility/element.js';
 
@@ -15,7 +16,6 @@ import { element } from '../utility/element.js';
 
 // -- Config -------------------------------------------------------------------
 
-/** @type {string} infoLabel */
 export const infoLabel = '?';
 
 /**
@@ -24,13 +24,13 @@ export const infoLabel = '?';
  * @type {Object<string, string>} buttonSize
  */
 export const buttonSize = {
-    auto: 'auto',
+    auto : 'auto',
     large: 'large',
     small: 'small',
 };
 
 /**
- * Valid sizes
+ * Valid button sizes
  *
  * @type {Set<string>}
  */
@@ -39,7 +39,7 @@ const validSizes = new Set(Object.values(buttonSize));
 // -- Public Functions ---------------------------------------------------------
 
 /**
- * Button
+ * Returns an HTML element button string.
  *
  * @param {string} label
  * @param {string} action

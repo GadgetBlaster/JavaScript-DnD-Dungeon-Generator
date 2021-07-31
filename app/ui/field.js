@@ -2,7 +2,7 @@
 import { element } from '../utility/element.js';
 import { toWords, toss } from '../utility/tools.js';
 
-/** @typedef {import('../utility/element').Attributes} Attributes */
+/** @typedef {import('../utility/element.js').Attributes} Attributes */
 
 // -- Private Functions --------------------------------------------------------
 
@@ -67,17 +67,19 @@ export function select(name, values) {
  * Slider
  *
  * @param {string} name
- * @param {Object<string, string>} [attrs]
+ * @param {Attributes} [attributes]
  *
  * @throws
  *
  * @returns {string}
  */
-export function slider(name, attrs = {}) {
-    attrs.type && toss('Slider `attrs` cannot contain a type');
-    attrs.min && typeof attrs.min !== 'number' && toss('Slider `min` must be a number');
-    attrs.max && typeof attrs.max !== 'number' && toss('Slider `max` must be a number');
-    attrs.min >= attrs.max && toss('Slider `min` must be less than `max`');
+export function slider(name, attributes = {}) {
+    let { type, min, max } = attributes;
 
-    return input(name, { type: 'range', min: 1, max: 100, ...attrs });
+    type && toss('Slider `attrs` cannot contain a type');
+    min && typeof min !== 'number' && toss('Slider `min` must be a number');
+    max && typeof max !== 'number' && toss('Slider `max` must be a number');
+    min >= max && toss('Slider `min` must be less than `max`');
+
+    return input(name, { type: 'range', min: 1, max: 100, ...attributes });
 }

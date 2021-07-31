@@ -1,13 +1,15 @@
+// @ts-check
 
 import { element } from '../utility/element.js';
+import { toss } from '../utility/tools.js';
 
-/** @type {import('../utility/element.js').Attributes} Attributes */
+/** @typedef {import('../utility/element.js').Attributes} Attributes */
 
 /**
  * List
  *
- * @param {string} content
- * @param {Attributes} attributes
+ * @param {string[]} items
+ * @param {Attributes} [attributes]
  *
  * @throws
  *
@@ -15,10 +17,10 @@ import { element } from '../utility/element.js';
  */
 export function list(items, attributes) {
     if (!items || !items.length) {
-        throw new TypeError('Items are required for list');
+        toss('Items are required for lists');
     }
 
-    let content = `<li>${items.join('</li><li>')}</li>`;
+    let content = items.map((item) => element('li', item)).join('');
 
     return element('ul', content, attributes);
 }

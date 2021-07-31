@@ -71,12 +71,12 @@ export const knobs = {
 /**
  * Knob set
  *
- * @typedef {Object} KnobSet
+ * @typedef {object} KnobSet
  *
  * @property {string} label
- * @property {Object<string, string>} [labels]
+ * @property {{ [key: string]: string }} [labels]
  * @property {Set<string>} [pages]
- * @property {Object<string, KnobSettings>} fields
+ * @property {KnobSettings[]} fields
  */
 
  /**

@@ -8,13 +8,13 @@ export default ({ assert, describe, it }) => {
     describe('list()', () => {
         describe('given no `items` param', () => {
             it('should throw', () => {
-                assert(() => list()).throws('Items are required for list');
+                assert(() => list()).throws('Items are required for lists');
             });
         });
 
         describe('given an empty array', () => {
             it('should throw', () => {
-                assert(() => list([])).throws('Items are required for list');
+                assert(() => list([])).throws('Items are required for lists');
             });
         });
 
