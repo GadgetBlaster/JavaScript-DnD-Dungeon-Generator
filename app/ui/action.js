@@ -1,10 +1,9 @@
+// @ts-check
 
 // -- Config -------------------------------------------------------------------
 
 /**
  * Actions
- *
- * @type {Object<string, string>}
  */
 export const actions = {
     accordion: 'accordion',
@@ -14,21 +13,30 @@ export const actions = {
     showHide : 'showHide',
 };
 
+// -- Private Functions --------------------------------------------------------
+
+/**
+ * Get element dataset.
+ *
+ * @param {EventTarget} target
+ *
+ * @returns {{ [attribute: string]: string }}
+ */
+const getDataset = (target) => target instanceof HTMLElement ? target.dataset : {};
+
 // -- Public Functions ---------------------------------------------------------
 
 /**
  * Attach actions
  *
- * @param {Element} container
+ * @param {HTMLElement} container
  * @param {Object<string, function>} triggers
  */
 export function attachActions(container, triggers) {
     container.addEventListener('click', (e) => {
-        let action = e.target.dataset.action;
+        e.preventDefault();
 
-        if ([ actions.generate, actions.home ].includes(action)) {
-            e.preventDefault();
-        }
+        let { action } = getDataset(e.target);
 
         triggers[action] && triggers[action](e);
     });
@@ -37,24 +45,27 @@ export function attachActions(container, triggers) {
 /**
  * Toggle accordion
  *
- * @param {Element} container
+ * @param {HTMLElement} container
  * @param {Event} e
  */
 export function toggleAccordion(container, e) {
-    let target = e.target.dataset.target;
+    let { target } = getDataset(e.target);
 
-    let accordions = container.querySelectorAll('[data-collapsed]');
-    let targetEl   = container.querySelector(`[data-id="${target}"]`);
+    /** @type {NodeListOf<HTMLElement>} sectionEls */
+    let sectionEls = container.querySelectorAll('[data-collapsed]');
 
-    [ ...accordions ].forEach((el) => {
-        if (el !== targetEl) {
-            el.dataset.collapsed = true;
+    /** @type {HTMLElement} targetSectionEl */
+    let targetSectionEl  = container.querySelector(`[data-id="${target}"]`);
+
+    [ ...sectionEls ].forEach((el) => {
+        if (el !== targetSectionEl) {
+            el.dataset.collapsed = 'true';
         }
     });
 
-    let collapsed = targetEl.dataset.collapsed === 'true';
+    let collapsed = targetSectionEl.dataset.collapsed === 'true';
 
-    targetEl.dataset.collapsed = collapsed === true ? false : true;
+    targetSectionEl.dataset.collapsed = collapsed ? 'false' : 'true';
 }
 
 /**
@@ -64,7 +75,9 @@ export function toggleAccordion(container, e) {
  * @param {Event} e
  */
 export function toggleVisibility(container, e) {
-    let target   = e.target.dataset.target;
+    let { target } = getDataset(e.target);
+
+    /** @type {HTMLElement} targetEl */
     let targetEl = container.querySelector(`[data-id="${target}"]`);
 
     targetEl.hidden = !targetEl.hidden;

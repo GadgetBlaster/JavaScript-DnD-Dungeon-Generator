@@ -1,10 +1,11 @@
+// @ts-check
 
 import { actions } from './action.js';
 import { button, buttonSize, infoLabel } from './button.js';
 import { div, fieldset, section } from './block.js';
 import { paragraph, small } from './typography.js';
 import { select, input, slider, fieldLabel } from './field.js';
-import { toDash } from '../utility/tools.js';
+import { toDash, toss } from '../utility/tools.js';
 import { typeSelect, typeNumber, typeRange } from '../knobs.js';
 
 /**
@@ -15,20 +16,19 @@ import { typeSelect, typeNumber, typeRange } from '../knobs.js';
 // -- Private Functions --------------------------------------------------------
 
 /**
- * Throw
+ * Returns an array of HTMLInputElement children for the knob container.
  *
- * @private
+ * @param {HTMLElement} knobContainer
  *
- * @param {string} message
- *
- * @throws
+ * @returns {ReturnType<HTMLInputElement[]>}
  */
-const _throw = (message) => { throw new TypeError(message); };
+ const getInputElements = (knobContainer) => [ ...knobContainer.querySelectorAll('[name]') ];
 
 /**
- * Get knob
+ * Returns an HTML element string for the given knob settings
  *
  * @private
+ * @throws
  *
  * @param {KnobSettings} settings
  *
@@ -52,7 +52,7 @@ function getKnob(settings) {
         case typeRange:
             return slider(name, { min, max, value });
         default:
-            throw new TypeError('Invalid knob type');
+            toss('Invalid knob type');
     }
 }
 
@@ -60,16 +60,17 @@ function getKnob(settings) {
  * Render fields
  *
  * @private
+ * @throws
  *
- * @param {KnobSettings[]}
+ * @param {KnobSettings[]} fields
  *
  * @returns {string}
  */
 const renderFields = (fields) => fields.map((settings) => {
     let { desc, label, name } = settings;
 
-    !name  && _throw('Missing required knob name');
-    !label && _throw('Missing required knob label');
+    !name  && toss('Missing required knob name');
+    !label && toss('Missing required knob label');
 
     let knob       = getKnob(settings);
     let descId     = desc && `info-${name}`;
@@ -88,14 +89,14 @@ export {
 // -- Public Functions ---------------------------------------------------------
 
 /**
- * Get form data
+ * Get form data.
  *
- * @param {Element} knobContainer
+ * @param {HTMLElement} knobContainer
  *
  * @returns {Object<string, *>}
  */
 export function getFormData(knobContainer) {
-    return [ ...knobContainer.querySelectorAll('[name]') ].reduce((set, item) => {
+    return getInputElements(knobContainer).reduce((set, item) => {
         let { name, value } = item;
 
         set[name] = value;
@@ -105,19 +106,19 @@ export function getFormData(knobContainer) {
 }
 
 /**
- * Render knobs
+ * Renders knobs.
  *
  * @param {KnobSet[]} knobs
  * @param {string} [page]
  *
  * @returns {string}
  */
-export const renderKnobs = (knobs, page) => knobs.map((knobConfig) => {
+export const renderKnobs = (knobs, page) => knobs.map((knobSet) => {
     let {
         label,
         labels,
         fields,
-    } = knobConfig;
+    } = knobSet;
 
     if (labels && labels[page]) {
         label = labels[page];
@@ -135,7 +136,7 @@ export const renderKnobs = (knobs, page) => knobs.map((knobConfig) => {
 }).join('');
 
 /** @type {string} submitButton */
-// TODO move to point of use
+// TODO render at point of use?
 export const submitButton = button('Generate', actions.generate, {
     size: buttonSize.large,
     type: 'submit',

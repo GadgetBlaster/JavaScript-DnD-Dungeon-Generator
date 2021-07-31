@@ -11,141 +11,137 @@ import {
  */
 export default ({ assert, describe, it }) => {
     describe('attachActions()', () => {
-        describe('given a container element and an `actions` object', () => {
-            describe('when a child element is clicked', () => {
-                describe('when the child has a `data-action` attribute', () => {
-                    describe('when the `data-action` attribute is a key in the `actions` object', () => {
-                        const container = document.createElement('div');
-                        const button    = document.createElement('button');
+        describe('when a child element is clicked', () => {
+            describe('when the `data-action` attribute is a key in the `actions` object', () => {
+                const container = document.createElement('div');
+                const button    = document.createElement('button');
 
-                        button.dataset.action = actions.home;
+                button.dataset.action = actions.home;
 
-                        container.appendChild(button);
+                container.appendChild(button);
 
-                        let event;
+                let event;
 
-                        const triggers = {
-                            [actions.home]: (e) => {
-                                event = e;
-                            },
-                        };
+                const triggers = {
+                    [actions.home]: (e) => {
+                        event = e;
+                    },
+                };
 
-                        attachActions(container, triggers);
+                attachActions(container, triggers);
 
-                        button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+                button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
 
-                        it('should trigger the click delegate and call the action', () => {
-                            assert(Boolean(event)).isTrue();
-                        });
+                it('should trigger the click delegate and call the action', () => {
+                    assert(Boolean(event)).isTrue();
+                });
 
-                        it('should call the action with a click event object param', () => {
-                            assert(event).isObject();
-                            assert(event.type).equals('click');
-                        });
-                    });
+                it('should call the action with a click event object param', () => {
+                    assert(event).isObject();
+                    assert(event.type).equals('click');
                 });
             });
         });
     });
 
     describe('toggleAccordion()', () => {
-        describe('given a container', () => {
-            describe('when there are 3 child accordion elements', () => {
-                const count     = 3;
-                const container = document.createElement('div');
+        describe('when there are 3 child accordion elements', () => {
+            const count     = 3;
+            const container = document.createElement('div');
 
-                for (let i = 0; i < count; i++) {
-                    const fieldset = document.createElement('div');
-                    fieldset.dataset.collapsed = true;
-                    fieldset.dataset.id = i;
+            for (let i = 0; i < count; i++) {
+                const fieldset = document.createElement('div');
+                const button   = document.createElement('button');
 
-                    const button = document.createElement('button');
-                    button.dataset.target = i;
+                fieldset.dataset.collapsed = 'true';
+                fieldset.dataset.id = i;
 
-                    fieldset.appendChild(button);
-                    container.appendChild(fieldset);
-                }
+                button.dataset.action = 'accordion';
+                button.dataset.target = i;
 
-                const each = ({ collapsed }) => {
-                    container.querySelectorAll('[data-collapsed]').forEach((item) => {
-                        item.dataset.collapsed = collapsed;
-                    });
-                };
+                fieldset.appendChild(button);
+                container.appendChild(fieldset);
+            }
 
-                const collapseAll = () => each({ collapsed: true });
-                const expandAll   = () => each({ collapsed: false });
+            const each = ({ collapsed }) => {
+                container.querySelectorAll('[data-collapsed]').forEach((item) => {
+                    item.dataset.collapsed = collapsed;
+                });
+            };
 
-                describe('given an event with a target', () => {
-                    const target = 1;
-                    const event  = { target: { dataset: { target } } };
+            const collapseAll = () => each({ collapsed: true });
 
-                    describe('when the accordion item is collapsed', () => {
-                        collapseAll();
-                        toggleAccordion(container, event);
+            const targetEl = container.querySelector('[data-action="accordion"][data-target="1"]');
+            const event    = { target: targetEl };
 
-                        it('should expand that accordion item', () => {
-                            let item = container.querySelector(`[data-collapsed][data-id="${target}"]`);
-                            assert(item.dataset.collapsed).equals('false');
-                        });
-                    });
+            describe('when an accordion section is collapsed', () => {
+                it('should expand that accordion item', () => {
+                    collapseAll();
 
-                    describe('when the accordion item is expanded', () => {
-                        expandAll();
-                        toggleAccordion(container, event);
+                    const section = container.querySelector('[data-collapsed][data-id="1"]');
 
-                        it('should collapse that accordion item', () => {
-                            let item = container.querySelector(`[data-collapsed][data-id="${target}"]`);
-                            assert(item.dataset.collapsed).equals('true');
-                        });
-                    });
+                    toggleAccordion(container, event);
+                    assert(section.dataset.collapsed).equals('false');
+                });
+            });
 
-                    describe('when other accordion items are expanded', () => {
-                        expandAll();
-                        toggleAccordion(container, event);
+            describe('when an accordion section is expanded', () => {
+                it('should collapse that accordion item', () => {
+                    collapseAll();
 
-                        it('should collapse all accordion items', () => {
-                            container.querySelectorAll('[data-collapsed]').forEach((item) => {
-                                assert(item.dataset.collapsed).equals('true');
-                            });
-                        });
-                    });
+                    const section = container.querySelector('[data-collapsed][data-id="1"]');
+                    section.dataset.collapsed = 'false';
+
+                    toggleAccordion(container, event);
+                    assert(section.dataset.collapsed).equals('true');
+                });
+            });
+
+            describe('when another accordion section is expanded', () => {
+                it('should collapse all accordion items', () => {
+                    collapseAll();
+
+                    const section2 = container.querySelector('[data-collapsed][data-id="2"]');
+                    section2.dataset.collapsed = 'false';
+
+                    toggleAccordion(container, event);
+                    assert(section2.dataset.collapsed).equals('true');
                 });
             });
         });
     });
 
     describe('toggleVisibility()', () => {
-        describe('given a container', () => {
-            describe('when there is a child element', () => {
-                const target    = 'elf';
-                const container = document.createElement('div');
+        const targetId  = 'elf';
+        const container = document.createElement('div');
+        const paragraph = document.createElement('p');
+        const button    = document.createElement('button');
 
-                const paragraph = document.createElement('p');
-                paragraph.dataset.id = target;
+        paragraph.dataset.id = targetId;
+        paragraph.hidden = false;
+
+        button.dataset.target = targetId;
+
+        container.appendChild(paragraph);
+
+        describe('given an event with a target', () => {
+            const event = { target: button };
+
+            describe('when the child is not hidden', () => {
                 paragraph.hidden = false;
 
-                container.appendChild(paragraph);
+                it('should hide the element', () => {
+                    toggleVisibility(container, event);
+                    assert(paragraph.hidden).isTrue();
+                });
+            });
 
-                describe('given an event with a target', () => {
-                    const event  = { target: { dataset: { target } } };
+            describe('when the child is hidden', () => {
+                paragraph.hidden = true;
 
-                    describe('when the child is not hidden', () => {
-                        paragraph.hidden = false;
-
-                        it('should hide the element', () => {
-                            toggleVisibility(container, event);
-                            assert(paragraph.hidden).isTrue();
-                        });
-                    });
-
-                    describe('when the child is hidden', () => {
-                        paragraph.hidden = true;
-
-                        it('should hide the element', () => {
-                            toggleVisibility(container, event);
-                            assert(paragraph.hidden).isFalse();
-                        });
-                    });
+                it('should hide the element', () => {
+                    toggleVisibility(container, event);
+                    assert(paragraph.hidden).isFalse();
                 });
             });
         });

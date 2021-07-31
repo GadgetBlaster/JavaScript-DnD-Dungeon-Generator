@@ -5,7 +5,9 @@ import { button } from './button.js';
 
 // -- Config -------------------------------------------------------------------
 
-/** Pages */
+/**
+ * Pages
+ */
 export const pages = {
     dungeon: 'dungeon',
     room   : 'room',
@@ -27,20 +29,12 @@ export const nav = [
 /**
  * Returns an array of HTMLElement children for an HTMLElement.
  *
- * @param {HTMLElement} el
+ * @param {HTMLCollection} collection
  *
- * @returns {ReturnType<HTMLElement[]>}
+ * @returns {HTMLElement[]}
  */
-const getChildren = (el) => [ ...el.children ];
-
-/**
- * Returns an array of HTMLElement siblings for an HTMLElement.
- *
- * @param {HTMLElement} el
- *
- * @returns {ReturnType<HTMLElement[]>}
- */
-const getSiblings = (el) => [ ...el.parentNode.children ];
+const getElements = (collection) => [ ...collection ].map((el) =>
+    el instanceof HTMLElement && el).filter(Boolean);
 
 // -- Public Functions ---------------------------------------------------------
 
@@ -52,7 +46,7 @@ const getSiblings = (el) => [ ...el.parentNode.children ];
  * @returns {string}
  */
 export function getActive(navContainer) {
-    return getChildren(navContainer).find((btn) => btn.dataset.active).dataset.target;
+    return getElements(navContainer.children).find((btn) => btn.dataset.active).dataset.target;
 }
 
 /**
@@ -61,7 +55,7 @@ export function getActive(navContainer) {
  * @param {HTMLElement} target
  */
 export function setActive(target) {
-    getSiblings(target).forEach((btn) => {
+    getElements(target.parentNode.children).forEach((btn) => {
         delete btn.dataset.active;
     });
 
