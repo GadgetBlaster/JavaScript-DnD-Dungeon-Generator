@@ -20,8 +20,6 @@ export const infoLabel = '?';
 
 /**
  * Button size
- *
- * @type {Object<string, string>} buttonSize
  */
 export const buttonSize = {
     auto : 'auto',
@@ -31,8 +29,6 @@ export const buttonSize = {
 
 /**
  * Valid button sizes
- *
- * @type {Set<string>}
  */
 const validSizes = new Set(Object.values(buttonSize));
 

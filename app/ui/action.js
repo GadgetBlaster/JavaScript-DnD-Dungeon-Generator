@@ -18,6 +18,8 @@ export const actions = {
 /**
  * Get element dataset.
  *
+ * @private
+ *
  * @param {EventTarget} target
  *
  * @returns {{ [attribute: string]: string }}

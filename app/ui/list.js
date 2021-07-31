@@ -6,7 +6,8 @@ import { toss } from '../utility/tools.js';
 /** @typedef {import('../utility/element.js').Attributes} Attributes */
 
 /**
- * List
+ * Returns an HTML unordered list element strings with each item wrapped in an
+ * HTML list item element string.
  *
  * @param {string[]} items
  * @param {Attributes} [attributes]

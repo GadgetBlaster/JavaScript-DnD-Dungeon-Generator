@@ -5,7 +5,7 @@ import { element } from '../utility/element.js';
 /** @typedef {import('../utility/element.js').Attributes} Attributes */
 
 /**
- * Article
+ * Returns an HTML article element string.
  *
  * @param {string} content
  * @param {Attributes} [attributes]
@@ -15,7 +15,7 @@ import { element } from '../utility/element.js';
 export const article = (content, attributes) => element('article', content, attributes);
 
 /**
- * Div
+ * Returns an HTML div element string.
  *
  * @param {string} content
  * @param {Attributes} [attributes]
@@ -25,7 +25,7 @@ export const article = (content, attributes) => element('article', content, attr
 export const div = (content, attributes) => element('div', content, attributes);
 
 /**
- * Fieldset
+ * Returns an HTML fieldset element string.
  *
  * @param {string} content
  * @param {Attributes} [attributes]
@@ -35,7 +35,7 @@ export const div = (content, attributes) => element('div', content, attributes);
 export const fieldset = (content, attributes) => element('fieldset', content, attributes);
 
 /**
- * Section
+ * Returns an HTML section element string.
  *
  * @param {string} content
  * @param {Attributes} [attributes]

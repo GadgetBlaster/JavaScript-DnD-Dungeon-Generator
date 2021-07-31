@@ -1,3 +1,4 @@
+// @ts-check
 
 import { element } from '../utility/element.js';
 import { toWords, toss } from '../utility/tools.js';
@@ -7,12 +8,12 @@ import { toWords, toss } from '../utility/tools.js';
 // -- Private Functions --------------------------------------------------------
 
 /**
- * Option
+ * Returns an HTML option element string.
  *
  * @private
  *
+ * @param {string} value
  * @param {string} label
- * @param {string} type
  *
  * @returns {string}
  */
@@ -21,7 +22,7 @@ const option = (value, label) => element('option', label, { value });
 // -- Public Functions ---------------------------------------------------------
 
 /**
- * Field label
+ * Returns an HTML field label element string.
  *
  * @param {string} label
  *
@@ -30,7 +31,7 @@ const option = (value, label) => element('option', label, { value });
 export const fieldLabel = (label) => element('label', label);
 
 /**
- * Input
+ * Returns an HTML input element string.
  *
  * @param {string} name
  * @param {Attributes} [attributes]
@@ -50,7 +51,7 @@ export function input(name, attributes = {}) {
 }
 
 /**
- * Input
+ * Returns an HTML select element string.
  *
  * @param {string} name
  * @param {string[]} values
@@ -64,7 +65,7 @@ export function select(name, values) {
 }
 
 /**
- * Slider
+ * Returns an HTML input range type element string.
  *
  * @param {string} name
  * @param {Attributes} [attributes]

@@ -25,7 +25,7 @@ import { typeSelect, typeNumber, typeRange } from '../knobs.js';
  const getInputElements = (knobContainer) => [ ...knobContainer.querySelectorAll('[name]') ];
 
 /**
- * Returns an HTML element string for the given knob settings
+ * Returns an HTML from element string for the given knob type.
  *
  * @private
  * @throws
@@ -57,7 +57,7 @@ function getKnob(settings) {
 }
 
 /**
- * Render fields
+ * Renders form fields for the given knob settings configurations.
  *
  * @private
  * @throws
@@ -89,7 +89,7 @@ export {
 // -- Public Functions ---------------------------------------------------------
 
 /**
- * Get form data.
+ * Gets form data for the given form container.
  *
  * @param {HTMLElement} knobContainer
  *
@@ -106,7 +106,7 @@ export function getFormData(knobContainer) {
 }
 
 /**
- * Renders knobs.
+ * Renders a fieldset containing from elements for the given knob sets.
  *
  * @param {KnobSet[]} knobs
  * @param {string} [page]

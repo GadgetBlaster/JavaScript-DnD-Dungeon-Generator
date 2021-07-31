@@ -29,6 +29,8 @@ export const nav = [
 /**
  * Returns an array of HTMLElement children for an HTMLElement.
  *
+ * @private
+ *
  * @param {HTMLCollection} collection
  *
  * @returns {HTMLElement[]}
@@ -39,7 +41,7 @@ const getElements = (collection) => [ ...collection ].map((el) =>
 // -- Public Functions ---------------------------------------------------------
 
 /**
- * Get active navigation target.
+ * Gets the active navigation target.
  *
  * @param {HTMLElement} navContainer
  *
@@ -50,7 +52,7 @@ export function getActive(navContainer) {
 }
 
 /**
- * Set active navigation target.
+ * Sets the active navigation target.
  *
  * @param {HTMLElement} target
  */

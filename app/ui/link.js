@@ -5,7 +5,7 @@ import { element } from '../utility/element.js';
 /** @typedef {import('../utility/element.js').Attributes} Attributes */
 
 /**
- * Link
+ * Returns an HTML anchor element string.
  *
  * @param {string} label
  * @param {string} [href]
