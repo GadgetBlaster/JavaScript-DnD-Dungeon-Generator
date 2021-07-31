@@ -59,6 +59,7 @@ export function input(name, attributes = {}) {
  * @returns {string}
  */
 export function select(name, values) {
+    !values.length && toss('Select fields require option values');
     let options = values.map((value) => option(value, toWords(value))).join('');
 
     return element('select', options, { name });

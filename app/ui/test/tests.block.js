@@ -1,3 +1,4 @@
+// @ts-check
 
 import {
     article,
@@ -19,7 +20,7 @@ const blocks = {
 };
 
 /**
- * @param {import('../../unit/state.js').Utility}
+ * @param {import('../../unit/state.js').Utility} utility
  */
 export default ({ assert, describe, it }) => {
     describe('blocks', () => {

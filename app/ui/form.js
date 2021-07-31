@@ -71,11 +71,12 @@ const renderFields = (fields) => fields.map((settings) => {
 
     !name  && toss('Missing required knob name');
     !label && toss('Missing required knob label');
+    !desc  && toss('Missing required knob description');
 
     let knob       = getKnob(settings);
     let descId     = desc && `info-${name}`;
-    let descButton = desc ? button(infoLabel, actions.showHide, { target: descId, size: buttonSize.auto }) : '';
-    let descText   = desc ? paragraph(small(desc), { hidden: true, 'data-id': descId }) : '';
+    let descButton = button(infoLabel, actions.showHide, { target: descId, size: buttonSize.auto });
+    let descText   = paragraph(small(desc), { hidden: true, 'data-id': descId }); // TODO style instead of `<small>`
     let knobLabel  = fieldLabel(label + descButton);
 
     return div(knobLabel + descText + knob);

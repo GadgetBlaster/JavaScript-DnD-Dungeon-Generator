@@ -1,27 +1,32 @@
+// @ts-check
 
 import { button, infoLabel } from '../button.js';
 
 /**
- * @param {import('../../unit/state.js').Utility}
+ * @param {import('../../unit/state.js').Utility} utility
  */
 export default ({ assert, describe, it }) => {
     describe('button()', () => {
-        let buttonHtml = button('click me');
+        let buttonHTML = button('click me', 'blast-off');
 
         it('should return an html button element string', () => {
-            assert(buttonHtml).isElementTag('button');
+            assert(buttonHTML).isElementTag('button');
         });
 
         it('should have a `data-size="small"` attribute by default', () => {
-            assert(buttonHtml).stringIncludes('data-size="small"');
+            assert(buttonHTML).stringIncludes('data-size="small"');
         });
 
         it('should have `type="button"` attribute by default', () => {
-            assert(buttonHtml).stringIncludes('type="button"');
+            assert(buttonHTML).stringIncludes('type="button"');
+        });
+
+        it('should have a `data-action` attribute by default', () => {
+            assert(buttonHTML).stringIncludes('data-action="blast-off"');
         });
 
         it('should include the label', () => {
-            assert(buttonHtml).stringIncludes('click me');
+            assert(buttonHTML).stringIncludes('click me');
         });
 
         describe('given an `action`', () => {

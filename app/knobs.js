@@ -62,10 +62,10 @@ export const knobs = {
  * @property {string} name
  * @property {string} desc
  * @property {string} type
- * @property {number} min
- * @property {number} max
- * @property {*} value
- * @property {*[]} values
+ * @property {number} [min]
+ * @property {number} [max]
+ * @property {any} [value]
+ * @property {any[]} [values]
  */
 
 /**

@@ -1,5 +1,7 @@
 // @ts-check
 
+import { toss } from '../utility/tools.js';
+
 // -- Config -------------------------------------------------------------------
 
 /**
@@ -12,6 +14,9 @@ export const actions = {
     navigate : 'navigate',
     showHide : 'showHide',
 };
+
+/** @typedef {(Event) => void} Trigger */
+/** @typedef {{ [key: string]: Trigger }} Triggers */
 
 // -- Private Functions --------------------------------------------------------
 
@@ -26,13 +31,33 @@ export const actions = {
  */
 const getDataset = (target) => target instanceof HTMLElement ? target.dataset : {};
 
+/**
+ * Returns a trigger function for the given action.
+ *
+ * @param {Triggers} triggers
+ * @param {string} [action]
+ *
+ * @returns {Trigger?}
+ */
+function getTrigger(triggers, action) {
+    action && !triggers[action] && toss(`Invalid action \`${action}\``);
+
+    return action && triggers[action];
+}
+
+export {
+    getDataset as testGetDataset,
+    getTrigger as testGetTrigger,
+};
+
 // -- Public Functions ---------------------------------------------------------
 
 /**
- * Attach actions
+ * Attaches a click event delegate to the given container with the given
+ * action triggers.
  *
  * @param {HTMLElement} container
- * @param {Object<string, function>} triggers
+ * @param {Triggers} triggers
  */
 export function attachActions(container, triggers) {
     container.addEventListener('click', (e) => {
@@ -40,7 +65,9 @@ export function attachActions(container, triggers) {
 
         let { action } = getDataset(e.target);
 
-        triggers[action] && triggers[action](e);
+        let trigger = getTrigger(triggers, action);
+
+        trigger && trigger(e);
     });
 }
 
@@ -53,11 +80,15 @@ export function attachActions(container, triggers) {
 export function toggleAccordion(container, e) {
     let { target } = getDataset(e.target);
 
-    /** @type {NodeListOf<HTMLElement>} sectionEls */
-    let sectionEls = container.querySelectorAll('[data-collapsed]');
+    !target && toss('Missing target for accordion toggle');
 
     /** @type {HTMLElement} targetSectionEl */
-    let targetSectionEl  = container.querySelector(`[data-id="${target}"]`);
+    let targetSectionEl = container.querySelector(`[data-collapsed][data-id="${target}"]`);
+
+    !targetSectionEl && toss(`Invalid accordion section target \`${target}\``);
+
+    /** @type {NodeListOf<HTMLElement>} sectionEls */
+    let sectionEls = container.querySelectorAll('[data-collapsed]');
 
     [ ...sectionEls ].forEach((el) => {
         if (el !== targetSectionEl) {
@@ -65,9 +96,9 @@ export function toggleAccordion(container, e) {
         }
     });
 
-    let collapsed = targetSectionEl.dataset.collapsed === 'true';
+    let isCollapsed = targetSectionEl.dataset.collapsed === 'true';
 
-    targetSectionEl.dataset.collapsed = collapsed ? 'false' : 'true';
+    targetSectionEl.dataset.collapsed = isCollapsed ? 'false' : 'true';
 }
 
 /**
@@ -79,8 +110,12 @@ export function toggleAccordion(container, e) {
 export function toggleVisibility(container, e) {
     let { target } = getDataset(e.target);
 
+    !target && toss('Missing target for visibility toggle');
+
     /** @type {HTMLElement} targetEl */
     let targetEl = container.querySelector(`[data-id="${target}"]`);
+
+    !targetEl && toss(`Invalid visibility toggle target \`${target}\``);
 
     targetEl.hidden = !targetEl.hidden;
 }

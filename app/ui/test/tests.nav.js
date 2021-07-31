@@ -1,8 +1,9 @@
+// @ts-check
 
 import { nav, setActive, getActive } from '../nav.js';
 
 /**
- * @param {import('../../unit/state.js').Utility}
+ * @param {import('../../unit/state.js').Utility} utility
  */
 export default ({ assert, describe, it }) => {
     describe('nav()', () => {
@@ -39,7 +40,9 @@ export default ({ assert, describe, it }) => {
                 setActive(container.querySelector('[data-target="grog"]'));
 
                 it('should remain the active element', () => {
-                    assert(container.querySelector('[data-target="grog"]').dataset.active).equals('true');
+                    /** @type {HTMLElement} targetEl */
+                    const targetEl = container.querySelector('[data-target="grog"]');
+                    assert(targetEl.dataset.active).equals('true');
                 });
 
                 it('should be the only active element', () => {
@@ -51,7 +54,9 @@ export default ({ assert, describe, it }) => {
                 setActive(container.querySelector('[data-target="frog"]'));
 
                 it('should set the target element as the active element', () => {
-                    assert(container.querySelector('[data-target="frog"]').dataset.active).equals('true');
+                    /** @type {HTMLElement} targetEl */
+                    const targetEl = container.querySelector('[data-target="frog"]');
+                    assert(targetEl.dataset.active).equals('true');
                 });
 
                 it('should be the only active element', () => {

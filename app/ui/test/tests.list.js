@@ -1,13 +1,15 @@
+// @ts-check
 
 import { list } from '../list.js';
 
 /**
- * @param {import('../../unit/state.js').Utility}
+ * @param {import('../../unit/state.js').Utility} utility
  */
 export default ({ assert, describe, it }) => {
     describe('list()', () => {
         describe('given no `items` param', () => {
             it('should throw', () => {
+                // @ts-expect-error
                 assert(() => list()).throws('Items are required for lists');
             });
         });

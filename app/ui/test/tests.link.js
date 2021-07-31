@@ -1,13 +1,14 @@
+// @ts-check
 
 import { link } from '../link.js';
 
 /**
- * @param {import('../../unit/state.js').Utility}
+ * @param {import('../../unit/state.js').Utility} utility
  */
 export default ({ assert, describe, it }) => {
     describe('link()', () => {
         it('should return an html anchor element string', () => {
-            assert(link()).isElementTag('a');
+            assert(link('')).isElementTag('a');
         });
 
         describe('given a label', () => {
