@@ -1,5 +1,5 @@
-
-// Rename file to `manifest.js`
+// @ts-check
+// TODO Rename file to `sets.js`
 
 import ammo from './types/ammo.js';
 import armor from './types/armor.js';

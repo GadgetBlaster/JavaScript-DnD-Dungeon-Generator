@@ -1,3 +1,4 @@
+// @ts-check
 
 import { article } from '../ui/block.js';
 import { capacity, itemSizeSpace, maxItemQuantitySmall } from './types/container.js';
@@ -19,10 +20,8 @@ import condition from '../attributes/condition.js';
 import quantity, { getRange, probability as quantityProbability } from '../attributes/quantity.js';
 import size from '../attributes/size.js';
 
-/**
- * @typedef {import('../typedefs.js').Settings} Settings
- * @typedef {import('../typedefs.js').Item} Item
- */
+/** @typedef {import('../knobs.js').Config} Config */
+/** @typedef {import('./item.js').Item} Item */
 
 // -- Config -------------------------------------------------------------------
 
@@ -30,15 +29,11 @@ import size from '../attributes/size.js';
  * Maximum number of columns for dungeon item lists.
  *
  * TODO rename.
- *
- * @type {number}
  */
 const maxColumnsItems = 4;
 
 /**
  * Maximum number of columns for non-dungeon room item lists.
- *
- * @type {number}
  */
 const maxColumnsRoom = 2;
 
@@ -46,6 +41,8 @@ const maxColumnsRoom = 2;
 
 /**
  * Generates furnishings by room type.
+ *
+ * @private
  *
  * @param {string} roomType
  * @param {string} quantity
@@ -80,13 +77,15 @@ function generateFurnishings(roomType, quantity) {
 /**
  * Generate item objects
  *
- * @param {number} count
- * @param {Settings} settings
+ * @private
  *
- * @returns {object.<string, Item>}
+ * @param {number} count
+ * @param {Config} config
+ *
+ * @returns {{ [label: string]: Item }}
  */
-const generateItemObjects = (count, settings) => [ ...Array(count) ].reduce((obj) => {
-    let item  = generateItem(settings);
+const generateItemObjects = (count, config) => [ ...Array(count) ].reduce((obj) => {
+    let item  = generateItem(config);
     let label = item.label;
 
     // TODO use an identifier instead of label?
@@ -107,6 +106,8 @@ const generateItemObjects = (count, settings) => [ ...Array(count) ].reduce((obj
  *
  * TODO rename to `getFurnishing()`
  * TODO move to furnishing.js
+ *
+ * @private
  *
  * @param {Item[]} furnishings
  * @param {string} roomCondition
@@ -136,6 +137,8 @@ const getFurnishingObjects = (furnishings, roomCondition) => furnishings.reduce(
 /**
  * Get item count based on quantity config.
  *
+ * @private
+ *
  * @param {string} itemQuantity
  *
  * @returns {number}
@@ -146,11 +149,11 @@ function getItemCount(itemQuantity) {
     return roll(min, max);
 }
 
-export const _private = {
-    generateFurnishings,
-    generateItemObjects,
-    getFurnishingObjects,
-    getItemCount,
+export {
+    generateFurnishings  as testGenerateFurnishings,
+    generateItemObjects  as testGenerateItemObjects,
+    getFurnishingObjects as testGetFurnishingObjects,
+    getItemCount         as testGetItemCount,
 };
 
 // -- Public Functions ---------------------------------------------------------
@@ -158,14 +161,16 @@ export const _private = {
 /**
  * Generate items
  *
- * @param {import('../typedefs.js').Settings}
- *
  * TODO separate HTMl from generation logic
+ * TODO rename to generateItemsDescription
+ *
+ * @param {Config} config
  *
  * @returns {string[]}
  */
-export function generateItems(settings) {
+export function generateItems(config) {
     let {
+        // TODO
         [knobs.roomType]      : roomType,
         [knobs.itemCondition] : itemCondition,
         [knobs.itemQuantity]  : itemQuantity,
@@ -173,7 +178,7 @@ export function generateItems(settings) {
         [knobs.itemType]      : itemType,
         [knobs.roomFurnishing]: furnitureQuantity,
         [knobs.roomCondition] : roomCondition,
-    } = settings;
+    } = config;
 
     // TODO collapse
     if (!itemQuantity) {
@@ -207,7 +212,7 @@ export function generateItems(settings) {
     }
 
     let count = getItemCount(itemQuantity);
-    let items = generateItemObjects(count, settings);
+    let items = generateItemObjects(count, config);
 
     let containers = [];
     let smallItems = [];

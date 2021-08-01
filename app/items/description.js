@@ -1,13 +1,14 @@
+// @ts-check
 
 import condition from '../attributes/condition.js';
 import rarity from '../attributes/rarity.js';
+
+/** @typedef {import('./item.js').Item} Item */
 
 // -- Config -------------------------------------------------------------------
 
 /**
  * Rarities that should be indicated for a group of items.
- *
- * @type {Set<string>}
  */
 const indicateRarity = new Set([
     rarity.uncommon,
@@ -33,7 +34,7 @@ const indicateRarity = new Set([
 /**
  * Get item description
  *
- * @param {import('../typedefs.js').Item}
+ * @param {Item} item
  *
  * @returns {string}
  */

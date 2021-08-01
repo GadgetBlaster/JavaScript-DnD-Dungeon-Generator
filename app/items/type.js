@@ -1,4 +1,8 @@
+// @ts-check
 
+/**
+ * Item types
+ */
 const type = {
     ammo         : 'ammo',
     armor        : 'armor',

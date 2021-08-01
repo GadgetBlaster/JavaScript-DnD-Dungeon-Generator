@@ -1,6 +1,10 @@
 
 import {
-    _private,
+    // Private Functions
+    testGroupByRarity as groupByRarity,
+    testGroupByType   as groupByType,
+
+    // Public Functions
     generateItem,
 } from '../item.js';
 import { knobs } from '../../knobs.js';
@@ -10,11 +14,6 @@ import condition from '../../attributes/condition.js';
 import itemType, { list as itemTypes } from '../type.js';
 import quantity from '../../attributes/quantity.js';
 import rarity from '../../attributes/rarity.js';
-
-const {
-    groupByRarity,
-    groupByType,
-} = _private;
 
 /**
  * @param {import('../../unit/state.js').Utility}

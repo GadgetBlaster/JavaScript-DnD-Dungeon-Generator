@@ -1,6 +1,12 @@
 
 import {
-    _private,
+    // Private Functions
+    testGenerateFurnishings  as generateFurnishings,
+    testGenerateItemObjects  as generateItemObjects,
+    testGetFurnishingObjects as getFurnishingObjects,
+    testGetItemCount         as getItemCount,
+
+    // Public Functions
     generateItems,
 } from '../generate.js';
 
@@ -18,13 +24,6 @@ import {
     furnitureQuantity,
     requiredRoomFurniture,
 } from '../types/furnishing.js';
-
-const {
-    generateFurnishings,
-    generateItemObjects,
-    getFurnishingObjects,
-    getItemCount,
-} = _private;
 
 /**
  * @param {import('../../unit/state.js').Utility}

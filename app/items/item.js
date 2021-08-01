@@ -1,3 +1,4 @@
+// @ts-check
 
 import { knobs } from '../knobs.js';
 import { random } from '../utility/random.js';
@@ -10,14 +11,15 @@ import set from './set.js';
 import size from '../attributes/size.js';
 import type, { list as itemTypes } from './type.js';
 
+/** @typedef {import('../knobs.js').Config} Config */
+
 /**
- * Item
- *
  * @TODO duplicate typedef. Consolidate and standardize
  *
- * @typedef {Item}
+ * @typedef {object} Item
  *
  * @property {string} name
+ * @property {string} label
  * @property {string} type
  * @property {string} rarity
  * @property {number} quantity - Max number of item found
@@ -25,41 +27,58 @@ import type, { list as itemTypes } from './type.js';
  * @property {string[]} [variants] - Array of variations
  */
 
-/**
- * @typedef {import('../typedefs.js').Settings} Settings
- */
-
 // -- Config -------------------------------------------------------------------
 
+/**
+ * Item defaults.
+ */
 const defaults = {
     quantity: 1,
-    rarity: rarity.average,
-    size: size.small,
-    type: type.miscellaneous,
+    rarity  : rarity.average,
+    size    : size.small,
+    type    : type.miscellaneous,
 };
 
+/**
+ * Item rarities that should be indicated in item descriptions.
+ */
 const rarityIndicated = new Set([
     rarity.rare,
     rarity.exotic,
     rarity.legendary,
 ]);
 
+/**
+ * Item types that should have their details hidden.
+ */
 const detailsHidden = new Set([
     type.coin,
     type.treasure,
 ]);
 
-const makeGroup = (groups) => groups.reduce((obj, group) => {
-    obj[group] = [];
-    return obj;
-}, {});
-
+/**
+ * Items
+ *
+ * @type {Item[]}
+ */
 const items = set.map((item) => ({ ...defaults, ...item }));
 
+/**
+ * Items grouped by rarity
+ *
+ * @type {{ [rarity: string]: Item[] }}
+ */
 const groupByRarity = makeGroup(rarities);
-const groupByType   = makeGroup(itemTypes);
+
+/**
+ * Items grouped by rarity
+ *
+ * @type {{ [itemType: string]: Item[] }}
+ */
+const groupByType = makeGroup(itemTypes);
 
 Object.keys(groupByType).forEach((type) => {
+    // TODO
     groupByType[type] = makeGroup(rarities);
 });
 
@@ -68,10 +87,28 @@ items.forEach((item) => {
     groupByType[item.type][item.rarity].push(item);
 });
 
-export const _private = {
-    groupByRarity,
-    groupByType,
+export {
+    groupByRarity as testGroupByRarity,
+    groupByType   as testGroupByType,
 };
+
+// -- Private Functions --------------------------------------------------------
+
+/**
+ * Returns a group of items.
+ *
+ * @private
+ *
+ * @param {string[]} groups
+ *
+ * @returns {{ [group: string]: Item[] }}
+ */
+function makeGroup(groups) {
+    return groups.reduce((obj, group) => {
+        obj[group] = [];
+        return obj;
+    }, {});
+}
 
 // -- Public Functions ---------------------------------------------------------
 
@@ -80,17 +117,18 @@ export const _private = {
  *
  * @TODO break out or inject randomization logic for testing.
  *
- * @param {Settings} settings
+ * @param {Config} config
  *
  * @returns {Item}
  */
-export const generateItem = (settings) => {
+export const generateItem = (config) => {
     let {
+        // TODO
         [knobs.itemCondition]: conditionSetting,
         [knobs.itemQuantity] : quantitySetting,
         [knobs.itemRarity]   : raritySetting,
         [knobs.itemType]     : itemType,
-    } = settings;
+    } = config;
 
     // TODO collapse
     if (!conditionSetting) {
