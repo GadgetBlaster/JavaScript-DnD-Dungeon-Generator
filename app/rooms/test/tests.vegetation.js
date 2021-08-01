@@ -1,14 +1,16 @@
+// @ts-check
 
 import {
+    // Private Functions
     testGetDescription as getDescription,
-    getVegetationDescription,
+
+    // Public Functions
+    getVegetationDescription, // TODO
     vegetation,
 } from '../vegetation.js';
 
-import { knobs } from '../../knobs.js';
-
 /**
- * @param {import('../../unit/state.js').Utility}
+ * @param {import('../../unit/state.js').Utility} utility
  */
 export default ({ assert, describe, it }) => {
 

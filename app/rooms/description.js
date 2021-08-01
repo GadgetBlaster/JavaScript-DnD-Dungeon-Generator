@@ -334,17 +334,16 @@ function getRoomDoorwayDescription(roomDoors) {
     return `${capitalize(descParts.join(', '))}${comma} and ${last}`;
 }
 
-// TODO
-export const _private = {
-    getContentDescription,
-    getContentRarityDetail,
-    getDescription,
-    getDoorwayDescription,
-    getFurnitureDetail,
-    getItemConditionDescription,
-    getKeyDetail,
-    getRoomDimensions,
-    getRoomDoorwayDescription,
+export {
+    getContentDescription       as testGetContentDescription,
+    getContentRarityDetail      as testGetContentRarityDetail,
+    getDescription              as testGetDescription,
+    getDoorwayDescription       as testGetDoorwayDescription,
+    getFurnitureDetail          as testGetFurnitureDetail,
+    getItemConditionDescription as testGetItemConditionDescription,
+    getKeyDetail                as testGetKeyDetail,
+    getRoomDimensions           as testGetRoomDimensions,
+    getRoomDoorwayDescription   as testGetRoomDoorwayDescription,
 };
 
 // -- Public Functions ---------------------------------------------------------

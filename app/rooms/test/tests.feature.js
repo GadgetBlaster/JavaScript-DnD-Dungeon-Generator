@@ -1,3 +1,4 @@
+// @ts-check
 
 import {
     // Private Functions
@@ -12,7 +13,7 @@ import { knobs } from '../../knobs.js';
 import roomType from '../type.js';
 
 /**
- * @param {import('../../unit/state.js').Utility}
+ * @param {import('../../unit/state.js').Utility} utility
  */
 export default ({ assert, describe, it }) => {
 
@@ -43,7 +44,8 @@ export default ({ assert, describe, it }) => {
     describe('getFeatureDesc()', () => {
         describe('given a room type of `roomType.hallway`', () => {
             it('should return an empty array', () => {
-                assert(getRoomFeatures({ [knobs.roomType]: roomType.hallway, })).equalsArray([]);
+                // TODO
+                assert(getRoomFeatures({ [knobs.roomType]: roomType.hallway })).equalsArray([]);
             });
         });
 

@@ -1,8 +1,12 @@
+// @ts-check
 
 import {
-    applyRoomRandomization,
-    testRollRoomType as rollRoomType,
+    // Private Functions
+    testRollRoomType   as rollRoomType,
     testRollUniformity as rollUniformity,
+
+    // Public Functions
+    applyRoomRandomization,
 } from '../settings.js';
 
 import { furnitureQuantity } from '../../items/types/furnishing.js';
@@ -15,7 +19,7 @@ import quantity, { quantities } from '../../attributes/quantity.js';
 import roomType, { list as roomTypes } from '../type.js';
 
 /**
- * @param {import('../../unit/state.js').Utility}
+ * @param {import('../../unit/state.js').Utility} utility
  */
 export default ({ assert, describe, it }) => {
 
@@ -36,16 +40,18 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('rollUniformity()', () => {
+        const fakeProbability = { roll: () => 'fake result', description: 'fake' };
+
         describe('given a uniformity condition of 100%', () => {
             it('should call `roll()` on the probability object', () => {
-                let result = rollUniformity(100, { roll: () => 'fake result' });
+                const result = rollUniformity(100, fakeProbability);
                 assert(result).equals('fake result');
             });
         });
 
         describe('given a uniformity condition of 0%', () => {
             it('should return null', () => {
-                assert(rollUniformity(0)).isNull();
+                assert(rollUniformity(0, fakeProbability)).isNull();
             });
         });
     });
@@ -55,7 +61,8 @@ export default ({ assert, describe, it }) => {
     describe('applyRoomRandomization()', () => {
         describe('given a `KnobSettings` object', () => {
             it('should return a `RoomConfig` object', () => {
-                let roomConfig = applyRoomRandomization({
+                const roomConfig = applyRoomRandomization({
+                    // TODO
                     [knobs.itemCondition]: random,
                     [knobs.itemQuantity]: random,
                     [knobs.itemRarity]: random,
@@ -78,7 +85,8 @@ export default ({ assert, describe, it }) => {
 
             describe('given a room type of `roomType.hallway` and an item quantity of `quantity.numerous`', () => {
                 it('should limit the item quantity to `quantity.several`', () => {
-                    let roomConfig = applyRoomRandomization({
+                    const roomConfig = applyRoomRandomization({
+                        // TODO
                         [knobs.itemQuantity]: quantity.numerous,
                         [knobs.roomType]: roomType.hallway,
                     });

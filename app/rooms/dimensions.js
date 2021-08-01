@@ -59,7 +59,7 @@ const roomSizes = {
  * Custom room dimensions
  *
  * @type {{
- *     hallway: (roomSize: string, options?: { isHorizontal?: number }) => RoomDimensions
+ *     hallway: (roomSize: string, options?: { isHorizontal?: boolean }) => RoomDimensions
  * }}
  */
 export const customDimensions = {
