@@ -1,27 +1,26 @@
+// @ts-check
 
 import { createProbability } from '../utility/roll.js';
 
+/** @typedef {import('../dungeons/map.js').Connection} Connection */
+/** @typedef {import('../utility/roll.js').Probability} Probability */
+
 /**
- * Key
+ * TODO RoomDoor
+ */
+
+/**
+ * @typedef {Object} DoorKey
  *
- * @typedef {Object} Key
- *
- * @property {Object<number, Connection>} connections
+ * @property {{ [key: number]: Connection }} connections
  * @property {string} type - Door type
  */
 
 /**
- * Room door
- *
  * @typedef {object} RoomDoors
  *
- * @property {Key[]} keys
- * @property {object.<number, Door[]>} doors
- */
-
-/**
- * @typedef {import('../dungeons/map.js').Door} Door
- * @typedef {import('../utility/roll.js').Probability} Probability
+ * @property {DoorKey[]} keys
+ * @property {{ [key: number]: RoomDoor[] }} doors
  */
 
 // -- Config -------------------------------------------------------------------
@@ -55,8 +54,6 @@ export const outside = 'outside';
 /**
  * Set of doorway types that should have "doorway" appended to their
  * description.
- *
- * @type {Set<string>}
  */
 export const appendDoorway = new Set([
     door.brass,
@@ -69,8 +66,6 @@ export const appendDoorway = new Set([
 
 /**
  * Set of doorway types that can be locked and hae an associated key.
- *
- * @type {Set<string>}
  */
 export const lockable = new Set([
     door.brass,
@@ -84,8 +79,6 @@ export const lockable = new Set([
 
 /**
  * Probability distribution table of door types.
- *
- * @type {Probability}
  */
 export const probability = createProbability([
     [ 20,  door.passageway ],
@@ -103,8 +96,6 @@ export const probability = createProbability([
 
 /**
  * Probability distribution table for secret doors.
- *
- * @type {Probability}
  */
 export const secretProbability = createProbability([
     [ 15, door.concealed ],
@@ -113,8 +104,6 @@ export const secretProbability = createProbability([
 
 /**
  * Percentile chance that a lockable door will be locked.
- *
- * @type {number}
  */
 export const lockedChance = 25;
 
@@ -123,9 +112,9 @@ export const lockedChance = 25;
 /**
  * Get room door
  *
- * TODO rename & simplify?
+ * TODO rename to plural & simplify?
  *
- * @param {import('../dungeons/map.js').Door[]}
+ * @param {RoomDoor[]} doors
  *
  * @returns {RoomDoors}
  */
@@ -159,6 +148,6 @@ export function getRoomDoor(doors) {
 
     return {
         keys,
-        doors: lookup,
+        doors: lookup, // TODO
     };
 }

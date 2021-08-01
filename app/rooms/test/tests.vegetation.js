@@ -1,15 +1,11 @@
 
 import {
-    _private,
+    testGetDescription as getDescription,
     getVegetationDescription,
     vegetation,
 } from '../vegetation.js';
 
 import { knobs } from '../../knobs.js';
-
-const {
-    getDescription
-} = _private;
 
 /**
  * @param {import('../../unit/state.js').Utility}

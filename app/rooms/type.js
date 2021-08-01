@@ -1,3 +1,4 @@
+// @ts-check
 
 import { createProbability } from '../utility/roll.js';
 import { random } from '../utility/random.js';
@@ -37,17 +38,13 @@ const roomTypes = {
 export default roomTypes;
 
 /**
- * Room type list
- *
- * @type {string[]}
+ * List of room types.
  */
 export const list = Object.keys(roomTypes);
 
 /**
  * Set of room types that should have the word "room" appended to their
  * descriptions.
- *
- * @type {Set<string>}
  */
 export const appendRoomTypes = new Set([
     roomTypes.dining,
@@ -59,11 +56,9 @@ export const appendRoomTypes = new Set([
 
 /**
  * Probability distribution table of room types.
- *
- * @type {Probability}
  */
 export const probability = createProbability([
     [ 40,  roomTypes.hallway ],
     [ 65,  roomTypes.room    ],
-    [ 100, random  ],
+    [ 100, random            ],
 ]);

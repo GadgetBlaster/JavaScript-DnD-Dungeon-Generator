@@ -1,3 +1,4 @@
+// @ts-check
 
 import { list as roomTypes } from './type.js';
 import { roll } from '../utility/roll.js';
@@ -12,9 +13,7 @@ let {
     massive,
 } = size;
 
-/**
- * @typedef {[number, number]} RoomDimensions
- */
+/** @typedef {[ number, number ]} RoomDimensions */
 
 // -- Config -------------------------------------------------------------------
 
@@ -26,7 +25,7 @@ const hallWidthMax  = 1;
 /**
  * Dimension ranges
  *
- * @type {Object.<string, RoomDimensions>}
+ * @type {{ [key: string]: RoomDimensions }}
  */
 export const dimensionRanges = {
     [tiny]   : [ 2, 3  ],
@@ -41,7 +40,7 @@ export const dimensionRanges = {
  *
  * TODO make into Sets?
  *
- * @type {Object.<string, string[]>}
+ * @type {{ [key: string]: string[] }}
  */
 const roomSizes = {
     [type.ballroom] : [ medium, large, massive ],
@@ -60,10 +59,11 @@ const roomSizes = {
  * Custom room dimensions
  *
  * @type {{
- *     hallway: (roomSize: string, { isHorizontal: number }) => RoomDimensions
+ *     hallway: (roomSize: string, options?: { isHorizontal?: number }) => RoomDimensions
  * }}
  */
 export const customDimensions = {
+    // TODO see below
     hallway: (roomSize, { isHorizontal = roll() } = {}) => {
         let [ min, max ] = dimensionRanges[roomSize];
 
@@ -73,7 +73,7 @@ export const customDimensions = {
         let roomWidth  = isHorizontal ? length : width;
         let roomHeight = isHorizontal ? width  : length;
 
-        // TODO should return an array
+        // TODO return an array or update RoomDimensions to object?
         return { roomWidth, roomHeight };
     },
 };
@@ -86,7 +86,7 @@ export const customDimensions = {
  *
  * Rename to `roomSizesByType` & combine with constant object
  *
- * @type {object.<string, string[]>}
+ * @type {{ [key: string]: string[] }}
  */
 export const roomTypeSizes = roomTypes.reduce((obj, roomType) => {
     obj[roomType] = roomSizes[roomType] || sizes;
@@ -94,8 +94,8 @@ export const roomTypeSizes = roomTypes.reduce((obj, roomType) => {
     return obj;
 }, {});
 
-export const _private = {
-    hallLengthMin,
-    hallWidthMin,
-    hallWidthMax,
+export {
+    hallLengthMin as testHallLengthMin,
+    hallWidthMin  as testHallWidthMin,
+    hallWidthMax  as testHallWidthMax,
 };

@@ -1,6 +1,12 @@
 
 import {
-    _private,
+    // Private Functions
+    testGetAirDesc       as getAirDesc,
+    testGetGroundDesc    as getGroundDesc,
+    testGetStructureDesc as getStructureDesc,
+    testGetWallDesc      as getWallDesc,
+
+    // Public Functions
     getEnvironmentDescription,
     structure,
 } from '../environment.js';
@@ -9,13 +15,6 @@ import { getRoomTypeLabel } from '../description.js';
 import { knobs } from '../../knobs.js';
 import roomType from '../type.js';
 import size from '../../attributes/size.js';
-
-const {
-    getStructureDesc,
-    getGroundDesc,
-    getWallDesc,
-    getAirDesc,
-} = _private;
 
 /**
  * @param {import('../../unit/state.js').Utility}

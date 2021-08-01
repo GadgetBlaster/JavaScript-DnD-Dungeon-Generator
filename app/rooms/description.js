@@ -1,3 +1,4 @@
+// @ts-check
 
 import { capitalize, indefiniteArticle, toWords } from '../utility/tools.js';
 import { cellFeet } from '../dungeons/grid.js';
@@ -16,11 +17,11 @@ import quantity from '../attributes/quantity.js';
 import roomTypes, { appendRoomTypes } from '../rooms/type.js';
 import size from '../attributes/size.js';
 
-/**
- * @typedef {import('../dungeons/map.js').Connection} Connection
- * @typedef {import('./door.js').RoomDoor} RoomDoor
- * @typedef {import('./settings.js').RoomSettings} RoomSettings
- */
+/** @typedef {import('../dungeons/map.js').Connection} Connection */
+/** @typedef {import('./door.js').RoomDoor} RoomDoor */
+/** @typedef {import('./door.js').DoorKey} DoorKey */
+/** @typedef {import('../knobs.js').RoomConfig} RoomConfig */
+/** @typedef {import('../knobs.js').DungeonConfig} DungeonConfig */
 
 // -- Config -------------------------------------------------------------------
 
@@ -42,17 +43,21 @@ const mapDescriptions = [
 /**
  * Get contents description
  *
- * @param {RoomSettings} [settings]
+ * @private
+ * @throws // TODO
  *
- * @returns {?string}
+ * @param {RoomConfig | DungeonConfig} config
+ *
+ * @returns {string|undefined}
  */
-function getContentDescription(settings = {}) {
+function getContentDescription(config) {
     let {
+        // TODO
         [knobs.itemQuantity]  : itemQuantity,
         [knobs.itemRarity]    : itemRarity,
         [knobs.roomFurnishing]: roomFurnishing,
         [knobs.roomType]      : roomType = roomTypes.room,
-    } = settings;
+    } = config;
 
     if (!itemQuantity || itemQuantity === quantity.zero) {
         return;
@@ -89,11 +94,15 @@ function getContentDescription(settings = {}) {
         case quantity.numerous:
             furnitureText = furniture ? (' amongst ' + furniture ) : '';
             return `There are numerous ${rarity} objects littering the ${type}${furnitureText}`;
+
+        // TODO default throw
     }
 }
 
 /**
  * Get content rarity detail
+ *
+ * @private
  *
  * @param {string} rarity
  *
@@ -107,17 +116,20 @@ function getContentRarityDetail(rarity) {
 /**
  * Get description
  *
- * @param {RoomSettings} [settings]
+ * @private
+ *
+ * @param {RoomConfig | DungeonConfig} config
  *
  * @returns {string}
  */
-function getDescription(settings = {}) {
+function getDescription(config) {
     let {
+        // TODO
         [knobs.itemQuantity]:  itemQuantity,
         [knobs.roomCondition]: roomCondition,
         [knobs.roomSize]:      roomSize,
         [knobs.roomType]:      roomType = roomTypes.room,
-    } = settings;
+    } = config;
 
     let typeString = getRoomTypeLabel(roomType);
 
@@ -138,6 +150,8 @@ function getDescription(settings = {}) {
 
 /**
  * Get doorway description
+ *
+ * @private
  *
  * @param {RoomDoor} door
  *
@@ -165,6 +179,8 @@ function getDoorwayDescription({ type, size, locked }) {
 /**
  * Get furniture detail
  *
+ * @private
+ *
  * @param {string} roomFurnishing
  *
  * @returns {string}
@@ -189,15 +205,18 @@ function getFurnitureDetail(roomFurnishing) {
 /**
  * Get item condition description
  *
- * @param {RoomSettings} [settings]
+ * @private
  *
- * @returns {?string}
+ * @param {RoomConfig | DungeonConfig} config
+ *
+ * @returns {string|undefined}
  */
-function getItemConditionDescription(settings = {}) {
+function getItemConditionDescription(config) {
     let {
+        // TODO
         [knobs.itemQuantity] : itemQuantity,
         [knobs.itemCondition]: itemCondition,
-    } = settings;
+    } = config;
 
     if (itemQuantity === quantity.zero) {
         return;
@@ -256,6 +275,8 @@ function getKeyDetail(type) {
 /**
  * Get room dimensions
  *
+ * @private
+ *
  * @param {import('../typedefs.js').Size} roomSize
  *
  * @returns {string}
@@ -272,6 +293,8 @@ function getRoomDimensions(roomSize) {
 
 /**
  * Get room doorway description
+ *
+ * @private
  *
  * @param {RoomDoor[]} roomDoors
  *
@@ -311,6 +334,7 @@ function getRoomDoorwayDescription(roomDoors) {
     return `${capitalize(descParts.join(', '))}${comma} and ${last}`;
 }
 
+// TODO
 export const _private = {
     getContentDescription,
     getContentRarityDetail,
@@ -350,7 +374,7 @@ export const getDoorwayList = (roomDoors) => {
 /**
  * Get key description
  *
- * @param {import('./door.js').Key[]}
+ * @param {DoorKey[]} keys
  *
  * @returns {string}
  */
@@ -375,7 +399,7 @@ export const getMapDescription = () => {
 /**
  * Get room description
  *
- * @param {RoomSettings} room
+ * @param {RoomSettings} room // TODO
  * @param {RoomDoor[]} [roomDoors]
  *
  * @returns {string}

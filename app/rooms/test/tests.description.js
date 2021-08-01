@@ -41,12 +41,6 @@ export default ({ assert, describe, it }) => {
     // -- Private Functions ----------------------------------------------------
 
     describe('getContentsDescription()', () => {
-        describe('given no settings', () => {
-            it('should return `undefined`', () => {
-                assert(getContentDescription()).isUndefined();
-            });
-        });
-
         describe('given no item quantity', () => {
             it('should return `undefined`', () => {
                 assert(getContentDescription({})).isUndefined();
@@ -129,12 +123,6 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getDescription()', () => {
-        describe('given no settings', () => {
-            it('should return "You enter a room"', () => {
-                assert(getDescription()).equals('You enter a room');
-            });
-        });
-
         describe('given a room type', () => {
             it('should return a description including the room type', () => {
                 assert(getDescription({ [knobs.roomType]: roomType.library }))
@@ -308,12 +296,6 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getItemConditionDescription()', () => {
-        describe('given no settings', () => {
-            it('should return `undefined`', () => {
-                assert(getItemConditionDescription()).isUndefined();
-            });
-        });
-
         describe('given no item quantity', () => {
             it('should return `undefined`', () => {
                 assert(getItemConditionDescription({})).isUndefined();

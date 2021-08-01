@@ -2,17 +2,13 @@
 import size, { list as sizes } from '../../attributes/size.js';
 import { list as roomTypes } from '../type.js';
 import {
-    _private,
+    testHallLengthMin as hallLengthMin,
+    testHallWidthMax  as hallWidthMax,
+    testHallWidthMin  as hallWidthMin,
     customDimensions,
     dimensionRanges,
     roomTypeSizes,
 } from '../dimensions.js';
-
-const {
-    hallLengthMin,
-    hallWidthMax,
-    hallWidthMin,
-} = _private;
 
 /**
  * @param {import('../../unit/state.js').Utility}

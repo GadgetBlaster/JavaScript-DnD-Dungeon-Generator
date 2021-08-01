@@ -1,33 +1,35 @@
+// @ts-check
 
 import { applyRoomRandomization } from './settings.js';
 import { generateItems } from '../items/generate.js';
 import { knobs } from '../knobs.js';
 
+/** @typedef {import('../knobs.js').DungeonConfig} DungeonConfig */
+/** @typedef {import('../knobs.js').RoomConfig} RoomConfig */
+
 /**
- * @typedef {object} RoomConfig
+ * @typedef {object} Room
  *
- * @property {RoomSettings} settings
+ * @property {DungeonConfig | RoomConfig} settings
  * @property {string[]} items
  */
 
 /**
- * @typedef {import('./settings.js').RoomSettings
- */
-
-/**
- * Generates room randomization
+ * Generates a randomized array of random room configs for the given knob
+ * settings.
  *
- * @param {KnobSettings} settings // TODO typedef
+ * @param {DungeonConfig | RoomConfig} config
  *
- * @returns {RoomConfig[]}
+ * @returns {Room[]}
  */
-export function generateRooms(settings) {
-    let { [knobs.roomCount]: roomCount } = settings;
+export function generateRooms(config) {
+    // TODO Use object properties directly, not key constants
+    let { [knobs.roomCount]: roomCount } = config;
 
     let count = Math.floor(Number(roomCount));
 
     return [ ...Array(count) ].map(() => {
-        let roomSettings = applyRoomRandomization(settings);
+        let roomSettings = applyRoomRandomization(config);
 
         return {
             settings: roomSettings,

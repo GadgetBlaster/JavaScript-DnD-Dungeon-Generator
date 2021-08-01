@@ -219,7 +219,7 @@ const getDoorDirection = ([ x, y ], room) => {
  * @typedef {object} Connection
  *
  * @property {Directions} direction - north, east, south, or west
- * @property {number|string} to - Room number or "outside"
+ * @property {number | string} to - Room number or "outside"
  */
 
 /**

@@ -1,18 +1,21 @@
+// @ts-check
 
+import { getRoomFeatures } from './feature.js';
 import { getRoomTypeLabel } from './description.js';
 import { getVegetationDescription } from './vegetation.js';
 import { knobs } from '../knobs.js';
 import { roll, rollArrayItem, rollPercentile } from '../utility/roll.js';
+import { toss } from '../utility/tools.js';
 import roomType from './type.js';
 import size from '../attributes/size.js';
-import { getRoomFeatures } from './feature.js';
+
+/** @typedef {import('../knobs.js').DungeonConfig} DungeonConfig */
+/** @typedef {import('../knobs.js').RoomConfig} RoomConfig */
 
 // -- Config -------------------------------------------------------------------
 
 /**
  * Percentile chance to include an environment detail with a room.
- *
- * @type {number}
  */
 const detailChance = 50;
 
@@ -30,8 +33,6 @@ export const structure = {
 
 /**
  * Set of room types that may contain vegetation.
- *
- * @type {Set<string>}
  */
 const supportsVegetation = new Set([
     structure.cave,
@@ -42,8 +43,6 @@ const supportsVegetation = new Set([
 
 /**
  * Air environment types
- *
- * @type {Object.<string, string>}
  */
 const air = {
     damp  : 'damp',
@@ -54,8 +53,6 @@ const air = {
 
 /**
  * Ground environment types
- *
- * @type {Object.<string, string>}
  */
 const ground = {
     ashes   : 'ashes',
@@ -71,8 +68,6 @@ const ground = {
 
 /**
  * Wall environment types
- *
- * @type {Object.<string, string>}
  */
 const wall = {
     bloody   : 'bloody',
@@ -86,18 +81,121 @@ const wall = {
 // -- Private Functions --------------------------------------------------------
 
 /**
- * Get structure description
+ * Returns a description of a room's air.
  *
- * @param {import('./settings.js').RoomSettings}
+ * @throws
+ *
+ * TODO inject all probabilities
+ *
+ * @returns {string}
+ */
+ function getAirDesc() {
+    if (!rollPercentile(detailChance)) {
+        return;
+    }
+
+    let random = rollArrayItem(Object.keys(air));
+
+    switch (random) {
+        case air.damp:
+            return 'The air is think and damp';
+
+        case air.misty:
+            if (roll()) {
+                return 'Low mist clings to the ground';
+            }
+
+            return 'Mist fills the air';
+
+        case air.smelly:
+            if (roll()) {
+                return 'A nasty smell fills the room';
+            }
+
+            if (roll()) {
+                return 'The air smells fresh and crisp';
+            }
+
+            return 'There is a strange sweet sent in the air';
+
+        case air.smokey:
+            return 'The room is filled with smoke from a hastily extinguished fire';
+
+        default:
+            toss('Invalid air type');
+    }
+}
+
+/**
+ * Returns a description of a room's ground.
+ *
+ * @throws
+ *
+ * TODO inject all probabilities
+ *
+ * @returns {string}
+ */
+function getGroundDesc() {
+    if (!rollPercentile(detailChance)) {
+        return;
+    }
+
+    let random = rollArrayItem(Object.keys(ground));
+
+    switch (random) {
+        case ground.ashes:
+            return 'The floor is covered with ashes';
+
+        case ground.bloody: {
+            let isFresh = roll() ? 'Fresh blood' : 'Blood stains';
+            return `${isFresh} can be seen on the floor`;
+        }
+
+        case ground.dirt:
+            return 'Dirt covers the ground';
+
+        case ground.flooded: {
+            let inches = roll();
+            // TODO
+            return `The room is ${inches ? '' : 'completely '}flooded with a few ${inches ? 'inches' : 'feet'} of water`;
+        }
+
+        case ground.muddy:
+            return 'The floor is sticky with mud';
+
+        case ground.rubble:
+            return 'Rubble covers the floor';
+
+        case ground.slimy:
+            return 'The ground is slimy';
+
+        case ground.slippery:
+            return 'The floor is wet and slippery';
+
+        case ground.uneven:
+            return 'The ground is extremely uneven';
+
+        default:
+            toss('Invalid ground type');
+    }
+}
+
+/**
+ * Returns a description a room's structure.
+ *
+ * @throws
+ *
+ * @param {RoomConfig | DungeonConfig} config
  * @param {string} roomStructure
  *
  * @returns {string}
  */
-function getStructureDesc(settings, roomStructure) {
+ function getStructureDesc(config, roomStructure) {
     let {
+        // TODO
         [knobs.roomType]: typeSetting,
         [knobs.roomSize]: roomSize,
-    } = settings;
+    } = config;
 
     let type = getRoomTypeLabel(typeSetting);
 
@@ -121,63 +219,14 @@ function getStructureDesc(settings, roomStructure) {
             return `The stone ${type} is reinforced with wooden beams and pillars`;
 
         default:
-            throw new TypeError('Invalid room structure');
+            toss('Invalid room structure');
     }
 }
 
 /**
- * Returns a ground description for a room
+ * Returns a description of a room's walls.
  *
- * TODO inject all probabilities
- *
- @returns {string}
- */
-function getGroundDesc() {
-    if (!rollPercentile(detailChance)) {
-        return;
-    }
-
-    let random = rollArrayItem(Object.keys(ground));
-
-    switch (random) {
-        case ground.ashes:
-            return 'The floor is covered with ashes';
-
-        case ground.bloody: {
-            let isFresh = roll() ? 'Fresh blood' : 'Blood stains';
-            return `${isFresh} can be seen on the floor`;
-        }
-
-        case ground.dirt:
-            return 'Dirt covers the ground';
-
-        case ground.flooded: {
-            let inches = roll();
-            return `The room is ${inches ? '' : 'completely '}flooded with a few ${inches ? 'inches' : 'feet'} of water`;
-        }
-
-        case ground.muddy:
-            return 'The floor is sticky with mud';
-
-        case ground.rubble:
-            return 'Rubble covers the floor';
-
-        case ground.slimy:
-            return 'The ground is slimy';
-
-        case ground.slippery:
-            return 'The floor is wet and slippery';
-
-        case ground.uneven:
-            return 'The ground is extremely uneven';
-
-        default:
-            throw new TypeError('Invalid ground type');
-    }
-}
-
-/**
- * Get wall description
+ * @throws
  *
  * TODO inject all probabilities
  *
@@ -212,59 +261,15 @@ function getWallDesc() {
             return 'The walls are covered in thick spider webs';
 
         default:
-            throw new TypeError('Invalid wall type');
+            toss('Invalid wall type');
     }
 }
 
-/**
- * Get air description
- *
- * TODO inject all probabilities
- *
- * @returns {string}
- */
-function getAirDesc() {
-    if (!rollPercentile(detailChance)) {
-        return;
-    }
-
-    let random = rollArrayItem(Object.keys(air));
-
-    switch (random) {
-        case air.damp:
-            return 'The air is think and damp';
-
-        case air.misty:
-            if (roll()) {
-                return 'Low mist clings to the ground';
-            }
-
-            return 'Mist fills the air';
-
-        case air.smelly:
-            if (roll()) {
-                return 'A nasty smell fills the room';
-            }
-
-            if (roll()) {
-                return 'The air smells fresh and crisp';
-            }
-
-            return 'There is a strange sweet sent in the air';
-
-        case air.smokey:
-            return 'The room is filled with smoke from a hastily extinguished fire';
-
-        default:
-            throw new TypeError('Invalid air type');
-    }
-}
-
-export const _private = {
-    getStructureDesc,
-    getGroundDesc,
-    getWallDesc,
-    getAirDesc,
+export {
+    getAirDesc       as testGetAirDesc,
+    getGroundDesc    as testGetGroundDesc,
+    getStructureDesc as testGetStructureDesc,
+    getWallDesc      as testGetWallDesc,
 };
 
 // -- Public Functions ---------------------------------------------------------
@@ -272,23 +277,25 @@ export const _private = {
 /**
  * Get environment description
  *
- * @returns {string}
+ * @param {RoomConfig | DungeonConfig} config
+ *
+ * @returns {string[]}
  */
-export function getEnvironmentDescription(settings) {
+export function getEnvironmentDescription(config) {
     // TODO randomization should be injected
     let roomStructure = rollArrayItem(Object.keys(structure));
     let roomVegetation;
 
     if (supportsVegetation.has(roomStructure)) {
-        roomVegetation = getVegetationDescription();
+        roomVegetation = getVegetationDescription(config);
     }
 
     return [
-        getStructureDesc(settings, roomStructure),
+        getStructureDesc(config, roomStructure),
         getGroundDesc(),
         getWallDesc(),
         roomVegetation,
         getAirDesc(),
-        ...getRoomFeatures(settings),
+        ...getRoomFeatures(config),
     ].filter(Boolean);
 }

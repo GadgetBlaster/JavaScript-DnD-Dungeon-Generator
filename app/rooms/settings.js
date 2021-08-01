@@ -1,3 +1,4 @@
+// @ts-check
 
 import { knobs } from '../knobs.js';
 import { probability as conditionProbability } from '../attributes/condition.js';
@@ -10,23 +11,10 @@ import { roomTypeSizes } from './dimensions.js';
 import quantity from '../attributes/quantity.js';
 import roomType, { list as roomTypes, probability as roomTypeProbability } from './type.js';
 
-/**
- * Room settings
- *
- * @typedef {Object} RoomSettings
- *
- * @property {string} itemCondition
- * @property {string} itemQuantity
- * @property {string} itemQuantity
- * @property {string} itemRarity
- * @property {string} roomCondition
- * @property {string} roomFurnishing
- * @property {string} roomFurnishing
- * @property {string} roomSize
- * @property {string} roomType
- */
-
+/** @typedef {import('./generate.js').Room} Room */
 /** @typedef {import('../utility/roll.js').Probability} Probability */
+/** @typedef {import('../knobs.js').DungeonConfig} DungeonConfig */
+/** @typedef {import('../knobs.js').RoomConfig} RoomConfig */
 
 // -- Config -------------------------------------------------------------------
 
@@ -45,7 +33,7 @@ const uniformConditionChance = 10;
 const uniformRarityChance = 10;
 
 /**
- * An object of randomization functions for room specific `KnobSettings`.
+ * An object of randomization functions for room configs.
  *
  * @type {{ [knobSetting: string]: () => string }}
  */
@@ -63,6 +51,8 @@ const roomRandomizations = {
 /**
  * Returns a randomly selected appropriate room size for a room type.
  *
+ * @private
+ *
  * @param {string} type
  *
  * @returns {string} size
@@ -71,6 +61,8 @@ const rollRoomSize = (type) => rollArrayItem(roomTypeSizes[type]);
 
 /**
  * Returns a random room type using the room type probability table.
+ *
+ * @private
  *
  * @param {string} type
  *
@@ -88,6 +80,8 @@ function rollRoomType(type) {
  * Returns a random condition for all items in the room, or null to indicate
  * each item should have a random condition.
  *
+ * @private
+ *
  * @param {number} uniformityChance
  *     Returns null to indicate all items in the room should have a uniform
  *     condition.
@@ -104,9 +98,9 @@ function rollUniformity(uniformityChance, probability) {
     return probability.roll();
 }
 
-export const _private = {
-    rollRoomType,
-    rollUniformity,
+export {
+    rollRoomType as testRollRoomType,
+    rollUniformity as testRollUniformity,
 };
 
 // -- Public Functions ---------------------------------------------------------
@@ -142,11 +136,10 @@ function applyRandomization(config, randomizations) {
  * Apply room randomizations
  *
  * TODO rename to `applyRoomRandomizations`
- * TODO rename `config` to `knobSettings`
  *
- * @param {KnobSettings} config
+ * @param {RoomConfig | DungeonConfig} config
  *
- * @returns {import('./generate.js').RoomConfig}
+ * @returns {DungeonConfig | RoomConfig}
  */
 export function applyRoomRandomization(config) {
     return applyRandomization(config, roomRandomizations);

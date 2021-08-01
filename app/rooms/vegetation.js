@@ -1,6 +1,10 @@
+// @ts-check
 
-import { capitalize, listSentence } from '../utility/tools.js';
+import { capitalize, listSentence, toss } from '../utility/tools.js';
 import { roll, rollPercentile, rollArrayItem } from '../utility/roll.js';
+
+/** @typedef {import('../knobs.js').DungeonConfig} DungeonConfig */
+/** @typedef {import('../knobs.js').RoomConfig} RoomConfig */
 
 // -- Config -------------------------------------------------------------------
 
@@ -20,8 +24,6 @@ const maxVegetation = 3;
 
 /**
  * Vegetation types
- *
- * @type {object.<string, string>}
  */
 export const vegetation = {
     ferns    : 'ferns',
@@ -38,9 +40,12 @@ export const vegetation = {
 /**
  * Get vegetation description
  *
+ * @private
+ * @throws
+ *
  * @param {string} type
  * @param {object} [options]
- *     @param {boolean} [options.variation = *]
+ *     @param {boolean} [options.variation = true | false]
  *
  * @returns {string}
  */
@@ -79,12 +84,12 @@ function getDescription(type, { variation = Boolean(roll()) } = {}) {
             return `vines ${variation ? 'cover' : 'cling to'} the walls`;
 
         default:
-            throw new TypeError('Invalid vegetation type');
+            toss('Invalid vegetation type');
     }
 }
 
-export const _private = {
-    getDescription
+export {
+    getDescription as testGetDescription,
 };
 
 // -- Public Functions ---------------------------------------------------------
@@ -96,13 +101,13 @@ export const _private = {
  * TODO rename to getRoomVegetation()
  * TODO hook up room settings
  *
- * @param {import('./settings.js').RoomSettings} settings
+ * @param {DungeonConfig | RoomConfig} config
  * @param {object} [options]
- *     @param {number} [options.count = *]
+ *     @param {number} [options.count = number]
  *
  * @returns {string}
  */
-export function getVegetationDescription(settings, { count = roll(1, maxVegetation) } = {}) {
+export function getVegetationDescription(config, { count = roll(1, maxVegetation) } = {}) {
     if (!rollPercentile(vegetationChance)) {
         return;
     }

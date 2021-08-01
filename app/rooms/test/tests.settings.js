@@ -1,7 +1,8 @@
 
 import {
-    _private,
     applyRoomRandomization,
+    testRollRoomType as rollRoomType,
+    testRollUniformity as rollUniformity,
 } from '../settings.js';
 
 import { furnitureQuantity } from '../../items/types/furnishing.js';
@@ -12,11 +13,6 @@ import { list as sizes } from '../../attributes/size.js';
 import { random } from '../../utility/random.js';
 import quantity, { quantities } from '../../attributes/quantity.js';
 import roomType, { list as roomTypes } from '../type.js';
-
-const {
-    rollRoomType,
-    rollUniformity,
-} = _private;
 
 /**
  * @param {import('../../unit/state.js').Utility}

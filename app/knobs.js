@@ -54,9 +54,47 @@ export const knobs = {
 };
 
 /**
+ * Item config
+ *
+ * @typedef {{
+ *     itemCondition: string;
+ *     itemQuantity : string;
+ *     itemRarity   : string;
+ *     itemType     : string;
+ * }} ItemConfig
+ */
+
+/**
+ * Room config
+ *
+ * @typedef {{
+ *     roomCondition : string;
+ *     roomCount     : number;
+ *     roomFurnishing: string;
+ *     roomSize      : string;
+ *     roomType      : string;
+ * } & ItemConfig} RoomConfig
+ */
+
+/**
+ * Dungeon config
+ *
+ * @typedef {{
+ *     dungeonComplexity : string;
+ *     dungeonConnections: string;
+ *     dungeonMaps       : string;
+ *     dungeonTraps      : string;
+ * } & RoomConfig} DungeonConfig
+ */
+
+/**
+ * @typedef {ItemConfig | RoomConfig | DungeonConfig } Config
+ */
+
+/**
  * Knob settings
  *
- * @typedef {Object} KnobSettings
+ * @typedef {object} KnobSettings
  *
  * @property {string} label
  * @property {string} name

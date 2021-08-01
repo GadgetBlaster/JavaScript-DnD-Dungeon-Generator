@@ -1,16 +1,15 @@
 
 import {
-    _private,
+    // Private Functions
+    testGetFeatureDesc as getFeatureDesc,
+
+    // Public Functions
     feature,
     getRoomFeatures,
 } from '../feature.js';
 
 import { knobs } from '../../knobs.js';
 import roomType from '../type.js';
-
-const {
-    getFeatureDesc,
-} = _private;
 
 /**
  * @param {import('../../unit/state.js').Utility}

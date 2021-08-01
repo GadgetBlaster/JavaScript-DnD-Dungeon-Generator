@@ -1,21 +1,22 @@
+// @ts-check
 
 import { knobs } from '../knobs.js';
 import { roll, rollArrayItem, rollPercentile } from '../utility/roll.js';
+import { toss } from '../utility/tools.js';
 import roomType from './type.js';
+
+/** @typedef {import('../knobs.js').DungeonConfig} DungeonConfig */
+/** @typedef {import('../knobs.js').RoomConfig} RoomConfig */
 
 // -- Config -------------------------------------------------------------------
 
 /**
  * Percentile chance to include a room feature.
- *
- * @type {number}
  */
 const featureChance = 50;
 
 /**
  * Maximum number of features for a room.
- *
- * @type {number}
  */
 const maxFeatures = 3;
 
@@ -58,9 +59,12 @@ export const feature = {
 /**
  * Get feature description
  *
+ * @private
+ * @throws
+ *
  * @param {string} type
  * @param {object} [options]
- *     @param {boolean} [options.variation = *]
+ *     @param {boolean} [options.variation = number]
  *
  * @returns {string}
  */
@@ -210,12 +214,12 @@ function getFeatureDesc(type, { variation = Boolean(roll()) } = {}) {
         }
 
         default:
-            throw new TypeError('Invalid room feature');
+            toss('Invalid room feature');
     }
 }
 
-export const _private = {
-    getFeatureDesc,
+export {
+    getFeatureDesc as testGetFeatureDesc,
 };
 
 // -- Public Functions ---------------------------------------------------------
@@ -226,14 +230,14 @@ export const _private = {
  * TODO inject probability
  * TODO inject count
  *
- * @param {import('./settings.js').RoomSettings} settings
+ * @param {RoomConfig | DungeonConfig} config
  *
  * @returns {string[]}
  */
-export function getRoomFeatures(settings) {
+export function getRoomFeatures(config) {
     let {
-        [knobs.roomType]: roomTypeSetting,
-    } = settings;
+        [knobs.roomType]: roomTypeSetting, // TODO
+    } = config;
 
     if (roomTypeSetting === roomType.hallway) {
         return [];

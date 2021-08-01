@@ -1,8 +1,7 @@
+// @ts-check
 
 /**
  * Trap descriptions
- *
- * @type {string[]}
  */
 const trap = [
     'Collapsing roof triggered by a tripwire',
