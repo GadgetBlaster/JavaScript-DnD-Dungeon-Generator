@@ -61,13 +61,18 @@ export {
  */
 export function attachActions(container, triggers) {
     container.addEventListener('click', (e) => {
-        e.preventDefault();
 
         let { action } = getDataset(e.target);
 
+
         let trigger = getTrigger(triggers, action);
 
-        trigger && trigger(e);
+        if (!trigger) {
+            return;
+        }
+
+        e.preventDefault();
+        trigger(e);
     });
 }
 

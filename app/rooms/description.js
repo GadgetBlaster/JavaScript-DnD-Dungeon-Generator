@@ -282,10 +282,6 @@ function getKeyDetail(type) {
  * @returns {string}
  */
 function getRoomDimensions(roomSize) {
-    if (!roomSize) {
-        return '';
-    }
-
     let [ width, height ] = roomSize;
 
     return `${width * cellFeet} x ${height * cellFeet} feet`;

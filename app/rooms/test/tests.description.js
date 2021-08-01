@@ -507,16 +507,9 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getRoomDimensions()', () => {
-        describe('given no room size', () => {
-            it('should return an empty string', () => {
-                // TODO
-                assert(getRoomDimensions({})).equals('');
-            });
-        });
-
         describe('given a room size of 2 x 3', () => {
             it('should return a string with the dimensions multiplied by `cellFeet`', () => {
-                assert(getRoomDimensions([ 2, 3]))
+                assert(getRoomDimensions([ 2, 3 ]))
                     .stringIncludes(`${2 * cellFeet}`)
                     .stringIncludes(`${3 * cellFeet}`);
             });
