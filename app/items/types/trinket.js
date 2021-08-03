@@ -1,3 +1,4 @@
+// @ts-check
 
 import type from '../type.js';
 import rarity from '../../attributes/rarity.js';

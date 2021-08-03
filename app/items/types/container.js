@@ -1,3 +1,4 @@
+// @ts-check
 
 import rarity from '../../attributes/rarity.js';
 import size from '../../attributes/size.js';
@@ -19,8 +20,6 @@ const {
 
 /**
  * Number of small items that fit into a container or furnishing
- *
- * @type {Object<Size, number>}
  */
 export const capacity = {
     [tiny]  : 0.5,

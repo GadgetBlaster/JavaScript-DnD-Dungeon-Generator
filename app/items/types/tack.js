@@ -1,8 +1,9 @@
+// @ts-check
 
 import rarity from '../../attributes/rarity.js';
 import type from '../type.js';
 
-let { abundant, common, uncommon } = rarity;
+let { uncommon } = rarity;
 
 const defaults = {
     rarity: uncommon,
@@ -17,7 +18,7 @@ const config = [
     { name: 'Chariot' },
     { name: 'Feed' },
     { name: 'Saddle', variants: [ 'Exotic', 'Military', 'Pack', 'Riding' ] },
-    { name: 'Saddlebags' }
+    { name: 'Saddlebags' },
 ];
 
 export default config.map((item) => ({ ...defaults, ...item }));

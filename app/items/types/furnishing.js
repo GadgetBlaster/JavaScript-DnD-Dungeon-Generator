@@ -1,3 +1,4 @@
+// @ts-check
 
 import { capacity } from './container.js';
 import { rollArrayItem, createProbability } from '../../utility/roll.js';
@@ -53,7 +54,7 @@ Object.keys(furnishing).forEach((key) => {
     let label = item.name;
 
     if (item.variants) {
-        // TODO this should but randomized when fetched...
+        // TODO this should but randomized for each instance when fetched...
         let variant = rollArrayItem(item.variants);
         label += `, ${variant}`;
     }
@@ -146,7 +147,7 @@ export const requiredRoomFurniture = {
 
 export const anyRoomFurniture = [ painting, tapestry ];
 
-// TODO use standard quantities
+// TODO use standard quantity values
 export const furnitureQuantity = {
     none     : 'none',
     minimum  : 'minimum',

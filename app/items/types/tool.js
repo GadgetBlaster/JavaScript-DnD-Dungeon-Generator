@@ -1,3 +1,4 @@
+// @ts-check
 
 import rarity from '../../attributes/rarity.js';
 import size from '../../attributes/size.js';

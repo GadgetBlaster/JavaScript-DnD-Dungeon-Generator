@@ -1,3 +1,4 @@
+// @ts-check
 
 import rarity from '../../attributes/rarity.js';
 import type from '../type.js';
@@ -10,7 +11,7 @@ const defaults = {
 };
 
 const config = [
-    { name: 'Treasure' },
+    { name: 'Treasure' }, // TODO more treasure types
 ];
 
 export default config.map((item) => ({ ...defaults, ...item }));

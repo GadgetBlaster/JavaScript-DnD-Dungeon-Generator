@@ -1,9 +1,10 @@
+// @ts-check
 
 import rarity from '../../attributes/rarity.js';
 import size from '../../attributes/size.js';
 import type from '../type.js';
 
-let { large } = size
+let { large } = size;
 let { abundant, common, uncommon } = rarity;
 
 const defaults = {
