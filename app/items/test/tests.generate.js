@@ -1,3 +1,4 @@
+// @ts-check
 
 import {
     // Private Functions
@@ -26,7 +27,7 @@ import {
 } from '../types/furnishing.js';
 
 /**
- * @param {import('../../unit/state.js').Utility}
+ * @param {import('../../unit/state.js').Utility} utility
  */
 export default ({ assert, describe, it }) => {
 
@@ -103,6 +104,7 @@ export default ({ assert, describe, it }) => {
     describe('generateItemObjects()', () => {
         describe('given a count of 1', () => {
             const items = generateItemObjects(1, {
+                // TODO
                 [knobs.itemCondition]: random,
                 [knobs.itemQuantity] : quantity.one,
                 [knobs.itemRarity]   : random,
@@ -127,6 +129,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given a count greater than 1', () => {
             const items = generateItemObjects(3, {
+                // TODO
                 [knobs.itemCondition]: random,
                 [knobs.itemQuantity] : quantity.one,
                 [knobs.itemRarity]   : random,
@@ -143,6 +146,7 @@ export default ({ assert, describe, it }) => {
 
         describe('when duplicates of the same item are generated', () => {
             const items = generateItemObjects(3, {
+                // TODO
                 [knobs.itemCondition]: condition.average,
                 [knobs.itemQuantity] : quantity.one,
                 [knobs.itemRarity]   : rarity.common,
@@ -167,9 +171,19 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getFurnishingObjects()', () => {
+        const table = {
+            condition: condition.average,
+            count: 1,
+            label: 'Table',
+            name: 'Table',
+            quantity: 1,
+            rarity: rarity.average,
+            type: itemType.furnishing,
+        };
+
         describe('given a single furnishing object', () => {
             const furnishings = getFurnishingObjects(
-                [ { name: 'Table', label: 'Table' } ],
+                [ table ],
                 condition.average
             );
 
@@ -190,8 +204,14 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given multiple furnishing objects', () => {
+            const chair = {
+                ...table,
+                name: 'Chair',
+                label: 'Chair',
+            };
+
             const furnishings = getFurnishingObjects(
-                [ { name: 'Table', label: 'Table' }, { name: 'Chair', label: 'Chair' } ],
+                [ table, chair ],
                 condition.average
             );
 
@@ -205,7 +225,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given duplicate furnishing objects', () => {
             const furnishings = getFurnishingObjects(
-                [ { name: 'Table', label: 'Table' }, { name: 'Table', label: 'Table' } ],
+                [ table, table ],
                 condition.average
             );
 
@@ -227,7 +247,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given a room condition of average', () => {
             const furnishings = getFurnishingObjects(
-                [ { name: 'Table', label: 'Table' } ],
+                [ table ],
                 condition.average
             );
 
@@ -241,7 +261,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given a room condition other than average', () => {
             const furnishings = getFurnishingObjects(
-                [ { name: 'Table', label: 'Table' } ],
+                [ table ],
                 condition.decaying
             );
 
@@ -290,6 +310,7 @@ export default ({ assert, describe, it }) => {
 
     describe('generateItems()', () => {
         const settings = {
+            // TODO
             [knobs.itemCondition] : condition.average,
             [knobs.itemQuantity]  : quantity.one,
             [knobs.itemRarity]    : rarity.average,
@@ -374,6 +395,7 @@ export default ({ assert, describe, it }) => {
                 it('should return an empty array', () => {
                     const results = generateItems({
                         ...settings,
+                        // TODO
                         [knobs.itemQuantity]: quantity.zero,
                         [knobs.roomType]: roomTypes.room,
                         [knobs.roomCondition]: condition.average,

@@ -1,3 +1,4 @@
+// @ts-check
 
 import {
     getConditionDescription,
@@ -6,9 +7,10 @@ import {
 } from '../description.js';
 import condition from '../../attributes/condition.js';
 import rarity from '../../attributes/rarity.js';
+import type from '../type.js';
 
 /**
- * @param {import('../../unit/state.js').Utility}
+ * @param {import('../../unit/state.js').Utility} utility
  */
 export default ({ assert, describe, it }) => {
     describe('getConditionDescription()', () => {
@@ -26,19 +28,25 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getItemDescription()', () => {
+        const item = {
+            count: 1,
+            label: 'Bubbling goblin juice',
+            name: 'Goblin juice',
+            quantity: 20,
+            rarity: rarity.abundant,
+            type: type.miscellaneous,
+        };
+
         describe('given an item count of 1', () => {
             it('should return the item label', () => {
-                assert(getItemDescription({
-                    label: 'Bubbling goblin juice',
-                    count: 1,
-                })).equals('Bubbling goblin juice');
+                assert(getItemDescription(item)).equals('Bubbling goblin juice');
             });
         });
 
         describe('given an item count larger than 1', () => {
             it('should return the item label with the count appended', () => {
                 assert(getItemDescription({
-                    label: 'Bubbling goblin juice',
+                    ...item,
                     count: 12,
                 })).equals('Bubbling goblin juice (12)');
             });

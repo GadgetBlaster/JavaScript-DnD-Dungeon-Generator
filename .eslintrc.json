@@ -11,7 +11,13 @@
         "sourceType": "module"
     },
     "rules": {
-        "comma-dangle":         [ "warn", "always-multiline" ],
+        "comma-dangle":         [ "warn", {
+            "object" : "always-multiline",
+            "arrays" : "always-multiline",
+            "objects": "always-multiline",
+            "imports": "always-multiline",
+            "exports": "always-multiline"
+        } ],
         "keyword-spacing":      [ "warn", { "before": true } ],
         "max-len":              [ "warn", { "code": 120, "comments": 80 } ],
         "no-case-declarations": [ "warn" ],

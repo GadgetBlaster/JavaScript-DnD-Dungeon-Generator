@@ -1,3 +1,4 @@
+// @ts-check
 
 import {
     // Private Functions
@@ -57,6 +58,7 @@ export default ({ assert, describe, it }) => {
     // TODO incomplete test coverage
     describe('generateItem()', () => {
         const itemSettings = {
+            // TODO
             [knobs.itemCondition]: condition.average,
             [knobs.itemQuantity]: quantity.one,
             [knobs.itemRarity]: rarity.exotic,

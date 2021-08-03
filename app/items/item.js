@@ -22,7 +22,8 @@ import type, { list as itemTypes } from './type.js';
  * @property {string} label
  * @property {string} type
  * @property {string} rarity
- * @property {number} quantity - Max number of item found
+ * @property {number} count
+ * @property {number} quantity - Max number of item found // TODO rename to `maxCount`
  * @property {number} [capacity] - Max number of small items found inside
  * @property {string[]} [variants] - Array of variations
  */
