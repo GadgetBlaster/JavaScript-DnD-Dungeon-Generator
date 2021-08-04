@@ -112,16 +112,16 @@ export function rollArrayItem(array) {
 /**
  * Roll percentile
  *
- * @param {number} chance
- *
  * @throws
+ *
+ * @param {number} chance
  *
  * @returns {boolean}
  */
 export function rollPercentile(chance) {
-    !Number.isInteger(chance) && toss('Percent `chance` must be an integer');
-    chance < minPercent && toss(`Percent \`chance\` must be ${minPercent} or greater`);
-    chance > maxPercent && toss(`Percent \`chance\` cannot exceed ${maxPercent}`);
+    !Number.isInteger(chance) && toss('rollPercentile() chance must be an integer');
+    chance < minPercent && toss(`rollPercentile() chance must be ${minPercent} or greater`);
+    chance > maxPercent && toss(`rollPercentile() chance cannot exceed ${maxPercent}`);
 
     return roll(minPercent, maxPercent) <= chance;
 }

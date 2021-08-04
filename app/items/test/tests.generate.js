@@ -327,50 +327,32 @@ export default ({ assert, describe, it }) => {
             assert(generateItems(settings).shift()).stringIncludes('Items (1)');
         });
 
-        describe('given no `itemQuantity`', () => {
-            it('should throw', () => {
-                const sansItemQuantity = { ...settings };
-                delete sansItemQuantity[knobs.itemQuantity];
-                assert(() => generateItems(sansItemQuantity)).throws('Item quantity is required in generateItems()');
-            });
-        });
+        describe('required configs', () => {
+            [
+                'itemCondition',
+                'itemQuantity',
+                'itemRarity',
+                'itemType',
+            ].forEach((requiredConfig) => {
+                describe(`given no \`${requiredConfig}\``, () => {
+                    const incompleteConfig = { ...settings };
+                    delete incompleteConfig[requiredConfig];
 
-        describe('given no `itemRarity`', () => {
-            it('should throw', () => {
-                const sansItemRarity = { ...settings };
-                delete sansItemRarity[knobs.itemRarity];
-                assert(() => generateItems(sansItemRarity)).throws('Item rarity is required in generateItems()');
-            });
-        });
-
-        describe('given no `itemRarity`', () => {
-            it('should throw', () => {
-                const sansItemRarity = { ...settings };
-                delete sansItemRarity[knobs.itemRarity];
-                assert(() => generateItems(sansItemRarity)).throws('Item rarity is required in generateItems()');
-            });
-        });
-
-        describe('given no `itemType`', () => {
-            it('should throw', () => {
-                const sansItemType = { ...settings };
-                delete sansItemType[knobs.itemType];
-                assert(() => generateItems(sansItemType)).throws('Item type is required in generateItems()');
-            });
-        });
-
-        describe('given no `itemCondition`', () => {
-            it('should throw', () => {
-                const sansItemCondition = { ...settings };
-                delete sansItemCondition[knobs.itemCondition];
-                assert(() => generateItems(sansItemCondition)).throws('Item condition is required in generateItems()');
+                    it('should throw', () => {
+                        // @ts-expect-error
+                        assert(() => generateItems(incompleteConfig))
+                            .throws(`${requiredConfig} is required in generateItems()`);
+                    });
+                });
             });
         });
 
         describe('given a `roomType` and no `roomCondition`', () => {
             it('should throw', () => {
-                assert(() => generateItems({ ...settings, [knobs.roomType]: roomTypes.room }))
-                    .throws('Room condition is required for room in generateItems()');
+                assert(() => generateItems({
+                    ...settings,
+                    [knobs.roomType]: roomTypes.room,
+                })).throws('roomCondition is required for room items in generateItems()');
             });
         });
 

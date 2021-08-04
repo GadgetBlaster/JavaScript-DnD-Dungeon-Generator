@@ -1,5 +1,7 @@
 // @ts-check
 
+// TODO move functionality to `rooms/generate.js`
+
 import { knobs } from '../knobs.js';
 import { probability as conditionProbability } from '../attributes/condition.js';
 import { probability as furnitureQuantityProbability } from '../items/types/furnishing.js';
@@ -74,7 +76,7 @@ function rollRoomType(type) {
     }
 
     return type;
-};
+}
 
 /**
  * Returns a random condition for all items in the room, or null to indicate
@@ -88,18 +90,18 @@ function rollRoomType(type) {
  *
  * @param {Probability} probability
  *
- * @returns {string|null} itemCondition
+ * @returns {string|undefined}
  */
 function rollUniformity(uniformityChance, probability) {
     if (!rollPercentile(uniformityChance)) {
-        return null;
+        return;
     }
 
     return probability.roll();
 }
 
 export {
-    rollRoomType as testRollRoomType,
+    rollRoomType   as testRollRoomType,
     rollUniformity as testRollUniformity,
 };
 

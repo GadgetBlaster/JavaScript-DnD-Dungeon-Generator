@@ -206,25 +206,37 @@ export default ({ assert, describe, it }) => {
         describe('given a float', () => {
             it('should throw', () => {
                 assert(() => { rollPercentile(3.1415); })
-                    .throws('Percent `chance` must be an integer');
+                    .throws('rollPercentile() chance must be an integer');
             });
         });
 
-        describe('given an integer less than `0`', () => {
+        describe('given an integer less than 0', () => {
             it('should throw', () => {
                 assert(() => { rollPercentile(-5); })
-                    .throws('Percent `chance` must be 0 or greater');
+                    .throws('rollPercentile() chance must be 0 or greater');
             });
         });
 
-        describe('given an integer greater than `100`', () => {
+        describe('given an integer greater than 100', () => {
             it('should throw', () => {
                 assert(() => { rollPercentile(216); })
-                    .throws('Percent `chance` cannot exceed 100');
+                    .throws('rollPercentile() chance cannot exceed 100');
             });
         });
 
-        describe('given an integer between `1` and `100`', () => {
+        describe('given 0', () => {
+            it('should return false', () => {
+                assert(rollPercentile(0)).isFalse();
+            });
+        });
+
+        describe('given 100', () => {
+            it('should return true', () => {
+                assert(rollPercentile(100)).isTrue();
+            });
+        });
+
+        describe('given an integer between 0 and 100', () => {
             it('should return a boolean', () => {
                 assert(rollPercentile(2)).isBoolean();
             });

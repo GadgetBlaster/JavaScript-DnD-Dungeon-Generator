@@ -1,34 +1,52 @@
 
 import { generateMap } from './map.js';
 import { generateRooms } from '../rooms/generate.js';
+import { getRoomDoor } from '../rooms/door.js';
 import { knobs } from '../knobs.js';
 import { roll, rollArrayItem } from '../utility/roll.js';
-import { getRoomDoor } from '../rooms/door.js';
+import { isRequired } from '../utility/tools.js';
 import trapList from '../rooms/trap.js';
 
-const complexityRoomCountMultiplier = 10;
-const complexityMultiplierMinXY     = 5;
+/** @typedef {import('./draw.js').GridDimensions} GridDimensions */
+/** @typedef {import('../knobs.js').DungeonConfig} DungeonConfig */
+
+/**
+ * @typedef {object} Dungeon
+ *
+ * @property {string} map // TODO rename to mapVector?
+ * @property {Room[]} rooms
+ * @property {Door[]} doors
+ * @property {GridDimensions} mapDimensions
+ */
+
+// -- Config -------------------------------------------------------------------
+
 const complexityMultiplierMaxXY     = 6;
+const complexityMultiplierMinXY     = 5;
+const complexityRoomCountMultiplier = 10;
 const trapCountMultiplier           = 5;
 
-const getMxRoomCount = (complexity) => {
-    return complexity * complexityRoomCountMultiplier;
+export {
+    complexityMultiplierMaxXY     as testComplexityMultiplierMaxXY,
+    complexityMultiplierMinXY     as testComplexityMultiplierMinXY,
+    complexityRoomCountMultiplier as testComplexityRoomCountMultiplier,
+    trapCountMultiplier           as testTrapCountMultiplier,
 };
 
-const getMapDimensions = (complexity) => {
-    let dimensionMin = complexity * complexityMultiplierMinXY;
-    let dimensionMax = complexity * complexityMultiplierMaxXY;
+// -- Private Functions --------------------------------------------------------
 
-    let gridWidth  = roll(dimensionMin, dimensionMax);
-    let gridHeight = roll(dimensionMin, dimensionMax);
-
-    return {
-        gridWidth,
-        gridHeight,
-    };
-};
-
-const generateTraps = (trapMin) => {
+/**
+ * Returns an array of trap descriptions.
+ *
+ * TODO can duplicate traps be placed in the same room?
+ *
+ * @private
+ *
+ * @param {number} trapMin
+ *
+ * @returns {string[]}
+ */
+function generateTraps(trapMin) {
     let traps = [];
 
     if (trapMin < 1) {
@@ -39,21 +57,79 @@ const generateTraps = (trapMin) => {
     let min   = Math.max(1, (max - trapCountMultiplier - trapMin));
     let count = roll(min, max);
 
-
     for (let i = 0; i < count; i++) {
         traps.push(rollArrayItem(trapList));
     }
 
     return traps;
+}
+
+/**
+ * Returns a maximum grid width and height for the dungeon.
+ *
+ * @private
+ *
+ * @param {number} complexity
+ *
+ * @returns {GridDimensions}
+ */
+function getMapDimensions(complexity) {
+    let dimensionMin = complexity * complexityMultiplierMinXY;
+    let dimensionMax = complexity * complexityMultiplierMaxXY;
+
+    let gridWidth  = roll(dimensionMin, dimensionMax);
+    let gridHeight = roll(dimensionMin, dimensionMax);
+
+    return {
+        gridWidth,
+        gridHeight,
+    };
+}
+
+/**
+ * Returns a maximum room count for the dungeon.
+ *
+ * TODO fix name
+ *
+ * @private
+ *
+ * @param {number} complexity
+ *
+ * @returns {number}
+ */
+function getMxRoomCount(complexity) {
+    return complexity * complexityRoomCountMultiplier;
+}
+
+export {
+    generateTraps    as testGenerateTraps,
+    getMapDimensions as testGetMapDimensions,
+    getMxRoomCount   as testGetMxRoomCount,
 };
 
+// -- Public Functions ---------------------------------------------------------
+
+/**
+ * Returns a dungeon.
+ *
+ * @param {DungeonConfig} settings // TODO config
+ *
+ * @returns {Dungeon}
+ */
 export const generateDungeon = (settings) => {
     let {
-        [knobs.dungeonComplexity]: complexity,
-        [knobs.dungeonMaps]      : maps,
-        [knobs.dungeonTraps]     : trapMin,
+        [knobs.dungeonComplexity] : complexity,
+        [knobs.dungeonConnections]: connections,
+        [knobs.dungeonMaps]       : maps,
+        [knobs.dungeonTraps]      : trapMin,
     } = settings;
 
+    isRequired(complexity,  'dungeonComplexity is required in generateDungeon()');
+    isRequired(connections, 'dungeonConnections is required in generateDungeon()');
+    isRequired(maps,        'dungeonMaps is required in generateDungeon()');
+    isRequired(trapMin,     'dungeonTraps is required in generateDungeon()');
+
+    // TODO merge to new object instead of overwriting
     settings[knobs.roomCount] = getMxRoomCount(complexity);
 
     let rooms = generateRooms(settings);
@@ -75,6 +151,9 @@ export const generateDungeon = (settings) => {
         ...mapDimensions,
         rooms,
     };
+
+    // TODO break out everything before generateMap() into
+    // generateDungeonRooms() for testing since excess rooms are discarded
 
     let dungeon         = generateMap(mapSettings);
     let { doors, keys } = getRoomDoor(dungeon.doors);

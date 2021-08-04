@@ -43,15 +43,15 @@ export default ({ assert, describe, it }) => {
         const fakeProbability = { roll: () => 'fake result', description: 'fake' };
 
         describe('given a uniformity condition of 100%', () => {
-            it('should call `roll()` on the probability object', () => {
+            it('should call roll() on the probability object', () => {
                 const result = rollUniformity(100, fakeProbability);
                 assert(result).equals('fake result');
             });
         });
 
         describe('given a uniformity condition of 0%', () => {
-            it('should return null', () => {
-                assert(rollUniformity(0, fakeProbability)).isNull();
+            it('should return undefined', () => {
+                assert(rollUniformity(0, fakeProbability)).isUndefined();
             });
         });
     });

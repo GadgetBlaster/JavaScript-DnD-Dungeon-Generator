@@ -139,6 +139,7 @@ export const toss = (message) => { throw new TypeError(message); };
  * Throws a type error if the given value is undefined.
  *
  * @param {any} value
+ * @param {string} message
  *
  * @throws
  */

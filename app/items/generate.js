@@ -9,13 +9,14 @@ import furnishing, {
     furnitureQuantity, // TODO rename?
     requiredRoomFurniture,
 } from './types/furnishing.js';
+import { em, paragraph, subtitle } from '../ui/typography.js';
 import { generateItem } from './item.js';
 import { getRarityDescription, getConditionDescription, getItemDescription } from './description.js';
+import { isRequired } from '../utility/tools.js';
 import { knobs } from '../knobs.js';
 import { list } from '../ui/list.js';
 import { random } from '../utility/random.js';
 import { roll, rollArrayItem } from '../utility/roll.js';
-import { em, paragraph, subtitle,  } from '../ui/typography.js';
 import condition from '../attributes/condition.js';
 import quantity, { getRange, probability as quantityProbability } from '../attributes/quantity.js';
 import size from '../attributes/size.js';
@@ -180,27 +181,15 @@ export function generateItems(config) {
         [knobs.roomCondition] : roomCondition,
     } = config;
 
-    // TODO collapse
-    if (!itemQuantity) {
-        throw new TypeError('Item quantity is required in generateItems()');
-    }
-
-    if (!itemRarity) {
-        throw new TypeError('Item rarity is required in generateItems()');
-    }
-
-    if (!itemType) {
-        throw new TypeError('Item type is required in generateItems()');
-    }
-
-    if (!itemCondition) {
-        throw new TypeError('Item condition is required in generateItems()');
-    }
+    isRequired(itemCondition, 'itemCondition is required in generateItems()');
+    isRequired(itemQuantity,  'itemQuantity is required in generateItems()');
+    isRequired(itemRarity,    'itemRarity is required in generateItems()');
+    isRequired(itemType,      'itemType is required in generateItems()');
 
     let inRoom = Boolean(roomType); // TODO Boolean cast necessary?
 
     if (inRoom && !roomCondition) {
-        throw new TypeError('Room condition is required for room in generateItems()');
+        isRequired(roomCondition, 'roomCondition is required for room items in generateItems()');
     }
 
     if (itemQuantity === random) {
