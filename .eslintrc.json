@@ -11,20 +11,30 @@
         "sourceType": "module"
     },
     "rules": {
-        "comma-dangle":         [ "warn", {
-            "object" : "always-multiline",
-            "arrays" : "always-multiline",
-            "objects": "always-multiline",
-            "imports": "always-multiline",
-            "exports": "always-multiline"
-        } ],
-        "keyword-spacing":      [ "warn", { "before": true } ],
-        "max-len":              [ "warn", { "code": 120, "comments": 80 } ],
-        "no-case-declarations": [ "warn" ],
-        "no-shadow":            "warn",
-        "no-undef":             [ "error" ],
-        "no-unused-vars":       [ "error" ],
-        "quotes":               [ "warn", "single",  { "allowTemplateLiterals": true, "avoidEscape": true } ],
-        "semi":                 [ "warn", "always" ]
+        "comma-dangle": [
+            "warn", {
+                "arrays" : "always-multiline",
+                "objects": "always-multiline",
+                "imports": "always-multiline",
+                "exports": "always-multiline"
+            }
+        ],
+
+        "quotes": [
+            "warn",
+            "single", {
+                "allowTemplateLiterals": true,
+                "avoidEscape": true
+            }
+        ],
+
+        "keyword-spacing"     : [ "warn", { "before": true } ],
+        "max-len"             : [ "warn", { "code": 120, "comments": 80 } ],
+        "no-case-declarations": [ "warn"  ],
+        "no-extra-semi"       : [ "warn"  ],
+        "no-shadow"           : [ "warn"  ],
+        "no-undef"            : [ "error" ],
+        "no-unused-vars"      : [ "error" ],
+        "semi"                : [ "warn", "always" ]
     }
 }
