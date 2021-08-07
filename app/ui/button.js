@@ -2,6 +2,8 @@
 
 import { element } from '../utility/element.js';
 
+// -- Types --------------------------------------------------------------------
+
 /**
  * Button options
  *

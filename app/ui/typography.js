@@ -2,7 +2,11 @@
 
 import { element } from '../utility/element.js';
 
+// -- Types --------------------------------------------------------------------
+
 /** @typedef {import('../utility/element').Attributes} Attributes */
+
+// -- Public Functions ---------------------------------------------------------
 
 /**
  * Returns an HTML emphasis element string.

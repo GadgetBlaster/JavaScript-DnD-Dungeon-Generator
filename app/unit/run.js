@@ -1,8 +1,12 @@
 // @ts-check
 
+// -- Types --------------------------------------------------------------------
+
 /** @typedef {import('./state.js').Utility} Utility */
 /** @typedef {import('./state').State} State */
 /** @typedef {import('./state').Summary} Summary */
+
+// -- Public Functions ---------------------------------------------------------
 
 /**
  * Run suite

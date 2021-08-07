@@ -21,6 +21,8 @@ import treasure from './types/treasure.js';
 import trinket from './types/trinket.js';
 import weapon from './types/weapon.js';
 
+// -- Config -------------------------------------------------------------------
+
 export default [
     ...ammo,
     ...armor,

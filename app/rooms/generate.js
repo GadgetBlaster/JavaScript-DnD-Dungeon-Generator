@@ -5,6 +5,8 @@ import { generateItems } from '../items/generate.js';
 import { isRequired } from '../utility/tools.js';
 import { knobs } from '../knobs.js';
 
+// -- Types --------------------------------------------------------------------
+
 /** @typedef {import('../knobs.js').DungeonConfig} DungeonConfig */
 /** @typedef {import('../knobs.js').RoomConfig} RoomConfig */
 
@@ -14,6 +16,8 @@ import { knobs } from '../knobs.js';
  * @property {DungeonConfig | RoomConfig} settings
  * @property {string[]} items
  */
+
+// -- Public Functions ---------------------------------------------------------
 
 /**
  * Generates a randomized array of random room configs for the given knob

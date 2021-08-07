@@ -7,6 +7,8 @@ import { paragraph } from '../ui/typography.js';
 import { plural } from '../utility/tools.js';
 import run from './run.js';
 
+// -- Types --------------------------------------------------------------------
+
 /** @typedef {import('../utility/element').Attributes} Attributes */
 /** @typedef {import('./assert.js').Result} Result */
 /** @typedef {import('./state.js').CurrentScope} CurrentScope */

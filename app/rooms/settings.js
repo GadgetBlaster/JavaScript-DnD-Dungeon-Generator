@@ -13,6 +13,8 @@ import { roomTypeSizes } from './dimensions.js';
 import quantity from '../attributes/quantity.js';
 import roomType, { list as roomTypes, probability as roomTypeProbability } from './type.js';
 
+// -- Types --------------------------------------------------------------------
+
 /** @typedef {import('./generate.js').Room} Room */
 /** @typedef {import('../utility/roll.js').Probability} Probability */
 /** @typedef {import('../knobs.js').DungeonConfig} DungeonConfig */

@@ -17,6 +17,8 @@ import quantity from '../attributes/quantity.js';
 import roomTypes, { appendRoomTypes } from '../rooms/type.js';
 import size from '../attributes/size.js';
 
+// -- Types --------------------------------------------------------------------
+
 /** @typedef {import('../dungeons/map.js').Connection} Connection */
 /** @typedef {import('./door.js').RoomDoor} RoomDoor */
 /** @typedef {import('./door.js').DoorKey} DoorKey */

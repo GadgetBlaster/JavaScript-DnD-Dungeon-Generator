@@ -8,6 +8,8 @@ import { roll, rollArrayItem } from '../utility/roll.js';
 import { isRequired } from '../utility/tools.js';
 import trapList from '../rooms/trap.js';
 
+// -- Types --------------------------------------------------------------------
+
 /** @typedef {import('./draw.js').GridDimensions} GridDimensions */
 /** @typedef {import('./map.js').Door} Door */
 /** @typedef {import('../knobs.js').DungeonConfig} DungeonConfig */

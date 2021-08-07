@@ -5,13 +5,7 @@ import { roll } from '../utility/roll.js';
 import size, { list as sizes } from '../attributes/size.js';
 import type from './type.js';
 
-let {
-    tiny,
-    small,
-    medium,
-    large,
-    massive,
-} = size;
+// -- Types --------------------------------------------------------------------
 
 /** @typedef {[ number, number ]} RoomDimensions */
 
@@ -21,6 +15,14 @@ let {
 const hallLengthMin = 3;
 const hallWidthMin  = 1;
 const hallWidthMax  = 1;
+
+let {
+    tiny,
+    small,
+    medium,
+    large,
+    massive,
+} = size;
 
 /**
  * Dimension ranges

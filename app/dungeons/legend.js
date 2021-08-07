@@ -7,12 +7,19 @@ import { small } from '../ui/typography.js';
 import { list } from '../ui/list.js';
 import doorType from '../rooms/door.js';
 
+// -- Types --------------------------------------------------------------------
+
 /** @typedef {import('./draw.js').GridRectangle} GridRectangle */
 
+// -- Public Functions ---------------------------------------------------------
+
 /**
- * TODO
- * @param {*} param0
- * @returns
+ * Returns an unordered list of labeled map features.
+ *
+ * @param {object} args
+ *     @param {number} args.mapWidth
+ *
+ * @returns {string}
  */
 export const drawLegend = ({ mapWidth }) => {
 

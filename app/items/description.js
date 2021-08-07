@@ -3,6 +3,8 @@
 import condition from '../attributes/condition.js';
 import rarity from '../attributes/rarity.js';
 
+// -- Types --------------------------------------------------------------------
+
 /** @typedef {import('./item.js').Item} Item */
 
 // -- Config -------------------------------------------------------------------

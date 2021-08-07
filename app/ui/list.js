@@ -3,7 +3,11 @@
 import { element } from '../utility/element.js';
 import { toss } from '../utility/tools.js';
 
+// -- Types --------------------------------------------------------------------
+
 /** @typedef {import('../utility/element.js').Attributes} Attributes */
+
+// -- Public Functions ---------------------------------------------------------
 
 /**
  * Returns an HTML unordered list element strings with each item wrapped in an

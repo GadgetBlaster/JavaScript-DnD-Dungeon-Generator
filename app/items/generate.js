@@ -21,6 +21,8 @@ import condition from '../attributes/condition.js';
 import quantity, { getRange, probability as quantityProbability } from '../attributes/quantity.js';
 import size from '../attributes/size.js';
 
+// -- Types --------------------------------------------------------------------
+
 /** @typedef {import('../knobs.js').Config} Config */
 /** @typedef {import('./item.js').Item} Item */
 

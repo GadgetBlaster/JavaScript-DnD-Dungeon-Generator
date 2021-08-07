@@ -3,6 +3,8 @@
 import { element } from '../utility/element.js';
 import { toWords, toss } from '../utility/tools.js';
 
+// -- Types --------------------------------------------------------------------
+
 /** @typedef {import('../utility/element.js').Attributes} Attributes */
 
 // -- Private Functions --------------------------------------------------------

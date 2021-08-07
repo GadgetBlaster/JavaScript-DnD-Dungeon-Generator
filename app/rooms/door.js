@@ -2,6 +2,8 @@
 
 import { createProbability } from '../utility/roll.js';
 
+// -- Types --------------------------------------------------------------------
+
 /** @typedef {import('../dungeons/map.js').Connection} Connection */
 /** @typedef {import('../utility/roll.js').Probability} Probability */
 

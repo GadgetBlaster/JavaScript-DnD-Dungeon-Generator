@@ -2,6 +2,8 @@
 
 import { roll, rollArrayItem } from '../utility/roll.js';
 
+// -- Types --------------------------------------------------------------------
+
 /**
  * A multidimensional array of grid cells, procedurally populated with rooms
  * connected by doors.

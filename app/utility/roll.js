@@ -2,6 +2,8 @@
 
 import { toss } from './tools.js';
 
+// -- Types --------------------------------------------------------------------
+
 /**
  * @typedef {object} Probability
  *     Probability distribution table.

@@ -8,10 +8,10 @@ import { select, input, slider, fieldLabel } from './field.js';
 import { toDash, toss } from '../utility/tools.js';
 import { typeSelect, typeNumber, typeRange } from '../knobs.js';
 
-/**
- * @typedef {import('../knobs.js').KnobSettings} KnobSettings
- * @typedef {import('../knobs.js').KnobSet} KnobSet
- */
+// -- Types --------------------------------------------------------------------
+
+/** @typedef {import('../knobs.js').KnobSettings} KnobSettings */
+/** @typedef {import('../knobs.js').KnobSet} KnobSet */
 
 // -- Private Functions --------------------------------------------------------
 
@@ -22,7 +22,7 @@ import { typeSelect, typeNumber, typeRange } from '../knobs.js';
  *
  * @returns {ReturnType<HTMLInputElement[]>}
  */
- const getInputElements = (knobContainer) => [ ...knobContainer.querySelectorAll('[name]') ];
+const getInputElements = (knobContainer) => [ ...knobContainer.querySelectorAll('[name]') ];
 
 /**
  * Returns an HTML from element string for the given knob type.

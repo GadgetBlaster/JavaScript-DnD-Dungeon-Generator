@@ -33,10 +33,48 @@ import { roll, rollArrayItem, rollPercentile } from '../utility/roll.js';
 import { toWords } from '../utility/tools.js';
 import roomType from '../rooms/type.js';
 
-/** @typedef {import('./draw.js').GridRectangle} GridRectangle */
+// -- Types --------------------------------------------------------------------
 
+/** @typedef {import('../knobs.js').DungeonConfig} DungeonConfig */
+/** @typedef {import('../knobs.js').RoomConfig} RoomConfig */
+/** @typedef {import('../rooms/dimensions.js').RoomDimensions} RoomDimensions */
+/** @typedef {import('./draw.js').GridRectangle} GridRectangle */
+/** @typedef {import('./grid.js').GridDimensions} GridDimensions */
+
+/**
+ * Connection
+ *
+ * @typedef {object} Connection
+ *
+ * @property {Directions} direction - north, east, south, or west
+ * @property {number | string} to - Room number or "outside"
+ */
+
+/**
+ * Door
+ *
+ * @typedef {object} Door
+ *
+ * @property {string} rect
+ * @property {string} type
+ * @property {boolean} locked
+ * @property {object.<number, Connection>} connections
+ * @property {Connection} connection
+ * @property {number} size
+ */
+
+// -- Config -------------------------------------------------------------------
+
+/**
+ * If an ASCII representation of the map arrays should be logged to the console.
+ */
 const debug = false;
 
+/**
+ * Maximum number of grid cells a door can be wide or tall.
+ *
+ * TODO rename to `maxDoorCellSize`?
+ */
 const maxDoorWidth = 4;
 
 /**
@@ -65,9 +103,9 @@ export const directions = {
 };
 
 /**
- * Opposite direction lookup
+ * Lookup up of direction opposites.
  *
- * @type {Directions}
+ * TODO no underscore
  */
 const _oppositeDirectionLookup = {
     [directions.north]: directions.south,
@@ -76,6 +114,16 @@ const _oppositeDirectionLookup = {
     [directions.west] : directions.east,
 };
 
+// -- Private Functions --------------------------------------------------------
+
+/**
+ * Returns randomized room dimensions for the given room type.
+ *
+ * @param {GridDimensions} mapSettings
+ * @param {RoomConfig | DungeonConfig} roomConfig
+ *
+ * @returns {RoomDimensions}
+ */
 const getRoomDimensions = (mapSettings, roomConfig) => {
     let { settings: {
         [knobs.roomSize]: roomSize,
@@ -213,28 +261,6 @@ const getDoorDirection = ([ x, y ], room) => {
         throw new TypeError('Invalid direction');
     }
 };
-
-/**
- * Connection
- *
- * @typedef {object} Connection
- *
- * @property {Directions} direction - north, east, south, or west
- * @property {number | string} to - Room number or "outside"
- */
-
-/**
- * Door
- *
- * @typedef {object} Door
- *
- * @property {string} rect
- * @property {string} type
- * @property {boolean} locked
- * @property {object.<number, Connection>} connections
- * @property {Connection} connection
- * @property {number} size
- */
 
 const makeDoor = (doorRectangle, { from, to, direction, type }) => {
     if (!type) {
@@ -479,6 +505,8 @@ const getRooms = (mapSettings, grid) => {
     };
 };
 
+// TODO only logs square grids?
+// TODO return string & rename to `getAsciiGrid()`
 export const logGrid = (grid) => {
     let rows = [];
 

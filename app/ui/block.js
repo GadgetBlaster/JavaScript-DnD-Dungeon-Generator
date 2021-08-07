@@ -2,7 +2,11 @@
 
 import { element } from '../utility/element.js';
 
+// -- Types --------------------------------------------------------------------
+
 /** @typedef {import('../utility/element.js').Attributes} Attributes */
+
+// -- Public Functions ---------------------------------------------------------
 
 /**
  * Returns an HTML article element string.

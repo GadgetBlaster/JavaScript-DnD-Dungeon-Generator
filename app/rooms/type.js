@@ -3,7 +3,11 @@
 import { createProbability } from '../utility/roll.js';
 import { random } from '../utility/random.js';
 
+// -- Types --------------------------------------------------------------------
+
 /** @typedef {import('../utility/roll.js').Probability} Probability */
+
+// -- Config -------------------------------------------------------------------
 
 /**
  * Room types

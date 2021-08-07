@@ -2,6 +2,11 @@
 
 import { toss } from '../utility/tools.js';
 
+// -- Types --------------------------------------------------------------------
+
+/** @typedef {(Event) => void} Trigger */
+/** @typedef {{ [key: string]: Trigger }} Triggers */
+
 // -- Config -------------------------------------------------------------------
 
 /**
@@ -15,8 +20,7 @@ export const actions = {
     showHide : 'showHide',
 };
 
-/** @typedef {(Event) => void} Trigger */
-/** @typedef {{ [key: string]: Trigger }} Triggers */
+
 
 // -- Private Functions --------------------------------------------------------
 

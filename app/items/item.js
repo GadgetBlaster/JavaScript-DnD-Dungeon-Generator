@@ -11,6 +11,8 @@ import set from './set.js';
 import size from '../attributes/size.js';
 import type, { list as itemTypes } from './type.js';
 
+// -- Types --------------------------------------------------------------------
+
 /** @typedef {import('../knobs.js').Config} Config */
 
 /**

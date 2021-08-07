@@ -9,6 +9,8 @@ import { toss } from '../utility/tools.js';
 import roomType from './type.js';
 import size from '../attributes/size.js';
 
+// -- Types --------------------------------------------------------------------
+
 /** @typedef {import('../knobs.js').DungeonConfig} DungeonConfig */
 /** @typedef {import('../knobs.js').RoomConfig} RoomConfig */
 

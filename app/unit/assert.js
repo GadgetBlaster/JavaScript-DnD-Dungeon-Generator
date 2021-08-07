@@ -2,6 +2,8 @@
 
 import { selfClosingElements } from '../utility/element.js';
 
+// -- Types --------------------------------------------------------------------
+
 /**
  * Result
  *

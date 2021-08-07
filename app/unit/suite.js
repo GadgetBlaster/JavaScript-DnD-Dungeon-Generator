@@ -37,6 +37,8 @@ import generate from '../dungeons/test/tests.generate.js';
 import grid     from '../dungeons/test/tests.grid.js';
 import legend   from '../dungeons/test/tests.legend.js';
 
+// -- Config -------------------------------------------------------------------
+
 export default {
     '/app/unit/test/tests.assert.js': assert,
     '/app/unit/test/tests.output.js': output,

@@ -3,6 +3,8 @@
 import * as assertFunctions from './assert.js';
 import { getResultMessage } from './output.js';
 
+// -- Types --------------------------------------------------------------------
+
 /** @typedef {import('./assert.js').Result} Result */
 
 /** @typedef {(value: any) => Assertions} Assertion */

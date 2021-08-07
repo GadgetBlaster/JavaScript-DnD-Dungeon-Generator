@@ -5,6 +5,8 @@ import { element } from '../utility/element.js';
 import { isRequired } from '../utility/tools.js';
 import doorType, { lockable } from '../rooms/door.js';
 
+// -- Types --------------------------------------------------------------------
+
 /** @typedef {import('./map').Directions} Directions */
 /** @typedef {import('./grid').GridCoordinates} GridCoordinates */
 /** @typedef {import('./grid').GridDimensions} GridDimensions */
