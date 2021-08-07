@@ -6,6 +6,10 @@ import { isRequired } from '../utility/tools.js';
 import doorType, { lockable } from '../rooms/door.js';
 
 /** @typedef {import('./map').Directions} Directions */
+/** @typedef {import('./grid').GridCoordinates} GridCoordinates */
+/** @typedef {import('./grid').GridDimensions} GridDimensions */
+/** @typedef {import('./grid').GridRectangle} GridRectangle */
+/** @typedef {import('../utility/element.js').Attributes} Attributes */
 
 // -- Pixel Definitions --------------------------------------------------------
 
@@ -46,26 +50,6 @@ import doorType, { lockable } from '../rooms/door.js';
 
 /**
  * @typedef {PixelCoordinates & PixelDimensions} Rectangle
- */
-
-// -- Grid Definitions ---------------------------------------------------------
-
-/**
- * @typedef GridCoordinates
- *
- * @property {number} gridX
- * @property {number} gridY
- */
-
-/**
- * @typedef GridDimensions
- *
- * @property {number} gridWidth
- * @property {number} gridHeight
- */
-
-/**
- * @typedef {GridCoordinates & GridDimensions} GridRectangle
  */
 
 // -- Room Defs ----------------------------------------------------------------
@@ -246,7 +230,7 @@ function drawPillarCell({ gridX, gridY }) {
  * @private
  *
  * @param {Rectangle} rectangle
- * @param {{ [key: string]: string | number | boolean }} [attributes]
+ * @param {Attributes} [attributes]
  *
  * @returns {string}
  */

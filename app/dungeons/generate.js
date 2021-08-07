@@ -1,3 +1,4 @@
+// @ts-check
 
 import { generateMap } from './map.js';
 import { generateRooms } from '../rooms/generate.js';
@@ -8,7 +9,9 @@ import { isRequired } from '../utility/tools.js';
 import trapList from '../rooms/trap.js';
 
 /** @typedef {import('./draw.js').GridDimensions} GridDimensions */
+/** @typedef {import('./map.js').Door} Door */
 /** @typedef {import('../knobs.js').DungeonConfig} DungeonConfig */
+/** @typedef {import('../rooms/generate').Room} Room */
 
 /**
  * @typedef {object} Dungeon
@@ -20,6 +23,8 @@ import trapList from '../rooms/trap.js';
  */
 
 // -- Config -------------------------------------------------------------------
+
+// TODO minimum complexity constant
 
 const complexityMultiplierMaxXY     = 6;
 const complexityMultiplierMinXY     = 5;
@@ -118,6 +123,7 @@ export {
  */
 export const generateDungeon = (settings) => {
     let {
+        // TODO
         [knobs.dungeonComplexity] : complexity,
         [knobs.dungeonConnections]: connections,
         [knobs.dungeonMaps]       : maps,

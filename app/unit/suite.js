@@ -34,6 +34,7 @@ import item from '../items/test/tests.item.js';
 
 import draw from '../dungeons/test/tests.draw.js';
 import generate from '../dungeons/test/tests.generate.js';
+import grid from '../dungeons/test/tests.grid.js';
 
 export default {
     '/app/unit/test/tests.assert.js': assert,
@@ -70,4 +71,5 @@ export default {
 
     '/app/dungeons/test/tests.draw.js'    : draw,
     '/app/dungeons/test/tests.generate.js': generate,
+    '/app/dungeons/test/tests.grid.js'    : grid,
 };

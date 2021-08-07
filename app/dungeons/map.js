@@ -108,6 +108,7 @@ const getRoom = (grid, room, { hasTraps }) => {
 
     let walls = [];
 
+    // TODO refactor out into `addRoomToGrid()`
     for (let w = -wallSize; w < (width + wallSize); w++) {
         for (let h = -wallSize; h < (height + wallSize); h++) {
             let xCord = x + w;
@@ -478,7 +479,7 @@ const getRooms = (mapSettings, grid) => {
     };
 };
 
-const logGrid = (grid) => {
+export const logGrid = (grid) => {
     let rows = [];
 
     grid.forEach((column, x) => {
@@ -501,6 +502,7 @@ const logGrid = (grid) => {
 export const generateMap = (mapSettings) => {
     let { gridWidth, gridHeight } = mapSettings;
 
+    // TODO use `createBlankGrid()`
     let grid = [ ...Array(gridWidth) ].fill(cellBlank);
 
     grid.forEach((_, col) => {
