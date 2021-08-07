@@ -3,6 +3,7 @@
 import {
     // Config
     cellBlank,
+    cellCornerWall,
     cellWall,
     wallSize,
 
@@ -14,9 +15,7 @@ import {
     createBlankGrid,
     getStartingPoint,
     getValidRoomCords,
-    cellCornerWall,
 } from '../grid.js';
-import { logGrid } from '../map.js';
 
 /**
  * @param {import('../../unit/state.js').Utility} utility

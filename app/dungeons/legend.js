@@ -26,16 +26,16 @@ export const drawLegend = ({ mapWidth }) => {
     let scale = `${cellFeet} x ${cellFeet} ft`;
 
     let legend = {
-        [scale]      : drawGrid(mapSettings),
-        'room'       : drawRoom(gridRectangle, { roomNumber: 1 }),
-        'trapped'    : drawRoom(gridRectangle, { roomNumber: '' }, { hasTraps: true }),
-        'passageway' : drawDoor(gridRectangle, { direction, type: doorType.passageway }),
-        'archway'    : drawDoor(gridRectangle, { direction, type: doorType.archway }),
-        'doorway'    : drawDoor(gridRectangle, { direction, type: doorType.wooden }),
-        'locked door': drawDoor(gridRectangle, { direction, type: doorType.wooden, locked: true }),
-        'hole'       : drawDoor(gridRectangle, { direction, type: doorType.hole }),
-        'secret'     : drawDoor(gridRectangle, { direction, type: doorType.secret }),
-        'concealed'  : drawDoor(gridRectangle, { direction, type: doorType.concealed }),
+        [scale]       : drawGrid(mapSettings),
+        'Room'        : drawRoom(gridRectangle, { roomNumber: 1 }),
+        'Trapped Room': drawRoom(gridRectangle, { roomNumber: '' }, { hasTraps: true }),
+        'Passageway'  : drawDoor(gridRectangle, { direction, type: doorType.passageway }),
+        'Archway'     : drawDoor(gridRectangle, { direction, type: doorType.archway }),
+        'Doorway'     : drawDoor(gridRectangle, { direction, type: doorType.wooden }),
+        'Locked Door' : drawDoor(gridRectangle, { direction, type: doorType.wooden, locked: true }),
+        'Hole'        : drawDoor(gridRectangle, { direction, type: doorType.hole }),
+        'Secret'      : drawDoor(gridRectangle, { direction, type: doorType.secret }),
+        'Concealed'   : drawDoor(gridRectangle, { direction, type: doorType.concealed }),
     };
 
     return list(Object.keys(legend).map((key) => {

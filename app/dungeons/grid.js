@@ -1,3 +1,4 @@
+// @ts-check
 
 import { roll, rollArrayItem } from '../utility/roll.js';
 
@@ -38,6 +39,7 @@ export const cellCornerWall = 'c';
 
 export const cellFeet = 5;
 
+// TODO replace with directions
 export const sides = {
     top   : 'top',
     right : 'right',
