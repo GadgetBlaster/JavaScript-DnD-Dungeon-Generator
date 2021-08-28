@@ -123,7 +123,7 @@ export {
  *
  * @returns {Dungeon}
  */
-export const generateDungeon = (settings) => {
+export function generateDungeon(settings) {
     let {
         // TODO
         [knobs.dungeonComplexity] : complexity,
@@ -189,4 +189,4 @@ export const generateDungeon = (settings) => {
         doors: doors,
         mapDimensions,
     };
-};
+}

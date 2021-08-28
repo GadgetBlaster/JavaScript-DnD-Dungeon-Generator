@@ -254,7 +254,7 @@ export default ({ assert, describe, it }) => {
             // 6 . . . . v . . . . .
             // 7 . . . . . . . . . .
             // 8 . . . . . . . . . .
-            // 9  . . . . . . . . . .
+            // 9 . . . . . . . . . .
 
             const expectedCords  = [
                 [ 2, 4 ],

@@ -256,7 +256,7 @@ function drawRect({ x, y, width, height }, attributes = {}) {
  *
  * @returns {string}
  */
- function drawRoomPillars({ gridX, gridY, gridWidth, gridHeight }) {
+function drawRoomPillars({ gridX, gridY, gridWidth, gridHeight }) {
     let pillars = '';
 
     if (gridWidth < pillarGridThreshold || gridHeight < pillarGridThreshold) {
@@ -354,7 +354,7 @@ function drawTrapText({ x, y, height }) {
  *
  * @returns {Rectangle}
  */
- function getRectAttrs({ gridX, gridY, gridWidth, gridHeight }) {
+function getRectAttrs({ gridX, gridY, gridWidth, gridHeight }) {
     let xPx = gridX * pxCell;
     let yPx = gridY * pxCell;
 
@@ -390,7 +390,7 @@ export {
  *
  * @returns {string}
  */
-export const drawDoor = (gridRectangle, { direction, type, locked }) => {
+export function drawDoor(gridRectangle, { direction, type, locked }) {
     // TODO doors should only ever be 1 wide or 1 tall depending on direction
 
     let rectAttributes = getRectAttrs(gridRectangle);
@@ -491,7 +491,7 @@ export const drawDoor = (gridRectangle, { direction, type, locked }) => {
     let lines       = lineCords.map((cords) => drawLine({ ...cords, ...lineAttrs }, lineOptions)).join('');
 
     return element('rect', null, attributes) + lines + details.join('');
-};
+}
 
 /**
  * Returns a grid of horizontal and vertical SVG element line strings for the
@@ -544,7 +544,7 @@ export function drawGrid({ gridWidth, gridHeight }) {
  *
  * @returns {string}
  */
- export const drawMap = ({ gridWidth, gridHeight }, content) => {
+export function drawMap({ gridWidth, gridHeight }, content) {
     let attributes = {
         width : (gridWidth * pxCell),
         height: (gridHeight * pxCell),
@@ -552,10 +552,12 @@ export function drawGrid({ gridWidth, gridHeight }) {
     };
 
     return element('svg', content, attributes);
-};
+}
 
 /**
  * Returns a room SVG element strings for the given room configs.
+ *
+ * TODO audit callers for new `gridRectangle` shape
  *
  * @param {GridRectangle} gridRectangle
  * @param {RoomText} roomTextConfig
@@ -564,9 +566,8 @@ export function drawGrid({ gridWidth, gridHeight }) {
  *
  * @returns {string}
  *
- * TODO audit callers for new `gridRectangle` shape
  */
-export const drawRoom = (gridRectangle, roomTextConfig, { hasTraps } = {}) => {
+export function drawRoom(gridRectangle, roomTextConfig, { hasTraps } = {}) {
     let rectAttrs = getRectAttrs(gridRectangle);
 
     let rect = drawRect(rectAttrs, {
@@ -581,4 +582,4 @@ export const drawRoom = (gridRectangle, roomTextConfig, { hasTraps } = {}) => {
     let trap    = hasTraps ? drawTrapText(rectAttrs) : '';
 
     return rect + pillars + text + trap;
-};
+}

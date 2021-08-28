@@ -21,7 +21,7 @@ import doorType from '../rooms/door.js';
  *
  * @returns {string}
  */
-export const drawLegend = ({ mapWidth }) => {
+export function drawLegend({ mapWidth }) {
 
     let mapSettings = { gridWidth: 1, gridHeight: 1 };
 

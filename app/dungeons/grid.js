@@ -139,7 +139,7 @@ export const createBlankGrid = ({ gridWidth, gridHeight }) =>
  *
  * @returns {number[]} // TODO GridCoordinates
  */
-export const getStartingPoint = ({ gridWidth, gridHeight }, { roomWidth, roomHeight }) => {
+export function getStartingPoint({ gridWidth, gridHeight }, { roomWidth, roomHeight }) {
     let minX = wallSize;
     let minY = wallSize;
     let maxX = gridWidth  - roomWidth  - wallSize;
@@ -179,7 +179,7 @@ export const getStartingPoint = ({ gridWidth, gridHeight }, { roomWidth, roomHei
     }
 
     return [ x, y ];
-};
+}
 
 /**
  * Returns valid room coordinates.
@@ -192,7 +192,7 @@ export const getStartingPoint = ({ gridWidth, gridHeight }, { roomWidth, roomHei
  *
  * @returns {number[][]} // TODO GridCoordinates[]
  */
-export const getValidRoomCords = (grid, prevRoom, { roomWidth, roomHeight }) => {
+export function getValidRoomCords(grid, prevRoom, { roomWidth, roomHeight }) {
     let {
         x: prevX,
         y: prevY,
@@ -228,4 +228,4 @@ export const getValidRoomCords = (grid, prevRoom, { roomWidth, roomHeight }) => 
     }
 
     return validCords;
-};
+}

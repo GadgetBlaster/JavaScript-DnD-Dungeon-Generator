@@ -68,3 +68,4 @@ license.
 - [ ] Add dungeon and environment types. Such as classic dungeon, wilderness, jungle ruin, etc.
 - [ ] JS doc blocks & type defs
 - [ ] Unit test coverage
+- [ ] Config for multiple entrances & exits to the dungeon
