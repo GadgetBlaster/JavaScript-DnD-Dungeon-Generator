@@ -36,6 +36,7 @@ import draw     from '../dungeons/test/tests.draw.js';
 import generate from '../dungeons/test/tests.generate.js';
 import grid     from '../dungeons/test/tests.grid.js';
 import legend   from '../dungeons/test/tests.legend.js';
+import map      from '../dungeons/test/tests.map.js';
 
 // -- Config -------------------------------------------------------------------
 
@@ -76,4 +77,5 @@ export default {
     '/app/dungeons/test/tests.generate.js': generate,
     '/app/dungeons/test/tests.grid.js'    : grid,
     '/app/dungeons/test/tests.legend.js'  : legend,
+    '/app/dungeons/test/tests.map.js'     : map,
 };

@@ -30,7 +30,7 @@ import {
 
 import { knobs } from '../knobs.js';
 import { roll, rollArrayItem, rollPercentile } from '../utility/roll.js';
-import { toWords } from '../utility/tools.js';
+import { isRequired, toWords } from '../utility/tools.js';
 import roomType from '../rooms/type.js';
 
 // -- Types --------------------------------------------------------------------
@@ -39,11 +39,11 @@ import roomType from '../rooms/type.js';
 /** @typedef {import('../knobs.js').RoomConfig} RoomConfig */
 /** @typedef {import('../rooms/dimensions.js').RoomDimensions} RoomDimensions */
 /** @typedef {import('./draw.js').GridRectangle} GridRectangle */
+/** @typedef {import('./grid.js').Grid} Grid */
+/** @typedef {import('./grid.js').GridCoordinates} GridCoordinates */
 /** @typedef {import('./grid.js').GridDimensions} GridDimensions */
 
 /**
- * Connection
- *
  * @typedef {object} Connection
  *
  * @property {Directions} direction - north, east, south, or west
@@ -51,8 +51,6 @@ import roomType from '../rooms/type.js';
  */
 
 /**
- * Door
- *
  * @typedef {object} Door
  *
  * @property {string} rect
@@ -61,6 +59,25 @@ import roomType from '../rooms/type.js';
  * @property {object.<number, Connection>} connections
  * @property {Connection} connection
  * @property {number} size
+ */
+
+/**
+ * @typedef {object} AppliedRoomResults
+ *
+ * @property {Room[]} rooms
+ *     All rooms which have been generated for the map grid.
+ *
+ * @property {Door[]} doors
+ *     Doors which are associated to rooms which have been applied to the grid.
+ *
+ * @property {GridRoom[]} gridRooms
+ *     Room configs which have been applied to the grid.
+ *
+ * @property {Room[]} skipped
+ *     Room configs which have not been applied to the grid.
+ *
+ * @property {number} roomNumber
+ *     The room's ID.
  */
 
 // -- Config -------------------------------------------------------------------
@@ -117,6 +134,240 @@ const _oppositeDirectionLookup = {
 // -- Private Functions --------------------------------------------------------
 
 /**
+ * Checks for an adjacent door.
+ *
+ * @param {Grid} grid
+ * @param {GridCoordinates} gridCoordinates
+ *
+ * @returns {boolean}
+ */
+const checkAdjacentDoor = (grid, [ x, y ]) => {
+    return [ -1, 1 ].some((adjust) => {
+        let xAdjust = x + adjust;
+        let yAdjust = y + adjust;
+
+        let xCell = grid[xAdjust] && grid[xAdjust][y];
+        let yCell = grid[x] && grid[x][yAdjust];
+
+        if (xCell === cellDoor || yCell === cellDoor) {
+            return true;
+        }
+
+        return false;
+    });
+};
+
+/**
+ * Draws rooms to a map grid and returns the results.
+ *
+ * @param {GridDimensions} mapSettings // TODO rename, infer from Grid?
+ * @param {Room[]} mapRooms
+ * @param {Grid} grid
+ * @param {number} [roomNumber = 1] // TODO make required?
+ * @param {Room} [prevRoom]
+ *
+ * @returns {AppliedRoomResults}
+ */
+const drawRooms = (mapSettings, mapRooms, grid, roomNumber = 1, prevRoom) => {
+    let rooms     = [];
+    let doors     = [];
+    let skipped   = [];
+    let gridRooms = [];
+    let isFork    = roomNumber === 1 ? false : true;
+
+    mapRooms.forEach((roomConfig) => {
+        let { [knobs.roomType]: type } = roomConfig.settings;
+
+        let roomDimensions = getRoomDimensions(mapSettings, roomConfig);
+
+        let x;
+        let y;
+
+        if (prevRoom) {
+            let validCords = getValidRoomCords(grid, prevRoom, roomDimensions);
+
+            if (!validCords.length) {
+                skipped.push(roomConfig);
+                return;
+            }
+
+            if (type === roomType.hallway) {
+                // TODO remind me why the last set of cords is used for halls?
+                [ x, y ] = validCords[validCords.length - 1];
+            } else {
+                [ x, y ] = rollArrayItem(validCords);
+            }
+        } else {
+            [ x, y ] = getStartingPoint(mapSettings, roomDimensions);
+        }
+
+        let room = {
+            x, y,
+            width: roomDimensions.roomWidth,
+            height: roomDimensions.roomHeight,
+            type,
+            roomNumber,
+        };
+
+        let { rect, walls } = getRoom(grid, room, { hasTraps: Boolean(roomConfig.traps) });
+
+        room.walls = walls;
+
+        gridRooms.push(room);
+
+        doors.push(getDoor(grid, room, prevRoom, { allowSecret: isFork }));
+
+        rooms.push({
+            rect,
+            config: {
+                ...roomConfig,
+                walls,
+                roomNumber,
+                size: [ roomDimensions.roomWidth, roomDimensions.roomHeight ], // TODO rename to dimensions
+            },
+        });
+
+        roomNumber++;
+
+        prevRoom = room;
+    });
+
+    let extraDoors = getExtraDoors(grid, rooms, doors);
+
+    return {
+        rooms,
+        doors: doors.concat(extraDoors),
+        gridRooms,
+        skipped,
+        roomNumber,
+    };
+};
+
+/**
+ * Returns a door object based on the given grid, room, and previous room.
+ *
+ * @param {Grid} grid
+ * @param {Room} room
+ * @param {Room} prevRoom
+ * @param {options} [options]
+ *     @param {options} [options.allowSecret]
+ *
+ * @returns {Door}
+ */
+const getDoor = (grid, room, prevRoom, { allowSecret } = {}) => {
+    let cells     = getDoorCells(grid, room, prevRoom);
+    let useEdge   = prevRoom && prevRoom.roomType === roomType.hallway && room.roomType === roomType.hallway;
+    let max       = Math.min(maxDoorWidth, Math.ceil(cells.length / 2));
+    let size      = roll(1, max);
+    let remainder = cells.length - size;
+    let start     = useEdge ? rollArrayItem([ 0, remainder ]) : roll(0, remainder);
+    let doorCells = cells.slice(start, start + size);
+    let [ x, y ]  = doorCells[0];
+    let direction = getDoorDirection([ x, y ], room);
+
+    let width  = 1;
+    let height = 1;
+
+    grid[x][y] = cellDoor;
+
+    doorCells.forEach(([ cellX, cellY ]) => {
+        if (cellX > x || cellY > y) {
+            cellX > x ? width++ : height++;
+            grid[cellX][cellY] = cellDoor;
+        }
+    });
+
+    /** @type {GridRectangle} doorRectangle */
+    let doorRectangle = { gridX: x, gridY: y, gridWidth: width, gridHeight: height }; // TODO cleanup
+    let from       = room.roomNumber;
+    let to         = prevRoom ? prevRoom.roomNumber : outside;
+    let type       = allowSecret && secretProbability.roll();
+
+    return makeDoor(doorRectangle, { from, to, direction, type });
+};
+
+/**
+ * Returns an array of grid cells which are valid spaces for a door.
+ *
+ * @param {Grid} grid
+ * @param {Room} room
+ * @param {Room} prevRoom
+ *
+ * @returns {string[]} // TODO GridCoordinates[]
+ */
+const getDoorCells = (grid, room, prevRoom) => {
+    let prevWalls = [];
+
+    if (prevRoom) {
+        // TODO require rooms share an edge
+        prevWalls = prevRoom.walls;
+    } else {
+        // TODO get grid dimensions helper?
+        let gridWidth  = grid.length - 1;
+        let gridHeight = grid[0].length - 1;
+
+        let startTop    = room.y === wallSize && sides.top;
+        let startRight  = room.x === (gridWidth - room.width) && sides.right;
+        let startBottom = room.y === (gridHeight - room.height) && sides.bottom;
+        let startLeft   = room.x === wallSize && sides.left;
+
+        // TODO require room is against a grid edge
+
+        let side = rollArrayItem([ startTop, startRight, startBottom, startLeft ].filter(Boolean));
+        let dimension = (side === sides.top || side === sides.bottom) ? gridWidth : gridHeight;
+
+        for (let i = 0; i <= dimension; i++) {
+            switch (side) {
+                case sides.top:
+                    prevWalls.push([ i, 0 ]);
+                    break;
+                case sides.right:
+                    prevWalls.push([ gridWidth, i ]);
+                    break;
+                case sides.bottom:
+                    prevWalls.push([ i, gridHeight ]);
+                    break;
+                case sides.left:
+                    prevWalls.push([ 0, i ]);
+                    break;
+            }
+        }
+    }
+
+    let roomWalls     = room.walls.map((cords) => cords.join());
+    let prevRoomWalls = prevWalls.map((cords) => cords.join());
+    let intersection  = roomWalls.filter((value) => prevRoomWalls.includes(value));
+
+    let cells = intersection.map((xy) => xy.split(','));
+
+    return cells;
+};
+
+/**
+ * Returns a door's direction based on a cell of the door and the room.
+ *
+ * @param {GridCell} cell
+ * @param {Room} room
+ * @returns
+ */
+const getDoorDirection = ([ x, y ], room) => {
+    // TODO return early and drop elses
+    // TODO Remove number casting
+    // TODO check x & y, e.g. the corner of the room is an invalid door cell
+    if (Number(y) === (room.y - 1)) {
+        return directions.north;
+    } else if (Number(x) === (room.x + room.width)) {
+        return directions.east;
+    } else if (Number(y) === (room.y + room.height)) {
+        return directions.south;
+    } else if (Number(x) === (room.x - 1)) {
+        return directions.west;
+    } else {
+        throw new TypeError('Invalid grid cell');
+    }
+};
+
+/**
  * Returns randomized room dimensions for the given room type.
  *
  * @param {GridDimensions} mapSettings
@@ -130,13 +381,16 @@ const getRoomDimensions = (mapSettings, roomConfig) => {
         [knobs.roomType]: roomType,
     } } = roomConfig;
 
+    isRequired(roomSize, 'roomSize is required in getRoomDimensions()');
+    isRequired(roomType, 'roomType is required in getRoomDimensions()');
+
     let { gridWidth, gridHeight } = mapSettings;
 
     let roomWidth;
     let roomHeight;
 
     if (customDimensions[roomType]) {
-        // TODO should return an array
+        // TODO should return an array?
         ({ roomWidth, roomHeight } = customDimensions[roomType](roomSize));
     } else {
         let [ min, max ] = dimensionRanges[roomSize];
@@ -145,18 +399,20 @@ const getRoomDimensions = (mapSettings, roomConfig) => {
         roomHeight = roll(min, max);
     }
 
+    // TODO replace - 2 with - (wallSize * 2)
     let width  = Math.min(gridWidth - 2, roomWidth);
     let height = Math.min(gridHeight - 2, roomHeight);
 
     return { roomWidth: width, roomHeight: height };
 };
 
-const getRoom = (grid, room, { hasTraps }) => {
+const getRoom = (grid, room, { hasTraps } = {}) => {
     let { x, y, width, height, type, roomNumber } = room;
 
     let walls = [];
 
     // TODO refactor out into `addRoomToGrid()`
+    // TODO refactor out to create room w/ walls separate from applying to grid
     for (let w = -wallSize; w < (width + wallSize); w++) {
         for (let h = -wallSize; h < (height + wallSize); h++) {
             let xCord = x + w;
@@ -204,64 +460,7 @@ const getRoom = (grid, room, { hasTraps }) => {
     };
 };
 
-const getDoorCells = (grid, room, prevRoom) => {
-    let prevWalls = [];
-
-    if (prevRoom) {
-        prevWalls = prevRoom.walls;
-    } else {
-        let gridWidth  = grid.length - 1;
-        let gridHeight = grid[0].length - 1;
-
-        let startTop    = room.y === wallSize && sides.top;
-        let startRight  = room.x === (gridWidth - room.width) && sides.right;
-        let startBottom = room.y === (gridHeight - room.height) && sides.bottom;
-        let startLeft   = room.x === wallSize && sides.left;
-
-        let side = rollArrayItem([ startTop, startRight, startBottom, startLeft ].filter(Boolean));
-        let dimension = (side === sides.top || side === sides.bottom) ? gridWidth : gridHeight;
-
-        for (let i = 0; i <= dimension; i++) {
-            switch (side) {
-                case sides.top:
-                    prevWalls.push([ i, 0 ]);
-                    break;
-                case sides.right:
-                    prevWalls.push([ gridWidth, i ]);
-                    break;
-                case sides.bottom:
-                    prevWalls.push([ i, gridHeight ]);
-                    break;
-                case sides.left:
-                    prevWalls.push([ 0, i ]);
-                    break;
-            }
-        }
-    }
-
-    let roomWalls     = room.walls.map((cords) => cords.join());
-    let prevRoomWalls = prevWalls.map((cords) => cords.join())
-    let intersection  = roomWalls.filter((value) => prevRoomWalls.includes(value));
-
-    let cells = intersection.map((xy) => xy.split(','));
-
-    return cells;
-};
-
-const getDoorDirection = ([ x, y ], room) => {
-    if (Number(y) === (room.y - 1)) {
-        return directions.north;
-    } else if (Number(x) === (room.x + room.width)) {
-        return directions.east;
-    } else if (Number(y) === (room.y + room.height)) {
-        return directions.south;
-    } else if (Number(x) === (room.x - 1)) {
-        return directions.west;
-    } else {
-        throw new TypeError('Invalid direction');
-    }
-};
-
+// TODO rename to createDoor()
 const makeDoor = (doorRectangle, { from, to, direction, type }) => {
     if (!type) {
         type = doorProbability.roll();
@@ -277,56 +476,9 @@ const makeDoor = (doorRectangle, { from, to, direction, type }) => {
             [from]: { direction, to },
             [to]  : { direction: _oppositeDirectionLookup[direction], to: from },
         },
+        // TODO size is returning NaN, likely unused?
         size: Math.max(doorRectangle.width, doorRectangle.height),
     };
-};
-
-const getDoor = (grid, room, prevRoom, { allowSecret }) => {
-    let cells     = getDoorCells(grid, room, prevRoom);
-    let useEdge   = prevRoom && prevRoom.roomType === roomType.hallway && room.roomType === roomType.hallway;
-    let max       = Math.min(maxDoorWidth, Math.ceil(cells.length / 2));
-    let size      = roll(1, max);
-    let remainder = cells.length - size;
-    let start     = useEdge ? rollArrayItem([ 0, remainder ]) : roll(0, remainder);
-    let doorCells = cells.slice(start, start + size);
-    let [ x, y ]  = doorCells[0];
-    let direction = getDoorDirection([ x, y ], room);
-
-    let width  = 1;
-    let height = 1;
-
-    grid[x][y] = cellDoor;
-
-    doorCells.forEach(([ cellX, cellY ]) => {
-        if (cellX > x || cellY > y) {
-            cellX > x ? width++ : height++;
-            grid[cellX][cellY] = cellDoor;
-        }
-    });
-
-    /** @type {GridRectangle} doorRectangle */
-    let doorRectangle = { gridX: x, gridY: y, gridWidth: width, gridHeight: height }; // TODO cleanup
-    let from       = room.roomNumber;
-    let to         = prevRoom ? prevRoom.roomNumber : outside;
-    let type       = allowSecret && secretProbability.roll();
-
-    return makeDoor(doorRectangle, { from, to, direction, type });
-};
-
-const checkAdjacentDoor = (grid, [ x, y ]) => {
-    return [ -1, 1 ].some((adjust) => {
-        let xAdjust = x + adjust;
-        let yAdjust = y + adjust;
-
-        let xCell = grid[xAdjust] && grid[xAdjust][y];
-        let yCell = grid[x] && grid[x][yAdjust];
-
-        if (xCell === cellDoor || yCell === cellDoor) {
-            return true;
-        }
-
-        return false;
-    });
 };
 
 const getExtraDoors = (grid, rooms, existingDoors) => {
@@ -407,80 +559,6 @@ const getExtraDoors = (grid, rooms, existingDoors) => {
     return doors;
 };
 
-const drawRooms = (mapSettings, mapRooms, grid, roomNumber = 1, prevRoom) => {
-    let rooms     = [];
-    let doors     = [];
-    let skipped   = [];
-    let gridRooms = [];
-    let isFork    = roomNumber === 1 ? false : true;
-
-    mapRooms.forEach((roomConfig) => {
-        let { [knobs.roomType]: type } = roomConfig.settings;
-
-        let roomDimensions = getRoomDimensions(mapSettings, roomConfig);
-
-        let x;
-        let y;
-
-        if (prevRoom) {
-            let validCords = getValidRoomCords(grid, prevRoom, roomDimensions);
-
-            if (!validCords.length) {
-                skipped.push(roomConfig);
-                return;
-            }
-
-            if (type === roomType.hallway) {
-                [ x, y ] = validCords[validCords.length - 1];
-            } else {
-                [ x, y ] = rollArrayItem(validCords);
-            }
-        } else {
-            [ x, y ] = getStartingPoint(mapSettings, roomDimensions);
-        }
-
-        let room = {
-            x, y,
-            width: roomDimensions.roomWidth,
-            height: roomDimensions.roomHeight,
-            type,
-            roomNumber,
-        };
-
-        let { rect, walls } = getRoom(grid, room, { hasTraps: Boolean(roomConfig.traps) });
-
-        room.walls = walls;
-
-        gridRooms.push(room);
-
-        doors.push(getDoor(grid, room, prevRoom, { allowSecret: isFork }));
-
-        rooms.push({
-            rect,
-            config: {
-                ...roomConfig,
-                walls,
-                roomNumber,
-                size: [ roomDimensions.roomWidth, roomDimensions.roomHeight ], // TODO rename to dimensions
-            },
-        });
-
-        roomNumber++;
-
-        prevRoom = room;
-    });
-
-    let extraDoors = getExtraDoors(grid, rooms, doors);
-
-    return {
-        rooms,
-        doors: doors.concat(extraDoors),
-        gridRooms,
-        skipped,
-        roomNumber,
-    };
-};
-
 const getRooms = (mapSettings, grid) => {
     let { rooms, doors, skipped, roomNumber, gridRooms } = drawRooms(mapSettings, mapSettings.rooms, grid);
 
@@ -504,6 +582,21 @@ const getRooms = (mapSettings, grid) => {
         doors,
     };
 };
+
+export {
+    checkAdjacentDoor as testCheckAdjacentDoor,
+    drawRooms         as testDrawRooms,
+    getDoor           as testGetDoor,
+    getDoorCells      as testGetDoorCells,
+    getDoorDirection  as testGetDoorDirection,
+    getExtraDoors     as testGetExtraDoors,
+    getRoom           as testGetRoom,
+    getRoomDimensions as testGetRoomDimensions,
+    getRooms          as testGetRooms,
+    makeDoor          as testMakeDoor,
+};
+
+// -- Public Functions ---------------------------------------------------------
 
 // TODO only logs square grids?
 // TODO return string & rename to `getAsciiGrid()`
