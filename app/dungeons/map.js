@@ -406,6 +406,18 @@ const getRoomDimensions = (mapSettings, roomConfig) => {
     return { roomWidth: width, roomHeight: height };
 };
 
+/**
+ * Returns a room rectangle and array of walls
+ * @param {Grid} grid
+ * @param {Room} room
+ * @param {object} [options]
+ *     @param {boolean} [options.hasTraps]
+ *
+ * @returns {{
+ *     rect: string;
+ *     walls: string[][]; // TODO GridCoordinates[]
+ * }}
+ */
 const getRoom = (grid, room, { hasTraps } = {}) => {
     let { x, y, width, height, type, roomNumber } = room;
 
@@ -455,7 +467,7 @@ const getRoom = (grid, room, { hasTraps } = {}) => {
     let rect = drawRoom(roomRectangle, { roomNumber, roomLabel }, { hasTraps });
 
     return {
-        rect,
+        rect, // TODO rename to roomElements?
         walls,
     };
 };
@@ -481,6 +493,16 @@ const makeDoor = (doorRectangle, { from, to, direction, type }) => {
     };
 };
 
+/**
+ * Returns an array of Door configs for the additional connections to the given
+ * Room, if any.
+ *
+ * @param {Grid} grid
+ * @param {Room[]} rooms
+ * @param {Door[]} existingDoors
+ *
+ * @returns {Door[]}
+ */
 const getExtraDoors = (grid, rooms, existingDoors) => {
     let doors = [];
 
@@ -534,7 +556,7 @@ const getExtraDoors = (grid, rooms, existingDoors) => {
                     connectedTo.add(xConnect);
 
                     let direction = adjust === -1 ? directions.west : directions.east;
-                    let type      = secretProbability.roll();
+                    let type      = secretProbability.roll(); // TODO inject `secretProbability`
 
                     doors.push(makeDoor(doorRectangle, { from: roomNumber, to: xConnect, direction, type }));
                 }
@@ -548,7 +570,7 @@ const getExtraDoors = (grid, rooms, existingDoors) => {
                     connectedTo.add(yConnect);
 
                     let direction = adjust === -1 ? directions.north : directions.south;
-                    let type      = secretProbability.roll();
+                    let type      = secretProbability.roll(); // TODO inject `secretProbability`
 
                     doors.push(makeDoor(doorRectangle, { from: roomNumber, to: yConnect, direction, type }));
                 }
@@ -598,7 +620,7 @@ export {
 
 // -- Public Functions ---------------------------------------------------------
 
-// TODO only logs square grids?
+// TODO Bug? Only logs square grids?
 // TODO return string & rename to `getAsciiGrid()`
 export const logGrid = (grid) => {
     let rows = [];

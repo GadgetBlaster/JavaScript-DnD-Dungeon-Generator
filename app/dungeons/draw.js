@@ -555,7 +555,7 @@ export function drawMap({ gridWidth, gridHeight }, content) {
 }
 
 /**
- * Returns a room SVG element strings for the given room configs.
+ * Returns a room's SVG element strings for the given room configs.
  *
  * TODO audit callers for new `gridRectangle` shape
  *
