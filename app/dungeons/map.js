@@ -370,16 +370,19 @@ const getDoorDirection = ([ x, y ], room) => {
 /**
  * Returns randomized room dimensions for the given room type.
  *
- * @param {GridDimensions} mapSettings
+ * @param {GridDimensions} mapSettings // TODO rename
  * @param {RoomConfig | DungeonConfig} roomConfig
  *
  * @returns {RoomDimensions}
  */
 const getRoomDimensions = (mapSettings, roomConfig) => {
-    let { settings: {
-        [knobs.roomSize]: roomSize,
-        [knobs.roomType]: roomType,
-    } } = roomConfig;
+    // TODO just pass settings
+    let {
+        settings: {
+            [knobs.roomSize]: roomSize,
+            [knobs.roomType]: roomType,
+        },
+    } = roomConfig;
 
     isRequired(roomSize, 'roomSize is required in getRoomDimensions()');
     isRequired(roomType, 'roomType is required in getRoomDimensions()');

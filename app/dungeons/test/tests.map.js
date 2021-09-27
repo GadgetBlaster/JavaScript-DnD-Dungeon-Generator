@@ -17,9 +17,12 @@ import {
     testMakeDoor          as makeDoor,
 
     // Public functions
+    logGrid,
+    generateMap,
 } from '../map.js';
 
-import { cellDoor, cellWall, cellCornerWall, createBlankGrid } from '../grid.js';
+import { cellDoor, cellWall, cellCornerWall, createBlankGrid, wallSize } from '../grid.js';
+import { dimensionRanges } from '../../rooms/dimensions.js';
 import { knobs } from '../../knobs.js';
 import { labelMinWidth, labelMinHeight, testTrapLabel as trapLabel } from '../draw.js';
 import { list as doorTypes } from '../../rooms/door.js';
@@ -725,7 +728,74 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getRoomDimensions()', () => {
+        const mapDimensions = { gridWidth: 10, gridHeight: 6 };
 
+        describe('given a room config with a missing room type', () => {
+            it('should throw', () => {
+                assert(() => getRoomDimensions(mapDimensions, {
+                    settings: { [knobs.roomSize]: size.small },
+                })).throws('roomType is required in getRoomDimensions()');
+            });
+        });
+
+        describe('given a room config with a missing room size', () => {
+            it('should throw', () => {
+                assert(() => getRoomDimensions(mapDimensions, {
+                    settings: { [knobs.roomType]: roomTypes.library },
+                })).throws('roomSize is required in getRoomDimensions()');
+            });
+        });
+
+        describe('given a room type which requires custom dimensions', () => {
+            // TODO need to inject randomization for testing
+            it('should return a room width and height ', () => {
+                const dimensions = getRoomDimensions(mapDimensions, {
+                    settings: {
+                        [knobs.roomSize]: size.small,
+                        [knobs.roomType]: roomTypes.hallway,
+                    },
+                });
+
+                assert(dimensions.roomWidth).isNumber();
+                assert(dimensions.roomHeight).isNumber();
+            });
+        });
+
+        describe('given a room type which does not require custom dimensions', () => {
+            it('should return a room width and height within the range specified for the room size', () => {
+                const [ minSize, maxSize ] = dimensionRanges[size.small];
+
+                const { roomWidth, roomHeight } = getRoomDimensions(mapDimensions, {
+                    settings: {
+                        [knobs.roomSize]: size.small,
+                        [knobs.roomType]: roomTypes.room,
+                    },
+                });
+
+                assert(roomWidth >= minSize && roomWidth <= maxSize).isTrue();
+                assert(roomHeight >= minSize && roomHeight <= maxSize).isTrue();
+            });
+        });
+
+        describe('when the room dimensions are larger than the grid dimensions', () => {
+            it('should return a room width and height no larger than the grid width minus twice the wall size', () => {
+                const gridWidth  = 5;
+                const gridHeight = 5;
+
+                const miniMapDimensions = { gridWidth, gridHeight };
+                const [ minSize, maxSize ] = dimensionRanges[size.massive];
+
+                const { roomWidth, roomHeight } = getRoomDimensions(miniMapDimensions, {
+                    settings: {
+                        [knobs.roomSize]: size.massive,
+                        [knobs.roomType]: roomTypes.room,
+                    },
+                });
+
+                assert(roomWidth <= (gridWidth - (wallSize * 2))).isTrue();
+                assert(roomHeight <= (gridHeight - (wallSize * 2))).isTrue();
+            });
+        });
     });
 
     describe('getRooms()', () => {
@@ -735,4 +805,15 @@ export default ({ assert, describe, it }) => {
     describe('makeDoor()', () => {
 
     });
+
+    // -- Public Functions -----------------------------------------------------
+
+    describe('logGrid()', () => {
+
+    });
+
+    describe('generateMap()', () => {
+
+    });
+
 };

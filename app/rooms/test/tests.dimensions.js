@@ -28,6 +28,8 @@ export default ({ assert, describe, it }) => {
                     assert(dimensions[0]).isNumber();
                     assert(dimensions[1]).isNumber();
                 });
+
+                // TODO assert min <= max
             });
         });
     });

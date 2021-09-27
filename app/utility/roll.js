@@ -76,7 +76,7 @@ export function createProbability(config) {
 }
 
 /**
- * Roll
+ * Rolls an integer between min and max inclusively.
  *
  * @param {number} [min = 0]
  * @param {number} [max = 1]
