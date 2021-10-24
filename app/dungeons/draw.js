@@ -384,7 +384,7 @@ export {
  *
  * @param {GridRectangle} gridRectangle
  * @param {object} args
- *     @param {"north" | "east" | "south" | "west"} args.direction
+ *     @param {"north" | "east" | "south" | "west"} args.direction // TODO reusable type
  *     @param {string} args.type
  *     @param {boolean} [args.locked] // TODO move to options param
  *

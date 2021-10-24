@@ -23,9 +23,14 @@ import {
 
 import { cellDoor, cellWall, cellCornerWall, createBlankGrid, wallSize } from '../grid.js';
 import { dimensionRanges } from '../../rooms/dimensions.js';
+import { generateRooms } from '../../rooms/generate.js';
 import { knobs } from '../../knobs.js';
 import { labelMinWidth, labelMinHeight, testTrapLabel as trapLabel } from '../draw.js';
 import { list as doorTypes } from '../../rooms/door.js';
+import condition from '../../attributes/condition.js';
+import itemTypes from '../../items/type.js';
+import quantity from '../../attributes/quantity.js';
+import rarity from '../../attributes/rarity.js';
 import roomTypes from '../../rooms/type.js';
 import size from '../../attributes/size.js';
 
@@ -72,7 +77,7 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('drawRooms()', () => {
-        const gridDimensions = { gridWidth: 10, gridHeight: 10 };
+        const gridDimensions = { gridWidth: 12, gridHeight: 12 };
 
         it('should return an AppliedRoomResults object', () => {
             const grid = createBlankGrid(gridDimensions);
@@ -128,6 +133,67 @@ export default ({ assert, describe, it }) => {
                 const result = drawRooms(gridDimensions, [ room, room ], grid, 1);
 
                 assert(result.skipped.length).equals(1);
+            });
+        });
+
+        describe('given a previous room', () => {
+            describe('when the previous room has no wall cells', () => {
+                it('should throw', () => {
+                    const grid = createBlankGrid(gridDimensions);
+                    const room = {
+                        settings: {
+                            [knobs.roomType]: roomTypes.room,
+                            [knobs.roomSize]: size.tiny,
+                        },
+                    };
+
+                    assert(() => drawRooms(gridDimensions, [ room ], grid, 1, room))
+                        .throws('Previous room requires wall cells');
+                });
+            });
+
+            describe('when connecting a hallway to a room', () => {
+                it('should connect the hallway to the previous room', () => {
+                    const grid = createBlankGrid(gridDimensions);
+                    const prevRoom = {
+                        x: 1,
+                        y: 1,
+                        width: 2,
+                        height: 3,
+                        roomNumber: 1,
+                        type: roomTypes.room,
+                    };
+
+                    const { walls } = getRoom(grid, prevRoom);
+
+                    const hallway = {
+                        roomNumber: 2,
+                        settings: {
+                            [knobs.roomType]: roomTypes.hallway,
+                            [knobs.roomSize]: size.small,
+                        },
+                    };
+
+                    const result = drawRooms(gridDimensions, [ hallway ], grid, 1, {
+                        walls,
+                        ...prevRoom,
+                    });
+
+
+                    assert(result.doors).isArray();
+
+                    // TODO door.size is undefined in this test, require missing
+                    // size
+                    const door = result.doors && result.doors.pop();
+                    assert(door.type).isString();
+
+                    door && assert(door.connections).isObject();
+                    door && assert(door.connections[1]).isObject();
+
+                    const connection = door && door.connections[1];
+                    connection && assert(connection.direction).isString();
+                    connection && assert(connection.to).equals(1);
+                });
             });
         });
     });
@@ -612,6 +678,24 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getRoom()', () => {
+        describe('given a room config without a roomNumber', () => {
+            it('should throw', () => {
+                // @ts-ignore
+                const grid = createBlankGrid({ gridWidth: 8, gridHeight: 6 });
+                assert(() => getRoom(grid, { type: roomTypes.kitchen }))
+                    .throws('roomNumber is required in getRoom()');
+            });
+        });
+
+        describe('given a room config without a room type', () => {
+            it('should throw', () => {
+                // @ts-ignore
+                const grid = createBlankGrid({ gridWidth: 8, gridHeight: 6 });
+                assert(() => getRoom(grid, { roomNumber: 1 }))
+                    .throws('room type is required in getRoom()');
+            });
+        });
+
         describe('given a grid and a room config', () => {
             // w = cellWall
             // c = cellCornerWall
@@ -799,21 +883,117 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getRooms()', () => {
+        describe('given three rooms configs', () => {
+            const gridWidth  = 20;
+            const gridHeight = 24;
 
+            const grid = createBlankGrid({ gridWidth, gridHeight });
+            const room = {
+                x: 1,
+                y: 1,
+                width: 3,
+                height: 2,
+                type: roomTypes.room,
+                roomNumber: 1,
+                settings: {
+                    [knobs.roomSize]: size.small,
+                    [knobs.roomType]: roomTypes.room,
+                },
+            };
+
+            it('should return an object containing rooms and doors', () => {
+                const { rooms, doors } = getRooms({
+                    gridWidth,
+                    gridHeight,
+                    rooms: [
+                        { ...room },
+                        { ...room, x: 5, y: 1, roomNumber: 2 },
+                        { ...room, x: 1, y: 4, roomNumber: 3 },
+                    ],
+                }, grid);
+
+                assert(rooms).isArray();
+                rooms && assert(rooms.length).equals(3);
+                rooms && rooms.forEach((roomConfig) => {
+                    assert(roomConfig).isObject();
+                    roomConfig && assert(roomConfig.config).isObject();
+                    roomConfig && assert(roomConfig.rect).isString();
+                });
+
+                assert(doors).isArray();
+                doors && assert(doors.length).equals(3);
+
+                doors && doors.forEach((doorConfig) => {
+                    assert(doorConfig).isObject();
+                    doorConfig && assert(doorConfig.connections).isObject();
+                    doorConfig && assert(doorConfig.locked).isBoolean();
+                    doorConfig && assert(doorConfig.rect).isString();
+                    doorConfig && assert(doorTypes.includes(doorConfig.type)).isTrue();
+                });
+            });
+        });
     });
 
     describe('makeDoor()', () => {
+        it('should return a door config', () => {
+            const door = makeDoor({
+                gridX: 1,
+                gridY: 2,
+                gridWidth: 4,
+                gridHeight: 3,
+            }, {
+                from: 1,
+                to: 2,
+                direction: directions.south,
+                type: roomTypes.library,
+            });
 
+            assert(door).isObject();
+            assert(door.rect).isString();
+            assert(door.type).equals(roomTypes.library);
+            assert(door.locked).isBoolean();
+            assert(door.connections).equalsObject({
+                1: { direction: directions.south, to: 2 },
+                2: { direction: directions.north, to: 1 },
+            });
+        });
     });
 
     // -- Public Functions -----------------------------------------------------
 
     describe('logGrid()', () => {
-
+        // TODO
     });
 
     describe('generateMap()', () => {
+        it('should generate a map, rooms, and doors', () => {
+            const { map, rooms, doors } = generateMap({
+                gridWidth: 30,
+                gridHeight: 24,
+                rooms: generateRooms({
+                    [knobs.itemCondition]: condition.average,
+                    [knobs.itemQuantity] : quantity.one,
+                    [knobs.itemRarity]   : rarity.average,
+                    [knobs.itemType]     : itemTypes.miscellaneous,
+                    [knobs.roomSize]     : size.medium,
+                    [knobs.roomCount]    : 28,
+                    [knobs.roomType]     : roomTypes.room,
+                    [knobs.roomCondition]: condition.average,
+                }),
+            });
 
+            assert(map).isString();
+
+            assert(rooms).isArray();
+            rooms && rooms.forEach((room, i) => {
+                assert(room.roomNumber).equals(i + 1);
+            });
+
+            assert(doors).isArray();
+            doors && doors.forEach((door) => {
+                assert(doorTypes.includes(door.type)).isTrue();
+            });
+        });
     });
 
-};
+}

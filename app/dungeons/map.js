@@ -160,11 +160,20 @@ const checkAdjacentDoor = (grid, [ x, y ]) => {
 /**
  * Draws rooms to a map grid and returns the results.
  *
+ * TODO rename, not a draw method
+ *
  * @param {GridDimensions} mapSettings // TODO rename, infer from Grid?
  * @param {Room[]} mapRooms
  * @param {Grid} grid
  * @param {number} [roomNumber = 1] // TODO make required?
- * @param {Room} [prevRoom]
+ * @param {{
+ *   x: number;
+ *   y: number;
+ *   width: number;
+ *   height: number;
+ *   type: number;
+ *   walls: [number, number][];
+ * }} [prevRoom]
  *
  * @returns {AppliedRoomResults}
  */
@@ -184,6 +193,8 @@ const drawRooms = (mapSettings, mapRooms, grid, roomNumber = 1, prevRoom) => {
         let y;
 
         if (prevRoom) {
+            isRequired(prevRoom.walls, 'Previous room requires wall cells');
+
             let validCords = getValidRoomCords(grid, prevRoom, roomDimensions);
 
             if (!validCords.length) {
@@ -410,9 +421,14 @@ const getRoomDimensions = (mapSettings, roomConfig) => {
 };
 
 /**
- * Returns a room rectangle and array of walls
+ * Returns a room rectangle and an array of wall coordinates.
+ *
+ * TODO rename to `getRoomWalls()`
+ * TODO refactor so it only returns walls, then call `drawRoom` in the parent
+ * function.
+ *
  * @param {Grid} grid
- * @param {Room} room
+ * @param {Room} room // TODO not a room
  * @param {object} [options]
  *     @param {boolean} [options.hasTraps]
  *
@@ -423,6 +439,9 @@ const getRoomDimensions = (mapSettings, roomConfig) => {
  */
 const getRoom = (grid, room, { hasTraps } = {}) => {
     let { x, y, width, height, type, roomNumber } = room;
+
+    isRequired(roomNumber, 'roomNumber is required in getRoom()');
+    isRequired(type, 'room type is required in getRoom()');
 
     let walls = [];
 
@@ -475,12 +494,28 @@ const getRoom = (grid, room, { hasTraps } = {}) => {
     };
 };
 
-// TODO rename to createDoor()
+/**
+ * Returns a door config.
+ *
+ * TODO rename to createDoor()
+ *
+ * @param {GridRectangle} doorRectangle
+ * @param {{
+ *     from: number;
+ *     to: number;
+ *     direction: Directions;
+ *     type: RoomType;
+ * }} args
+ *
+ * @returns {Door}
+ */
 const makeDoor = (doorRectangle, { from, to, direction, type }) => {
     if (!type) {
+        // TODO inject probability
         type = doorProbability.roll();
     }
 
+    // TODO inject probability
     let locked = lockable.has(type) && rollPercentile(lockedChance);
 
     return {
@@ -584,6 +619,19 @@ const getExtraDoors = (grid, rooms, existingDoors) => {
     return doors;
 };
 
+/**
+ * Returns an array of rooms and an array of doors.
+ *
+ * TODO rename.
+ *
+ * @param {GridDimensions} mapSettings // TODO rename, infer from Grid?
+ * @param {Grid} grid
+ *
+ * @returns {{
+ *     rooms: Room[];
+ *     doors: Door[];
+ * }}
+ */
 const getRooms = (mapSettings, grid) => {
     let { rooms, doors, skipped, roomNumber, gridRooms } = drawRooms(mapSettings, mapSettings.rooms, grid);
 
@@ -623,8 +671,14 @@ export {
 
 // -- Public Functions ---------------------------------------------------------
 
-// TODO Bug? Only logs square grids?
-// TODO return string & rename to `getAsciiGrid()`
+/**
+ * Logs an ascii representation of a grid.
+ *
+ * TODO Bug? Only logging square grids?
+ * TODO return string & rename to `getAsciiGrid()`
+ *
+ * @param {Grid} grid
+ */
 export const logGrid = (grid) => {
     let rows = [];
 
@@ -645,6 +699,13 @@ export const logGrid = (grid) => {
     console.log(ascii);
 };
 
+/**
+ * Generates a dungeon map.
+ *
+ * @param {MapConfig} mapSettings
+ *
+ * @returns {Map}
+ */
 export const generateMap = (mapSettings) => {
     let { gridWidth, gridHeight } = mapSettings;
 
