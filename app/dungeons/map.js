@@ -83,11 +83,6 @@ import roomType from '../rooms/type.js';
 // -- Config -------------------------------------------------------------------
 
 /**
- * If an ASCII representation of the map arrays should be logged to the console.
- */
-const debug = false;
-
-/**
  * Maximum number of grid cells a door can be wide or tall.
  *
  * TODO rename to `maxDoorCellSize`?
@@ -678,25 +673,29 @@ export {
  * TODO return string & rename to `getAsciiGrid()`
  *
  * @param {Grid} grid
+ *
+ * @returns {string}
  */
 export const logGrid = (grid) => {
     let rows = [];
 
-    grid.forEach((column, x) => {
-        let cols = [];
+    for (let y = 0; y <= grid[0].length; y++) {
+        let row = [];
 
-        column.forEach((_, y) => {
-            grid[y] && grid[y][x] && cols.push(grid[y][x]);
-        });
+        for (let x = 0; x <= grid.length; x++) {
+            grid[x] && grid[x][y] && row.push(grid[x][y]);
+        }
 
-        cols.length && rows.push(cols);
-    });
+        rows.push(row);
+    }
 
-    let ascii = rows.map((cols) => {
+    let log = rows.map((cols) => {
         return cols.join(' ');
-    }).join("\n");
+    }).join('\n').trim();
 
-    console.log(ascii);
+    console.log(log);
+
+    return log;
 };
 
 /**
@@ -726,8 +725,6 @@ export const generateMap = (mapSettings) => {
     let doorRects = doors.map(({ rect }) => rect).join('');
     let gridLines = drawGrid(mapSettings);
     let content   = gridLines + roomRects + doorRects;
-
-    debug && logGrid(grid);
 
     return {
         map  : drawMap(mapSettings, content),

@@ -21,7 +21,7 @@ import {
     generateMap,
 } from '../map.js';
 
-import { cellDoor, cellWall, cellCornerWall, createBlankGrid, wallSize } from '../grid.js';
+import { cellBlank, cellDoor, cellWall, cellCornerWall, createBlankGrid, wallSize } from '../grid.js';
 import { dimensionRanges } from '../../rooms/dimensions.js';
 import { generateRooms } from '../../rooms/generate.js';
 import { knobs } from '../../knobs.js';
@@ -152,6 +152,48 @@ export default ({ assert, describe, it }) => {
                 });
             });
 
+            describe('when connecting to a room', () => {
+                it('should connect the rooms', () => {
+                    const grid = createBlankGrid(gridDimensions);
+                    const prevRoom = {
+                        x: 1,
+                        y: 1,
+                        width: 2,
+                        height: 3,
+                        roomNumber: 1,
+                        type: roomTypes.room,
+                    };
+
+                    const { walls } = getRoom(grid, prevRoom);
+
+                    const room = {
+                        roomNumber: 2,
+                        settings: {
+                            [knobs.roomType]: roomTypes.room,
+                            [knobs.roomSize]: size.medium,
+                        },
+                    };
+
+                    const result = drawRooms(gridDimensions, [ room ], grid, 1, {
+                        walls,
+                        ...prevRoom,
+                    });
+
+                    assert(result.doors).isArray();
+
+                    // TODO door.size is undefined in this test, require missing
+                    // size
+                    const door = result.doors.pop();
+                    assert(door.type).isString();
+                    assert(door.connections).isObject();
+
+                    const connection = door.connections[1];
+                    assert(connection).isObject();
+                    assert(connection.direction).isString();
+                    assert(connection.to).equals(1);
+                });
+            });
+
             describe('when connecting a hallway to a room', () => {
                 it('should connect the hallway to the previous room', () => {
                     const grid = createBlankGrid(gridDimensions);
@@ -179,20 +221,16 @@ export default ({ assert, describe, it }) => {
                         ...prevRoom,
                     });
 
-
                     assert(result.doors).isArray();
 
-                    // TODO door.size is undefined in this test, require missing
-                    // size
-                    const door = result.doors && result.doors.pop();
+                    const door = result.doors.pop();
                     assert(door.type).isString();
+                    assert(door.connections).isObject();
 
-                    door && assert(door.connections).isObject();
-                    door && assert(door.connections[1]).isObject();
-
-                    const connection = door && door.connections[1];
-                    connection && assert(connection.direction).isString();
-                    connection && assert(connection.to).equals(1);
+                    const connection = door.connections[1];
+                    assert(connection).isObject();
+                    assert(connection.direction).isString();
+                    assert(connection.to).equals(1);
                 });
             });
         });
@@ -962,7 +1000,67 @@ export default ({ assert, describe, it }) => {
     // -- Public Functions -----------------------------------------------------
 
     describe('logGrid()', () => {
-        // TODO
+        describe('given a blank grid', () => {
+            it('should return an string representing the grid', () => {
+                const grid = createBlankGrid({ gridWidth: 3, gridHeight: 3 });
+                assert(logGrid(grid)).equals('. . .\n. . .\n. . .');
+            });
+        });
+
+        describe('given a grid with a room on it', () => {
+            it('should return an string containing the walls, corners, room number, and blank cells', () => {
+                const gridDimensions = { gridWidth: 5, gridHeight: 5 };
+                const grid = createBlankGrid(gridDimensions);
+
+                grid[1][1] = cellCornerWall;
+                grid[2][1] = cellWall;
+                grid[3][1] = cellWall;
+                grid[4][1] = cellCornerWall;
+
+                grid[1][2] = cellWall;
+                grid[2][2] = '1';
+                grid[3][2] = '1';
+                grid[4][2] = cellWall;
+
+                grid[1][3] = cellCornerWall;
+                grid[2][3] = cellWall;
+                grid[3][3] = cellWall;
+                grid[4][3] = cellCornerWall;
+
+                assert(logGrid(grid)).equals(
+                    '. . . . .\n' +
+                    '. c w w c\n' +
+                    '. w 1 1 w\n' +
+                    '. c w w c\n' +
+                    '. . . . .'
+                );
+            });
+        });
+
+        describe('given dimensions for a horizontal rectangle grid', () => {
+            it('should return an string representing the grid', () => {
+                const grid = createBlankGrid({ gridWidth: 7, gridHeight: 4 });
+                assert(logGrid(grid)).equals(
+                    '. . . . . . .\n' +
+                    '. . . . . . .\n' +
+                    '. . . . . . .\n' +
+                    '. . . . . . .'
+                );
+            });
+        });
+
+        describe('given dimensions for a vertical rectangle grid', () => {
+            it('should return an string representing the grid', () => {
+                const grid = createBlankGrid({ gridWidth: 3, gridHeight: 5 });
+                assert(logGrid(grid)).equals(
+                    '. . .\n' +
+                    '. . .\n' +
+                    '. . .\n' +
+                    '. . .\n' +
+                    '. . .'
+                );
+            });
+        });
     });
 
     describe('generateMap()', () => {
@@ -976,7 +1074,7 @@ export default ({ assert, describe, it }) => {
                     [knobs.itemRarity]   : rarity.average,
                     [knobs.itemType]     : itemTypes.miscellaneous,
                     [knobs.roomSize]     : size.medium,
-                    [knobs.roomCount]    : 28,
+                    [knobs.roomCount]    : 34,
                     [knobs.roomType]     : roomTypes.room,
                     [knobs.roomCondition]: condition.average,
                 }),
@@ -996,4 +1094,4 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-}
+};
