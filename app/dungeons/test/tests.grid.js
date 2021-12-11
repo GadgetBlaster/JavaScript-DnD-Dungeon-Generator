@@ -88,7 +88,7 @@ export default ({ assert, describe, it }) => {
             const gridWidth  = 4;
             const gridHeight = 5;
 
-            const grid = createBlankGrid({ gridWidth, gridHeight });
+            const grid = createBlankGrid({ width: gridWidth, height: gridHeight });
             const rect = {
                 x: 1,
                 y: 1,
@@ -118,7 +118,7 @@ export default ({ assert, describe, it }) => {
 
                 describe('when the rectangle overlaps an occupied cell', () => {
                     it('should return false', () => {
-                        const populatedGrid = createBlankGrid({ gridWidth, gridHeight });
+                        const populatedGrid = createBlankGrid({ width: gridWidth, height: gridHeight });
                         populatedGrid[1][1] = cellWall;
 
                         assert(checkArea(populatedGrid, rect)).isFalse();
@@ -154,7 +154,7 @@ export default ({ assert, describe, it }) => {
 
                 describe('when the rectangle overlaps an occupied cell', () => {
                     it('should return false', () => {
-                        const populatedGrid = createBlankGrid({ gridWidth, gridHeight });
+                        const populatedGrid = createBlankGrid({ width: gridWidth, height: gridHeight });
                         populatedGrid[2][3] = cellWall;
 
                         assert(checkArea(populatedGrid, rect2)).isFalse();
@@ -169,7 +169,7 @@ export default ({ assert, describe, it }) => {
     describe('createBlankGrid()', () => {
         describe('given a gridWidth and gridHeight', () => {
             it('returns a multidimensional array of empty grid cells for the given dimensions', () => {
-                const grid = createBlankGrid({ gridWidth: 4, gridHeight: 3 });
+                const grid = createBlankGrid({ width: 4, height: 3 });
 
                 assert(grid).isArray();
 
@@ -224,7 +224,7 @@ export default ({ assert, describe, it }) => {
 
     describe('getValidRoomCords()', () => {
         describe('given a 10 x 10 grid and 1 x 1 rooms', () => {
-            const grid           = createBlankGrid({ gridWidth: 10, gridHeight: 10 });
+            const grid           = createBlankGrid({ width: 10, height: 10 });
             const prevRoom       = { x: 4, y: 4, width: 1, height: 1 };
             const roomDimensions = { roomWidth: 1, roomHeight: 1 };
 
@@ -277,7 +277,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a 12 x 13 grid and 2 x 3 rooms', () => {
-            const grid           = createBlankGrid({ gridWidth: 12, gridHeight: 13 });
+            const grid           = createBlankGrid({ width: 12, height: 13 });
             const prevRoom       = { x: 4, y: 5, width: 2, height: 3 };
             const roomDimensions = { roomWidth: 2, roomHeight: 3 };
 
@@ -357,7 +357,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('when a room is near the edges', () => {
-            const grid           = createBlankGrid({ gridWidth: 10, gridHeight: 10 });
+            const grid           = createBlankGrid({ width: 10, height: 10 });
             const prevRoom       = { x: 3, y: 3, width: 2, height: 3 };
             const roomDimensions = { roomWidth: 3, roomHeight: 2 };
 

@@ -21,7 +21,7 @@ import {
     getGridAsText,
 } from '../map.js';
 
-import { cellBlank, cellDoor, cellWall, cellCornerWall, createBlankGrid, wallSize } from '../grid.js';
+import { cellDoor, cellWall, cellCornerWall, createBlankGrid, wallSize } from '../grid.js';
 import { dimensionRanges } from '../../rooms/dimensions.js';
 import { generateRooms } from '../../rooms/generate.js';
 import { knobs } from '../../knobs.js';
@@ -59,7 +59,7 @@ export default ({ assert, describe, it }) => {
             ].forEach((doorCords) => {
                 it('returns false', () => {
                     const [ x, y ] = doorCords;
-                    const grid = createBlankGrid({ gridWidth: 3, gridHeight: 3 });
+                    const grid = createBlankGrid({ width: 3, height: 3 });
 
                     grid[x][y] = cellDoor;
 
@@ -70,14 +70,14 @@ export default ({ assert, describe, it }) => {
 
         describe('given coordinates which are not adjacent to a door', () => {
             it('returns true', () => {
-                const grid = createBlankGrid({ gridWidth: 3, gridHeight: 3 });
+                const grid = createBlankGrid({ width: 3, height: 3 });
                 assert(checkAdjacentDoor(grid, [ 1, 1 ])).isFalse();
             });
         });
     });
 
     describe('drawRooms()', () => {
-        const gridDimensions = { gridWidth: 12, gridHeight: 12 };
+        const gridDimensions = { width: 12, height: 12 };
 
         it('should return an AppliedRoomResults object', () => {
             const grid = createBlankGrid(gridDimensions);
@@ -88,7 +88,7 @@ export default ({ assert, describe, it }) => {
                 },
             };
 
-            const result = drawRooms(gridDimensions, [ room ], grid, 1);
+            const result = drawRooms({ gridWidth: gridDimensions.width, gridHeight: gridDimensions.height }, [ room ], grid, 1);
 
             assert(result).isObject();
             assert(result.doors).isArray();
@@ -113,7 +113,7 @@ export default ({ assert, describe, it }) => {
                     },
                 };
 
-                const result = drawRooms(gridDimensions, [ room, room ], grid, 1);
+                const result = drawRooms({ gridWidth: gridDimensions.width, gridHeight: gridDimensions.height }, [ room, room ], grid, 1);
                 const firstDoor = result.doors.shift();
 
                 assert(Boolean(firstDoor.connections.outside)).isTrue();
@@ -130,7 +130,7 @@ export default ({ assert, describe, it }) => {
                     },
                 };
 
-                const result = drawRooms(gridDimensions, [ room, room ], grid, 1);
+                const result = drawRooms({ gridWidth: gridDimensions.width, gridHeight: gridDimensions.height }, [ room, room ], grid, 1);
 
                 assert(result.skipped.length).equals(1);
             });
@@ -147,7 +147,7 @@ export default ({ assert, describe, it }) => {
                         },
                     };
 
-                    assert(() => drawRooms(gridDimensions, [ room ], grid, 1, room))
+                    assert(() => drawRooms({ gridWidth: gridDimensions.width, gridHeight: gridDimensions.height }, [ room ], grid, 1, room))
                         .throws('Previous room requires wall cells');
                 });
             });
@@ -174,7 +174,7 @@ export default ({ assert, describe, it }) => {
                         },
                     };
 
-                    const result = drawRooms(gridDimensions, [ room ], grid, 1, {
+                    const result = drawRooms({ gridWidth: gridDimensions.width, gridHeight: gridDimensions.height }, [ room ], grid, 1, {
                         walls,
                         ...prevRoom,
                     });
@@ -216,7 +216,7 @@ export default ({ assert, describe, it }) => {
                         },
                     };
 
-                    const result = drawRooms(gridDimensions, [ hallway ], grid, 1, {
+                    const result = drawRooms({ gridWidth: gridDimensions.width, gridHeight: gridDimensions.height }, [ hallway ], grid, 1, {
                         walls,
                         ...prevRoom,
                     });
@@ -255,7 +255,7 @@ export default ({ assert, describe, it }) => {
             // 8 . . . . . . . . . .
             // 9 . . . . . . . . . .
 
-            const grid = createBlankGrid({ gridWidth: 10, gridHeight: 10 });
+            const grid = createBlankGrid({ width: 10, height: 10 });
 
             const prevRoom = {
                 x: 2,
@@ -310,7 +310,7 @@ export default ({ assert, describe, it }) => {
 
             describe('when the room is adjacent to the north edge', () => {
                 it('should return connections to the north edge', () => {
-                    const grid = createBlankGrid({ gridWidth: 10, gridHeight: 10 });
+                    const grid = createBlankGrid({ width: 10, height: 10 });
                     const room = {
                         ...roomConfig,
                         x: 3,
@@ -331,7 +331,7 @@ export default ({ assert, describe, it }) => {
 
             describe('when the room is adjacent to the east edge', () => {
                 it('should return connections to the east edge', () => {
-                    const grid = createBlankGrid({ gridWidth: 10, gridHeight: 10 });
+                    const grid = createBlankGrid({ width: 10, height: 10 });
                     const room = {
                         ...roomConfig,
                         x: 7, // x + room width = east edge
@@ -352,7 +352,7 @@ export default ({ assert, describe, it }) => {
 
             describe('when the room is adjacent to the south edge', () => {
                 it('should return connections to the south edge', () => {
-                    const grid = createBlankGrid({ gridWidth: 10, gridHeight: 10 });
+                    const grid = createBlankGrid({ width: 10, height: 10 });
                     const room = {
                         ...roomConfig,
                         x: 2,
@@ -373,7 +373,7 @@ export default ({ assert, describe, it }) => {
 
             describe('when the room is adjacent to the west edge', () => {
                 it('should return connections to the west edge', () => {
-                    const grid = createBlankGrid({ gridWidth: 10, gridHeight: 10 });
+                    const grid = createBlankGrid({ width: 10, height: 10 });
                     const room = {
                         ...roomConfig,
                         x: 1, // x - 1 = west edge
@@ -412,7 +412,7 @@ export default ({ assert, describe, it }) => {
                 // 8 . . c w w w w c . .
                 // 9 . . . . . . . . . .
 
-                const grid = createBlankGrid({ gridWidth: 10, gridHeight: 10 });
+                const grid = createBlankGrid({ width: 10, height: 10 });
                 const room1 = {
                     x: 4,
                     y: 2,
@@ -509,7 +509,7 @@ export default ({ assert, describe, it }) => {
             // 9 . . . . . . . . . .
 
             function getRoomsForTest(connectionChance) {
-                const grid  = createBlankGrid({ gridWidth: 10, gridHeight: 10 });
+                const grid  = createBlankGrid({ width: 10, height: 10 });
 
                 const room1 = {
                     x: 4,
@@ -577,6 +577,7 @@ export default ({ assert, describe, it }) => {
                     doors && assert(doors.length).equals(1);
 
                     const door = doors && doors.pop();
+
                     door && assert(door.rect).isString(); // Assert door els
                     door && assert(doorTypes.includes(door.type)).isTrue();
                     door && assert(door.locked).isBoolean();
@@ -621,7 +622,7 @@ export default ({ assert, describe, it }) => {
             // 9 . . . . . . . . . .
 
             function getRoomsForTest(connectionChance) {
-                const grid = createBlankGrid({ gridWidth: 10, gridHeight: 10 });
+                const grid = createBlankGrid({ width: 10, height: 10 });
 
                 const room1 = {
                     x: 2,
@@ -718,8 +719,8 @@ export default ({ assert, describe, it }) => {
     describe('getRoom()', () => {
         describe('given a room config without a roomNumber', () => {
             it('should throw', () => {
-                // @ts-ignore
-                const grid = createBlankGrid({ gridWidth: 8, gridHeight: 6 });
+                const grid = createBlankGrid({ width: 8, height: 6 });
+
                 assert(() => getRoom(grid, { type: roomTypes.kitchen }))
                     .throws('roomNumber is required in getRoom()');
             });
@@ -727,8 +728,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given a room config without a room type', () => {
             it('should throw', () => {
-                // @ts-ignore
-                const grid = createBlankGrid({ gridWidth: 8, gridHeight: 6 });
+                const grid = createBlankGrid({ width: 8, height: 6 });
                 assert(() => getRoom(grid, { roomNumber: 1 }))
                     .throws('room type is required in getRoom()');
             });
@@ -748,7 +748,7 @@ export default ({ assert, describe, it }) => {
             // 5 . . c w w w c .
             // 6 . . . . . . . .
 
-            const grid = createBlankGrid({ gridWidth: 8, gridHeight: 6 });
+            const grid = createBlankGrid({ width: 8, height: 6 });
             const room = {
                 x: 3,
                 y: 3,
@@ -925,7 +925,7 @@ export default ({ assert, describe, it }) => {
             const gridWidth  = 20;
             const gridHeight = 24;
 
-            const grid = createBlankGrid({ gridWidth, gridHeight });
+            const grid = createBlankGrid({ width: gridWidth, height: gridHeight });
             const room = {
                 x: 1,
                 y: 1,
@@ -1033,15 +1033,14 @@ export default ({ assert, describe, it }) => {
     describe('getGridAsText()', () => {
         describe('given a blank grid', () => {
             it('should return an string representing the grid', () => {
-                const grid = createBlankGrid({ gridWidth: 3, gridHeight: 3 });
+                const grid = createBlankGrid({ width: 3, height: 3 });
                 assert(getGridAsText(grid)).equals('. . .\n. . .\n. . .');
             });
         });
 
         describe('given a grid with a room on it', () => {
             it('should return an string containing the walls, corners, room number, and blank cells', () => {
-                const gridDimensions = { gridWidth: 5, gridHeight: 5 };
-                const grid = createBlankGrid(gridDimensions);
+                const grid = createBlankGrid({ width: 5, height: 5 });
 
                 grid[1][1] = cellCornerWall;
                 grid[2][1] = cellWall;
@@ -1070,7 +1069,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given dimensions for a horizontal rectangle grid', () => {
             it('should return an string representing the grid', () => {
-                const grid = createBlankGrid({ gridWidth: 7, gridHeight: 4 });
+                const grid = createBlankGrid({ width: 7, height: 4 });
                 assert(getGridAsText(grid)).equals(
                     '. . . . . . .\n' +
                     '. . . . . . .\n' +
@@ -1082,7 +1081,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given dimensions for a vertical rectangle grid', () => {
             it('should return an string representing the grid', () => {
-                const grid = createBlankGrid({ gridWidth: 3, gridHeight: 5 });
+                const grid = createBlankGrid({ width: 3, height: 5 });
                 assert(getGridAsText(grid)).equals(
                     '. . .\n' +
                     '. . .\n' +

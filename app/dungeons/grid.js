@@ -11,23 +11,9 @@ import { roll, rollArrayItem } from '../utility/roll.js';
  * @typedef {string[][]} Grid
  */
 
-/**
- * @typedef GridCoordinates
- *
- * @property {number} gridX
- * @property {number} gridY
- */
-
-/**
- * @typedef GridDimensions
- *
- * @property {number} gridWidth
- * @property {number} gridHeight
- */
-
-/**
- * @typedef {GridCoordinates & GridDimensions} GridRectangle
- */
+/** @typedef {{ x: number; y: number }} Coordinates */
+/** @typedef {{ width: number; height: number }} Dimensions */
+/** @typedef {Coordinates & Dimensions} Rectangle */
 
 // -- Config -------------------------------------------------------------------
 
@@ -82,7 +68,7 @@ function isRoomCorner({ x, y, minX, minY, maxX, maxY }) {
  * @private
  *
  * @param {Grid} grid
- * @param {GridRectangle} rectangle // TODO fix params
+ * @param {Rectangle} rectangle
  *
  * @returns boolean
  */
@@ -122,13 +108,13 @@ export {
  * Returns a multi dimensional array of empty grid cells for the given grid
  * dimensions.
  *
- * @param {GridDimensions} gridDimensions
+ * @param {Dimensions} gridDimensions
  *
  * @returns {Grid}
  */
-export const createBlankGrid = ({ gridWidth, gridHeight }) =>
-    Array(gridWidth).fill(null).map(() =>
-        Array(gridHeight).fill(cellBlank));
+export const createBlankGrid = ({ width, height }) =>
+    Array(width).fill(null).map(() =>
+        Array(height).fill(cellBlank));
 
 /**
  * Returns a random starting point for the dungeon door along one of the grid
