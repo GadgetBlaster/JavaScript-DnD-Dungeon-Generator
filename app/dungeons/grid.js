@@ -175,12 +175,14 @@ export function getStartingPoint(gridDimensions, roomDimensions) {
  * TODO rename getValidRoomConnectionCords
  *
  * @param {Grid} grid
- * @param {GridRectangle} prevRoom
- * @param {GridDimensions} roomDimensions // RooMDimensions
+ * @param {Rectangle} prevRoom
+ * @param {Dimensions} roomDimensions
  *
  * @returns {number[][]} // TODO GridCoordinates[]
  */
-export function getValidRoomCords(grid, prevRoom, { roomWidth, roomHeight }) {
+export function getValidRoomCords(grid, prevRoom, roomDimensions) {
+    let  { width: roomWidth, height: roomHeight } = roomDimensions;
+
     let {
         x: prevX,
         y: prevY,

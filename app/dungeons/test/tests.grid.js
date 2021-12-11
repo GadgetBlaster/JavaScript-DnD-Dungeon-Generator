@@ -220,10 +220,10 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getValidRoomCords()', () => {
-        describe('given a 10 x 10 grid and 1 x 1 rooms', () => {
+        describe('given a 10 x 10 grid and two 1 x 1 rooms', () => {
             const grid           = createBlankGrid({ width: 10, height: 10 });
             const prevRoom       = { x: 4, y: 4, width: 1, height: 1 };
-            const roomDimensions = { roomWidth: 1, roomHeight: 1 };
+            const roomDimensions = { width: 1, height: 1 };
 
             // TODO use `addRoomToGrid()`
             grid[4][4] = '1';
@@ -276,7 +276,7 @@ export default ({ assert, describe, it }) => {
         describe('given a 12 x 13 grid and 2 x 3 rooms', () => {
             const grid           = createBlankGrid({ width: 12, height: 13 });
             const prevRoom       = { x: 4, y: 5, width: 2, height: 3 };
-            const roomDimensions = { roomWidth: 2, roomHeight: 3 };
+            const roomDimensions = { width: 2, height: 3 };
 
             // TODO use `addRoomToGrid()`
             grid[4][5] = '1';
@@ -356,7 +356,7 @@ export default ({ assert, describe, it }) => {
         describe('when a room is near the edges', () => {
             const grid           = createBlankGrid({ width: 10, height: 10 });
             const prevRoom       = { x: 3, y: 3, width: 2, height: 3 };
-            const roomDimensions = { roomWidth: 3, roomHeight: 2 };
+            const roomDimensions = { width: 3, height: 2 };
 
             // TODO use `addRoomToGrid()`
             grid[3][3] = '1';

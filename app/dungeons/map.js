@@ -192,7 +192,10 @@ const drawRooms = (mapSettings, mapRooms, grid, roomNumber = 1, prevRoom) => {
         if (prevRoom) {
             isRequired(prevRoom.walls, 'Previous room requires wall cells');
 
-            let validCords = getValidRoomCords(grid, prevRoom, roomDimensions);
+            let validCords = getValidRoomCords(grid, prevRoom, {
+                width: roomDimensions.roomWidth,
+                height: roomDimensions.roomHeight,
+            });
 
             if (!validCords.length) {
                 skipped.push(roomConfig);
