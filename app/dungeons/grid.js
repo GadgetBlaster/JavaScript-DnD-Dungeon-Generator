@@ -38,32 +38,7 @@ export const sides = {
 // -- Private Functions --------------------------------------------------------
 
 /**
- * Checks if the given coordinates are the corner wall of the previous room?
- *
- * @private
- *
- * @param {object} param // TODO
- *
- * @returns {boolean}
- */
-function isRoomCorner({ x, y, minX, minY, maxX, maxY }) {
-    let minLeft   = minX + wallSize;
-    let minTop    = minY + wallSize;
-    let minBottom = maxY - wallSize;
-    let minRight  = maxX - wallSize;
-
-    let upperLeft  = x <= minLeft  && y <= minTop;
-    let upperRight = x >= minRight && y <= minTop;
-    let lowerRight = x >= minRight && y >= minBottom;
-    let lowerLeft  = x <= minLeft  && y >= minBottom;
-
-    return upperLeft || upperRight || lowerRight || lowerLeft;
-}
-
-/**
  * Checks if a grid cell can become part of a room shape.
- *
- * TODO rename isEmptyGridCell()
  *
  * @private
  *
@@ -72,7 +47,7 @@ function isRoomCorner({ x, y, minX, minY, maxX, maxY }) {
  *
  * @returns boolean
  */
-function checkArea(grid, { x, y, width, height }) {
+ function isEmptyCell(grid, { x, y, width, height }) {
     let minX = wallSize;
     let minY = wallSize;
     let maxX = grid.length - wallSize;
@@ -97,9 +72,32 @@ function checkArea(grid, { x, y, width, height }) {
     return true;
 }
 
+/**
+ * Checks if the given coordinates are the corner wall of the previous room?
+ *
+ * @private
+ *
+ * @param {object} param // TODO
+ *
+ * @returns {boolean}
+ */
+function isRoomCorner({ x, y, minX, minY, maxX, maxY }) {
+    let minLeft   = minX + wallSize;
+    let minTop    = minY + wallSize;
+    let minBottom = maxY - wallSize;
+    let minRight  = maxX - wallSize;
+
+    let upperLeft  = x <= minLeft  && y <= minTop;
+    let upperRight = x >= minRight && y <= minTop;
+    let lowerRight = x >= minRight && y >= minBottom;
+    let lowerLeft  = x <= minLeft  && y >= minBottom;
+
+    return upperLeft || upperRight || lowerRight || lowerLeft;
+}
+
 export {
+    isEmptyCell  as testIsEmptyCell,
     isRoomCorner as testIsRoomCorner,
-    checkArea    as testCheckArea,
 };
 
 // -- Public Functions ---------------------------------------------------------
@@ -199,7 +197,7 @@ export function getValidRoomCords(grid, prevRoom, { roomWidth, roomHeight }) {
                 continue;
             }
 
-            let valid = checkArea(grid, {
+            let valid = isEmptyCell(grid, {
                 x, y,
                 width: roomWidth,
                 height: roomHeight,

@@ -8,8 +8,8 @@ import {
     wallSize,
 
     // Private Functions
+    testIsEmptyCell  as isEmptyCell,
     testIsRoomCorner as isRoomCorner,
-    testCheckArea as checkArea,
 
     // Public functions
     createBlankGrid,
@@ -23,6 +23,87 @@ import {
 export default ({ assert, describe, it }) => {
 
     // -- Private Functions ----------------------------------------------------
+
+    describe('isEmptyCell()', () => {
+        describe('given a 4 x 5 grid', () => {
+            const gridWidth  = 4;
+            const gridHeight = 5;
+
+            const grid = createBlankGrid({ width: gridWidth, height: gridHeight });
+            const rect = {
+                x: 1,
+                y: 1,
+                width: 1,
+                height: 1,
+            };
+
+            describe('given a 1 x 1 rectangle', () => {
+                describe('when the rectangle is in bounds', () => {
+                    it('should return true', () => {
+                        assert(isEmptyCell(grid, rect)).isTrue();
+                    });
+                });
+
+                describe('when the cell is out of bounds', () => {
+                    [
+                        { x: 0 },
+                        { x: gridWidth - 1 },
+                        { y: 0 },
+                        { y: gridHeight - 1 },
+                    ].forEach((rectCord) => {
+                        it('should return false', () => {
+                            assert(isEmptyCell(grid, { ...rect, ...rectCord })).isFalse();
+                        });
+                    });
+                });
+
+                describe('when the rectangle overlaps an occupied cell', () => {
+                    it('should return false', () => {
+                        const populatedGrid = createBlankGrid({ width: gridWidth, height: gridHeight });
+                        populatedGrid[1][1] = cellWall;
+
+                        assert(isEmptyCell(populatedGrid, rect)).isFalse();
+                    });
+                });
+            });
+
+            describe('given a 2 x 3 rectangle', () => {
+                const rect2 = {
+                    ...rect,
+                    width: 2,
+                    height: 3,
+                };
+
+                describe('when the rectangle is in bounds', () => {
+                    it('should return true', () => {
+                        assert(isEmptyCell(grid, rect2)).isTrue();
+                    });
+                });
+
+                describe('when the cell is out of bounds', () => {
+                    [
+                        { x: 0 },
+                        { x: gridWidth - 1 },
+                        { y: 0 },
+                        { y: gridHeight - 1 },
+                    ].forEach((rectCord) => {
+                        it('should return false', () => {
+                            assert(isEmptyCell(grid, { ...rect2, ...rectCord })).isFalse();
+                        });
+                    });
+                });
+
+                describe('when the rectangle overlaps an occupied cell', () => {
+                    it('should return false', () => {
+                        const populatedGrid = createBlankGrid({ width: gridWidth, height: gridHeight });
+                        populatedGrid[2][3] = cellWall;
+
+                        assert(isEmptyCell(populatedGrid, rect2)).isFalse();
+                    });
+                });
+            });
+        });
+    });
 
     describe('isRoomCorner()', () => {
         const minMax = {
@@ -79,87 +160,6 @@ export default ({ assert, describe, it }) => {
                     x: 10,
                     y: 10,
                 })).isFalse();
-            });
-        });
-    });
-
-    describe('checkArea()', () => {
-        describe('given a 4 x 5 grid', () => {
-            const gridWidth  = 4;
-            const gridHeight = 5;
-
-            const grid = createBlankGrid({ width: gridWidth, height: gridHeight });
-            const rect = {
-                x: 1,
-                y: 1,
-                width: 1,
-                height: 1,
-            };
-
-            describe('given a 1 x 1 rectangle', () => {
-                describe('when the rectangle is in bounds', () => {
-                    it('should return true', () => {
-                        assert(checkArea(grid, rect)).isTrue();
-                    });
-                });
-
-                describe('when the cell is out of bounds', () => {
-                    [
-                        { x: 0 },
-                        { x: gridWidth - 1 },
-                        { y: 0 },
-                        { y: gridHeight - 1 },
-                    ].forEach((rectCord) => {
-                        it('should return false', () => {
-                            assert(checkArea(grid, { ...rect, ...rectCord })).isFalse();
-                        });
-                    });
-                });
-
-                describe('when the rectangle overlaps an occupied cell', () => {
-                    it('should return false', () => {
-                        const populatedGrid = createBlankGrid({ width: gridWidth, height: gridHeight });
-                        populatedGrid[1][1] = cellWall;
-
-                        assert(checkArea(populatedGrid, rect)).isFalse();
-                    });
-                });
-            });
-
-            describe('given a 2 x 3 rectangle', () => {
-                const rect2 = {
-                    ...rect,
-                    width: 2,
-                    height: 3,
-                };
-
-                describe('when the rectangle is in bounds', () => {
-                    it('should return true', () => {
-                        assert(checkArea(grid, rect2)).isTrue();
-                    });
-                });
-
-                describe('when the cell is out of bounds', () => {
-                    [
-                        { x: 0 },
-                        { x: gridWidth - 1 },
-                        { y: 0 },
-                        { y: gridHeight - 1 },
-                    ].forEach((rectCord) => {
-                        it('should return false', () => {
-                            assert(checkArea(grid, { ...rect2, ...rectCord })).isFalse();
-                        });
-                    });
-                });
-
-                describe('when the rectangle overlaps an occupied cell', () => {
-                    it('should return false', () => {
-                        const populatedGrid = createBlankGrid({ width: gridWidth, height: gridHeight });
-                        populatedGrid[2][3] = cellWall;
-
-                        assert(checkArea(populatedGrid, rect2)).isFalse();
-                    });
-                });
             });
         });
     });
