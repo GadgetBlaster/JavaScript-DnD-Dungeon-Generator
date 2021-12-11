@@ -208,7 +208,10 @@ const drawRooms = (mapSettings, mapRooms, grid, roomNumber = 1, prevRoom) => {
             [ x, y ] = getStartingPoint({
                 width: mapSettings.gridWidth,
                 height: mapSettings.gridHeight,
-            }, roomDimensions);
+            }, {
+                width: roomDimensions.roomWidth,
+                height: roomDimensions.roomHeight,
+            });
         }
 
         let room = {

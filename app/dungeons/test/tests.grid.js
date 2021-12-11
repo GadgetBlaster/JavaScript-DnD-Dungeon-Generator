@@ -198,8 +198,8 @@ export default ({ assert, describe, it }) => {
         describe('given a room that does not fit in the inset grid content area', () => {
             it('should throw', () => {
                 const room = {
-                    roomWidth:  gridWidth  - wallSize,
-                    roomHeight: gridHeight - wallSize,
+                    width:  gridWidth  - wallSize,
+                    height: gridHeight - wallSize,
                 };
 
                 assert(() => getStartingPoint(grid, room)).throws('Invalid min or max');
@@ -208,9 +208,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given a room that fits in the inset grid content area', () => {
             it('should return grid coordinates along the edge of a wall', () => {
-                const room = { roomWidth: 1, roomHeight: 1 };
-
-                const [ x, y ] = getStartingPoint(grid, room);
+                const [ x, y ] = getStartingPoint(grid, { width: 1, height: 1 });
 
                 assert(x).isNumber();
                 assert(y).isNumber();

@@ -120,12 +120,13 @@ export const createBlankGrid = ({ width, height }) =>
  * edges.
  *
  * @param {Dimensions} gridDimensions
- * @param {GridDimensions} roomDimensions
+ * @param {Dimensions} roomDimensions
  *
  * @returns {number[]} // TODO GridCoordinates
  */
-export function getStartingPoint(gridDimensions, { roomWidth, roomHeight }) {
+export function getStartingPoint(gridDimensions, roomDimensions) {
     let { width: gridWidth, height: gridHeight } = gridDimensions;
+    let { width: roomWidth, height: roomHeight } = roomDimensions;
 
     let minX = wallSize;
     let minY = wallSize;
