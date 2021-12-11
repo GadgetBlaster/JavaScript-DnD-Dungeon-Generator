@@ -170,17 +170,15 @@ export function getStartingPoint(gridDimensions, roomDimensions) {
 }
 
 /**
- * Returns valid room coordinates.
- *
- * TODO rename getValidRoomConnectionCords
+ * Returns an array of valid grid coordinates for connecting two rooms.
  *
  * @param {Grid} grid
  * @param {Rectangle} prevRoom
  * @param {Dimensions} roomDimensions
  *
- * @returns {number[][]} // TODO GridCoordinates[]
+ * @returns {Coordinates[]}
  */
-export function getValidRoomCords(grid, prevRoom, roomDimensions) {
+export function getValidRoomConnections(grid, prevRoom, roomDimensions) {
     let  { width: roomWidth, height: roomHeight } = roomDimensions;
 
     let {
@@ -213,7 +211,7 @@ export function getValidRoomCords(grid, prevRoom, roomDimensions) {
                 continue;
             }
 
-            validCords.push([ x, y ]);
+            validCords.push({ x, y });
         }
     }
 

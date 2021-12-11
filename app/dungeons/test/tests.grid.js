@@ -14,7 +14,7 @@ import {
     // Public functions
     createBlankGrid,
     getStartingPoint,
-    getValidRoomCords,
+    getValidRoomConnections,
 } from '../grid.js';
 
 /**
@@ -219,7 +219,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('getValidRoomCords()', () => {
+    describe('getValidRoomConnections()', () => {
         describe('given a 10 x 10 grid and two 1 x 1 rooms', () => {
             const grid           = createBlankGrid({ width: 10, height: 10 });
             const prevRoom       = { x: 4, y: 4, width: 1, height: 1 };
@@ -254,21 +254,21 @@ export default ({ assert, describe, it }) => {
             // 9 . . . . . . . . . .
 
             const expectedCords  = [
-                [ 2, 4 ],
-                [ 4, 2 ],
-                [ 4, 6 ],
-                [ 6, 4 ],
+                { x: 2, y: 4 },
+                { x: 4, y: 2 },
+                { x: 4, y: 6 },
+                { x: 6, y: 4 },
             ];
 
             it('should return an array of valid room connection coordinates', () => {
-                const validCords = getValidRoomCords(grid, prevRoom, roomDimensions);
+                const validCords = getValidRoomConnections(grid, prevRoom, roomDimensions);
 
                 assert(validCords).isArray();
 
                 validCords && assert(validCords.length).equals(expectedCords.length);
                 validCords && validCords.forEach((cords, i) => {
-                    assert(expectedCords[i]).isArray();
-                    expectedCords[i] && assert(cords).equalsArray(expectedCords[i]);
+                    assert(expectedCords[i]).isObject();
+                    expectedCords[i] && assert(cords).equalsObject(expectedCords[i]);
                 });
             });
         });
@@ -322,33 +322,33 @@ export default ({ assert, describe, it }) => {
             // 12 . . . . . . . . . . . .
 
             const expectedCords  = [
-                [ 1, 3 ],
-                [ 1, 4 ],
-                [ 1, 5 ],
-                [ 1, 6 ],
-                [ 1, 7 ],
-                [ 3, 1 ],
-                [ 3, 9 ],
-                [ 4, 1 ],
-                [ 4, 9 ],
-                [ 5, 1 ],
-                [ 5, 9 ],
-                [ 7, 3 ],
-                [ 7, 4 ],
-                [ 7, 5 ],
-                [ 7, 6 ],
-                [ 7, 7 ],
+                { x: 1, y: 3 },
+                { x: 1, y: 4 },
+                { x: 1, y: 5 },
+                { x: 1, y: 6 },
+                { x: 1, y: 7 },
+                { x: 3, y: 1 },
+                { x: 3, y: 9 },
+                { x: 4, y: 1 },
+                { x: 4, y: 9 },
+                { x: 5, y: 1 },
+                { x: 5, y: 9 },
+                { x: 7, y: 3 },
+                { x: 7, y: 4 },
+                { x: 7, y: 5 },
+                { x: 7, y: 6 },
+                { x: 7, y: 7 },
             ];
 
             it('should return an array of valid room connection coordinates', () => {
-                const validCords = getValidRoomCords(grid, prevRoom, roomDimensions);
+                const validCords = getValidRoomConnections(grid, prevRoom, roomDimensions);
 
                 assert(validCords).isArray();
 
                 validCords && assert(validCords.length).equals(expectedCords.length);
                 validCords && validCords.forEach((cords, i) => {
-                    assert(expectedCords[i]).isArray();
-                    expectedCords[i] && assert(cords).equalsArray(expectedCords[i]);
+                    assert(expectedCords[i]).isObject();
+                    expectedCords[i] && assert(cords).equalsObject(expectedCords[i]);
                 });
             });
         });
@@ -399,25 +399,25 @@ export default ({ assert, describe, it }) => {
             //  9 . . . . . . . . . .
 
             const expectedCords  = [
-                [ 1, 7 ],
-                [ 2, 7 ],
-                [ 3, 7 ],
-                [ 4, 7 ],
-                [ 6, 2 ],
-                [ 6, 3 ],
-                [ 6, 4 ],
-                [ 6, 5 ],
+                { x: 1, y: 7 },
+                { x: 2, y: 7 },
+                { x: 3, y: 7 },
+                { x: 4, y: 7 },
+                { x: 6, y: 2 },
+                { x: 6, y: 3 },
+                { x: 6, y: 4 },
+                { x: 6, y: 5 },
             ];
 
             it('should return an array of valid room connection coordinates that account for the grid edges', () => {
-                const validCords = getValidRoomCords(grid, prevRoom, roomDimensions);
+                const validCords = getValidRoomConnections(grid, prevRoom, roomDimensions);
 
                 assert(validCords).isArray();
 
                 validCords && assert(validCords.length).equals(expectedCords.length);
                 validCords && validCords.forEach((cords, i) => {
-                    assert(expectedCords[i]).isArray();
-                    expectedCords[i] && assert(cords).equalsArray(expectedCords[i]);
+                    assert(expectedCords[i]).isObject();
+                    expectedCords[i] && assert(cords).equalsObject(expectedCords[i]);
                 });
             });
         });

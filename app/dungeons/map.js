@@ -6,7 +6,7 @@ import {
     cellDoor,
     cellWall,
     getStartingPoint,
-    getValidRoomCords,
+    getValidRoomConnections,
     sides,
     wallSize,
 } from './grid.js';
@@ -192,7 +192,7 @@ const drawRooms = (mapSettings, mapRooms, grid, roomNumber = 1, prevRoom) => {
         if (prevRoom) {
             isRequired(prevRoom.walls, 'Previous room requires wall cells');
 
-            let validCords = getValidRoomCords(grid, prevRoom, {
+            let validCords = getValidRoomConnections(grid, prevRoom, {
                 width: roomDimensions.roomWidth,
                 height: roomDimensions.roomHeight,
             });
@@ -204,9 +204,9 @@ const drawRooms = (mapSettings, mapRooms, grid, roomNumber = 1, prevRoom) => {
 
             if (type === roomType.hallway) {
                 // TODO remind me why the last set of cords is used for halls?
-                [ x, y ] = validCords[validCords.length - 1];
+                ({ x, y } = validCords[validCords.length - 1]);
             } else {
-                [ x, y ] = rollArrayItem(validCords);
+                ({ x, y } = rollArrayItem(validCords));
             }
         } else {
             ({ x, y } = getStartingPoint({
