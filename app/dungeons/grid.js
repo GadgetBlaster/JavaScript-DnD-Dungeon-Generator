@@ -122,7 +122,7 @@ export const createBlankGrid = ({ width, height }) =>
  * @param {Dimensions} gridDimensions
  * @param {Dimensions} roomDimensions
  *
- * @returns {number[]} // TODO GridCoordinates
+ * @returns {Coordinates}
  */
 export function getStartingPoint(gridDimensions, roomDimensions) {
     let { width: gridWidth, height: gridHeight } = gridDimensions;
@@ -166,7 +166,7 @@ export function getStartingPoint(gridDimensions, roomDimensions) {
             break;
     }
 
-    return [ x, y ];
+    return { x, y };
 }
 
 /**

@@ -188,6 +188,7 @@ const drawRooms = (mapSettings, mapRooms, grid, roomNumber = 1, prevRoom) => {
         let x;
         let y;
 
+        // TODO break out into private function
         if (prevRoom) {
             isRequired(prevRoom.walls, 'Previous room requires wall cells');
 
@@ -205,13 +206,13 @@ const drawRooms = (mapSettings, mapRooms, grid, roomNumber = 1, prevRoom) => {
                 [ x, y ] = rollArrayItem(validCords);
             }
         } else {
-            [ x, y ] = getStartingPoint({
+            ({ x, y } = getStartingPoint({
                 width: mapSettings.gridWidth,
                 height: mapSettings.gridHeight,
             }, {
                 width: roomDimensions.roomWidth,
                 height: roomDimensions.roomHeight,
-            });
+            }));
         }
 
         let room = {
