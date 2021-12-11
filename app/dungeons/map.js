@@ -1,3 +1,4 @@
+// @ts-check
 
 import {
     cellBlank,
@@ -667,38 +668,6 @@ export {
 // -- Public Functions ---------------------------------------------------------
 
 /**
- * Logs an ascii representation of a grid.
- *
- * TODO Bug? Only logging square grids?
- * TODO return string & rename to `getAsciiGrid()`
- *
- * @param {Grid} grid
- *
- * @returns {string}
- */
-export const logGrid = (grid) => {
-    let rows = [];
-
-    for (let y = 0; y <= grid[0].length; y++) {
-        let row = [];
-
-        for (let x = 0; x <= grid.length; x++) {
-            grid[x] && grid[x][y] && row.push(grid[x][y]);
-        }
-
-        rows.push(row);
-    }
-
-    let log = rows.map((cols) => {
-        return cols.join(' ');
-    }).join('\n').trim();
-
-    console.log(log);
-
-    return log;
-};
-
-/**
  * Generates a dungeon map.
  *
  * @param {MapConfig} mapSettings
@@ -731,4 +700,27 @@ export const generateMap = (mapSettings) => {
         rooms: rooms.map(({ config }) => config),
         doors: doors.map(({ rect, ...door }) => door),
     };
+};
+
+/**
+ * Returns a text representation of a grid which can be logged to the console.
+ *
+ * @param {Grid} grid
+ *
+ * @returns {string}
+ */
+ export const getGridAsText = (grid) => {
+    let rows = [];
+
+    for (let y = 0; y <= grid[0].length; y++) {
+        let row = [];
+
+        for (let x = 0; x <= grid.length; x++) {
+            grid[x] && grid[x][y] && row.push(grid[x][y]);
+        }
+
+        rows.push(row);
+    }
+
+    return rows.map((cols) => cols.join(' ')).join('\n').trim();
 };

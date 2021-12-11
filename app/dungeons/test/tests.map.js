@@ -17,8 +17,8 @@ import {
     testMakeDoor          as makeDoor,
 
     // Public functions
-    logGrid,
     generateMap,
+    getGridAsText,
 } from '../map.js';
 
 import { cellBlank, cellDoor, cellWall, cellCornerWall, createBlankGrid, wallSize } from '../grid.js';
@@ -999,70 +999,6 @@ export default ({ assert, describe, it }) => {
 
     // -- Public Functions -----------------------------------------------------
 
-    describe('logGrid()', () => {
-        describe('given a blank grid', () => {
-            it('should return an string representing the grid', () => {
-                const grid = createBlankGrid({ gridWidth: 3, gridHeight: 3 });
-                assert(logGrid(grid)).equals('. . .\n. . .\n. . .');
-            });
-        });
-
-        describe('given a grid with a room on it', () => {
-            it('should return an string containing the walls, corners, room number, and blank cells', () => {
-                const gridDimensions = { gridWidth: 5, gridHeight: 5 };
-                const grid = createBlankGrid(gridDimensions);
-
-                grid[1][1] = cellCornerWall;
-                grid[2][1] = cellWall;
-                grid[3][1] = cellWall;
-                grid[4][1] = cellCornerWall;
-
-                grid[1][2] = cellWall;
-                grid[2][2] = '1';
-                grid[3][2] = '1';
-                grid[4][2] = cellWall;
-
-                grid[1][3] = cellCornerWall;
-                grid[2][3] = cellWall;
-                grid[3][3] = cellWall;
-                grid[4][3] = cellCornerWall;
-
-                assert(logGrid(grid)).equals(
-                    '. . . . .\n' +
-                    '. c w w c\n' +
-                    '. w 1 1 w\n' +
-                    '. c w w c\n' +
-                    '. . . . .'
-                );
-            });
-        });
-
-        describe('given dimensions for a horizontal rectangle grid', () => {
-            it('should return an string representing the grid', () => {
-                const grid = createBlankGrid({ gridWidth: 7, gridHeight: 4 });
-                assert(logGrid(grid)).equals(
-                    '. . . . . . .\n' +
-                    '. . . . . . .\n' +
-                    '. . . . . . .\n' +
-                    '. . . . . . .'
-                );
-            });
-        });
-
-        describe('given dimensions for a vertical rectangle grid', () => {
-            it('should return an string representing the grid', () => {
-                const grid = createBlankGrid({ gridWidth: 3, gridHeight: 5 });
-                assert(logGrid(grid)).equals(
-                    '. . .\n' +
-                    '. . .\n' +
-                    '. . .\n' +
-                    '. . .\n' +
-                    '. . .'
-                );
-            });
-        });
-    });
-
     describe('generateMap()', () => {
         it('should generate a map, rooms, and doors', () => {
             const { map, rooms, doors } = generateMap({
@@ -1090,6 +1026,70 @@ export default ({ assert, describe, it }) => {
             assert(doors).isArray();
             doors && doors.forEach((door) => {
                 assert(doorTypes.includes(door.type)).isTrue();
+            });
+        });
+    });
+
+    describe('getGridAsText()', () => {
+        describe('given a blank grid', () => {
+            it('should return an string representing the grid', () => {
+                const grid = createBlankGrid({ gridWidth: 3, gridHeight: 3 });
+                assert(getGridAsText(grid)).equals('. . .\n. . .\n. . .');
+            });
+        });
+
+        describe('given a grid with a room on it', () => {
+            it('should return an string containing the walls, corners, room number, and blank cells', () => {
+                const gridDimensions = { gridWidth: 5, gridHeight: 5 };
+                const grid = createBlankGrid(gridDimensions);
+
+                grid[1][1] = cellCornerWall;
+                grid[2][1] = cellWall;
+                grid[3][1] = cellWall;
+                grid[4][1] = cellCornerWall;
+
+                grid[1][2] = cellWall;
+                grid[2][2] = '1';
+                grid[3][2] = '1';
+                grid[4][2] = cellWall;
+
+                grid[1][3] = cellCornerWall;
+                grid[2][3] = cellWall;
+                grid[3][3] = cellWall;
+                grid[4][3] = cellCornerWall;
+
+                assert(getGridAsText(grid)).equals(
+                    '. . . . .\n' +
+                    '. c w w c\n' +
+                    '. w 1 1 w\n' +
+                    '. c w w c\n' +
+                    '. . . . .'
+                );
+            });
+        });
+
+        describe('given dimensions for a horizontal rectangle grid', () => {
+            it('should return an string representing the grid', () => {
+                const grid = createBlankGrid({ gridWidth: 7, gridHeight: 4 });
+                assert(getGridAsText(grid)).equals(
+                    '. . . . . . .\n' +
+                    '. . . . . . .\n' +
+                    '. . . . . . .\n' +
+                    '. . . . . . .'
+                );
+            });
+        });
+
+        describe('given dimensions for a vertical rectangle grid', () => {
+            it('should return an string representing the grid', () => {
+                const grid = createBlankGrid({ gridWidth: 3, gridHeight: 5 });
+                assert(getGridAsText(grid)).equals(
+                    '. . .\n' +
+                    '. . .\n' +
+                    '. . .\n' +
+                    '. . .\n' +
+                    '. . .'
+                );
             });
         });
     });
