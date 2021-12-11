@@ -73,7 +73,7 @@ export const sides = {
 }
 
 /**
- * Checks if the given coordinates are the corner wall of the previous room?
+ * Checks if the given coordinates are the corner wall of a room.
  *
  * @private
  *
@@ -82,6 +82,7 @@ export const sides = {
  * @returns {boolean}
  */
 function isRoomCorner({ x, y, minX, minY, maxX, maxY }) {
+    // TODO remove unnecessary math, pass in Rectangle
     let minLeft   = minX + wallSize;
     let minTop    = minY + wallSize;
     let minBottom = maxY - wallSize;
@@ -118,12 +119,14 @@ export const createBlankGrid = ({ width, height }) =>
  * Returns a random starting point for the dungeon door along one of the grid
  * edges.
  *
- * @param {GridDimensions} gridDimensions
+ * @param {Dimensions} gridDimensions
  * @param {GridDimensions} roomDimensions
  *
  * @returns {number[]} // TODO GridCoordinates
  */
-export function getStartingPoint({ gridWidth, gridHeight }, { roomWidth, roomHeight }) {
+export function getStartingPoint(gridDimensions, { roomWidth, roomHeight }) {
+    let { width: gridWidth, height: gridHeight } = gridDimensions;
+
     let minX = wallSize;
     let minY = wallSize;
     let maxX = gridWidth  - roomWidth  - wallSize;

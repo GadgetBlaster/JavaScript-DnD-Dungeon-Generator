@@ -193,10 +193,10 @@ export default ({ assert, describe, it }) => {
     describe('getStartingPoint()', () => {
         const gridWidth  = 4;
         const gridHeight = 5;
+        const grid = { width: gridWidth, height: gridHeight };
 
         describe('given a room that does not fit in the inset grid content area', () => {
             it('should throw', () => {
-                const grid = { gridWidth, gridHeight };
                 const room = {
                     roomWidth:  gridWidth  - wallSize,
                     roomHeight: gridHeight - wallSize,
@@ -208,7 +208,6 @@ export default ({ assert, describe, it }) => {
 
         describe('given a room that fits in the inset grid content area', () => {
             it('should return grid coordinates along the edge of a wall', () => {
-                const grid = { gridWidth, gridHeight };
                 const room = { roomWidth: 1, roomHeight: 1 };
 
                 const [ x, y ] = getStartingPoint(grid, room);

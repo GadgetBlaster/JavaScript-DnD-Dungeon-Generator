@@ -205,7 +205,10 @@ const drawRooms = (mapSettings, mapRooms, grid, roomNumber = 1, prevRoom) => {
                 [ x, y ] = rollArrayItem(validCords);
             }
         } else {
-            [ x, y ] = getStartingPoint(mapSettings, roomDimensions);
+            [ x, y ] = getStartingPoint({
+                width: mapSettings.gridWidth,
+                height: mapSettings.gridHeight,
+            }, roomDimensions);
         }
 
         let room = {
