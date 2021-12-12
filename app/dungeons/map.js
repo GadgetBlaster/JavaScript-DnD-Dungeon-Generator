@@ -94,11 +94,9 @@ import roomType from '../rooms/type.js';
 // -- Config -------------------------------------------------------------------
 
 /**
- * Maximum number of grid cells a door can be wide or tall.
- *
- * TODO rename to `maxDoorCellSize`?
+ * Maximum number of grid units a door can be wide or tall.
  */
-const maxDoorWidth = 4;
+const maxDoorGridUnits = 4;
 
 /**
  * Opposite direction lookup.
@@ -260,7 +258,7 @@ function drawRooms(gridDimensions, mapRooms, grid, roomNumber = 1, prevRoom) {
 const getDoor = (grid, room, prevRoom, { allowSecret } = {}) => {
     let cells     = getDoorCells(grid, room, prevRoom);
     let useEdge   = prevRoom && prevRoom.roomType === roomType.hallway && room.roomType === roomType.hallway;
-    let max       = Math.min(maxDoorWidth, Math.ceil(cells.length / 2));
+    let max       = Math.min(maxDoorGridUnits, Math.ceil(cells.length / 2));
     let size      = roll(1, max);
     let remainder = cells.length - size;
     let start     = useEdge ? rollArrayItem([ 0, remainder ]) : roll(0, remainder);
