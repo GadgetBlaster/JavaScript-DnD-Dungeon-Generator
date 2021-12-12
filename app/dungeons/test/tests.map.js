@@ -324,8 +324,8 @@ export default ({ assert, describe, it }) => {
                     const cells = getDoorCells(grid, room);
 
                     assert(cells).isArray();
-                    cells && assert(cells.shift()).equalsArray([ '3', '0' ]);
-                    cells && assert(cells.shift()).equalsArray([ '4', '0' ]);
+                    cells && assert(cells.shift()).equalsObject({ x: 3, y: 0 });
+                    cells && assert(cells.shift()).equalsObject({ x: 4, y: 0 });
                 });
             });
 
@@ -345,8 +345,8 @@ export default ({ assert, describe, it }) => {
                     const cells = getDoorCells(grid, room);
 
                     assert(cells).isArray();
-                    cells && assert(cells.shift()).equalsArray([ '9', '3' ]);
-                    cells && assert(cells.shift()).equalsArray([ '9', '4' ]);
+                    cells && assert(cells.shift()).equalsObject({ x: 9, y: 3 });
+                    cells && assert(cells.shift()).equalsObject({ x: 9, y: 4 });
                 });
             });
 
@@ -366,8 +366,8 @@ export default ({ assert, describe, it }) => {
                     const cells = getDoorCells(grid, room);
 
                     assert(cells).isArray();
-                    cells && assert(cells.shift()).equalsArray([ '2', '9' ]);
-                    cells && assert(cells.shift()).equalsArray([ '3', '9' ]);
+                    cells && assert(cells.shift()).equalsObject({ x: 2, y: 9 });
+                    cells && assert(cells.shift()).equalsObject({ x: 3, y: 9 });
                 });
             });
 
@@ -387,8 +387,8 @@ export default ({ assert, describe, it }) => {
                     const cells = getDoorCells(grid, room);
 
                     assert(cells).isArray();
-                    cells && assert(cells.shift()).equalsArray([ '0', '5' ]);
-                    cells && assert(cells.shift()).equalsArray([ '0', '6' ]);
+                    cells && assert(cells.shift()).equalsObject({ x: 0, y: 5 });
+                    cells && assert(cells.shift()).equalsObject({ x: 0, y: 6 });
                 });
             });
         });
@@ -440,9 +440,9 @@ export default ({ assert, describe, it }) => {
                 const cells = getDoorCells(grid, room2, room1);
 
                 assert(cells).isArray();
-                cells && assert(cells.shift()).equalsArray([ '4', '4' ]);
-                cells && assert(cells.shift()).equalsArray([ '5', '4' ]);
-                cells && assert(cells.shift()).equalsArray([ '6', '4' ]);
+                cells && assert(cells.shift()).equalsObject({ x: 4, y: 4 });
+                cells && assert(cells.shift()).equalsObject({ x: 5, y: 4 });
+                cells && assert(cells.shift()).equalsObject({ x: 6, y: 4 });
             });
         });
     });

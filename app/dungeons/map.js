@@ -136,6 +136,8 @@ const _oppositeDirectionLookup = {
 /**
  * Checks if there is an adjacent door to the given cell.
  *
+ * @private
+ *
  * @param {Grid} grid
  * @param {Coordinates} coordinates
  *
@@ -161,6 +163,7 @@ const checkForAdjacentDoor = (grid, { x, y }) => {
  * Draws rooms to a map grid and returns the results.
  *
  * TODO rename, not a draw method
+ * @private
  *
  * @param {Dimensions} gridDimensions
  * @param {Room[]} mapRooms
@@ -258,11 +261,13 @@ function drawRooms(gridDimensions, mapRooms, grid, roomNumber = 1, prevRoom) {
 /**
  * Returns a door object based on the given grid, room, and previous room.
  *
+ * @private
+ *
  * @param {Grid} grid
  * @param {Room} room
  * @param {Room} prevRoom
- * @param {options} [options]
- *     @param {options} [options.allowSecret]
+ * @param {object} [options = {}]
+ *     @param {boolean} [options.allowSecret]
  *
  * @returns {Door}
  */
@@ -274,7 +279,7 @@ const getDoor = (grid, room, prevRoom, { allowSecret } = {}) => {
     let remainder = cells.length - size;
     let start     = useEdge ? rollArrayItem([ 0, remainder ]) : roll(0, remainder);
     let doorCells = cells.slice(start, start + size);
-    let [ x, y ]  = doorCells[0];
+    let { x, y }  = doorCells[0];
     let direction = getDoorDirection({ x, y }, room);
 
     let width  = 1;
@@ -282,7 +287,7 @@ const getDoor = (grid, room, prevRoom, { allowSecret } = {}) => {
 
     grid[x][y] = cellDoor;
 
-    doorCells.forEach(([ cellX, cellY ]) => {
+    doorCells.forEach(({ x: cellX, y: cellY }) => {
         if (cellX > x || cellY > y) {
             cellX > x ? width++ : height++;
             grid[cellX][cellY] = cellDoor;
@@ -301,11 +306,13 @@ const getDoor = (grid, room, prevRoom, { allowSecret } = {}) => {
 /**
  * Returns an array of grid cells which are valid spaces for a door.
  *
+ * @private
+ *
  * @param {Grid} grid
  * @param {Room} room
  * @param {Room} prevRoom
  *
- * @returns {string[]} // TODO GridCoordinates[]
+ * @returns {Coordinates[]}
  */
 const getDoorCells = (grid, room, prevRoom) => {
     let prevWalls = [];
@@ -350,14 +357,23 @@ const getDoorCells = (grid, room, prevRoom) => {
     let prevRoomWalls = prevWalls.map((cords) => cords.join());
     let intersection  = roomWalls.filter((value) => prevRoomWalls.includes(value));
 
-    let cells = intersection.map((xy) => xy.split(','));
+    /** @type {Coordinates[]} validDoorCells */
+    let validDoorCells = intersection.map((xy) => {
+        let [ x, y ] = xy.split(',');
 
-    return cells;
+        return {
+            x: Number(x),
+            y: Number(y),
+        };
+    });
+
+    return validDoorCells;
 };
 
 /**
  * Returns a door's direction for a given wall coordinate.
  *
+ * @private
  * @throws
  *
  * @param {Coordinates} doorCoordinates
@@ -384,6 +400,8 @@ function getDoorDirection({ x, y }, room) {
 
 /**
  * Returns randomized room dimensions for the given room type.
+ *
+ * @private
  *
  * @param {Dimensions} gridDimensions
  * @param {RoomConfig | DungeonConfig} roomConfig
@@ -430,6 +448,8 @@ function getRoomDimensions(gridDimensions, roomConfig) {
  * TODO rename to `getRoomWalls()`
  * TODO refactor so it only returns walls, then call `drawRoom` in the parent
  * function.
+ *
+ * @private
  *
  * @param {Grid} grid
  * @param {Room} room // TODO not a room
@@ -503,6 +523,8 @@ const getRoom = (grid, room, { hasTraps } = {}) => {
  *
  * TODO rename to createDoor()
  *
+ * @private
+ *
  * @param {Rectangle} doorRectangle
  * @param {{
  *     from: number;
@@ -538,6 +560,8 @@ const makeDoor = (doorRectangle, { from, to, direction, type }) => {
 /**
  * Returns an array of Door configs for the additional connections to the given
  * Room, if any.
+ *
+ * @private
  *
  * @param {Grid} grid
  * @param {Room[]} rooms
@@ -627,6 +651,8 @@ const getExtraDoors = (grid, rooms, existingDoors) => {
  * Returns an array of rooms and an array of doors.
  *
  * TODO rename.
+ *
+ * @private
  *
  * @param {Dimensions} gridDimensions
  * @param {Room[]} roomConfigs

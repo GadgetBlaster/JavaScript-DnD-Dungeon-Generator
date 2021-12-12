@@ -53,14 +53,14 @@ export const sides = {
 // -- Private Functions --------------------------------------------------------
 
 /**
- * Checks if a grid cell can become part of a room shape.
+ * Checks if a grid cell is empty.
  *
  * @private
  *
  * @param {Grid} grid
  * @param {Rectangle} rectangle
  *
- * @returns boolean
+ * @returns {boolean}
  */
  function isEmptyCell(grid, { x, y, width, height }) {
     let minX = wallSize;
@@ -203,9 +203,12 @@ export function getValidRoomConnections(grid, prevRoomDimensions, roomDimensions
         height: prevHeight,
     } = prevRoomDimensions;
 
+    // Add extra `wallSize` unit in each direction because rooms are placed 1
+    // wall unit apart, a space which can be occupied by a door cell.
     let minX = prevX - roomWidth - wallSize;
-    let minY = prevY - roomHeight - wallSize;
     let maxX = prevX + prevWidth + wallSize;
+
+    let minY = prevY - roomHeight - wallSize;
     let maxY = prevY + prevHeight + wallSize;
 
     let validCords = [];
