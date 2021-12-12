@@ -459,32 +459,32 @@ export default ({ assert, describe, it }) => {
 
         describe('given a grid cell on the north side of a room', () => {
             it('should return `directions.north`', () => {
-                assert(getDoorDirection([ 2, 1 ], room)).equals(directions.north);
+                assert(getDoorDirection({ x: 2, y: 1 }, room)).equals(directions.north);
             });
         });
 
         describe('given a grid cell on the east side of a room', () => {
             it('should return `directions.north`', () => {
-                assert(getDoorDirection([ 4, 2 ], room)).equals(directions.east);
+                assert(getDoorDirection({ x: 4, y: 2 }, room)).equals(directions.east);
             });
         });
 
         describe('given a grid cell on the south side of a room', () => {
             it('should return `directions.north`', () => {
-                assert(getDoorDirection([ 2, 4 ], room)).equals(directions.south);
+                assert(getDoorDirection({ x: 2, y: 4 }, room)).equals(directions.south);
             });
         });
 
         describe('given a grid cell on the south side of a room', () => {
             it('should return `directions.north`', () => {
-                assert(getDoorDirection([ 1, 2 ], room)).equals(directions.west);
+                assert(getDoorDirection({ x: 1, y: 2 }, room)).equals(directions.west);
             });
         });
 
         describe('given an invalid cell', () => {
             it('should throw', () => {
                 // TODO [ 1, 1 ] should throw as well
-                assert(() => getDoorDirection([ 0, 0 ], room)).throws('Invalid grid cell');
+                assert(() => getDoorDirection({ x: 0, y: 0 }, room)).throws('Invalid door coordinates');
             });
         });
     });

@@ -277,7 +277,7 @@ const getDoor = (grid, room, prevRoom, { allowSecret } = {}) => {
     let start     = useEdge ? rollArrayItem([ 0, remainder ]) : roll(0, remainder);
     let doorCells = cells.slice(start, start + size);
     let [ x, y ]  = doorCells[0];
-    let direction = getDoorDirection([ x, y ], room);
+    let direction = getDoorDirection({ x, y }, room);
 
     let width  = 1;
     let height = 1;
@@ -358,13 +358,16 @@ const getDoorCells = (grid, room, prevRoom) => {
 };
 
 /**
- * Returns a door's direction based on a cell of the door and the room.
+ * Returns a door's direction for a given wall coordinate.
  *
- * @param {GridCell} cell
+ * @throws
+ *
+ * @param {Coordinates} doorCoordinates
  * @param {Room} room
+ *
  * @returns
  */
-const getDoorDirection = ([ x, y ], room) => {
+function getDoorDirection({ x, y }, room) {
     // TODO return early and drop elses
     // TODO Remove number casting
     // TODO check x & y, e.g. the corner of the room is an invalid door cell
@@ -377,9 +380,9 @@ const getDoorDirection = ([ x, y ], room) => {
     } else if (Number(x) === (room.x - 1)) {
         return directions.west;
     } else {
-        throw new TypeError('Invalid grid cell');
+        throw new TypeError('Invalid door coordinates');
     }
-};
+}
 
 /**
  * Returns randomized room dimensions for the given room type.
@@ -389,7 +392,7 @@ const getDoorDirection = ([ x, y ], room) => {
  *
  * @returns {Dimensions}
  */
-const getRoomDimensions = (gridDimensions, roomConfig) => {
+function getRoomDimensions(gridDimensions, roomConfig) {
     // TODO just pass settings
     let {
         settings: {
@@ -421,7 +424,7 @@ const getRoomDimensions = (gridDimensions, roomConfig) => {
     let height = Math.min(gridHeight - 2, roomHeight);
 
     return { width, height };
-};
+}
 
 /**
  * Returns a room rectangle and an array of wall coordinates.
