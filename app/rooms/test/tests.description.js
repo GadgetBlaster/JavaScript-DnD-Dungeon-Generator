@@ -22,7 +22,6 @@ import {
 
 import { capitalize } from '../../utility/tools.js';
 import { cellFeet } from '../../dungeons/grid.js';
-import { directions } from '../../dungeons/map.js';
 import { furnitureQuantity } from '../../items/types/furnishing.js';
 import { knobs } from '../../knobs.js';
 import { random } from '../../utility/random.js';
@@ -398,7 +397,7 @@ export default ({ assert, describe, it }) => {
             const config = {
                 type: doorType.passageway,
                 size: 1,
-                connection: { direction: directions.north, to: 2 },
+                connection: { direction: 'north', to: 2 },
             };
 
             const desc = getRoomDoorwayDescription([ config ]);
@@ -428,7 +427,7 @@ export default ({ assert, describe, it }) => {
             const config = [{
                 type: doorType.passageway,
                 size: 1,
-                connection: { direction: directions.south, to: outside },
+                connection: { direction: 'south', to: outside },
             }];
 
             it('should include a description of the door to the outside', () => {
@@ -442,12 +441,12 @@ export default ({ assert, describe, it }) => {
                 {
                     type: doorType.archway,
                     size: 1,
-                    connection: { direction: directions.south, to: 2 },
+                    connection: { direction: 'south', to: 2 },
                 },
                 {
                     type: doorType.passageway,
                     size: 1,
-                    connection: { direction: directions.north, to: 1 },
+                    connection: { direction: 'north', to: 1 },
                 },
             ];
 
@@ -467,8 +466,8 @@ export default ({ assert, describe, it }) => {
 
             it('should include both directions', () => {
                 assert(desc)
-                    .stringIncludes(directions.south)
-                    .stringIncludes(directions.north);
+                    .stringIncludes('south')
+                    .stringIncludes('north');
             });
 
             describe('when the first door is of type `doorType.archway`', () => {
@@ -483,17 +482,17 @@ export default ({ assert, describe, it }) => {
                 {
                     type: doorType.archway,
                     size: 1,
-                    connection: { direction: directions.south, to: 2 },
+                    connection: { direction: 'south', to: 2 },
                 },
                 {
                     type: doorType.passageway,
                     size: 1,
-                    connection: { direction: directions.north, to: 3 },
+                    connection: { direction: 'north', to: 3 },
                 },
                 {
                     type: doorType.hole,
                     size: 1,
-                    connection: { direction: directions.east, to: 4 },
+                    connection: { direction: 'east', to: 4 },
                 },
             ];
 
@@ -523,11 +522,11 @@ export default ({ assert, describe, it }) => {
             const config = [
                 {
                     type: doorType.archway,
-                    connection: { direction: directions.south, to: 2 },
+                    connection: { direction: 'south', to: 2 },
                 },
                 {
                     type: doorType.passageway,
-                    connection: { direction: directions.north, to: 3 },
+                    connection: { direction: 'north', to: 3 },
                 },
             ];
 
@@ -551,7 +550,7 @@ export default ({ assert, describe, it }) => {
         describe('given a door that connects to the outside', () => {
             const config = [{
                 type: doorType.archway,
-                connection: { direction: directions.south, to: outside },
+                connection: { direction: 'south', to: outside },
             }];
 
             it('should include "leading out of the dungeon"', () => {
@@ -563,7 +562,7 @@ export default ({ assert, describe, it }) => {
             [ doorType.concealed, doorType.secret ].forEach((type) => {
                 const config = [{
                     type,
-                    connection: { direction: directions.east, to: 1 },
+                    connection: { direction: 'east', to: 1 },
                 }];
 
                 it('should emphasize the list item with `<strong>`', () => {
@@ -580,15 +579,15 @@ export default ({ assert, describe, it }) => {
                 {
                     type: 'Any',
                     connections: {
-                        1: { direction: directions.north, to: 2 },
-                        2: { direction: directions.south, to: 1 },
+                        1: { direction: 'north', to: 2 },
+                        2: { direction: 'south', to: 1 },
                     },
                 },
                 {
                     type: 'Any',
                     connections: {
-                        1: { direction: directions.east, to: 23 },
-                        23: { direction: directions.west, to: 1 },
+                        1: { direction: 'east', to: 23 },
+                        23: { direction: 'west', to: 1 },
                     },
                 },
             ];
@@ -767,7 +766,7 @@ export default ({ assert, describe, it }) => {
                     const roomDoors = [{
                         type: doorType.passageway,
                         size: 1,
-                        connection: { direction: directions.south, to: outside },
+                        connection: { direction: 'south', to: outside },
                     }];
 
                     assert(getRoomDescription(room, roomDoors))

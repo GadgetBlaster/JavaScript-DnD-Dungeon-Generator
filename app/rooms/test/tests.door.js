@@ -7,8 +7,6 @@ import door, {
     probability,
 } from '../door.js';
 
-import { directions } from '../../dungeons/map.js';
-
 /**
  * @param {import('../../unit/state.js').Utility} utility
  */
@@ -55,8 +53,8 @@ export default ({ assert, describe, it }) => {
             const dungeonDoors = [
                 {
                     connections: {
-                        1: { direction: directions.north, to: 2 },
-                        2: { direction: directions.south, to: 1 },
+                        1: { direction: 'north', to: 2 },
+                        2: { direction: 'south', to: 1 },
                     },
                     locked: false,
                     size: 2,
@@ -74,8 +72,8 @@ export default ({ assert, describe, it }) => {
                     const roomDoors = getRoomDoor(dungeonDoors).doors;
 
                     assert(roomDoors).equalsObject({
-                        1: [ { ...dungeonDoors[0], connection: { direction: directions.north, to: 2 } } ],
-                        2: [ { ...dungeonDoors[0], connection: { direction: directions.south, to: 1 } } ],
+                        1: [ { ...dungeonDoors[0], connection: { direction: 'north', to: 2 } } ],
+                        2: [ { ...dungeonDoors[0], connection: { direction: 'south', to: 1 } } ],
                     });
                 });
             });
@@ -92,8 +90,8 @@ export default ({ assert, describe, it }) => {
                     assert(roomDoorKeys[0]).equalsObject({
                         type: door.wooden,
                         connections: {
-                            1: { direction: directions.north, to: 2 },
-                            2: { direction: directions.south, to: 1 },
+                            1: { direction: 'north', to: 2 },
+                            2: { direction: 'south', to: 1 },
                         },
                     });
                 });

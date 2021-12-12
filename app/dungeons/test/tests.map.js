@@ -1,9 +1,6 @@
 // @ts-check
 
 import {
-    // Config
-    directions,
-
     // Private Functions
     testCheckForAdjacentDoor as checkForAdjacentDoor,
     testDrawRooms            as drawRooms,
@@ -458,33 +455,34 @@ export default ({ assert, describe, it }) => {
         };
 
         describe('given a grid cell on the north side of a room', () => {
-            it('should return `directions.north`', () => {
-                assert(getDoorDirection({ x: 2, y: 1 }, room)).equals(directions.north);
+            it('should return "north"', () => {
+                assert(getDoorDirection({ x: 2, y: 1 }, room)).equals('north');
             });
         });
 
         describe('given a grid cell on the east side of a room', () => {
-            it('should return `directions.north`', () => {
-                assert(getDoorDirection({ x: 4, y: 2 }, room)).equals(directions.east);
+            it('should return "east', () => {
+                assert(getDoorDirection({ x: 4, y: 2 }, room)).equals('east');
             });
         });
 
         describe('given a grid cell on the south side of a room', () => {
-            it('should return `directions.north`', () => {
-                assert(getDoorDirection({ x: 2, y: 4 }, room)).equals(directions.south);
+            it('should return "south"', () => {
+                assert(getDoorDirection({ x: 2, y: 4 }, room)).equals('south');
             });
         });
 
         describe('given a grid cell on the south side of a room', () => {
-            it('should return `directions.north`', () => {
-                assert(getDoorDirection({ x: 1, y: 2 }, room)).equals(directions.west);
+            it('should return "west"', () => {
+                assert(getDoorDirection({ x: 1, y: 2 }, room)).equals('west');
             });
         });
 
         describe('given an invalid cell', () => {
             it('should throw', () => {
                 // TODO [ 1, 1 ] should throw as well
-                assert(() => getDoorDirection({ x: 0, y: 0 }, room)).throws('Invalid door coordinates');
+                assert(() => getDoorDirection({ x: 0, y: 0 }, room))
+                    .throws('Invalid door coordinates in getDoorDirection()');
             });
         });
     });
@@ -582,8 +580,8 @@ export default ({ assert, describe, it }) => {
                     door && assert(doorTypes.includes(door.type)).isTrue();
                     door && assert(door.locked).isBoolean();
                     door && assert(door.connections).equalsObject({
-                        1: { direction: directions.south, to: 2 },
-                        2: { direction: directions.north, to: 1 },
+                        1: { direction: 'south', to: 2 },
+                        2: { direction: 'north', to: 1 },
                     });
                 });
 
@@ -694,8 +692,8 @@ export default ({ assert, describe, it }) => {
                     door && assert(doorTypes.includes(door.type)).isTrue();
                     door && assert(door.locked).isBoolean();
                     door && assert(door.connections).equalsObject({
-                        1: { direction: directions.east, to: 2 },
-                        2: { direction: directions.west, to: 1 },
+                        1: { direction: 'east', to: 2 },
+                        2: { direction: 'west', to: 1 },
                     });
                 });
 
@@ -982,7 +980,7 @@ export default ({ assert, describe, it }) => {
             }, {
                 from: 1,
                 to: 2,
-                direction: directions.south,
+                direction: 'south',
                 type: roomTypes.library,
             });
 
@@ -991,8 +989,8 @@ export default ({ assert, describe, it }) => {
             assert(door.type).equals(roomTypes.library);
             assert(door.locked).isBoolean();
             assert(door.connections).equalsObject({
-                1: { direction: directions.south, to: 2 },
-                2: { direction: directions.north, to: 1 },
+                1: { direction: 'south', to: 2 },
+                2: { direction: 'north', to: 1 },
             });
         });
     });

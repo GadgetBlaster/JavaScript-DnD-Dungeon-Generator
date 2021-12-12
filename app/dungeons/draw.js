@@ -1,6 +1,5 @@
 // @ts-check
 
-import { directions } from './map.js';
 import { element } from '../utility/element.js';
 import { isRequired } from '../utility/tools.js';
 import doorType, { lockable } from '../rooms/door.js';
@@ -9,11 +8,11 @@ import doorType, { lockable } from '../rooms/door.js';
 
 // -- Types --------------------------------------------------------------------
 
-/** @typedef {import('./map').Directions} Directions */
+/** @typedef {import('../utility/element.js').Attributes} Attributes */
 /** @typedef {import('./grid').Coordinates} Coordinates */
 /** @typedef {import('./grid').Dimensions} Dimensions */
 /** @typedef {import('./grid').Rectangle} Rectangle */
-/** @typedef {import('../utility/element.js').Attributes} Attributes */
+/** @typedef {import('./map').Direction} Direction */
 
 // -- Pixel Definitions --------------------------------------------------------
 
@@ -388,7 +387,7 @@ export {
  *
  * @param {Rectangle} rectangle
  * @param {object} args
- *     @param {"north" | "east" | "south" | "west"} args.direction // TODO reusable type
+ *     @param {Direction} args.direction
  *     @param {string} args.type
  *     @param {boolean} [args.locked] // TODO move to options param
  *
@@ -411,7 +410,7 @@ export function drawDoor(rectangle, { direction, type, locked }) {
     let { x, y, width, height } = rectAttributes;
 
     let lineCords = [];
-    let isVertical = direction === directions.north || direction === directions.south;
+    let isVertical = direction === 'north' || direction === 'south';
 
     let xHalf   = x + (width / 2);
     let yHalf   = y + (height / 2);

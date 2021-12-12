@@ -37,7 +37,6 @@ import {
     drawRoom,
 } from '../draw.js';
 
-import { directions } from '../map.js';
 import doorType from '../../rooms/door.js';
 
 /** @typedef {import('../draw.js').Circle} Circle */
@@ -450,7 +449,7 @@ export default ({ assert, describe, it }) => {
         /** @type {Rectangle} rectangle */
         const rectangle = { x: 10, y: 20, width: 1, height: 1 };
         const doorArgs  = {
-            direction: directions.south,
+            direction: 'south',
             locked: false,
             type: doorType.passageway,
         };
@@ -480,11 +479,11 @@ export default ({ assert, describe, it }) => {
 
         /** @type {Rectangle} northSouthDoorRect */
         const northSouthDoorRect = { x: 10, y: 20, width: 2, height: 1 };
-        const northSouthDoorArgs = { ...doorArgs, direction: directions.north };
+        const northSouthDoorArgs = { ...doorArgs, direction: 'north' };
 
         /** @type {Rectangle} eastWestDoorRect */
         const eastWestDoorRect = { x: 10, y: 20, width: 1, height: 2 };
-        const eastWestDoorArgs = { ...doorArgs, direction: directions.east };
+        const eastWestDoorArgs = { ...doorArgs, direction: 'east' };
 
         describe('door orientations', () => {
             describe('door wall lines', () => {

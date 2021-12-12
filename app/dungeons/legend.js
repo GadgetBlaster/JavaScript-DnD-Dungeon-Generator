@@ -1,7 +1,6 @@
 // @ts-check
 
 import { cellFeet } from './grid.js';
-import { directions } from './map.js';
 import { drawMap, drawRoom, drawDoor, drawGrid, pxCell } from './draw.js';
 import { small } from '../ui/typography.js';
 import { list } from '../ui/list.js';
@@ -9,8 +8,9 @@ import doorType from '../rooms/door.js';
 
 // -- Types --------------------------------------------------------------------
 
-/** @typedef {import('./grid.js').Rectangle} Rectangle */
 /** @typedef {import('./grid.js').Dimensions} Dimensions */
+/** @typedef {import('./grid.js').Rectangle} Rectangle */
+/** @typedef {import('./map.js').Direction} Direction */
 
 // -- Public Functions ---------------------------------------------------------
 
@@ -30,7 +30,8 @@ export function drawLegend({ mapWidth }) {
     /** @type {Rectangle} gridRectangle */
     let gridRectangle = { x: 0, y: 0, width: 1, height: 1 };
 
-    let direction = directions.east;
+    /**  @type {Direction} direction */
+    let direction = 'east';
 
     let scale = `${cellFeet} x ${cellFeet} ft`;
 

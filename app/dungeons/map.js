@@ -47,8 +47,14 @@ import roomType from '../rooms/type.js';
 /**
  * @typedef {object} Connection
  *
- * @property {Directions} direction - north, east, south, or west
+ * @property {Direction} direction
  * @property {number | string} to - Room number or "outside"
+ */
+
+/**
+ * Direction
+ *
+ * @typedef {"north" | "east" | "south" | "west"} Direction
  */
 
 /**
@@ -95,40 +101,20 @@ import roomType from '../rooms/type.js';
 const maxDoorWidth = 4;
 
 /**
- * Directions
+ * Opposite direction lookup.
  *
- * @typedef {object} Directions
- *
- * @property {"north"} north
- * @property {"east"} east
- * @property {"south"} south
- * @property {"west"} west
+ * @type {{
+ *     north: "south";
+ *     east : "west";
+ *     south: "north";
+ *     west : "east";
+ * }}
  */
-
-/**
- * Directions
- *
- * TODO freeze all lookup objects?
- *
- * @type {Directions}
- */
-export const directions = {
-    north: 'north',
-    east : 'east',
-    south: 'south',
-    west : 'west',
-};
-
-/**
- * Lookup up of direction opposites.
- *
- * TODO no underscore
- */
-const _oppositeDirectionLookup = {
-    [directions.north]: directions.south,
-    [directions.east] : directions.west,
-    [directions.south]: directions.north,
-    [directions.west] : directions.east,
+const oppositeDirectionLookup = {
+    north: 'south',
+    east : 'west',
+    south: 'north',
+    west : 'east',
 };
 
 // -- Private Functions --------------------------------------------------------
@@ -379,23 +365,29 @@ const getDoorCells = (grid, room, prevRoom) => {
  * @param {Coordinates} doorCoordinates
  * @param {Room} room
  *
- * @returns
+ * @returns {Direction}
  */
 function getDoorDirection({ x, y }, room) {
     // TODO return early and drop elses
     // TODO Remove number casting
     // TODO check x & y, e.g. the corner of the room is an invalid door cell
     if (Number(y) === (room.y - 1)) {
-        return directions.north;
-    } else if (Number(x) === (room.x + room.width)) {
-        return directions.east;
-    } else if (Number(y) === (room.y + room.height)) {
-        return directions.south;
-    } else if (Number(x) === (room.x - 1)) {
-        return directions.west;
-    } else {
-        throw new TypeError('Invalid door coordinates');
+        return 'north';
     }
+
+    if (Number(x) === (room.x + room.width)) {
+        return 'east';
+    }
+
+    if (Number(y) === (room.y + room.height)) {
+        return 'south';
+    }
+
+    if (Number(x) === (room.x - 1)) {
+        return 'west';
+    }
+
+    throw new TypeError('Invalid door coordinates in getDoorDirection()');
 }
 
 /**
@@ -550,7 +542,7 @@ const makeDoor = (doorRectangle, { from, to, direction, type }) => {
         locked,
         connections: {
             [from]: { direction, to },
-            [to]  : { direction: _oppositeDirectionLookup[direction], to: from },
+            [to]  : { direction: oppositeDirectionLookup[direction], to: from },
         },
         // TODO size is returning NaN, likely unused?
         size: Math.max(doorRectangle.width, doorRectangle.height),
@@ -621,7 +613,8 @@ const getExtraDoors = (grid, rooms, existingDoors) => {
 
                     connectedTo.add(xConnect);
 
-                    let direction = adjust === -1 ? directions.west : directions.east;
+                    /** @type {Direction} direction */
+                    let direction = adjust === -1 ? 'west' : 'east';
                     let type      = secretProbability.roll(); // TODO inject `secretProbability`
 
                     doors.push(makeDoor(doorRectangle, { from: roomNumber, to: xConnect, direction, type }));
@@ -635,7 +628,8 @@ const getExtraDoors = (grid, rooms, existingDoors) => {
 
                     connectedTo.add(yConnect);
 
-                    let direction = adjust === -1 ? directions.north : directions.south;
+                    /** @type {Direction} direction */
+                    let direction = adjust === -1 ? 'north' : 'south';
                     let type      = secretProbability.roll(); // TODO inject `secretProbability`
 
                     doors.push(makeDoor(doorRectangle, { from: roomNumber, to: yConnect, direction, type }));
