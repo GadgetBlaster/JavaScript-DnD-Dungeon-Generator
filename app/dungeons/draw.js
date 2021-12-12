@@ -9,7 +9,7 @@ import doorType, { lockable } from '../rooms/door.js';
 
 /** @typedef {import('./map').Directions} Directions */
 /** @typedef {import('./grid').GridCoordinates} GridCoordinates */
-/** @typedef {import('./grid').GridDimensions} GridDimensions */
+/** @typedef {import('./grid').Dimensions} Dimensions */
 /** @typedef {import('./grid').GridRectangle} GridRectangle */
 /** @typedef {import('../utility/element.js').Attributes} Attributes */
 
@@ -497,11 +497,11 @@ export function drawDoor(gridRectangle, { direction, type, locked }) {
  * Returns a grid of horizontal and vertical SVG element line strings for the
  * given width and height.
  *
- * @param {GridDimensions} gridDimensions
+ * @param {Dimensions} dimensions
  *
  * @returns {string}
  */
-export function drawGrid({ gridWidth, gridHeight }) {
+export function drawGrid({ width, height }) {
     let lines = '';
 
     let gridLineAttrs = {
@@ -509,26 +509,26 @@ export function drawGrid({ gridWidth, gridHeight }) {
         width: pxGridLine,
     };
 
-    for (let i = 0; i <= gridHeight; i++) {
+    for (let i = 0; i <= height; i++) {
         let unit = i * pxCell;
 
         lines += drawLine({
             x1: 0,
             y1: unit,
-            x2: gridWidth * pxCell,
+            x2: width * pxCell,
             y2: unit,
             ...gridLineAttrs,
         });
     }
 
-    for (let i = 0; i <= gridWidth; i++) {
+    for (let i = 0; i <= width; i++) {
         let unit = i * pxCell;
 
         lines += drawLine({
             x1: unit,
             y1: 0,
             x2: unit,
-            y2: gridHeight * pxCell,
+            y2: height * pxCell,
             ...gridLineAttrs,
         });
     }
@@ -539,15 +539,15 @@ export function drawGrid({ gridWidth, gridHeight }) {
 /**
  * Returns map SVG content wrapped in an SVG element with the given dimensions.
  *
- * @param {GridDimensions} gridDimensions
+ * @param {Dimensions} gridDimensions
  * @param {string} content
  *
  * @returns {string}
  */
-export function drawMap({ gridWidth, gridHeight }, content) {
+export function drawMap({ width, height }, content) {
     let attributes = {
-        width : (gridWidth * pxCell),
-        height: (gridHeight * pxCell),
+        width : (width * pxCell),
+        height: (height * pxCell),
         style : `background: ${colorGridFill}; overflow: visible;`,
     };
 

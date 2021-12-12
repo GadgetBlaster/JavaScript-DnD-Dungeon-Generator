@@ -9,7 +9,8 @@ import doorType from '../rooms/door.js';
 
 // -- Types --------------------------------------------------------------------
 
-/** @typedef {import('./draw.js').GridRectangle} GridRectangle */
+/** @typedef {import('./grid.js').Rectangle} Rectangle */
+/** @typedef {import('./grid.js').Dimensions} Dimensions */
 
 // -- Public Functions ---------------------------------------------------------
 
@@ -23,9 +24,10 @@ import doorType from '../rooms/door.js';
  */
 export function drawLegend({ mapWidth }) {
 
-    let mapSettings = { gridWidth: 1, gridHeight: 1 };
+    /** @type {Dimensions} gridDimensions */
+    let gridDimensions = { width: 1, height: 1 };
 
-    /** @type {GridRectangle} gridRectangle */
+    /** @type {Rectangle} gridRectangle */
     let gridRectangle = { gridX: 0, gridY: 0, gridWidth: 1, gridHeight: 1 };
 
     let direction = directions.east;
@@ -33,7 +35,7 @@ export function drawLegend({ mapWidth }) {
     let scale = `${cellFeet} x ${cellFeet} ft`;
 
     let legend = {
-        [scale]       : drawGrid(mapSettings),
+        [scale]       : drawGrid(gridDimensions),
         'Room'        : drawRoom(gridRectangle, { roomNumber: 1 }),
         'Trapped Room': drawRoom(gridRectangle, { roomNumber: '' }, { hasTraps: true }),
         'Passageway'  : drawDoor(gridRectangle, { direction, type: doorType.passageway }),
@@ -46,6 +48,6 @@ export function drawLegend({ mapWidth }) {
     };
 
     return list(Object.keys(legend).map((key) => {
-        return drawMap(mapSettings, legend[key]) + small(key);
+        return drawMap(gridDimensions, legend[key]) + small(key);
     }), { 'data-grid': true, style: `width: ${mapWidth * pxCell}px;` });
-};
+}

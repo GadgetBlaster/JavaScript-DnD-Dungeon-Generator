@@ -798,26 +798,26 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('drawGrid()', () => {
-        const gridWidth  = 4;
-        const gridHeight = 5;
+        const width  = 4;
+        const height = 5;
 
-        const grid = drawGrid({ gridWidth, gridHeight });
+        const grid = drawGrid({ width, height });
         const lines = grid.match(/<line(.+?) \/>/g);
 
         it('returns the correct number of `<line />` element strings', () => {
-            const lineCount = gridWidth + 1 + gridHeight + 1;
+            const lineCount = width + 1 + height + 1;
 
             assert(lines).isArray();
             lines && assert(lines.length).equals(lineCount);
         });
 
         it('returns a vertical `<line />` element string for each horizontal grid cell and the outer edge', () => {
-            const y2 = gridHeight * pxCell;
+            const y2 = height * pxCell;
 
             const verticalLines = lines.filter((line) =>
                 line.includes('y1="0"') && line.includes(`y2="${y2}"`));
 
-            assert(verticalLines.length).equals(gridWidth + 1);
+            assert(verticalLines.length).equals(width + 1);
 
             verticalLines.forEach((line, xCord) => {
                 const x = xCord * pxCell;
@@ -829,12 +829,12 @@ export default ({ assert, describe, it }) => {
         });
 
         it('returns a horizontal `<line />` element string for each vertical grid cell and the outer edge', () => {
-            const x2 = gridWidth * pxCell;
+            const x2 = width * pxCell;
 
             const horizontalLines = lines.filter((line) =>
                 line.includes('x1="0"') && line.includes(`x2="${x2}"`));
 
-            assert(horizontalLines.length).equals(gridHeight + 1);
+            assert(horizontalLines.length).equals(height + 1);
 
             horizontalLines.forEach((line, yCord) => {
                 const y = yCord * pxCell;
@@ -847,7 +847,7 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('drawMap()', () => {
-        const dimensions = { gridWidth: 12, gridHeight: 14 };
+        const dimensions = { width: 12, height: 14 };
         const map = drawMap(dimensions, '');
 
         it('should return an SVG element string', () => {
@@ -855,12 +855,12 @@ export default ({ assert, describe, it }) => {
         });
 
         it('should have correct width and heigh attributes', () => {
-            const width = dimensions.gridWidth * pxCell;
-            const height = dimensions.gridHeight * pxCell;
+            const pxWidth = dimensions.width * pxCell;
+            const pxHeight = dimensions.height * pxCell;
 
             assert(map)
-                .stringIncludes(`width="${width}"`)
-                .stringIncludes(`height="${height}"`);
+                .stringIncludes(`width="${pxWidth}"`)
+                .stringIncludes(`height="${pxHeight}"`);
         });
 
         it('should include the content', () => {

@@ -682,7 +682,7 @@ export {
  *
  * @param {MapConfig} mapSettings
  *
- * @returns {Map}
+ * @returns {TODO}
  */
 export const generateMap = (mapSettings) => {
     let { gridWidth, gridHeight } = mapSettings;
@@ -702,11 +702,11 @@ export const generateMap = (mapSettings) => {
 
     let roomRects = rooms.map((room) => room.rect).join('');
     let doorRects = doors.map(({ rect }) => rect).join('');
-    let gridLines = drawGrid(mapSettings);
+    let gridLines = drawGrid({ width: gridWidth, height: gridHeight });
     let content   = gridLines + roomRects + doorRects;
 
     return {
-        map  : drawMap(mapSettings, content),
+        map  : drawMap({ width: gridWidth, height: gridHeight }, content),
         rooms: rooms.map(({ config }) => config),
         doors: doors.map(({ rect, ...door }) => door),
     };
