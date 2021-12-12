@@ -5,7 +5,6 @@ import {
     directions,
 
     // Private Functions
-    testCheckAdjacentDoor as checkAdjacentDoor,
     testDrawRooms         as drawRooms,
     testGetDoor           as getDoor,
     testGetDoorCells      as getDoorCells,
@@ -14,6 +13,7 @@ import {
     testGetRoom           as getRoom,
     testGetRoomDimensions as getRoomDimensions,
     testGetRooms          as getRooms,
+    testIsDoor            as isDoor,
     testMakeDoor          as makeDoor,
 
     // Public functions
@@ -41,7 +41,7 @@ export default ({ assert, describe, it }) => {
 
     // -- Private Functions ----------------------------------------------------
 
-    describe('checkAdjacentDoor()', () => {
+    describe('isDoor()', () => {
         describe('given coordinates which are adjacent to a door', () => {
             // d = cellDoor
             // x = checked cell
@@ -63,7 +63,7 @@ export default ({ assert, describe, it }) => {
 
                     grid[x][y] = cellDoor;
 
-                    assert(checkAdjacentDoor(grid, { x: 1, y: 1 })).isTrue();
+                    assert(isDoor(grid, { x: 1, y: 1 })).isTrue();
                 });
             });
         });
@@ -71,7 +71,7 @@ export default ({ assert, describe, it }) => {
         describe('given coordinates which are not adjacent to a door', () => {
             it('returns true', () => {
                 const grid = createBlankGrid({ width: 3, height: 3 });
-                assert(checkAdjacentDoor(grid, { x: 1, y: 1 })).isFalse();
+                assert(isDoor(grid, { x: 1, y: 1 })).isFalse();
             });
         });
     });

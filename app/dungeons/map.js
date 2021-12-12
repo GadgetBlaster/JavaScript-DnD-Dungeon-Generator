@@ -134,14 +134,12 @@ const _oppositeDirectionLookup = {
 /**
  * Checks if there is a door at the given cell.
  *
- * TODO rename to `isDoor()`
- *
  * @param {Grid} grid
  * @param {Coordinates} coordinates
  *
  * @returns {boolean}
  */
-const checkAdjacentDoor = (grid, { x, y }) => {
+const isDoor = (grid, { x, y }) => {
     return [ -1, 1 ].some((adjust) => {
         let xAdjust = x + adjust;
         let yAdjust = y + adjust;
@@ -581,7 +579,7 @@ const getExtraDoors = (grid, rooms, existingDoors) => {
                 return;
             }
 
-            if (checkAdjacentDoor(grid, { x, y })) {
+            if (isDoor(grid, { x, y })) {
                 return;
             }
 
@@ -667,7 +665,6 @@ const getRooms = (mapSettings, grid) => {
 };
 
 export {
-    checkAdjacentDoor as testCheckAdjacentDoor,
     drawRooms         as testDrawRooms,
     getDoor           as testGetDoor,
     getDoorCells      as testGetDoorCells,
@@ -676,6 +673,7 @@ export {
     getRoom           as testGetRoom,
     getRoomDimensions as testGetRoomDimensions,
     getRooms          as testGetRooms,
+    isDoor            as testIsDoor,
     makeDoor          as testMakeDoor,
 };
 
