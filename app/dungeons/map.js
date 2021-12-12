@@ -38,11 +38,13 @@ import roomType from '../rooms/type.js';
 
 /** @typedef {import('../knobs.js').DungeonConfig} DungeonConfig */
 /** @typedef {import('../knobs.js').RoomConfig} RoomConfig */
+
 /** @typedef {import('../rooms/dimensions.js').RoomDimensions} RoomDimensions */
-/** @typedef {import('./draw.js').GridRectangle} GridRectangle */
+
+/** @typedef {import('./grid.js').Coordinates} Coordinates */
+/** @typedef {import('./grid.js').Dimensions} Dimensions */
 /** @typedef {import('./grid.js').Grid} Grid */
-/** @typedef {import('./grid.js').GridCoordinates} GridCoordinates */
-/** @typedef {import('./grid.js').GridDimensions} GridDimensions */
+/** @typedef {import('./grid.js').Rectangle} Rectangle */
 
 /**
  * @typedef {object} Connection
@@ -57,7 +59,7 @@ import roomType from '../rooms/type.js';
  * @property {string} rect
  * @property {string} type
  * @property {boolean} locked
- * @property {object.<number, Connection>} connections
+ * @property {Object.<number, Connection>} connections // TODO named key
  * @property {Connection} connection
  * @property {number} size
  */
@@ -104,7 +106,7 @@ const maxDoorWidth = 4;
 /**
  * Directions
  *
- * TODO freeze all lookup objects
+ * TODO freeze all lookup objects?
  *
  * @type {Directions}
  */
@@ -130,14 +132,16 @@ const _oppositeDirectionLookup = {
 // -- Private Functions --------------------------------------------------------
 
 /**
- * Checks for an adjacent door.
+ * Checks if there is a door at the given cell.
+ *
+ * TODO rename to `isDoor()`
  *
  * @param {Grid} grid
- * @param {GridCoordinates} gridCoordinates
+ * @param {Coordinates} coordinates
  *
  * @returns {boolean}
  */
-const checkAdjacentDoor = (grid, [ x, y ]) => {
+const checkAdjacentDoor = (grid, { x, y }) => {
     return [ -1, 1 ].some((adjust) => {
         let xAdjust = x + adjust;
         let yAdjust = y + adjust;
@@ -577,7 +581,7 @@ const getExtraDoors = (grid, rooms, existingDoors) => {
                 return;
             }
 
-            if (checkAdjacentDoor(grid, [ x, y ])) {
+            if (checkAdjacentDoor(grid, { x, y })) {
                 return;
             }
 

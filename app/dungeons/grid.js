@@ -5,15 +5,30 @@ import { roll, rollArrayItem } from '../utility/roll.js';
 // -- Types --------------------------------------------------------------------
 
 /**
+ * X and Y coordinates on a Grid.
+ *
+ * @typedef {{ x: number; y: number }} Coordinates
+ */
+
+/**
+ * Width and Height dimensions in Grid units.
+ *
+ * @typedef {{ width: number; height: number }} Dimensions
+ */
+
+/**
  * A multidimensional array of grid cells, procedurally populated with rooms
  * connected by doors.
  *
  * @typedef {string[][]} Grid
  */
 
-/** @typedef {{ x: number; y: number }} Coordinates */
-/** @typedef {{ width: number; height: number }} Dimensions */
-/** @typedef {Coordinates & Dimensions} Rectangle */
+/**
+ * A rectangle represented by X and Y Grid coordinates and Width and Height
+ * Dimensions.
+ *
+ * @typedef {Coordinates & Dimensions} Rectangle
+ */
 
 // -- Config -------------------------------------------------------------------
 
@@ -107,7 +122,7 @@ export {
  * Returns a multi dimensional array of empty grid cells for the given grid
  * dimensions.
  *
- * @param {Dimensions} gridDimensions
+ * @param {Dimensions} dimensions
  *
  * @returns {Grid}
  */
@@ -173,12 +188,12 @@ export function getStartingPoint(gridDimensions, roomDimensions) {
  * Returns an array of valid grid coordinates for connecting two rooms.
  *
  * @param {Grid} grid
- * @param {Rectangle} prevRoom
+ * @param {Rectangle} prevRoomDimensions
  * @param {Dimensions} roomDimensions
  *
  * @returns {Coordinates[]}
  */
-export function getValidRoomConnections(grid, prevRoom, roomDimensions) {
+export function getValidRoomConnections(grid, prevRoomDimensions, roomDimensions) {
     let  { width: roomWidth, height: roomHeight } = roomDimensions;
 
     let {
@@ -186,7 +201,7 @@ export function getValidRoomConnections(grid, prevRoom, roomDimensions) {
         y: prevY,
         width: prevWidth,
         height: prevHeight,
-    } = prevRoom;
+    } = prevRoomDimensions;
 
     let minX = prevX - roomWidth - wallSize;
     let minY = prevY - roomHeight - wallSize;

@@ -63,7 +63,7 @@ export default ({ assert, describe, it }) => {
 
                     grid[x][y] = cellDoor;
 
-                    assert(checkAdjacentDoor(grid, [ 1, 1 ])).isTrue();
+                    assert(checkAdjacentDoor(grid, { x: 1, y: 1 })).isTrue();
                 });
             });
         });
@@ -71,7 +71,7 @@ export default ({ assert, describe, it }) => {
         describe('given coordinates which are not adjacent to a door', () => {
             it('returns true', () => {
                 const grid = createBlankGrid({ width: 3, height: 3 });
-                assert(checkAdjacentDoor(grid, [ 1, 1 ])).isFalse();
+                assert(checkAdjacentDoor(grid, { x: 1, y: 1 })).isFalse();
             });
         });
     });
