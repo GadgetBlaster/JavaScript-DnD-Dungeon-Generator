@@ -2,7 +2,7 @@
 
 import {
     // Config
-    testCellBlank as cellBlank,
+    testCellEmpty as cellEmpty,
     wallSize,
 
     // Private Functions
@@ -184,10 +184,10 @@ export default ({ assert, describe, it }) => {
                 });
 
                 grid && assert(grid.toString()).equals([
-                    [ cellBlank, cellBlank, cellBlank ],
-                    [ cellBlank, cellBlank, cellBlank ],
-                    [ cellBlank, cellBlank, cellBlank ],
-                    [ cellBlank, cellBlank, cellBlank ],
+                    [ cellEmpty, cellEmpty, cellEmpty ],
+                    [ cellEmpty, cellEmpty, cellEmpty ],
+                    [ cellEmpty, cellEmpty, cellEmpty ],
+                    [ cellEmpty, cellEmpty, cellEmpty ],
                 ].toString());
             });
         });

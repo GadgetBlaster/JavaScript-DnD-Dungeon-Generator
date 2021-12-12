@@ -46,7 +46,7 @@ export const cellFeet = 5;
  *
  * @type {CellValue}
  */
-const cellBlank = '.'; // TODO rename to cellEmpty
+const cellEmpty = '.'; // TODO rename to cellEmpty
 
 // TODO replace with Direction
 export const sides = {
@@ -56,7 +56,7 @@ export const sides = {
     left  : 'left',
 };
 
-export { cellBlank as testCellBlank };
+export { cellEmpty as testCellEmpty };
 
 // -- Private Functions --------------------------------------------------------
 
@@ -86,7 +86,7 @@ export { cellBlank as testCellBlank };
                 return false;
             }
 
-            if (grid[xCord][yCord] !== cellBlank) {
+            if (grid[xCord][yCord] !== cellEmpty) {
                 return false;
             }
         }
@@ -136,7 +136,7 @@ export {
  */
 export const createBlankGrid = ({ width, height }) =>
     Array(width).fill(null).map(() =>
-        Array(height).fill(cellBlank));
+        Array(height).fill(cellEmpty));
 
 /**
  * Returns a random starting point for the dungeon door along one of the grid
