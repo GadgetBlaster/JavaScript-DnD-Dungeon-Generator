@@ -187,7 +187,7 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('drawPillarCell()', () => {
-        const pillarCell = drawPillarCell({ gridX: 15, gridY: 25 });
+        const pillarCell = drawPillarCell({ x: 15, y: 25 });
 
         it('should return a `<circle />` element string', () => {
             assert(pillarCell).isElementTag('circle');

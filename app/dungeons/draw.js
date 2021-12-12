@@ -8,7 +8,7 @@ import doorType, { lockable } from '../rooms/door.js';
 // -- Types --------------------------------------------------------------------
 
 /** @typedef {import('./map').Directions} Directions */
-/** @typedef {import('./grid').GridCoordinates} GridCoordinates */
+/** @typedef {import('./grid').Coordinates} Coordinates */
 /** @typedef {import('./grid').Dimensions} Dimensions */
 /** @typedef {import('./grid').GridRectangle} GridRectangle */
 /** @typedef {import('../utility/element.js').Attributes} Attributes */
@@ -213,12 +213,12 @@ function drawPillar({ cx, cy }, { stroke } = {}) {
  *
  * @private
  *
- * @param {GridCoordinates} coordinates
+ * @param {Coordinates} coordinates
  *
  * @returns {string}
  */
-function drawPillarCell({ gridX, gridY }) {
-    let rect = getRectAttrs({ gridX, gridY, gridWidth: 1, gridHeight: 1 });
+function drawPillarCell({ x, y }) {
+    let rect = getRectAttrs({ gridX: x, gridY: y, gridWidth: 1, gridHeight: 1 });
 
     let cx = rect.x + (rect.width / 2);
     let cy = rect.y + (rect.height / 2);
@@ -266,10 +266,10 @@ function drawRoomPillars({ x, y, width, height }) {
     let innerWidth  = width  - (pillarGridInset * 2);
     let innerHeight = height - (pillarGridInset * 2);
 
-    pillars += drawPillarCell({ gridX: (x + pillarGridInset), gridY: (y + pillarGridInset) });
-    pillars += drawPillarCell({ gridX: (x + innerWidth),      gridY: (y + pillarGridInset) });
-    pillars += drawPillarCell({ gridX: (x + pillarGridInset), gridY: (y + innerHeight) });
-    pillars += drawPillarCell({ gridX: (x + innerWidth),      gridY: (y + innerHeight) });
+    pillars += drawPillarCell({ x: (x + pillarGridInset), y: (y + pillarGridInset) });
+    pillars += drawPillarCell({ x: (x + innerWidth),      y: (y + pillarGridInset) });
+    pillars += drawPillarCell({ x: (x + pillarGridInset), y: (y + innerHeight) });
+    pillars += drawPillarCell({ x: (x + innerWidth),      y: (y + innerHeight) });
 
     return pillars;
 }
