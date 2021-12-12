@@ -1,7 +1,7 @@
 // @ts-check
 
 import {
-    cellBlank,
+    createBlankGrid,
     getStartingPoint,
     getValidRoomConnections,
     sides,
@@ -716,14 +716,7 @@ export {
  * @returns {TODO}
  */
 export function generateMap(gridDimensions, roomConfigs) {
-    let { width: gridWidth, height: gridHeight } = gridDimensions;
-
-    // TODO use `createBlankGrid()`
-    let grid = [ ...Array(gridWidth) ].fill(cellBlank);
-
-    grid.forEach((_, col) => {
-        grid[col] = [ ...Array(gridHeight) ].fill(cellBlank);
-    });
+    let grid = createBlankGrid(gridDimensions);
 
     let { rooms, doors } = getRooms(gridDimensions, roomConfigs, grid);
 
@@ -737,7 +730,7 @@ export function generateMap(gridDimensions, roomConfigs) {
     let content   = gridLines + roomRects + doorRects;
 
     return {
-        map  : drawMap({ width: gridWidth, height: gridHeight }, content),
+        map  : drawMap(gridDimensions, content),
         rooms: rooms.map(({ config }) => config),
         doors: doors.map(({ rect, ...door }) => door),
     };

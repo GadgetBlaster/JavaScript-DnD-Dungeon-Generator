@@ -44,11 +44,9 @@ export const cellFeet = 5;
 /**
  * Empty cell value.
  *
- * TODO can be a private constant once map is refactored use createBlankGrid()
- *
  * @type {CellValue}
  */
-export const cellBlank = '.'; // TODO rename to cellEmpty
+const cellBlank = '.'; // TODO rename to cellEmpty
 
 // TODO replace with Direction
 export const sides = {
@@ -57,6 +55,8 @@ export const sides = {
     bottom: 'bottom',
     left  : 'left',
 };
+
+export { cellBlank as testCellBlank };
 
 // -- Private Functions --------------------------------------------------------
 

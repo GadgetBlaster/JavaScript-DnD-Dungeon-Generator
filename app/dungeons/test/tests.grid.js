@@ -2,7 +2,7 @@
 
 import {
     // Config
-    cellBlank,
+    testCellBlank as cellBlank,
     wallSize,
 
     // Private Functions
