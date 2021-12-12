@@ -132,14 +132,14 @@ const _oppositeDirectionLookup = {
 // -- Private Functions --------------------------------------------------------
 
 /**
- * Checks if there is a door at the given cell.
+ * Checks if there is an adjacent door to the given cell.
  *
  * @param {Grid} grid
  * @param {Coordinates} coordinates
  *
  * @returns {boolean}
  */
-const isDoor = (grid, { x, y }) => {
+const checkForAdjacentDoor = (grid, { x, y }) => {
     return [ -1, 1 ].some((adjust) => {
         let xAdjust = x + adjust;
         let yAdjust = y + adjust;
@@ -579,7 +579,7 @@ const getExtraDoors = (grid, rooms, existingDoors) => {
                 return;
             }
 
-            if (isDoor(grid, { x, y })) {
+            if (checkForAdjacentDoor(grid, { x, y })) {
                 return;
             }
 
@@ -665,16 +665,16 @@ const getRooms = (mapSettings, grid) => {
 };
 
 export {
-    drawRooms         as testDrawRooms,
-    getDoor           as testGetDoor,
-    getDoorCells      as testGetDoorCells,
-    getDoorDirection  as testGetDoorDirection,
-    getExtraDoors     as testGetExtraDoors,
-    getRoom           as testGetRoom,
-    getRoomDimensions as testGetRoomDimensions,
-    getRooms          as testGetRooms,
-    isDoor            as testIsDoor,
-    makeDoor          as testMakeDoor,
+    checkForAdjacentDoor as testCheckForAdjacentDoor,
+    drawRooms            as testDrawRooms,
+    getDoor              as testGetDoor,
+    getDoorCells         as testGetDoorCells,
+    getDoorDirection     as testGetDoorDirection,
+    getExtraDoors        as testGetExtraDoors,
+    getRoom              as testGetRoom,
+    getRoomDimensions    as testGetRoomDimensions,
+    getRooms             as testGetRooms,
+    makeDoor             as testMakeDoor,
 };
 
 // -- Public Functions ---------------------------------------------------------

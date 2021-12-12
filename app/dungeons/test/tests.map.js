@@ -5,16 +5,16 @@ import {
     directions,
 
     // Private Functions
-    testDrawRooms         as drawRooms,
-    testGetDoor           as getDoor,
-    testGetDoorCells      as getDoorCells,
-    testGetDoorDirection  as getDoorDirection,
-    testGetExtraDoors     as getExtraDoors,
-    testGetRoom           as getRoom,
-    testGetRoomDimensions as getRoomDimensions,
-    testGetRooms          as getRooms,
-    testIsDoor            as isDoor,
-    testMakeDoor          as makeDoor,
+    testCheckForAdjacentDoor as checkForAdjacentDoor,
+    testDrawRooms            as drawRooms,
+    testGetDoor              as getDoor,
+    testGetDoorCells         as getDoorCells,
+    testGetDoorDirection     as getDoorDirection,
+    testGetExtraDoors        as getExtraDoors,
+    testGetRoom              as getRoom,
+    testGetRoomDimensions    as getRoomDimensions,
+    testGetRooms             as getRooms,
+    testMakeDoor             as makeDoor,
 
     // Public functions
     generateMap,
@@ -41,7 +41,7 @@ export default ({ assert, describe, it }) => {
 
     // -- Private Functions ----------------------------------------------------
 
-    describe('isDoor()', () => {
+    describe('checkForAdjacentDoor()', () => {
         describe('given coordinates which are adjacent to a door', () => {
             // d = cellDoor
             // x = checked cell
@@ -63,7 +63,7 @@ export default ({ assert, describe, it }) => {
 
                     grid[x][y] = cellDoor;
 
-                    assert(isDoor(grid, { x: 1, y: 1 })).isTrue();
+                    assert(checkForAdjacentDoor(grid, { x: 1, y: 1 })).isTrue();
                 });
             });
         });
@@ -71,7 +71,7 @@ export default ({ assert, describe, it }) => {
         describe('given coordinates which are not adjacent to a door', () => {
             it('returns true', () => {
                 const grid = createBlankGrid({ width: 3, height: 3 });
-                assert(isDoor(grid, { x: 1, y: 1 })).isFalse();
+                assert(checkForAdjacentDoor(grid, { x: 1, y: 1 })).isFalse();
             });
         });
     });
