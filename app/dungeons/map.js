@@ -39,8 +39,6 @@ import roomType from '../rooms/type.js';
 /** @typedef {import('../knobs.js').DungeonConfig} DungeonConfig */
 /** @typedef {import('../knobs.js').RoomConfig} RoomConfig */
 
-/** @typedef {import('../rooms/dimensions.js').RoomDimensions} RoomDimensions */
-
 /** @typedef {import('./grid.js').Coordinates} Coordinates */
 /** @typedef {import('./grid.js').Dimensions} Dimensions */
 /** @typedef {import('./grid.js').Grid} Grid */
@@ -197,10 +195,7 @@ const drawRooms = (mapSettings, mapRooms, grid, roomNumber = 1, prevRoom) => {
         if (prevRoom) {
             isRequired(prevRoom.walls, 'Previous room requires wall cells');
 
-            let validCords = getValidRoomConnections(grid, prevRoom, {
-                width: roomDimensions.roomWidth,
-                height: roomDimensions.roomHeight,
-            });
+            let validCords = getValidRoomConnections(grid, prevRoom, roomDimensions);
 
             if (!validCords.length) {
                 skipped.push(roomConfig);
@@ -217,18 +212,15 @@ const drawRooms = (mapSettings, mapRooms, grid, roomNumber = 1, prevRoom) => {
             ({ x, y } = getStartingPoint({
                 width: mapSettings.gridWidth,
                 height: mapSettings.gridHeight,
-            }, {
-                width: roomDimensions.roomWidth,
-                height: roomDimensions.roomHeight,
-            }));
+            }, roomDimensions));
         }
 
         let room = {
-            x, y,
-            width: roomDimensions.roomWidth,
-            height: roomDimensions.roomHeight,
-            type,
+            ...roomDimensions,
             roomNumber,
+            type,
+            x,
+            y,
         };
 
         let { rect, walls } = getRoom(grid, room, { hasTraps: Boolean(roomConfig.traps) });
@@ -245,7 +237,7 @@ const drawRooms = (mapSettings, mapRooms, grid, roomNumber = 1, prevRoom) => {
                 ...roomConfig,
                 walls,
                 roomNumber,
-                size: [ roomDimensions.roomWidth, roomDimensions.roomHeight ], // TODO rename to dimensions
+                size: [ roomDimensions.width, roomDimensions.height ], // TODO rename to dimensions
             },
         });
 
@@ -395,7 +387,7 @@ const getDoorDirection = ([ x, y ], room) => {
  * @param {Dimensions} gridDimensions
  * @param {RoomConfig | DungeonConfig} roomConfig
  *
- * @returns {RoomDimensions}
+ * @returns {Dimensions}
  */
 const getRoomDimensions = (gridDimensions, roomConfig) => {
     // TODO just pass settings
@@ -428,7 +420,7 @@ const getRoomDimensions = (gridDimensions, roomConfig) => {
     let width  = Math.min(gridWidth - 2, roomWidth);
     let height = Math.min(gridHeight - 2, roomHeight);
 
-    return { roomWidth: width, roomHeight: height };
+    return { width, height };
 };
 
 /**

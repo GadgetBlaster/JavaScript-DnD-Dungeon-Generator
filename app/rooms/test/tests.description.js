@@ -506,7 +506,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('getRoomDimensions()', () => {
+    describe('getRoomDimensionsDescription()', () => {
         describe('given a room size of 2 x 3', () => {
             it('should return a string with the dimensions multiplied by `cellFeet`', () => {
                 assert(getRoomDimensionsDescription([ 2, 3 ]))

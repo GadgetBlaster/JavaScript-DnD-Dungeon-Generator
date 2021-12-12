@@ -878,8 +878,8 @@ export default ({ assert, describe, it }) => {
                     },
                 });
 
-                assert(dimensions.roomWidth).isNumber();
-                assert(dimensions.roomHeight).isNumber();
+                assert(dimensions.width).isNumber();
+                assert(dimensions.height).isNumber();
             });
         });
 
@@ -887,15 +887,15 @@ export default ({ assert, describe, it }) => {
             it('should return a room width and height within the range specified for the room size', () => {
                 const [ minSize, maxSize ] = dimensionRanges[size.small];
 
-                const { roomWidth, roomHeight } = getRoomDimensions(gridDimensions, {
+                const { width, height } = getRoomDimensions(gridDimensions, {
                     settings: {
                         [knobs.roomSize]: size.small,
                         [knobs.roomType]: roomTypes.room,
                     },
                 });
 
-                assert(roomWidth >= minSize && roomWidth <= maxSize).isTrue();
-                assert(roomHeight >= minSize && roomHeight <= maxSize).isTrue();
+                assert(width >= minSize && width <= maxSize).isTrue();
+                assert(height >= minSize && height <= maxSize).isTrue();
             });
         });
 
@@ -907,15 +907,15 @@ export default ({ assert, describe, it }) => {
                 const miniMapDimensions = { width: gridWidth, height: gridHeight };
                 // const [ minSize, maxSize ] = dimensionRanges[size.massive];
 
-                const { roomWidth, roomHeight } = getRoomDimensions(miniMapDimensions, {
+                const { width, height } = getRoomDimensions(miniMapDimensions, {
                     settings: {
                         [knobs.roomSize]: size.massive,
                         [knobs.roomType]: roomTypes.room,
                     },
                 });
 
-                assert(roomWidth <= (gridWidth - (wallSize * 2))).isTrue();
-                assert(roomHeight <= (gridHeight - (wallSize * 2))).isTrue();
+                assert(width <= (gridWidth - (wallSize * 2))).isTrue();
+                assert(height <= (gridHeight - (wallSize * 2))).isTrue();
             });
         });
     });
