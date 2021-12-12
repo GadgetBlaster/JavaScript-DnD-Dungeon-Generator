@@ -10,7 +10,7 @@ import trapList from '../rooms/trap.js';
 
 // -- Types --------------------------------------------------------------------
 
-/** @typedef {import('./draw.js').GridDimensions} GridDimensions */
+/** @typedef {import('./draw.js').Dimensions} Dimensions */
 /** @typedef {import('./map.js').Door} Door */
 /** @typedef {import('../knobs.js').DungeonConfig} DungeonConfig */
 /** @typedef {import('../rooms/generate').Room} Room */
@@ -21,7 +21,7 @@ import trapList from '../rooms/trap.js';
  * @property {string} map // TODO rename to mapVector?
  * @property {Room[]} rooms
  * @property {Door[]} doors
- * @property {GridDimensions} mapDimensions
+ * @property {Dimensions} gridDimensions
  */
 
 // -- Config -------------------------------------------------------------------
@@ -78,18 +78,18 @@ function generateTraps(trapMin) {
  *
  * @param {number} complexity
  *
- * @returns {GridDimensions}
+ * @returns {Dimensions}
  */
 function getMapDimensions(complexity) {
     let dimensionMin = complexity * complexityMultiplierMinXY;
     let dimensionMax = complexity * complexityMultiplierMaxXY;
 
-    let gridWidth  = roll(dimensionMin, dimensionMax);
-    let gridHeight = roll(dimensionMin, dimensionMax);
+    let width  = roll(dimensionMin, dimensionMax);
+    let height = roll(dimensionMin, dimensionMax);
 
     return {
-        gridWidth,
-        gridHeight,
+        width,
+        height,
     };
 }
 
@@ -153,17 +153,10 @@ export function generateDungeon(settings) {
         room.traps.push(trap);
     });
 
-    let mapDimensions = getMapDimensions(complexity);
-
-    let mapSettings = {
-        ...mapDimensions,
-        rooms,
-    };
-
     // TODO break out everything before generateMap() into
     // generateDungeonRooms() for testing since excess rooms are discarded
-
-    let dungeon         = generateMap(mapSettings);
+    let gridDimensions  = getMapDimensions(complexity); // TODO rename to generateMapDimensions
+    let dungeon         = generateMap(gridDimensions, rooms);
     let { doors, keys } = getRoomDoor(dungeon.doors);
 
     keys.length && keys.forEach((key) => {
@@ -187,6 +180,10 @@ export function generateDungeon(settings) {
         map  : dungeon.map,
         rooms: dungeon.rooms,
         doors: doors,
-        mapDimensions,
+        // TODO update to Dimensions
+        mapDimensions: {
+            gridWidth: gridDimensions.width,
+            gridHeight: gridDimensions.height,
+        },
     };
 }

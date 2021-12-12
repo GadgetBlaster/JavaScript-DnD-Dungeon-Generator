@@ -5,6 +5,8 @@ import { element } from '../utility/element.js';
 import { isRequired } from '../utility/tools.js';
 import doorType, { lockable } from '../rooms/door.js';
 
+// TODO move base shape draw functions to `/utility/draw.js`
+
 // -- Types --------------------------------------------------------------------
 
 /** @typedef {import('./map').Directions} Directions */
@@ -242,7 +244,6 @@ function drawRect({ x, y, width, height }, attributes = {}) {
 
     return element('rect', null, { x, y, width, height, ...attributes });
 }
-
 
 /**
  * Returns pillars for a room with x & y dimensions greater than

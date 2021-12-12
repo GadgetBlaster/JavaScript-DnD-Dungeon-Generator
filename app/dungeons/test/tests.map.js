@@ -88,7 +88,7 @@ export default ({ assert, describe, it }) => {
                 },
             };
 
-            const result = drawRooms({ gridWidth: gridDimensions.width, gridHeight: gridDimensions.height }, [ room ], grid, 1);
+            const result = drawRooms(gridDimensions, [ room ], grid, 1);
 
             assert(result).isObject();
             assert(result.doors).isArray();
@@ -113,7 +113,7 @@ export default ({ assert, describe, it }) => {
                     },
                 };
 
-                const result = drawRooms({ gridWidth: gridDimensions.width, gridHeight: gridDimensions.height }, [ room, room ], grid, 1);
+                const result = drawRooms(gridDimensions, [ room, room ], grid, 1);
                 const firstDoor = result.doors.shift();
 
                 assert(Boolean(firstDoor.connections.outside)).isTrue();
@@ -130,7 +130,7 @@ export default ({ assert, describe, it }) => {
                     },
                 };
 
-                const result = drawRooms({ gridWidth: gridDimensions.width, gridHeight: gridDimensions.height }, [ room, room ], grid, 1);
+                const result = drawRooms(gridDimensions, [ room, room ], grid, 1);
 
                 assert(result.skipped.length).equals(1);
             });
@@ -147,7 +147,7 @@ export default ({ assert, describe, it }) => {
                         },
                     };
 
-                    assert(() => drawRooms({ gridWidth: gridDimensions.width, gridHeight: gridDimensions.height }, [ room ], grid, 1, room))
+                    assert(() => drawRooms(gridDimensions, [ room ], grid, 1, room))
                         .throws('Previous room requires wall cells');
                 });
             });
@@ -174,7 +174,7 @@ export default ({ assert, describe, it }) => {
                         },
                     };
 
-                    const result = drawRooms({ gridWidth: gridDimensions.width, gridHeight: gridDimensions.height }, [ room ], grid, 1, {
+                    const result = drawRooms(gridDimensions, [ room ], grid, 1, {
                         walls,
                         ...prevRoom,
                     });
@@ -216,7 +216,7 @@ export default ({ assert, describe, it }) => {
                         },
                     };
 
-                    const result = drawRooms({ gridWidth: gridDimensions.width, gridHeight: gridDimensions.height }, [ hallway ], grid, 1, {
+                    const result = drawRooms(gridDimensions, [ hallway ], grid, 1, {
                         walls,
                         ...prevRoom,
                     });
@@ -941,14 +941,14 @@ export default ({ assert, describe, it }) => {
 
             it('should return an object containing rooms and doors', () => {
                 const { rooms, doors } = getRooms({
-                    gridWidth,
-                    gridHeight,
-                    rooms: [
-                        { ...room },
-                        { ...room, x: 5, y: 1, roomNumber: 2 },
-                        { ...room, x: 1, y: 4, roomNumber: 3 },
-                    ],
-                }, grid);
+                    width: gridWidth,
+                    height: gridHeight,
+                }, [
+                    { ...room },
+                    { ...room, x: 5, y: 1, roomNumber: 2 },
+                    { ...room, x: 1, y: 4, roomNumber: 3 },
+                ],
+                grid);
 
                 assert(rooms).isArray();
                 rooms && assert(rooms.length).equals(3);
@@ -1001,20 +1001,16 @@ export default ({ assert, describe, it }) => {
 
     describe('generateMap()', () => {
         it('should generate a map, rooms, and doors', () => {
-            const { map, rooms, doors } = generateMap({
-                gridWidth: 30,
-                gridHeight: 24,
-                rooms: generateRooms({
-                    [knobs.itemCondition]: condition.average,
-                    [knobs.itemQuantity] : quantity.one,
-                    [knobs.itemRarity]   : rarity.average,
-                    [knobs.itemType]     : itemTypes.miscellaneous,
-                    [knobs.roomSize]     : size.medium,
-                    [knobs.roomCount]    : 34,
-                    [knobs.roomType]     : roomTypes.room,
-                    [knobs.roomCondition]: condition.average,
-                }),
-            });
+            const { map, rooms, doors } = generateMap({ width: 30, height: 24 }, generateRooms({
+                [knobs.itemCondition]: condition.average,
+                [knobs.itemQuantity] : quantity.one,
+                [knobs.itemRarity]   : rarity.average,
+                [knobs.itemType]     : itemTypes.miscellaneous,
+                [knobs.roomSize]     : size.medium,
+                [knobs.roomCount]    : 34,
+                [knobs.roomType]     : roomTypes.room,
+                [knobs.roomCondition]: condition.average,
+            }));
 
             assert(map).isString();
 

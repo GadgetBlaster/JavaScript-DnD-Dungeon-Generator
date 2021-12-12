@@ -81,6 +81,10 @@ import roomType from '../rooms/type.js';
  *     The room's ID.
  */
 
+/**
+ * @typedef {object} MapConfig
+ */
+
 // -- Config -------------------------------------------------------------------
 
 /**
@@ -158,7 +162,7 @@ const checkForAdjacentDoor = (grid, { x, y }) => {
  *
  * TODO rename, not a draw method
  *
- * @param {GridDimensions} mapSettings // TODO rename, infer from Grid?
+ * @param {Dimensions} gridDimensions
  * @param {Room[]} mapRooms
  * @param {Grid} grid
  * @param {number} [roomNumber = 1] // TODO make required?
@@ -173,7 +177,7 @@ const checkForAdjacentDoor = (grid, { x, y }) => {
  *
  * @returns {AppliedRoomResults}
  */
-const drawRooms = (mapSettings, mapRooms, grid, roomNumber = 1, prevRoom) => {
+function drawRooms(gridDimensions, mapRooms, grid, roomNumber = 1, prevRoom) {
     let rooms     = [];
     let doors     = [];
     let skipped   = [];
@@ -183,10 +187,7 @@ const drawRooms = (mapSettings, mapRooms, grid, roomNumber = 1, prevRoom) => {
     mapRooms.forEach((roomConfig) => {
         let { [knobs.roomType]: type } = roomConfig.settings;
 
-        let roomDimensions = getRoomDimensions({
-            width: mapSettings.gridWidth,
-            height: mapSettings.gridHeight,
-        }, roomConfig);
+        let roomDimensions = getRoomDimensions(gridDimensions, roomConfig);
 
         let x;
         let y;
@@ -209,10 +210,7 @@ const drawRooms = (mapSettings, mapRooms, grid, roomNumber = 1, prevRoom) => {
                 ({ x, y } = rollArrayItem(validCords));
             }
         } else {
-            ({ x, y } = getStartingPoint({
-                width: mapSettings.gridWidth,
-                height: mapSettings.gridHeight,
-            }, roomDimensions));
+            ({ x, y } = getStartingPoint(gridDimensions, roomDimensions));
         }
 
         let room = {
@@ -630,7 +628,8 @@ const getExtraDoors = (grid, rooms, existingDoors) => {
  *
  * TODO rename.
  *
- * @param {GridDimensions} mapSettings // TODO rename, infer from Grid?
+ * @param {Dimensions} gridDimensions
+ * @param {Room[]} roomConfigs
  * @param {Grid} grid
  *
  * @returns {{
@@ -638,14 +637,14 @@ const getExtraDoors = (grid, rooms, existingDoors) => {
  *     doors: Door[];
  * }}
  */
-const getRooms = (mapSettings, grid) => {
-    let { rooms, doors, skipped, roomNumber, gridRooms } = drawRooms(mapSettings, mapSettings.rooms, grid);
+function getRooms(gridDimensions, roomConfigs, grid) {
+    let { rooms, doors, skipped, roomNumber, gridRooms } = drawRooms(gridDimensions, roomConfigs, grid);
 
     let lastRoomNumber = roomNumber;
     let lastSkipped    = skipped;
 
     gridRooms.forEach((gridRoom) => {
-        let fork = drawRooms(mapSettings, lastSkipped, grid, lastRoomNumber, gridRoom);
+        let fork = drawRooms(gridDimensions, lastSkipped, grid, lastRoomNumber, gridRoom);
 
         if (fork.rooms.length && fork.doors.length) {
             lastRoomNumber = fork.roomNumber;
@@ -653,14 +652,14 @@ const getRooms = (mapSettings, grid) => {
 
             rooms.push(...fork.rooms);
             doors.push(...fork.doors);
-        };
+        }
     });
 
     return {
         rooms,
         doors,
     };
-};
+}
 
 export {
     checkForAdjacentDoor as testCheckForAdjacentDoor,
@@ -680,12 +679,13 @@ export {
 /**
  * Generates a dungeon map.
  *
- * @param {MapConfig} mapSettings
+ * @param {Dimensions} gridDimensions
+ * @param {Room[]} roomConfigs
  *
  * @returns {TODO}
  */
-export const generateMap = (mapSettings) => {
-    let { gridWidth, gridHeight } = mapSettings;
+export function generateMap(gridDimensions, roomConfigs) {
+    let { width: gridWidth, height: gridHeight } = gridDimensions;
 
     // TODO use `createBlankGrid()`
     let grid = [ ...Array(gridWidth) ].fill(cellBlank);
@@ -694,15 +694,15 @@ export const generateMap = (mapSettings) => {
         grid[col] = [ ...Array(gridHeight) ].fill(cellBlank);
     });
 
-    let { rooms, doors } = getRooms(mapSettings, grid);
+    let { rooms, doors } = getRooms(gridDimensions, roomConfigs, grid);
 
-    if (mapSettings.rooms.length <= rooms.length) {
-        console.warn('Not enough rooms generated', mapSettings.rooms.length, rooms.length);
+    if (roomConfigs.length <= rooms.length) {
+        console.warn('Not enough rooms generated', roomConfigs.length, rooms.length);
     }
 
     let roomRects = rooms.map((room) => room.rect).join('');
     let doorRects = doors.map(({ rect }) => rect).join('');
-    let gridLines = drawGrid({ width: gridWidth, height: gridHeight });
+    let gridLines = drawGrid(gridDimensions);
     let content   = gridLines + roomRects + doorRects;
 
     return {
@@ -710,7 +710,7 @@ export const generateMap = (mapSettings) => {
         rooms: rooms.map(({ config }) => config),
         doors: doors.map(({ rect, ...door }) => door),
     };
-};
+}
 
 /**
  * Returns a text representation of a grid which can be logged to the console.

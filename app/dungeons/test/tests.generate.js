@@ -77,21 +77,21 @@ export default ({ assert, describe, it }) => {
             const min = complexity * complexityMultiplierMinXY;
             const max = complexity * complexityMultiplierMaxXY;
 
-            const { gridWidth, gridHeight } = dimensions;
+            const { width, height } = dimensions;
 
             it('should return a `GridDimensions` object', () => {
-                assert(gridWidth).isNumber();
-                assert(gridHeight).isNumber();
+                assert(width).isNumber();
+                assert(height).isNumber();
             });
 
             it('`gridWidth` should be between the calculated min and max', () => {
-                assert(gridWidth >= min).isTrue();
-                assert(gridWidth <= max).isTrue();
+                assert(width >= min).isTrue();
+                assert(width <= max).isTrue();
             });
 
             it('`gridHeight` should be between the calculated min and max', () => {
-                assert(gridHeight >= min).isTrue();
-                assert(gridHeight <= max).isTrue();
+                assert(height >= min).isTrue();
+                assert(height <= max).isTrue();
             });
         });
     });
