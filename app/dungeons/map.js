@@ -291,8 +291,8 @@ const getDoor = (grid, room, prevRoom, { allowSecret } = {}) => {
         }
     });
 
-    /** @type {GridRectangle} doorRectangle */
-    let doorRectangle = { gridX: x, gridY: y, gridWidth: width, gridHeight: height }; // TODO cleanup
+    /** @type {Rectangle} doorRectangle */
+    let doorRectangle = { x, y, width, height }; // TODO string vs number
     let from       = room.roomNumber;
     let to         = prevRoom ? prevRoom.roomNumber : outside;
     let type       = allowSecret && secretProbability.roll();
@@ -487,8 +487,8 @@ const getRoom = (grid, room, { hasTraps } = {}) => {
         }
     }
 
-    /** @type {GridRectangle} */
-    let roomRectangle = { gridX: x, gridY: y, gridWidth: width, gridHeight: height };
+    /** @type {Rectangle} roomRectangle */
+    let roomRectangle = { x, y, width, height };
     let showRoomLabel = type !== roomType.room && width >= labelMinWidth && height >= labelMinHeight;
     let roomLabel     = showRoomLabel && toWords(type);
 
@@ -505,7 +505,7 @@ const getRoom = (grid, room, { hasTraps } = {}) => {
  *
  * TODO rename to createDoor()
  *
- * @param {GridRectangle} doorRectangle
+ * @param {Rectangle} doorRectangle
  * @param {{
  *     from: number;
  *     to: number;
@@ -582,8 +582,8 @@ const getExtraDoors = (grid, rooms, existingDoors) => {
             }
 
             [ -1, 1 ].forEach((adjust) => {
-                /** @type {GridRectangle} */
-                let doorRectangle = { gridX: x, gridY: y, gridWidth: wallSize, gridHeight: wallSize };
+                /** @type {Rectangle} doorRectangle */
+                let doorRectangle = { x, y, width: wallSize, height: wallSize };
 
                 let xAdjust = x + adjust;
                 let yAdjust = y + adjust;

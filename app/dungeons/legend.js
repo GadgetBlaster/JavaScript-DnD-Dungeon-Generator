@@ -28,7 +28,7 @@ export function drawLegend({ mapWidth }) {
     let gridDimensions = { width: 1, height: 1 };
 
     /** @type {Rectangle} gridRectangle */
-    let gridRectangle = { gridX: 0, gridY: 0, gridWidth: 1, gridHeight: 1 };
+    let gridRectangle = { x: 0, y: 0, width: 1, height: 1 };
 
     let direction = directions.east;
 

@@ -10,7 +10,7 @@ import doorType, { lockable } from '../rooms/door.js';
 /** @typedef {import('./map').Directions} Directions */
 /** @typedef {import('./grid').Coordinates} Coordinates */
 /** @typedef {import('./grid').Dimensions} Dimensions */
-/** @typedef {import('./grid').GridRectangle} GridRectangle */
+/** @typedef {import('./grid').Rectangle} Rectangle */
 /** @typedef {import('../utility/element.js').Attributes} Attributes */
 
 // -- Pixel Definitions --------------------------------------------------------
@@ -28,6 +28,8 @@ import doorType, { lockable } from '../rooms/door.js';
  * @property {number} width
  * @property {number} height
  */
+
+/** @typedef {PixelCoordinates & PixelDimensions} PixelRectangle */
 
 // -- Shape Definitions --------------------------------------------------------
 
@@ -48,10 +50,6 @@ import doorType, { lockable } from '../rooms/door.js';
  * @property {number} y2
  * @property {string} color
  * @property {number} width
- */
-
-/**
- * @typedef {PixelCoordinates & PixelDimensions} Rectangle
  */
 
 // -- Room Defs ----------------------------------------------------------------
@@ -218,7 +216,7 @@ function drawPillar({ cx, cy }, { stroke } = {}) {
  * @returns {string}
  */
 function drawPillarCell({ x, y }) {
-    let rect = getRectAttrs({ gridX: x, gridY: y, gridWidth: 1, gridHeight: 1 });
+    let rect = getRectAttrs({ x, y, width: 1, height: 1 });
 
     let cx = rect.x + (rect.width / 2);
     let cy = rect.y + (rect.height / 2);
@@ -231,7 +229,7 @@ function drawPillarCell({ x, y }) {
  *
  * @private
  *
- * @param {Rectangle} rectangle
+ * @param {PixelRectangle} rectangle
  * @param {Attributes} [attributes]
  *
  * @returns {string}
@@ -279,7 +277,7 @@ function drawRoomPillars({ x, y, width, height }) {
  *
  * @private
  *
- * @param {Rectangle} rectangle
+ * @param {PixelRectangle} rectangle
  * @param {RoomText} roomText
  *
  * @returns {string}
@@ -334,7 +332,7 @@ function drawText(text, { x, y }, { fontSize = fontSizeNormal, fill = colorText 
  *
  * @private
  *
- * @param {Rectangle} rect
+ * @param {PixelRectangle} rect
  *
  * @returns {string}
  */
@@ -350,18 +348,23 @@ function drawTrapText({ x, y, height }) {
  *
  * @private
  *
- * @param {GridRectangle} rect
+ * @param {Rectangle} rectangle
  *
- * @returns {Rectangle}
+ * @returns {PixelRectangle}
  */
-function getRectAttrs({ gridX, gridY, gridWidth, gridHeight }) {
-    let xPx = gridX * pxCell;
-    let yPx = gridY * pxCell;
+function getRectAttrs({ x, y, width, height }) {
+    let xPx = x * pxCell;
+    let yPx = y * pxCell;
 
-    let widthPx  = gridWidth  * pxCell;
-    let heightPx = gridHeight * pxCell;
+    let widthPx  = width  * pxCell;
+    let heightPx = height * pxCell;
 
-    return { x: xPx, y: yPx, width: widthPx, height: heightPx };
+    return {
+        x: xPx,
+        y: yPx,
+        width: widthPx,
+        height: heightPx,
+    };
 }
 
 export {
@@ -382,7 +385,7 @@ export {
 /**
  * Returns a door SVG element strings for the given door type and dimensions.
  *
- * @param {GridRectangle} gridRectangle
+ * @param {Rectangle} rectangle
  * @param {object} args
  *     @param {"north" | "east" | "south" | "west"} args.direction // TODO reusable type
  *     @param {string} args.type
@@ -390,10 +393,10 @@ export {
  *
  * @returns {string}
  */
-export function drawDoor(gridRectangle, { direction, type, locked }) {
+export function drawDoor(rectangle, { direction, type, locked }) {
     // TODO doors should only ever be 1 wide or 1 tall depending on direction
 
-    let rectAttributes = getRectAttrs(gridRectangle);
+    let rectAttributes = getRectAttrs(rectangle);
     let isSecret  = type === doorType.secret || type === doorType.concealed;
     let color     = isSecret ? colorTransparent : colorRoomFill;
 
@@ -557,9 +560,7 @@ export function drawMap({ width, height }, content) {
 /**
  * Returns a room's SVG element strings for the given room configs.
  *
- * TODO audit callers for new `gridRectangle` shape
- *
- * @param {GridRectangle} gridRectangle
+ * @param {Rectangle} rectangle
  * @param {RoomText} roomTextConfig
  * @param {object} [options]
  *     @param {boolean} [options.hasTraps]
@@ -567,8 +568,8 @@ export function drawMap({ width, height }, content) {
  * @returns {string}
  *
  */
-export function drawRoom(gridRectangle, roomTextConfig, { hasTraps } = {}) {
-    let rectAttrs = getRectAttrs(gridRectangle);
+export function drawRoom(rectangle, roomTextConfig, { hasTraps } = {}) {
+    let rectAttrs = getRectAttrs(rectangle);
 
     let rect = drawRect(rectAttrs, {
         fill: colorRoomFill,
@@ -577,7 +578,7 @@ export function drawRoom(gridRectangle, roomTextConfig, { hasTraps } = {}) {
         'stroke-width': pxBorder,
     });
 
-    let pillars = drawRoomPillars({ x: gridRectangle.gridX, y: gridRectangle.gridY, width: gridRectangle.gridWidth, height: gridRectangle.gridHeight });
+    let pillars = drawRoomPillars(rectangle);
     let text    = drawRoomText(rectAttrs, roomTextConfig);
     let trap    = hasTraps ? drawTrapText(rectAttrs) : '';
 

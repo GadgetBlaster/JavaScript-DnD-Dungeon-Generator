@@ -975,10 +975,10 @@ export default ({ assert, describe, it }) => {
     describe('makeDoor()', () => {
         it('should return a door config', () => {
             const door = makeDoor({
-                gridX: 1,
-                gridY: 2,
-                gridWidth: 4,
-                gridHeight: 3,
+                x: 1,
+                y: 2,
+                width: 4,
+                height: 3,
             }, {
                 from: 1,
                 to: 2,
