@@ -2,9 +2,6 @@
 
 import {
     cellBlank,
-    cellCornerWall,
-    cellDoor,
-    cellWall,
     getStartingPoint,
     getValidRoomConnections,
     sides,
@@ -39,6 +36,7 @@ import roomType from '../rooms/type.js';
 /** @typedef {import('../knobs.js').DungeonConfig} DungeonConfig */
 /** @typedef {import('../knobs.js').RoomConfig} RoomConfig */
 
+/** @typedef {import('./grid.js').CellValue} CellValue */
 /** @typedef {import('./grid.js').Coordinates} Coordinates */
 /** @typedef {import('./grid.js').Dimensions} Dimensions */
 /** @typedef {import('./grid.js').Grid} Grid */
@@ -93,6 +91,15 @@ import roomType from '../rooms/type.js';
 
 // -- Config -------------------------------------------------------------------
 
+/** @type {CellValue} cellWall */
+const cellWall = 'w';
+
+/** @type {CellValue} cellDoor */
+const cellDoor = 'd';
+
+/** @type {CellValue} cellCornerWall */
+const cellCornerWall = 'c';
+
 /**
  * Maximum number of grid units a door can be wide or tall.
  */
@@ -113,6 +120,12 @@ const oppositeDirectionLookup = {
     east : 'west',
     south: 'north',
     west : 'east',
+};
+
+export {
+    cellCornerWall as testCellCornerWall,
+    cellDoor       as testCellDoor,
+    cellWall       as testCellWall,
 };
 
 // -- Private Functions --------------------------------------------------------
@@ -519,7 +532,7 @@ const getRoom = (grid, room, { hasTraps } = {}) => {
  * @param {{
  *     from: number;
  *     to: number;
- *     direction: Directions;
+ *     direction: Direction;
  *     type: RoomType;
  * }} args
  *

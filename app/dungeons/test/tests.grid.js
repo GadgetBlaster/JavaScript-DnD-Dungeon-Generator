@@ -3,8 +3,6 @@
 import {
     // Config
     cellBlank,
-    cellCornerWall,
-    cellWall,
     wallSize,
 
     // Private Functions
@@ -16,6 +14,11 @@ import {
     getStartingPoint,
     getValidRoomConnections,
 } from '../grid.js';
+
+import {
+    testCellCornerWall as cellCornerWall,
+    testCellWall       as cellWall,
+} from '../map.js';
 
 /**
  * @param {import('../../unit/state.js').Utility} utility

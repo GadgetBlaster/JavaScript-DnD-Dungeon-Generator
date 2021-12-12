@@ -1,6 +1,11 @@
 // @ts-check
 
 import {
+    // Config
+    testCellCornerWall as cellCornerWall,
+    testCellDoor       as cellDoor,
+    testCellWall       as cellWall,
+
     // Private Functions
     testCheckForAdjacentDoor as checkForAdjacentDoor,
     testDrawRooms            as drawRooms,
@@ -18,7 +23,7 @@ import {
     getGridAsText,
 } from '../map.js';
 
-import { cellDoor, cellWall, cellCornerWall, createBlankGrid, wallSize } from '../grid.js';
+import { createBlankGrid, wallSize } from '../grid.js';
 import { dimensionRanges } from '../../rooms/dimensions.js';
 import { generateRooms } from '../../rooms/generate.js';
 import { knobs } from '../../knobs.js';

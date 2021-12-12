@@ -30,19 +30,27 @@ import { roll, rollArrayItem } from '../utility/roll.js';
  * @typedef {Coordinates & Dimensions} Rectangle
  */
 
+/**
+ * Cell Values
+ *
+ * @typedef {"." | "w" | "d" | "c"} CellValue
+ */
+
 // -- Config -------------------------------------------------------------------
 
 export const wallSize = 1;
-
-// TODO mve to map.js?
-export const cellBlank      = '.'; // TODO rename to cellEmpty
-export const cellWall       = 'w';
-export const cellDoor       = 'd';
-export const cellCornerWall = 'c';
-
 export const cellFeet = 5;
 
-// TODO replace with directions
+/**
+ * Empty cell value.
+ *
+ * TODO can be a private constant once map is refactored use createBlankGrid()
+ *
+ * @type {CellValue}
+ */
+export const cellBlank = '.'; // TODO rename to cellEmpty
+
+// TODO replace with Direction
 export const sides = {
     top   : 'top',
     right : 'right',
