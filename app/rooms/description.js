@@ -275,7 +275,7 @@ function getKeyDetail(type) {
 }
 
 /**
- * Get room dimensions
+ * Returns a description of the room's dimensions.
  *
  * @private
  *
@@ -283,7 +283,7 @@ function getKeyDetail(type) {
  *
  * @returns {string}
  */
-function getRoomDimensions(roomSize) {
+function getRoomDimensionsDescription(roomSize) {
     let [ width, height ] = roomSize;
 
     return `${width * cellFeet} x ${height * cellFeet} feet`;
@@ -333,15 +333,15 @@ function getRoomDoorwayDescription(roomDoors) {
 }
 
 export {
-    getContentDescription       as testGetContentDescription,
-    getContentRarityDetail      as testGetContentRarityDetail,
-    getDescription              as testGetDescription,
-    getDoorwayDescription       as testGetDoorwayDescription,
-    getFurnitureDetail          as testGetFurnitureDetail,
-    getItemConditionDescription as testGetItemConditionDescription,
-    getKeyDetail                as testGetKeyDetail,
-    getRoomDimensions           as testGetRoomDimensions,
-    getRoomDoorwayDescription   as testGetRoomDoorwayDescription,
+    getContentDescription        as testGetContentDescription,
+    getContentRarityDetail       as testGetContentRarityDetail,
+    getDescription               as testGetDescription,
+    getDoorwayDescription        as testGetDoorwayDescription,
+    getFurnitureDetail           as testGetFurnitureDetail,
+    getItemConditionDescription  as testGetItemConditionDescription,
+    getKeyDetail                 as testGetKeyDetail,
+    getRoomDimensionsDescription as testGetRoomDimensionsDescription,
+    getRoomDoorwayDescription    as testGetRoomDoorwayDescription,
 };
 
 // -- Public Functions ---------------------------------------------------------
@@ -412,7 +412,7 @@ export function getRoomDescription(room, roomDoors) {
     let numberLabel = roomCount > 1 ? ` ${roomNumber}` : '';
     let typeLabel   = type !== roomTypes.room ? ` - ${capitalize(getRoomTypeLabel(type))}` : '';
     let roomTitle   = title(`Room${numberLabel}${typeLabel}`);
-    let dimensions  = roomDimensions ? element('span', getRoomDimensions(roomDimensions)) : '';
+    let dimensions  = roomDimensions ? element('span', getRoomDimensionsDescription(roomDimensions)) : '';
     let header      = element('header', roomTitle + dimensions);
 
     let content = header + subtitle('Description') + paragraph([

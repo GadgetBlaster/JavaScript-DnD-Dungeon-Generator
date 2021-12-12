@@ -850,11 +850,11 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getRoomDimensions()', () => {
-        const mapDimensions = { gridWidth: 10, gridHeight: 6 };
+        const gridDimensions = { width: 10, height: 6 };
 
         describe('given a room config with a missing room type', () => {
             it('should throw', () => {
-                assert(() => getRoomDimensions(mapDimensions, {
+                assert(() => getRoomDimensions(gridDimensions, {
                     settings: { [knobs.roomSize]: size.small },
                 })).throws('roomType is required in getRoomDimensions()');
             });
@@ -862,7 +862,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given a room config with a missing room size', () => {
             it('should throw', () => {
-                assert(() => getRoomDimensions(mapDimensions, {
+                assert(() => getRoomDimensions(gridDimensions, {
                     settings: { [knobs.roomType]: roomTypes.library },
                 })).throws('roomSize is required in getRoomDimensions()');
             });
@@ -871,7 +871,7 @@ export default ({ assert, describe, it }) => {
         describe('given a room type which requires custom dimensions', () => {
             // TODO need to inject randomization for testing
             it('should return a room width and height ', () => {
-                const dimensions = getRoomDimensions(mapDimensions, {
+                const dimensions = getRoomDimensions(gridDimensions, {
                     settings: {
                         [knobs.roomSize]: size.small,
                         [knobs.roomType]: roomTypes.hallway,
@@ -887,7 +887,7 @@ export default ({ assert, describe, it }) => {
             it('should return a room width and height within the range specified for the room size', () => {
                 const [ minSize, maxSize ] = dimensionRanges[size.small];
 
-                const { roomWidth, roomHeight } = getRoomDimensions(mapDimensions, {
+                const { roomWidth, roomHeight } = getRoomDimensions(gridDimensions, {
                     settings: {
                         [knobs.roomSize]: size.small,
                         [knobs.roomType]: roomTypes.room,
@@ -904,8 +904,8 @@ export default ({ assert, describe, it }) => {
                 const gridWidth  = 5;
                 const gridHeight = 5;
 
-                const miniMapDimensions = { gridWidth, gridHeight };
-                const [ minSize, maxSize ] = dimensionRanges[size.massive];
+                const miniMapDimensions = { width: gridWidth, height: gridHeight };
+                // const [ minSize, maxSize ] = dimensionRanges[size.massive];
 
                 const { roomWidth, roomHeight } = getRoomDimensions(miniMapDimensions, {
                     settings: {

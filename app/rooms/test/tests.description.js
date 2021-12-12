@@ -2,15 +2,15 @@
 
 import {
     // Private Functions
-    testGetContentDescription       as getContentDescription,
-    testGetContentRarityDetail      as getContentRarityDetail,
-    testGetDescription              as getDescription,
-    testGetDoorwayDescription       as getDoorwayDescription,
-    testGetFurnitureDetail          as getFurnitureDetail,
-    testGetItemConditionDescription as getItemConditionDescription,
-    testGetKeyDetail                as getKeyDetail,
-    testGetRoomDimensions           as getRoomDimensions,
-    testGetRoomDoorwayDescription   as getRoomDoorwayDescription,
+    testGetContentDescription        as getContentDescription,
+    testGetContentRarityDetail       as getContentRarityDetail,
+    testGetDescription               as getDescription,
+    testGetDoorwayDescription        as getDoorwayDescription,
+    testGetFurnitureDetail           as getFurnitureDetail,
+    testGetItemConditionDescription  as getItemConditionDescription,
+    testGetKeyDetail                 as getKeyDetail,
+    testGetRoomDimensionsDescription as getRoomDimensionsDescription,
+    testGetRoomDoorwayDescription    as getRoomDoorwayDescription,
 
     // Public Functions
     getDoorwayList,
@@ -509,7 +509,7 @@ export default ({ assert, describe, it }) => {
     describe('getRoomDimensions()', () => {
         describe('given a room size of 2 x 3', () => {
             it('should return a string with the dimensions multiplied by `cellFeet`', () => {
-                assert(getRoomDimensions([ 2, 3 ]))
+                assert(getRoomDimensionsDescription([ 2, 3 ]))
                     .stringIncludes(`${2 * cellFeet}`)
                     .stringIncludes(`${3 * cellFeet}`);
             });
@@ -710,7 +710,7 @@ export default ({ assert, describe, it }) => {
                     };
 
                     assert(getRoomDescription(room))
-                        .stringIncludes(`<span>${getRoomDimensions(room.size)}</span>`);
+                        .stringIncludes(`<span>${getRoomDimensionsDescription(room.size)}</span>`);
                 });
             });
         });

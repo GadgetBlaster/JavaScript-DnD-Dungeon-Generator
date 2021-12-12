@@ -185,7 +185,10 @@ const drawRooms = (mapSettings, mapRooms, grid, roomNumber = 1, prevRoom) => {
     mapRooms.forEach((roomConfig) => {
         let { [knobs.roomType]: type } = roomConfig.settings;
 
-        let roomDimensions = getRoomDimensions(mapSettings, roomConfig);
+        let roomDimensions = getRoomDimensions({
+            width: mapSettings.gridWidth,
+            height: mapSettings.gridHeight,
+        }, roomConfig);
 
         let x;
         let y;
@@ -389,12 +392,12 @@ const getDoorDirection = ([ x, y ], room) => {
 /**
  * Returns randomized room dimensions for the given room type.
  *
- * @param {GridDimensions} mapSettings // TODO rename
+ * @param {Dimensions} gridDimensions
  * @param {RoomConfig | DungeonConfig} roomConfig
  *
  * @returns {RoomDimensions}
  */
-const getRoomDimensions = (mapSettings, roomConfig) => {
+const getRoomDimensions = (gridDimensions, roomConfig) => {
     // TODO just pass settings
     let {
         settings: {
@@ -406,7 +409,7 @@ const getRoomDimensions = (mapSettings, roomConfig) => {
     isRequired(roomSize, 'roomSize is required in getRoomDimensions()');
     isRequired(roomType, 'roomType is required in getRoomDimensions()');
 
-    let { gridWidth, gridHeight } = mapSettings;
+    let { width: gridWidth, height: gridHeight } = gridDimensions;
 
     let roomWidth;
     let roomHeight;
