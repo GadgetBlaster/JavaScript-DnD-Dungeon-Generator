@@ -252,24 +252,24 @@ function drawRect({ x, y, width, height }, attributes = {}) {
  *
  * @private
  *
- * @param {GridRectangle} rectangle
+ * @param {Rectangle} rectangle
  *
  * @returns {string}
  */
-function drawRoomPillars({ gridX, gridY, gridWidth, gridHeight }) {
+function drawRoomPillars({ x, y, width, height }) {
     let pillars = '';
 
-    if (gridWidth < pillarGridThreshold || gridHeight < pillarGridThreshold) {
+    if (width < pillarGridThreshold || height < pillarGridThreshold) {
         return pillars;
     }
 
-    let innerWidth  = gridWidth  - (pillarGridInset * 2);
-    let innerHeight = gridHeight - (pillarGridInset * 2);
+    let innerWidth  = width  - (pillarGridInset * 2);
+    let innerHeight = height - (pillarGridInset * 2);
 
-    pillars += drawPillarCell({ gridX: (gridX + pillarGridInset), gridY: (gridY + pillarGridInset) });
-    pillars += drawPillarCell({ gridX: (gridX + innerWidth),      gridY: (gridY + pillarGridInset) });
-    pillars += drawPillarCell({ gridX: (gridX + pillarGridInset), gridY: (gridY + innerHeight) });
-    pillars += drawPillarCell({ gridX: (gridX + innerWidth),      gridY: (gridY + innerHeight) });
+    pillars += drawPillarCell({ gridX: (x + pillarGridInset), gridY: (y + pillarGridInset) });
+    pillars += drawPillarCell({ gridX: (x + innerWidth),      gridY: (y + pillarGridInset) });
+    pillars += drawPillarCell({ gridX: (x + pillarGridInset), gridY: (y + innerHeight) });
+    pillars += drawPillarCell({ gridX: (x + innerWidth),      gridY: (y + innerHeight) });
 
     return pillars;
 }
@@ -577,7 +577,7 @@ export function drawRoom(gridRectangle, roomTextConfig, { hasTraps } = {}) {
         'stroke-width': pxBorder,
     });
 
-    let pillars = drawRoomPillars(gridRectangle);
+    let pillars = drawRoomPillars({ x: gridRectangle.gridX, y: gridRectangle.gridY, width: gridRectangle.gridWidth, height: gridRectangle.gridHeight });
     let text    = drawRoomText(rectAttrs, roomTextConfig);
     let trap    = hasTraps ? drawTrapText(rectAttrs) : '';
 

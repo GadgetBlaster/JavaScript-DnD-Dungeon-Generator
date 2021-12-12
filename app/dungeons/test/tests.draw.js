@@ -247,19 +247,19 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('drawRoomPillars()', () => {
-        /** @type {GridRectangle} */
-        const roomGridRectangle = {
-            gridX: 10,
-            gridY: 10,
-            gridWidth: pillarGridThreshold,
-            gridHeight: pillarGridThreshold,
+        /** @type {Rectangle} */
+        const roomRectangle = {
+            x: 10,
+            y: 10,
+            width: pillarGridThreshold,
+            height: pillarGridThreshold,
         };
 
         describe('given a room `width` less than `pillarThreshold`', () => {
             it('should return an empty string', () => {
                 const pillars = drawRoomPillars({
-                    ...roomGridRectangle,
-                    gridWidth: pillarGridThreshold - 1,
+                    ...roomRectangle,
+                    width: pillarGridThreshold - 1,
                 });
 
                 assert(pillars).equals('');
@@ -269,8 +269,8 @@ export default ({ assert, describe, it }) => {
         describe('given a room `height` less than `pillarThreshold`', () => {
             it('should return an empty string', () => {
                 const pillars = drawRoomPillars({
-                    ...roomGridRectangle,
-                    gridHeight: pillarGridThreshold - 1,
+                    ...roomRectangle,
+                    height: pillarGridThreshold - 1,
                 });
 
                 assert(pillars).equals('');
@@ -278,7 +278,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a room `width` and `height` of at least `pillarThreshold`', () => {
-            const pillars = drawRoomPillars(roomGridRectangle);
+            const pillars = drawRoomPillars(roomRectangle);
             const matches = pillars.match(/<circle(.+?)\/>/g);
 
             it('should return four `<circle />` element strings', () => {
@@ -287,17 +287,17 @@ export default ({ assert, describe, it }) => {
             });
 
             it('should place a pillar in the center of each corner cell of the room, inset by `pillarInset`', () => {
-                const { gridX, gridY, gridWidth, gridHeight } = roomGridRectangle;
+                const { x, y, width, height } = roomRectangle;
 
-                const innerWidth  = gridWidth  - (pillarGridInset * 2);
-                const innerHeight = gridHeight - (pillarGridInset * 2);
+                const innerWidth  = width  - (pillarGridInset * 2);
+                const innerHeight = height - (pillarGridInset * 2);
 
                 const halfPxCell = pxCell / 2;
 
-                const xLeft   = ((gridX + pillarGridInset) * pxCell) + halfPxCell;
-                const xRight  = ((gridX + innerWidth)      * pxCell) + halfPxCell;
-                const yTop    = ((gridY + pillarGridInset) * pxCell) + halfPxCell;
-                const yBottom = ((gridY + innerHeight)     * pxCell) + halfPxCell;
+                const xLeft   = ((x + pillarGridInset) * pxCell) + halfPxCell;
+                const xRight  = ((x + innerWidth)      * pxCell) + halfPxCell;
+                const yTop    = ((y + pillarGridInset) * pxCell) + halfPxCell;
+                const yBottom = ((y + innerHeight)     * pxCell) + halfPxCell;
 
                 matches && assert(matches.shift())
                     .stringIncludes(`cx="${xLeft}"`)
