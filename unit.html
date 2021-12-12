@@ -6,8 +6,8 @@
         <link href="https://fonts.googleapis.com/css?family=Pompiere|Varela&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="./style.css">
         <style>
-            .fail { color: #db0f0f; }
-            .ok { color: #14c80f; }
+            [data-ok="ok"] { color: #14c80f; }
+            [data-ok="fail"] { color: #db0f0f; }
 
             .dot {
                 width: 6px;
@@ -17,33 +17,13 @@
                 margin: 2px;
             }
 
-            .dot.ok { background: #14c80f; }
-            .dot.fail { background: #db0f0f; }
-
-            [data-animate="show"] {
-                visibility: hidden;
-                animation: animate-show ease 0ms;
-                animation-fill-mode: forwards;
-            }
-
-            [data-animate="hide"] {
-                animation: animate-hide ease 0ms;
-                animation-fill-mode: forwards;
-            }
+            .dot[data-ok="ok"] { background: #14c80f; }
+            .dot[data-ok="fail"] { background: #db0f0f; }
 
             ul {
                 white-space: pre-wrap;
                 font-size: 15px;
                 font-family: monospace;
-            }
-
-            @keyframes animate-show {
-                0% { visibility: hidden; }
-                100% { visibility: visible; }
-            }
-
-            @keyframes animate-hide {
-                100% { display: none; }
             }
         </style>
     </head>

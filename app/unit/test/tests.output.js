@@ -266,7 +266,7 @@ export default ({ assert, describe, it }) => {
 
             it('should render one passing dot', () => {
                 const matches = result
-                    .match(/<span data-animate="show" class="dot ok" style="animation-delay: (.)ms"><\/span>/g);
+                    .match(/<span data-ok="ok" class="dot"><\/span>/g);
 
                 assert(matches).isArray();
                 matches && assert(matches.length).equals(1);
@@ -329,7 +329,7 @@ export default ({ assert, describe, it }) => {
 
             it('should render two passing dots', () => {
                 const matches = getResults(summary)
-                    .match(/<span data-animate="show" class="dot ok" style="animation-delay: (.)ms"><\/span>/g);
+                    .match(/<span data-ok="ok" class="dot"><\/span>/g);
 
                 assert(matches).isArray();
                 matches && assert(matches.length).equals(2);
@@ -356,7 +356,7 @@ export default ({ assert, describe, it }) => {
 
             it('should render one failing dot', () => {
                 const matches = result
-                    .match(/<span data-animate="show" class="dot fail" style="animation-delay: (.)ms"><\/span>/g);
+                    .match(/<span data-ok="fail" class="dot"><\/span>/g);
 
                 assert(matches).isArray();
                 matches && assert(matches.length).equals(1);
@@ -389,7 +389,7 @@ export default ({ assert, describe, it }) => {
 
             it('should render one failing dot', () => {
                 const matches = result
-                    .match(/<span data-animate="show" class="dot fail" style="animation-delay: (.)ms"><\/span>/g);
+                    .match(/<span data-ok="fail" class="dot"><\/span>/g);
 
                 assert(matches).isArray();
                 matches && assert(matches.length).equals(1);

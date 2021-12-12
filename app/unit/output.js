@@ -193,22 +193,20 @@ export function getResults(summary, options = {}) {
         onSuccess('Zero mischievous kobolds found 👏');
     }
 
-    let dots = results.map(({ isOk  }, i) => {
+    let dots = results.map(({ isOk  }) => {
         return element('span', '', {
-            'data-animate': 'show',
-            class: `dot ${isOk ? 'ok' : 'fail'}`,
-            style: `animation-delay: ${i * animationDelay}ms`,
+            'data-ok': isOk ? 'ok' : 'fail',
+            class: 'dot',
         });
     }).join('');
 
-    let delayStyle = `animation-delay: ${summary.results.length * animationDelay}ms`;
     let log = getLog(results, { verbose });
 
     return element('h1', 'Mumbling incantations')
         + paragraph(scope || 'All Tests')
         + div(dots)
-        + paragraph(getSummary(summary), { 'data-animate': 'show', style: delayStyle })
-        + element('ul', log, { 'data-animate': 'show', style: delayStyle });
+        + paragraph(getSummary(summary))
+        + element('ul', log);
 }
 
 /**
