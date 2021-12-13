@@ -98,7 +98,7 @@ export function roll(min = 0, max = 1) {
 /**
  * Roll array item
  *
- * @param {Array} array
+ * @param {any[] | readonly any[]} array
  *
  * @throws
  *

@@ -4,7 +4,6 @@ import {
     createBlankGrid,
     getStartingPoint,
     getValidRoomConnections,
-    sides,
     wallSize,
 } from './grid.js';
 
@@ -101,26 +100,28 @@ const cellDoor = 'd';
 const cellCornerWall = 'c';
 
 /**
- * Maximum number of grid units a door can be wide or tall.
+ * Directions.
+ *
+ * @type {readonly Direction[]}
  */
-const maxDoorGridUnits = 4;
+export const directions = Object.freeze([ 'north', 'east', 'south', 'west' ]);
 
 /**
  * Opposite direction lookup.
  *
- * @type {{
- *     north: "south";
- *     east : "west";
- *     south: "north";
- *     west : "east";
- * }}
+ * @type {{ [direction in Direction]: Direction }}
  */
-const oppositeDirectionLookup = {
+const directionOppositeLookup = Object.freeze({
     north: 'south',
     east : 'west',
     south: 'north',
     west : 'east',
-};
+});
+
+/**
+ * Maximum number of grid units a door can be wide or tall.
+ */
+const maxDoorGridUnits = 4;
 
 export {
     cellCornerWall as testCellCornerWall,
@@ -322,28 +323,34 @@ const getDoorCells = (grid, room, prevRoom) => {
         let gridWidth  = grid.length - 1;
         let gridHeight = grid[0].length - 1;
 
-        let startTop    = room.y === wallSize && sides.top;
-        let startRight  = room.x === (gridWidth - room.width) && sides.right;
-        let startBottom = room.y === (gridHeight - room.height) && sides.bottom;
-        let startLeft   = room.x === wallSize && sides.left;
+        /** @type {Direction[]} doorDirections */
+        let doorDirections = [
+            room.y === wallSize                   ? 'north' : undefined,
+            room.x === (gridWidth - room.width)   ? 'east'  : undefined,
+            room.y === (gridHeight - room.height) ? 'south' : undefined,
+            room.x === wallSize                   ? 'west'  : undefined,
+        ];
 
         // TODO require room is against a grid edge
 
-        let side = rollArrayItem([ startTop, startRight, startBottom, startLeft ].filter(Boolean));
-        let dimension = (side === sides.top || side === sides.bottom) ? gridWidth : gridHeight;
+        let direction = rollArrayItem(doorDirections.filter(Boolean));
+        let dimension = (direction === 'north' || direction === 'south') ? gridWidth : gridHeight;
 
         for (let i = 0; i <= dimension; i++) {
-            switch (side) {
-                case sides.top:
+            switch (direction) {
+                case 'north':
                     prevWalls.push([ i, 0 ]);
                     break;
-                case sides.right:
+
+                case 'east':
                     prevWalls.push([ gridWidth, i ]);
                     break;
-                case sides.bottom:
+
+                case 'south':
                     prevWalls.push([ i, gridHeight ]);
                     break;
-                case sides.left:
+
+                case 'west':
                     prevWalls.push([ 0, i ]);
                     break;
             }
@@ -553,7 +560,7 @@ const makeDoor = (doorRectangle, { from, to, direction, type }) => {
         locked,
         connections: {
             [from]: { direction, to },
-            [to]  : { direction: oppositeDirectionLookup[direction], to: from },
+            [to]  : { direction: directionOppositeLookup[direction], to: from },
         },
         // TODO size is returning NaN, likely unused?
         size: Math.max(doorRectangle.width, doorRectangle.height),

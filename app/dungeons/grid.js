@@ -1,5 +1,6 @@
 // @ts-check
 
+import { directions } from './map.js';
 import { roll, rollArrayItem } from '../utility/roll.js';
 
 // -- Types --------------------------------------------------------------------
@@ -46,15 +47,7 @@ export const cellFeet = 5;
  *
  * @type {CellValue}
  */
-const cellEmpty = '.'; // TODO rename to cellEmpty
-
-// TODO replace with Direction
-export const sides = {
-    top   : 'top',
-    right : 'right',
-    bottom: 'bottom',
-    left  : 'left',
-};
+const cellEmpty = '.';
 
 export { cellEmpty as testCellEmpty };
 
@@ -157,32 +150,32 @@ export function getStartingPoint(gridDimensions, roomDimensions) {
     let maxY = gridHeight - roomHeight - wallSize;
 
     if (maxX < minX || maxY < minY) {
-        throw new TypeError('Invalid min or max');
+        throw new TypeError('Invalid min or max in getStartingPoint()');
     }
 
     let x;
     let y;
 
     // TODO inject randomization
-    let side = rollArrayItem(Object.values(sides));
+    let direction = rollArrayItem(directions);
 
-    switch (side) {
-        case sides.right:
+    switch (direction) {
+        case 'east':
             x = maxX;
             y = roll(minY, maxY);
             break;
 
-        case sides.bottom:
+        case 'south':
             x = roll(minX, maxX);
             y = maxY;
             break;
 
-        case sides.left:
+        case 'west':
             x = minX;
             y = roll(minY, maxY);
             break;
 
-        case sides.top:
+        case 'north':
         default:
             x = roll(minX, maxX);
             y = minY;

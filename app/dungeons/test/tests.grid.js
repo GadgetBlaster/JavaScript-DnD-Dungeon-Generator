@@ -205,7 +205,7 @@ export default ({ assert, describe, it }) => {
                     height: gridHeight - wallSize,
                 };
 
-                assert(() => getStartingPoint(grid, room)).throws('Invalid min or max');
+                assert(() => getStartingPoint(grid, room)).throws('Invalid min or max in getStartingPoint()');
             });
         });
 
