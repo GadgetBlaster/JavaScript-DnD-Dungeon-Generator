@@ -15,7 +15,7 @@ import {
 import { getRoomTypeLabel } from '../description.js';
 import { knobs } from '../../knobs.js';
 import roomType from '../type.js';
-import size from '../../attributes/size.js';
+import size from '../../attribute/size.js';
 
 /**
  * @param {import('../../unit/state.js').Utility} utility

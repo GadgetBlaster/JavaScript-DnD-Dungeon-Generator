@@ -5,8 +5,8 @@ import {
     getItemDescription,
     getRarityDescription,
 } from '../description.js';
-import condition from '../../attributes/condition.js';
-import rarity from '../../attributes/rarity.js';
+import condition from '../../attribute/condition.js';
+import rarity from '../../attribute/rarity.js';
 import type from '../type.js';
 
 /**

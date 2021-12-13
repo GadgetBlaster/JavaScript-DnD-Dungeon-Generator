@@ -1,6 +1,6 @@
 // @ts-check
 
-import rarity from '../../attributes/rarity.js';
+import rarity from '../../attribute/rarity.js';
 import type from '../type.js';
 
 let { common, uncommon, rare } = rarity;

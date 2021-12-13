@@ -1,7 +1,7 @@
 // @ts-check
 
-import rarity from '../../attributes/rarity.js';
-import size from '../../attributes/size.js';
+import rarity from '../../attribute/rarity.js';
+import size from '../../attribute/size.js';
 
 let { abundant, common, uncommon, rare, exotic } = rarity;
 let { tiny, medium, large } = size;

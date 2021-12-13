@@ -6,12 +6,12 @@ import {
 
 import { furnitureQuantity } from '../../items/types/furnishing.js';
 import { knobs } from '../../knobs.js';
-import condition from '../../attributes/condition.js';
+import condition from '../../attribute/condition.js';
 import itemType from '../../items/type.js';
-import quantity from '../../attributes/quantity.js';
-import rarity from '../../attributes/rarity.js';
+import quantity from '../../attribute/quantity.js';
+import rarity from '../../attribute/rarity.js';
 import roomType from '../type.js';
-import size from '../../attributes/size.js';
+import size from '../../attribute/size.js';
 
 /**
  * @param {import('../../unit/state.js').Utility} utility

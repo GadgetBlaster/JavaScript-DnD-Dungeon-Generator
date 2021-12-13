@@ -2,7 +2,7 @@
 
 import { list as roomTypes } from './type.js';
 import { roll } from '../utility/roll.js';
-import size, { list as sizes } from '../attributes/size.js';
+import size, { list as sizes } from '../attribute/size.js';
 import type from './type.js';
 
 // -- Types --------------------------------------------------------------------

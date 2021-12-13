@@ -4,11 +4,11 @@ import { knobs } from '../knobs.js';
 import { random } from '../utility/random.js';
 import { rollArrayItem, roll } from '../utility/roll.js';
 import { strong, em } from '../ui/typography.js';
-import condition, { probability as conditionProbability } from '../attributes/condition.js';
-import quantity from '../attributes/quantity.js';
-import rarity, { list as rarities, probability as rarityProbability } from '../attributes/rarity.js';
+import condition, { probability as conditionProbability } from '../attribute/condition.js';
+import quantity from '../attribute/quantity.js';
+import rarity, { list as rarities, probability as rarityProbability } from '../attribute/rarity.js';
 import set from './set.js';
-import size from '../attributes/size.js';
+import size from '../attribute/size.js';
 import type, { list as itemTypes } from './type.js';
 
 // -- Types --------------------------------------------------------------------

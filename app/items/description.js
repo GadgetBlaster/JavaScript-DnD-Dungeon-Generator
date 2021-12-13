@@ -1,7 +1,7 @@
 // @ts-check
 
-import condition from '../attributes/condition.js';
-import rarity from '../attributes/rarity.js';
+import condition from '../attribute/condition.js';
+import rarity from '../attribute/rarity.js';
 
 // -- Types --------------------------------------------------------------------
 

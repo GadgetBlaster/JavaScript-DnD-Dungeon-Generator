@@ -6,16 +6,16 @@ import { element } from '../utility/element.js';
 import { em, paragraph, strong, subtitle, title } from '../ui/typography.js';
 import { furnitureQuantity } from '../items/types/furnishing.js';
 import { getEnvironmentDescription } from './environment.js';
-import { indicateRarity } from '../attributes/rarity.js';
+import { indicateRarity } from '../attribute/rarity.js';
 import { knobs } from '../knobs.js';
 import { list } from '../ui/list.js';
 import { random } from '../utility/random.js';
 import { rollArrayItem } from '../utility/roll.js';
-import condition from '../attributes/condition.js';
+import condition from '../attribute/condition.js';
 import doorType, { appendDoorway, outside } from './door.js';
-import quantity from '../attributes/quantity.js';
+import quantity from '../attribute/quantity.js';
 import roomTypes, { appendRoomTypes } from '../rooms/type.js';
-import size from '../attributes/size.js';
+import size from '../attribute/size.js';
 
 // -- Types --------------------------------------------------------------------
 

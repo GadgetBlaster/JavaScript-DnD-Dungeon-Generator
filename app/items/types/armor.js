@@ -1,8 +1,8 @@
 // @ts-check
 
-import rarity from '../../attributes/rarity.js';
+import rarity from '../../attribute/rarity.js';
 import type from '../type.js';
-import size from '../../attributes/size.js';
+import size from '../../attribute/size.js';
 
 let { uncommon, rare } = rarity;
 

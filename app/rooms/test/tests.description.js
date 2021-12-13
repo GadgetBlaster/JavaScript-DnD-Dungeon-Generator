@@ -25,12 +25,12 @@ import { cellFeet } from '../../dungeons/grid.js';
 import { furnitureQuantity } from '../../items/types/furnishing.js';
 import { knobs } from '../../knobs.js';
 import { random } from '../../utility/random.js';
-import condition from '../../attributes/condition.js';
+import condition from '../../attribute/condition.js';
 import doorType, { lockable, appendDoorway, outside } from '../door.js';
-import quantity, { quantities } from '../../attributes/quantity.js';
-import rarity, { indicateRarity, rarities } from '../../attributes/rarity.js';
+import quantity, { quantities } from '../../attribute/quantity.js';
+import rarity, { indicateRarity, rarities } from '../../attribute/rarity.js';
 import roomType, { appendRoomTypes } from '../../rooms/type.js';
-import size from '../../attributes/size.js';
+import size from '../../attribute/size.js';
 
 /**
  * @param {import('../../unit/state.js').Utility}

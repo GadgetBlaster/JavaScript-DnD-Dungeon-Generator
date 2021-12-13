@@ -7,7 +7,7 @@ import { knobs } from '../knobs.js';
 import { roll, rollArrayItem, rollPercentile } from '../utility/roll.js';
 import { toss } from '../utility/tools.js';
 import roomType from './type.js';
-import size from '../attributes/size.js';
+import size from '../attribute/size.js';
 
 // -- Types --------------------------------------------------------------------
 

@@ -17,14 +17,14 @@ import { knobs } from '../knobs.js';
 import { list } from '../ui/list.js';
 import { random } from '../utility/random.js';
 import { roll, rollArrayItem } from '../utility/roll.js';
-import condition from '../attributes/condition.js';
-import quantity, { getRange, probability as quantityProbability } from '../attributes/quantity.js';
-import size from '../attributes/size.js';
+import condition from '../attribute/condition.js';
+import quantity, { getRange, probability as quantityProbability } from '../attribute/quantity.js';
+import size from '../attribute/size.js';
 
 // -- Types --------------------------------------------------------------------
 
-/** @typedef {import('../knobs.js').Config} Config */
 /** @typedef {import('./item.js').Item} Item */
+/** @typedef {import('../attribute/quantity').Quantity} Quantity */
 
 // -- Config -------------------------------------------------------------------
 
@@ -48,7 +48,7 @@ const maxColumnsRoom = 2;
  * @private
  *
  * @param {string} roomType
- * @param {string} quantity
+ * @param {Quantity} quantity
  *
  * @returns {Item[]}
  */
@@ -142,7 +142,7 @@ const getFurnishingObjects = (furnishings, roomCondition) => furnishings.reduce(
  *
  * @private
  *
- * @param {string} itemQuantity
+ * @param {Quantity} itemQuantity
  *
  * @returns {number}
  */

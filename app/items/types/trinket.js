@@ -1,7 +1,7 @@
 // @ts-check
 
 import type from '../type.js';
-import rarity from '../../attributes/rarity.js';
+import rarity from '../../attribute/rarity.js';
 
 const defaults = {
     rarity: rarity.exotic,

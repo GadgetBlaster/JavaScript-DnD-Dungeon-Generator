@@ -9,7 +9,7 @@ import {
     roomTypeSizes,
 } from '../dimensions.js';
 
-import size, { list as sizes } from '../../attributes/size.js';
+import size, { list as sizes } from '../../attribute/size.js';
 import { list as roomTypes } from '../type.js';
 
 /**

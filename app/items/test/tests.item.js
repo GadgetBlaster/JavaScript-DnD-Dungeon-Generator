@@ -10,11 +10,11 @@ import {
 } from '../item.js';
 import { knobs } from '../../knobs.js';
 
-import { list as rarities } from '../../attributes/rarity.js';
-import condition from '../../attributes/condition.js';
+import { list as rarities } from '../../attribute/rarity.js';
+import condition from '../../attribute/condition.js';
 import itemType, { list as itemTypes } from '../type.js';
-import quantity from '../../attributes/quantity.js';
-import rarity from '../../attributes/rarity.js';
+import quantity from '../../attribute/quantity.js';
+import rarity from '../../attribute/rarity.js';
 
 /**
  * @param {import('../../unit/state.js').Utility}

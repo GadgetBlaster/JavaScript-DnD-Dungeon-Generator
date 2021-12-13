@@ -29,12 +29,12 @@ import { generateRooms } from '../../rooms/generate.js';
 import { knobs } from '../../knobs.js';
 import { labelMinWidth, labelMinHeight, testTrapLabel as trapLabel } from '../draw.js';
 import { list as doorTypes } from '../../rooms/door.js';
-import condition from '../../attributes/condition.js';
+import condition from '../../attribute/condition.js';
 import itemTypes from '../../items/type.js';
-import quantity from '../../attributes/quantity.js';
-import rarity from '../../attributes/rarity.js';
+import quantity from '../../attribute/quantity.js';
+import rarity from '../../attribute/rarity.js';
 import roomTypes from '../../rooms/type.js';
-import size from '../../attributes/size.js';
+import size from '../../attribute/size.js';
 
 /**
  * @param {import('../../unit/state.js').Utility} utility

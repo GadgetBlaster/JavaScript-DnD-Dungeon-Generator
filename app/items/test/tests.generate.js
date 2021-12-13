@@ -13,10 +13,10 @@ import {
 
 import { knobs } from '../../knobs.js';
 import { random } from '../../utility/random.js';
-import condition from '../../attributes/condition.js';
+import condition from '../../attribute/condition.js';
 import itemType from '../type.js';
-import quantity, { quantityMinimum, quantityMaximum } from '../../attributes/quantity.js';
-import rarity from '../../attributes/rarity.js';
+import quantity, { quantityMinimum, quantityMaximum } from '../../attribute/quantity.js';
+import rarity from '../../attribute/rarity.js';
 import roomTypes from '../../rooms/type.js';
 import {
     anyRoomFurniture,
