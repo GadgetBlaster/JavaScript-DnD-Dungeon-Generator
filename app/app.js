@@ -1,6 +1,6 @@
 // TODO break out into modules and add tests
 
-import { chunk, toDash } from './utility/tools.js';
+import { chunk } from './utility/tools.js';
 
 import { getSummaryLink } from './unit/output.js';
 import { unitState } from './unit/state.js';
@@ -15,8 +15,8 @@ import {
 } from './ui/action.js';
 
 import { article, section } from './ui/block.js';
-import { getActive, nav, pages, setActive } from './ui/nav.js';
-import { getFormData, renderKnobs, submitButton } from './ui/form.js';
+import { getActive, nav, setActive } from './ui/nav.js';
+import { getFormData, updateKnobs } from './ui/form.js';
 import { list } from './ui/list.js';
 import { subtitle } from './ui/typography.js';
 
@@ -33,8 +33,6 @@ import { generateDungeon } from './dungeon/generate.js';
 import { generateItems } from './item/generate.js';
 import { generateRooms } from './room/generate.js';
 
-import { getKnobConfig } from './knobs.js';
-
 const docBody          = document.body;
 const contentContainer = document.getElementById('content');
 const footerContainer  = document.getElementById('footer');
@@ -48,24 +46,13 @@ const homeContent = contentContainer.innerHTML;
 
 const roomsPerRow = 3;
 
-// TODO move to form
-const updateKnobs = (target) => {
-    let page = target || getActive(navContainer);
-    let config = getKnobConfig(page);
-
-    knobContainer.innerHTML = submitButton + renderKnobs(config, page);
-
-    let firstAccordionSelector = `[data-id="fieldset-${toDash(config[0].label)}"]`;
-    docBody.querySelector(firstAccordionSelector).dataset.collapsed = false;
-};
-
 const navigate = (e) => {
-    let el     = e.target;
-    let target = el.dataset.target;
+    let el   = e.target;
+    let page = el.dataset.target;
 
     el && setActive(el);
 
-    updateKnobs(target);
+    updateKnobs(knobContainer, page);
     contentContainer.innerHTML = homeContent;
 };
 
@@ -121,9 +108,9 @@ const getDungeon = (settings) => {
 };
 
 const generators = {
-    [pages.dungeon]: getDungeon,
-    [pages.items]  : getItems,
-    [pages.room]   : getRooms,
+    dungeon: getDungeon,
+    items  : getItems,
+    rooms  : getRooms,
 };
 
 const generate = () => {
@@ -148,4 +135,4 @@ attachActions(docBody, {
 
 navContainer.innerHTML = nav;
 
-updateKnobs();
+updateKnobs(knobContainer);

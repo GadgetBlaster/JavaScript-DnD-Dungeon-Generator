@@ -3,25 +3,25 @@
 import { actions } from './action.js';
 import { button } from './button.js';
 
+// -- Types --------------------------------------------------------------------
+
+/** @typedef {"dungeon" | "rooms" | "items"} Page */
+
 // -- Config -------------------------------------------------------------------
 
-/**
- * Pages
- */
 export const pages = {
     dungeon: 'dungeon',
-    room   : 'room',
-    items  : 'items',
+    room: 'rooms',
+    items: 'items',
 };
 
-let { dungeon, room, items } = pages;
 let { navigate } = actions;
 
 /** Main Navigation HTML string */
 export const nav = [
-    button('Dungeon', navigate, { target: dungeon, active: true }),
-    button('Rooms',   navigate, { target: room }),
-    button('Items',   navigate, { target: items }),
+    button('Dungeon', navigate, { target: 'dungeon', active: true }),
+    button('Rooms',   navigate, { target: 'rooms' }),
+    button('Items',   navigate, { target: 'items' }),
 ].join('');
 
 // -- Private Functions --------------------------------------------------------

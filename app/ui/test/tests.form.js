@@ -2,13 +2,13 @@
 
 import {
     // Private Functions
-    testGetKnob as getKnob,
+    testGetKnob      as getKnob,
     testRenderFields as renderFields,
+    testRenderKnobs  as renderKnobs,
 
     // Public Functions
     getFormData,
-    renderKnobs,
-    submitButton,
+    updateKnobs,
 } from '../form.js';
 
 import { actions } from '../action.js';
@@ -132,8 +132,8 @@ export default ({ assert, describe, it }) => {
 
         describe('given settings for multiple knobs', () => {
             const result = renderFields([
-                { name: 'size',        label: 'Size',        desc: 'Size?',        type: typeNumber             },
-                { name: 'shape',       label: 'Shape',       desc: 'Shape?',       type: typeRange              },
+                { name: 'size',        label: 'Size',        desc: 'Size?',        type: typeNumber                  },
+                { name: 'shape',       label: 'Shape',       desc: 'Shape?',       type: typeRange                   },
                 { name: 'squishiness', label: 'Squishiness', desc: 'Squishiness?', type: typeSelect, values: [ '1' ] },
             ]);
 
@@ -200,9 +200,7 @@ export default ({ assert, describe, it }) => {
             const result = renderKnobs([ { label: 'Shovels', fields: [] } ]);
 
             it('should return an html fieldset element string', () => {
-                assert(result)
-                    .stringIncludes('<fieldset')
-                    .stringIncludes('</fieldset>');
+                assert(/<fieldset(.*?)>(.*?)<\/fieldset>/.test(result)).isTrue();
             });
 
             it('should contain the correct data-id', () => {
@@ -264,21 +262,33 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('submitButton()', () => {
-        it('should be a string', () => {
-            assert(submitButton).isString();
+    describe('updateKnobs()', () => {
+        const knobContainer = document.createElement('div');
+
+        updateKnobs(knobContainer);
+
+        const knobContainerHtml = knobContainer.innerHTML;
+
+        it('should render a submit button to the given knobContainer', () => {
+            assert(knobContainerHtml).stringIncludes(
+                `<button data-action="${actions.generate}" data-size="large" type="submit">Generate</button>`
+            );
         });
 
-        it('should be an html button element string', () => {
-            assert(submitButton).isElementTag('button');
+        it('should render a fieldset to the given knobContainer', () => {
+            assert(/<fieldset(.*?)>(.*?)<\/fieldset>/.test(knobContainerHtml)).isTrue();
         });
 
-        it('should have a `type="submit"` attribute', () => {
-            assert(submitButton).stringIncludes('type="submit"');
+        it('should expand the fist fieldset', () => {
+            let fieldSets = knobContainerHtml.match(/<fieldset(.*?)>(.*?)<\/fieldset>/g);
+            assert(fieldSets.shift()).stringIncludes('data-collapsed="false"');
         });
 
-        it(`should have a \`data-action="${actions.generate}"\` attribute`, () => {
-            assert(submitButton).stringIncludes(`data-action="${actions.generate}"`);
+        describe('give a page', () => {
+            it('should render the field sets for the given page', () => {
+                updateKnobs(knobContainer, 'items');
+                assert(knobContainer.innerHTML.match(/<fieldset(.*?)>(.*?)<\/fieldset>/g).length).equals(1);
+            });
         });
     });
 };

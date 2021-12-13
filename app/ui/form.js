@@ -6,17 +6,27 @@ import { div, fieldset, section } from './block.js';
 import { paragraph, small } from './typography.js';
 import { select, input, slider, fieldLabel } from './field.js';
 import { toDash, toss } from '../utility/tools.js';
-import { typeSelect, typeNumber, typeRange } from '../knobs.js';
+import { getKnobConfig, typeSelect, typeNumber, typeRange } from '../knobs.js';
 
 // -- Types --------------------------------------------------------------------
 
-/** @typedef {import('../knobs.js').KnobSettings} KnobSettings */
 /** @typedef {import('../knobs.js').KnobSet} KnobSet */
+/** @typedef {import('../knobs.js').KnobSettings} KnobSettings */
+/** @typedef {import('./nav.js').Page} Page */
+
+// -- Config -------------------------------------------------------------------
+
+const submitButton = button('Generate', actions.generate, {
+    size: buttonSize.large,
+    type: 'submit',
+});
 
 // -- Private Functions --------------------------------------------------------
 
 /**
  * Returns an array of HTMLInputElement children for the knob container.
+ *
+ * @private
  *
  * @param {HTMLElement} knobContainer
  *
@@ -82,9 +92,42 @@ const renderFields = (fields) => fields.map((settings) => {
     return div(knobLabel + descText + knob);
 }).join('');
 
+/**
+ * Renders a fieldset containing from elements for the given knob sets.
+ *
+ * @private
+ *
+ * @param {KnobSet[]} knobs
+ * @param {string} [page]
+ *
+ * @returns {string}
+ */
+ const renderKnobs = (knobs, page) => knobs.map((knobSet) => {
+    let {
+        label,
+        labels,
+        fields,
+    } = knobSet;
+
+    if (labels && labels[page]) {
+        label = labels[page];
+    }
+
+    let fieldsetId = `fieldset-${toDash(label)}`;
+    let handle = button(label, actions.accordion, { target: fieldsetId });
+
+    let attrs = {
+        'data-collapsed': true,
+        'data-id': fieldsetId,
+    };
+
+    return fieldset(handle + section(renderFields(fields)), attrs);
+}).join('');
+
 export {
-    getKnob as testGetKnob,
+    getKnob      as testGetKnob,
     renderFields as testRenderFields,
+    renderKnobs  as testRenderKnobs,
 };
 
 // -- Public Functions ---------------------------------------------------------
@@ -107,38 +150,17 @@ export function getFormData(knobContainer) {
 }
 
 /**
- * Renders a fieldset containing from elements for the given knob sets.
+ * Update form knobs when changing pages.
  *
- * @param {KnobSet[]} knobs
- * @param {string} [page]
- *
- * @returns {string}
+ * @param {HTMLElement} knobContainer
+ * @param {Page} [page = "dungeon"]
  */
-export const renderKnobs = (knobs, page) => knobs.map((knobSet) => {
-    let {
-        label,
-        labels,
-        fields,
-    } = knobSet;
+export function updateKnobs(knobContainer, page = 'dungeon') {
+    let config = getKnobConfig(page);
 
-    if (labels && labels[page]) {
-        label = labels[page];
-    }
+    knobContainer.innerHTML = submitButton + renderKnobs(config, page);
 
-    let fieldsetId = `fieldset-${toDash(label)}`;
-    let handle = button(label, actions.accordion, { target: fieldsetId });
-
-    let attrs = {
-        'data-collapsed': true,
-        'data-id': fieldsetId,
-    };
-
-    return fieldset(handle + section(renderFields(fields)), attrs);
-}).join('');
-
-/** @type {string} submitButton */
-// TODO render at point of use?
-export const submitButton = button('Generate', actions.generate, {
-    size: buttonSize.large,
-    type: 'submit',
-});
+    /** @type {HTMLElement} */
+    let firstAccordion = knobContainer.querySelector(`[data-id="fieldset-${toDash(config[0].label)}"]`);
+    firstAccordion.dataset.collapsed = 'false';
+}

@@ -298,7 +298,7 @@ export function getSummaryParts(summary) {
         issuesText += failures ? failureText : '';
         issuesText += failures && errors.length ? ' and' : '';
         issuesText += errors.length ? errorText : '';
-        issuesText += errors.length ? '!' : '.';
+        issuesText += errors.length ? '!' : '';
 
         return {
             assertionsText,

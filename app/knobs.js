@@ -86,19 +86,15 @@ export const typeNumber = 'number';
 export const typeRange  = 'range';
 
 const descEqualDistribution = 'Random probability: Equally distributed.';
-
-const descComplexity = `Controls dungeon size and room count. Need more
-    complexity? Generate multiple dungeon levels and add stairways.`;
-
-const descConnections = `Probably that rooms will be connected to adjacent
-    rooms. Setting to zero will make dungeons more linear, setting to 100
-    places a doorway between every adjacent room.`;
-
+const descComplexity        = 'Controls dungeon size and room count.';
+const descConnections       = [
+    'Probably that rooms will be connected to adjacent rooms.',
+    'Setting to 0% makes dungeons linear.',
+    'Setting to 100% places doorways between every adjacent room.',
+].join(' ');
 const descFurnitureQuantity = 'How furnished the dungeon‘s rooms are.';
-
-const descMaps = 'Number of dungeon maps that can be found.';
-
-const descTraps = 'Trap randomization frequency.';
+const descMaps              = 'Number of dungeon maps that can be found.';
+const descTraps             = 'Trap randomization frequency.';
 
 const getValues = (values) => {
     return [
