@@ -28,9 +28,9 @@ import generateRooms   from '../rooms/test/tests.generate.js';
 import settings        from '../rooms/test/tests.settings.js';
 import vegetation      from '../rooms/test/tests.vegetation.js';
 
-import itemDescription from '../items/test/tests.description.js';
-import generateItems   from '../items/test/tests.generate.js';
-import item            from '../items/test/tests.item.js';
+import itemDescription from '../item/test/tests.description.js';
+import generateItems   from '../item/test/tests.generate.js';
+import item            from '../item/test/tests.item.js';
 
 import draw     from '../dungeon/test/tests.draw.js';
 import generate from '../dungeon/test/tests.generate.js';

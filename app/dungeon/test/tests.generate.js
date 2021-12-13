@@ -18,7 +18,7 @@ import {
 
 import { knobs } from '../../knobs.js';
 import condition from '../../attribute/condition.js';
-import itemType from '../../items/type.js';
+import itemType from '../../item/type.js';
 import quantity from '../../attribute/quantity.js';
 import rarity from '../../attribute/rarity.js';
 import size from '../../attribute/size.js';

@@ -2,9 +2,9 @@
 // @ts-check
 // TODO move to ui/knobs.js and add unit tests
 
-import { furnitureQuantityList, probability as furnitureQuantityProbability } from './items/types/furnishing.js';
+import { furnitureQuantityList, probability as furnitureQuantityProbability } from './item/types/furnishing.js';
 import { list as conditions, probability as conditionProbability } from './attribute/condition.js';
-import { list as itemTypes } from './items/type.js';
+import { list as itemTypes } from './item/type.js';
 import { list as quantities, probability as quantityProbability } from './attribute/quantity.js';
 import { list as rarities, probability as rarityProbability } from './attribute/rarity.js';
 import { list as roomTypes } from './rooms/type.js';

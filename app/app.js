@@ -30,7 +30,7 @@ import {
 import { drawLegend } from './dungeon/legend.js';
 import { generateDungeon } from './dungeon/generate.js';
 
-import { generateItems } from './items/generate.js';
+import { generateItems } from './item/generate.js';
 import { generateRooms } from './rooms/generate.js';
 
 import { getKnobConfig } from './knobs.js';

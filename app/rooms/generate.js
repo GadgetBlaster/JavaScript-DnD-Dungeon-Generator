@@ -1,7 +1,7 @@
 // @ts-check
 
 import { applyRoomRandomization } from './settings.js';
-import { generateItems } from '../items/generate.js';
+import { generateItems } from '../item/generate.js';
 import { isRequired } from '../utility/tools.js';
 import { knobs } from '../knobs.js';
 

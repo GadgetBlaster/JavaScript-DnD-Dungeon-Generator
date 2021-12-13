@@ -30,7 +30,7 @@ import { knobs } from '../../knobs.js';
 import { labelMinWidth, labelMinHeight, testTrapLabel as trapLabel } from '../draw.js';
 import { list as doorTypes } from '../../rooms/door.js';
 import condition from '../../attribute/condition.js';
-import itemTypes from '../../items/type.js';
+import itemTypes from '../../item/type.js';
 import quantity from '../../attribute/quantity.js';
 import rarity from '../../attribute/rarity.js';
 import roomTypes from '../../rooms/type.js';
