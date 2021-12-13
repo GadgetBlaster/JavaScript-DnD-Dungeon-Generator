@@ -32,11 +32,11 @@ import itemDescription from '../items/test/tests.description.js';
 import generateItems   from '../items/test/tests.generate.js';
 import item            from '../items/test/tests.item.js';
 
-import draw     from '../dungeons/test/tests.draw.js';
-import generate from '../dungeons/test/tests.generate.js';
-import grid     from '../dungeons/test/tests.grid.js';
-import legend   from '../dungeons/test/tests.legend.js';
-import map      from '../dungeons/test/tests.map.js';
+import draw     from '../dungeon/test/tests.draw.js';
+import generate from '../dungeon/test/tests.generate.js';
+import grid     from '../dungeon/test/tests.grid.js';
+import legend   from '../dungeon/test/tests.legend.js';
+import map      from '../dungeon/test/tests.map.js';
 
 // -- Config -------------------------------------------------------------------
 
@@ -73,9 +73,9 @@ export default {
     '/app/item/test/tests.generate.js'    : generateItems,
     '/app/item/test/tests.item.js'        : item,
 
-    '/app/dungeons/test/tests.draw.js'    : draw,
-    '/app/dungeons/test/tests.generate.js': generate,
-    '/app/dungeons/test/tests.grid.js'    : grid,
-    '/app/dungeons/test/tests.legend.js'  : legend,
-    '/app/dungeons/test/tests.map.js'     : map,
+    '/app/dungeon/test/tests.draw.js'    : draw,
+    '/app/dungeon/test/tests.generate.js': generate,
+    '/app/dungeon/test/tests.grid.js'    : grid,
+    '/app/dungeon/test/tests.legend.js'  : legend,
+    '/app/dungeon/test/tests.map.js'     : map,
 };

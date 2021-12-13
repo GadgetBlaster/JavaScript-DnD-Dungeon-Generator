@@ -1,7 +1,7 @@
 // @ts-check
 
 import { capitalize, indefiniteArticle, toWords } from '../utility/tools.js';
-import { cellFeet } from '../dungeons/grid.js';
+import { cellFeet } from '../dungeon/grid.js';
 import { element } from '../utility/element.js';
 import { em, paragraph, strong, subtitle, title } from '../ui/typography.js';
 import { furnitureQuantity } from '../items/types/furnishing.js';
@@ -19,7 +19,7 @@ import size from '../attribute/size.js';
 
 // -- Types --------------------------------------------------------------------
 
-/** @typedef {import('../dungeons/map.js').Connection} Connection */
+/** @typedef {import('../dungeon/map.js').Connection} Connection */
 /** @typedef {import('./door.js').RoomDoor} RoomDoor */
 /** @typedef {import('./door.js').DoorKey} DoorKey */
 /** @typedef {import('../knobs.js').RoomConfig} RoomConfig */

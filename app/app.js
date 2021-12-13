@@ -27,8 +27,8 @@ import {
     getRoomDescription,
 } from './rooms/description.js';
 
-import { drawLegend } from './dungeons/legend.js';
-import { generateDungeon } from './dungeons/generate.js';
+import { drawLegend } from './dungeon/legend.js';
+import { generateDungeon } from './dungeon/generate.js';
 
 import { generateItems } from './items/generate.js';
 import { generateRooms } from './rooms/generate.js';

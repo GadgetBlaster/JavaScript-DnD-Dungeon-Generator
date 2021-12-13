@@ -21,7 +21,7 @@ import {
 } from '../description.js';
 
 import { capitalize } from '../../utility/tools.js';
-import { cellFeet } from '../../dungeons/grid.js';
+import { cellFeet } from '../../dungeon/grid.js';
 import { furnitureQuantity } from '../../items/types/furnishing.js';
 import { knobs } from '../../knobs.js';
 import { random } from '../../utility/random.js';
