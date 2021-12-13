@@ -4,7 +4,7 @@ import { capacity } from './container.js';
 import { rollArrayItem, createProbability } from '../../utility/roll.js';
 import itemType from '../type.js';
 import rarity from '../../attribute/rarity.js';
-import roomType from '../../rooms/type.js';
+import roomType from '../../room/type.js';
 import size from '../../attribute/size.js';
 
 const defaults = {

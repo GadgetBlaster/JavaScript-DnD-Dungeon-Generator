@@ -25,13 +25,13 @@ import {
     getKeyDescription,
     getMapDescription,
     getRoomDescription,
-} from './rooms/description.js';
+} from './room/description.js';
 
 import { drawLegend } from './dungeon/legend.js';
 import { generateDungeon } from './dungeon/generate.js';
 
 import { generateItems } from './item/generate.js';
-import { generateRooms } from './rooms/generate.js';
+import { generateRooms } from './room/generate.js';
 
 import { getKnobConfig } from './knobs.js';
 

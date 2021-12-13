@@ -1,6 +1,6 @@
 // @ts-check
 
-// TODO move functionality to `rooms/generate.js`
+// TODO move functionality to `/room/generate.js`
 
 import { knobs } from '../knobs.js';
 import { probability as conditionProbability } from '../attribute/condition.js';

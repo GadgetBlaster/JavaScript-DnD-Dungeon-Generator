@@ -4,7 +4,7 @@ import { cellFeet } from './grid.js';
 import { drawMap, drawRoom, drawDoor, drawGrid, pxCell } from './draw.js';
 import { small } from '../ui/typography.js';
 import { list } from '../ui/list.js';
-import doorType from '../rooms/door.js';
+import doorType from '../room/door.js';
 
 // -- Types --------------------------------------------------------------------
 

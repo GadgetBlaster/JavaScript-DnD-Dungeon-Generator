@@ -37,7 +37,7 @@ import {
     drawRoom,
 } from '../draw.js';
 
-import doorType from '../../rooms/door.js';
+import doorType from '../../room/door.js';
 
 /** @typedef {import('../draw.js').Circle} Circle */
 /** @typedef {import('../draw.js').Line} Line */

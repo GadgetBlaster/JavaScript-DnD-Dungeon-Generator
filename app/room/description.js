@@ -14,7 +14,7 @@ import { rollArrayItem } from '../utility/roll.js';
 import condition from '../attribute/condition.js';
 import doorType, { appendDoorway, outside } from './door.js';
 import quantity from '../attribute/quantity.js';
-import roomTypes, { appendRoomTypes } from '../rooms/type.js';
+import roomTypes, { appendRoomTypes } from '../room/type.js';
 import size from '../attribute/size.js';
 
 // -- Types --------------------------------------------------------------------

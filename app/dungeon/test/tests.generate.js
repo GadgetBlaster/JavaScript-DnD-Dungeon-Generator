@@ -22,8 +22,8 @@ import itemType from '../../item/type.js';
 import quantity from '../../attribute/quantity.js';
 import rarity from '../../attribute/rarity.js';
 import size from '../../attribute/size.js';
-import roomType from '../../rooms/type.js';
-import trapList from '../../rooms/trap.js';
+import roomType from '../../room/type.js';
+import trapList from '../../room/trap.js';
 
 /**
  * @param {import('../../unit/state.js').Utility} utility

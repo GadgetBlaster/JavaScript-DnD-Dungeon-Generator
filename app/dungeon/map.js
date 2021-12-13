@@ -16,26 +16,26 @@ import {
     labelMinWidth,
 } from './draw.js';
 
-import { dimensionRanges, customDimensions } from '../rooms/dimensions.js';
+import { dimensionRanges, customDimensions } from '../room/dimensions.js';
 import {
     lockable,
     lockedChance,
     outside,
     probability as doorProbability,
     secretProbability,
-} from '../rooms/door.js';
+} from '../room/door.js';
 
 import { knobs } from '../knobs.js';
 import { roll, rollArrayItem, rollPercentile } from '../utility/roll.js';
 import { isRequired, toWords } from '../utility/tools.js';
-import roomType from '../rooms/type.js';
+import roomType from '../room/type.js';
 
 // -- Types --------------------------------------------------------------------
 
 /** @typedef {import('../knobs.js').DungeonConfig} DungeonConfig */
 /** @typedef {import('../knobs.js').RoomConfig} RoomConfig */
 
-/** @typedef {import('../rooms/generate.js').Room} Room */
+/** @typedef {import('../room/generate.js').Room} Room */
 
 /** @typedef {import('./grid.js').CellValue} CellValue */
 /** @typedef {import('./grid.js').Coordinates} Coordinates */

@@ -19,14 +19,14 @@ import list       from '../ui/test/tests.list.js';
 import nav        from '../ui/test/tests.nav.js';
 import typography from '../ui/test/tests.typography.js';
 
-import roomDescription from '../rooms/test/tests.description.js';
-import roomDimensions  from '../rooms/test/tests.dimensions.js';
-import door            from '../rooms/test/tests.door.js';
-import environment     from '../rooms/test/tests.environment.js';
-import feature         from '../rooms/test/tests.feature.js';
-import generateRooms   from '../rooms/test/tests.generate.js';
-import settings        from '../rooms/test/tests.settings.js';
-import vegetation      from '../rooms/test/tests.vegetation.js';
+import roomDescription from '../room/test/tests.description.js';
+import roomDimensions  from '../room/test/tests.dimensions.js';
+import door            from '../room/test/tests.door.js';
+import environment     from '../room/test/tests.environment.js';
+import feature         from '../room/test/tests.feature.js';
+import generateRooms   from '../room/test/tests.generate.js';
+import settings        from '../room/test/tests.settings.js';
+import vegetation      from '../room/test/tests.vegetation.js';
 
 import itemDescription from '../item/test/tests.description.js';
 import generateItems   from '../item/test/tests.generate.js';
@@ -60,14 +60,14 @@ export default {
     '/app/ui/test/tests.nav.js'       : nav,
     '/app/ui/test/tests.typography.js': typography,
 
-    '/app/rooms/test/tests.description.js': roomDescription,
-    '/app/rooms/test/tests.dimensions.js' : roomDimensions,
-    '/app/rooms/test/tests.door.js'       : door,
-    '/app/rooms/test/tests.environment.js': environment,
-    '/app/rooms/test/tests.feature.js'    : feature,
-    '/app/rooms/test/tests.generate.js'   : generateRooms,
-    '/app/rooms/test/tests.settings.js'   : settings,
-    '/app/rooms/test/tests.vegetation.js' : vegetation,
+    '/app/room/test/tests.description.js': roomDescription,
+    '/app/room/test/tests.dimensions.js' : roomDimensions,
+    '/app/room/test/tests.door.js'       : door,
+    '/app/room/test/tests.environment.js': environment,
+    '/app/room/test/tests.feature.js'    : feature,
+    '/app/room/test/tests.generate.js'   : generateRooms,
+    '/app/room/test/tests.settings.js'   : settings,
+    '/app/room/test/tests.vegetation.js' : vegetation,
 
     '/app/item/test/tests.description.js' : itemDescription,
     '/app/item/test/tests.generate.js'    : generateItems,

@@ -2,7 +2,7 @@
 
 import { element } from '../utility/element.js';
 import { isRequired } from '../utility/tools.js';
-import doorType, { lockable } from '../rooms/door.js';
+import doorType, { lockable } from '../room/door.js';
 
 // TODO move base shape draw functions to `/utility/draw.js`
 

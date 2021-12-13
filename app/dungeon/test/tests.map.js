@@ -24,16 +24,16 @@ import {
 } from '../map.js';
 
 import { createBlankGrid, wallSize } from '../grid.js';
-import { dimensionRanges } from '../../rooms/dimensions.js';
-import { generateRooms } from '../../rooms/generate.js';
+import { dimensionRanges } from '../../room/dimensions.js';
+import { generateRooms } from '../../room/generate.js';
 import { knobs } from '../../knobs.js';
 import { labelMinWidth, labelMinHeight, testTrapLabel as trapLabel } from '../draw.js';
-import { list as doorTypes } from '../../rooms/door.js';
+import { list as doorTypes } from '../../room/door.js';
 import condition from '../../attribute/condition.js';
 import itemTypes from '../../item/type.js';
 import quantity from '../../attribute/quantity.js';
 import rarity from '../../attribute/rarity.js';
-import roomTypes from '../../rooms/type.js';
+import roomTypes from '../../room/type.js';
 import size from '../../attribute/size.js';
 
 /**
