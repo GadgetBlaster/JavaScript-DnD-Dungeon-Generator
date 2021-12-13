@@ -35,6 +35,8 @@ import roomType from '../rooms/type.js';
 /** @typedef {import('../knobs.js').DungeonConfig} DungeonConfig */
 /** @typedef {import('../knobs.js').RoomConfig} RoomConfig */
 
+/** @typedef {import('../rooms/generate.js').Room} Room */
+
 /** @typedef {import('./grid.js').CellValue} CellValue */
 /** @typedef {import('./grid.js').Coordinates} Coordinates */
 /** @typedef {import('./grid.js').Dimensions} Dimensions */
@@ -60,7 +62,7 @@ import roomType from '../rooms/type.js';
  * @property {string} rect
  * @property {string} type
  * @property {boolean} locked
- * @property {Object.<number, Connection>} connections // TODO named key
+ * @property {{ [roomNumber: number]: Connection }} connections
  * @property {Connection} connection
  * @property {number} size
  */

@@ -1,5 +1,6 @@
 
-// TODO move to ui.js and add unit tests
+// @ts-check
+// TODO move to ui/knobs.js and add unit tests
 
 import { furnitureQuantityList, probability as furnitureQuantityProbability } from './items/types/furnishing.js';
 import { list as conditions, probability as conditionProbability } from './attributes/condition.js';
@@ -10,6 +11,75 @@ import { list as roomTypes } from './rooms/type.js';
 import { list as sizes } from './attributes/size.js';
 import { pages } from './ui/nav.js';
 import { random } from './utility/random.js';
+
+// -- Types --------------------------------------------------------------------
+
+/** @typedef {import('./attributes/condition.js').Condition} Condition */
+/** @typedef {import('./attributes/quantity.js').Quantity} Quantity */
+/** @typedef {import('./attributes/rarity').Rarity} Rarity */
+/** @typedef {import('./attributes/size').Size} Size */
+
+/**
+ * Item config
+ *
+ * @typedef {object} ItemConfig
+ *
+ * @prop {Condition} condition
+ * @prop {Quantity} quantity
+ * @prop {Rarity} rarity
+ * @prop {string} type
+ */
+
+/**
+ * Room config
+ *
+ * @typedef {object} RoomConfig
+ *
+ * @prop {Condition} condition
+ * @prop {number} count
+ * @prop {string} furnishing
+ * @prop {Size} size
+ * @prop {string} type
+ */
+
+/**
+ * Dungeon config
+ *
+ * @typedef {object} DungeonConfig
+ *
+ * @prop {string} complexity
+ * @prop {string} connections
+ * @prop {string} maps
+ * @prop {string} traps
+ */
+
+/**
+ * Knob settings
+ *
+ * @typedef {object} KnobSettings
+ *
+ * @property {string} label
+ * @property {string} name
+ * @property {string} desc
+ * @property {string} type
+ * @property {number} [min]
+ * @property {number} [max]
+ * @property {any} [value]
+ * @property {any[]} [values]
+ */
+
+/**
+ * Knob set
+ *
+ * @typedef {object} KnobSet
+ *
+ * @property {string} label
+ * @property {{ [key: string]: string }} [labels]
+ * @property {Set<string>} [pages]
+ * @property {KnobSettings[]} fields
+ */
+
+// -- Config -------------------------------------------------------------------
 
 export const typeSelect = 'select';
 export const typeNumber = 'number';
@@ -52,70 +122,6 @@ export const knobs = {
     roomSize          : 'roomSize',
     roomType          : 'roomType',
 };
-
-/**
- * Item config
- *
- * @typedef {{
- *     itemCondition: string;
- *     itemQuantity : string;
- *     itemRarity   : string;
- *     itemType     : string;
- * }} ItemConfig
- */
-
-/**
- * Room config
- *
- * @typedef {{
- *     roomCondition : string;
- *     roomCount     : number;
- *     roomFurnishing: string;
- *     roomSize      : string;
- *     roomType      : string;
- * } & ItemConfig} RoomConfig
- */
-
-/**
- * Dungeon config
- *
- * @typedef {{
- *     dungeonComplexity : string;
- *     dungeonConnections: string;
- *     dungeonMaps       : string;
- *     dungeonTraps      : string;
- * } & RoomConfig} DungeonConfig
- */
-
-/**
- * @typedef {ItemConfig | RoomConfig | DungeonConfig } Config
- */
-
-/**
- * Knob settings
- *
- * @typedef {object} KnobSettings
- *
- * @property {string} label
- * @property {string} name
- * @property {string} desc
- * @property {string} type
- * @property {number} [min]
- * @property {number} [max]
- * @property {any} [value]
- * @property {any[]} [values]
- */
-
-/**
- * Knob set
- *
- * @typedef {object} KnobSet
- *
- * @property {string} label
- * @property {{ [key: string]: string }} [labels]
- * @property {Set<string>} [pages]
- * @property {KnobSettings[]} fields
- */
 
  /**
   * Config

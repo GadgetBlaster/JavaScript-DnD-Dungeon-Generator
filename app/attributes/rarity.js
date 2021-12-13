@@ -1,5 +1,21 @@
+// @ts-check
 
 import { createProbability } from '../utility/roll.js';
+
+// -- Types --------------------------------------------------------------------
+
+/**
+ * @typedef {"abundant"
+ *     | "common"
+ *     | "average"
+ *     | "uncommon"
+ *     | "rare"
+ *     | "exotic"
+ *     | "legendary"
+ * } Rarity
+ */
+
+// -- Config -------------------------------------------------------------------
 
 const rarity = {
     abundant : 'abundant',

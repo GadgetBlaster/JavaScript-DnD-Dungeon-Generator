@@ -1,5 +1,22 @@
+// @ts-check
 
 import { createProbability } from '../utility/roll.js';
+
+// -- Types --------------------------------------------------------------------
+
+/**
+ * @typedef {"zero"
+ *     | "one"
+ *     | "couple"
+ *     | "few"
+ *     | "some"
+ *     | "several"
+ *     | "many"
+ *     | "numerous"
+ * } Quantity
+ */
+
+// -- Config -------------------------------------------------------------------
 
 const quantity = {
     zero    : 'zero',

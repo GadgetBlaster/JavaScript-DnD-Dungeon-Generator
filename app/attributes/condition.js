@@ -1,5 +1,20 @@
+// @ts-check
 
 import { createProbability } from '../utility/roll.js';
+
+// -- Types --------------------------------------------------------------------
+
+/**
+ * @typedef {"decaying"
+ *     | "busted"
+ *     | "poor"
+ *     | "average"
+ *     | "good"
+ *     | "exquisite"
+ * } Condition
+ */
+
+// -- Config -------------------------------------------------------------------
 
 const condition = {
     decaying : 'decaying',
