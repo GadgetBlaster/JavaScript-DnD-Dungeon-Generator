@@ -1,17 +1,13 @@
-// TODO break out into modules and add tests
+// @ts-check
 
 import { getSummaryLink } from './unit/output.js';
 import { unitState } from './unit/state.js';
 import run from './unit/run.js';
 import suite from './unit/suite.js';
 
-import {
-    attachClickDelegate,
-    getTriggers,
-} from './ui/action.js';
-
+import { attachClickDelegate, getTriggers } from './ui/action.js';
+import { getKnobPanel } from './ui/form.js';
 import { getNav } from './ui/nav.js';
-import { updateKnobs } from './ui/form.js';
 
 // -- Types --------------------------------------------------------------------
 
@@ -19,7 +15,7 @@ import { updateKnobs } from './ui/form.js';
 
 // -- Config -------------------------------------------------------------------
 
-/** @type {Sections} */
+/** @type {Sections} sections */
 const sections = {
     body   : document.body,
     content: document.getElementById('content'),
@@ -28,19 +24,15 @@ const sections = {
     nav    : document.getElementById('nav'),
 };
 
-const testSummary = getSummaryLink(run(unitState(), suite), { asLink: true });
-sections.footer.insertAdjacentHTML('afterbegin', testSummary);
+const homeContent   = sections.content.innerHTML;
+const footerContent = sections.footer.innerHTML;
 
-// const homeContent = sections.content.innerHTML;
-
-// const navigateHome = () => {
-//     sections.content.innerHTML = homeContent;
-// };
+const testSummary = getSummaryLink(run(unitState(), suite));
 
 // -- Initialization -----------------------------------------------------------
 
-sections.nav.innerHTML = getNav();
+sections.nav.innerHTML    = getNav();
+sections.knobs.innerHTML  = getKnobPanel();
+sections.footer.innerHTML =  testSummary + footerContent;
 
-attachClickDelegate(sections.body, getTriggers(sections));
-
-updateKnobs(sections.knobs);
+attachClickDelegate(sections.body, getTriggers(sections, homeContent));

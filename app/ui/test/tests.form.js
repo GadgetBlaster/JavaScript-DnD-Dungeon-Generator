@@ -8,7 +8,7 @@ import {
 
     // Public Functions
     getFormData,
-    updateKnobs,
+    getKnobPanel,
 } from '../form.js';
 
 import { typeSelect, typeNumber, typeRange } from '../../knobs.js';
@@ -261,32 +261,27 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('updateKnobs()', () => {
-        const knobContainer = document.createElement('div');
+    describe('getKnobPanel()', () => {
+        let knobs = getKnobPanel();
 
-        updateKnobs(knobContainer);
+        it('should return a string', () => {
+            assert(knobs).isString();
+        });
 
-        const knobContainerHtml = knobContainer.innerHTML;
-
-        it('should render a submit button to the given knobContainer', () => {
-            assert(knobContainerHtml).stringIncludes(
+        it('should include a submit button', () => {
+            assert(knobs).stringIncludes(
                 `<button data-action="generate" data-size="large" type="submit">Generate</button>`
             );
         });
 
-        it('should render a fieldset to the given knobContainer', () => {
-            assert(/<fieldset(.*?)>(.*?)<\/fieldset>/.test(knobContainerHtml)).isTrue();
-        });
-
-        it('should expand the fist fieldset', () => {
-            let fieldSets = knobContainerHtml.match(/<fieldset(.*?)>(.*?)<\/fieldset>/g);
-            assert(fieldSets.shift()).stringIncludes('data-collapsed="false"');
+        it('should include three fieldsets by default', () => {
+            assert(knobs.match(/<fieldset(.*?)>(.*?)<\/fieldset>/g).length).equals(3);
         });
 
         describe('give a page', () => {
-            it('should render the field sets for the given page', () => {
-                updateKnobs(knobContainer, 'items');
-                assert(knobContainer.innerHTML.match(/<fieldset(.*?)>(.*?)<\/fieldset>/g).length).equals(1);
+            it('should return the field sets for the given page', () => {
+                let itemKnobs = getKnobPanel('items');
+                assert(itemKnobs.match(/<fieldset(.*?)>(.*?)<\/fieldset>/g).length).equals(1);
             });
         });
     });

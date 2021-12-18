@@ -1,10 +1,10 @@
 // @ts-check
 
 import { chunk, toss } from '../utility/tools.js';
-import { getFormData, updateKnobs } from './form.js';
-import { getActiveNavItem, setActiveNavItem } from './nav.js';
 
 import { article, section } from './block.js';
+import { getActiveNavItem, setActiveNavItem } from './nav.js';
+import { getFormData, getKnobPanel } from './form.js';
 import { list } from './list.js';
 import { subtitle } from './typography.js';
 
@@ -157,15 +157,17 @@ const onGenerate = ({ content, knobs, nav }) => {
  * TODO tests!
  *
  * @param {Pick<Sections, "content" | "knobs" | "nav">} sections
+ * @param {string} homeContent
  * @param {Event} e
  */
-function onNavigate({ content, knobs, nav }, e) {
+function onNavigate({ content, knobs, nav }, homeContent, e) {
     let { target: page } = getDataset(e.target);
 
     setActiveNavItem(nav, /** @type {Page} */ (page));
-    updateKnobs(knobs, /** @type {Page} */ (page));
 
-    content.innerHTML = '';
+    knobs.innerHTML = getKnobPanel(/** @type {Page} */ (page));
+
+    content.innerHTML = homeContent;
 }
 
 export {
@@ -199,15 +201,15 @@ export function attachClickDelegate(docBody, triggers) {
  * Get triggers
  *
  * @param {Sections} sections
+ * @param {string} homeContent
  *
  * @returns {Triggers}
  */
-export const getTriggers = ({ body, content, knobs, nav }) => ({
+export const getTriggers = ({ body, content, knobs, nav }, homeContent) => ({
     accordion: (e) => toggleAccordion(body, e),
     generate : ( ) => onGenerate({ content, knobs, nav }),
-    navigate : (e) => onNavigate({ content, knobs, nav }, e),
+    navigate : (e) => onNavigate({ content, knobs, nav }, homeContent, e),
     toggle   : (e) => toggleVisibility(body, e),
-    home     : ( ) => {}, // TODO
 });
 
 /**

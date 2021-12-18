@@ -102,7 +102,7 @@ const renderFields = (fields) => fields.map((settings) => {
  *
  * @returns {string}
  */
- const renderKnobs = (knobs, page) => knobs.map((knobSet) => {
+const renderKnobs = (knobs, page) => knobs.map((knobSet) => {
     let {
         label,
         labels,
@@ -152,15 +152,9 @@ export function getFormData(knobContainer) {
 /**
  * Update form knobs when changing pages.
  *
- * @param {HTMLElement} knobContainer
  * @param {Page} [page = "dungeon"]
+ *
+ * @returns {string}
  */
-export function updateKnobs(knobContainer, page = 'dungeon') {
-    let config = getKnobConfig(page);
-
-    knobContainer.innerHTML = submitButton + renderKnobs(config, page);
-
-    /** @type {HTMLElement} */
-    let firstAccordion = knobContainer.querySelector(`[data-id="fieldset-${toDash(config[0].label)}"]`);
-    firstAccordion.dataset.collapsed = 'false';
-}
+export const getKnobPanel = (page = 'dungeon') =>
+    submitButton + renderKnobs(getKnobConfig(page), page);
