@@ -1,26 +1,109 @@
 // @ts-check
 
-import { toss } from '../utility/tools.js';
+import { chunk, toss } from '../utility/tools.js';
+import { getFormData, updateKnobs } from './form.js';
+import { getActiveNavItem, setActiveNavItem } from './nav.js';
+
+import { article, section } from './block.js';
+import { list } from './list.js';
+import { subtitle } from './typography.js';
+
+import {
+    getDoorwayList,
+    getKeyDescription,
+    getMapDescription,
+    getRoomDescription,
+} from '../room/description.js';
+
+import { drawLegend } from '../dungeon/legend.js';
+import { generateDungeon } from '../dungeon/generate.js';
+
+import { generateItems } from '../item/generate.js';
+import { generateRooms } from '../room/generate.js';
+
 
 // -- Types --------------------------------------------------------------------
 
-/** @typedef {(Event) => void} Trigger */
-/** @typedef {{ [key: string]: Trigger }} Triggers */
+/** @typedef {import('./nav.js').Page} Page */
 
-// -- Config -------------------------------------------------------------------
+/** @typedef {(Event) => void} Trigger */
+/** @typedef {{ [key in Action]?: Trigger }} Triggers */
 
 /**
- * Actions
+ * @typedef {object} Sections
+ *
+ * @prop {HTMLElement} body
+ * @prop {HTMLElement} content
+ * @prop {HTMLElement} footer
+ * @prop {HTMLElement} knobs
+ * @prop {HTMLElement} nav
  */
-export const actions = {
-    accordion: 'accordion',
-    generate : 'generate',
-    home     : 'home',
-    navigate : 'navigate',
-    showHide : 'showHide',
+
+/**
+ * @typedef {"accordion"
+ * | "generate"
+ * | "home"
+ * | "navigate"
+ * | "toggle"
+ * } Action
+ */
+
+// -- TODO Organize ------------------------------------------------------------
+
+const roomsPerRow = 3;
+
+const formatRoom = (room, doors) => {
+    let roomDoors = doors && doors[room.roomNumber];
+    let desc      = getRoomDescription(room, roomDoors);
+    let doorList  = roomDoors ? getDoorwayList(roomDoors) : '';
+    let items     = room.items.join('');
+    let map       = room.map ? getMapDescription() : '';
+    let keys      = room.keys ? getKeyDescription(room.keys) : '';
+    let traps     = room.traps ? subtitle(`Traps (${room.traps.length})`) + list(room.traps) : '';
+
+    return article(desc + doorList + items + map + keys + traps);
 };
 
+const getItems = (settings) => {
+    let items = generateItems(settings).join('');
 
+    return section(article(items));
+};
+
+const getRoomRows = (rooms, doors) => {
+    let sections = chunk(rooms, roomsPerRow);
+
+    return sections.map((roomChunk) => {
+        let row = roomChunk.map((room) => formatRoom(room, doors)).join('');
+
+        return section(row, { 'data-grid': 3 });
+    }).join('');
+};
+
+const getRooms = (settings) => {
+    let rooms = generateRooms(settings);
+
+    rooms.forEach((_, i) => {
+        rooms[i].roomNumber = i + 1;
+    });
+
+    return getRoomRows(rooms);
+};
+
+const getDungeon = (settings) => {
+    let { map, rooms, doors, mapDimensions } = generateDungeon(settings);
+
+    let legend   = drawLegend({ mapWidth: mapDimensions.gridWidth });
+    let sections = getRoomRows(rooms, doors);
+
+    return section(map) + section(legend) + sections;
+};
+
+const generators = {
+    dungeon: getDungeon,
+    items  : getItems,
+    rooms  : getRooms,
+};
 
 // -- Private Functions --------------------------------------------------------
 
@@ -44,9 +127,45 @@ const getDataset = (target) => target instanceof HTMLElement ? target.dataset : 
  * @returns {Trigger?}
  */
 function getTrigger(triggers, action) {
-    action && !triggers[action] && toss(`Invalid action \`${action}\``);
+    action && !triggers[action] && toss(`Invalid action "${action}"`);
 
     return action && triggers[action];
+}
+
+/**
+ * Generator event handler.
+ *
+ * TODO tests!
+ *
+ * @param {Pick<Sections, "content" | "knobs" | "nav">} sections
+ */
+const onGenerate = ({ content, knobs, nav }) => {
+    let settings  = getFormData(knobs);
+    let page      = getActiveNavItem(nav);
+    let generator = generators[page];
+
+    if (!generator) {
+        throw new Error('Invalid page');
+    }
+
+    content.innerHTML = generator(settings);
+};
+
+/**
+ * Navigation event handler.
+ *
+ * TODO tests!
+ *
+ * @param {Pick<Sections, "content" | "knobs" | "nav">} sections
+ * @param {Event} e
+ */
+function onNavigate({ content, knobs, nav }, e) {
+    let { target: page } = getDataset(e.target);
+
+    setActiveNavItem(nav, /** @type {Page} */ (page));
+    updateKnobs(knobs, /** @type {Page} */ (page));
+
+    content.innerHTML = '';
 }
 
 export {
@@ -57,18 +176,14 @@ export {
 // -- Public Functions ---------------------------------------------------------
 
 /**
- * Attaches a click event delegate to the given container with the given
- * action triggers.
+ * Attaches an application click event delegate to the document body.
  *
- * @param {HTMLElement} container
+ * @param {HTMLElement} docBody
  * @param {Triggers} triggers
  */
-export function attachClickDelegate(container, triggers) {
-    container.addEventListener('click', (e) => {
-
+export function attachClickDelegate(docBody, triggers) {
+    docBody.addEventListener('click', (e) => {
         let { action } = getDataset(e.target);
-
-
         let trigger = getTrigger(triggers, action);
 
         if (!trigger) {
@@ -79,6 +194,21 @@ export function attachClickDelegate(container, triggers) {
         trigger(e);
     });
 }
+
+/**
+ * Get triggers
+ *
+ * @param {Sections} sections
+ *
+ * @returns {Triggers}
+ */
+export const getTriggers = ({ body, content, knobs, nav }) => ({
+    accordion: (e) => toggleAccordion(body, e),
+    generate : ( ) => onGenerate({ content, knobs, nav }),
+    navigate : (e) => onNavigate({ content, knobs, nav }, e),
+    toggle   : (e) => toggleVisibility(body, e),
+    home     : ( ) => {}, // TODO
+});
 
 /**
  * Toggle accordion

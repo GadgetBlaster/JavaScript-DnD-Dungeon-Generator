@@ -1,6 +1,5 @@
 // @ts-check
 
-import { actions } from './action.js';
 import { button, buttonSize, infoLabel } from './button.js';
 import { div, fieldset, section } from './block.js';
 import { paragraph, small } from './typography.js';
@@ -12,11 +11,12 @@ import { getKnobConfig, typeSelect, typeNumber, typeRange } from '../knobs.js';
 
 /** @typedef {import('../knobs.js').KnobSet} KnobSet */
 /** @typedef {import('../knobs.js').KnobSettings} KnobSettings */
+/** @typedef {import('./action').Action} Action */
 /** @typedef {import('./nav.js').Page} Page */
 
 // -- Config -------------------------------------------------------------------
 
-const submitButton = button('Generate', actions.generate, {
+const submitButton = button('Generate', 'generate', {
     size: buttonSize.large,
     type: 'submit',
 });
@@ -85,7 +85,7 @@ const renderFields = (fields) => fields.map((settings) => {
 
     let knob       = getKnob(settings);
     let descId     = desc && `info-${name}`;
-    let descButton = button(infoLabel, actions.showHide, { target: descId, size: buttonSize.auto });
+    let descButton = button(infoLabel, 'toggle', { target: descId, size: buttonSize.auto });
     let descText   = paragraph(small(desc), { hidden: true, 'data-id': descId }); // TODO style instead of `<small>`
     let knobLabel  = fieldLabel(label + descButton);
 
@@ -114,7 +114,7 @@ const renderFields = (fields) => fields.map((settings) => {
     }
 
     let fieldsetId = `fieldset-${toDash(label)}`;
-    let handle = button(label, actions.accordion, { target: fieldsetId });
+    let handle = button(label, 'accordion', { target: fieldsetId });
 
     let attrs = {
         'data-collapsed': true,

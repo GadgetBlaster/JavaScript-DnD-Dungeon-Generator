@@ -11,7 +11,6 @@ import {
     updateKnobs,
 } from '../form.js';
 
-import { actions } from '../action.js';
 import { typeSelect, typeNumber, typeRange } from '../../knobs.js';
 
 const fakeKnob = {
@@ -117,7 +116,7 @@ export default ({ assert, describe, it }) => {
                 const result = renderFields([ { ...knob, desc: 'Toad\'s tenacity'} ]);
 
                 it('should include an html info button string', () => {
-                    const snapshot = '<button data-action="showHide" data-size="auto" data-target="info-size" ' +
+                    const snapshot = '<button data-action="toggle" data-size="auto" data-target="info-size" ' +
                         'data-info="true" type="button">?</button>';
 
                     assert(result).stringIncludes(snapshot);
@@ -271,7 +270,7 @@ export default ({ assert, describe, it }) => {
 
         it('should render a submit button to the given knobContainer', () => {
             assert(knobContainerHtml).stringIncludes(
-                `<button data-action="${actions.generate}" data-size="large" type="submit">Generate</button>`
+                `<button data-action="generate" data-size="large" type="submit">Generate</button>`
             );
         });
 

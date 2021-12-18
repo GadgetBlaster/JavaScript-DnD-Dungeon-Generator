@@ -1,11 +1,12 @@
 // @ts-check
 
-import { actions } from './action.js';
+// import { actions } from './action.js';
 import { button } from './button.js';
 
 // -- Types --------------------------------------------------------------------
 
 /** @typedef {"dungeon" | "rooms" | "items"} Page */
+/** @typedef {import('./action.js').Sections} Sections */
 
 // -- Config -------------------------------------------------------------------
 
@@ -14,15 +15,6 @@ export const pages = {
     room: 'rooms',
     items: 'items',
 };
-
-let { navigate } = actions;
-
-/** Main Navigation HTML string */
-export const nav = [
-    button('Dungeon', navigate, { target: 'dungeon', active: true }),
-    button('Rooms',   navigate, { target: 'rooms' }),
-    button('Items',   navigate, { target: 'items' }),
-].join('');
 
 // -- Private Functions --------------------------------------------------------
 
@@ -43,23 +35,34 @@ const getElements = (collection) => [ ...collection ].map((el) =>
 /**
  * Gets the active navigation target.
  *
- * @param {HTMLElement} navContainer
+ * @param {HTMLElement} nav
  *
  * @returns {string}
  */
-export function getActive(navContainer) {
-    return getElements(navContainer.children).find((btn) => btn.dataset.active).dataset.target;
+export function getActiveNavItem(nav) {
+    return getElements(nav.children).find((btn) => btn.dataset.active).dataset.target;
 }
+
+/** Main Navigation HTML string */
+export const getNav = () => [
+    button('Dungeon', 'navigate', { target: 'dungeon', active: true }),
+    button('Rooms',   'navigate', { target: 'rooms' }),
+    button('Items',   'navigate', { target: 'items' }),
+].join('');
 
 /**
  * Sets the active navigation target.
  *
- * @param {HTMLElement} target
+ * @param {HTMLElement} nav
+ * @param {Page} page
  */
-export function setActive(target) {
-    getElements(target.parentNode.children).forEach((btn) => {
+export function setActiveNavItem(nav, page) {
+    getElements(nav.children).forEach((btn) => {
+        if (btn.dataset.target === page) {
+            btn.dataset.active = 'true';
+            return;
+        }
+
         delete btn.dataset.active;
     });
-
-    target.dataset.active = 'true';
 }

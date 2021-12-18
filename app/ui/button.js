@@ -16,6 +16,8 @@ import { element } from '../utility/element.js';
  * @property {string} [type]
  */
 
+/** @typedef {import('./action.js').Action} Action */
+
 // -- Config -------------------------------------------------------------------
 
 export const infoLabel = '?';
@@ -40,7 +42,7 @@ const validSizes = new Set(Object.values(buttonSize));
  * Returns an HTML element button string.
  *
  * @param {string} label
- * @param {string} action
+ * @param {Action} action
  * @param {ButtonOptions} [options]
  *
  * @throws

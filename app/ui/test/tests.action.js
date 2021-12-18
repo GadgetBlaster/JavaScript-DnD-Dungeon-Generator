@@ -9,8 +9,10 @@ import {
     attachClickDelegate,
     toggleAccordion,
     toggleVisibility,
-    actions,
+    // actions,
 } from '../action.js';
+
+/** @typedef {import('../action.js').Trigger} Trigger */
 
 /**
  * @param {import('../../unit/state.js').Utility} utility
@@ -46,15 +48,14 @@ export default ({ assert, describe, it }) => {
 
         describe('given an action that does not exist on the given triggers', () => {
             it('throws', () => {
-                assert(() => getTrigger({}, 'bellyFlop')).throws('Invalid action `bellyFlop`');
+                assert(() => getTrigger({}, 'bellyFlop')).throws('Invalid action "bellyFlop"');
             });
         });
 
         describe('given an action that exists on the given triggers', () => {
             it('returns the action', () => {
-                const surprise = () => 'success';
-                const triggers = { surprise };
-                const trigger  = getTrigger(triggers, 'surprise');
+                const triggers = { navigate: () => 'success' };
+                const trigger  = getTrigger(triggers, 'navigate');
 
                 assert(trigger()).equals('success');
             });
@@ -70,7 +71,7 @@ export default ({ assert, describe, it }) => {
             const button2   = document.createElement('button');
             const button3   = document.createElement('button');
 
-            button.dataset.action  = actions.home;
+            button.dataset.action  = 'home';
             button3.dataset.action = 'invalid-action';
 
             container.appendChild(button);
@@ -80,7 +81,7 @@ export default ({ assert, describe, it }) => {
             const events = [];
 
             const triggers = {
-                [actions.home]: (e) => {
+                home: /** @type {Trigger} */ (e) => {
                     events.push(e);
                 },
             };
@@ -97,7 +98,7 @@ export default ({ assert, describe, it }) => {
 
                 it('should call the action with a click event object param', () => {
                     assert(event).isObject();
-                    assert(event.type).equals('click');
+                    event && assert(event.type).equals('click');
                 });
             });
 
