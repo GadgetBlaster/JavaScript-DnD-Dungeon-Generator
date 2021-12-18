@@ -9,8 +9,8 @@ import { selfClosingElements } from '../utility/element.js';
  *
  * @typedef {Object} Result
  *
- * @property {string} msg
- * @property {boolean} isOk
+ * @prop {string} msg
+ * @prop {boolean} isOk
  */
 
 // -- Public Functions ---------------------------------------------------------

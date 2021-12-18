@@ -14,15 +14,15 @@ import { createProbability } from '../utility/roll.js';
 /**
  * @typedef {Object} DoorKey
  *
- * @property {{ [key: number]: Connection }} connections
- * @property {string} type - Door type
+ * @prop {{ [key: number]: Connection }} connections
+ * @prop {string} type - Door type
  */
 
 /**
  * @typedef {object} RoomDoors
  *
- * @property {DoorKey[]} keys
- * @property {{ [key: number]: RoomDoor[] }} doors
+ * @prop {DoorKey[]} keys
+ * @prop {{ [key: number]: RoomDoor[] }} doors
  */
 
 // -- Config -------------------------------------------------------------------

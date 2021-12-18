@@ -19,15 +19,15 @@ import doorType, { lockable } from '../room/door.js';
 /**
  * @typedef PixelCoordinates
  *
- * @property {number} x
- * @property {number} y
+ * @prop {number} x
+ * @prop {number} y
  */
 
 /**
  * @typedef PixelDimensions
  *
- * @property {number} width
- * @property {number} height
+ * @prop {number} width
+ * @prop {number} height
  */
 
 /** @typedef {PixelCoordinates & PixelDimensions} PixelRectangle */
@@ -37,20 +37,20 @@ import doorType, { lockable } from '../room/door.js';
 /**
  * @typedef Circle
  *
- * @property {number} cx
- * @property {number} cy
- * @property {number} r
+ * @prop {number} cx
+ * @prop {number} cy
+ * @prop {number} r
  */
 
 /**
  * @typedef Line
  *
- * @property {number} x1
- * @property {number} y1
- * @property {number} x2
- * @property {number} y2
- * @property {string} color
- * @property {number} width
+ * @prop {number} x1
+ * @prop {number} y1
+ * @prop {number} x2
+ * @prop {number} y2
+ * @prop {string} color
+ * @prop {number} width
  */
 
 // -- Room Defs ----------------------------------------------------------------
@@ -58,8 +58,8 @@ import doorType, { lockable } from '../room/door.js';
 /**
  * @typedef RoomText
  *
- * @property {number | string} roomNumber
- * @property {string} [roomLabel]
+ * @prop {number | string} roomNumber
+ * @prop {string} [roomLabel]
  */
 
 // -- Config -------------------------------------------------------------------

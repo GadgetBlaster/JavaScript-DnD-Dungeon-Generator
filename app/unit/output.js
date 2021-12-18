@@ -19,10 +19,10 @@ import run from './run.js';
 /**
  * @typedef {object} OutputOptions
  *
- * @property {function} [onError]
- * @property {function} [onSuccess]
- * @property {string} [scope]
- * @property {boolean} [verbose]
+ * @prop {function} [onError]
+ * @prop {function} [onSuccess]
+ * @prop {string} [scope]
+ * @prop {boolean} [verbose]
  */
 
 // -- Config -------------------------------------------------------------------

@@ -8,8 +8,8 @@ import { toss } from './tools.js';
  * @typedef {object} Probability
  *     Probability distribution table.
  *
- * @property {string} description
- * @property {() => string} roll
+ * @prop {string} description
+ * @prop {() => string} roll
  */
 
 // -- Config -------------------------------------------------------------------

@@ -13,8 +13,8 @@ import { knobs } from '../knobs.js';
 /**
  * @typedef {object} Room
  *
- * @property {DungeonConfig | RoomConfig} settings
- * @property {string[]} items
+ * @prop {DungeonConfig | RoomConfig} settings
+ * @prop {string[]} items
  */
 
 // -- Public Functions ---------------------------------------------------------

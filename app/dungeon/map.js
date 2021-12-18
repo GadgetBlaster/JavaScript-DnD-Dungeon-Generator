@@ -46,8 +46,8 @@ import roomType from '../room/type.js';
 /**
  * @typedef {object} Connection
  *
- * @property {Direction} direction
- * @property {number | string} to - Room number or "outside"
+ * @prop {Direction} direction
+ * @prop {number | string} to - Room number or "outside"
  */
 
 /**
@@ -59,30 +59,30 @@ import roomType from '../room/type.js';
 /**
  * @typedef {object} Door
  *
- * @property {string} rect
- * @property {string} type
- * @property {boolean} locked
- * @property {{ [roomNumber: number]: Connection }} connections
- * @property {Connection} connection
- * @property {number} size
+ * @prop {string} rect
+ * @prop {string} type
+ * @prop {boolean} locked
+ * @prop {{ [roomNumber: number]: Connection }} connections
+ * @prop {Connection} connection
+ * @prop {number} size
  */
 
 /**
  * @typedef {object} AppliedRoomResults
  *
- * @property {Room[]} rooms
+ * @prop {Room[]} rooms
  *     All rooms which have been generated for the map grid.
  *
- * @property {Door[]} doors
+ * @prop {Door[]} doors
  *     Doors which are associated to rooms which have been applied to the grid.
  *
- * @property {GridRoom[]} gridRooms
+ * @prop {GridRoom[]} gridRooms
  *     Room configs which have been applied to the grid.
  *
- * @property {Room[]} skipped
+ * @prop {Room[]} skipped
  *     Room configs which have not been applied to the grid.
  *
- * @property {number} roomNumber
+ * @prop {number} roomNumber
  *     The room's ID.
  */
 

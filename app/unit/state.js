@@ -12,23 +12,23 @@ import { getResultMessage } from './output.js';
 /**
  * @typedef {object} Assertions
  *
- * @property {Assertion} equals
- * @property {Assertion} equalsArray
- * @property {Assertion} equalsObject
- * @property {Assertion} isArray
- * @property {Assertion} isBoolean
- * @property {Assertion} isElementTag
- * @property {Assertion} isFalse
- * @property {Assertion} isFunction
- * @property {Assertion} isNull
- * @property {Assertion} isNumber
- * @property {Assertion} isObject
- * @property {Assertion} isString
- * @property {Assertion} isTrue
- * @property {Assertion} isUndefined
- * @property {Assertion} stringExcludes
- * @property {Assertion} stringIncludes
- * @property {Assertion} throws
+ * @prop {Assertion} equals
+ * @prop {Assertion} equalsArray
+ * @prop {Assertion} equalsObject
+ * @prop {Assertion} isArray
+ * @prop {Assertion} isBoolean
+ * @prop {Assertion} isElementTag
+ * @prop {Assertion} isFalse
+ * @prop {Assertion} isFunction
+ * @prop {Assertion} isNull
+ * @prop {Assertion} isNumber
+ * @prop {Assertion} isObject
+ * @prop {Assertion} isString
+ * @prop {Assertion} isTrue
+ * @prop {Assertion} isUndefined
+ * @prop {Assertion} stringExcludes
+ * @prop {Assertion} stringIncludes
+ * @prop {Assertion} throws
 */
 
 /** @typedef {{ scope: Scope; msg: string }} CurrentScope */
@@ -36,8 +36,8 @@ import { getResultMessage } from './output.js';
 /**
  * @typedef {object} Entry
  *
- * @property {string} msg
- * @property {boolean} isOk
+ * @prop {string} msg
+ * @prop {boolean} isOk
  */
 
 /** @typedef {"assert()" | "describe()" | "it()" | "default()"} Scope */
@@ -45,26 +45,26 @@ import { getResultMessage } from './output.js';
 /**
  * @typedef {object} State
  *
- * @property {() => Summary} getSummary
- * @property {(error: string) => void} onError
- * @property {(path: string, tests: Function) => void} runUnits
+ * @prop {() => Summary} getSummary
+ * @prop {(error: string) => void} onError
+ * @prop {(path: string, tests: Function) => void} runUnits
  */
 
 /**
  * @typedef {object} Summary
  *
- * @property {number} assertions
- * @property {number} failures
- * @property {Result[]} results
- * @property {Result[]} errors
+ * @prop {number} assertions
+ * @prop {number} failures
+ * @prop {Result[]} results
+ * @prop {Result[]} errors
  */
 
 /**
  * @typedef {object} Utility
  *
- * @property {(value: any) => Assertions} assert
- * @property {Function} describe
- * @property {Function} it
+ * @prop {(value: any) => Assertions} assert
+ * @prop {Function} describe
+ * @prop {Function} it
  */
 
 // -- Config -------------------------------------------------------------------

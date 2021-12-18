@@ -9,11 +9,11 @@ import { element } from '../utility/element.js';
  *
  * @typedef {object} ButtonOptions
  *
- * @property {boolean} [active]
- * @property {string} [size]
- * @property {string} [target]
- * @property {string} [value]
- * @property {string} [type]
+ * @prop {boolean} [active]
+ * @prop {string} [size]
+ * @prop {string} [target]
+ * @prop {string} [value]
+ * @prop {string} [type]
  */
 
 /** @typedef {import('./action.js').Action} Action */

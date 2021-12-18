@@ -58,14 +58,14 @@ import { random } from './utility/random.js';
  *
  * @typedef {object} KnobSettings
  *
- * @property {string} label
- * @property {string} name
- * @property {string} desc
- * @property {string} type
- * @property {number} [min]
- * @property {number} [max]
- * @property {any} [value]
- * @property {any[]} [values]
+ * @prop {string} label
+ * @prop {string} name
+ * @prop {string} desc
+ * @prop {string} type
+ * @prop {number} [min]
+ * @prop {number} [max]
+ * @prop {any} [value]
+ * @prop {any[]} [values]
  */
 
 /**
@@ -73,10 +73,10 @@ import { random } from './utility/random.js';
  *
  * @typedef {object} KnobSet
  *
- * @property {string} label
- * @property {{ [key: string]: string }} [labels]
- * @property {Set<string>} [pages]
- * @property {KnobSettings[]} fields
+ * @prop {string} label
+ * @prop {{ [key: string]: string }} [labels]
+ * @prop {Set<string>} [pages]
+ * @prop {KnobSettings[]} fields
  */
 
 // -- Config -------------------------------------------------------------------

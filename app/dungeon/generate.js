@@ -18,10 +18,10 @@ import trapList from '../room/trap.js';
 /**
  * @typedef {object} Dungeon
  *
- * @property {string} map // TODO rename to mapVector?
- * @property {Room[]} rooms
- * @property {Door[]} doors
- * @property {Dimensions} gridDimensions
+ * @prop {string} map // TODO rename to mapVector?
+ * @prop {Room[]} rooms
+ * @prop {Door[]} doors
+ * @prop {Dimensions} gridDimensions
  */
 
 // -- Config -------------------------------------------------------------------

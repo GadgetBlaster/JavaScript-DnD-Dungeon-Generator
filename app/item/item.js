@@ -20,14 +20,14 @@ import type, { list as itemTypes } from './type.js';
  *
  * @typedef {object} Item
  *
- * @property {string} name
- * @property {string} label
- * @property {string} type
- * @property {string} rarity
- * @property {number} count
- * @property {number} quantity - Max number of item found // TODO rename to `maxCount`
- * @property {number} [capacity] - Max number of small items found inside
- * @property {string[]} [variants] - Array of variations
+ * @prop {string} name
+ * @prop {string} label
+ * @prop {string} type
+ * @prop {string} rarity
+ * @prop {number} count
+ * @prop {number} quantity - Max number of item found // TODO rename to `maxCount`
+ * @prop {number} [capacity] - Max number of small items found inside
+ * @prop {string[]} [variants] - Array of variations
  */
 
 // -- Config -------------------------------------------------------------------

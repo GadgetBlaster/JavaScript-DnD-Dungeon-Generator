@@ -21,7 +21,6 @@ import { generateDungeon } from '../dungeon/generate.js';
 import { generateItems } from '../item/generate.js';
 import { generateRooms } from '../room/generate.js';
 
-
 // -- Types --------------------------------------------------------------------
 
 /** @typedef {import('./nav.js').Page} Page */
