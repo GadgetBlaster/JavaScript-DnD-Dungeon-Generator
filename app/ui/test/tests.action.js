@@ -6,7 +6,7 @@ import {
     testGetTrigger as getTrigger,
 
     // Public Functions
-    attachActions,
+    attachClickDelegate,
     toggleAccordion,
     toggleVisibility,
     actions,
@@ -63,7 +63,7 @@ export default ({ assert, describe, it }) => {
 
     // -- Public Functions -----------------------------------------------------
 
-    describe('attachActions()', () => {
+    describe('attachClickDelegate()', () => {
         describe('when a child element is clicked', () => {
             const container = document.createElement('div');
             const button    = document.createElement('button');
@@ -85,7 +85,7 @@ export default ({ assert, describe, it }) => {
                 },
             };
 
-            attachActions(container, triggers);
+            attachClickDelegate(container, triggers);
 
             describe('when the clicked element has a valid `data-action` attribute', () => {
                 button.dispatchEvent(new MouseEvent('click', { bubbles: true }));

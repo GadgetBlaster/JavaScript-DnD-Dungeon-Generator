@@ -63,7 +63,7 @@ export {
  * @param {HTMLElement} container
  * @param {Triggers} triggers
  */
-export function attachActions(container, triggers) {
+export function attachClickDelegate(container, triggers) {
     container.addEventListener('click', (e) => {
 
         let { action } = getDataset(e.target);

@@ -9,7 +9,7 @@ import suite from './unit/suite.js';
 
 import {
     actions,
-    attachActions,
+    attachClickDelegate,
     toggleAccordion,
     toggleVisibility,
 } from './ui/action.js';
@@ -32,6 +32,8 @@ import { generateDungeon } from './dungeon/generate.js';
 
 import { generateItems } from './item/generate.js';
 import { generateRooms } from './room/generate.js';
+
+// -- Config -------------------------------------------------------------------
 
 const docBody          = document.body;
 const contentContainer = document.getElementById('content');
@@ -125,14 +127,16 @@ const generate = () => {
     contentContainer.innerHTML = generator(settings);
 };
 
-attachActions(docBody, {
+// -- Initialization -----------------------------------------------------------
+
+navContainer.innerHTML = nav;
+
+attachClickDelegate(docBody, {
     [actions.accordion]: (e) => toggleAccordion(docBody, e),
     [actions.generate] : generate,
     [actions.navigate] : navigate,
     [actions.showHide] : (e) => toggleVisibility(docBody, e),
     [actions.home]     : navigateHome,
 });
-
-navContainer.innerHTML = nav;
 
 updateKnobs(knobContainer);
