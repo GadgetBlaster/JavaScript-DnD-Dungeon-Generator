@@ -8,7 +8,7 @@ import furnishing, {
     furnishingQuantityRanges,
     furnitureQuantity, // TODO rename?
     requiredRoomFurniture,
-} from './types/furnishing.js';
+} from './furnishing.js';
 import { em, paragraph, subtitle } from '../ui/typography.js';
 import { generateItem } from './item.js';
 import { getRarityDescription, getConditionDescription, getItemDescription } from './description.js';
@@ -252,7 +252,7 @@ export function generateItems(config) {
         }
 
         let contents       = [];
-        let remainingSpace = capacity[container.size];
+        let remainingSpace = capacity[container.size]; // TODO can be undefined
         let itemCount      = smallItems.length;
 
         for (let i = 0; i < itemCount; i++) {

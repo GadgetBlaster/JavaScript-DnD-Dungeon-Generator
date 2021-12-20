@@ -1,29 +1,33 @@
 // @ts-check
 
-import rarity from '../../attribute/rarity.js';
-import type from '../type.js';
+/** @typedef {import('../item.js').ItemConfig} ItemConfig */
 
-let { abundant, common, average, uncommon } = rarity;
-
+/** @type {Omit<ItemConfig, "name">} */
 const defaults = {
-    rarity: abundant,
-    type  : type.kitchen,
+    rarity: 'abundant',
+    type  : 'kitchen',
 };
 
-const config = [
-    { name: 'Basin' },
-    { name: 'Cauldron', rarity: average },
-    { name: 'Cutting board' },
-    { name: 'Fork' },
-    { name: 'Kitchen knife' },
-    { name: 'Ladle', rarity: common },
-    { name: 'Mess kit' },
-    { name: 'Pan, iron' },
-    { name: 'Pot, iron' },
-    { name: 'Soap', rarity: uncommon },
-    { name: 'Spoon' },
-    { name: 'Steak knife' },
-    { name: 'Tub' },
-];
+/** @type {{ [name: string]: Partial<ItemConfig>}} */
+const kitchenSupplies = {
+    'Basin'        : null,
+    'Cauldron'     : { rarity: 'average' },
+    'Cutting board': null,
+    'Fork'         : null,
+    'Kitchen knife': null,
+    'Ladle'        : { rarity: 'common' },
+    'Mess kit'     : null,
+    'Pan, iron'    : null,
+    'Pot, iron'    : null,
+    'Soap'         : { rarity: 'uncommon' },
+    'Spoon'        : null,
+    'Steak knife'  : null,
+    'Tub'          : null,
+};
 
-export default config.map((item) => ({ ...defaults, ...item }));
+/** @type {ItemConfig[]} */
+export default Object.entries(kitchenSupplies).map(([ name, config ]) => ({
+    name,
+    ...defaults,
+    ...config,
+}));

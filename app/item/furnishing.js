@@ -1,33 +1,32 @@
 // @ts-check
 
-import { capacity } from './container.js';
-import { rollArrayItem, createProbability } from '../../utility/roll.js';
-import itemType from '../type.js';
-import rarity from '../../attribute/rarity.js';
-import roomType from '../../room/type.js';
-import size from '../../attribute/size.js';
+import { capacity } from './types/container.js';
+import { rollArrayItem, createProbability } from '../utility/roll.js';
+import roomType from '../room/type.js';
+import size from '../attribute/size.js';
 
+/** @typedef {import('./item.js').ItemConfig} ItemConfig */
+
+/** @type {Omit<ItemConfig, "name">} */
 const defaults = {
-    quantity: 1,
-    rarity  : rarity.average,
-    size    : size.medium,
-    type    : itemType.furnishing,
+    maxCount: 1,
+    rarity  : 'average',
+    size    : 'medium',
+    type    : 'furnishing',
 };
-
-const defaultCapacity = capacity[size.medium];
 
 const furnishing = {
     alchemy  : { name: 'Alchemy equipment' },
     anvil    : { name: 'Anvil' },
     bed      : { name: 'Bed', variants: [ 'single', 'double', 'queen', 'king', 'bedroll', 'cot', 'rag pile' ] },
     bench    : { name: 'Bench', variants: [ 'wood', 'cushioned', 'stone' ] },
-    bookcase : { name: 'Bookcase', capacity: defaultCapacity, variants: [ 'wood', 'metal' ] },
-    cabinet  : { name: 'Cabinet', capacity: defaultCapacity },
+    bookcase : { name: 'Bookcase', capacity: capacity.medium, variants: [ 'wood', 'metal' ] },
+    cabinet  : { name: 'Cabinet', capacity: capacity.medium },
     carpet   : { name: 'Carpet' },
     chair    : { name: 'Chair', variants: [ 'armchair', 'wood', 'cushioned', 'stone', 'stool' ] },
-    cupboard : { name: 'Cupboard', capacity: defaultCapacity },
-    desk     : { name: 'Desk', capacity: defaultCapacity, variants: [ 'wood', 'stone', 'metal' ] },
-    dresser  : { name: 'Dresser', capacity: defaultCapacity },
+    cupboard : { name: 'Cupboard', capacity: capacity.medium },
+    desk     : { name: 'Desk', capacity: capacity.medium, variants: [ 'wood', 'stone', 'metal' ] },
+    dresser  : { name: 'Dresser', capacity: capacity.medium },
     firePit  : { name: 'Fire pit' },
     fireplace: { name: 'Fireplace' },
     forge    : { name: 'Forge' },
@@ -35,17 +34,17 @@ const furnishing = {
     mirror   : { name: 'Mirror, large' },
     painting : { name: 'Painting' },
     pillar   : { name: 'Pillar' },
-    rack     : { name: 'Rack', capacity: defaultCapacity, variants: [ 'wood', 'metal' ] },
+    rack     : { name: 'Rack', capacity: capacity.medium, variants: [ 'wood', 'metal' ] },
     shelf    : { name: 'Table, small', capacity: capacity[size.small] },
     shrine   : { name: 'Shrine' },
     spit     : { name: 'Cooking spit' },
-    tableLg  : { name: 'Table, large', capacity: defaultCapacity, variants: [ 'wood', 'stone', 'metal' ] },
+    tableLg  : { name: 'Table, large', capacity: capacity.medium, variants: [ 'wood', 'stone', 'metal' ] },
     tableSm  : { name: 'Table, small', capacity: capacity[size.small], variants: [ 'wood', 'stone', 'metal' ] },
     tapestry : { name: 'Tapestry' },
     throne   : { name: 'Throne' },
     torch    : { name: 'Torch' },
-    wardrobe : { name: 'Wardrobe', capacity: defaultCapacity },
-    workbench: { name: 'Workbench', capacity: defaultCapacity, variants: [ 'wood', 'stone', 'metal' ] },
+    wardrobe : { name: 'Wardrobe', capacity: capacity.medium },
+    workbench: { name: 'Workbench', capacity: capacity.medium, variants: [ 'wood', 'stone', 'metal' ] },
 };
 
 Object.keys(furnishing).forEach((key) => {

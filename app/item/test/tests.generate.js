@@ -24,7 +24,7 @@ import {
     furnishingQuantityRanges,
     furnitureQuantity,
     requiredRoomFurniture,
-} from '../types/furnishing.js';
+} from '../furnishing.js';
 
 /**
  * @param {import('../../unit/state.js').Utility} utility

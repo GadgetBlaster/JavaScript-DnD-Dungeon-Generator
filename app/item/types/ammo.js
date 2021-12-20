@@ -1,19 +1,20 @@
 // @ts-check
 
-import rarity from '../../attribute/rarity.js';
-import type from '../type.js';
+/** @typedef {import('../item.js').ItemConfig} ItemConfig */
 
+/** @type {Omit<ItemConfig, "name">} */
 const defaults = {
-    quantity: 50,
-    rarity  : rarity.common,
-    type    : type.ammo,
+    maxCount: 50,
+    rarity  : 'common',
+    type    : 'ammo',
 };
 
-const config = [
-    { name: 'Arrow' },
-    { name: 'Blowgun needle' },
-    { name: 'Crossbow bolt' },
-    { name: 'Sling bullet' },
+const ammunition = [
+    'Arrow',
+    'Blowgun needle',
+    'Crossbow bolt',
+    'Sling bullet',
 ];
 
-export default config.map((item) => ({ ...defaults, ...item }));
+/** @type {ItemConfig[]} */
+export default ammunition.map((name) => ({ ...defaults, name }));

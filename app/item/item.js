@@ -6,14 +6,30 @@ import { rollArrayItem, roll } from '../utility/roll.js';
 import { strong, em } from '../ui/typography.js';
 import condition, { probability as conditionProbability } from '../attribute/condition.js';
 import quantity from '../attribute/quantity.js';
-import rarity, { list as rarities, probability as rarityProbability } from '../attribute/rarity.js';
+import { probability as rarityProbability } from '../attribute/rarity.js';
 import set from './set.js';
-import size from '../attribute/size.js';
-import type, { list as itemTypes } from './type.js';
+// import size from '../attribute/size.js';
+// import type from './type.js';
 
 // -- Types --------------------------------------------------------------------
 
-/** @typedef {import('../knobs.js').Config} Config */
+// /** @typedef {import('../knobs.js').Config} Config */
+/** @typedef {import('../attribute/rarity.js').Rarity} Rarity */
+/** @typedef {import('../attribute/size.js').Size} Size */
+
+/** @typedef {typeof itemTypes[number]} ItemType */
+
+/**
+ * @typedef {object} ItemConfig
+ *
+ * @prop {string} name
+ * @prop {Rarity} [rarity]
+ * @prop {Size} [size]
+ * @prop {ItemType} [type]
+ * @prop {number} [maxCount]
+ * @prop {number} [capacity] - Max number of small items found inside
+ * @prop {string[]} [variants] - Array of variations
+ */
 
 /**
  * @TODO duplicate typedef. Consolidate and standardize
@@ -22,96 +38,118 @@ import type, { list as itemTypes } from './type.js';
  *
  * @prop {string} name
  * @prop {string} label
- * @prop {string} type
- * @prop {string} rarity
+ * @prop {Rarity} rarity
+ * @prop {Size} size
+ * @prop {ItemType} type
  * @prop {number} count
- * @prop {number} quantity - Max number of item found // TODO rename to `maxCount`
  * @prop {number} [capacity] - Max number of small items found inside
  * @prop {string[]} [variants] - Array of variations
- */
+*/
 
 // -- Config -------------------------------------------------------------------
 
+const itemTypes = Object.freeze(/** @type {const} */ ([
+    'ammo',
+    'armor',
+    'chancery',
+    'clothing',
+    'coin',
+    'container',
+    'food',
+    'furnishing',
+    'kitchen',
+    'liquid',
+    'miscellaneous',
+    'mysterious',
+    'mystic',
+    'potion',
+    'survival',
+    'tack',
+    'tool',
+    'treasure',
+    'trinket',
+    'weapon',
+]));
+
 /**
  * Item defaults.
+ *
+ * @type {Omit<ItemConfig, "name">}
  */
 const defaults = {
-    quantity: 1,
-    rarity  : rarity.average,
-    size    : size.small,
-    type    : type.miscellaneous,
+    maxCount: 1,
+    rarity  : 'average',
+    size    : 'small',
+    type    : 'miscellaneous',
 };
 
 /**
  * Item rarities that should be indicated in item descriptions.
+ *
+ * @type {Set<Rarity>}
  */
 const rarityIndicated = new Set([
-    rarity.rare,
-    rarity.exotic,
-    rarity.legendary,
+    'rare',
+    'exotic',
+    'legendary',
 ]);
 
 /**
  * Item types that should have their details hidden.
+ *
+ * @type {Set<ItemType>}
  */
 const detailsHidden = new Set([
-    type.coin,
-    type.treasure,
+    'coin',
+    'treasure',
 ]);
 
 /**
- * Items
+ * Item configs.
  *
- * @type {Item[]}
+ * @type {ItemConfig[]}
  */
 const items = set.map((item) => ({ ...defaults, ...item }));
 
 /**
- * Items grouped by rarity
- *
- * @type {{ [rarity: string]: Item[] }}
+ * Items grouped by rarity and items grouped by type and rarity.
  */
-const groupByRarity = makeGroup(rarities);
+const {
+    groupByRarity,
+    groupByType,
+} = (() => {
+    let byRarity = {};
+    let byType   = {};
 
-/**
- * Items grouped by rarity
- *
- * @type {{ [itemType: string]: Item[] }}
- */
-const groupByType = makeGroup(itemTypes);
+    items.forEach((item) => {
+        let { rarity, type } = item;
 
-Object.keys(groupByType).forEach((type) => {
-    // TODO
-    groupByType[type] = makeGroup(rarities);
-});
+        if (!byRarity[rarity]) {
+            byRarity[rarity] = [];
+        }
 
-items.forEach((item) => {
-    groupByRarity[item.rarity].push(item);
-    groupByType[item.type][item.rarity].push(item);
-});
+        if (!byType[type]) {
+            byType[type] = [];
+        }
+
+        if (!byType[type][rarity]) {
+            byType[type][rarity] = [];
+        }
+
+        byRarity[rarity].push(item);
+        byType[type][rarity].push(item);
+    });
+
+    return {
+        groupByRarity: /** @type {{ [key in Rarity]: ItemConfig[] }} */ (byRarity),
+        groupByType: /** @type {{ [key in ItemType]: { [key in Rarity]: ItemConfig[] }}} */ (byType),
+    };
+})();
 
 export {
     groupByRarity as testGroupByRarity,
     groupByType   as testGroupByType,
 };
-
-// -- Private Functions --------------------------------------------------------
-
-/**
- * Returns a group of items.
- *
- * @private
- *
- * @param {string[]} groups
- *
- * @returns {{ [group: string]: Item[] }}
- */
-function makeGroup(groups) {
-    return groups.reduce((obj, group) => {
-        obj[group] = [];
-        return obj;
-    }, {});
-}
 
 // -- Public Functions ---------------------------------------------------------
 
@@ -163,21 +201,23 @@ export const generateItem = (config) => {
 
     let randomItem;
 
+    // TODO break out into function, add early returns for undefined groups.
     if (itemType === random) {
-        randomItem = rollArrayItem(groupByRarity[itemRarity]);
+        randomItem = groupByRarity[itemRarity] && rollArrayItem(groupByRarity[itemRarity]);
     } else {
-        let itemsByTypeAndRarity = groupByType[itemType][itemRarity];
-        randomItem = itemsByTypeAndRarity.length && rollArrayItem(itemsByTypeAndRarity);
+        let itemsByTypeAndRarity = groupByType[itemType] && groupByType[itemType][itemRarity];
+        randomItem = itemsByTypeAndRarity && itemsByTypeAndRarity.length && rollArrayItem(itemsByTypeAndRarity);
     }
 
+    // TODO add type
     let item = randomItem || {
         name: 'Mysterious object',
-        type: type.mysterious,
+        type: 'mysterious',
     };
 
     if (detailsHidden.has(item.type)) {
         itemCondition = condition.average;
-        itemRarity    = rarity.average;
+        itemRarity    = 'average';
     }
 
     if (itemCondition === random) {
@@ -202,16 +242,18 @@ export const generateItem = (config) => {
 
     let noteText = notes.length ? ` (${em(notes.join(', '))})` : '';
 
-    let itemQuantity = 1;
+    let maxCount = 1;
 
     if (item.quantity > 1) {
-        itemQuantity = roll(1, item.quantity);
+        maxCount = roll(1, item.quantity);
 
-        if (itemQuantity > 1) {
-            if (item.type === type.coin) {
-                name = `${itemQuantity} ${name}${itemQuantity > 1 ? 's' : ''}`;
+        // TODO breakout into function
+        if (maxCount > 1) {
+            if (item.type === 'coin') {
+                // TODO pluralize()
+                name = `${maxCount} ${name}${maxCount > 1 ? 's' : ''}`;
             } else {
-                name += `, set of ${itemQuantity}`;
+                name += `, set of ${maxCount}`;
             }
         }
     }
@@ -224,7 +266,7 @@ export const generateItem = (config) => {
     return {
         label: name + noteText,
         name,
-        quantity: itemQuantity,
+        quantity: maxCount,
         rarity: itemRarity,
         size: item.size,
         type: item.type,

@@ -1,34 +1,37 @@
 // @ts-check
 
-import rarity from '../../attribute/rarity.js';
-import type from '../type.js';
-import size from '../../attribute/size.js';
+/** @typedef {import('../item.js').ItemConfig} ItemConfig */
 
-let { tiny } = size;
-
+/** @type {Omit<ItemConfig, "name">} */
 const defaults = {
-    rarity: rarity.uncommon,
-    type: type.chancery,
+    rarity: 'uncommon',
+    type  : 'chancery',
 };
 
-const config = [
-    { name: 'Abacus', rarity: rarity.rare },
-    { name: 'Book', rarity: rarity.common },
-    { name: 'Chalk', size: tiny },
-    { name: 'Hourglass', rarity: rarity.rare },
-    { name: 'Ink pen', size: tiny },
-    { name: 'Ink', size: tiny, variants: [ 'vial', 'bottle' ] },
-    { name: 'Journal', variants: [ 'blank', 'adventurer’s', 'noble person’s', 'hermit’s', 'wizard’s', 'merchant’s' ] },
-    { name: 'Letter opener', size: tiny },
-    { name: 'Paper', quantity: 100 },
-    { name: 'Paperweight', size: tiny },
-    { name: 'Parchment', quantity: 100 },
-    { name: 'Pencil', size: tiny },
-    { name: 'Scale, merchant’s', rarity: rarity.rare },
-    { name: 'Scroll', size: tiny, rarity: rarity.common },
-    { name: 'Sealing wax', size: tiny },
-    { name: 'Signet ring', size: tiny },
-    { name: 'Wax seal', size: tiny },
-];
+/** @type {{ [name: string]: Partial<ItemConfig>}} */
+const chanceryItems = {
+    'Abacus'           : { rarity: 'rare' },
+    'Book'             : { rarity: 'common' },
+    'Chalk'            : { size: 'tiny' },
+    'Hourglass'        : { rarity: 'rare' },
+    'Ink pen'          : { size: 'tiny' },
+    'Ink'              : { size: 'tiny', variants: [ 'vial', 'bottle' ] },
+    'Journal'          : { variants: [ 'blank', 'adventurer’s', 'noble person’s', 'hermit’s', 'wizard’s', 'merchant’s' ] },
+    'Letter opener'    : { size: 'tiny' },
+    'Paper'            : { maxCount: 100 },
+    'Paperweight'      : { size: 'tiny' },
+    'Parchment'        : { maxCount: 100 },
+    'Pencil'           : { size: 'tiny' },
+    'Scale, merchant’s': { rarity: 'rare' },
+    'Scroll'           : { size: 'tiny', rarity: 'common' },
+    'Sealing wax'      : { size: 'tiny' },
+    'Signet ring'      : { size: 'tiny' },
+    'Wax seal'         : { size: 'tiny' },
+};
 
-export default config.map((item) => ({ ...defaults, ...item }));
+/** @type {ItemConfig[]} */
+export default Object.entries(chanceryItems).map(([ name, config ]) => ({
+    name,
+    ...defaults,
+    ...config,
+}));

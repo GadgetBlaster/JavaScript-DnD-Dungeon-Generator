@@ -1,39 +1,42 @@
 // @ts-check
 
-import rarity from '../../attribute/rarity.js';
-import size from '../../attribute/size.js';
+/** @typedef {import('../item.js').ItemConfig} ItemConfig */
 
-let { abundant, common, uncommon, rare, exotic } = rarity;
-let { tiny, medium, large } = size;
-
+/** @type {Omit<ItemConfig, "name">} */
 const defaults = {
-    rarity: common,
+    rarity: 'common',
 };
 
-const config = [
-    { name: 'Bell' },
-    { name: 'Bone', variants: [ 'finger', 'foot', 'vertebrae' ], size: tiny, quantity: 10 },
-    { name: 'Bone', variants: [ 'rib', 'pelvis', 'femur', 'leg', 'arm' ] },
-    { name: 'Bones, pile', size: medium },
-    { name: 'Candle', rarity: abundant, quantity: 5 },
-    { name: 'Canvas', variants: [ '1 foot', '5 feet', '10 feet', '20 foot' ] },
-    { name: 'Cloth, bolt', variants: [ 'common', 'fine' ], quantity: 10 },
-    { name: 'Cotton', variants: [ '1 foot', '5 feet', '10 feet', '20 foot' ] },
-    { name: 'Hide', variants: [ 'wolf', 'bear', 'deer', 'rabbit', 'raccoon', 'beaver' ] },
-    { name: 'Incense', rarity: rare },
-    { name: 'Instrument', rarity: exotic, variants: [ 'Bagpipes', 'Drum', 'Dulcimer', 'Flute', 'Lute', 'Lyre', 'Horn', 'Pan flute', 'Shawm', 'Viol' ] },
-    { name: 'Iron, bar', rarity: uncommon },
-    { name: 'Linen', variants: [ '1 foot', '5 feet', '10 feet', '20 foot' ] },
-    { name: 'Manacles' },
-    { name: 'Perfume', variants: [ 'vial', 'bottle' ] },
-    { name: 'Rock', size: large },
-    { name: 'Rock', size: medium },
-    { name: 'Silk', rarity: rare, variants: [ '1 foot', '5 feet', '10 feet', '20 foot' ] },
-    { name: 'Skull' },
-    { name: 'Stone', size: tiny },
-    { name: 'String', variants: [ '1 foot', '5 feet', '10 feet', '20 foot' ] },
-    { name: 'Torch' },
-    { name: 'Totem' },
-];
+/** @type {{ [name: string]: Partial<ItemConfig>}} */
+const miscellaneousItems = {
+    'Bell'       : null,
+    'Bone'       : { variants: [ 'rib', 'pelvis', 'femur', 'leg', 'arm' ] },
+    'Bones'      : { maxCount: 10, size: 'tiny', variants: [ 'finger', 'foot', 'vertebrae' ]  },
+    'Bones, pile': { size: 'medium' },
+    'Candle'     : { rarity: 'abundant', maxCount: 5 },
+    'Canvas'     : { variants: [ '1 foot', '5 feet', '10 feet', '20 foot' ] },
+    'Cloth, bolt': { maxCount: 10, variants: [ 'common', 'fine' ] },
+    'Cotton'     : { variants: [ '1 foot', '5 feet', '10 feet', '20 foot' ] },
+    'Hide'       : { variants: [ 'wolf', 'bear', 'deer', 'rabbit', 'raccoon', 'beaver' ] },
+    'Incense'    : { rarity: 'rare' },
+    'Instrument' : { rarity: 'exotic', variants: [ 'Bagpipes', 'Drum', 'Dulcimer', 'Flute', 'Lute', 'Lyre', 'Horn', 'Pan flute', 'Shawm', 'Viol' ] },
+    'Iron, bar'  : { rarity: 'uncommon' },
+    'Linen'      : { variants: [ '1 foot', '5 feet', '10 feet', '20 foot' ] },
+    'Manacles'   : null,
+    'Perfume'    : { variants: [ 'vial', 'bottle' ] },
+    'Boulder'    : { size: 'large' },
+    'Rock'       : { size: 'medium' },
+    'Silk'       : { rarity: 'rare', variants: [ '1 foot', '5 feet', '10 feet', '20 foot' ] },
+    'Skull'      : null,
+    'Stone'      : { size: 'tiny' },
+    'String'     : { variants: [ '1 foot', '5 feet', '10 feet', '20 foot' ] },
+    'Torch'      : null,
+    'Totem'      : null,
+};
 
-export default config.map((item) => ({ ...defaults, ...item }));
+/** @type {ItemConfig[]} */
+export default Object.entries(miscellaneousItems).map(([ name, config ]) => ({
+    name,
+    ...defaults,
+    ...config,
+}));

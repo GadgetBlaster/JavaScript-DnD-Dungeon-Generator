@@ -1,31 +1,34 @@
 // @ts-check
 
-import rarity from '../../attribute/rarity.js';
-import type from '../type.js';
-import size from '../../attribute/size.js';
+/** @typedef {import('../item.js').ItemConfig} ItemConfig */
 
-let { uncommon, rare } = rarity;
-
+/** @type {Omit<ItemConfig, "name">} */
 const defaults = {
-    rarity: uncommon,
-    type  : type.armor,
-    size  : size.medium,
+    rarity: 'uncommon',
+    type  : 'armor',
+    size  : 'medium',
 };
 
-const config = [
-    { name: 'Breastplate', rarity: rare },
-    { name: 'Chain mail', rarity: rare },
-    { name: 'Chain shirt' },
-    { name: 'Half plate armor', rarity: rare },
-    { name: 'Hide armor' },
-    { name: 'Leather armor' },
-    { name: 'Padded armor' },
-    { name: 'Plate armor', rarity: rare },
-    { name: 'Ring mail armor' },
-    { name: 'Scale mail armor' },
-    { name: 'Shield' },
-    { name: 'Splint armor', rarity: rare },
-    { name: 'Studded leather armor' },
-];
+/** @type {{ [name: string]: Partial<ItemConfig>}} */
+const armor = {
+    'Breastplate'          : { rarity: 'rare' },
+    'Chain mail'           : { rarity: 'rare' },
+    'Chain shirt'          : null,
+    'Half plate armor'     : { rarity: 'rare' },
+    'Hide armor'           : null,
+    'Leather armor'        : null,
+    'Padded armor'         : null,
+    'Plate armor'          : { rarity: 'rare' },
+    'Ring mail armor'      : null,
+    'Scale mail armor'     : null,
+    'Shield'               : null,
+    'Splint armor'         : { rarity: 'rare' },
+    'Studded leather armor': null,
+};
 
-export default config.map((item) => ({ ...defaults, ...item }));
+/** @type {ItemConfig[]} */
+export default Object.entries(armor).map(([ name, config ]) => ({
+    name,
+    ...defaults,
+    ...config,
+}));

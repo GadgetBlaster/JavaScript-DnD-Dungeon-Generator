@@ -1,17 +1,16 @@
 // @ts-check
 
-import rarity from '../../attribute/rarity.js';
-import type from '../type.js';
+/** @typedef {import('../item.js').ItemConfig} ItemConfig */
 
-let { legendary } = rarity;
-
+/** @type {Omit<ItemConfig, "name">} */
 const defaults = {
-    rarity: legendary,
-    type  : type.treasure,
+    rarity: 'legendary',
+    type  : 'treasure',
 };
 
-const config = [
-    { name: 'Treasure' }, // TODO more treasure types
+const treasure = [
+    'Treasure', // TODO more treasure types
 ];
 
-export default config.map((item) => ({ ...defaults, ...item }));
+/** @type {ItemConfig[]} */
+export default treasure.map((name) => ({ ...defaults, name }));

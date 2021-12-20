@@ -4,7 +4,7 @@
 
 import { knobs } from '../knobs.js';
 import { probability as conditionProbability } from '../attribute/condition.js';
-import { probability as furnitureQuantityProbability } from '../item/types/furnishing.js';
+import { probability as furnitureQuantityProbability } from '../item/furnishing.js';
 import { probability as quantityProbability } from '../attribute/quantity.js';
 import { probability as rarityProbability } from '../attribute/rarity.js';
 import { random } from '../utility/random.js';

@@ -1,47 +1,46 @@
 // @ts-check
 
-import type from '../type.js';
-import rarity from '../../attribute/rarity.js';
-import size from '../../attribute/size.js';
+/** @typedef {import('../item.js').ItemConfig} ItemConfig */
 
-let { tiny } = size;
-let { uncommon, rare } = rarity;
-
+/** @type {Omit<ItemConfig, "name">} */
 const defaults = {
-    type: type.food,
+    type: 'food',
 };
 
-const config = [
-    { name: 'Bread, loaf', quantity: 3 },
-    { name: 'Butter', variants: [ 'bucket', 'bowl', 'block' ] },
-    { name: 'Cheese, round', quantity: 4 },
-    { name: 'Cheese, round', quantity: 4 },
-    { name: 'Cheese, wedge', quantity: 4 },
-    { name: 'Cinnamon, pouch', size: tiny, rarity: rare },
-    { name: 'Cloves, pouch', size: tiny, rarity: rare },
-    { name: 'Egg', size: tiny, quantity: 24 },
-    { name: 'Figs', size: tiny },
-    { name: 'Fish', variants: [ 'salmon', 'trout', 'carp', 'herring' ] },
-    { name: 'Flour', variants: [ 'pouch', 'bag', 'sack' ]  },
-    { name: 'Ginger, pouch', size: tiny, rarity: rare },
-    { name: 'Grain', quantity: 10 },
-    { name: 'Honey', rarity: uncommon, quantity: 10 },
-    { name: 'Lentils', variants: [ 'pouch', 'bag', 'sack' ] },
-    { name: 'Meat', variants: [ 'chicken', 'dog', 'horse', 'pig', 'deer', 'sheep', 'goat', 'duck' ] },
-    { name: 'Nuts', size: tiny, quantity: 50 },
-    { name: 'Pepper, pouch', size: tiny, rarity: rare },
-    { name: 'Raisins', size: tiny, quantity: 50 },
-    { name: 'Rations, dried', quantity: 50 },
-    { name: 'Rice', variants: [ 'pouch', 'bag', 'sack' ] },
-    { name: 'Saffron, pouch', size: tiny, rarity: rare },
-    { name: 'Salt, pouch', size: tiny, rarity: rare },
-    { name: 'Soup', variants: [ 'meat', 'vegetables', 'potato' ] },
-    { name: 'Spice, pouch', size: tiny, rarity: rare, variants: [ 'exotic', 'rare', 'uncommon' ] },
-    { name: 'Sugar, pouch', size: tiny, rarity: rare },
-    { name: 'Vegetables', quantity: 20 },
-    { name: 'Wheat', variants: [ 'pouch', 'bag', 'sack' ]  },
-];
+/** @type {{ [name: string]: Partial<ItemConfig>}} */
+const food = {
+    'Bread, loaf'    : { maxCount: 3 },
+    'Butter'         : { variants: [ 'bucket', 'bowl', 'block' ] },
+    'Cheese, round'  : { maxCount: 4 },
+    'Cheese, wedge'  : { maxCount: 4 },
+    'Cinnamon, pouch': { size: 'tiny', rarity: 'rare' },
+    'Cloves, pouch'  : { size: 'tiny', rarity: 'rare' },
+    'Egg'            : { size: 'tiny', maxCount: 24 },
+    'Figs'           : { size: 'tiny' },
+    'Fish'           : { variants: [ 'salmon', 'trout', 'carp', 'herring' ] },
+    'Flour'          : { variants: [ 'pouch', 'bag', 'sack' ]  },
+    'Ginger, pouch'  : { size: 'tiny', rarity: 'rare' },
+    'Grain'          : { maxCount: 10 },
+    'Honey'          : { rarity: 'uncommon', maxCount: 10 },
+    'Lentils'        : { variants: [ 'pouch', 'bag', 'sack' ] },
+    'Meat'           : { variants: [ 'chicken', 'dog', 'horse', 'pig', 'deer', 'sheep', 'goat', 'duck' ] },
+    'Nuts'           : { size: 'tiny', maxCount: 50 },
+    'Pepper, pouch'  : { size: 'tiny', rarity: 'rare' },
+    'Raisins'        : { size: 'tiny', maxCount: 50 },
+    'Rations, dried' : { maxCount: 50 },
+    'Rice'           : { variants: [ 'pouch', 'bag', 'sack' ] },
+    'Saffron, pouch' : { size: 'tiny', rarity: 'rare' },
+    'Salt, pouch'    : { size: 'tiny', rarity: 'rare' },
+    'Soup'           : { variants: [ 'meat', 'vegetables', 'potato' ] },
+    'Spice, pouch'   : { size: 'tiny', rarity: 'rare', variants: [ 'exotic', 'rare', 'uncommon' ] },
+    'Sugar, pouch'   : { size: 'tiny', rarity: 'rare' },
+    'Vegetables'     : { maxCount: 20 },
+    'Wheat'          : { variants: [ 'pouch', 'bag', 'sack' ]  },
+};
 
-export default config.map((item) => ({ ...defaults, ...item }));
-
-
+/** @type {ItemConfig[]} */
+export default Object.entries(food).map(([ name, config ]) => ({
+    name,
+    ...defaults,
+    ...config,
+}));

@@ -1,83 +1,82 @@
 // @ts-check
 
-import rarity from '../../attribute/rarity.js';
-import size from '../../attribute/size.js';
-import type from '../type.js';
-
-const {
-    tiny,
-    small,
-    medium,
-    large,
-} = size;
-
-const {
-    abundant,
-    common,
-    uncommon,
-    rare,
-} = rarity;
+/** @typedef {import('../item.js').ItemConfig} ItemConfig */
+/** @typedef {import('../../attribute/size.js').Size} Size */
 
 /**
- * Number of small items that fit into a container or furnishing
+ * Item size lookup defining the number of small items which can fit into a
+ * container or furnishing. 1 is equal to a single small item.
+ *
+ * @type {{ [key in Size]?: number }}
  */
 export const capacity = {
-    [tiny]  : 0.5,
-    [small] : 1,
-    [medium]: 5,
-    [large] : 10,
+    tiny  : 0.5,
+    small : 1,
+    medium: 5,
+    large : 10,
 };
 
+/**
+ * Item size lookup defining the amount of space required. 1 is equal to a
+ * single small item.
+ *
+ * @type {{ [key in Size]?: number }}
+ */
 export const itemSizeSpace = {
-    [tiny]  : 0.5,
-    [small] : 1,
+    tiny  : 0.5,
+    small : 1,
 };
 
+// TODO figure out what exactly this does.
 export const maxItemQuantitySmall = 10;
 
+/** @type {Omit<ItemConfig, "name">} */
 const defaults = {
-    rarity: common,
-    size  : small,
-    type  : type.container,
+    rarity: 'common',
+    size  : 'small',
+    type  : 'container',
 };
 
-const config = [
-    { name: 'Backpack', size: medium },
-    { name: 'Barrel, large', size: large },
-    { name: 'Barrel, medium', size: medium },
-    { name: 'Barrel, small' },
-    { name: 'Basket, large', size: medium },
-    { name: 'Basket, small', size: small },
-    { name: 'Belt pouch, large' },
-    { name: 'Belt pouch, small', size: tiny },
-    { name: 'Bottle, glass', size: tiny },
-    { name: 'Bowl', variants: [ 'wood', 'stone', 'glass' ] },
-    { name: 'Box, large', size: large, variants: [ 'wood', 'stone', 'metal' ] },
-    { name: 'Box, medium', size: medium, variants: [ 'wood', 'stone', 'metal' ] },
-    { name: 'Box, small', variants: [ 'wood', 'stone', 'metal' ] },
-    { name: 'Bucket' },
-    { name: 'Case, crossbow bolt' },
-    { name: 'Case, map or scroll' },
-    { name: 'Chest, large', size: large },
-    { name: 'Chest, medium', size: medium },
-    { name: 'Chest, small' },
-    { name: 'Component pouch', size: tiny, rarity: rare },
-    { name: 'Crate' },
-    { name: 'Flask', size: tiny },
-    { name: 'Glass case', size: medium },
-    { name: 'Jug' },
-    { name: 'Pitcher' },
-    { name: 'Pouch', size: tiny },
-    { name: 'Quiver' },
-    { name: 'Sack' },
-    { name: 'Tankard', size: tiny, rarity: abundant },
-    { name: 'Vial', size: tiny, rarity: uncommon },
-    { name: 'Wagon', size: large },
-    { name: 'Waterskin' },
-];
+/** @type {{ [name: string]: Partial<ItemConfig>}} */
+const containers = {
+    'Backpack'           : { size: 'medium' },
+    'Barrel, large'      : { size: 'large' },
+    'Barrel, medium'     : { size: 'medium' },
+    'Barrel, small'      : null,
+    'Basket, large'      : { size: 'medium' },
+    'Basket, small'      : { size: 'small' },
+    'Belt pouch, large'  : null,
+    'Belt pouch, small'  : { size: 'tiny' },
+    'Bottle, glass'      : { size: 'tiny' },
+    'Bowl'               : { variants: [ 'wood', 'stone', 'glass' ] },
+    'Box, large'         : { size: 'large', variants: [ 'wood', 'stone', 'metal' ] },
+    'Box, medium'        : { size: 'medium', variants: [ 'wood', 'stone', 'metal' ] },
+    'Box, small'         : { variants: [ 'wood', 'stone', 'metal' ] },
+    'Bucket'             : null,
+    'Case, crossbow bolt': null,
+    'Case, map or scroll': null,
+    'Chest, large'       : { size: 'large' },
+    'Chest, medium'      : { size: 'medium' },
+    'Chest, small'       : null,
+    'Component pouch'    : { size: 'tiny', rarity: 'rare' },
+    'Crate'              : null,
+    'Flask'              : { size: 'tiny' },
+    'Glass case'         : { size: 'medium' },
+    'Jug'                : null,
+    'Pitcher'            : null,
+    'Pouch'              : { size: 'tiny' },
+    'Quiver'             : null,
+    'Sack'               : null,
+    'Tankard'            : { size: 'tiny', rarity: 'abundant' },
+    'Vial'               : { size: 'tiny', rarity: 'uncommon' },
+    'Wagon'              : { size: 'large' },
+    'Waterskin'          : null,
+};
 
-export default config.map((item) => ({
+/** @type {ItemConfig[]} */
+export default Object.entries(containers).map(([ name, config ]) => ({
+    name,
+    capacity: config && config.size ? capacity[config.size] : capacity.small,
     ...defaults,
-    ...item,
-    capacity: capacity[item.size] || capacity[defaults.size],
+    ...config,
 }));

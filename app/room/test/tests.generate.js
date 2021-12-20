@@ -4,7 +4,7 @@ import {
     generateRooms,
 } from '../generate.js';
 
-import { furnitureQuantity } from '../../item/types/furnishing.js';
+import { furnitureQuantity } from '../../item/furnishing.js';
 import { knobs } from '../../knobs.js';
 import condition from '../../attribute/condition.js';
 import itemType from '../../item/type.js';

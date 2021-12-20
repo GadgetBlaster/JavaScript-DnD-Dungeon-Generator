@@ -22,7 +22,7 @@ import {
 
 import { capitalize } from '../../utility/tools.js';
 import { cellFeet } from '../../dungeon/grid.js';
-import { furnitureQuantity } from '../../item/types/furnishing.js';
+import { furnitureQuantity } from '../../item/furnishing.js';
 import { knobs } from '../../knobs.js';
 import { random } from '../../utility/random.js';
 import condition from '../../attribute/condition.js';

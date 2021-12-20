@@ -9,7 +9,7 @@ import {
     applyRoomRandomization,
 } from '../settings.js';
 
-import { furnitureQuantity } from '../../item/types/furnishing.js';
+import { furnitureQuantity } from '../../item/furnishing.js';
 import { knobs } from '../../knobs.js';
 import { list as conditions } from '../../attribute/condition.js';
 import { list as rarities } from '../../attribute/rarity.js';

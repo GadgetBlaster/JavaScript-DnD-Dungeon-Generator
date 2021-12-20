@@ -47,7 +47,9 @@ import { generateRooms } from '../room/generate.js';
  * } Action
  */
 
-// -- TODO Organize ------------------------------------------------------------
+// -- TODO Refactor ------------------------------------------------------------
+// - Refactor so content generation and markup structure are separate operations
+// - Add unit tests.
 
 const roomsPerRow = 3;
 

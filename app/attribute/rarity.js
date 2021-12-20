@@ -4,62 +4,49 @@ import { createProbability } from '../utility/roll.js';
 
 // -- Types --------------------------------------------------------------------
 
-/**
- * @typedef {"abundant"
- *     | "common"
- *     | "average"
- *     | "uncommon"
- *     | "rare"
- *     | "exotic"
- *     | "legendary"
- * } Rarity
- */
+/** @typedef {typeof rarity[number]} Rarity */
 
 // -- Config -------------------------------------------------------------------
 
-const rarity = {
-    abundant : 'abundant',
-    common   : 'common',
-    average  : 'average',
-    uncommon : 'uncommon',
-    rare     : 'rare',
-    exotic   : 'exotic',
-    legendary: 'legendary',
-};
+const rarity = Object.freeze(/** @type {const} */ ([
+    'abundant',
+    'common',
+    'average',
+    'uncommon',
+    'rare',
+    'exotic',
+    'legendary',
+]));
 
-export default rarity;
+let rarityTmp = rarity.reduce((obj, rarity) => {
+    obj[rarity] = rarity;
+    return obj;
+}, {});
 
-export const list = Object.keys(rarity); // deprecated TODO remove
-export const rarities = Object.values(rarity);
+export default rarityTmp;
+
+// deprecated TODO remove
+export const list = rarity;
+export const rarities = rarity;
 
 /**
  * Indicate rarity
  *
- * @type {Set<string>}
+ * @type {Set<Rarity>}
  */
 export const indicateRarity = new Set([
-    rarity.exotic,
-    rarity.legendary,
-    rarity.rare,
-    rarity.uncommon,
+    'exotic',
+    'legendary',
+    'rare',
+    'uncommon',
 ]);
 
-let {
-    abundant,
-    common,
-    uncommon,
-    average,
-    rare,
-    exotic,
-    legendary,
-} = rarity;
-
 export const probability = createProbability([
-    [ 25,  abundant  ],
-    [ 45,  common    ],
-    [ 65,  average   ],
-    [ 80,  uncommon  ],
-    [ 93,  rare      ],
-    [ 99,  exotic    ],
-    [ 100, legendary ],
+    [ 25,  'abundant'  ],
+    [ 45,  'common'    ],
+    [ 65,  'average'   ],
+    [ 80,  'uncommon'  ],
+    [ 93,  'rare'      ],
+    [ 99,  'exotic'    ],
+    [ 100, 'legendary' ],
 ]);

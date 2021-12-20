@@ -1,24 +1,28 @@
 // @ts-check
 
-import rarity from '../../attribute/rarity.js';
-import type from '../type.js';
+/** @typedef {import('../item.js').ItemConfig} ItemConfig */
 
-let { uncommon } = rarity;
-
+/** @type {Omit<ItemConfig, "name">} */
 const defaults = {
-    rarity: uncommon,
-    type  : type.tack,
+    rarity: 'uncommon',
+    type  : 'tack',
 };
 
-const config = [
-    { name: 'Barding', variants: [ 'chain', 'plage', 'scabb' ] },
-    { name: 'Bit and bridle' },
-    { name: 'Carriage' },
-    { name: 'Cart' },
-    { name: 'Chariot' },
-    { name: 'Feed' },
-    { name: 'Saddle', variants: [ 'Exotic', 'Military', 'Pack', 'Riding' ] },
-    { name: 'Saddlebags' },
-];
+/** @type {{ [name: string]: Partial<ItemConfig>}} */
+const tack = {
+    'Barding'       : { variants: [ 'chain', 'plage', 'scabb' ] },
+    'Bit and bridle': null,
+    'Carriage'      : null,
+    'Cart'          : null,
+    'Chariot'       : null,
+    'Feed'          : null,
+    'Saddle'        : { variants: [ 'Exotic', 'Military', 'Pack', 'Riding' ] },
+    'Saddlebags'    : null,
+};
 
-export default config.map((item) => ({ ...defaults, ...item }));
+/** @type {ItemConfig[]} */
+export default Object.entries(tack).map(([ name, config ]) => ({
+    name,
+    ...defaults,
+    ...config,
+}));

@@ -1,9 +1,6 @@
 // @ts-check
 
-import rarity from '../../attribute/rarity.js';
-import type from '../type.js';
-
-let { common, uncommon, rare } = rarity;
+/** @typedef {import('../item.js').ItemConfig} ItemConfig */
 
 const variants = [
     'barrel',
@@ -18,29 +15,36 @@ const variants = [
     'waterskin',
 ];
 
+/** @type {Omit<ItemConfig, "name">} */
 const defaults = {
-    rarity  : uncommon,
-    type    : type.liquid,
+    rarity  : 'uncommon',
+    type    : 'liquid',
     variants: variants,
 };
 
-const config = [
-    { name: 'Acid' },
-    { name: 'Alchemist’s fire' },
-    { name: 'Ale' },
-    { name: 'Antitoxin' },
-    { name: 'Cider, apple' },
-    { name: 'Cider, hard' },
-    { name: 'Grog' },
-    { name: 'Holy water' },
-    { name: 'Oil, lamp' },
-    { name: 'Poison, basic' },
-    { name: 'Poison, deadly', rarity: rare },
-    { name: 'Water, clean', rarity: common },
-    { name: 'Water, dirty', rarity: common },
-    { name: 'Whisky' },
-    { name: 'Wine, common' },
-    { name: 'Wine, fine', rarity: rare },
-];
+/** @type {{ [name: string]: Partial<ItemConfig>}} */
+const liquids = {
+    'Acid'            : null,
+    'Alchemist’s fire': null,
+    'Ale'             : null,
+    'Antitoxin'       : null,
+    'Cider, apple'    : null,
+    'Cider, hard'     : null,
+    'Grog'            : null,
+    'Holy water'      : null,
+    'Oil, lamp'       : null,
+    'Poison, basic'   : null,
+    'Poison, deadly'  : { rarity: 'rare' },
+    'Water, clean'    : { rarity: 'common' },
+    'Water, dirty'    : { rarity: 'common' },
+    'Whisky'          : null,
+    'Wine, common'    : null,
+    'Wine, fine'      : { rarity: 'rare' },
+};
 
-export default config.map((item) => ({ ...defaults, ...item }));
+/** @type {ItemConfig[]} */
+export default Object.entries(liquids).map(([ name, config ]) => ({
+    name,
+    ...defaults,
+    ...config,
+}));

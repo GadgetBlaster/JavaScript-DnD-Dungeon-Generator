@@ -1,35 +1,41 @@
 // @ts-check
 
-import rarity from '../../attribute/rarity.js';
-import type from '../type.js';
+/** @typedef {import('../item.js').ItemConfig} ItemConfig */
 
+/** @type {Omit<ItemConfig, "name">} */
 const defaults = {
-    rarity: rarity.abundant,
-    type: type.clothing,
+    rarity: 'abundant',
+    type  : 'clothing',
 };
 
-const config = [
-    { name: 'Belt' },
-    { name: 'Boots', variants: [ 'riding', 'soft', 'combat' ] },
-    { name: 'Breaches' },
-    { name: 'Brooch' },
-    { name: 'Cap' },
-    { name: 'Cape', variants: [ 'cotton', 'canvas', 'fur', 'silk' ] },
-    { name: 'Cloak', variants: [ 'cotton', 'canvas', 'fur', 'silk' ] },
-    { name: 'Clothes, set', variants: [ 'common', 'costume', 'fine', 'traveler’s' ] },
-    { name: 'Gloves' },
-    { name: 'Gown' },
-    { name: 'Hat' },
-    { name: 'Hose' },
-    { name: 'Jacket', variants: [ 'leather', 'fur', 'silk' ] },
-    { name: 'Mittens' },
-    { name: 'Robes', variants: [ 'common', 'embroidered' ] },
-    { name: 'Sandals' },
-    { name: 'Sash' },
-    { name: 'Shoes' },
-    { name: 'Surcoat' },
-    { name: 'Tunic' },
-    { name: 'Vest', variants: [ 'leather', 'fur', 'silk' ]  },
-];
+/** @type {{ [name: string]: Partial<ItemConfig>}} */
+const clothing = {
+    'Belt'        : null,
+    'Boots'       : { variants: [ 'riding', 'soft', 'combat' ] },
+    'Breaches'    : null,
+    'Brooch'      : null,
+    'Cap'         : null,
+    'Cape'        : { variants: [ 'cotton', 'canvas', 'fur', 'silk' ] },
+    'Cloak'       : { variants: [ 'cotton', 'canvas', 'fur', 'silk' ] },
+    'Clothes, set': { variants: [ 'common', 'costume', 'fine', 'traveler’s' ] },
+    'Gloves'      : null,
+    'Gown'        : null,
+    'Hat'         : null,
+    'Hose'        : null,
+    'Jacket'      : { variants: [ 'leather', 'fur', 'silk' ] },
+    'Mittens'     : null,
+    'Robes'       : { variants: [ 'common', 'embroidered' ] },
+    'Sandals'     : null,
+    'Sash'        : null,
+    'Shoes'       : null,
+    'Surcoat'     : null,
+    'Tunic'       : null,
+    'Vest'        : { variants: [ 'leather', 'fur', 'silk' ]  },
+};
 
-export default config.map((item) => ({ ...defaults, ...item }));
+/** @type {ItemConfig[]} */
+export default Object.entries(clothing).map(([ name, config ]) => ({
+    name,
+    ...defaults,
+    ...config,
+}));

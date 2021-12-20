@@ -4,7 +4,7 @@ import { capitalize, indefiniteArticle, toWords } from '../utility/tools.js';
 import { cellFeet } from '../dungeon/grid.js';
 import { element } from '../utility/element.js';
 import { em, paragraph, strong, subtitle, title } from '../ui/typography.js';
-import { furnitureQuantity } from '../item/types/furnishing.js';
+import { furnitureQuantity } from '../item/furnishing.js';
 import { getEnvironmentDescription } from './environment.js';
 import { indicateRarity } from '../attribute/rarity.js';
 import { knobs } from '../knobs.js';

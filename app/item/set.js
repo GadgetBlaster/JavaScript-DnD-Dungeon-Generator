@@ -1,5 +1,4 @@
 // @ts-check
-// TODO Rename file to `sets.js`
 
 import ammo from './types/ammo.js';
 import armor from './types/armor.js';
@@ -12,7 +11,7 @@ import kitchen from './types/kitchen.js';
 import liquid from './types/liquid.js';
 import miscellaneous from './types/miscellaneous.js';
 import mysterious from './types/mysterious.js';
-import mythic from './types/mythic.js';
+import mystic from './types/mystic.js';
 import potion from './types/potion.js';
 import survival from './types/survival.js';
 import tack from './types/tack.js';
@@ -23,6 +22,9 @@ import weapon from './types/weapon.js';
 
 // -- Config -------------------------------------------------------------------
 
+/** @typedef {import('./item.js').ItemConfig} ItemConfig */
+
+/** @type {ItemConfig[]} */
 export default [
     ...ammo,
     ...armor,
@@ -35,7 +37,7 @@ export default [
     ...liquid,
     ...miscellaneous,
     ...mysterious,
-    ...mythic,
+    ...mystic,
     ...potion,
     ...survival,
     ...tack,

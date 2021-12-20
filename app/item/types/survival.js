@@ -1,33 +1,35 @@
 // @ts-check
 
-import rarity from '../../attribute/rarity.js';
-import size from '../../attribute/size.js';
-import type from '../type.js';
+/** @typedef {import('../item.js').ItemConfig} ItemConfig */
 
-let { large } = size;
-let { abundant, common, uncommon } = rarity;
-
+/** @type {Omit<ItemConfig, "name">} */
 const defaults = {
-    rarity: uncommon,
-    type  : type.survival,
+    rarity: 'uncommon',
+    type  : 'survival',
 };
 
-const config = [
-    { name: 'Bedroll', rarity: common },
-    { name: 'Blanket', rarity: common },
-    { name: 'Climber’s kit' },
-    { name: 'Crampons' },
-    { name: 'Firewood', rarity: abundant },
-    { name: 'Fishhook' },
-    { name: 'Fishing net, large', size: large },
-    { name: 'Fishing net', variants: [ 'small', 'medium' ] },
-    { name: 'Fishing tackle' },
-    { name: 'Flint and steel' },
-    { name: 'Hunting trap' },
-    { name: 'Piton' },
-    { name: 'Signal whistle' },
-    { name: 'Tent', variants: [ 'one-person', 'two-person', 'pavilion' ] },
-    { name: 'Tinderbox' },
-];
+/** @type {{ [name: string]: Partial<ItemConfig>}} */
+const survivalEquipment = {
+    'Bedroll'           : { rarity: 'common' },
+    'Blanket'           : { rarity: 'common' },
+    'Climber’s kit'     : null,
+    'Crampons'          : null,
+    'Firewood'          : { rarity: 'abundant' },
+    'Fishhook'          : null,
+    'Fishing net, large': { size: 'large' },
+    'Fishing net'       : { variants: [ 'small', 'medium' ] },
+    'Fishing tackle'    : null,
+    'Flint and steel'   : null,
+    'Hunting trap'      : null,
+    'Piton'             : null,
+    'Signal whistle'    : null,
+    'Tent'              : { variants: [ 'one-person', 'two-person', 'pavilion' ] },
+    'Tinderbox'         : null,
+};
 
-export default config.map((item) => ({ ...defaults, ...item }));
+/** @type {ItemConfig[]} */
+export default Object.entries(survivalEquipment).map(([ name, config ]) => ({
+    name,
+    ...defaults,
+    ...config,
+}));

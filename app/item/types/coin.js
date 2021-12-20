@@ -1,27 +1,26 @@
 // @ts-check
 
-import rarity from '../../attribute/rarity.js';
-import type from '../type.js';
+/** @typedef {import('../item.js').ItemConfig} ItemConfig */
 
-let {
-    common,
-    exotic,
-    rare,
-    uncommon,
-} = rarity;
-
+/** @type {Omit<ItemConfig, "name">} */
 const defaults = {
-    quantity: 100,
-    type    : type.coin,
-    rarity  : uncommon,
+    maxCount: 100,
+    type    : 'coin',
+    rarity  : 'uncommon',
 };
 
-const config = [
-    { name: 'Copper piece', rarity: common },
-    { name: 'Silver piece' },
-    { name: 'Electrum piece', rarity: exotic },
-    { name: 'Gold piece', rarity: rare },
-    { name: 'Platinum piece', rarity: exotic },
-];
+/** @type {{ [name: string]: Partial<ItemConfig>}} */
+const coins = {
+    'Copper piece'  : { rarity: 'common' },
+    'Silver piece'  : null,
+    'Electrum piece': { rarity: 'exotic' },
+    'Gold piece'    : { rarity: 'rare' },
+    'Platinum piece': { rarity: 'exotic' },
+};
 
-export default config.map((item) => ({ ...defaults, ...item }));
+/** @type {ItemConfig[]} */
+export default Object.entries(coins).map(([ name, config ]) => ({
+    name,
+    ...defaults,
+    ...config,
+}));
