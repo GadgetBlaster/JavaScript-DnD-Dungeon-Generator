@@ -322,7 +322,7 @@ export function generateItems(config) {
 
     if (itemQuantity !== quantity.one && itemRarity !== random) {
         let rarityDescription = getRarityDescription(itemRarity);
-        rarityDescription && descriptions.push(rarityDescription)
+        rarityDescription && descriptions.push(rarityDescription);
     }
 
     let description = descriptions.length && paragraph(descriptions.map((desc) => desc).join(' | '));

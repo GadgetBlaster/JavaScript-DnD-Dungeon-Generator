@@ -1,22 +1,23 @@
 // @ts-check
 
-import condition from '../attribute/condition.js';
-import rarity from '../attribute/rarity.js';
-
 // -- Types --------------------------------------------------------------------
 
 /** @typedef {import('./item.js').Item} Item */
+/** @typedef {import('../attribute/rarity').Rarity} Rarity */
+/** @typedef {import('../attribute/condition').Condition} Condition */
 
 // -- Config -------------------------------------------------------------------
 
 /**
  * Rarities that should be indicated for a group of items.
+ *
+ * @type {Set<Rarity>}
  */
 const indicateRarity = new Set([
-    rarity.uncommon,
-    rarity.rare,
-    rarity.exotic,
-    rarity.legendary,
+    'uncommon',
+    'rare',
+    'exotic',
+    'legendary',
 ]);
 
 // -- Public Functions ---------------------------------------------------------
@@ -24,13 +25,13 @@ const indicateRarity = new Set([
 /**
  * Get condition description for a group of items.
  *
- * @param {string} itemCondition
+ * @param {Condition} condition
  *
  * @returns {string|false}
  */
- export function getConditionDescription(itemCondition) {
-    let showCondition = itemCondition !== condition.average;
-    return showCondition && `Item Condition: ${itemCondition}`;
+ export function getConditionDescription(condition) {
+    let showCondition = condition !== 'average';
+    return showCondition && `Item Condition: ${condition}`;
 }
 
 /**
@@ -49,11 +50,11 @@ export function getItemDescription(item) {
 /**
  * Get rarity description for a group of items.
  *
- * @param {string} itemRarity
+ * @param {Rarity} rarity
  *
  * @returns {string|false}
  */
-export function getRarityDescription(itemRarity) {
-    let showRarity = indicateRarity.has(itemRarity);
-    return showRarity && `Item Rarity: ${itemRarity}`;
+export function getRarityDescription(rarity) {
+    let showRarity = indicateRarity.has(rarity);
+    return showRarity && `Item Rarity: ${rarity}`;
 }
