@@ -17,10 +17,6 @@ import {
 } from '../generate.js';
 
 import { knobs } from '../../knobs.js';
-import condition from '../../attribute/condition.js';
-import quantity from '../../attribute/quantity.js';
-import rarity from '../../attribute/rarity.js';
-import size from '../../attribute/size.js';
 import trapList from '../../room/trap.js';
 
 /**
@@ -111,12 +107,12 @@ export default ({ assert, describe, it }) => {
             [knobs.dungeonConnections]: 0,
             [knobs.dungeonMaps]       : 0,
             [knobs.dungeonTraps]      : 0,
-            [knobs.itemCondition]     : condition.average,
-            [knobs.itemQuantity]      : quantity.zero,
+            [knobs.itemCondition]     : 'average',
+            [knobs.itemQuantity]      : 'zero',
             [knobs.itemRarity]        : 'average',
             [knobs.itemType]          : 'miscellaneous',
-            [knobs.roomCondition]     : condition.average,
-            [knobs.roomSize]          : size.medium,
+            [knobs.roomCondition]     : 'average',
+            [knobs.roomSize]          : 'medium',
             [knobs.roomType]          : 'room',
         };
 

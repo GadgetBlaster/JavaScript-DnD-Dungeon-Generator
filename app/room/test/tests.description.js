@@ -26,7 +26,7 @@ import { furnitureQuantity } from '../../item/furnishing.js';
 import { indicateRarity, rarities } from '../../attribute/rarity.js';
 import { knobs } from '../../knobs.js';
 import { quantities } from '../../attribute/quantity.js';
-import { list as conditions } from '../../attribute/condition.js';
+import { conditions } from '../../attribute/condition.js';
 import doorType, { lockable, appendDoorway, outside } from '../door.js';
 
 /**

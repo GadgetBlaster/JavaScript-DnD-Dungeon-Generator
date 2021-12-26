@@ -4,45 +4,24 @@ import { createProbability } from '../utility/roll.js';
 
 // -- Types --------------------------------------------------------------------
 
-/**
- * @typedef {"decaying"
- *     | "busted"
- *     | "poor"
- *     | "average"
- *     | "good"
- *     | "exquisite"
- * } Condition
- */
+/** @typedef {typeof conditions[number]} Condition */
 
 // -- Config -------------------------------------------------------------------
 
-const condition = {
-    decaying : 'decaying',
-    busted   : 'busted',
-    poor     : 'poor',
-    average  : 'average',
-    good     : 'good',
-    exquisite: 'exquisite',
-};
-
-export default condition;
-
-export const list = Object.keys(condition);
-
-let {
-    decaying,
-    busted,
-    poor,
-    average,
-    good,
-    exquisite,
-} = condition;
+export const conditions = Object.freeze(/** @type {const} */ ([
+    'decaying',
+    'busted',
+    'poor',
+    'average',
+    'good',
+    'exquisite',
+]));
 
 export const probability = createProbability([
-    [ 50,  average   ],
-    [ 60,  good      ],
-    [ 75,  poor      ],
-    [ 85,  busted    ],
-    [ 95,  decaying  ],
-    [ 100, exquisite ],
+    [ 50,  'average'   ],
+    [ 60,  'good'      ],
+    [ 75,  'poor'      ],
+    [ 85,  'busted'    ],
+    [ 95,  'decaying'  ],
+    [ 100, 'exquisite' ],
 ]);

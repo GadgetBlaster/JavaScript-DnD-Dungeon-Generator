@@ -11,7 +11,7 @@ import {
 
 import { furnitureQuantity } from '../../item/furnishing.js';
 import { knobs } from '../../knobs.js';
-import { list as conditions } from '../../attribute/condition.js';
+import { conditions } from '../../attribute/condition.js';
 import { list as rarities } from '../../attribute/rarity.js';
 import { list as sizes } from '../../attribute/size.js';
 import { random } from '../../utility/random.js';
