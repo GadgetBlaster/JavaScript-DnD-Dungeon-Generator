@@ -4,11 +4,11 @@ import { createProbability } from '../utility/roll.js';
 
 // -- Types --------------------------------------------------------------------
 
-/** @typedef {typeof rarity[number]} Rarity */
+/** @typedef {typeof rarities[number]} Rarity */
 
 // -- Config -------------------------------------------------------------------
 
-const rarity = Object.freeze(/** @type {const} */ ([
+export const rarities = Object.freeze(/** @type {const} */ ([
     'abundant',
     'common',
     'average',
@@ -17,17 +17,6 @@ const rarity = Object.freeze(/** @type {const} */ ([
     'exotic',
     'legendary',
 ]));
-
-let rarityTmp = rarity.reduce((obj, rarity) => {
-    obj[rarity] = rarity;
-    return obj;
-}, {});
-
-export default rarityTmp;
-
-// deprecated TODO remove
-export const list = rarity;
-export const rarities = rarity;
 
 /**
  * Indicate rarity

@@ -9,13 +9,12 @@ import {
     applyRoomRandomization,
 } from '../settings.js';
 
+import { conditions } from '../../attribute/condition.js';
 import { furnitureQuantity } from '../../item/furnishing.js';
 import { knobs } from '../../knobs.js';
-import { conditions } from '../../attribute/condition.js';
-import { list as rarities } from '../../attribute/rarity.js';
 import { list as sizes } from '../../attribute/size.js';
-import { random } from '../../utility/random.js';
 import { quantities } from '../../attribute/quantity.js';
+import { rarities } from '../../attribute/rarity.js';
 import { roomTypes } from '../room.js';
 
 /**
@@ -34,7 +33,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given a room type of `random`', () => {
             it('should return a random room type', () => {
-                assert(roomTypes.includes(rollRoomType(random))).isTrue();
+                assert(roomTypes.includes(rollRoomType('random'))).isTrue();
             });
         });
     });
@@ -74,11 +73,11 @@ export default ({ assert, describe, it }) => {
 
                 assert(roomConfig).isObject();
 
-                assert([ ...conditions, random ].includes(roomConfig[knobs.itemCondition])).isTrue();
+                assert([ ...conditions, 'random' ].includes(roomConfig[knobs.itemCondition])).isTrue();
                 assert(conditions.includes(roomConfig[knobs.roomCondition])).isTrue();
                 assert(Object.keys(furnitureQuantity).includes(roomConfig[knobs.roomFurnishing])).isTrue();
                 assert(quantities.includes(roomConfig[knobs.itemQuantity])).isTrue();
-                assert([ ...rarities, random ].includes(roomConfig[knobs.itemRarity])).isTrue();
+                assert([ ...rarities, 'random' ].includes(roomConfig[knobs.itemRarity])).isTrue();
                 assert(roomTypes.includes(roomConfig[knobs.roomType])).isTrue();
                 assert(sizes.includes(roomConfig[knobs.roomSize])).isTrue();
             });

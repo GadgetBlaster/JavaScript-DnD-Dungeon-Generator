@@ -2,15 +2,14 @@
 // @ts-check
 // TODO move to ui/knobs.js and add unit tests
 
-import { furnitureQuantityList, probability as furnitureQuantityProbability } from './item/furnishing.js';
 import { conditions, probability as conditionProbability } from './attribute/condition.js';
+import { furnitureQuantityList, probability as furnitureQuantityProbability } from './item/furnishing.js';
 import { itemTypes } from './item/item.js';
-import { quantities, probability as quantityProbability } from './attribute/quantity.js';
-import { list as rarities, probability as rarityProbability } from './attribute/rarity.js';
-import { roomTypes } from './room/room.js';
 import { list as sizes } from './attribute/size.js';
 import { pages } from './ui/nav.js';
-import { random } from './utility/random.js';
+import { quantities, probability as quantityProbability } from './attribute/quantity.js';
+import { rarities, probability as rarityProbability } from './attribute/rarity.js';
+import { roomTypes } from './room/room.js';
 
 // -- Types --------------------------------------------------------------------
 
@@ -98,7 +97,7 @@ const descTraps             = 'Trap randomization frequency.';
 
 const getValues = (values) => {
     return [
-        random,
+        'random',
         ...values,
     ];
 };
