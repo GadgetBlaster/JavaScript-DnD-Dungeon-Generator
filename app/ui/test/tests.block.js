@@ -7,11 +7,6 @@ import {
     section,
 } from '../block.js';
 
-/**
- * Blocks
- *
- * @type {Object<string, function>}
- */
 const blocks = {
     article,
     div,

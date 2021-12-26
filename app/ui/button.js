@@ -1,20 +1,9 @@
 // @ts-check
 
 import { element } from '../utility/element.js';
+import { toss } from '../utility/tools.js';
 
 // -- Types --------------------------------------------------------------------
-
-/**
- * Button options
- *
- * @typedef {object} ButtonOptions
- *
- * @prop {boolean} [active]
- * @prop {string} [size]
- * @prop {string} [target]
- * @prop {string} [value]
- * @prop {string} [type]
- */
 
 /** @typedef {import('./action.js').Action} Action */
 
@@ -23,18 +12,9 @@ import { element } from '../utility/element.js';
 export const infoLabel = '?';
 
 /**
- * Button size
- */
-export const buttonSize = {
-    auto : 'auto',
-    large: 'large',
-    small: 'small',
-};
-
-/**
  * Valid button sizes
  */
-const validSizes = new Set(Object.values(buttonSize));
+const validSizes = new Set([ 'auto', 'large', 'small' ]);
 
 // -- Public Functions ---------------------------------------------------------
 
@@ -43,7 +23,13 @@ const validSizes = new Set(Object.values(buttonSize));
  *
  * @param {string} label
  * @param {Action} action
- * @param {ButtonOptions} [options]
+ * @param {{
+ *     active ?: boolean;
+ *     size   ?: "auto" | "large" | "small";
+ *     target ?: string;
+ *     type   ?: "button" | "submit";
+ *     value  ?: string;
+ * }} [options]
  *
  * @throws
  *
@@ -52,15 +38,15 @@ const validSizes = new Set(Object.values(buttonSize));
 export function button(label, action, options = {}) {
     let {
         active,
-        size = buttonSize.small,
+        size = 'small',
         target,
         type = 'button',
         value,
     } = options;
 
-    if (!validSizes.has(size)) {
-        throw new TypeError('Invalid button size');
-    }
+    !label                && toss('label is required by button()');
+    !action               && toss('action is required by button()');
+    !validSizes.has(size) && toss('Invalid button size');
 
     let dataAttrs = {
         action,

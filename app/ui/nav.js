@@ -1,6 +1,5 @@
 // @ts-check
 
-// import { actions } from './action.js';
 import { button } from './button.js';
 
 // -- Types --------------------------------------------------------------------

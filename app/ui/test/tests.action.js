@@ -9,7 +9,6 @@ import {
     attachClickDelegate,
     toggleAccordion,
     toggleVisibility,
-    // actions,
 } from '../action.js';
 
 /** @typedef {import('../action.js').Trigger} Trigger */

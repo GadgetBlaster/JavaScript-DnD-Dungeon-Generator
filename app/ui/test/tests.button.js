@@ -7,7 +7,7 @@ import { button, infoLabel } from '../button.js';
  */
 export default ({ assert, describe, it }) => {
     describe('button()', () => {
-        let buttonHTML = button('click me', 'blast-off');
+        let buttonHTML = button('click me', 'home');
 
         it('should return an html button element string', () => {
             assert(buttonHTML).isElementTag('button');
@@ -22,57 +22,65 @@ export default ({ assert, describe, it }) => {
         });
 
         it('should have a `data-action` attribute by default', () => {
-            assert(buttonHTML).stringIncludes('data-action="blast-off"');
+            assert(buttonHTML).stringIncludes('data-action="home"');
         });
 
         it('should include the label', () => {
             assert(buttonHTML).stringIncludes('click me');
         });
 
-        describe('given an `action`', () => {
-            it('should include the action attribute', () => {
-                assert(button('click me', 'magic-missile')).stringIncludes('data-action="magic-missile"');
+        describe('given no `label`', () => {
+            it('should throw', () => {
+                // @ts-expect-error
+                assert(() => button()).throws('label is required by button()');
+            });
+        });
+
+        describe('given no `action`', () => {
+            it('should throw', () => {
+                // @ts-expect-error
+                assert(() => button('click me')).throws('action is required by button()');
             });
         });
 
         describe('given a `label` that matches the `infoLabel`', () => {
             it('should contain a `data-info="true"` attribute', () => {
-                assert(button(infoLabel, ''))
+                assert(button(infoLabel, 'home'))
                     .stringIncludes('data-info="true"');
             });
         });
 
         describe('given a truthy `active` option', () => {
             it('should contain a `data-active="true"` attribute', () => {
-                assert(button('', '', { active: true }))
+                assert(button('Magic missile', 'toggle', { active: true }))
                     .stringIncludes('data-active="true"');
             });
         });
 
         describe('given an invalid `size` option', () => {
             it('should throw', () => {
-                assert(() => button('fred', 'back-flip', { size: 'invalid-size' }))
+                assert(() => button('Magic missile', 'toggle', { size: 'invalid-size' }))
                     .throws('Invalid button size');
             });
         });
 
         describe('given a `target` option', () => {
             it('should contain a `data-target` attribute with the target value', () => {
-                assert(button('', '', { target: 'blueberries' }))
+                assert(button('Magic missile', 'toggle', { target: 'blueberries' }))
                     .stringIncludes('data-target="blueberries"');
             });
         });
 
         describe('given a `value` option', () => {
             it('should contain a `data-value` attribute with the value', () => {
-                assert(button('', '', { value: 'honeybees' }))
+                assert(button('Magic missile', 'toggle', { value: 'honeybees' }))
                     .stringIncludes('data-value="honeybees"');
             });
         });
 
         describe('given a `type` option', () => {
             it('should contain a `type` attribute with the type', () => {
-                assert(button('', '', { type: 'submit' }))
+                assert(button('Magic missile', 'toggle', { type: 'submit' }))
                     .stringIncludes('type="submit"');
             });
         });

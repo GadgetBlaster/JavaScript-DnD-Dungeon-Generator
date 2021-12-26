@@ -1,6 +1,6 @@
 // @ts-check
 
-import { button, buttonSize, infoLabel } from './button.js';
+import { button, infoLabel } from './button.js';
 import { div, fieldset, section } from './block.js';
 import { paragraph, small } from './typography.js';
 import { select, input, slider, fieldLabel } from './field.js';
@@ -17,7 +17,7 @@ import { getKnobConfig, typeSelect, typeNumber, typeRange } from '../knobs.js';
 // -- Config -------------------------------------------------------------------
 
 const submitButton = button('Generate', 'generate', {
-    size: buttonSize.large,
+    size: 'large',
     type: 'submit',
 });
 
@@ -85,7 +85,7 @@ const renderFields = (fields) => fields.map((settings) => {
 
     let knob       = getKnob(settings);
     let descId     = desc && `info-${name}`;
-    let descButton = button(infoLabel, 'toggle', { target: descId, size: buttonSize.auto });
+    let descButton = button(infoLabel, 'toggle', { target: descId, size: 'auto' });
     let descText   = paragraph(small(desc), { hidden: true, 'data-id': descId }); // TODO style instead of `<small>`
     let knobLabel  = fieldLabel(label + descButton);
 
