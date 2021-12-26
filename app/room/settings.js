@@ -11,14 +11,16 @@ import { random } from '../utility/random.js';
 import { rollArrayItem, rollPercentile } from '../utility/roll.js';
 import { roomTypeSizes } from './dimensions.js';
 import quantity from '../attribute/quantity.js';
-import roomType, { list as roomTypes, probability as roomTypeProbability } from './room.js';
+import { roomTypes, probability as roomTypeProbability } from './room.js';
 
 // -- Types --------------------------------------------------------------------
 
-/** @typedef {import('./generate.js').Room} Room */
-/** @typedef {import('../utility/roll.js').Probability} Probability */
+/** @typedef {import('../attribute/size.js').Size} Size */
 /** @typedef {import('../knobs.js').DungeonConfig} DungeonConfig */
 /** @typedef {import('../knobs.js').RoomConfig} RoomConfig */
+/** @typedef {import('../utility/roll.js').Probability} Probability */
+/** @typedef {import('./generate.js').Room} Room */
+/** @typedef {import('./room.js').RoomType} RoomType */
 
 // -- Config -------------------------------------------------------------------
 
@@ -57,9 +59,9 @@ const roomRandomizations = {
  *
  * @private
  *
- * @param {string} type
+ * @param {RoomType} type
  *
- * @returns {string} size
+ * @returns {Size} size
  */
 const rollRoomSize = (type) => rollArrayItem(roomTypeSizes[type]);
 
@@ -68,9 +70,9 @@ const rollRoomSize = (type) => rollArrayItem(roomTypeSizes[type]);
  *
  * @private
  *
- * @param {string} type
+ * @param {RoomType | "random"} type
  *
- * @returns {string} roomType
+ * @returns {RoomType} roomType
  */
 function rollRoomType(type) {
     if (type === random) {
@@ -109,7 +111,7 @@ export {
 
 // -- Public Functions ---------------------------------------------------------
 
-// TODO consolidate with applyRoomRandomization
+// TODO consolidate with applyRoomRandomization?
 function applyRandomization(config, randomizations) {
     let settings = { ...config };
 
@@ -129,7 +131,7 @@ function applyRandomization(config, randomizations) {
         settings[knobs.roomSize] = rollRoomSize(settings[knobs.roomType]);
     }
 
-    if (settings[knobs.roomType] === roomType.hallway && settings[knobs.itemQuantity] === quantity.numerous) {
+    if (settings[knobs.roomType] === 'hallway' && settings[knobs.itemQuantity] === quantity.numerous) {
         settings[knobs.itemQuantity] = quantity.several;
     }
 

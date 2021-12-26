@@ -10,7 +10,6 @@ import {
 } from '../feature.js';
 
 import { knobs } from '../../knobs.js';
-import roomType from '../room.js';
 
 /**
  * @param {import('../../unit/state.js').Utility} utility
@@ -42,10 +41,10 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getFeatureDesc()', () => {
-        describe('given a room type of `roomType.hallway`', () => {
+        describe('given a room type of "hallway"', () => {
             it('should return an empty array', () => {
                 // TODO
-                assert(getRoomFeatures({ [knobs.roomType]: roomType.hallway })).equalsArray([]);
+                assert(getRoomFeatures({ [knobs.roomType]: 'hallway' })).equalsArray([]);
             });
         });
 

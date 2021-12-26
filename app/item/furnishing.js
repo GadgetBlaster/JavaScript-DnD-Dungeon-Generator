@@ -2,10 +2,10 @@
 
 import { capacity } from './types/container.js';
 import { rollArrayItem, createProbability } from '../utility/roll.js';
-import roomType from '../room/room.js';
 import size from '../attribute/size.js';
 
 /** @typedef {import('./item.js').ItemConfig} ItemConfig */
+/** @typedef {import('../room/room.js').RoomType} RoomType */
 
 /** @type {Omit<ItemConfig, "name">} */
 const defaults = {
@@ -15,6 +15,7 @@ const defaults = {
     type    : 'furnishing',
 };
 
+// TODO FurnishingType
 const furnishing = {
     alchemy  : { name: 'Alchemy equipment' },
     anvil    : { name: 'Anvil' },
@@ -99,49 +100,54 @@ let {
     workbench,
 } = furnishing;
 
+/**
+ * @type {{ [key in RoomType]: FurnishingType }}
+ */
 export const furnishingByRoomType = {
-    [roomType.armory]    : [ anvil, bench, cabinet, forge, lamp, rack, tableLg, shelf, torch, workbench ],
-    [roomType.atrium]    : [ bench, carpet, pillar ],
-    [roomType.ballroom]  : [ bench, carpet, chair, fireplace, lamp, tableLg, tableSm ],
-    [roomType.bathhouse] : [ bench, rack, shelf ],
-    [roomType.bedroom]   : [ bed, bench, bookcase, carpet, chair, desk, dresser, fireplace, lamp, mirror, tableSm, shelf, shrine, wardrobe ],
-    [roomType.chamber]   : [ bookcase, cabinet, carpet, chair, desk, fireplace, lamp, tableSm, shelf, torch ],
-    [roomType.dining]    : [ bench, cabinet, carpet, chair, cupboard, fireplace, lamp, tableLg, tableSm, spit, torch ],
-    [roomType.dormitory] : [ bed, carpet, bench, bookcase, chair, cupboard, desk, dresser, fireplace, pillar, rack, tableSm, shelf, torch ],
-    [roomType.greatHall] : [ bench, carpet, bookcase, fireplace, forge, lamp, pillar, rack, tableLg, throne, shrine, torch ],
-    [roomType.hallway]   : [ carpet, shelf, torch ],
-    [roomType.kitchen]   : [ firePit, fireplace, lamp, rack, tableLg, tableSm, shelf, spit, workbench ],
-    [roomType.laboratory]: [ alchemy, bench, bookcase, cabinet, carpet, chair, desk, fireplace, lamp, mirror, rack, tableSm, tableLg, shelf, torch, workbench ],
-    [roomType.library]   : [ bench, bookcase, cabinet, carpet, chair, desk, fireplace, lamp, tableLg, tableSm, shelf ],
-    [roomType.pantry]    : [ cabinet, cupboard, rack, shelf ],
-    [roomType.parlour]   : [ bench, bookcase, cabinet, carpet, chair, desk, tableSm ],
-    [roomType.room]      : [ carpet, firePit, tableSm, torch ],
-    [roomType.shrine]    : [ carpet, lamp, shrine, torch ],
-    [roomType.smithy]    : [ anvil, forge, workbench ],
-    [roomType.storage]   : [ cabinet, cupboard, rack, tableSm, shelf ],
-    [roomType.study]     : [ bookcase, cabinet, carpet, chair, desk, lamp, tableSm, shelf ],
-    [roomType.throne]    : [ bench, carpet, lamp, pillar, tableLg, throne, torch ],
-    [roomType.torture]   : [ fireplace, torch, workbench ],
-    [roomType.treasury]  : [ carpet, desk, lamp, mirror, rack, tableLg, tableSm ],
+    armory    : [ anvil, bench, cabinet, forge, lamp, rack, tableLg, shelf, torch, workbench ],
+    atrium    : [ bench, carpet, pillar ],
+    ballroom  : [ bench, carpet, chair, fireplace, lamp, tableLg, tableSm ],
+    bathhouse : [ bench, rack, shelf ],
+    bedroom   : [ bed, bench, bookcase, carpet, chair, desk, dresser, fireplace, lamp, mirror, tableSm, shelf, shrine, wardrobe ],
+    chamber   : [ bookcase, cabinet, carpet, chair, desk, fireplace, lamp, tableSm, shelf, torch ],
+    dining    : [ bench, cabinet, carpet, chair, cupboard, fireplace, lamp, tableLg, tableSm, spit, torch ],
+    dormitory : [ bed, carpet, bench, bookcase, chair, cupboard, desk, dresser, fireplace, pillar, rack, tableSm, shelf, torch ],
+    greatHall : [ bench, carpet, bookcase, fireplace, forge, lamp, pillar, rack, tableLg, throne, shrine, torch ],
+    hallway   : [ carpet, shelf, torch ],
+    kitchen   : [ firePit, fireplace, lamp, rack, tableLg, tableSm, shelf, spit, workbench ],
+    laboratory: [ alchemy, bench, bookcase, cabinet, carpet, chair, desk, fireplace, lamp, mirror, rack, tableSm, tableLg, shelf, torch, workbench ],
+    library   : [ bench, bookcase, cabinet, carpet, chair, desk, fireplace, lamp, tableLg, tableSm, shelf ],
+    pantry    : [ cabinet, cupboard, rack, shelf ],
+    parlour   : [ bench, bookcase, cabinet, carpet, chair, desk, tableSm ],
+    room      : [ carpet, firePit, tableSm, torch ],
+    shrine    : [ carpet, lamp, shrine, torch ],
+    smithy    : [ anvil, forge, workbench ],
+    storage   : [ cabinet, cupboard, rack, tableSm, shelf ],
+    study     : [ bookcase, cabinet, carpet, chair, desk, lamp, tableSm, shelf ],
+    throne    : [ bench, carpet, lamp, pillar, tableLg, throne, torch ],
+    torture   : [ fireplace, torch, workbench ],
+    treasury  : [ carpet, desk, lamp, mirror, rack, tableLg, tableSm ],
 };
 
 /**
  * Furniture that must be included in a specific room type.
+ *
+ * @type {{ [key in RoomType]: FurnishingType }}
  */
 export const requiredRoomFurniture = {
-    [roomType.armory]    : [ rack ],
-    [roomType.bedroom]   : [ bed ],
-    [roomType.dining]    : [ tableLg ],
-    [roomType.dormitory] : [ bed ],
-    [roomType.kitchen]   : [ tableSm, spit ],
-    [roomType.laboratory]: [ alchemy, workbench ],
-    [roomType.library]   : [ bookcase ],
-    [roomType.pantry]    : [ shelf ],
-    [roomType.shrine]    : [ shrine ],
-    [roomType.smithy]    : [ anvil, forge, workbench ],
-    [roomType.storage]   : [ rack ],
-    [roomType.study]     : [ chair, desk ],
-    [roomType.throne]    : [ throne ],
+    armory    : [ rack ],
+    bedroom   : [ bed ],
+    dining    : [ tableLg ],
+    dormitory : [ bed ],
+    kitchen   : [ tableSm, spit ],
+    laboratory: [ alchemy, workbench ],
+    library   : [ bookcase ],
+    pantry    : [ shelf ],
+    shrine    : [ shrine ],
+    smithy    : [ anvil, forge, workbench ],
+    storage   : [ rack ],
+    study     : [ chair, desk ],
+    throne    : [ throne ],
 };
 
 export const anyRoomFurniture = [ painting, tapestry ];

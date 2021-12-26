@@ -14,8 +14,6 @@ import {
 
 import { getRoomTypeLabel } from '../description.js';
 import { knobs } from '../../knobs.js';
-import roomType from '../room.js';
-import size from '../../attribute/size.js';
 
 /**
  * @param {import('../../unit/state.js').Utility} utility
@@ -43,8 +41,8 @@ export default ({ assert, describe, it }) => {
             describe(`given a room structure of \`${roomStructure}\``, () => {
                 const desc = getStructureDesc({
                     // TODO
-                    [knobs.roomType]: roomType.bedroom,
-                    [knobs.roomSize]: size.medium,
+                    [knobs.roomType]: 'bedroom',
+                    [knobs.roomSize]: 'medium',
                 }, roomStructure);
 
                 it('should return a string', () => {
@@ -52,7 +50,7 @@ export default ({ assert, describe, it }) => {
                 });
 
                 it('should include the room type label', () => {
-                    assert(desc).stringIncludes(getRoomTypeLabel(roomType.bedroom));
+                    assert(desc).stringIncludes(getRoomTypeLabel('bedroom'));
                 });
             });
         });
@@ -61,8 +59,8 @@ export default ({ assert, describe, it }) => {
             it('should throw', () => {
                 assert(() => getStructureDesc({
                     // TODO
-                    [knobs.roomType]: roomType.bedroom,
-                    [knobs.roomSize]: size.medium,
+                    [knobs.roomType]: 'bedroom',
+                    [knobs.roomSize]: 'medium',
                 }, 'very small rocks')).throws('Invalid room structure');
             });
         });
@@ -72,19 +70,19 @@ export default ({ assert, describe, it }) => {
                 it('should include "cavern" and not "cave"', () => {
                     const desc = getStructureDesc({
                         // TODO
-                        [knobs.roomType]: roomType.room,
-                        [knobs.roomSize]: size.massive,
+                        [knobs.roomType]: 'room',
+                        [knobs.roomSize]: 'massive',
                     }, structure.cave);
 
                     assert(desc).stringIncludes('cavern');
                 });
 
-                describe('when the room type is `roomType.hallway`', () => {
+                describe('when the room type is "hallway"', () => {
                     it('should include "cave" and not "cavern"', () => {
                         const desc = getStructureDesc({
                             // TODO
-                            [knobs.roomType]: roomType.hallway,
-                            [knobs.roomSize]: size.massive,
+                            [knobs.roomType]: 'hallway',
+                            [knobs.roomSize]: 'massive',
                         }, structure.cave);
 
                         assert(desc).stringIncludes('cave');
@@ -97,8 +95,8 @@ export default ({ assert, describe, it }) => {
                 it('should include "cave" and not "cavern"', () => {
                     const desc = getStructureDesc({
                         // TODO
-                        [knobs.roomType]: roomType.room,
-                        [knobs.roomSize]: size.medium,
+                        [knobs.roomType]: 'room',
+                        [knobs.roomSize]: 'medium',
                     }, structure.cave);
 
                     assert(desc).stringIncludes('cave');
@@ -121,8 +119,8 @@ export default ({ assert, describe, it }) => {
         it('should return an array of strings', () => {
             const descriptionParts = getEnvironmentDescription({
                 // TODO
-                [knobs.roomType]: roomType.laboratory,
-                [knobs.roomSize]: size.medium,
+                [knobs.roomType]: 'laboratory',
+                [knobs.roomSize]: 'medium',
             });
 
             assert(descriptionParts).isArray();

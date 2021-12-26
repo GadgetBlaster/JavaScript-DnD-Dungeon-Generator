@@ -6,7 +6,6 @@ import { getVegetationDescription } from './vegetation.js';
 import { knobs } from '../knobs.js';
 import { roll, rollArrayItem, rollPercentile } from '../utility/roll.js';
 import { toss } from '../utility/tools.js';
-import roomTypes from './room.js';
 import size from '../attribute/size.js';
 
 // -- Types --------------------------------------------------------------------
@@ -203,7 +202,7 @@ function getGroundDesc() {
 
     switch (roomStructure) {
         case structure.cave: {
-            let isCavern = roomSize === size.massive && typeSetting !== roomTypes.hallway;
+            let isCavern = roomSize === size.massive && typeSetting !== 'hallway';
             return `The ${type} is formed by a ${isCavern ? 'cavern' : 'cave'}`;
         }
 

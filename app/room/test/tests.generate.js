@@ -6,11 +6,6 @@ import {
 
 import { furnitureQuantity } from '../../item/furnishing.js';
 import { knobs } from '../../knobs.js';
-import condition from '../../attribute/condition.js';
-import quantity from '../../attribute/quantity.js';
-import rarity from '../../attribute/rarity.js';
-import roomType from '../room.js';
-import size from '../../attribute/size.js';
 
 /**
  * @param {import('../../unit/state.js').Utility} utility
@@ -19,14 +14,14 @@ export default ({ assert, describe, it }) => {
     describe('generateRooms()', () => {
         const config = {
             // TODO
-            [knobs.itemCondition]: condition.average,
-            [knobs.itemQuantity]: quantity.zero,
-            [knobs.itemRarity]: rarity.exotic,
+            [knobs.itemCondition]: 'average',
+            [knobs.itemQuantity]: 'zero',
+            [knobs.itemRarity]: 'exotic',
             [knobs.itemType]: 'treasure',
-            [knobs.roomCondition]: condition.average,
+            [knobs.roomCondition]: 'average',
             [knobs.roomCount]: 1,
-            [knobs.roomSize]: size.medium,
-            [knobs.roomType]: roomType.room,
+            [knobs.roomSize]: 'medium',
+            [knobs.roomType]: 'room',
             [knobs.roomFurnishing]: furnitureQuantity.none,
         };
 
@@ -66,12 +61,12 @@ export default ({ assert, describe, it }) => {
                 });
             });
 
-            describe('given a `knobs.itemQuantity` of `quantity.couple`', () => {
+            describe('given a `knobs.itemQuantity` of "couple"', () => {
                 it('should return an array of `Room` objects with two items', () => {
                     const rooms = generateRooms({
                         // TODO
                         ...config,
-                        [knobs.itemQuantity]: quantity.couple,
+                        [knobs.itemQuantity]: 'couple',
                     }).pop();
 
                     assert(rooms.items[0]).stringIncludes('Items (2)');
@@ -82,7 +77,7 @@ export default ({ assert, describe, it }) => {
                         const rooms = generateRooms({
                             // TODO
                             ...config,
-                            [knobs.itemQuantity]: quantity.couple,
+                            [knobs.itemQuantity]: 'couple',
                             [knobs.roomFurnishing]: furnitureQuantity.minimum,
                         }).pop();
 

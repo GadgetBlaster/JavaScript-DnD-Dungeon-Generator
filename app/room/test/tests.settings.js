@@ -15,8 +15,8 @@ import { list as conditions } from '../../attribute/condition.js';
 import { list as rarities } from '../../attribute/rarity.js';
 import { list as sizes } from '../../attribute/size.js';
 import { random } from '../../utility/random.js';
-import quantity, { quantities } from '../../attribute/quantity.js';
-import roomType, { list as roomTypes } from '../room.js';
+import { quantities } from '../../attribute/quantity.js';
+import { roomTypes } from '../room.js';
 
 /**
  * @param {import('../../unit/state.js').Utility} utility
@@ -26,15 +26,15 @@ export default ({ assert, describe, it }) => {
     // -- Private Functions ----------------------------------------------------
 
     describe('rollRoomType()', () => {
-        describe('given a room type other than `random`', () => {
+        describe('given a room type other than "random"', () => {
             it('should return it', () => {
-                assert(rollRoomType(roomType.smithy)).equals(roomType.smithy);
+                assert(rollRoomType('smithy')).equals('smithy');
             });
         });
 
         describe('given a room type of `random`', () => {
             it('should return a random room type', () => {
-                assert(roomType[rollRoomType(random)] !== undefined).isTrue();
+                assert(roomTypes.includes(rollRoomType(random))).isTrue();
             });
         });
     });
@@ -63,13 +63,13 @@ export default ({ assert, describe, it }) => {
             it('should return a `RoomConfig` object', () => {
                 const roomConfig = applyRoomRandomization({
                     // TODO
-                    [knobs.itemCondition]: random,
-                    [knobs.itemQuantity]: random,
-                    [knobs.itemRarity]: random,
-                    [knobs.roomCondition]: random,
-                    [knobs.roomFurnishing]: random,
-                    [knobs.roomSize]: random,
-                    [knobs.roomType]: random,
+                    [knobs.itemCondition] : 'random',
+                    [knobs.itemQuantity]  : 'random',
+                    [knobs.itemRarity]    : 'random',
+                    [knobs.roomCondition] : 'random',
+                    [knobs.roomFurnishing]: 'random',
+                    [knobs.roomSize]      : 'random',
+                    [knobs.roomType]      : 'random',
                 });
 
                 assert(roomConfig).isObject();
@@ -83,15 +83,15 @@ export default ({ assert, describe, it }) => {
                 assert(sizes.includes(roomConfig[knobs.roomSize])).isTrue();
             });
 
-            describe('given a room type of `roomType.hallway` and an item quantity of `quantity.numerous`', () => {
+            describe('given a room type of "hallway" and an item quantity of `quantity.numerous`', () => {
                 it('should limit the item quantity to `quantity.several`', () => {
                     const roomConfig = applyRoomRandomization({
                         // TODO
-                        [knobs.itemQuantity]: quantity.numerous,
-                        [knobs.roomType]: roomType.hallway,
+                        [knobs.itemQuantity]: 'numerous',
+                        [knobs.roomType]: 'hallway',
                     });
 
-                    assert(roomConfig[knobs.itemQuantity]).equals(quantity.several);
+                    assert(roomConfig[knobs.itemQuantity]).equals('several');
                 });
             });
         });

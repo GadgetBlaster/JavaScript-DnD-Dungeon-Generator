@@ -28,7 +28,6 @@ import {
 import { knobs } from '../knobs.js';
 import { roll, rollArrayItem, rollPercentile } from '../utility/roll.js';
 import { isRequired, toWords } from '../utility/tools.js';
-import roomType from '../room/room.js';
 
 // -- Types --------------------------------------------------------------------
 
@@ -206,7 +205,7 @@ function drawRooms(gridDimensions, mapRooms, grid, roomNumber = 1, prevRoom) {
                 return;
             }
 
-            if (type === roomType.hallway) {
+            if (type === 'hallway') {
                 // TODO remind me why the last set of cords is used for halls?
                 ({ x, y } = validCords[validCords.length - 1]);
             } else {
@@ -273,7 +272,7 @@ function drawRooms(gridDimensions, mapRooms, grid, roomNumber = 1, prevRoom) {
  */
 const getDoor = (grid, room, prevRoom, { allowSecret } = {}) => {
     let cells     = getDoorCells(grid, room, prevRoom);
-    let useEdge   = prevRoom && prevRoom.roomType === roomType.hallway && room.roomType === roomType.hallway;
+    let useEdge   = prevRoom && prevRoom.roomType === 'hallway' && room.roomType === 'hallway';
     let max       = Math.min(maxDoorGridUnits, Math.ceil(cells.length / 2));
     let size      = roll(1, max);
     let remainder = cells.length - size;
@@ -519,7 +518,7 @@ const getRoom = (grid, room, { hasTraps } = {}) => {
 
     /** @type {Rectangle} roomRectangle */
     let roomRectangle = { x, y, width, height };
-    let showRoomLabel = type !== roomType.room && width >= labelMinWidth && height >= labelMinHeight;
+    let showRoomLabel = type !== 'room' && width >= labelMinWidth && height >= labelMinHeight;
     let roomLabel     = showRoomLabel && toWords(type);
 
     let rect = drawRoom(roomRectangle, { roomNumber, roomLabel }, { hasTraps });

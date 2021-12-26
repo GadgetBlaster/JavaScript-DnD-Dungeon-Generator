@@ -29,11 +29,6 @@ import { generateRooms } from '../../room/generate.js';
 import { knobs } from '../../knobs.js';
 import { labelMinWidth, labelMinHeight, testTrapLabel as trapLabel } from '../draw.js';
 import { list as doorTypes } from '../../room/door.js';
-import condition from '../../attribute/condition.js';
-import quantity from '../../attribute/quantity.js';
-import rarity from '../../attribute/rarity.js';
-import roomTypes from '../../room/room.js';
-import size from '../../attribute/size.js';
 
 /**
  * @param {import('../../unit/state.js').Utility} utility
@@ -84,8 +79,8 @@ export default ({ assert, describe, it }) => {
             const grid = createBlankGrid(gridDimensions);
             const room = {
                 settings: {
-                    [knobs.roomType]: roomTypes.room,
-                    [knobs.roomSize]: size.tiny,
+                    [knobs.roomType]: 'room',
+                    [knobs.roomSize]: 'tiny',
                 },
             };
 
@@ -109,8 +104,8 @@ export default ({ assert, describe, it }) => {
                 const grid = createBlankGrid(gridDimensions);
                 const room = {
                     settings: {
-                        [knobs.roomType]: roomTypes.room,
-                        [knobs.roomSize]: size.small,
+                        [knobs.roomType]: 'room',
+                        [knobs.roomSize]: 'small',
                     },
                 };
 
@@ -126,8 +121,8 @@ export default ({ assert, describe, it }) => {
                 const grid = createBlankGrid(gridDimensions);
                 const room = {
                     settings: {
-                        [knobs.roomType]: roomTypes.room,
-                        [knobs.roomSize]: size.massive,
+                        [knobs.roomType]: 'room',
+                        [knobs.roomSize]: 'massive',
                     },
                 };
 
@@ -143,8 +138,8 @@ export default ({ assert, describe, it }) => {
                     const grid = createBlankGrid(gridDimensions);
                     const room = {
                         settings: {
-                            [knobs.roomType]: roomTypes.room,
-                            [knobs.roomSize]: size.tiny,
+                            [knobs.roomType]: 'room',
+                            [knobs.roomSize]: 'tiny',
                         },
                     };
 
@@ -162,7 +157,7 @@ export default ({ assert, describe, it }) => {
                         width: 2,
                         height: 3,
                         roomNumber: 1,
-                        type: roomTypes.room,
+                        type: 'room',
                     };
 
                     const { walls } = getRoom(grid, prevRoom);
@@ -170,8 +165,8 @@ export default ({ assert, describe, it }) => {
                     const room = {
                         roomNumber: 2,
                         settings: {
-                            [knobs.roomType]: roomTypes.room,
-                            [knobs.roomSize]: size.medium,
+                            [knobs.roomType]: 'room',
+                            [knobs.roomSize]: 'medium',
                         },
                     };
 
@@ -204,7 +199,7 @@ export default ({ assert, describe, it }) => {
                         width: 2,
                         height: 3,
                         roomNumber: 1,
-                        type: roomTypes.room,
+                        type: 'room',
                     };
 
                     const { walls } = getRoom(grid, prevRoom);
@@ -212,8 +207,8 @@ export default ({ assert, describe, it }) => {
                     const hallway = {
                         roomNumber: 2,
                         settings: {
-                            [knobs.roomType]: roomTypes.hallway,
-                            [knobs.roomSize]: size.small,
+                            [knobs.roomType]: 'hallway',
+                            [knobs.roomSize]: 'small',
                         },
                     };
 
@@ -263,7 +258,7 @@ export default ({ assert, describe, it }) => {
                 y: 2,
                 width: 2,
                 height: 2,
-                type: roomTypes.room,
+                type: 'room',
                 roomNumber: 1,
             };
 
@@ -276,7 +271,7 @@ export default ({ assert, describe, it }) => {
                 y: 5,
                 width: 2,
                 height: 2,
-                type: roomTypes.room,
+                type: 'room',
                 roomNumber: 2,
             };
 
@@ -305,7 +300,7 @@ export default ({ assert, describe, it }) => {
                 y: 0,
                 width: 2,
                 height: 2,
-                type: roomTypes.room,
+                type: 'room',
                 roomNumber: 1,
             };
 
@@ -419,7 +414,7 @@ export default ({ assert, describe, it }) => {
                     y: 2,
                     width: 3,
                     height: 2,
-                    type: roomTypes.room,
+                    type: 'room',
                     roomNumber: 1,
                 };
 
@@ -428,7 +423,7 @@ export default ({ assert, describe, it }) => {
                     y: 5,
                     width: 4,
                     height: 3,
-                    type: roomTypes.room,
+                    type: 'room',
                     roomNumber: 2,
                 };
 
@@ -454,7 +449,7 @@ export default ({ assert, describe, it }) => {
             y: 2,
             width: 2,
             height: 2,
-            type: roomTypes.room,
+            type: 'room',
             roomNumber: 1,
         };
 
@@ -518,7 +513,7 @@ export default ({ assert, describe, it }) => {
                     y: 2,
                     width: 3,
                     height: 2,
-                    type: roomTypes.room,
+                    type: 'room',
                     roomNumber: 1,
                     settings: {
                         [knobs.dungeonConnections]: connectionChance,
@@ -530,7 +525,7 @@ export default ({ assert, describe, it }) => {
                     y: 5,
                     width: 4,
                     height: 3,
-                    type: roomTypes.room,
+                    type: 'room',
                     roomNumber: 2,
                     settings: {
                         [knobs.dungeonConnections]: connectionChance,
@@ -631,7 +626,7 @@ export default ({ assert, describe, it }) => {
                     y: 2,
                     width: 2,
                     height: 2,
-                    type: roomTypes.room,
+                    type: 'room',
                     roomNumber: 1,
                     settings: {
                         [knobs.dungeonConnections]: connectionChance,
@@ -643,7 +638,7 @@ export default ({ assert, describe, it }) => {
                     y: 2,
                     width: 3,
                     height: 6,
-                    type: roomTypes.room,
+                    type: 'room',
                     roomNumber: 2,
                     settings: {
                         [knobs.dungeonConnections]: connectionChance,
@@ -723,7 +718,7 @@ export default ({ assert, describe, it }) => {
             it('should throw', () => {
                 const grid = createBlankGrid({ width: 8, height: 6 });
 
-                assert(() => getRoom(grid, { type: roomTypes.kitchen }))
+                assert(() => getRoom(grid, { type: 'kitchen' }))
                     .throws('roomNumber is required in getRoom()');
             });
         });
@@ -756,14 +751,14 @@ export default ({ assert, describe, it }) => {
                 y: 3,
                 width: 3,
                 height: 2,
-                type: roomTypes.room,
+                type: 'room',
                 roomNumber: 7,
             };
 
             const expectedCords = [ [2, 3], [2, 4], [3, 2], [3, 5], [4, 2], [4, 5], [5, 2], [5, 5], [6, 3], [6, 4] ];
             const expectedCornerCords = [ [2, 2], [2, 5], [6, 2], [6, 5] ];
 
-            describe('when the room type is `roomType.room`', () => {
+            describe('when the room type is "room"', () => {
                 const { rect, walls } = getRoom(grid, room);
 
                 it('should return an object with a room rect and an array of wall cells', () => {
@@ -804,28 +799,28 @@ export default ({ assert, describe, it }) => {
                             height: labelMinHeight,
                         });
 
-                        assert(RegExp(`<text(.+?)>${roomTypes.room}</text>`).test(rectWithLabelDimensions)).isFalse();
+                        assert(RegExp('<text(.+?)>room</text>').test(rectWithLabelDimensions)).isFalse();
                     });
                 });
             });
 
-            describe('when the room type is not `roomType.room`', () => {
+            describe('when the room type is not "room"', () => {
                 const libraryRoom = {
                     ...room,
-                    type: roomTypes.library,
+                    type: 'library',
                 };
 
                 describe('when the room width is less than or equal to `labelMinWidth`', () => {
                     it('should not include the room label in the room rect', () => {
                         const { rect } = getRoom(grid, { ...libraryRoom, width: labelMinWidth - 1 });
-                        assert(RegExp(`<text(.+?)>${roomTypes.library}</text>`).test(rect)).isFalse();
+                        assert(RegExp('<text(.+?)>library</text>').test(rect)).isFalse();
                     });
                 });
 
                 describe('when the room width is less than or equal to `labelMinHeight`', () => {
                     it('should not include the room label in the room rect', () => {
                         const { rect } = getRoom(grid, { ...libraryRoom, height: labelMinHeight - 1 });
-                        assert(RegExp(`<text(.+?)>${roomTypes.library}</text>`).test(rect)).isFalse();
+                        assert(RegExp('<text(.+?)>library</text>').test(rect)).isFalse();
                     });
                 });
 
@@ -837,7 +832,7 @@ export default ({ assert, describe, it }) => {
                             height: labelMinHeight,
                         });
 
-                        assert(RegExp(`<text(.+?)>${roomTypes.library}</text>`).test(rect)).isTrue();
+                        assert(RegExp('<text(.+?)>library</text>').test(rect)).isTrue();
                     });
                 });
             });
@@ -857,7 +852,7 @@ export default ({ assert, describe, it }) => {
         describe('given a room config with a missing room type', () => {
             it('should throw', () => {
                 assert(() => getRoomDimensions(gridDimensions, {
-                    settings: { [knobs.roomSize]: size.small },
+                    settings: { [knobs.roomSize]: 'small' },
                 })).throws('roomType is required in getRoomDimensions()');
             });
         });
@@ -865,7 +860,7 @@ export default ({ assert, describe, it }) => {
         describe('given a room config with a missing room size', () => {
             it('should throw', () => {
                 assert(() => getRoomDimensions(gridDimensions, {
-                    settings: { [knobs.roomType]: roomTypes.library },
+                    settings: { [knobs.roomType]: 'library' },
                 })).throws('roomSize is required in getRoomDimensions()');
             });
         });
@@ -875,8 +870,8 @@ export default ({ assert, describe, it }) => {
             it('should return a room width and height ', () => {
                 const dimensions = getRoomDimensions(gridDimensions, {
                     settings: {
-                        [knobs.roomSize]: size.small,
-                        [knobs.roomType]: roomTypes.hallway,
+                        [knobs.roomSize]: 'small',
+                        [knobs.roomType]: 'hallway',
                     },
                 });
 
@@ -887,12 +882,12 @@ export default ({ assert, describe, it }) => {
 
         describe('given a room type which does not require custom dimensions', () => {
             it('should return a room width and height within the range specified for the room size', () => {
-                const [ minSize, maxSize ] = dimensionRanges[size.small];
+                const [ minSize, maxSize ] = dimensionRanges.small;
 
                 const { width, height } = getRoomDimensions(gridDimensions, {
                     settings: {
-                        [knobs.roomSize]: size.small,
-                        [knobs.roomType]: roomTypes.room,
+                        [knobs.roomSize]: 'small',
+                        [knobs.roomType]: 'room',
                     },
                 });
 
@@ -907,12 +902,11 @@ export default ({ assert, describe, it }) => {
                 const gridHeight = 5;
 
                 const miniMapDimensions = { width: gridWidth, height: gridHeight };
-                // const [ minSize, maxSize ] = dimensionRanges[size.massive];
 
                 const { width, height } = getRoomDimensions(miniMapDimensions, {
                     settings: {
-                        [knobs.roomSize]: size.massive,
-                        [knobs.roomType]: roomTypes.room,
+                        [knobs.roomSize]: 'massive',
+                        [knobs.roomType]: 'room',
                     },
                 });
 
@@ -933,11 +927,11 @@ export default ({ assert, describe, it }) => {
                 y: 1,
                 width: 3,
                 height: 2,
-                type: roomTypes.room,
+                type: 'room',
                 roomNumber: 1,
                 settings: {
-                    [knobs.roomSize]: size.small,
-                    [knobs.roomType]: roomTypes.room,
+                    [knobs.roomSize]: 'small',
+                    [knobs.roomType]: 'room',
                 },
             };
 
@@ -985,12 +979,12 @@ export default ({ assert, describe, it }) => {
                 from: 1,
                 to: 2,
                 direction: 'south',
-                type: roomTypes.library,
+                type: 'library',
             });
 
             assert(door).isObject();
             assert(door.rect).isString();
-            assert(door.type).equals(roomTypes.library);
+            assert(door.type).equals('library');
             assert(door.locked).isBoolean();
             assert(door.connections).equalsObject({
                 1: { direction: 'south', to: 2 },
@@ -1004,14 +998,14 @@ export default ({ assert, describe, it }) => {
     describe('generateMap()', () => {
         it('should generate a map, rooms, and doors', () => {
             const { map, rooms, doors } = generateMap({ width: 30, height: 24 }, generateRooms({
-                [knobs.itemCondition]: condition.average,
-                [knobs.itemQuantity] : quantity.one,
-                [knobs.itemRarity]   : rarity.average,
+                [knobs.itemCondition]: 'average',
+                [knobs.itemQuantity] : 'one',
+                [knobs.itemRarity]   : 'average',
                 [knobs.itemType]     : 'miscellaneous',
-                [knobs.roomSize]     : size.medium,
+                [knobs.roomSize]     : 'medium',
                 [knobs.roomCount]    : 34,
-                [knobs.roomType]     : roomTypes.room,
-                [knobs.roomCondition]: condition.average,
+                [knobs.roomType]     : 'room',
+                [knobs.roomCondition]: 'average',
             }));
 
             assert(map).isString();

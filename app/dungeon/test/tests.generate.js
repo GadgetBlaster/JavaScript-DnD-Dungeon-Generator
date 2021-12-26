@@ -21,7 +21,6 @@ import condition from '../../attribute/condition.js';
 import quantity from '../../attribute/quantity.js';
 import rarity from '../../attribute/rarity.js';
 import size from '../../attribute/size.js';
-import roomType from '../../room/room.js';
 import trapList from '../../room/trap.js';
 
 /**
@@ -114,11 +113,11 @@ export default ({ assert, describe, it }) => {
             [knobs.dungeonTraps]      : 0,
             [knobs.itemCondition]     : condition.average,
             [knobs.itemQuantity]      : quantity.zero,
-            [knobs.itemRarity]        : rarity.average,
+            [knobs.itemRarity]        : 'average',
             [knobs.itemType]          : 'miscellaneous',
             [knobs.roomCondition]     : condition.average,
             [knobs.roomSize]          : size.medium,
-            [knobs.roomType]          : roomType.room,
+            [knobs.roomType]          : 'room',
         };
 
         const dungeon = generateDungeon(config);

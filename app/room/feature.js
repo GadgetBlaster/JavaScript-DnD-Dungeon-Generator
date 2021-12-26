@@ -3,7 +3,6 @@
 import { knobs } from '../knobs.js';
 import { roll, rollArrayItem, rollPercentile } from '../utility/roll.js';
 import { toss } from '../utility/tools.js';
-import roomType from './room.js';
 
 // -- Types --------------------------------------------------------------------
 
@@ -241,7 +240,7 @@ export function getRoomFeatures(config) {
         [knobs.roomType]: roomTypeSetting, // TODO
     } = config;
 
-    if (roomTypeSetting === roomType.hallway) {
+    if (roomTypeSetting === 'hallway') {
         return [];
     }
 

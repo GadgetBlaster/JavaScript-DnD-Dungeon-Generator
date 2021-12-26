@@ -11,17 +11,18 @@ import { knobs } from '../knobs.js';
 import { list } from '../ui/list.js';
 import { rollArrayItem } from '../utility/roll.js';
 import doorType, { appendDoorway, outside } from './door.js';
-import roomTypes, { appendRoomTypes } from '../room/room.js';
+import { appendRoomTypes } from './room.js';
 
 // -- Types --------------------------------------------------------------------
 
-/** @typedef {import('../attribute/size.js').Size} Size */
 /** @typedef {import('../attribute/rarity.js').Rarity} Rarity */
+/** @typedef {import('../attribute/size.js').Size} Size */
 /** @typedef {import('../dungeon/map.js').Connection} Connection */
 /** @typedef {import('../knobs.js').DungeonConfig} DungeonConfig */
 /** @typedef {import('../knobs.js').RoomConfig} RoomConfig */
 /** @typedef {import('./door.js').DoorKey} DoorKey */
 /** @typedef {import('./door.js').RoomDoor} RoomDoor */
+/** @typedef {import('./room.js').RoomType} RoomType */
 
 // -- Config -------------------------------------------------------------------
 
@@ -56,7 +57,7 @@ function getContentDescription(config) {
         [knobs.itemQuantity]  : itemQuantity,
         [knobs.itemRarity]    : itemRarity,
         [knobs.roomFurnishing]: roomFurnishing,
-        [knobs.roomType]      : roomType = roomTypes.room,
+        [knobs.roomType]      : roomType = 'room',
     } = config;
 
     if (!itemQuantity || itemQuantity === 'zero') {
@@ -131,7 +132,7 @@ function getDescription(config) {
         [knobs.itemQuantity]:  itemQuantity,
         [knobs.roomCondition]: roomCondition,
         [knobs.roomSize]:      roomSize,
-        [knobs.roomType]:      roomType = roomTypes.room,
+        [knobs.roomType]:      roomType = 'room',
     } = config;
 
     let typeString = getRoomTypeLabel(roomType);
@@ -285,7 +286,7 @@ function getKeyDetail(type) {
  * @returns {string}
  */
 function getRoomDimensionsDescription(roomSize) {
-    let [ width, height ] = roomSize;
+    let [ width, height ] = roomSize; // TODO use Dimensions type
 
     return `${width * cellFeet} x ${height * cellFeet} feet`;
 }
@@ -411,7 +412,7 @@ export function getRoomDescription(room, roomDoors) {
     } = settings;
 
     let numberLabel = roomCount > 1 ? ` ${roomNumber}` : '';
-    let typeLabel   = type !== roomTypes.room ? ` - ${capitalize(getRoomTypeLabel(type))}` : '';
+    let typeLabel   = type !== 'room' ? ` - ${capitalize(getRoomTypeLabel(type))}` : '';
     let roomTitle   = title(`Room${numberLabel}${typeLabel}`);
     let dimensions  = roomDimensions ? element('span', getRoomDimensionsDescription(roomDimensions)) : '';
     let header      = element('header', roomTitle + dimensions);
@@ -430,7 +431,7 @@ export function getRoomDescription(room, roomDoors) {
 /**
  * Get room type label
  *
- * @param {string} type
+ * @param {RoomType} type
  *
  * @returns {string}
  */

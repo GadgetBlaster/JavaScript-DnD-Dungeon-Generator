@@ -1,12 +1,15 @@
 // @ts-check
 
-import roomType, { list as roomTypes } from './room.js';
+import { roomTypes } from './room.js';
 import { roll } from '../utility/roll.js';
-import size, { list as sizes } from '../attribute/size.js';
+import { list as sizes } from '../attribute/size.js';
 
 // -- Types --------------------------------------------------------------------
 
-/** @typedef {[ number, number ]} RoomDimensions */
+/** @typedef {import('./room.js').RoomType} RoomType */
+/** @typedef {import('../attribute/size').Size} Size */
+
+/** @typedef {[ number, number ]} RoomDimensions */ // TODO use Dimensions type
 
 // -- Config -------------------------------------------------------------------
 
@@ -15,25 +18,17 @@ const hallLengthMin = 3;
 const hallWidthMin  = 1;
 const hallWidthMax  = 1;
 
-let {
-    tiny,
-    small,
-    medium,
-    large,
-    massive,
-} = size;
-
 /**
  * Dimension ranges
  *
- * @type {{ [key: string]: RoomDimensions }}
+ * @type {{ [key in Size]?: RoomDimensions }}
  */
 export const dimensionRanges = {
-    [tiny]   : [ 2, 3  ],
-    [small]  : [ 2, 4  ],
-    [medium] : [ 2, 5  ],
-    [large]  : [ 3, 10 ],
-    [massive]: [ 5, 15 ],
+    tiny   : [ 2, 3  ],
+    small  : [ 2, 4  ],
+    medium : [ 2, 5  ],
+    large  : [ 3, 10 ],
+    massive: [ 5, 15 ],
 };
 
 /**
@@ -41,19 +36,19 @@ export const dimensionRanges = {
  *
  * TODO make into Sets?
  *
- * @type {{ [key: string]: string[] }}
+ * @type {{ [key in RoomType]?: Size[] }}
  */
 const roomSizes = {
-    [roomType.ballroom] : [ medium, large, massive ],
-    [roomType.bathhouse]: [ small, medium, large, massive ],
-    [roomType.dining]   : [ small, medium, large, massive ],
-    [roomType.dormitory]: [ medium, large, massive ],
-    [roomType.greatHall]: [ large, massive ],
-    [roomType.pantry]   : [ tiny, small, medium ],
-    [roomType.parlour]  : [ tiny, small, medium ],
-    [roomType.study]    : [ tiny, small, medium ],
-    [roomType.throne]   : [ medium, large, massive ],
-    [roomType.torture]  : [ tiny, small, medium ],
+    ballroom : [ 'medium', 'large', 'massive' ],
+    bathhouse: [ 'small', 'medium', 'large', 'massive' ],
+    dining   : [ 'small', 'medium', 'large', 'massive' ],
+    dormitory: [ 'medium', 'large', 'massive' ],
+    greatHall: [ 'large', 'massive' ],
+    pantry   : [ 'tiny', 'small', 'medium' ],
+    parlour  : [ 'tiny', 'small', 'medium' ],
+    study    : [ 'tiny', 'small', 'medium' ],
+    throne   : [ 'medium', 'large', 'massive' ],
+    torture  : [ 'tiny', 'small', 'medium' ],
 };
 
 /**
@@ -74,13 +69,13 @@ export const customDimensions = {
         let roomWidth  = isHorizontal ? length : width;
         let roomHeight = isHorizontal ? width  : length;
 
-        // TODO return an array or update RoomDimensions to object?
+        // TODO update Dimensions type object.
         return { roomWidth, roomHeight };
     },
 };
 
 /**
- * Room sizes by room roomType.
+ * Room sizes by room RoomType.
  *
  * All room sizes are returned if the room type is not limited to a sub-set of
  * sizes defined in `roomSizes`.

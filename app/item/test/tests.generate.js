@@ -13,7 +13,6 @@ import {
 
 import { knobs } from '../../knobs.js';
 import { quantityMinimum, quantityMaximum } from '../../attribute/quantity.js';
-import roomTypes from '../../room/room.js';
 import {
     anyRoomFurniture,
     furnishingByRoomType,
@@ -33,13 +32,13 @@ export default ({ assert, describe, it }) => {
 
     describe('generateFurnishings()', () => {
         it('should return an array', () => {
-            const furniture = generateFurnishings(roomTypes.room, furnitureQuantity.minimum);
+            const furniture = generateFurnishings('room', furnitureQuantity.minimum);
             assert(furniture).isArray();
         });
 
         describe('given `furnitureQuantity.none`', () => {
             it('should return an empty array', () => {
-                const furniture = generateFurnishings(roomTypes.smithy, furnitureQuantity.none);
+                const furniture = generateFurnishings('smithy', furnitureQuantity.none);
                 assert(furniture).isArray();
                 assert(furniture.length).equals(0);
             });
@@ -47,11 +46,11 @@ export default ({ assert, describe, it }) => {
 
         describe('given a `furnitureQuantity`', () => {
             it('should generate a number of furniture items within the furniture quantity range', () => {
-                // Make sure `roomTypes.room` is not included in
+                // Make sure "room" is not included in
                 // `requiredRoomFurniture`.
-                assert(requiredRoomFurniture[roomTypes.room]).isUndefined();
+                assert(requiredRoomFurniture.room).isUndefined();
 
-                const furniture = generateFurnishings(roomTypes.room, furnitureQuantity.furnished);
+                const furniture = generateFurnishings('room', furnitureQuantity.furnished);
                 const count = furniture.length;
                 const max = furnishingQuantityRanges[furnitureQuantity.furnished];
 
@@ -60,15 +59,15 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a `roomType` that requires furniture', () => {
-            const furniture = generateFurnishings(roomTypes.smithy, furnitureQuantity.minimum)
+            const furniture = generateFurnishings('smithy', furnitureQuantity.minimum)
                 .map(({ name }) => name);
 
             it('should return an array including all required room type furniture', () => {
-                // Make sure `roomTypes.smithy` is still included in
+                // Make sure "smithy" is still included in
                 // `requiredRoomFurniture`.
-                assert(requiredRoomFurniture[roomTypes.smithy]).isArray();
+                assert(requiredRoomFurniture.smithy).isArray();
 
-                requiredRoomFurniture[roomTypes.smithy].forEach(({ name }) => {
+                requiredRoomFurniture.smithy.forEach(({ name }) => {
                     assert(furniture.includes(name)).isTrue();
                 });
             });
@@ -76,10 +75,10 @@ export default ({ assert, describe, it }) => {
 
         describe('given a room type included in `furnishingByRoomType`', () => {
             it('should include only furniture appropriate to the room type', () => {
-                const validFurniture = furnishingByRoomType[roomTypes.room].concat(anyRoomFurniture)
+                const validFurniture = furnishingByRoomType.room.concat(anyRoomFurniture)
                     .map(({ name }) => name);
 
-                generateFurnishings(roomTypes.room, furnitureQuantity.furnished)
+                generateFurnishings('room', furnitureQuantity.furnished)
                     .forEach(({ name }) => {
                         assert(validFurniture.includes(name)).isTrue();
                     });
@@ -90,6 +89,7 @@ export default ({ assert, describe, it }) => {
             it('should include any furnishing', () => {
                 // Make sure 'newRoomType' is not included in
                 // `furnishingByRoomType`.
+                // @ts-expect-error
                 assert(furnishingByRoomType.newRoomType).isUndefined();
 
                 const furniture = generateFurnishings('newRoomType', furnitureQuantity.minimum).pop();
@@ -350,7 +350,7 @@ export default ({ assert, describe, it }) => {
             it('should throw', () => {
                 assert(() => generateItems({
                     ...settings,
-                    [knobs.roomType]: roomTypes.room,
+                    [knobs.roomType]: 'room',
                 })).throws('roomCondition is required for room items in generateItems()');
             });
         });
@@ -378,7 +378,7 @@ export default ({ assert, describe, it }) => {
                         ...settings,
                         // TODO
                         [knobs.itemQuantity]: 'zero',
-                        [knobs.roomType]: roomTypes.room,
+                        [knobs.roomType]: 'room',
                         [knobs.roomCondition]: 'average',
                     });
                     assert(results).isArray();

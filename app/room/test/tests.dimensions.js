@@ -9,8 +9,8 @@ import {
     roomTypeSizes,
 } from '../dimensions.js';
 
-import size, { list as sizes } from '../../attribute/size.js';
-import { list as roomTypes } from '../room.js';
+import { list as sizes } from '../../attribute/size.js';
+import { roomTypes } from '../room.js';
 
 /**
  * @param {import('../../unit/state.js').Utility} utility
@@ -36,9 +36,9 @@ export default ({ assert, describe, it }) => {
 
     describe('`customDimensions`', () => {
         describe('hallway()', () => {
-            describe('given a room size of `size.massive`', () => {
+            describe('given a room size of "massive"', () => {
                 describe('given a falsy `isHorizontal` flag', () => {
-                    const roomDimensions = customDimensions.hallway(size.massive, { isHorizontal: false });
+                    const roomDimensions = customDimensions.hallway('massive', { isHorizontal: false });
 
                     it('should return an object containing `roomWidth` and `roomHeight`', () => {
                         assert(roomDimensions).isObject();
@@ -68,7 +68,7 @@ export default ({ assert, describe, it }) => {
                 });
 
                 describe('given a truthy `isHorizontal` flag', () => {
-                    const roomDimensions = customDimensions.hallway(size.massive, { isHorizontal: true  });
+                    const roomDimensions = customDimensions.hallway('massive', { isHorizontal: true  });
 
                     it('should return an object containing `roomWidth` and `roomHeight`', () => {
                         assert(roomDimensions).isObject();
