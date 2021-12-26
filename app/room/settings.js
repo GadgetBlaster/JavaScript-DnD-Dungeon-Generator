@@ -10,7 +10,6 @@ import { probability as rarityProbability } from '../attribute/rarity.js';
 import { random } from '../utility/random.js';
 import { rollArrayItem, rollPercentile } from '../utility/roll.js';
 import { roomTypeSizes } from './dimensions.js';
-import quantity from '../attribute/quantity.js';
 import { roomTypes, probability as roomTypeProbability } from './room.js';
 
 // -- Types --------------------------------------------------------------------
@@ -131,8 +130,8 @@ function applyRandomization(config, randomizations) {
         settings[knobs.roomSize] = rollRoomSize(settings[knobs.roomType]);
     }
 
-    if (settings[knobs.roomType] === 'hallway' && settings[knobs.itemQuantity] === quantity.numerous) {
-        settings[knobs.itemQuantity] = quantity.several;
+    if (settings[knobs.roomType] === 'hallway' && settings[knobs.itemQuantity] === 'numerous') {
+        settings[knobs.itemQuantity] = 'several';
     }
 
     return settings;

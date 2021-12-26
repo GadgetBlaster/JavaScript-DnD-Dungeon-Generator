@@ -15,11 +15,8 @@ import { getRarityDescription, getConditionDescription, getItemDescription } fro
 import { isRequired } from '../utility/tools.js';
 import { knobs } from '../knobs.js';
 import { list } from '../ui/list.js';
-import { random } from '../utility/random.js';
 import { roll, rollArrayItem } from '../utility/roll.js';
-import condition from '../attribute/condition.js';
-import quantity, { getRange, probability as quantityProbability } from '../attribute/quantity.js';
-import size from '../attribute/size.js';
+import { getRange, probability as quantityProbability } from '../attribute/quantity.js';
 
 // -- Types --------------------------------------------------------------------
 
@@ -120,7 +117,7 @@ const generateItemObjects = (count, config) => [ ...Array(count) ].reduce((obj) 
 const getFurnishingObjects = (furnishings, roomCondition) => furnishings.reduce((obj, item) => {
     let label = item.label;
 
-    if (roomCondition !== condition.average) {
+    if (roomCondition !== 'average') {
         label += ` (${em(roomCondition)})`;
     }
 
@@ -194,11 +191,11 @@ export function generateItems(config) {
         isRequired(roomCondition, 'roomCondition is required for room items in generateItems()');
     }
 
-    if (itemQuantity === random) {
+    if (itemQuantity === 'random') {
         itemQuantity = quantityProbability.roll();
     }
 
-    if (itemQuantity === quantity.zero) {
+    if (itemQuantity === 'zero') {
         return inRoom ? [] : [ subtitle('Items (0)') ];
     }
 
@@ -235,7 +232,7 @@ export function generateItems(config) {
             return;
         }
 
-        if (item.size === size.tiny || item.size === size.small) {
+        if (item.size === 'tiny' || item.size === 'small') {
             smallItems.push(item);
             return;
         }
@@ -315,12 +312,12 @@ export function generateItems(config) {
 
     let descriptions = [];
 
-    if (itemQuantity !== quantity.one && itemCondition !== random) {
-        let conditionDescription = getConditionDescription(itemCondition)
+    if (itemQuantity !== 'one' && itemCondition !== 'random') {
+        let conditionDescription = getConditionDescription(itemCondition);
         conditionDescription && descriptions.push(conditionDescription);
     }
 
-    if (itemQuantity !== quantity.one && itemRarity !== random) {
+    if (itemQuantity !== 'one' && itemRarity !== 'random') {
         let rarityDescription = getRarityDescription(itemRarity);
         rarityDescription && descriptions.push(rarityDescription);
     }

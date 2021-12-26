@@ -2,7 +2,6 @@
 
 import { capacity } from './types/container.js';
 import { rollArrayItem, createProbability } from '../utility/roll.js';
-import size from '../attribute/size.js';
 
 /** @typedef {import('./item.js').ItemConfig} ItemConfig */
 /** @typedef {import('../room/room.js').RoomType} RoomType */
@@ -36,11 +35,11 @@ const furnishing = {
     painting : { name: 'Painting' },
     pillar   : { name: 'Pillar' },
     rack     : { name: 'Rack', capacity: capacity.medium, variants: [ 'wood', 'metal' ] },
-    shelf    : { name: 'Table, small', capacity: capacity[size.small] },
+    shelf    : { name: 'Table, small', capacity: capacity.small },
     shrine   : { name: 'Shrine' },
     spit     : { name: 'Cooking spit' },
     tableLg  : { name: 'Table, large', capacity: capacity.medium, variants: [ 'wood', 'stone', 'metal' ] },
-    tableSm  : { name: 'Table, small', capacity: capacity[size.small], variants: [ 'wood', 'stone', 'metal' ] },
+    tableSm  : { name: 'Table, small', capacity: capacity.small, variants: [ 'wood', 'stone', 'metal' ] },
     tapestry : { name: 'Tapestry' },
     throne   : { name: 'Throne' },
     torch    : { name: 'Torch' },

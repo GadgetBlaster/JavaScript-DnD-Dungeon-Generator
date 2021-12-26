@@ -4,8 +4,7 @@ import { knobs } from '../knobs.js';
 import { random } from '../utility/random.js';
 import { rollArrayItem, roll } from '../utility/roll.js';
 import { strong, em } from '../ui/typography.js';
-import condition, { probability as conditionProbability } from '../attribute/condition.js';
-import quantity from '../attribute/quantity.js';
+import { probability as conditionProbability } from '../attribute/condition.js';
 import { probability as rarityProbability } from '../attribute/rarity.js';
 import set from './set.js';
 
@@ -180,7 +179,7 @@ export const generateItem = (config) => {
         throw new TypeError('Item quantity is required in generateItem()');
     }
 
-    if (quantitySetting === quantity.zero) {
+    if (quantitySetting === 'zero') {
         throw new TypeError('Item quantity cannot be zero');
     }
 
@@ -216,7 +215,7 @@ export const generateItem = (config) => {
     };
 
     if (detailsHidden.has(item.type)) {
-        itemCondition = condition.average;
+        itemCondition = 'average';
         itemRarity    = 'average';
     }
 
@@ -224,9 +223,9 @@ export const generateItem = (config) => {
         itemCondition = conditionProbability.roll();
     }
 
-    let isSingle          = quantitySetting === quantity.one;
+    let isSingle          = quantitySetting === 'one';
     let indicateRare      = (isSingle || raritySetting === random)    && rarityIndicated.has(itemRarity);
-    let indicateCondition = (isSingle || conditionSetting === random) && itemCondition !== condition.average;
+    let indicateCondition = (isSingle || conditionSetting === random) && itemCondition !== 'average';
 
     let name = indicateRare ? strong(item.name) : item.name;
 
