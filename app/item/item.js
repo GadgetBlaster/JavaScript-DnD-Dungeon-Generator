@@ -14,8 +14,10 @@ import set from './set.js';
 // -- Types --------------------------------------------------------------------
 
 // /** @typedef {import('../knobs.js').Config} Config */
+
 /** @typedef {import('../attribute/rarity.js').Rarity} Rarity */
 /** @typedef {import('../attribute/size.js').Size} Size */
+/** @typedef {import('../attribute/condition.js').Condition} Condition */
 
 /** @typedef {typeof itemTypes[number]} ItemType */
 
@@ -32,12 +34,13 @@ import set from './set.js';
  */
 
 /**
- * @TODO duplicate typedef. Consolidate and standardize
+ * @TODO duplicate typedef. Consolidate and standardize. Use this type.
  *
  * @typedef {object} Item
  *
  * @prop {string} name
  * @prop {string} label
+ * @prop {Condition} condition
  * @prop {Rarity} rarity
  * @prop {Size} size
  * @prop {ItemType} type
@@ -266,7 +269,7 @@ export const generateItem = (config) => {
     return {
         label: name + noteText,
         name,
-        quantity: maxCount,
+        quantity: maxCount, // TODO count?
         rarity: itemRarity,
         size: item.size,
         type: item.type,

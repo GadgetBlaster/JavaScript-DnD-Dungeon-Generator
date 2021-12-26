@@ -5,36 +5,36 @@ import {
     getItemDescription,
     getRarityDescription,
 } from '../description.js';
-import condition from '../../attribute/condition.js';
-import rarity from '../../attribute/rarity.js';
-import type from '../type.js';
+
+/** @typedef {import('../item.js').Item} Item */
 
 /**
  * @param {import('../../unit/state.js').Utility} utility
  */
 export default ({ assert, describe, it }) => {
     describe('getConditionDescription()', () => {
-        describe('given an item condition of `condition.average`', () => {
+        describe('given an item condition of "average"', () => {
             it('should return undefined', () => {
-                assert(getConditionDescription(condition.average)).isFalse();
+                assert(getConditionDescription('average')).isFalse();
             });
         });
 
-        describe('given an item condition other than `condition.average`', () => {
+        describe('given an item condition other than "average"', () => {
             it('should return a string containing the condition', () => {
-                assert(getConditionDescription(condition.exquisite)).stringIncludes(condition.exquisite);
+                assert(getConditionDescription('exquisite')).stringIncludes('exquisite');
             });
         });
     });
 
     describe('getItemDescription()', () => {
+        /** @type {Item} item */
         const item = {
             count: 1,
             label: 'Bubbling goblin juice',
             name: 'Goblin juice',
-            quantity: 20,
-            rarity: rarity.abundant,
-            type: type.miscellaneous,
+            rarity: 'abundant',
+            size: 'medium',
+            type: 'miscellaneous',
         };
 
         describe('given an item count of 1', () => {
@@ -56,13 +56,13 @@ export default ({ assert, describe, it }) => {
     describe('getRarityDescription()', () => {
         describe('given an item rarity that should not be indicated', () => {
             it('should return undefined', () => {
-                assert(getRarityDescription(rarity.average)).isFalse();
+                assert(getRarityDescription('average')).isFalse();
             });
         });
 
         describe('given an item rarity that should be indicated', () => {
             it('should return a string containing the rarity', () => {
-                assert(getRarityDescription(rarity.rare)).stringIncludes(rarity.rare);
+                assert(getRarityDescription('rare')).stringIncludes('rare');
             });
         });
     });

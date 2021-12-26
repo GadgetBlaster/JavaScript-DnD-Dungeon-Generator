@@ -10,12 +10,6 @@ import {
 } from '../item.js';
 import { knobs } from '../../knobs.js';
 
-import { list as rarities } from '../../attribute/rarity.js';
-import condition from '../../attribute/condition.js';
-import itemType, { list as itemTypes } from '../type.js';
-import quantity from '../../attribute/quantity.js';
-import rarity from '../../attribute/rarity.js';
-
 /**
  * @param {import('../../unit/state.js').Utility}
  */
@@ -60,10 +54,10 @@ export default ({ assert, describe, it }) => {
     describe('generateItem()', () => {
         const itemSettings = {
             // TODO
-            [knobs.itemCondition]: condition.average,
-            [knobs.itemQuantity]: quantity.one,
-            [knobs.itemRarity]: rarity.exotic,
-            [knobs.itemType]: itemType.treasure,
+            [knobs.itemCondition]: 'average',
+            [knobs.itemQuantity] : 'one',
+            [knobs.itemRarity]   : 'exotic',
+            [knobs.itemType]     : 'treasure',
         };
 
         describe('given no `itemCondition` setting', () => {
@@ -85,7 +79,7 @@ export default ({ assert, describe, it }) => {
         describe('given an `itemQuantity` of zero', () => {
             it('should throw', () => {
                 let settings = { ...itemSettings };
-                settings[knobs.itemQuantity] = quantity.zero;
+                settings[knobs.itemQuantity] = 'zero';
                 assert(() => generateItem(settings)).throws('Item quantity cannot be zero');
             });
         });
@@ -111,7 +105,7 @@ export default ({ assert, describe, it }) => {
 
             assert(item.label).isString();
             assert(item.name).isString();
-            assert(item.quantity).equals(1);
+            assert(item.quantity).equals(1); // TODO count
         });
     });
 };
