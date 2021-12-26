@@ -5,7 +5,7 @@
 import { furnitureQuantityList, probability as furnitureQuantityProbability } from './item/furnishing.js';
 import { conditions, probability as conditionProbability } from './attribute/condition.js';
 import { itemTypes } from './item/item.js';
-import { list as quantities, probability as quantityProbability } from './attribute/quantity.js';
+import { quantities, probability as quantityProbability } from './attribute/quantity.js';
 import { list as rarities, probability as rarityProbability } from './attribute/rarity.js';
 import { roomTypes } from './room/room.js';
 import { list as sizes } from './attribute/size.js';
