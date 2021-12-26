@@ -5,11 +5,11 @@
 import { conditions, probability as conditionProbability } from './attribute/condition.js';
 import { furnitureQuantityList, probability as furnitureQuantityProbability } from './item/furnishing.js';
 import { itemTypes } from './item/item.js';
-import { list as sizes } from './attribute/size.js';
 import { pages } from './ui/nav.js';
 import { quantities, probability as quantityProbability } from './attribute/quantity.js';
 import { rarities, probability as rarityProbability } from './attribute/rarity.js';
 import { roomTypes } from './room/room.js';
+import { sizes } from './attribute/size.js';
 
 // -- Types --------------------------------------------------------------------
 

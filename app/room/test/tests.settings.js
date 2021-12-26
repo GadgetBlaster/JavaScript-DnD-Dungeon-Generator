@@ -12,10 +12,10 @@ import {
 import { conditions } from '../../attribute/condition.js';
 import { furnitureQuantity } from '../../item/furnishing.js';
 import { knobs } from '../../knobs.js';
-import { list as sizes } from '../../attribute/size.js';
 import { quantities } from '../../attribute/quantity.js';
 import { rarities } from '../../attribute/rarity.js';
 import { roomTypes } from '../room.js';
+import { sizes } from '../../attribute/size.js';
 
 /**
  * @param {import('../../unit/state.js').Utility} utility

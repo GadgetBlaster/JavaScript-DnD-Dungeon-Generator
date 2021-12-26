@@ -9,8 +9,8 @@ import {
     roomTypeSizes,
 } from '../dimensions.js';
 
-import { list as sizes } from '../../attribute/size.js';
 import { roomTypes } from '../room.js';
+import { sizes } from '../../attribute/size.js';
 
 /**
  * @param {import('../../unit/state.js').Utility} utility
