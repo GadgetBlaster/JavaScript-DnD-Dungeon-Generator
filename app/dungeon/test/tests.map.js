@@ -30,7 +30,6 @@ import { knobs } from '../../knobs.js';
 import { labelMinWidth, labelMinHeight, testTrapLabel as trapLabel } from '../draw.js';
 import { list as doorTypes } from '../../room/door.js';
 import condition from '../../attribute/condition.js';
-import itemTypes from '../../item/type.js';
 import quantity from '../../attribute/quantity.js';
 import rarity from '../../attribute/rarity.js';
 import roomTypes from '../../room/type.js';
@@ -1008,7 +1007,7 @@ export default ({ assert, describe, it }) => {
                 [knobs.itemCondition]: condition.average,
                 [knobs.itemQuantity] : quantity.one,
                 [knobs.itemRarity]   : rarity.average,
-                [knobs.itemType]     : itemTypes.miscellaneous,
+                [knobs.itemType]     : 'miscellaneous',
                 [knobs.roomSize]     : size.medium,
                 [knobs.roomCount]    : 34,
                 [knobs.roomType]     : roomTypes.room,

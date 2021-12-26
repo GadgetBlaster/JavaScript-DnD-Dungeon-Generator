@@ -7,7 +7,6 @@ import {
 import { furnitureQuantity } from '../../item/furnishing.js';
 import { knobs } from '../../knobs.js';
 import condition from '../../attribute/condition.js';
-import itemType from '../../item/type.js';
 import quantity from '../../attribute/quantity.js';
 import rarity from '../../attribute/rarity.js';
 import roomType from '../type.js';
@@ -23,7 +22,7 @@ export default ({ assert, describe, it }) => {
             [knobs.itemCondition]: condition.average,
             [knobs.itemQuantity]: quantity.zero,
             [knobs.itemRarity]: rarity.exotic,
-            [knobs.itemType]: itemType.treasure,
+            [knobs.itemType]: 'treasure',
             [knobs.roomCondition]: condition.average,
             [knobs.roomCount]: 1,
             [knobs.roomSize]: size.medium,

@@ -8,12 +8,8 @@ import condition, { probability as conditionProbability } from '../attribute/con
 import quantity from '../attribute/quantity.js';
 import { probability as rarityProbability } from '../attribute/rarity.js';
 import set from './set.js';
-// import size from '../attribute/size.js';
-// import type from './type.js';
 
 // -- Types --------------------------------------------------------------------
-
-// /** @typedef {import('../knobs.js').Config} Config */
 
 /** @typedef {import('../attribute/rarity.js').Rarity} Rarity */
 /** @typedef {import('../attribute/size.js').Size} Size */
@@ -51,7 +47,7 @@ import set from './set.js';
 
 // -- Config -------------------------------------------------------------------
 
-const itemTypes = Object.freeze(/** @type {const} */ ([
+export const itemTypes = Object.freeze(/** @type {const} */ ([
     'ammo',
     'armor',
     'chancery',
