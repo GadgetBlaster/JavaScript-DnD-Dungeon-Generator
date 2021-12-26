@@ -9,21 +9,19 @@ import { getEnvironmentDescription } from './environment.js';
 import { indicateRarity } from '../attribute/rarity.js';
 import { knobs } from '../knobs.js';
 import { list } from '../ui/list.js';
-import { random } from '../utility/random.js';
 import { rollArrayItem } from '../utility/roll.js';
-import condition from '../attribute/condition.js';
 import doorType, { appendDoorway, outside } from './door.js';
-import quantity from '../attribute/quantity.js';
 import roomTypes, { appendRoomTypes } from '../room/type.js';
-import size from '../attribute/size.js';
 
 // -- Types --------------------------------------------------------------------
 
+/** @typedef {import('../attribute/size.js').Size} Size */
+/** @typedef {import('../attribute/rarity.js').Rarity} Rarity */
 /** @typedef {import('../dungeon/map.js').Connection} Connection */
-/** @typedef {import('./door.js').RoomDoor} RoomDoor */
-/** @typedef {import('./door.js').DoorKey} DoorKey */
-/** @typedef {import('../knobs.js').RoomConfig} RoomConfig */
 /** @typedef {import('../knobs.js').DungeonConfig} DungeonConfig */
+/** @typedef {import('../knobs.js').RoomConfig} RoomConfig */
+/** @typedef {import('./door.js').DoorKey} DoorKey */
+/** @typedef {import('./door.js').RoomDoor} RoomDoor */
 
 // -- Config -------------------------------------------------------------------
 
@@ -61,7 +59,7 @@ function getContentDescription(config) {
         [knobs.roomType]      : roomType = roomTypes.room,
     } = config;
 
-    if (!itemQuantity || itemQuantity === quantity.zero) {
+    if (!itemQuantity || itemQuantity === 'zero') {
         return;
     }
 
@@ -72,28 +70,28 @@ function getContentDescription(config) {
     let furnitureText;
 
     switch (itemQuantity) {
-        case quantity.one:
+        case 'one':
             furnitureText = furniture ? (furniture + ' and') : '';
             return `The ${type} is entirely empty except for ${furnitureText} a single ${rarity} item`;
 
-        case quantity.couple:
+        case 'couple':
             furnitureText = furniture ? (' amongst ' + furniture ) : '';
             return `There are a couple of ${rarity} things in the ${type}${furnitureText}`;
 
-        case quantity.few:
+        case 'few':
             furnitureText = furniture ? (' amongst ' + furniture ) : '';
             return `There are a few ${rarity} things in the ${type}${furnitureText}`;
 
-        case quantity.some:
-        case quantity.several:
+        case 'some':
+        case 'several':
             furnitureText = furniture ? (furniture + ' and ' ) : '';
             return `You can see ${furnitureText}${itemQuantity} ${rarity} items as you search around the ${type}`;
 
-        case quantity.many:
+        case 'many':
             furnitureText = furniture ? (' and ' + furniture) : '';
             return `The ${type} is cluttered with ${rarity} items${furnitureText}`;
 
-        case quantity.numerous:
+        case 'numerous':
             furnitureText = furniture ? (' amongst ' + furniture ) : '';
             return `There are numerous ${rarity} objects littering the ${type}${furnitureText}`;
 
@@ -106,13 +104,16 @@ function getContentDescription(config) {
  *
  * @private
  *
- * @param {string} rarity
+ * @param {Rarity | "random"} rarity
  *
  * @returns {string}
  */
 function getContentRarityDetail(rarity) {
-    let defaultRarity = rarity === random ? '' : 'ordinary';
-    return indicateRarity.has(rarity) ? rarity : defaultRarity;
+    if (rarity === 'random') {
+        return '';
+    }
+
+    return indicateRarity.has(rarity) ? rarity : 'ordinary';
 }
 
 /**
@@ -135,15 +136,15 @@ function getDescription(config) {
 
     let typeString = getRoomTypeLabel(roomType);
 
-    if (roomSize && roomSize === size.medium) {
+    if (roomSize && roomSize === 'medium') {
         roomSize = 'medium sized';
     }
 
-    let empty    = itemQuantity === quantity.zero ? 'empty' : '';
+    let empty    = itemQuantity === 'zero' ? 'empty' : '';
     let desc     = [ roomSize, empty, typeString ].filter(Boolean).join(' ');
     let sentence = `You enter ${indefiniteArticle(desc)} ${desc}`;
 
-    if (roomCondition && roomCondition !== condition.average) {
+    if (roomCondition && roomCondition !== 'average') {
         sentence += ` in ${roomCondition} condition`;
     }
 
@@ -220,23 +221,23 @@ function getItemConditionDescription(config) {
         [knobs.itemCondition]: itemCondition,
     } = config;
 
-    if (itemQuantity === quantity.zero) {
+    if (itemQuantity === 'zero') {
         return;
     }
 
     switch (itemCondition) {
-        case condition.busted:
-        case condition.decaying:
+        case 'busted':
+        case 'decaying':
             return `Everything in the room is ${itemCondition}`;
 
-        case condition.good:
-        case condition.poor:
+        case 'good':
+        case 'poor':
             return `All of the items in the room are in ${itemCondition} condition`;
 
-        case condition.exquisite:
-            return `The room’s contents are in exquisite condition`;
+        case 'exquisite':
+            return 'The room’s contents are in exquisite condition';
 
-        case condition.average:
+        case 'average':
         default:
             return;
     }
@@ -279,7 +280,7 @@ function getKeyDetail(type) {
  *
  * @private
  *
- * @param {import('../typedefs.js').Size} roomSize
+ * @param {Size} roomSize
  *
  * @returns {string}
  */
