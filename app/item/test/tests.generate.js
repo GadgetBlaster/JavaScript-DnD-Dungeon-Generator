@@ -13,7 +13,7 @@ import {
 
 import { knobs } from '../../knobs.js';
 import { quantityMinimum, quantityMaximum } from '../../attribute/quantity.js';
-import roomTypes from '../../room/type.js';
+import roomTypes from '../../room/room.js';
 import {
     anyRoomFurniture,
     furnishingByRoomType,

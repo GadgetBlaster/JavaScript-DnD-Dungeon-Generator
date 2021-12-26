@@ -16,7 +16,7 @@ import { list as rarities } from '../../attribute/rarity.js';
 import { list as sizes } from '../../attribute/size.js';
 import { random } from '../../utility/random.js';
 import quantity, { quantities } from '../../attribute/quantity.js';
-import roomType, { list as roomTypes } from '../type.js';
+import roomType, { list as roomTypes } from '../room.js';
 
 /**
  * @param {import('../../unit/state.js').Utility} utility

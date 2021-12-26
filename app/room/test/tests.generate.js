@@ -9,7 +9,7 @@ import { knobs } from '../../knobs.js';
 import condition from '../../attribute/condition.js';
 import quantity from '../../attribute/quantity.js';
 import rarity from '../../attribute/rarity.js';
-import roomType from '../type.js';
+import roomType from '../room.js';
 import size from '../../attribute/size.js';
 
 /**

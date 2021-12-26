@@ -21,7 +21,7 @@ import condition from '../../attribute/condition.js';
 import quantity from '../../attribute/quantity.js';
 import rarity from '../../attribute/rarity.js';
 import size from '../../attribute/size.js';
-import roomType from '../../room/type.js';
+import roomType from '../../room/room.js';
 import trapList from '../../room/trap.js';
 
 /**

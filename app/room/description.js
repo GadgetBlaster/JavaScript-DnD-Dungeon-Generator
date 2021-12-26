@@ -11,7 +11,7 @@ import { knobs } from '../knobs.js';
 import { list } from '../ui/list.js';
 import { rollArrayItem } from '../utility/roll.js';
 import doorType, { appendDoorway, outside } from './door.js';
-import roomTypes, { appendRoomTypes } from '../room/type.js';
+import roomTypes, { appendRoomTypes } from '../room/room.js';
 
 // -- Types --------------------------------------------------------------------
 

@@ -1,9 +1,8 @@
 // @ts-check
 
-import { list as roomTypes } from './type.js';
+import roomType, { list as roomTypes } from './room.js';
 import { roll } from '../utility/roll.js';
 import size, { list as sizes } from '../attribute/size.js';
-import type from './type.js';
 
 // -- Types --------------------------------------------------------------------
 
@@ -45,16 +44,16 @@ export const dimensionRanges = {
  * @type {{ [key: string]: string[] }}
  */
 const roomSizes = {
-    [type.ballroom] : [ medium, large, massive ],
-    [type.bathhouse]: [ small, medium, large, massive ],
-    [type.dining]   : [ small, medium, large, massive ],
-    [type.dormitory]: [ medium, large, massive ],
-    [type.greatHall]: [ large, massive ],
-    [type.pantry]   : [ tiny, small, medium ],
-    [type.parlour]  : [ tiny, small, medium ],
-    [type.study]    : [ tiny, small, medium ],
-    [type.throne]   : [ medium, large, massive ],
-    [type.torture]  : [ tiny, small, medium ],
+    [roomType.ballroom] : [ medium, large, massive ],
+    [roomType.bathhouse]: [ small, medium, large, massive ],
+    [roomType.dining]   : [ small, medium, large, massive ],
+    [roomType.dormitory]: [ medium, large, massive ],
+    [roomType.greatHall]: [ large, massive ],
+    [roomType.pantry]   : [ tiny, small, medium ],
+    [roomType.parlour]  : [ tiny, small, medium ],
+    [roomType.study]    : [ tiny, small, medium ],
+    [roomType.throne]   : [ medium, large, massive ],
+    [roomType.torture]  : [ tiny, small, medium ],
 };
 
 /**
@@ -81,7 +80,7 @@ export const customDimensions = {
 };
 
 /**
- * Room sizes by room type.
+ * Room sizes by room roomType.
  *
  * All room sizes are returned if the room type is not limited to a sub-set of
  * sizes defined in `roomSizes`.

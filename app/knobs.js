@@ -7,7 +7,7 @@ import { list as conditions, probability as conditionProbability } from './attri
 import { itemTypes } from './item/item.js';
 import { list as quantities, probability as quantityProbability } from './attribute/quantity.js';
 import { list as rarities, probability as rarityProbability } from './attribute/rarity.js';
-import { list as roomTypes } from './room/type.js';
+import { list as roomTypes } from './room/room.js';
 import { list as sizes } from './attribute/size.js';
 import { pages } from './ui/nav.js';
 import { random } from './utility/random.js';

@@ -2,7 +2,7 @@
 
 import { capacity } from './types/container.js';
 import { rollArrayItem, createProbability } from '../utility/roll.js';
-import roomType from '../room/type.js';
+import roomType from '../room/room.js';
 import size from '../attribute/size.js';
 
 /** @typedef {import('./item.js').ItemConfig} ItemConfig */

@@ -10,7 +10,7 @@ import {
 } from '../dimensions.js';
 
 import size, { list as sizes } from '../../attribute/size.js';
-import { list as roomTypes } from '../type.js';
+import { list as roomTypes } from '../room.js';
 
 /**
  * @param {import('../../unit/state.js').Utility} utility

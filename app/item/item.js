@@ -156,6 +156,7 @@ export {
  * Generates an item config based on room settings.
  *
  * @TODO break out or inject randomization logic for testing.
+ * @TODO move to generate.js
  *
  * @param {Config} config
  *

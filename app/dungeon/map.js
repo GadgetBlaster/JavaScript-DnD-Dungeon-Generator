@@ -28,7 +28,7 @@ import {
 import { knobs } from '../knobs.js';
 import { roll, rollArrayItem, rollPercentile } from '../utility/roll.js';
 import { isRequired, toWords } from '../utility/tools.js';
-import roomType from '../room/type.js';
+import roomType from '../room/room.js';
 
 // -- Types --------------------------------------------------------------------
 

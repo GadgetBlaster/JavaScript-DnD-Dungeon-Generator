@@ -11,7 +11,7 @@ import { random } from '../utility/random.js';
 import { rollArrayItem, rollPercentile } from '../utility/roll.js';
 import { roomTypeSizes } from './dimensions.js';
 import quantity from '../attribute/quantity.js';
-import roomType, { list as roomTypes, probability as roomTypeProbability } from './type.js';
+import roomType, { list as roomTypes, probability as roomTypeProbability } from './room.js';
 
 // -- Types --------------------------------------------------------------------
 

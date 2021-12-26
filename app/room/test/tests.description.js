@@ -29,7 +29,7 @@ import condition from '../../attribute/condition.js';
 import doorType, { lockable, appendDoorway, outside } from '../door.js';
 import quantity, { quantities } from '../../attribute/quantity.js';
 import rarity, { indicateRarity, rarities } from '../../attribute/rarity.js';
-import roomType, { appendRoomTypes } from '../../room/type.js';
+import roomType, { appendRoomTypes } from '../room.js';
 import size from '../../attribute/size.js';
 
 /**

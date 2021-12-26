@@ -32,7 +32,7 @@ import { list as doorTypes } from '../../room/door.js';
 import condition from '../../attribute/condition.js';
 import quantity from '../../attribute/quantity.js';
 import rarity from '../../attribute/rarity.js';
-import roomTypes from '../../room/type.js';
+import roomTypes from '../../room/room.js';
 import size from '../../attribute/size.js';
 
 /**

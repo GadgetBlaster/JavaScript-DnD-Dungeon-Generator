@@ -10,7 +10,7 @@ import {
 } from '../feature.js';
 
 import { knobs } from '../../knobs.js';
-import roomType from '../type.js';
+import roomType from '../room.js';
 
 /**
  * @param {import('../../unit/state.js').Utility} utility
