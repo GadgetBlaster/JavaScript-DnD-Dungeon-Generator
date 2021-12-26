@@ -1,7 +1,7 @@
 // @ts-check
 
 import { knobs } from '../knobs.js';
-import { random } from '../utility/random.js';
+import { toss } from '../utility/tools.js';
 import { rollArrayItem, roll } from '../utility/roll.js';
 import { strong, em } from '../ui/typography.js';
 import { probability as conditionProbability } from '../attribute/condition.js';
@@ -170,38 +170,23 @@ export const generateItem = (config) => {
         [knobs.itemType]     : itemType,
     } = config;
 
-    // TODO collapse
-    if (!conditionSetting) {
-        throw new TypeError('Item condition is required in generateItem()');
-    }
-
-    if (!quantitySetting) {
-        throw new TypeError('Item quantity is required in generateItem()');
-    }
-
-    if (quantitySetting === 'zero') {
-        throw new TypeError('Item quantity cannot be zero');
-    }
-
-    if (!raritySetting) {
-        throw new TypeError('Item rarity is required in generateItem()');
-    }
-
-    if (!itemType) {
-        throw new TypeError('Item type is required in generateItem()');
-    }
+    !conditionSetting && toss('Item condition is required in generateItem()');
+    !itemType         && toss('Item type is required in generateItem()');
+    !quantitySetting  && toss('Item quantity is required in generateItem()');
+    !raritySetting    && toss('Item rarity is required in generateItem()');
+    quantitySetting === 'zero' && toss('Item quantity cannot be zero');
 
     let itemRarity    = raritySetting;
     let itemCondition = conditionSetting;
 
-    if (raritySetting === random) {
+    if (raritySetting === 'random') {
         itemRarity = rarityProbability.roll();
     }
 
     let randomItem;
 
     // TODO break out into function, add early returns for undefined groups.
-    if (itemType === random) {
+    if (itemType === 'random') {
         randomItem = groupByRarity[itemRarity] && rollArrayItem(groupByRarity[itemRarity]);
     } else {
         let itemsByTypeAndRarity = groupByType[itemType] && groupByType[itemType][itemRarity];
@@ -219,13 +204,13 @@ export const generateItem = (config) => {
         itemRarity    = 'average';
     }
 
-    if (itemCondition === random) {
+    if (itemCondition === 'random') {
         itemCondition = conditionProbability.roll();
     }
 
     let isSingle          = quantitySetting === 'one';
-    let indicateRare      = (isSingle || raritySetting === random)    && rarityIndicated.has(itemRarity);
-    let indicateCondition = (isSingle || conditionSetting === random) && itemCondition !== 'average';
+    let indicateRare      = (isSingle || raritySetting === 'random')    && rarityIndicated.has(itemRarity);
+    let indicateCondition = (isSingle || conditionSetting === 'random') && itemCondition !== 'average';
 
     let name = indicateRare ? strong(item.name) : item.name;
 

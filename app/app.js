@@ -27,12 +27,12 @@ const sections = {
 const homeContent   = sections.content.innerHTML;
 const footerContent = sections.footer.innerHTML;
 
-const testSummary = getSummaryLink(run(unitState(), suite));
-
 // -- Initialization -----------------------------------------------------------
+
+const testSummary = getSummaryLink(run(unitState(), suite));
 
 sections.nav.innerHTML    = getNav();
 sections.knobs.innerHTML  = getKnobPanel();
-sections.footer.innerHTML =  testSummary + footerContent;
+sections.footer.innerHTML = testSummary + footerContent;
 
 attachClickDelegate(sections.body, getTriggers(sections, homeContent));
