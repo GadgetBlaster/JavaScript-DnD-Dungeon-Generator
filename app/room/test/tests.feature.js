@@ -5,7 +5,7 @@ import {
     testGetFeatureDesc as getFeatureDesc,
 
     // Public Functions
-    feature,
+    roomFeatures,
     getRoomFeatures,
 } from '../feature.js';
 
@@ -19,7 +19,7 @@ export default ({ assert, describe, it }) => {
     // -- Private Functions ----------------------------------------------------
 
     describe('getFeatureDesc()', () => {
-        Object.values(feature).forEach((roomFeature) => {
+        roomFeatures.forEach((roomFeature) => {
             describe(`given a room feature of \`${roomFeature}\``, () => {
                 it('should return a string', () => {
                     assert(getFeatureDesc(roomFeature, { variation: false })).isString();
@@ -35,6 +35,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given an invalid room feature', () => {
             it('should throw', () => {
+                // @ts-expect-error
                 assert(() => getFeatureDesc('captain jim jam')).throws('Invalid room feature');
             });
         });

@@ -9,6 +9,8 @@ import { toss } from '../utility/tools.js';
 /** @typedef {import('../knobs.js').DungeonConfig} DungeonConfig */
 /** @typedef {import('../knobs.js').RoomConfig} RoomConfig */
 
+/** @typedef {typeof roomFeatures[number]} RoomFeature */
+
 // -- Config -------------------------------------------------------------------
 
 /**
@@ -21,39 +23,36 @@ const featureChance = 50;
  */
 const maxFeatures = 3;
 
-/**
- * Room feature types
- */
-export const feature = {
-    altar     : 'altar',
-    beetles   : 'beetles',
-    cage      : 'cage',
-    candles   : 'candles',
-    carvings  : 'carvings',
-    caveIn    : 'caveIn',
-    cobwebs   : 'cobwebs',
-    corpse    : 'corpse',
-    embers    : 'embers',
-    fire      : 'fire',
-    fountain  : 'fountain',
-    gargoyles : 'gargoyles',
-    hole      : 'hole',
-    machinery : 'machinery',
-    moths     : 'moths',
-    mouldy    : 'mouldy',
-    pit       : 'pit',
-    pits      : 'pits',
-    rats      : 'rats',
-    sarcophagi: 'sarcophagi',
-    shackles  : 'shackles',
-    spiders   : 'spiders',
-    spikes    : 'spikes',
-    statue    : 'statue',
-    stream    : 'stream',
-    tapestries: 'tapestries',
-    torches   : 'torches',
-    well      : 'well',
-};
+export const roomFeatures = Object.freeze(/** @type {const} */ ([
+    'altar',
+    'beetles',
+    'cage',
+    'candles',
+    'carvings',
+    'caveIn',
+    'cobwebs',
+    'corpse',
+    'embers',
+    'fire',
+    'fountain',
+    'gargoyles',
+    'hole',
+    'machinery',
+    'moths',
+    'mouldy',
+    'pit',
+    'pits',
+    'rats',
+    'sarcophagi',
+    'shackles',
+    'spiders',
+    'spikes',
+    'statue',
+    'stream',
+    'tapestries',
+    'torches',
+    'well',
+]));
 
 // -- Private Functions --------------------------------------------------------
 
@@ -63,63 +62,63 @@ export const feature = {
  * @private
  * @throws
  *
- * @param {string} type
+ * @param {RoomFeature} roomFeature
  * @param {object} [options]
  *     @param {boolean} [options.variation = number]
  *
  * @returns {string}
  */
-function getFeatureDesc(type, { variation = Boolean(roll()) } = {}) {
-    switch (type) {
-        case feature.altar: {
+function getFeatureDesc(roomFeature, { variation = Boolean(roll()) } = {}) {
+    switch (roomFeature) {
+        case 'altar': {
             let location = variation ? 'in the center' : 'to one side';
             return `A ritualistic altar sits ${location} of the room`;
         }
 
-        case feature.beetles:
+        case 'beetles':
             return variation
                 ? 'Beetles scurry about'
                 : 'Beetles fall from the ceiling';
 
-        case feature.cage:
+        case 'cage':
             return variation
                 ? 'A large cage occupies the space'
                 : 'Small cages are scattered around the room';
 
-        case feature.candles:
+        case 'candles':
             return variation
                 ? 'Candles that were lit recently flicker and cast shadows around the room'
                 : 'Wax from melted candles is splattered on walls and floors';
 
-        case feature.carvings:
+        case 'carvings':
             return variation
                 ? 'Strange carvings have been etched into the walls, floor, and ceiling'
                 : 'Crude carvings of faces are chiseled in the walls';
 
-        case feature.caveIn:
+        case 'caveIn':
             return `Part of the ${variation ? 'room' : 'ceiling'} has caved in`;
 
-        case feature.cobwebs:
+        case 'cobwebs':
             return variation
                 ? 'Massive cobwebs stick to the walls'
                 : 'The room is covered with old cobwebs';
 
-        case feature.corpse:
+        case 'corpse':
             return variation
                 ? 'Bones from an old corpse are scattered around the room'
                 : 'A rotting corpse sits against a wall';
 
-        case feature.embers:
+        case 'embers':
             return variation
                 ? 'Scattered embers from a recent fire glow in the room'
                 : 'The room contains a small fire ring containing warm embers';
 
-        case feature.fire: {
+        case 'fire': {
             let fresh = variation ? 'A fresh' : 'An abandoned';
             return `${fresh} campfire burns on the floor`;
         }
 
-        case feature.fountain: {
+        case 'fountain': {
             let flowing = variation
                 ? 'still flowing'
                 : 'that has long ago stopped running';
@@ -127,87 +126,87 @@ function getFeatureDesc(type, { variation = Boolean(roll()) } = {}) {
             return `The room features a small fountain ${flowing}`;
         }
 
-        case feature.gargoyles:
+        case 'gargoyles':
             return variation
                 ? 'Small gargoyles line the edge of the ceiling'
                 : 'Tow statues of gargoyles site motionless next to the door';
 
-        case feature.hole:
+        case 'hole':
             return variation
                 ? 'There is a large hole in the floor'
                 : 'A small hole has been carved in to the wall';
 
-        case feature.machinery:
+        case 'machinery':
             return variation
                 ? 'Strange ancient machinery fills the room'
                 : 'The room contains old mechanical gears and machine parts';
 
-        case feature.moths:
+        case 'moths':
             return variation
                 ? 'Moths flutter in the air'
                 : 'Moth cocoons are stick to the walls and hang from the ceiling';
 
-        case feature.mouldy:
+        case 'mouldy':
             return variation
                 ? 'Nasty black mold is growing on the walls like vines'
                 : 'The room covered in mould';
 
-        case feature.pit: {
+        case 'pit': {
             let size = variation ? 'large' : 'small';
             return `A ${size} pit has been dug in the floor`;
         }
 
-        case feature.pits: {
+        case 'pits': {
             let size = variation ? 'large' : 'small';
             return `${roll(2, 8)} ${size} pits can be seen in the room`;
         }
 
-        case feature.rats:
+        case 'rats':
             return variation
                 ? 'Rats scatter as you enter the room'
                 : 'A large well fed ret looks at you inquisitively';
 
-        case feature.sarcophagi:
+        case 'sarcophagi':
             return variation
                 ? 'A sarcophagus sits undisturbed in the center of the room'
                 : `${roll(2, 6)} sarcophagi line the walls of the room`;
 
-        case feature.shackles:
+        case 'shackles':
             return variation
                 ? 'Shackles are attached to the walls'
                 : 'Broken shackles litter the floor';
 
-        case feature.spiders: {
+        case 'spiders': {
             let size = variation ? 'tiny' : 'small';
             return `The room is crawling with ${size} spikers`;
         }
 
-        case feature.spikes:
+        case 'spikes':
             return variation
                 ? 'Rusty spikes have been crudely attached to the walls and floors'
                 : 'Steel spikes descend from the ceiling';
 
-        case feature.statue: {
+        case 'statue': {
             let material = variation ? 'stone' : 'wooden';
             return `A ${material} statue sits motionless`;
         }
 
-        case feature.stream: {
+        case 'stream': {
             let description = variation ? 'small' : 'muddy';
             return `A ${description} stream runs through the room`;
         }
 
-        case feature.tapestries: {
+        case 'tapestries': {
             let size = variation ? 'large' : 'small';
             return `Several ${size} tapestries line the walls`;
         }
 
-        case feature.torches:
+        case 'torches':
             return variation
                 ? 'Lit torches illuminate the walls'
                 : 'Smoke from extinguished torches hangs in the room';
 
-        case feature.well: {
+        case 'well': {
             let description = variation
                 ? 'that appears to have running water'
                 : 'with muddy';
@@ -250,15 +249,15 @@ export function getRoomFeatures(config) {
     }
 
     let featureCount = roll(1, maxFeatures);
-    let types = new Set();
+    let featureTypes = new Set();
 
     for (let i = 0; i < featureCount; i++) {
-        types.add(rollArrayItem(Object.keys(feature)));
+        featureTypes.add(rollArrayItem(roomFeatures));
     }
 
-    let roomFeatures = [ ...types ].map((type) => {
+    let features = [ ...featureTypes ].map((type) => {
         return getFeatureDesc(type);
     });
 
-    return roomFeatures;
+    return features;
 }
