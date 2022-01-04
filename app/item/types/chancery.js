@@ -16,7 +16,7 @@ const chanceryItems = {
     'Hourglass'        : { rarity: 'rare' },
     'Ink pen'          : { size: 'tiny' },
     'Ink'              : { size: 'tiny', variants: [ 'vial', 'bottle' ] },
-    'Journal'          : { variants: [ 'blank', 'adventurer’s', 'noble person’s', 'hermit’s', 'wizard’s', 'merchant’s' ] },
+    'Journal'          : { variants: [ 'blank', 'adventurer’s', 'noble person’s', 'hermit’s', 'wizard’s', 'merchant’s' ] }, // eslint-disable-line max-len
     'Letter opener'    : { size: 'tiny' },
     'Paper'            : { maxCount: 100 },
     'Paperweight'      : { size: 'tiny' },

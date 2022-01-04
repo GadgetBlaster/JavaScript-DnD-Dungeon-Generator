@@ -41,7 +41,7 @@ export function createProbability(config) {
 
     try {
         map = new Map(config);
-    } catch(e) {
+    } catch (e) {
         throw new TypeError('Invalid `config` for Map');
     }
 

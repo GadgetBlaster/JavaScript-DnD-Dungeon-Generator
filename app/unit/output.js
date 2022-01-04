@@ -28,13 +28,6 @@ import run from './run.js';
 // -- Config -------------------------------------------------------------------
 
 /**
- * Animation delay in milliseconds.
- *
- * @type {number}
- */
-const animationDelay = 2;
-
-/**
  * HTML escapes
  */
 const htmlEscapes = {
@@ -126,7 +119,7 @@ export const getNav = ({ scope, verbose }) => [
     link('All', unitUrl + makeParams({ scope: null, verbose }), !scope ? { 'data-active': true } : null),
     link('Tests', unitUrl + makeParams({ scope: 'list', verbose }), scope === 'list' ? { 'data-active': true } : null),
     element('span', '', { role: 'presentation', 'data-separator': true }),
-    link('Verbose', unitUrl + makeParams({ scope, verbose: !verbose }), verbose ? { 'data-active': verbose } : null)
+    link('Verbose', unitUrl + makeParams({ scope, verbose: !verbose }), verbose ? { 'data-active': verbose } : null),
 ].join('');
 
 /**

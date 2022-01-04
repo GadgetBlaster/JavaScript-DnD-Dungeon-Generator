@@ -255,7 +255,7 @@ function drawRooms(gridDimensions, mapRooms, grid, roomNumber = 1, prevRoom) {
         skipped,
         roomNumber,
     };
-};
+}
 
 /**
  * Returns a door object based on the given grid, room, and previous room.
@@ -587,7 +587,7 @@ const getExtraDoors = (grid, rooms, existingDoors) => {
         let { roomNumber, settings } = room.config;
         let { [knobs.dungeonConnections ]: connectionChance } = settings;
 
-        let chance = Number(connectionChance)
+        let chance = Number(connectionChance);
 
         if (!chance) {
             return;

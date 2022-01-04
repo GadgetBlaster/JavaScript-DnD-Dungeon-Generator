@@ -155,9 +155,9 @@ function getGroundDesc() {
             return 'Dirt covers the ground';
 
         case ground.flooded: {
-            let inches = roll();
-            // TODO
-            return `The room is ${inches ? '' : 'completely '}flooded with a few ${inches ? 'inches' : 'feet'} of water`;
+            return roll()
+                ? 'The room is flooded with a boot’s depth of water'
+                : 'The room is completely flooded with what appears to be waist deep water';
         }
 
         case ground.muddy:

@@ -50,7 +50,7 @@ export default function ({ getSummary, onError, runUnits }, suite, scope) {
 
         try {
             runUnits(path, tests);
-        } catch(error) {
+        } catch (error) {
             let msg = typeof error === 'object' ? error.stack.toString() : error;
             onError(msg);
         }

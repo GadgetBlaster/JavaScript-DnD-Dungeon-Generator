@@ -140,7 +140,7 @@ export function getRoomDoor(doors) {
             if (door.locked) {
                 keys.push({
                     type: door.type,
-                    connections: door.connections
+                    connections: door.connections,
                 });
             }
 

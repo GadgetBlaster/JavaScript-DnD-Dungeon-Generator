@@ -203,7 +203,7 @@ const config = [
                 desc  : descFurnitureQuantity + ' ' + furnitureQuantityProbability.description,
                 type  : typeSelect,
                 values: getValues(furnitureQuantityList),
-            }
+            },
         ],
     },
     {

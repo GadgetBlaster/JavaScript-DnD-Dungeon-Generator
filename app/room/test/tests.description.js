@@ -47,7 +47,7 @@ export default ({ assert, describe, it }) => {
             it('should return `undefined`', () => {
                 assert(getContentDescription({
                     // TODO
-                    [knobs.itemQuantity]: 'zero'
+                    [knobs.itemQuantity]: 'zero',
                 })).isUndefined();
             });
         });

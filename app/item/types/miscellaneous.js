@@ -19,7 +19,7 @@ const miscellaneousItems = {
     'Cotton'     : { variants: [ '1 foot', '5 feet', '10 feet', '20 foot' ] },
     'Hide'       : { variants: [ 'wolf', 'bear', 'deer', 'rabbit', 'raccoon', 'beaver' ] },
     'Incense'    : { rarity: 'rare' },
-    'Instrument' : { rarity: 'exotic', variants: [ 'Bagpipes', 'Drum', 'Dulcimer', 'Flute', 'Lute', 'Lyre', 'Horn', 'Pan flute', 'Shawm', 'Viol' ] },
+    'Instrument' : { rarity: 'exotic', variants: [ 'Bagpipes', 'Drum', 'Dulcimer', 'Flute', 'Lute', 'Lyre', 'Horn', 'Pan flute', 'Shawm', 'Viol' ] }, // eslint-disable-line max-len
     'Iron, bar'  : { rarity: 'uncommon' },
     'Linen'      : { variants: [ '1 foot', '5 feet', '10 feet', '20 foot' ] },
     'Manacles'   : null,

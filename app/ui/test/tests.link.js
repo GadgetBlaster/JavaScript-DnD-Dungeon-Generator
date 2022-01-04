@@ -19,7 +19,8 @@ export default ({ assert, describe, it }) => {
 
         describe('given an href', () => {
             it('should contain the href', () => {
-                assert(link('Home', 'https://www.mysticwaffle.com')).stringIncludes('href="https://www.mysticwaffle.com"');
+                let linkHtml = link('Home', 'https://www.mysticwaffle.com');
+                assert(linkHtml).stringIncludes('href="https://www.mysticwaffle.com"');
             });
         });
 

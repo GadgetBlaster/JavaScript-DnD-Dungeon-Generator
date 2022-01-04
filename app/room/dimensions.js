@@ -59,7 +59,6 @@ const roomSizes = {
  * }}
  */
 export const customDimensions = {
-    // TODO see below
     hallway: (roomSize, { isHorizontal = roll() } = {}) => {
         let [ min, max ] = dimensionRanges[roomSize];
 

@@ -537,7 +537,7 @@ export function drawGrid({ width, height }) {
     }
 
     return lines;
-};
+}
 
 /**
  * Returns map SVG content wrapped in an SVG element with the given dimensions.

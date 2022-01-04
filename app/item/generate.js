@@ -277,7 +277,7 @@ export function generateItems(config) {
             remainingSpace = spaceAfterAdded;
 
             contents.push(smallItems.shift());
-        };
+        }
 
         if (contents.length) {
             container.contents = contents;
@@ -294,10 +294,10 @@ export function generateItems(config) {
             return;
         }
 
-        let items = container.contents.length && container.contents.map((item) => getItemDescription(item));
+        let containerItems = container.contents.length && container.contents.map((item) => getItemDescription(item));
         let desc  = getItemDescription(container);
 
-        return article(desc + (items ? list(items) : ''));
+        return article(desc + (containerItems ? list(containerItems) : ''));
     }).filter(Boolean).join('');
 
     let notContained = remaining.concat(smallItems, emptyContainers).map((item) => getItemDescription(item));
