@@ -4,6 +4,7 @@ import { capacity } from './types/container.js';
 import { rollArrayItem, createProbability } from '../utility/roll.js';
 
 /** @typedef {import('./item.js').ItemConfig} ItemConfig */
+/** @typedef {import('./item.js').Item} Item */
 /** @typedef {import('../room/room.js').RoomType} RoomType */
 
 /** @type {Omit<ItemConfig, "name">} */
@@ -14,7 +15,9 @@ const defaults = {
     type    : 'furnishing',
 };
 
-// TODO FurnishingType
+/**
+ * @type {Object<string, ItemConfig>}
+ */
 const furnishing = {
     alchemy  : { name: 'Alchemy equipment' },
     anvil    : { name: 'Anvil' },
@@ -58,11 +61,11 @@ Object.keys(furnishing).forEach((key) => {
         label += `, ${variant}`;
     }
 
-    furnishing[key] = {
+    furnishing[key] = /** @type {Item} */ ({
         ...defaults,
         ...item,
         label,
-    };
+    });
 });
 
 export default furnishing;
@@ -100,7 +103,7 @@ let {
 } = furnishing;
 
 /**
- * @type {{ [key in RoomType]: FurnishingType }}
+ * @type {{ [key in RoomType]: Item[] }}
  */
 export const furnishingByRoomType = {
     armory    : [ anvil, bench, cabinet, forge, lamp, rack, tableLg, shelf, torch, workbench ],
