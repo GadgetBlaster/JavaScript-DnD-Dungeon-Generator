@@ -225,24 +225,35 @@ function drawRooms(gridDimensions, mapRooms, grid, roomNumber = 1, prevRoom) {
             ({ x, y } = getStartingPoint(gridDimensions, roomDimensions));
         }
 
+        let rect = { x, y, ...roomDimensions };
+
+        let walls = getRoomWalls(grid, rect, roomNumber);
+
+        // TODO replace this `room` object with `gridRoom`
         let room = {
             ...roomDimensions,
             roomNumber,
             type,
             x,
             y,
+            walls,
         };
 
-        let { rect, walls } = getRoom(grid, room, { hasTraps: Boolean(roomConfig.traps) });
-
-        room.walls = walls;
+        let gridRoom = {
+            rect: { x, y, ...roomDimensions },
+            type,
+            roomNumber,
+            walls,
+        };
 
         gridRooms.push(room);
 
         doors.push(getDoor(grid, room, prevRoom, { allowSecret: isFork }));
 
+        let roomDrawing = getRoomDrawing(gridRoom, { hasTraps: Boolean(roomConfig.traps) });
+
         rooms.push({
-            rect,
+            rect: roomDrawing,
             config: {
                 ...roomConfig,
                 walls,
@@ -473,20 +484,15 @@ function getRoomDimensions(gridDimensions, roomConfig) {
  * @private
  *
  * @param {Grid} grid
- * @param {Room} room // TODO not a room
- * @param {object} [options]
- *     @param {boolean} [options.hasTraps]
+ * @param {Rectangle} rect
+ * @param {number} roomNumber
  *
- * @returns {{
- *     rect: string;
- *     walls: string[][]; // TODO GridCoordinates[]
- * }}
+ * @returns {GridCoordinates[]}
  */
-const getRoom = (grid, room, { hasTraps } = {}) => {
-    let { x, y, width, height, type, roomNumber } = room;
+function getRoomWalls(grid, rect, roomNumber) {
+    isRequired(roomNumber, 'roomNumber is required in getRoomWalls()');
 
-    isRequired(roomNumber, 'roomNumber is required in getRoom()');
-    isRequired(type, 'room type is required in getRoom()');
+    let { x, y, width, height } = rect;
 
     let walls = [];
 
@@ -498,6 +504,7 @@ const getRoom = (grid, room, { hasTraps } = {}) => {
             let yCord = y + h;
 
             if (!grid[xCord] || !grid[xCord][yCord]) {
+                // TODO throw?
                 continue;
             }
 
@@ -526,18 +533,27 @@ const getRoom = (grid, room, { hasTraps } = {}) => {
         }
     }
 
-    /** @type {Rectangle} roomRectangle */
-    let roomRectangle = { x, y, width, height };
+    return walls;
+}
+
+/**
+ * Returns a room's SVG element strings for the given GridRoom.
+ *
+ * @param {GridRoom} gridRoom
+ * @param {object} [options]
+ *     @param {object} [options.hasTraps]
+ *
+ * @returns {string}
+ */
+function getRoomDrawing(gridRoom, { hasTraps } = {}) {
+    let { rect, type, roomNumber } = gridRoom;
+    let { width, height } = rect;
+
     let showRoomLabel = type !== 'room' && width >= labelMinWidth && height >= labelMinHeight;
     let roomLabel     = showRoomLabel && toWords(type);
 
-    let rect = drawRoom(roomRectangle, { roomNumber, roomLabel }, { hasTraps });
-
-    return {
-        rect, // TODO rename to roomElements?
-        walls,
-    };
-};
+    return drawRoom(rect, { roomNumber, roomLabel }, { hasTraps });
+}
 
 /**
  * Returns a door config.
@@ -717,9 +733,10 @@ export {
     getDoorCells         as testGetDoorCells,
     getDoorDirection     as testGetDoorDirection,
     getExtraDoors        as testGetExtraDoors,
-    getRoom              as testGetRoom,
     getRoomDimensions    as testGetRoomDimensions,
+    getRoomDrawing       as testGetRoomDrawing,
     getRooms             as testGetRooms,
+    getRoomWalls         as testGetRoomWalls,
     makeDoor             as testMakeDoor,
 };
 
