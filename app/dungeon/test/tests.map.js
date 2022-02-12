@@ -32,6 +32,7 @@ import { labelMinWidth, labelMinHeight, testTrapLabel as trapLabel } from '../dr
 import { list as doorTypes } from '../../room/door.js';
 
 /** @typedef {import('../map.js').GridRoom} GridRoom */
+/** @typedef {import('../../room/room.js').RoomType} RoomType */
 
 /**
  * @param {import('../../unit/state.js').Utility} utility
@@ -154,20 +155,19 @@ export default ({ assert, describe, it }) => {
             describe('when connecting to a room', () => {
                 it('should connect the rooms', () => {
                     const grid = createBlankGrid(gridDimensions);
-                    let rect = {
+                    let prevRect = {
                         x: 1,
                         y: 1,
                         width: 2,
                         height: 3,
                     };
 
-                    const prevRoom = {
-                        ...rect,
+                    const prevGridRoom = {
+                        rect: prevRect,
                         roomNumber: 1,
                         type: 'room',
+                        walls: getRoomWalls(grid, prevRect, 1),
                     };
-
-                    const walls = getRoomWalls(grid, rect, prevRoom.roomNumber);
 
                     const room = {
                         roomNumber: 2,
@@ -177,10 +177,7 @@ export default ({ assert, describe, it }) => {
                         },
                     };
 
-                    const result = drawRooms(gridDimensions, [ room ], grid, 1, {
-                        walls,
-                        ...prevRoom,
-                    });
+                    const result = drawRooms(gridDimensions, [ room ], grid, 1, prevGridRoom);
 
                     assert(result.doors).isArray();
 
@@ -200,20 +197,19 @@ export default ({ assert, describe, it }) => {
             describe('when connecting a hallway to a room', () => {
                 it('should connect the hallway to the previous room', () => {
                     const grid = createBlankGrid(gridDimensions);
-                    const rect = {
+                    const prevRect = {
                         x: 1,
                         y: 1,
                         width: 2,
                         height: 3,
                     };
 
-                    const prevRoom = {
-                        ...rect,
+                    const prevGridRoom = {
+                        rect: prevRect,
                         roomNumber: 1,
                         type: 'room',
+                        walls: getRoomWalls(grid, prevRect, 1)
                     };
-
-                    const walls = getRoomWalls(grid, rect, prevRoom.roomNumber);
 
                     const hallway = {
                         roomNumber: 2,
@@ -223,10 +219,7 @@ export default ({ assert, describe, it }) => {
                         },
                     };
 
-                    const result = drawRooms(gridDimensions, [ hallway ], grid, 1, {
-                        walls,
-                        ...prevRoom,
-                    });
+                    const result = drawRooms(gridDimensions, [ hallway ], grid, 1, prevGridRoom);
 
                     assert(result.doors).isArray();
 
@@ -244,6 +237,7 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getDoor()', () => {
+        // TODO needs test w/o previous room
         it('should return a Door object', () => {
             // w = cellWall
             // c = cellCornerWall
@@ -271,15 +265,12 @@ export default ({ assert, describe, it }) => {
                 height: 2,
             };
 
-            const prevRoom = {
-                ...prevRect,
-                type: 'room',
+            const prevGridRoom = {
+                rect: prevRect,
                 roomNumber: 1,
+                type: /** @type {RoomType} */ ('room'),
+                walls: getRoomWalls(grid, prevRect, 1),
             };
-
-            const prevWalls = getRoomWalls(grid, prevRect, prevRoom.roomNumber);
-
-            prevRoom.walls = prevWalls;
 
             const rect = {
                 x: 2,
@@ -288,17 +279,14 @@ export default ({ assert, describe, it }) => {
                 height: 2,
             };
 
-            const room = {
-                ...rect,
-                type: 'room',
+            const gridRoom = {
+                rect,
                 roomNumber: 2,
+                type: /** @type {RoomType} */ ('room'),
+                walls: getRoomWalls(grid, rect, 2),
             };
 
-            const walls = getRoomWalls(grid, rect, room.roomNumber);
-
-            room.walls = walls;
-
-            const door = getDoor(grid, room, prevRoom);
+            const door = getDoor(grid, gridRoom, prevGridRoom);
 
             assert(door).isObject();
             assert(door.connections).equalsObject({
@@ -314,6 +302,7 @@ export default ({ assert, describe, it }) => {
 
     describe('getDoorCells()', () => {
         describe('given no previous room', () => {
+            const roomNumber = 1;
             const rectConfig = {
                 x: 0,
                 y: 0,
@@ -321,10 +310,10 @@ export default ({ assert, describe, it }) => {
                 height: 2,
             };
 
-            const roomConfig = {
-                ...rectConfig,
-                type: 'room',
-                roomNumber: 1,
+            const gridRoomConfig = {
+                rect: rectConfig,
+                roomNumber,
+                type: /** @type {RoomType} */ ('room'),
             };
 
             describe('when the room is adjacent to the north edge', () => {
@@ -336,16 +325,13 @@ export default ({ assert, describe, it }) => {
                         y: 1, // y - 1 = north edge
                     };
 
-                    const room = {
-                        ...roomConfig,
-                        ...rect,
+                    const gridRoom = {
+                        ...gridRoomConfig,
+                        rect,
+                        walls: getRoomWalls(grid, rect, roomNumber),
                     };
 
-                    const walls = getRoomWalls(grid, rect, room.roomNumber);
-
-                    room.walls = walls;
-
-                    const cells = getDoorCells(grid, room);
+                    const cells = getDoorCells(grid, gridRoom);
 
                     assert(cells).isArray();
                     cells && assert(cells.shift()).equalsObject({ x: 3, y: 0 });
@@ -362,16 +348,13 @@ export default ({ assert, describe, it }) => {
                         y: 3,
                     };
 
-                    const room = {
-                        ...roomConfig,
-                        ...rect,
+                    const gridRoom = {
+                        ...gridRoomConfig,
+                        rect,
+                        walls: getRoomWalls(grid, rect, roomNumber),
                     };
 
-                    const walls = getRoomWalls(grid, rect, room.roomNumber);
-
-                    room.walls = walls;
-
-                    const cells = getDoorCells(grid, room);
+                    const cells = getDoorCells(grid, gridRoom);
 
                     assert(cells).isArray();
                     cells && assert(cells.shift()).equalsObject({ x: 9, y: 3 });
@@ -388,16 +371,13 @@ export default ({ assert, describe, it }) => {
                         y: 7, // y + room height = south edge
                     };
 
-                    const room = {
-                        ...roomConfig,
-                        ...rect,
+                    const gridRoom = {
+                        ...gridRoomConfig,
+                        rect,
+                        walls: getRoomWalls(grid, rect, roomNumber),
                     };
 
-                    const walls = getRoomWalls(grid, rect, room.roomNumber);
-
-                    room.walls = walls;
-
-                    const cells = getDoorCells(grid, room);
+                    const cells = getDoorCells(grid, gridRoom);
 
                     assert(cells).isArray();
                     cells && assert(cells.shift()).equalsObject({ x: 2, y: 9 });
@@ -414,16 +394,13 @@ export default ({ assert, describe, it }) => {
                         y: 5,
                     };
 
-                    const room = {
-                        ...roomConfig,
-                        ...rect,
+                    const gridRoom = {
+                        ...gridRoomConfig,
+                        rect,
+                        walls: getRoomWalls(grid, rect, roomNumber),
                     };
 
-                    const walls = getRoomWalls(grid, rect, room.roomNumber);
-
-                    room.walls = walls;
-
-                    const cells = getDoorCells(grid, room);
+                    const cells = getDoorCells(grid, gridRoom);
 
                     assert(cells).isArray();
                     cells && assert(cells.shift()).equalsObject({ x: 0, y: 5 });
@@ -459,10 +436,11 @@ export default ({ assert, describe, it }) => {
                     height: 2,
                 };
 
-                const room1 = {
-                    ...rect1,
-                    type: 'room',
+                const gridRoom1 = {
+                    rect: rect1,
                     roomNumber: 1,
+                    type: /** @type {RoomType} */ ('room'),
+                    walls: getRoomWalls(grid, rect1, 1),
                 };
 
                 const rect2 = {
@@ -470,21 +448,16 @@ export default ({ assert, describe, it }) => {
                     y: 5,
                     width: 4,
                     height: 3,
-                }
-
-                const room2 = {
-                    ...rect2,
-                    type: 'room',
-                    roomNumber: 2,
                 };
 
-                const walls1 = getRoomWalls(grid, rect1, room1.roomNumber);
-                const walls2 = getRoomWalls(grid, rect2, room2.roomNumber);
+                const gridRoom2 = {
+                    rect: rect2,
+                    roomNumber: 2,
+                    type: /** @type {RoomType} */ ('room'),
+                    walls: getRoomWalls(grid, rect2, 2),
+                };
 
-                room1.walls = walls1;
-                room2.walls = walls2;
-
-                const cells = getDoorCells(grid, room2, room1);
+                const cells = getDoorCells(grid, gridRoom2, gridRoom1);
 
                 assert(cells).isArray();
                 cells && assert(cells.shift()).equalsObject({ x: 4, y: 4 });
@@ -495,43 +468,41 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getDoorDirection()', () => {
-        const room = {
+        const roomRect = {
             x: 2,
             y: 2,
             width: 2,
             height: 2,
-            type: 'room',
-            roomNumber: 1,
         };
 
         describe('given a grid cell on the north side of a room', () => {
             it('should return "north"', () => {
-                assert(getDoorDirection({ x: 2, y: 1 }, room)).equals('north');
+                assert(getDoorDirection({ x: 2, y: 1 }, roomRect)).equals('north');
             });
         });
 
         describe('given a grid cell on the east side of a room', () => {
             it('should return "east', () => {
-                assert(getDoorDirection({ x: 4, y: 2 }, room)).equals('east');
+                assert(getDoorDirection({ x: 4, y: 2 }, roomRect)).equals('east');
             });
         });
 
         describe('given a grid cell on the south side of a room', () => {
             it('should return "south"', () => {
-                assert(getDoorDirection({ x: 2, y: 4 }, room)).equals('south');
+                assert(getDoorDirection({ x: 2, y: 4 }, roomRect)).equals('south');
             });
         });
 
         describe('given a grid cell on the south side of a room', () => {
             it('should return "west"', () => {
-                assert(getDoorDirection({ x: 1, y: 2 }, room)).equals('west');
+                assert(getDoorDirection({ x: 1, y: 2 }, roomRect)).equals('west');
             });
         });
 
         describe('given an invalid cell', () => {
             it('should throw', () => {
                 // TODO [ 1, 1 ] should throw as well
-                assert(() => getDoorDirection({ x: 0, y: 0 }, room))
+                assert(() => getDoorDirection({ x: 0, y: 0 }, roomRect))
                     .throws('Invalid door coordinates in getDoorDirection()');
             });
         });

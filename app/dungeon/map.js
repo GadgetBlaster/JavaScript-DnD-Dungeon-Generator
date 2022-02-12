@@ -178,18 +178,11 @@ const checkForAdjacentDoor = (grid, { x, y }) => {
  * @param {Room[]} mapRooms
  * @param {Grid} grid
  * @param {number} [roomNumber = 1] // TODO make required?
- * @param {{
- *   x: number;
- *   y: number;
- *   width: number;
- *   height: number;
- *   type: number;
- *   walls: [number, number][];
- * }} [prevRoom]
+ * @param {GridRoom} [prevGridRoom]
  *
  * @returns {AppliedRoomResults}
  */
-function drawRooms(gridDimensions, mapRooms, grid, roomNumber = 1, prevRoom) {
+function drawRooms(gridDimensions, mapRooms, grid, roomNumber = 1, prevGridRoom) {
     let rooms     = [];
     let doors     = [];
     let skipped   = [];
@@ -205,10 +198,10 @@ function drawRooms(gridDimensions, mapRooms, grid, roomNumber = 1, prevRoom) {
         let y;
 
         // TODO break out into private function
-        if (prevRoom) {
-            isRequired(prevRoom.walls, 'Previous room requires wall cells');
+        if (prevGridRoom) {
+            isRequired(prevGridRoom.walls, 'Previous room requires wall cells'); // TODO add text `in drawRooms()`
 
-            let validCords = getValidRoomConnections(grid, prevRoom, roomDimensions);
+            let validCords = getValidRoomConnections(grid, roomDimensions, prevGridRoom.rect);
 
             if (!validCords.length) {
                 skipped.push(roomConfig);
@@ -226,18 +219,7 @@ function drawRooms(gridDimensions, mapRooms, grid, roomNumber = 1, prevRoom) {
         }
 
         let rect = { x, y, ...roomDimensions };
-
         let walls = getRoomWalls(grid, rect, roomNumber);
-
-        // TODO replace this `room` object with `gridRoom`
-        let room = {
-            ...roomDimensions,
-            roomNumber,
-            type,
-            x,
-            y,
-            walls,
-        };
 
         let gridRoom = {
             rect: { x, y, ...roomDimensions },
@@ -246,14 +228,14 @@ function drawRooms(gridDimensions, mapRooms, grid, roomNumber = 1, prevRoom) {
             walls,
         };
 
-        gridRooms.push(room);
+        gridRooms.push(gridRoom);
 
-        doors.push(getDoor(grid, room, prevRoom, { allowSecret: isFork }));
+        doors.push(getDoor(grid, gridRoom, prevGridRoom, { allowSecret: isFork }));
 
         let roomDrawing = getRoomDrawing(gridRoom, { hasTraps: Boolean(roomConfig.traps) });
 
         rooms.push({
-            rect: roomDrawing,
+            rect: roomDrawing, // TODO rename param
             config: {
                 ...roomConfig,
                 walls,
@@ -264,7 +246,7 @@ function drawRooms(gridDimensions, mapRooms, grid, roomNumber = 1, prevRoom) {
 
         roomNumber++;
 
-        prevRoom = room;
+        prevGridRoom = gridRoom;
     });
 
     let extraDoors = getExtraDoors(grid, rooms, doors);
@@ -273,7 +255,7 @@ function drawRooms(gridDimensions, mapRooms, grid, roomNumber = 1, prevRoom) {
         rooms,
         doors: doors.concat(extraDoors),
         gridRooms,
-        skipped,
+        skipped, // TOOD better name
         roomNumber,
     };
 }
@@ -284,23 +266,23 @@ function drawRooms(gridDimensions, mapRooms, grid, roomNumber = 1, prevRoom) {
  * @private
  *
  * @param {Grid} grid
- * @param {Room} room
- * @param {Room} prevRoom
+ * @param {GridRoom} gridRoom
+ * @param {GridRoom} [prevGridRoom]
  * @param {object} [options = {}]
  *     @param {boolean} [options.allowSecret]
  *
  * @returns {Door}
  */
-const getDoor = (grid, room, prevRoom, { allowSecret } = {}) => {
-    let cells     = getDoorCells(grid, room, prevRoom);
-    let useEdge   = prevRoom && prevRoom.roomType === 'hallway' && room.roomType === 'hallway';
+function getDoor(grid, gridRoom, prevGridRoom, { allowSecret } = {}) {
+    let cells     = getDoorCells(grid, gridRoom, prevGridRoom);
+    let useEdge   = prevGridRoom && prevGridRoom.type === 'hallway' && gridRoom.type === 'hallway';
     let max       = Math.min(maxDoorGridUnits, Math.ceil(cells.length / 2));
     let size      = roll(1, max);
     let remainder = cells.length - size;
     let start     = useEdge ? rollArrayItem([ 0, remainder ]) : roll(0, remainder);
     let doorCells = cells.slice(start, start + size);
     let { x, y }  = doorCells[0];
-    let direction = getDoorDirection({ x, y }, room);
+    let direction = getDoorDirection({ x, y }, gridRoom.rect); // TODO refactor for gridRoom
 
     let width  = 1;
     let height = 1;
@@ -315,13 +297,13 @@ const getDoor = (grid, room, prevRoom, { allowSecret } = {}) => {
     });
 
     /** @type {Rectangle} doorRectangle */
-    let doorRectangle = { x, y, width, height }; // TODO string vs number
-    let from       = room.roomNumber;
-    let to         = prevRoom ? prevRoom.roomNumber : outside;
+    let doorRectangle = { x, y, width, height };
+    let from       = gridRoom.roomNumber; // TODO string vs number type
+    let to         = prevGridRoom ? prevGridRoom.roomNumber : outside;
     let type       = allowSecret && secretProbability.roll();
 
     return makeDoor(doorRectangle, { from, to, direction, type });
-};
+}
 
 /**
  * Returns an array of grid cells which are valid spaces for a door.
@@ -329,28 +311,30 @@ const getDoor = (grid, room, prevRoom, { allowSecret } = {}) => {
  * @private
  *
  * @param {Grid} grid
- * @param {Room} room
- * @param {Room} prevRoom
+ * @param {GridRoom} gridRoom
+ * @param {GridRoom} [prevGridRoom]
  *
  * @returns {Coordinates[]}
  */
-const getDoorCells = (grid, room, prevRoom) => {
+function getDoorCells(grid, gridRoom, prevGridRoom) {
     let prevWalls = [];
 
-    if (prevRoom) {
+    if (prevGridRoom) {
         // TODO require rooms share an edge
-        prevWalls = prevRoom.walls;
+        prevWalls = prevGridRoom.walls;
     } else {
         // TODO get grid dimensions helper?
         let gridWidth  = grid.length - 1;
         let gridHeight = grid[0].length - 1;
 
+        let { x, y, width, height } = gridRoom.rect;
+
         /** @type {Direction[]} doorDirections */
         let doorDirections = [
-            room.y === wallSize                   ? 'north' : undefined,
-            room.x === (gridWidth - room.width)   ? 'east'  : undefined,
-            room.y === (gridHeight - room.height) ? 'south' : undefined,
-            room.x === wallSize                   ? 'west'  : undefined,
+            y === wallSize              ? 'north' : undefined,
+            x === (gridWidth - width)   ? 'east'  : undefined,
+            y === (gridHeight - height) ? 'south' : undefined,
+            x === wallSize              ? 'west'  : undefined,
         ];
 
         // TODO require room is against a grid edge
@@ -361,7 +345,7 @@ const getDoorCells = (grid, room, prevRoom) => {
         for (let i = 0; i <= dimension; i++) {
             switch (direction) {
                 case 'north':
-                    prevWalls.push([ i, 0 ]);
+                    prevWalls.push([ i, 0 ]); // TODO {Coordinates} objects
                     break;
 
                 case 'east':
@@ -379,7 +363,7 @@ const getDoorCells = (grid, room, prevRoom) => {
         }
     }
 
-    let roomWalls     = room.walls.map((cords) => cords.join());
+    let roomWalls     = gridRoom.walls.map((cords) => cords.join()); // TODO update with wall cords array to obj
     let prevRoomWalls = prevWalls.map((cords) => cords.join());
     let intersection  = roomWalls.filter((value) => prevRoomWalls.includes(value));
 
@@ -394,7 +378,7 @@ const getDoorCells = (grid, room, prevRoom) => {
     });
 
     return validDoorCells;
-};
+}
 
 /**
  * Returns a door's direction for a given wall coordinate.
@@ -403,27 +387,27 @@ const getDoorCells = (grid, room, prevRoom) => {
  * @throws
  *
  * @param {Coordinates} doorCoordinates
- * @param {Room} room
+ * @param {Rectangle} roomRect
  *
  * @returns {Direction}
  */
-function getDoorDirection({ x, y }, room) {
+function getDoorDirection({ x, y }, roomRect) {
     // TODO return early and drop elses
     // TODO Remove number casting
     // TODO check x & y, e.g. the corner of the room is an invalid door cell
-    if (Number(y) === (room.y - 1)) {
+    if (Number(y) === (roomRect.y - 1)) {
         return 'north';
     }
 
-    if (Number(x) === (room.x + room.width)) {
+    if (Number(x) === (roomRect.x + roomRect.width)) {
         return 'east';
     }
 
-    if (Number(y) === (room.y + room.height)) {
+    if (Number(y) === (roomRect.y + roomRect.height)) {
         return 'south';
     }
 
-    if (Number(x) === (room.x - 1)) {
+    if (Number(x) === (roomRect.x - 1)) {
         return 'west';
     }
 
@@ -700,6 +684,7 @@ const getExtraDoors = (grid, rooms, existingDoors) => {
  * }}
  */
 function getRooms(gridDimensions, roomConfigs, grid) {
+    // TODO pass `1` for roomNumber here?
     let { rooms, doors, skipped, roomNumber, gridRooms } = drawRooms(gridDimensions, roomConfigs, grid);
 
     let lastRoomNumber = roomNumber;

@@ -98,6 +98,8 @@ export const probability = createProbability([
 
 /**
  * Probability distribution table for secret doors.
+ *
+ * TODO return type
  */
 export const secretProbability = createProbability([
     [ 15, door.concealed ],

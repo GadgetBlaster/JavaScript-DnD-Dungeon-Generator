@@ -189,12 +189,12 @@ export function getStartingPoint(gridDimensions, roomDimensions) {
  * Returns an array of valid grid coordinates for connecting two rooms.
  *
  * @param {Grid} grid
- * @param {Rectangle} prevRoomDimensions
  * @param {Dimensions} roomDimensions
+ * @param {Rectangle} prevRoomRect
  *
  * @returns {Coordinates[]}
  */
-export function getValidRoomConnections(grid, prevRoomDimensions, roomDimensions) {
+export function getValidRoomConnections(grid, roomDimensions, prevRoomRect) {
     let  { width: roomWidth, height: roomHeight } = roomDimensions;
 
     let {
@@ -202,7 +202,7 @@ export function getValidRoomConnections(grid, prevRoomDimensions, roomDimensions
         y: prevY,
         width: prevWidth,
         height: prevHeight,
-    } = prevRoomDimensions;
+    } = prevRoomRect;
 
     // Add extra `wallSize` unit in each direction because rooms are placed 1
     // wall unit apart, a space which can be occupied by a door cell.

@@ -225,7 +225,7 @@ export default ({ assert, describe, it }) => {
     describe('getValidRoomConnections()', () => {
         describe('given a 10 x 10 grid and two 1 x 1 rooms', () => {
             const grid           = createBlankGrid({ width: 10, height: 10 });
-            const prevRoom       = { x: 4, y: 4, width: 1, height: 1 };
+            const prevRoomRect   = { x: 4, y: 4, width: 1, height: 1 };
             const roomDimensions = { width: 1, height: 1 };
 
             // TODO use `addRoomToGrid()`
@@ -264,7 +264,7 @@ export default ({ assert, describe, it }) => {
             ];
 
             it('should return an array of valid room connection coordinates', () => {
-                const validCords = getValidRoomConnections(grid, prevRoom, roomDimensions);
+                const validCords = getValidRoomConnections(grid, roomDimensions, prevRoomRect);
 
                 assert(validCords).isArray();
 
@@ -278,7 +278,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given a 12 x 13 grid and 2 x 3 rooms', () => {
             const grid           = createBlankGrid({ width: 12, height: 13 });
-            const prevRoom       = { x: 4, y: 5, width: 2, height: 3 };
+            const prevRoomRect   = { x: 4, y: 5, width: 2, height: 3 };
             const roomDimensions = { width: 2, height: 3 };
 
             // TODO use `addRoomToGrid()`
@@ -344,7 +344,7 @@ export default ({ assert, describe, it }) => {
             ];
 
             it('should return an array of valid room connection coordinates', () => {
-                const validCords = getValidRoomConnections(grid, prevRoom, roomDimensions);
+                const validCords = getValidRoomConnections(grid, roomDimensions, prevRoomRect);
 
                 assert(validCords).isArray();
 
@@ -358,7 +358,7 @@ export default ({ assert, describe, it }) => {
 
         describe('when a room is near the edges', () => {
             const grid           = createBlankGrid({ width: 10, height: 10 });
-            const prevRoom       = { x: 3, y: 3, width: 2, height: 3 };
+            const prevRoomRect   = { x: 3, y: 3, width: 2, height: 3 };
             const roomDimensions = { width: 3, height: 2 };
 
             // TODO use `addRoomToGrid()`
@@ -413,7 +413,7 @@ export default ({ assert, describe, it }) => {
             ];
 
             it('should return an array of valid room connection coordinates that account for the grid edges', () => {
-                const validCords = getValidRoomConnections(grid, prevRoom, roomDimensions);
+                const validCords = getValidRoomConnections(grid, roomDimensions, prevRoomRect);
 
                 assert(validCords).isArray();
 
