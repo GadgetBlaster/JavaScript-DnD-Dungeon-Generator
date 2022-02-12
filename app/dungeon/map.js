@@ -29,12 +29,13 @@ import { knobs } from '../knobs.js';
 import { roll, rollArrayItem, rollPercentile } from '../utility/roll.js';
 import { isRequired, toWords } from '../utility/tools.js';
 
-// -- Types --------------------------------------------------------------------
+// -- Type Imports -------------------------------------------------------------
 
 /** @typedef {import('../knobs.js').DungeonConfig} DungeonConfig */
 /** @typedef {import('../knobs.js').RoomConfig} RoomConfig */
 
 /** @typedef {import('../room/generate.js').Room} Room */
+/** @typedef {import('../room/room.js').RoomType} RoomType */
 
 /** @typedef {import('./grid.js').CellValue} CellValue */
 /** @typedef {import('./grid.js').Coordinates} Coordinates */
@@ -42,29 +43,7 @@ import { isRequired, toWords } from '../utility/tools.js';
 /** @typedef {import('./grid.js').Grid} Grid */
 /** @typedef {import('./grid.js').Rectangle} Rectangle */
 
-/**
- * @typedef {object} Connection
- *
- * @prop {Direction} direction
- * @prop {number | string} to - Room number or "outside"
- */
-
-/**
- * Direction
- *
- * @typedef {"north" | "east" | "south" | "west"} Direction
- */
-
-/**
- * @typedef {object} Door
- *
- * @prop {string} rect
- * @prop {string} type
- * @prop {boolean} locked
- * @prop {{ [roomNumber: number]: Connection }} connections
- * @prop {Connection} connection
- * @prop {number} size
- */
+// -- Types --------------------------------------------------------------------
 
 /**
  * @typedef {object} AppliedRoomResults
@@ -86,7 +65,38 @@ import { isRequired, toWords } from '../utility/tools.js';
  */
 
 /**
+ * @typedef {object} Connection
+ *
+ * @prop {Direction} direction
+ * @prop {number | string} to - Room number or "outside"
+ */
+
+/** @typedef {"north" | "east" | "south" | "west"} Direction */
+
+/**
+ * @typedef {object} Door
+ *
+ * @prop {string} rect
+ * @prop {string} type
+ * @prop {boolean} locked
+ * @prop {{ [roomNumber: number]: Connection }} connections
+ * @prop {Connection} connection
+ * @prop {number} size
+ */
+
+/**
+ * @typedef {object} GridRoom
+ *
+ * @prop {Rectangle} rect
+ * @prop {number} roomNumber
+ * @prop {RoomType} type
+ * @prop {Coordinates[]} walls
+ */
+
+/**
  * @typedef {object} MapConfig
+ *
+ * TODO
  */
 
 // -- Config -------------------------------------------------------------------
