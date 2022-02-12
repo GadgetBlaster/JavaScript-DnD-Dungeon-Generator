@@ -477,17 +477,13 @@ function getRoomDimensions(gridDimensions, roomConfig) {
 /**
  * Returns a room rectangle and an array of wall coordinates.
  *
- * TODO rename to `getRoomWalls()`
- * TODO refactor so it only returns walls, then call `drawRoom` in the parent
- * function.
- *
  * @private
  *
  * @param {Grid} grid
  * @param {Rectangle} rect
  * @param {number} roomNumber
  *
- * @returns {GridCoordinates[]}
+ * @returns {Coordinates[]}
  */
 function getRoomWalls(grid, rect, roomNumber) {
     isRequired(roomNumber, 'roomNumber is required in getRoomWalls()');
@@ -521,6 +517,7 @@ function getRoomWalls(grid, rect, roomNumber) {
                 walls.push([ xCord, yCord ]);
             }
 
+            /** @type {CellValue} cell */
             let cell = roomNumber;
 
             if (isWall) {

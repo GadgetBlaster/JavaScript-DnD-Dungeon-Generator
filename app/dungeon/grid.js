@@ -21,7 +21,7 @@ import { roll, rollArrayItem } from '../utility/roll.js';
  * A multidimensional array of grid cells, procedurally populated with rooms
  * connected by doors.
  *
- * @typedef {string[][]} Grid
+ * @typedef {CellValue[][]} Grid
  */
 
 /**
@@ -34,7 +34,7 @@ import { roll, rollArrayItem } from '../utility/roll.js';
 /**
  * Cell Values
  *
- * @typedef {"." | "w" | "d" | "c"} CellValue
+ * @typedef {"." | "w" | "d" | "c" | number} CellValue
  */
 
 // -- Config -------------------------------------------------------------------

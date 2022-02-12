@@ -58,7 +58,7 @@ import doorType, { lockable } from '../room/door.js';
 /**
  * @typedef RoomText
  *
- * @prop {number | string} roomNumber
+ * @prop {string} roomNumber
  * @prop {string} [roomLabel]
  */
 
