@@ -2,7 +2,7 @@
 
 // TODO move functionality to `/room/generate.js`
 
-import { knobs } from '../knobs.js';
+import { knobs } from '../controller/knobs.js';
 import { probability as conditionProbability } from '../attribute/condition.js';
 import { probability as furnitureQuantityProbability } from '../item/furnishing.js';
 import { probability as quantityProbability } from '../attribute/quantity.js';
@@ -15,8 +15,8 @@ import { roomTypes, probability as roomTypeProbability } from './room.js';
 // -- Types --------------------------------------------------------------------
 
 /** @typedef {import('../attribute/size.js').Size} Size */
-/** @typedef {import('../knobs.js').DungeonConfig} DungeonConfig */
-/** @typedef {import('../knobs.js').RoomConfig} RoomConfig */
+/** @typedef {import('../controller/knobs.js').DungeonConfig} DungeonConfig */
+/** @typedef {import('../controller/knobs.js').RoomConfig} RoomConfig */
 /** @typedef {import('../utility/roll.js').Probability} Probability */
 /** @typedef {import('./generate.js').Room} Room */
 /** @typedef {import('./room.js').RoomType} RoomType */

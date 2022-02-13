@@ -13,7 +13,7 @@ import { em, paragraph, subtitle } from '../ui/typography.js';
 import { generateItem } from './item.js';
 import { getRarityDescription, getConditionDescription, getItemDescription } from './description.js';
 import { isRequired } from '../utility/tools.js';
-import { knobs } from '../knobs.js';
+import { knobs } from '../controller/knobs.js';
 import { list } from '../ui/list.js';
 import { roll, rollArrayItem } from '../utility/roll.js';
 import { getRange, probability as quantityProbability } from '../attribute/quantity.js';

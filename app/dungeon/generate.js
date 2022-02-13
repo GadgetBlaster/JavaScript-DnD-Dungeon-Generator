@@ -3,7 +3,7 @@
 import { generateMap } from './map.js';
 import { generateRooms } from '../room/generate.js';
 import { getRoomDoor } from '../room/door.js';
-import { knobs } from '../knobs.js';
+import { knobs } from '../controller/knobs.js';
 import { roll, rollArrayItem } from '../utility/roll.js';
 import { isRequired } from '../utility/tools.js';
 import trapList from '../room/trap.js';
@@ -12,7 +12,7 @@ import trapList from '../room/trap.js';
 
 /** @typedef {import('./draw.js').Dimensions} Dimensions */
 /** @typedef {import('./map.js').Door} Door */
-/** @typedef {import('../knobs.js').DungeonConfig} DungeonConfig */
+/** @typedef {import('../controller/knobs.js').DungeonConfig} DungeonConfig */
 /** @typedef {import('../room/generate').Room} Room */
 
 /**

@@ -11,7 +11,7 @@ import {
     getKnobPanel,
 } from '../form.js';
 
-import { typeSelect, typeNumber, typeRange } from '../../knobs.js';
+import { typeSelect, typeNumber, typeRange } from '../../controller/knobs.js';
 
 const fakeKnob = {
     label: 'Tools',

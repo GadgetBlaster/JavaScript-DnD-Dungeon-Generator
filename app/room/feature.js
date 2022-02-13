@@ -1,13 +1,13 @@
 // @ts-check
 
-import { knobs } from '../knobs.js';
+import { knobs } from '../controller/knobs.js';
 import { roll, rollArrayItem, rollPercentile } from '../utility/roll.js';
 import { toss } from '../utility/tools.js';
 
 // -- Types --------------------------------------------------------------------
 
-/** @typedef {import('../knobs.js').DungeonConfig} DungeonConfig */
-/** @typedef {import('../knobs.js').RoomConfig} RoomConfig */
+/** @typedef {import('../controller/knobs.js').DungeonConfig} DungeonConfig */
+/** @typedef {import('../controller/knobs.js').RoomConfig} RoomConfig */
 
 /** @typedef {typeof roomFeatures[number]} RoomFeature */
 

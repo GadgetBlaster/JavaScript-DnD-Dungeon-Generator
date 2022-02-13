@@ -5,8 +5,8 @@ import { roll, rollPercentile, rollArrayItem } from '../utility/roll.js';
 
 // -- Types --------------------------------------------------------------------
 
-/** @typedef {import('../knobs.js').DungeonConfig} DungeonConfig */
-/** @typedef {import('../knobs.js').RoomConfig} RoomConfig */
+/** @typedef {import('../controller/knobs.js').DungeonConfig} DungeonConfig */
+/** @typedef {import('../controller/knobs.js').RoomConfig} RoomConfig */
 
 // -- Config -------------------------------------------------------------------
 

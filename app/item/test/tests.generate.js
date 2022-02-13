@@ -11,7 +11,7 @@ import {
     generateItems,
 } from '../generate.js';
 
-import { knobs } from '../../knobs.js';
+import { knobs } from '../../controller/knobs.js';
 import { quantityMinimum, quantityMaximum } from '../../attribute/quantity.js';
 import {
     anyRoomFurniture,

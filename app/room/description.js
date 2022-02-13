@@ -7,7 +7,7 @@ import { em, paragraph, strong, subtitle, title } from '../ui/typography.js';
 import { furnitureQuantity } from '../item/furnishing.js';
 import { getEnvironmentDescription } from './environment.js';
 import { indicateRarity } from '../attribute/rarity.js';
-import { knobs } from '../knobs.js';
+import { knobs } from '../controller/knobs.js';
 import { list } from '../ui/list.js';
 import { rollArrayItem } from '../utility/roll.js';
 import doorType, { appendDoorway, outside } from './door.js';
@@ -18,8 +18,8 @@ import { appendRoomTypes } from './room.js';
 /** @typedef {import('../attribute/rarity.js').Rarity} Rarity */
 /** @typedef {import('../attribute/size.js').Size} Size */
 /** @typedef {import('../dungeon/map.js').Connection} Connection */
-/** @typedef {import('../knobs.js').DungeonConfig} DungeonConfig */
-/** @typedef {import('../knobs.js').RoomConfig} RoomConfig */
+/** @typedef {import('../controller/knobs.js').DungeonConfig} DungeonConfig */
+/** @typedef {import('../controller/knobs.js').RoomConfig} RoomConfig */
 /** @typedef {import('./door.js').DoorKey} DoorKey */
 /** @typedef {import('./door.js').RoomDoor} RoomDoor */
 /** @typedef {import('./room.js').RoomType} RoomType */

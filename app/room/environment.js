@@ -3,14 +3,14 @@
 import { getRoomFeatures } from './feature.js';
 import { getRoomTypeLabel } from './description.js';
 import { getVegetationDescription } from './vegetation.js';
-import { knobs } from '../knobs.js';
+import { knobs } from '../controller/knobs.js';
 import { roll, rollArrayItem, rollPercentile } from '../utility/roll.js';
 import { toss } from '../utility/tools.js';
 
 // -- Types --------------------------------------------------------------------
 
-/** @typedef {import('../knobs.js').DungeonConfig} DungeonConfig */
-/** @typedef {import('../knobs.js').RoomConfig} RoomConfig */
+/** @typedef {import('../controller/knobs.js').DungeonConfig} DungeonConfig */
+/** @typedef {import('../controller/knobs.js').RoomConfig} RoomConfig */
 
 // -- Config -------------------------------------------------------------------
 

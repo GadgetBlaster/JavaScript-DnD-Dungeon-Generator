@@ -1,6 +1,6 @@
 // @ts-check
 
-import { knobs } from '../knobs.js';
+import { knobs } from '../controller/knobs.js';
 import { toss } from '../utility/tools.js';
 import { rollArrayItem, roll } from '../utility/roll.js';
 import { strong, em } from '../ui/typography.js';

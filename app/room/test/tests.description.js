@@ -24,7 +24,7 @@ import { appendRoomTypes } from '../room.js';
 import { cellFeet } from '../../dungeon/grid.js';
 import { furnitureQuantity } from '../../item/furnishing.js';
 import { indicateRarity, rarities } from '../../attribute/rarity.js';
-import { knobs } from '../../knobs.js';
+import { knobs } from '../../controller/knobs.js';
 import { quantities } from '../../attribute/quantity.js';
 import { conditions } from '../../attribute/condition.js';
 import doorType, { lockable, appendDoorway, outside } from '../door.js';

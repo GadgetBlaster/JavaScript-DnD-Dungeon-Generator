@@ -5,12 +5,12 @@ import { div, fieldset, section } from './block.js';
 import { paragraph, small } from './typography.js';
 import { select, input, slider, fieldLabel } from './field.js';
 import { toDash, toss } from '../utility/tools.js';
-import { getKnobConfig, typeSelect, typeNumber, typeRange } from '../knobs.js';
+import { getKnobConfig, typeSelect, typeNumber, typeRange } from '../controller/knobs.js';
 
 // -- Types --------------------------------------------------------------------
 
-/** @typedef {import('../knobs.js').KnobSet} KnobSet */
-/** @typedef {import('../knobs.js').KnobSettings} KnobSettings */
+/** @typedef {import('../controller/knobs.js').KnobSet} KnobSet */
+/** @typedef {import('../controller/knobs.js').KnobSettings} KnobSettings */
 /** @typedef {import('./action').Action} Action */
 /** @typedef {import('./nav.js').Page} Page */
 

@@ -2,21 +2,21 @@
 // @ts-check
 // TODO move to ui/knobs.js and add unit tests
 
-import { conditions, probability as conditionProbability } from './attribute/condition.js';
-import { furnitureQuantityList, probability as furnitureQuantityProbability } from './item/furnishing.js';
-import { itemTypes } from './item/item.js';
-import { pages } from './ui/nav.js';
-import { quantities, probability as quantityProbability } from './attribute/quantity.js';
-import { rarities, probability as rarityProbability } from './attribute/rarity.js';
-import { roomTypes } from './room/room.js';
-import { sizes } from './attribute/size.js';
+import { conditions, probability as conditionProbability } from '../attribute/condition.js';
+import { furnitureQuantityList, probability as furnitureQuantityProbability } from '../item/furnishing.js';
+import { itemTypes } from '../item/item.js';
+import { pages } from '../ui/nav.js';
+import { quantities, probability as quantityProbability } from '../attribute/quantity.js';
+import { rarities, probability as rarityProbability } from '../attribute/rarity.js';
+import { roomTypes } from '../room/room.js';
+import { sizes } from '../attribute/size.js';
 
 // -- Types --------------------------------------------------------------------
 
-/** @typedef {import('./attribute/condition.js').Condition} Condition */
-/** @typedef {import('./attribute/quantity.js').Quantity} Quantity */
-/** @typedef {import('./attribute/rarity').Rarity} Rarity */
-/** @typedef {import('./attribute/size').Size} Size */
+/** @typedef {import('../attribute/condition.js').Condition} Condition */
+/** @typedef {import('../attribute/quantity.js').Quantity} Quantity */
+/** @typedef {import('../attribute/rarity').Rarity} Rarity */
+/** @typedef {import('../attribute/size').Size} Size */
 
 /**
  * Item config

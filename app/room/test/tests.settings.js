@@ -11,7 +11,7 @@ import {
 
 import { conditions } from '../../attribute/condition.js';
 import { furnitureQuantity } from '../../item/furnishing.js';
-import { knobs } from '../../knobs.js';
+import { knobs } from '../../controller/knobs.js';
 import { quantities } from '../../attribute/quantity.js';
 import { rarities } from '../../attribute/rarity.js';
 import { roomTypes } from '../room.js';

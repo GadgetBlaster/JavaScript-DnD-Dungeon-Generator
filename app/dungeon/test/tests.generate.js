@@ -16,7 +16,7 @@ import {
     generateDungeon,
 } from '../generate.js';
 
-import { knobs } from '../../knobs.js';
+import { knobs } from '../../controller/knobs.js';
 import trapList from '../../room/trap.js';
 
 /**

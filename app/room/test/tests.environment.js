@@ -13,7 +13,7 @@ import {
 } from '../environment.js';
 
 import { getRoomTypeLabel } from '../description.js';
-import { knobs } from '../../knobs.js';
+import { knobs } from '../../controller/knobs.js';
 
 /**
  * @param {import('../../unit/state.js').Utility} utility

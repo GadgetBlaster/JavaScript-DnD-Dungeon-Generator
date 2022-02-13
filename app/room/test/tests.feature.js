@@ -9,7 +9,7 @@ import {
     getRoomFeatures,
 } from '../feature.js';
 
-import { knobs } from '../../knobs.js';
+import { knobs } from '../../controller/knobs.js';
 
 /**
  * @param {import('../../unit/state.js').Utility} utility

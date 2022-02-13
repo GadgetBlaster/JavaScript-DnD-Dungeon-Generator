@@ -5,7 +5,7 @@ import {
 } from '../generate.js';
 
 import { furnitureQuantity } from '../../item/furnishing.js';
-import { knobs } from '../../knobs.js';
+import { knobs } from '../../controller/knobs.js';
 
 /**
  * @param {import('../../unit/state.js').Utility} utility

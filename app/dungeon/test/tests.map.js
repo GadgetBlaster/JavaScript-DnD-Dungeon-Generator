@@ -27,7 +27,7 @@ import {
 import { createBlankGrid, wallSize } from '../grid.js';
 import { dimensionRanges } from '../../room/dimensions.js';
 import { generateRooms } from '../../room/generate.js';
-import { knobs } from '../../knobs.js';
+import { knobs } from '../../controller/knobs.js';
 import { labelMinWidth, labelMinHeight, testTrapLabel as trapLabel } from '../draw.js';
 import { list as doorTypes } from '../../room/door.js';
 
