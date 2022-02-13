@@ -201,8 +201,6 @@ function createDoor(doorRectangle, { from, to, direction, type }) {
             [from]: { direction, to },
             [to]  : { direction: directionOppositeLookup[direction], to: from },
         },
-        // TODO size is returning NaN, likely unused?
-        size: Math.max(doorRectangle.width, doorRectangle.height),
     };
 }
 
