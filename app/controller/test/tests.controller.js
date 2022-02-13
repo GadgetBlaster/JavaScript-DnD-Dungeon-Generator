@@ -37,6 +37,9 @@ const getMockClickEvent = (targetEl) => ({
 /** @typedef {import('../knobs.js').ItemConfig} ItemConfig */
 /** @typedef {import('../knobs.js').RoomConfig} RoomConfig */
 
+const knobHTML = getKnobPanel('items');
+const navHTML  = getNav('items');
+
 /**
  * @param {import('../../unit/state.js').Utility} utility
  */
@@ -109,11 +112,11 @@ export default ({ assert, describe, it }) => {
     describe('getDataset()', () => {
         describe('given an HTML element target', () => {
             it('returns the element\'s data attributes', () => {
-                const div = document.createElement('div');
+                const divEl = document.createElement('div');
 
-                div.dataset.type = 'blackKnight';
+                divEl.dataset.type = 'blackKnight';
 
-                assert(getDataset(div)).equalsObject({ type: 'blackKnight' });
+                assert(getDataset(divEl)).equalsObject({ type: 'blackKnight' });
             });
         });
 
@@ -160,16 +163,14 @@ export default ({ assert, describe, it }) => {
                 const contentEl = document.createElement('div');
                 const knobsEl   = document.createElement('form');
 
-                const dungeonButton = document.createElement('button');
-                dungeonButton.dataset.target = 'dungeon';
-                dungeonButton.dataset.active = 'true';
-
-                const roomsButton = document.createElement('button');
-                roomsButton.dataset.target = 'rooms';
-
                 const navEl = document.createElement('nav');
-                navEl.appendChild(dungeonButton);
-                navEl.appendChild(roomsButton);
+                navEl.innerHTML = navHTML;
+
+                /** @type {HTMLElement} */
+                const dungeonButton = navEl.querySelector('[data-target="dungeon"]');
+
+                /** @type {HTMLElement} */
+                const roomsButton = navEl.querySelector('[data-target="rooms"]');
 
                 const sections = {
                     content: contentEl,
@@ -192,14 +193,10 @@ export default ({ assert, describe, it }) => {
             const contentEl = document.createElement('div');
 
             const knobsEl = document.createElement('form');
-            knobsEl.innerHTML = getKnobPanel('items');
-
-            const itemsButton = document.createElement('button');
-            itemsButton.dataset.active = 'true';
-            itemsButton.dataset.target = 'items';
+            knobsEl.innerHTML = knobHTML;
 
             const navEl = document.createElement('nav');
-            navEl.appendChild(itemsButton);
+            navEl.innerHTML = navHTML;
 
             onGenerate({
                 content: contentEl,
@@ -207,9 +204,8 @@ export default ({ assert, describe, it }) => {
                 nav    : navEl,
             });
 
-            assert(contentEl.innerHTML)
-                .stringIncludes('<section>')
-                .stringIncludes('</section>');
+            assert(/<h3>Items \([0-9]+\)<\/h3>/.test(contentEl.innerHTML)).isTrue();
+            assert(/<ul(.+?)>(.+?)<\/ul>/.test(contentEl.innerHTML)).isTrue();
         });
 
         describe('when the page is invalid', () => {
@@ -235,26 +231,26 @@ export default ({ assert, describe, it }) => {
 
     describe('toggleAccordion()', () => {
         describe('when there are 3 accordion sections', () => {
-            const count     = 3;
-            const container = document.createElement('div');
+            const count       = 3;
+            const containerEl = document.createElement('div');
 
             for (let i = 0; i < count; i++) {
-                const fieldset = document.createElement('div');
-                const button   = document.createElement('button');
+                const fieldsetEl = document.createElement('div');
+                const buttonEl   = document.createElement('button');
 
-                fieldset.dataset.collapsed = 'true';
-                fieldset.dataset.id = i.toString();
+                fieldsetEl.dataset.collapsed = 'true';
+                fieldsetEl.dataset.id = i.toString();
 
-                button.dataset.action = 'accordion';
-                button.dataset.target = i.toString();
+                buttonEl.dataset.action = 'accordion';
+                buttonEl.dataset.target = i.toString();
 
-                fieldset.appendChild(button);
-                container.appendChild(fieldset);
+                fieldsetEl.appendChild(buttonEl);
+                containerEl.appendChild(fieldsetEl);
             }
 
             const each = ({ collapsed }) => {
                 /** @type {NodeListOf<HTMLElement>} */
-                const sectionEls = container.querySelectorAll('[data-collapsed]');
+                const sectionEls = containerEl.querySelectorAll('[data-collapsed]');
 
                 sectionEls.forEach((sectionEl) => {
                     sectionEl.dataset.collapsed = collapsed;
@@ -264,16 +260,16 @@ export default ({ assert, describe, it }) => {
             const collapseAll = () => each({ collapsed: true });
 
             /** @type {HTMLElement} */
-            const targetEl = container.querySelector('[data-action="accordion"][data-target="1"]');
+            const targetEl = containerEl.querySelector('[data-action="accordion"][data-target="1"]');
 
             describe('when an accordion section is collapsed', () => {
                 it('expands the accordion item', () => {
                     collapseAll();
 
                     /** @type {HTMLElement} */
-                    const sectionEl = container.querySelector('[data-collapsed][data-id="1"]');
+                    const sectionEl = containerEl.querySelector('[data-collapsed][data-id="1"]');
 
-                    toggleAccordion(container, getMockClickEvent(targetEl));
+                    toggleAccordion(containerEl, getMockClickEvent(targetEl));
                     assert(sectionEl.dataset.collapsed).equals('false');
                 });
             });
@@ -283,10 +279,10 @@ export default ({ assert, describe, it }) => {
                     collapseAll();
 
                     /** @type {HTMLElement} */
-                    const sectionEl = container.querySelector('[data-collapsed][data-id="1"]');
+                    const sectionEl = containerEl.querySelector('[data-collapsed][data-id="1"]');
                     sectionEl.dataset.collapsed = 'false';
 
-                    toggleAccordion(container, getMockClickEvent(targetEl));
+                    toggleAccordion(containerEl, getMockClickEvent(targetEl));
                     assert(sectionEl.dataset.collapsed).equals('true');
                 });
             });
@@ -296,10 +292,10 @@ export default ({ assert, describe, it }) => {
                     collapseAll();
 
                     /** @type {HTMLElement} */
-                    const accordionEl = container.querySelector('[data-collapsed][data-id="2"]');
+                    const accordionEl = containerEl.querySelector('[data-collapsed][data-id="2"]');
                     accordionEl.dataset.collapsed = 'false';
 
-                    toggleAccordion(container, getMockClickEvent(targetEl));
+                    toggleAccordion(containerEl, getMockClickEvent(targetEl));
                     assert(accordionEl.dataset.collapsed).equals('true');
                 });
             });
@@ -307,7 +303,7 @@ export default ({ assert, describe, it }) => {
             describe('given an event with no click target' , () => {
                 it('throws', () => {
                     const e = getMockClickEvent(document.createElement('button'));
-                    assert(() => toggleAccordion(container, e)).throws('Missing target for accordion toggle');
+                    assert(() => toggleAccordion(containerEl, e)).throws('Missing target for accordion toggle');
                 });
             });
 
@@ -318,7 +314,7 @@ export default ({ assert, describe, it }) => {
                     button.dataset.action = 'accordion';
                     button.dataset.target = 'nope';
 
-                    assert(() => toggleAccordion(container, getMockClickEvent(button)))
+                    assert(() => toggleAccordion(containerEl, getMockClickEvent(button)))
                         .throws('Invalid accordion section target "nope"');
                 });
             });
@@ -326,14 +322,14 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('toggleVisibility()', () => {
-        const targetId  = 'elf';
-        const container = document.createElement('div');
-        const paragraph = document.createElement('p');
+        const targetId    = 'elf';
+        const containerEl = document.createElement('div');
+        const paragraphEl = document.createElement('p');
 
-        paragraph.dataset.id = targetId;
-        paragraph.hidden     = false;
+        paragraphEl.dataset.id = targetId;
+        paragraphEl.hidden     = false;
 
-        container.appendChild(paragraph);
+        containerEl.appendChild(paragraphEl);
 
         describe('given an event with a valid target', () => {
             const button = document.createElement('button');
@@ -342,19 +338,19 @@ export default ({ assert, describe, it }) => {
 
             describe('when the child is not hidden', () => {
                 it('hides the element', () => {
-                    paragraph.hidden = false;
+                    paragraphEl.hidden = false;
 
-                    toggleVisibility(container, getMockClickEvent(button));
-                    assert(paragraph.hidden).isTrue();
+                    toggleVisibility(containerEl, getMockClickEvent(button));
+                    assert(paragraphEl.hidden).isTrue();
                 });
             });
 
             describe('when the child is hidden', () => {
                 it('hides the element', () => {
-                    paragraph.hidden = true;
+                    paragraphEl.hidden = true;
 
-                    toggleVisibility(container, getMockClickEvent(button));
-                    assert(paragraph.hidden).isFalse();
+                    toggleVisibility(containerEl, getMockClickEvent(button));
+                    assert(paragraphEl.hidden).isFalse();
                 });
             });
         });
@@ -363,7 +359,7 @@ export default ({ assert, describe, it }) => {
             it('throws', () => {
                 const button = document.createElement('button');
 
-                assert(() => toggleVisibility(container, getMockClickEvent(button)))
+                assert(() => toggleVisibility(containerEl, getMockClickEvent(button)))
                     .throws('Missing target for visibility toggle');
             });
         });
@@ -374,7 +370,7 @@ export default ({ assert, describe, it }) => {
 
                 button.dataset.target = 'frodo';
 
-                assert(() => toggleVisibility(container, getMockClickEvent(button)))
+                assert(() => toggleVisibility(containerEl, getMockClickEvent(button)))
                     .throws('Invalid visibility toggle target "frodo"');
             });
         });
@@ -384,17 +380,17 @@ export default ({ assert, describe, it }) => {
 
     describe('attachClickDelegate()', () => {
         describe('when a child element is clicked', () => {
-            const container = document.createElement('div');
-            const button    = document.createElement('button');
-            const button2   = document.createElement('button');
-            const button3   = document.createElement('button');
+            const containerEl = document.createElement('div');
+            const buttonEl1   = document.createElement('button');
+            const buttonEl2   = document.createElement('button');
+            const buttonEl3   = document.createElement('button');
 
-            button.dataset.action  = 'generate';
-            button3.dataset.action = 'invalid-action';
+            buttonEl1.dataset.action  = 'generate';
+            buttonEl3.dataset.action = 'invalid-action';
 
-            container.appendChild(button);
-            container.appendChild(button2);
-            container.appendChild(button3);
+            containerEl.appendChild(buttonEl1);
+            containerEl.appendChild(buttonEl2);
+            containerEl.appendChild(buttonEl3);
 
             const events = [];
 
@@ -406,10 +402,10 @@ export default ({ assert, describe, it }) => {
                 toggle   : trigger,
             };
 
-            attachClickDelegate(container, triggers);
+            attachClickDelegate(containerEl, triggers);
 
             describe('when the clicked element has a valid `data-action` attribute', () => {
-                button.dispatchEvent(new CustomEvent('click', { bubbles: true }));
+                buttonEl1.dispatchEvent(new CustomEvent('click', { bubbles: true }));
                 const event = events.pop();
 
                 it('triggers the click delegate and calls the action', () => {
@@ -424,7 +420,7 @@ export default ({ assert, describe, it }) => {
 
             describe('when the click target has no action', () => {
                 it('no actions are called', () => {
-                    button2.dispatchEvent(new CustomEvent('click', { bubbles: true }));
+                    buttonEl2.dispatchEvent(new CustomEvent('click', { bubbles: true }));
                     assert(events.length).equals(0);
                 });
             });
@@ -432,21 +428,21 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getTriggers()', () => {
-        const body    = document.createElement('div');
-        const content = document.createElement('div');
-        const knobs   = document.createElement('form');
-        const nav     = document.createElement('nav');
+        const bodyEl    = document.createElement('div');
+        const contentEl = document.createElement('div');
+        const knobsEl   = document.createElement('form');
+        const navEl     = document.createElement('nav');
 
-        content.innerHTML = 'Fake homepage content';
-        knobs.innerHTML = getKnobPanel('items');
-        nav.innerHTML = getNav('items');
+        contentEl.innerHTML = 'Fake homepage content';
+        knobsEl.innerHTML  = knobHTML;
+        navEl.innerHTML    = navHTML;
 
-        body.appendChild(nav);
-        body.appendChild(knobs);
-        body.appendChild(content);
+        bodyEl.appendChild(navEl);
+        bodyEl.appendChild(knobsEl);
+        bodyEl.appendChild(contentEl);
 
-        const sections = { body, content, knobs, nav };
-        const triggers = getTriggers(sections, content.innerHTML);
+        const sections = { body: bodyEl, content: contentEl, knobs: knobsEl, nav: navEl };
+        const triggers = getTriggers(sections, contentEl.innerHTML);
 
         it('returns an object containing all application triggers', () => {
             assert(triggers.accordion).isFunction();
@@ -458,10 +454,10 @@ export default ({ assert, describe, it }) => {
         describe('accordion', () => {
             it('toggles an accordion', () => {
                 /** @type {HTMLElement} */
-                const accordionButtonEl = knobs.querySelector('[data-target="fieldset-item-settings"]');
+                const accordionButtonEl = knobsEl.querySelector('[data-target="fieldset-item-settings"]');
 
                 /** @type {HTMLElement} */
-                const fieldsetEl = knobs.querySelector('[data-id="fieldset-item-settings"]');
+                const fieldsetEl = knobsEl.querySelector('[data-id="fieldset-item-settings"]');
 
                 triggers.accordion(getMockClickEvent(accordionButtonEl));
 
@@ -472,33 +468,33 @@ export default ({ assert, describe, it }) => {
         describe('generate', () => {
             it('updates the content', () => {
                 /** @type {HTMLElement} */
-                const generateButtonEl = knobs.querySelector('[data-action="generate"]');
+                const generateButtonEl = knobsEl.querySelector('[data-action="generate"]');
 
                 triggers.generate(getMockClickEvent(generateButtonEl));
 
-                assert(/<h3>Items \([0-9]+\)<\/h3>/.test(content.innerHTML)).isTrue();
-                assert(/<ul(.+?)>(.+?)<\/ul>/.test(content.innerHTML)).isTrue();
+                assert(/<h3>Items \([0-9]+\)<\/h3>/.test(contentEl.innerHTML)).isTrue();
+                assert(/<ul(.+?)>(.+?)<\/ul>/.test(contentEl.innerHTML)).isTrue();
             });
         });
 
         describe('navigate', () => {
             it('updates the content', () => {
                 /** @type {HTMLElement} */
-                const roomsButtonEl = knobs.querySelector('[data-action="navigate"][data-target="rooms"]');
+                const roomsButtonEl = knobsEl.querySelector('[data-action="navigate"][data-target="rooms"]');
 
                 triggers.navigate(getMockClickEvent(roomsButtonEl));
 
-                assert(content.innerHTML).equals('Fake homepage content');
+                assert(contentEl.innerHTML).equals('Fake homepage content');
             });
         });
 
         describe('toggle', () => {
             it('updates the target\'s visibility', () => {
                 /** @type {HTMLElement} */
-                const toggleButtonEl = knobs.querySelector('[data-action="toggle"][data-target="info-itemQuantity"]');
+                const toggleButtonEl = knobsEl.querySelector('[data-action="toggle"][data-target="info-itemQuantity"]');
 
                 /** @type {HTMLElement} */
-                const infoEl = knobs.querySelector('[data-id="info-itemQuantity"]');
+                const infoEl = knobsEl.querySelector('[data-id="info-itemQuantity"]');
 
                 assert(infoEl.hidden).isTrue();
 
