@@ -9,9 +9,9 @@ import {
 
     // Public Functions
     attachClickDelegate,
-} from '../action.js';
+} from '../controller.js';
 
-/** @typedef {import('../action.js').Trigger} Trigger */
+/** @typedef {import('../controller.js').Trigger} Trigger */
 
 /**
  * @param {import('../../unit/state.js').Utility} utility

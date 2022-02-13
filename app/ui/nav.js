@@ -5,7 +5,7 @@ import { button } from './button.js';
 // -- Types --------------------------------------------------------------------
 
 /** @typedef {"dungeon" | "rooms" | "items"} Page */
-/** @typedef {import('../controller/action.js').Sections} Sections */
+/** @typedef {import('../controller/controller.js').Sections} Sections */
 
 // -- Config -------------------------------------------------------------------
 

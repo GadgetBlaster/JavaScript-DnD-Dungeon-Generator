@@ -11,6 +11,7 @@ import { knobs } from '../controller/knobs.js';
 /** @typedef {import('../controller/knobs.js').RoomConfig} RoomConfig */
 
 /**
+ * TODO move to room.js?
  * @typedef {object} Room
  *
  * @prop {DungeonConfig | RoomConfig} settings

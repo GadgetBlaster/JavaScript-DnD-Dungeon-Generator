@@ -22,6 +22,7 @@ import { getRange, probability as quantityProbability } from '../attribute/quant
 
 /** @typedef {import('./item.js').Item} Item */
 /** @typedef {import('../attribute/quantity').Quantity} Quantity */
+/** @typedef {import('../controller/knobs.js').ItemConfig} ItemConfig */
 
 // -- Config -------------------------------------------------------------------
 
@@ -164,7 +165,7 @@ export {
  * TODO separate HTMl from generation logic
  * TODO rename to generateItemsDescription
  *
- * @param {Config} config
+ * @param {ItemConfig} config
  *
  * @returns {string[]}
  */

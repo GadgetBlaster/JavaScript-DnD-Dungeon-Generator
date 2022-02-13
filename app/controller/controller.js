@@ -1,29 +1,27 @@
 // @ts-check
 
-import { chunk, toss, isRequired } from '../utility/tools.js';
+import { toss, isRequired } from '../utility/tools.js';
 
-import { article, section } from '../ui/block.js';
 import { getActiveNavItem, setActiveNavItem } from '../ui/nav.js';
 import { getFormData, getKnobPanel } from '../ui/form.js';
-import { list } from '../ui/list.js';
-import { subtitle } from '../ui/typography.js';
 
-import {
-    getDoorwayList,
-    getKeyDescription,
-    getMapDescription,
-    getRoomDescription,
-} from '../room/description.js';
-
-import { drawLegend } from '../dungeon/legend.js';
 import { generateDungeon } from '../dungeon/generate.js';
 
 import { generateItems } from '../item/generate.js';
 import { generateRooms } from '../room/generate.js';
 
+import {
+    formatDungeon,
+    formatRooms,
+    formatItems,
+} from './formatter.js';
+
 // -- Type Imports -------------------------------------------------------------
 
 /** @typedef {import('../ui/nav.js').Page} Page */
+/** @typedef {import('./knobs.js').ItemConfig} ItemConfig */
+/** @typedef {import('./knobs.js').RoomConfig} RoomConfig */
+/** @typedef {import('./knobs.js').DungeonConfig} DungeonConfig */
 
 // -- Types --------------------------------------------------------------------
 
@@ -49,66 +47,48 @@ import { generateRooms } from '../room/generate.js';
  * } Action
  */
 
-// -- TODO Refactor ------------------------------------------------------------
-// - Refactor so content generation and markup structure are separate operations
-// - Add unit tests.
-
-const roomsPerRow = 3;
-
-const formatRoom = (room, doors) => {
-    let roomDoors = doors && doors[room.roomNumber];
-    let desc      = getRoomDescription(room, roomDoors);
-    let doorList  = roomDoors ? getDoorwayList(roomDoors) : '';
-    let items     = room.items.join('');
-    let map       = room.map ? getMapDescription() : '';
-    let keys      = room.keys ? getKeyDescription(room.keys) : '';
-    let traps     = room.traps ? subtitle(`Traps (${room.traps.length})`) + list(room.traps) : '';
-
-    return article(desc + doorList + items + map + keys + traps);
-};
-
-const getItems = (settings) => {
-    let items = generateItems(settings).join('');
-
-    return section(article(items));
-};
-
-const getRoomRows = (rooms, doors) => {
-    let sections = chunk(rooms, roomsPerRow);
-
-    return sections.map((roomChunk) => {
-        let row = roomChunk.map((room) => formatRoom(room, doors)).join('');
-
-        return section(row, { 'data-grid': 3 });
-    }).join('');
-};
-
-const getRooms = (settings) => {
-    let rooms = generateRooms(settings);
-
-    rooms.forEach((_, i) => {
-        rooms[i].roomNumber = i + 1;
-    });
-
-    return getRoomRows(rooms);
-};
-
-const getDungeon = (settings) => {
-    let { map, rooms, doors, mapDimensions } = generateDungeon(settings);
-
-    let legend   = drawLegend({ mapWidth: mapDimensions.gridWidth });
-    let sections = getRoomRows(rooms, doors);
-
-    return section(map) + section(legend) + sections;
-};
+// -- Config -------------------------------------------------------------------
 
 const generators = {
-    dungeon: getDungeon,
-    items  : getItems,
-    rooms  : getRooms,
+    dungeon: dungeonGenerator,
+    items  : itemGenerator,
+    rooms  : roomGenerator,
 };
 
 // -- Private Functions --------------------------------------------------------
+
+/**
+ * Generates and formats output for the item generation page.
+ *
+ * @param {ItemConfig} settings
+ *
+ * @returns {string}
+ */
+function itemGenerator(settings) {
+    return formatItems(generateItems(settings));
+}
+
+/**
+ * Generates and formats output for the room generation page.
+ *
+ * @param {RoomConfig} settings
+ *
+ * @returns {string}
+ */
+function roomGenerator(settings) {
+    return formatRooms(generateRooms(settings));
+}
+
+/**
+ * Generates and formats output for the dungeon generation page.
+ *
+ * @param {DungeonConfig} settings
+ *
+ * @returns {string}
+ */
+function dungeonGenerator(settings) {
+    return formatDungeon(generateDungeon(settings));
+}
 
 /**
  * Get element dataset.
@@ -127,6 +107,8 @@ const getDataset = (target) => target instanceof HTMLElement ? target.dataset : 
  * @param {Triggers} triggers
  * @param {Action} action
  *
+ * @throws
+ *
  * @returns {Trigger?}
  */
 function getTrigger(triggers, action) {
@@ -139,6 +121,8 @@ function getTrigger(triggers, action) {
  * Generator event handler.
  *
  * TODO tests!
+ *
+ * @throws
  *
  * @param {Pick<Sections, "content" | "knobs" | "nav">} sections
  */
@@ -211,6 +195,7 @@ function toggleAccordion(container, e) {
  * attribute on a click event's `target` element.
  *
  * @private
+ * @throws
  *
  * @param {Element} container
  * @param {Event} e
