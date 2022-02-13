@@ -34,6 +34,9 @@ const getMockClickEvent = (targetEl) => ({
     target: targetEl,
 });
 
+/** @typedef {import('../knobs.js').ItemConfig} ItemConfig */
+/** @typedef {import('../knobs.js').RoomConfig} RoomConfig */
+
 /**
  * @param {import('../../unit/state.js').Utility} utility
  */
@@ -42,6 +45,23 @@ export default ({ assert, describe, it }) => {
     // -- Private Functions ----------------------------------------------------
 
     describe('generators', () => {
+        /** @type {ItemConfig} itemSettings */
+        const itemSettings = {
+            itemCondition: 'average',
+            itemQuantity : 'one',
+            itemRarity   : 'legendary',
+            itemType     : 'random',
+        };
+
+        /** @type {RoomConfig} roomSettings */
+        const roomSettingsBase = {
+            ...itemSettings,
+            roomCondition     : 'average',
+            roomFurnishing    : 'none', // TODO 'zero' when updated to Quantity
+            roomSize          : 'small',
+            roomType          : 'room',
+        };
+
         it('includes a function for each page', () => {
             pages.forEach((page) => {
                 assert(generators[page]).isFunction();
@@ -50,32 +70,35 @@ export default ({ assert, describe, it }) => {
 
         describe('items', () => {
             it('returns generated items', () => {
-                // TODO
+                const result = generators.items(itemSettings);
+                assert(result).stringIncludes('<h3>Items (1)</h3>');
+                assert(RegExp('<ul(.+?)>(.+?)</ul>').test(result)).isTrue();
             });
         });
 
         describe('rooms', () => {
             it('returns generated rooms', () => {
-                // TODO
+                const result = generators.rooms({
+                    ...itemSettings,
+                    ...roomSettingsBase,
+                    roomCount : 1,
+                });
+
+                assert(result).stringIncludes('<h2>Room</h2>');
+                assert(result).stringIncludes('<h3>Items (1)</h3>');
+                assert(RegExp('<ul(.+?)>(.+?)</ul>').test(result)).isTrue();
             });
         });
 
         describe('dungeon', () => {
             it('returns a generated dungeon', () => {
                 const result = generators.dungeon({
+                    ...itemSettings,
+                    ...roomSettingsBase,
                     dungeonComplexity : 2,
                     dungeonConnections: 0,
                     dungeonMaps       : 0,
                     dungeonTraps      : 0,
-                    itemCondition     : 'average',
-                    itemQuantity      : 'zero',
-                    itemRarity        : 'legendary',
-                    itemType          : 'random',
-                    roomCondition     : 'average',
-                    // roomCount room only
-                    roomFurnishing    : 'zero',
-                    roomSize          : 'small',
-                    roomType          : 'room',
                 });
 
                 assert(RegExp('<svg(.+?)>(.+?)</svg>').test(result)).isTrue();
