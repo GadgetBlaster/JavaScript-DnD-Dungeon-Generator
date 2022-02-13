@@ -125,16 +125,12 @@ const getDataset = (target) => target instanceof HTMLElement ? target.dataset : 
  * Returns a trigger function for the given action.
  *
  * @param {Triggers} triggers
- * @param {string} [action]
+ * @param {Action} action
  *
  * @returns {Trigger?}
  */
 function getTrigger(triggers, action) {
-    if (!action) {
-        return;
-    }
-
-    isRequired(triggers[action], `Invalid action "${action}"`);
+    isRequired(triggers[action], `Invalid action "${action}" passed to getTrigger()`);
 
     return triggers[action];
 }
@@ -189,12 +185,12 @@ function onNavigate({ content, knobs, nav }, homeContent, e) {
 function toggleAccordion(container, e) {
     let { target } = getDataset(e.target);
 
-    !target && toss('Missing target for accordion toggle');
+    isRequired(target, 'Missing target for accordion toggle');
 
     /** @type {HTMLElement} targetSectionEl */
     let targetSectionEl = container.querySelector(`[data-collapsed][data-id="${target}"]`);
 
-    !targetSectionEl && toss(`Invalid accordion section target \`${target}\``);
+    !targetSectionEl && toss(`Invalid accordion section target "${target}"`);
 
     /** @type {NodeListOf<HTMLElement>} sectionEls */
     let sectionEls = container.querySelectorAll('[data-collapsed]');
@@ -222,12 +218,12 @@ function toggleAccordion(container, e) {
 function toggleVisibility(container, e) {
     let { target } = getDataset(e.target);
 
-    !target && toss('Missing target for visibility toggle');
+    isRequired(target, 'Missing target for visibility toggle');
 
     /** @type {HTMLElement} targetEl */
     let targetEl = container.querySelector(`[data-id="${target}"]`);
 
-    !targetEl && toss(`Invalid visibility toggle target \`${target}\``);
+    !targetEl && toss(`Invalid visibility toggle target "${target}"`);
 
     targetEl.hidden = !targetEl.hidden;
 }
@@ -249,12 +245,14 @@ export {
  */
 export function attachClickDelegate(docBody, triggers) {
     docBody.addEventListener('click', (e) => {
+        /** @type {{ action?: Action }} */
         let { action } = getDataset(e.target);
-        let trigger = getTrigger(triggers, action);
 
-        if (!trigger) {
+        if (!action) {
             return;
         }
+
+        let trigger = getTrigger(triggers, action);
 
         e.preventDefault();
         trigger(e);

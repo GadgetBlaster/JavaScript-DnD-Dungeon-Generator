@@ -39,15 +39,10 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getTrigger()', () => {
-        describe('given no action', () => {
-            it('returns undefined', () => {
-                assert(getTrigger({})).isUndefined();
-            });
-        });
-
         describe('given an action that does not exist on the given triggers', () => {
             it('throws', () => {
-                assert(() => getTrigger({}, 'bellyFlop')).throws('Invalid action "bellyFlop"');
+                // @ts-expect-error
+                assert(() => getTrigger({}, 'bellyFlop')).throws('Invalid action "bellyFlop" passed to getTrigger()');
             });
         });
 
@@ -160,7 +155,7 @@ export default ({ assert, describe, it }) => {
 
                     onTargetElClick(button, (e) => {
                         assert(() => toggleAccordion(container, e))
-                            .throws('Invalid accordion section target `nope`');
+                            .throws('Invalid accordion section target "nope"');
                     });
                 });
             });
@@ -230,7 +225,7 @@ export default ({ assert, describe, it }) => {
 
                 onTargetElClick(button, (e) => {
                     assert(() => toggleVisibility(container, e))
-                        .throws('Invalid visibility toggle target `frodo`');
+                        .throws('Invalid visibility toggle target "frodo"');
                 });
             });
         });
