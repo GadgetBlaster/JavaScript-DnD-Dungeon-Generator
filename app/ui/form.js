@@ -152,7 +152,7 @@ export function getFormData(knobContainer) {
 /**
  * Update form knobs when changing pages.
  *
- * @param {Page} [page = "dungeon"]
+ * @param {Page} [page = "dungeon"] // TODO make rquired
  *
  * @returns {string}
  */

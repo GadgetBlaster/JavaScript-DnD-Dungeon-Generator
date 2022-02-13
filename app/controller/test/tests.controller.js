@@ -18,7 +18,7 @@ import {
 } from '../controller.js';
 
 import { getKnobPanel } from '../../ui/form.js';
-import { pages } from '../../ui/nav.js';
+import { getNav, pages } from '../../ui/nav.js';
 
 /** @typedef {import('../controller.js').Trigger} Trigger */
 
@@ -72,7 +72,7 @@ export default ({ assert, describe, it }) => {
             it('returns generated items', () => {
                 const result = generators.items(itemSettings);
                 assert(result).stringIncludes('<h3>Items (1)</h3>');
-                assert(RegExp('<ul(.+?)>(.+?)</ul>').test(result)).isTrue();
+                assert(/<ul(.+?)>(.+?)<\/ul>/.test(result)).isTrue();
             });
         });
 
@@ -86,7 +86,7 @@ export default ({ assert, describe, it }) => {
 
                 assert(result).stringIncludes('<h2>Room</h2>');
                 assert(result).stringIncludes('<h3>Items (1)</h3>');
-                assert(RegExp('<ul(.+?)>(.+?)</ul>').test(result)).isTrue();
+                assert(/<ul(.+?)>(.+?)<\/ul>/.test(result)).isTrue();
             });
         });
 
@@ -101,14 +101,14 @@ export default ({ assert, describe, it }) => {
                     dungeonTraps      : 0,
                 });
 
-                assert(RegExp('<svg(.+?)>(.+?)</svg>').test(result)).isTrue();
+                assert(/<svg(.+?)>(.+?)<\/svg>/.test(result)).isTrue();
             });
         });
     });
 
     describe('getDataset()', () => {
         describe('given an HTML element target', () => {
-            it('should return the elements data attributes', () => {
+            it('returns the element\'s data attributes', () => {
                 const div = document.createElement('div');
 
                 div.dataset.type = 'blackKnight';
@@ -118,7 +118,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a target that is not an HTML element', () => {
-            it('should return an empty object', () => {
+            it('returns an empty object', () => {
                 assert(getDataset(null)).equalsObject({});
             });
         });
@@ -156,7 +156,7 @@ export default ({ assert, describe, it }) => {
 
     describe('onNavigate()', () => {
         describe('given an event with the target page of "rooms"', () => {
-            it('should update the content, knobs, and nav', () => {
+            it('updates the content, knobs, and nav elements', () => {
                 const contentEl = document.createElement('div');
                 const knobsEl   = document.createElement('form');
 
@@ -167,7 +167,7 @@ export default ({ assert, describe, it }) => {
                 const roomsButton = document.createElement('button');
                 roomsButton.dataset.target = 'rooms';
 
-                const navEl = document.createElement('div');
+                const navEl = document.createElement('nav');
                 navEl.appendChild(dungeonButton);
                 navEl.appendChild(roomsButton);
 
@@ -188,17 +188,17 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('onGenerate()', () => {
-        it('should generate content', () => {
+        it('generates content', () => {
             const contentEl = document.createElement('div');
 
-            const knobsEl   = document.createElement('form');
+            const knobsEl = document.createElement('form');
             knobsEl.innerHTML = getKnobPanel('items');
 
             const itemsButton = document.createElement('button');
             itemsButton.dataset.active = 'true';
             itemsButton.dataset.target = 'items';
 
-            const navEl = document.createElement('div');
+            const navEl = document.createElement('nav');
             navEl.appendChild(itemsButton);
 
             onGenerate({
@@ -213,7 +213,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('when the page is invalid', () => {
-            it('should throw', () => {
+            it('throws', () => {
                 const contentEl = document.createElement('div');
                 const knobsEl   = document.createElement('form');
 
@@ -253,7 +253,7 @@ export default ({ assert, describe, it }) => {
             }
 
             const each = ({ collapsed }) => {
-                /** @type {NodeListOf<HTMLElement>} sectionEls */
+                /** @type {NodeListOf<HTMLElement>} */
                 const sectionEls = container.querySelectorAll('[data-collapsed]');
 
                 sectionEls.forEach((sectionEl) => {
@@ -263,14 +263,14 @@ export default ({ assert, describe, it }) => {
 
             const collapseAll = () => each({ collapsed: true });
 
-            /** @type {HTMLElement} targetEl */
+            /** @type {HTMLElement} */
             const targetEl = container.querySelector('[data-action="accordion"][data-target="1"]');
 
             describe('when an accordion section is collapsed', () => {
-                it('should expand that accordion item', () => {
+                it('expands the accordion item', () => {
                     collapseAll();
 
-                    /** @type {HTMLElement} sectionEl */
+                    /** @type {HTMLElement} */
                     const sectionEl = container.querySelector('[data-collapsed][data-id="1"]');
 
                     toggleAccordion(container, getMockClickEvent(targetEl));
@@ -279,10 +279,10 @@ export default ({ assert, describe, it }) => {
             });
 
             describe('when an accordion section is expanded', () => {
-                it('should collapse that accordion item', () => {
+                it('collapses the accordion item', () => {
                     collapseAll();
 
-                    /** @type {HTMLElement} sectionEl */
+                    /** @type {HTMLElement} */
                     const sectionEl = container.querySelector('[data-collapsed][data-id="1"]');
                     sectionEl.dataset.collapsed = 'false';
 
@@ -292,27 +292,27 @@ export default ({ assert, describe, it }) => {
             });
 
             describe('when another accordion section is expanded', () => {
-                it('should collapse all accordion items', () => {
+                it('collapses all accordion items', () => {
                     collapseAll();
 
-                    /** @type {HTMLElement} sectionEle */
-                    const sectionEle = container.querySelector('[data-collapsed][data-id="2"]');
-                    sectionEle.dataset.collapsed = 'false';
+                    /** @type {HTMLElement} */
+                    const accordionEl = container.querySelector('[data-collapsed][data-id="2"]');
+                    accordionEl.dataset.collapsed = 'false';
 
                     toggleAccordion(container, getMockClickEvent(targetEl));
-                    assert(sectionEle.dataset.collapsed).equals('true');
+                    assert(accordionEl.dataset.collapsed).equals('true');
                 });
             });
 
             describe('given an event with no click target' , () => {
-                it('should throw', () => {
+                it('throws', () => {
                     const e = getMockClickEvent(document.createElement('button'));
                     assert(() => toggleAccordion(container, e)).throws('Missing target for accordion toggle');
                 });
             });
 
             describe('given an event with an invalid accordion section target' , () => {
-                it('should throw', () => {
+                it('throws', () => {
                     const button = document.createElement('button');
 
                     button.dataset.action = 'accordion';
@@ -341,7 +341,7 @@ export default ({ assert, describe, it }) => {
             button.dataset.target = targetId;
 
             describe('when the child is not hidden', () => {
-                it('should hide the element', () => {
+                it('hides the element', () => {
                     paragraph.hidden = false;
 
                     toggleVisibility(container, getMockClickEvent(button));
@@ -350,7 +350,7 @@ export default ({ assert, describe, it }) => {
             });
 
             describe('when the child is hidden', () => {
-                it('should hide the element', () => {
+                it('hides the element', () => {
                     paragraph.hidden = true;
 
                     toggleVisibility(container, getMockClickEvent(button));
@@ -360,7 +360,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given an event with no target', () => {
-            it('should throw', () => {
+            it('throws', () => {
                 const button = document.createElement('button');
 
                 assert(() => toggleVisibility(container, getMockClickEvent(button)))
@@ -369,7 +369,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given an event with an invalid target', () => {
-            it('should throw', () => {
+            it('throws', () => {
                 const button = document.createElement('button');
 
                 button.dataset.target = 'frodo';
@@ -412,18 +412,18 @@ export default ({ assert, describe, it }) => {
                 button.dispatchEvent(new CustomEvent('click', { bubbles: true }));
                 const event = events.pop();
 
-                it('should trigger the click delegate and call the action', () => {
+                it('triggers the click delegate and calls the action', () => {
                     assert(Boolean(event)).isTrue();
                 });
 
-                it('should call the action with a click event object param', () => {
+                it('calls the action with a click event object param', () => {
                     assert(event).isObject();
                     event && assert(event.type).equals('click');
                 });
             });
 
             describe('when the click target has no action', () => {
-                it('should not call any actions', () => {
+                it('no actions are called', () => {
                     button2.dispatchEvent(new CustomEvent('click', { bubbles: true }));
                     assert(events.length).equals(0);
                 });
@@ -432,21 +432,80 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getTriggers()', () => {
-        it('should return an object containing all application triggers', () => {
-            const fakeEl   = document.createElement('div');
-            const sections = {
-                body   : fakeEl,
-                content: fakeEl,
-                knobs  : fakeEl,
-                nav    : fakeEl,
-            };
+        const body    = document.createElement('div');
+        const content = document.createElement('div');
+        const knobs   = document.createElement('form');
+        const nav     = document.createElement('nav');
 
-            const triggers = getTriggers(sections, '');
+        content.innerHTML = 'Fake homepage content';
+        knobs.innerHTML = getKnobPanel('items');
+        nav.innerHTML = getNav('items');
 
+        body.appendChild(nav);
+        body.appendChild(knobs);
+        body.appendChild(content);
+
+        const sections = { body, content, knobs, nav };
+        const triggers = getTriggers(sections, content.innerHTML);
+
+        it('returns an object containing all application triggers', () => {
             assert(triggers.accordion).isFunction();
             assert(triggers.generate).isFunction();
             assert(triggers.navigate).isFunction();
             assert(triggers.toggle).isFunction();
+        });
+
+        describe('accordion', () => {
+            it('toggles an accordion', () => {
+                /** @type {HTMLElement} */
+                const accordionButtonEl = knobs.querySelector('[data-target="fieldset-item-settings"]');
+
+                /** @type {HTMLElement} */
+                const fieldsetEl = knobs.querySelector('[data-id="fieldset-item-settings"]');
+
+                triggers.accordion(getMockClickEvent(accordionButtonEl));
+
+                assert(fieldsetEl.dataset.collapsed).equals('false');
+            });
+        });
+
+        describe('generate', () => {
+            it('updates the content', () => {
+                /** @type {HTMLElement} */
+                const generateButtonEl = knobs.querySelector('[data-action="generate"]');
+
+                triggers.generate(getMockClickEvent(generateButtonEl));
+
+                assert(/<h3>Items \([0-9]+\)<\/h3>/.test(content.innerHTML)).isTrue();
+                assert(/<ul(.+?)>(.+?)<\/ul>/.test(content.innerHTML)).isTrue();
+            });
+        });
+
+        describe('navigate', () => {
+            it('updates the content', () => {
+                /** @type {HTMLElement} */
+                const roomsButtonEl = knobs.querySelector('[data-action="navigate"][data-target="rooms"]');
+
+                triggers.navigate(getMockClickEvent(roomsButtonEl));
+
+                assert(content.innerHTML).equals('Fake homepage content');
+            });
+        });
+
+        describe('toggle', () => {
+            it('updates the target\'s visibility', () => {
+                /** @type {HTMLElement} */
+                const toggleButtonEl = knobs.querySelector('[data-action="toggle"][data-target="info-itemQuantity"]');
+
+                /** @type {HTMLElement} */
+                const infoEl = knobs.querySelector('[data-id="info-itemQuantity"]');
+
+                assert(infoEl.hidden).isTrue();
+
+                triggers.toggle(getMockClickEvent(toggleButtonEl));
+
+                assert(infoEl.hidden).isFalse();
+            });
         });
     });
 };
