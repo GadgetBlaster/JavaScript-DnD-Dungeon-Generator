@@ -21,9 +21,11 @@ import { generateDungeon } from '../dungeon/generate.js';
 import { generateItems } from '../item/generate.js';
 import { generateRooms } from '../room/generate.js';
 
-// -- Types --------------------------------------------------------------------
+// -- Type Imports -------------------------------------------------------------
 
 /** @typedef {import('./nav.js').Page} Page */
+
+// -- Types --------------------------------------------------------------------
 
 /** @typedef {(Event) => void} Trigger */
 /** @typedef {{ [key in Action]?: Trigger }} Triggers */
@@ -171,15 +173,48 @@ function onNavigate({ content, knobs, nav }, homeContent, e) {
     content.innerHTML = homeContent;
 }
 
+/**
+ * Toggle accordion
+ *
+ * @private
+ *
+ * @param {HTMLElement} container
+ * @param {Event} e
+ */
+function toggleAccordion(container, e) {
+    let { target } = getDataset(e.target);
+
+    !target && toss('Missing target for accordion toggle');
+
+    /** @type {HTMLElement} targetSectionEl */
+    let targetSectionEl = container.querySelector(`[data-collapsed][data-id="${target}"]`);
+
+    !targetSectionEl && toss(`Invalid accordion section target \`${target}\``);
+
+    /** @type {NodeListOf<HTMLElement>} sectionEls */
+    let sectionEls = container.querySelectorAll('[data-collapsed]');
+
+    [ ...sectionEls ].forEach((el) => {
+        if (el !== targetSectionEl) {
+            el.dataset.collapsed = 'true';
+        }
+    });
+
+    let isCollapsed = targetSectionEl.dataset.collapsed === 'true';
+
+    targetSectionEl.dataset.collapsed = isCollapsed ? 'false' : 'true';
+}
+
 export {
-    getDataset as testGetDataset,
-    getTrigger as testGetTrigger,
+    getDataset      as testGetDataset,
+    getTrigger      as testGetTrigger,
+    toggleAccordion as testToggleAccordion,
 };
 
 // -- Public Functions ---------------------------------------------------------
 
 /**
- * Attaches an application click event delegate to the document body.
+ * Attaches an application level click delegate to the document body.
  *
  * @param {HTMLElement} docBody
  * @param {Triggers} triggers
@@ -212,36 +247,6 @@ export const getTriggers = ({ body, content, knobs, nav }, homeContent) => ({
     navigate : (e) => onNavigate({ content, knobs, nav }, homeContent, e),
     toggle   : (e) => toggleVisibility(body, e),
 });
-
-/**
- * Toggle accordion
- *
- * @param {HTMLElement} container
- * @param {Event} e
- */
-export function toggleAccordion(container, e) {
-    let { target } = getDataset(e.target);
-
-    !target && toss('Missing target for accordion toggle');
-
-    /** @type {HTMLElement} targetSectionEl */
-    let targetSectionEl = container.querySelector(`[data-collapsed][data-id="${target}"]`);
-
-    !targetSectionEl && toss(`Invalid accordion section target \`${target}\``);
-
-    /** @type {NodeListOf<HTMLElement>} sectionEls */
-    let sectionEls = container.querySelectorAll('[data-collapsed]');
-
-    [ ...sectionEls ].forEach((el) => {
-        if (el !== targetSectionEl) {
-            el.dataset.collapsed = 'true';
-        }
-    });
-
-    let isCollapsed = targetSectionEl.dataset.collapsed === 'true';
-
-    targetSectionEl.dataset.collapsed = isCollapsed ? 'false' : 'true';
-}
 
 /**
  * Toggle visibility

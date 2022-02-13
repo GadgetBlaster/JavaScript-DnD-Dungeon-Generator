@@ -2,12 +2,12 @@
 
 import {
     // Private Functions
-    testGetDataset as getDataset,
-    testGetTrigger as getTrigger,
+    testGetDataset      as getDataset,
+    testGetTrigger      as getTrigger,
+    testToggleAccordion as toggleAccordion,
 
     // Public Functions
     attachClickDelegate,
-    toggleAccordion,
     toggleVisibility,
 } from '../action.js';
 
@@ -57,55 +57,6 @@ export default ({ assert, describe, it }) => {
                 const trigger  = getTrigger(triggers, 'navigate');
 
                 assert(trigger()).equals('success');
-            });
-        });
-    });
-
-    // -- Public Functions -----------------------------------------------------
-
-    describe('attachClickDelegate()', () => {
-        describe('when a child element is clicked', () => {
-            const container = document.createElement('div');
-            const button    = document.createElement('button');
-            const button2   = document.createElement('button');
-            const button3   = document.createElement('button');
-
-            button.dataset.action  = 'home';
-            button3.dataset.action = 'invalid-action';
-
-            container.appendChild(button);
-            container.appendChild(button2);
-            container.appendChild(button3);
-
-            const events = [];
-
-            const triggers = {
-                home: /** @type {Trigger} */ (e) => {
-                    events.push(e);
-                },
-            };
-
-            attachClickDelegate(container, triggers);
-
-            describe('when the clicked element has a valid `data-action` attribute', () => {
-                button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-                const event = events.pop();
-
-                it('should trigger the click delegate and call the action', () => {
-                    assert(Boolean(event)).isTrue();
-                });
-
-                it('should call the action with a click event object param', () => {
-                    assert(event).isObject();
-                    event && assert(event.type).equals('click');
-                });
-            });
-
-            describe('when the click target has no action', () => {
-                it('should not call any actions', () => {
-                    button2.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-                    assert(events.length).equals(0);
-                });
             });
         });
     });
@@ -211,6 +162,55 @@ export default ({ assert, describe, it }) => {
                         assert(() => toggleAccordion(container, e))
                             .throws('Invalid accordion section target `nope`');
                     });
+                });
+            });
+        });
+    });
+
+    // -- Public Functions -----------------------------------------------------
+
+    describe('attachClickDelegate()', () => {
+        describe('when a child element is clicked', () => {
+            const container = document.createElement('div');
+            const button    = document.createElement('button');
+            const button2   = document.createElement('button');
+            const button3   = document.createElement('button');
+
+            button.dataset.action  = 'home';
+            button3.dataset.action = 'invalid-action';
+
+            container.appendChild(button);
+            container.appendChild(button2);
+            container.appendChild(button3);
+
+            const events = [];
+
+            const triggers = {
+                home: /** @type {Trigger} */ (e) => {
+                    events.push(e);
+                },
+            };
+
+            attachClickDelegate(container, triggers);
+
+            describe('when the clicked element has a valid `data-action` attribute', () => {
+                button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+                const event = events.pop();
+
+                it('should trigger the click delegate and call the action', () => {
+                    assert(Boolean(event)).isTrue();
+                });
+
+                it('should call the action with a click event object param', () => {
+                    assert(event).isObject();
+                    event && assert(event.type).equals('click');
+                });
+            });
+
+            describe('when the click target has no action', () => {
+                it('should not call any actions', () => {
+                    button2.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+                    assert(events.length).equals(0);
                 });
             });
         });
