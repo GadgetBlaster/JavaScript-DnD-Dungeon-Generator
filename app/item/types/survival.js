@@ -1,14 +1,14 @@
 // @ts-check
 
-/** @typedef {import('../item.js').ItemConfig} ItemConfig */
+/** @typedef {import('../item.js').ItemBase} ItemBase */
 
-/** @type {Omit<ItemConfig, "name">} */
+/** @type {Omit<ItemBase, "name">} */
 const defaults = {
     rarity: 'uncommon',
     type  : 'survival',
 };
 
-/** @type {{ [name: string]: Partial<ItemConfig>}} */
+/** @type {{ [name: string]: Partial<ItemBase>}} */
 const survivalEquipment = {
     'Bedroll'           : { rarity: 'common' },
     'Blanket'           : { rarity: 'common' },
@@ -27,7 +27,7 @@ const survivalEquipment = {
     'Tinderbox'         : null,
 };
 
-/** @type {ItemConfig[]} */
+/** @type {ItemBase[]} */
 export default Object.entries(survivalEquipment).map(([ name, config ]) => ({
     name,
     ...defaults,

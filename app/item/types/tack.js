@@ -1,14 +1,14 @@
 // @ts-check
 
-/** @typedef {import('../item.js').ItemConfig} ItemConfig */
+/** @typedef {import('../item.js').ItemBase} ItemBase */
 
-/** @type {Omit<ItemConfig, "name">} */
+/** @type {Omit<ItemBase, "name">} */
 const defaults = {
     rarity: 'uncommon',
     type  : 'tack',
 };
 
-/** @type {{ [name: string]: Partial<ItemConfig>}} */
+/** @type {{ [name: string]: Partial<ItemBase>}} */
 const tack = {
     'Barding'       : { variants: [ 'chain', 'plage', 'scabb' ] },
     'Bit and bridle': null,
@@ -20,7 +20,7 @@ const tack = {
     'Saddlebags'    : null,
 };
 
-/** @type {ItemConfig[]} */
+/** @type {ItemBase[]} */
 export default Object.entries(tack).map(([ name, config ]) => ({
     name,
     ...defaults,

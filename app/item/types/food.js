@@ -1,13 +1,13 @@
 // @ts-check
 
-/** @typedef {import('../item.js').ItemConfig} ItemConfig */
+/** @typedef {import('../item.js').ItemBase} ItemBase */
 
-/** @type {Omit<ItemConfig, "name">} */
+/** @type {Omit<ItemBase, "name">} */
 const defaults = {
     type: 'food',
 };
 
-/** @type {{ [name: string]: Partial<ItemConfig>}} */
+/** @type {{ [name: string]: Partial<ItemBase>}} */
 const food = {
     'Bread, loaf'    : { maxCount: 3 },
     'Butter'         : { variants: [ 'bucket', 'bowl', 'block' ] },
@@ -38,7 +38,7 @@ const food = {
     'Wheat'          : { variants: [ 'pouch', 'bag', 'sack' ]  },
 };
 
-/** @type {ItemConfig[]} */
+/** @type {ItemBase[]} */
 export default Object.entries(food).map(([ name, config ]) => ({
     name,
     ...defaults,

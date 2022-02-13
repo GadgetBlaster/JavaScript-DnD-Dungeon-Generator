@@ -1,14 +1,14 @@
 // @ts-check
 
-/** @typedef {import('../item.js').ItemConfig} ItemConfig */
+/** @typedef {import('../item.js').ItemBase} ItemBase */
 
-/** @type {Omit<ItemConfig, "name">} */
+/** @type {Omit<ItemBase, "name">} */
 const defaults = {
     rarity: 'abundant',
     type  : 'kitchen',
 };
 
-/** @type {{ [name: string]: Partial<ItemConfig>}} */
+/** @type {{ [name: string]: Partial<ItemBase>}} */
 const kitchenSupplies = {
     'Basin'        : null,
     'Cauldron'     : { rarity: 'average' },
@@ -25,7 +25,7 @@ const kitchenSupplies = {
     'Tub'          : null,
 };
 
-/** @type {ItemConfig[]} */
+/** @type {ItemBase[]} */
 export default Object.entries(kitchenSupplies).map(([ name, config ]) => ({
     name,
     ...defaults,

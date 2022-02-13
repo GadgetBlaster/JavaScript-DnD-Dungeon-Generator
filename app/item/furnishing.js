@@ -3,11 +3,11 @@
 import { capacity } from './types/container.js';
 import { rollArrayItem, createProbability } from '../utility/roll.js';
 
-/** @typedef {import('./item.js').ItemConfig} ItemConfig */
+/** @typedef {import('./item.js').ItemBase} ItemBase */
 /** @typedef {import('./item.js').Item} Item */
 /** @typedef {import('../room/room.js').RoomType} RoomType */
 
-/** @type {Omit<ItemConfig, "name">} */
+/** @type {Omit<ItemBase, "name">} */
 const defaults = {
     maxCount: 1,
     rarity  : 'average',
@@ -16,7 +16,7 @@ const defaults = {
 };
 
 /**
- * @type {Object<string, ItemConfig>}
+ * @type {Object<string, ItemBase>}
  */
 const furnishing = {
     alchemy  : { name: 'Alchemy equipment' },

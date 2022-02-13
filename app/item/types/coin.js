@@ -1,15 +1,15 @@
 // @ts-check
 
-/** @typedef {import('../item.js').ItemConfig} ItemConfig */
+/** @typedef {import('../item.js').ItemBase} ItemBase */
 
-/** @type {Omit<ItemConfig, "name">} */
+/** @type {Omit<ItemBase, "name">} */
 const defaults = {
     maxCount: 100,
     type    : 'coin',
     rarity  : 'uncommon',
 };
 
-/** @type {{ [name: string]: Partial<ItemConfig>}} */
+/** @type {{ [name: string]: Partial<ItemBase>}} */
 const coins = {
     'Copper piece'  : { rarity: 'common' },
     'Silver piece'  : null,
@@ -18,7 +18,7 @@ const coins = {
     'Platinum piece': { rarity: 'exotic' },
 };
 
-/** @type {ItemConfig[]} */
+/** @type {ItemBase[]} */
 export default Object.entries(coins).map(([ name, config ]) => ({
     name,
     ...defaults,

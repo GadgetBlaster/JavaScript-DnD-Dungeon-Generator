@@ -17,7 +17,7 @@ import set from './set.js';
 /** @typedef {typeof itemTypes[number]} ItemType */
 
 /**
- * @typedef {object} ItemConfig
+ * @typedef {object} ItemBase
  *
  * @prop {string} name
  * @prop {Rarity} [rarity]
@@ -72,7 +72,7 @@ export const itemTypes = Object.freeze(/** @type {const} */ ([
 /**
  * Item defaults.
  *
- * @type {Omit<ItemConfig, "name">}
+ * @type {Omit<ItemBase, "name">}
  */
 const defaults = {
     maxCount: 1,
@@ -105,7 +105,7 @@ const detailsHidden = new Set([
 /**
  * Item configs.
  *
- * @type {ItemConfig[]}
+ * @type {ItemBase[]}
  */
 const items = set.map((item) => ({ ...defaults, ...item }));
 
@@ -139,8 +139,8 @@ const {
     });
 
     return {
-        groupByRarity: /** @type {{ [key in Rarity]: ItemConfig[] }} */ (byRarity),
-        groupByType: /** @type {{ [key in ItemType]: { [key in Rarity]: ItemConfig[] }}} */ (byType),
+        groupByRarity: /** @type {{ [key in Rarity]: ItemBase[] }} */ (byRarity),
+        groupByType: /** @type {{ [key in ItemType]: { [key in Rarity]: ItemBase[] }}} */ (byType),
     };
 })();
 

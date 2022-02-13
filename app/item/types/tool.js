@@ -1,13 +1,13 @@
 // @ts-check
 
-/** @typedef {import('../item.js').ItemConfig} ItemConfig */
+/** @typedef {import('../item.js').ItemBase} ItemBase */
 
-/** @type {Omit<ItemConfig, "name">} */
+/** @type {Omit<ItemBase, "name">} */
 const defaults = {
     type: 'tool',
 };
 
-/** @type {{ [name: string]: Partial<ItemConfig>}} */
+/** @type {{ [name: string]: Partial<ItemBase>}} */
 const tools = {
     'Alchemist’s supplies'   : { rarity: 'rare' },
     'Ball bearings'          : { maxCount: 100 },
@@ -65,7 +65,7 @@ const tools = {
     'Wooden staff'           : { size: 'medium'  },
 };
 
-/** @type {ItemConfig[]} */
+/** @type {ItemBase[]} */
 export default Object.entries(tools).map(([ name, config ]) => ({
     name,
     ...defaults,

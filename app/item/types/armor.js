@@ -1,15 +1,15 @@
 // @ts-check
 
-/** @typedef {import('../item.js').ItemConfig} ItemConfig */
+/** @typedef {import('../item.js').ItemBase} ItemBase */
 
-/** @type {Omit<ItemConfig, "name">} */
+/** @type {Omit<ItemBase, "name">} */
 const defaults = {
     rarity: 'uncommon',
     type  : 'armor',
     size  : 'medium',
 };
 
-/** @type {{ [name: string]: Partial<ItemConfig>}} */
+/** @type {{ [name: string]: Partial<ItemBase>}} */
 const armor = {
     'Breastplate'          : { rarity: 'rare' },
     'Chain mail'           : { rarity: 'rare' },
@@ -26,7 +26,7 @@ const armor = {
     'Studded leather armor': null,
 };
 
-/** @type {ItemConfig[]} */
+/** @type {ItemBase[]} */
 export default Object.entries(armor).map(([ name, config ]) => ({
     name,
     ...defaults,

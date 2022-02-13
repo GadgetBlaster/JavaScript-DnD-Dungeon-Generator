@@ -1,8 +1,8 @@
 // @ts-check
 
-/** @typedef {import('../item.js').ItemConfig} ItemConfig */
+/** @typedef {import('../item.js').ItemBase} ItemBase */
 
-/** @type {Omit<ItemConfig, "name">} */
+/** @type {Omit<ItemBase, "name">} */
 const defaults = {
     maxCount: 50,
     rarity  : 'common',
@@ -16,5 +16,5 @@ const ammunition = [
     'Sling bullet',
 ];
 
-/** @type {ItemConfig[]} */
+/** @type {ItemBase[]} */
 export default ammunition.map((name) => ({ ...defaults, name }));

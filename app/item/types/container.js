@@ -1,6 +1,6 @@
 // @ts-check
 
-/** @typedef {import('../item.js').ItemConfig} ItemConfig */
+/** @typedef {import('../item.js').ItemBase} ItemBase */
 /** @typedef {import('../../attribute/size.js').Size} Size */
 
 /**
@@ -30,14 +30,14 @@ export const itemSizeSpace = {
 // TODO figure out what exactly this does.
 export const maxItemQuantitySmall = 10;
 
-/** @type {Omit<ItemConfig, "name">} */
+/** @type {Omit<ItemBase, "name">} */
 const defaults = {
     rarity: 'common',
     size  : 'small',
     type  : 'container',
 };
 
-/** @type {{ [name: string]: Partial<ItemConfig>}} */
+/** @type {{ [name: string]: Partial<ItemBase>}} */
 const containers = {
     'Backpack'           : { size: 'medium' },
     'Barrel, large'      : { size: 'large' },
@@ -73,7 +73,7 @@ const containers = {
     'Waterskin'          : null,
 };
 
-/** @type {ItemConfig[]} */
+/** @type {ItemBase[]} */
 export default Object.entries(containers).map(([ name, config ]) => ({
     name,
     capacity: config && config.size ? capacity[config.size] : capacity.small,

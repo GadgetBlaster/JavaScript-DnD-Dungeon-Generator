@@ -1,8 +1,8 @@
 // @ts-check
 
-/** @typedef {import('../item.js').ItemConfig} ItemConfig */
+/** @typedef {import('../item.js').ItemBase} ItemBase */
 
-/** @type {Omit<ItemConfig, "name">} */
+/** @type {Omit<ItemBase, "name">} */
 const defaults = {
     rarity: 'exotic',
     type  : 'trinket',
@@ -111,5 +111,5 @@ const trinkets = [
     'A metal urn containing the ashes of a hero',
 ];
 
-/** @type {ItemConfig[]} */
+/** @type {ItemBase[]} */
 export default trinkets.map((name) => ({ ...defaults, name }));

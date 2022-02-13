@@ -1,8 +1,8 @@
 // @ts-check
 
-/** @typedef {import('../item.js').ItemConfig} ItemConfig */
+/** @typedef {import('../item.js').ItemBase} ItemBase */
 
-/** @type {Omit<ItemConfig, "name">} */
+/** @type {Omit<ItemBase, "name">} */
 const defaults = {
     rarity: 'rare',
     type  : 'mysterious',
@@ -12,5 +12,5 @@ const mysteriousItems = [
     'Mysterious object',
 ];
 
-/** @type {ItemConfig[]} */
+/** @type {ItemBase[]} */
 export default mysteriousItems.map((name) => ({ ...defaults, name }));
