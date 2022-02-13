@@ -177,12 +177,12 @@ const checkForAdjacentDoor = (grid, { x, y }) => {
  * @param {Dimensions} gridDimensions
  * @param {Room[]} mapRooms
  * @param {Grid} grid
- * @param {number} [roomNumber = 1] // TODO make required?
+ * @param {number} roomNumber
  * @param {GridRoom} [prevGridRoom]
  *
  * @returns {AppliedRoomResults}
  */
-function drawRooms(gridDimensions, mapRooms, grid, roomNumber = 1, prevGridRoom) {
+function drawRooms(gridDimensions, mapRooms, grid, roomNumber, prevGridRoom) {
     /** @type {Room[]} rooms */
     let rooms     = [];
 
@@ -687,8 +687,7 @@ function getExtraDoors(grid, rooms, existingDoors) {
  * }}
  */
 function getRooms(gridDimensions, roomConfigs, grid) {
-    // TODO pass `1` for roomNumber here?
-    let { rooms, doors, skipped, roomNumber, gridRooms } = drawRooms(gridDimensions, roomConfigs, grid);
+    let { rooms, doors, skipped, roomNumber, gridRooms } = drawRooms(gridDimensions, roomConfigs, grid, 1);
 
     let lastRoomNumber = roomNumber;
     let lastSkipped    = skipped;
@@ -726,6 +725,7 @@ export {
 };
 
 // -- Public Functions ---------------------------------------------------------
+
 /**
  * Generates a dungeon map.
  *
