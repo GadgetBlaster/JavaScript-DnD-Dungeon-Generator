@@ -183,7 +183,9 @@ const checkForAdjacentDoor = (grid, { x, y }) => {
  * @returns {AppliedRoomResults}
  */
 function drawRooms(gridDimensions, mapRooms, grid, roomNumber = 1, prevGridRoom) {
+    /** @type {Room[]} rooms */
     let rooms     = [];
+
     let doors     = [];
     let skipped   = [];
     let gridRooms = [];
@@ -199,7 +201,7 @@ function drawRooms(gridDimensions, mapRooms, grid, roomNumber = 1, prevGridRoom)
 
         // TODO break out into private function
         if (prevGridRoom) {
-            isRequired(prevGridRoom.walls, 'Previous room requires wall cells'); // TODO add text `in drawRooms()`
+            isRequired(prevGridRoom.walls, 'Previous grid room requires wall coordinates in drawRooms()');
 
             let validCords = getValidRoomConnections(grid, roomDimensions, prevGridRoom.rect);
 
@@ -255,7 +257,7 @@ function drawRooms(gridDimensions, mapRooms, grid, roomNumber = 1, prevGridRoom)
         rooms,
         doors: doors.concat(extraDoors),
         gridRooms,
-        skipped, // TOOD better name
+        skipped, // TODO better name
         roomNumber,
     };
 }
@@ -282,7 +284,7 @@ function getDoor(grid, gridRoom, prevGridRoom, { allowSecret } = {}) {
     let start     = useEdge ? rollArrayItem([ 0, remainder ]) : roll(0, remainder);
     let doorCells = cells.slice(start, start + size);
     let { x, y }  = doorCells[0];
-    let direction = getDoorDirection({ x, y }, gridRoom.rect); // TODO refactor for gridRoom
+    let direction = getDoorDirection({ x, y }, gridRoom.rect);
 
     let width  = 1;
     let height = 1;
@@ -317,6 +319,7 @@ function getDoor(grid, gridRoom, prevGridRoom, { allowSecret } = {}) {
  * @returns {Coordinates[]}
  */
 function getDoorCells(grid, gridRoom, prevGridRoom) {
+    /** @type {Coordinates[]} prevWalls */
     let prevWalls = [];
 
     if (prevGridRoom) {
@@ -345,26 +348,26 @@ function getDoorCells(grid, gridRoom, prevGridRoom) {
         for (let i = 0; i <= dimension; i++) {
             switch (direction) {
                 case 'north':
-                    prevWalls.push([ i, 0 ]); // TODO {Coordinates} objects
+                    prevWalls.push({ x: i, y: 0 });
                     break;
 
                 case 'east':
-                    prevWalls.push([ gridWidth, i ]);
+                    prevWalls.push({ x: gridWidth, y: i });
                     break;
 
                 case 'south':
-                    prevWalls.push([ i, gridHeight ]);
+                    prevWalls.push({ x: i, y: gridHeight });
                     break;
 
                 case 'west':
-                    prevWalls.push([ 0, i ]);
+                    prevWalls.push({ x: 0, y: i });
                     break;
             }
         }
     }
 
-    let roomWalls     = gridRoom.walls.map((cords) => cords.join()); // TODO update with wall cords array to obj
-    let prevRoomWalls = prevWalls.map((cords) => cords.join());
+    let roomWalls     = gridRoom.walls.map(({ x, y }) => `${x},${y}`);
+    let prevRoomWalls = prevWalls.map(({ x, y }) => `${x},${y}`);
     let intersection  = roomWalls.filter((value) => prevRoomWalls.includes(value));
 
     /** @type {Coordinates[]} validDoorCells */
@@ -459,7 +462,7 @@ function getRoomDimensions(gridDimensions, roomConfig) {
 }
 
 /**
- * Returns a room rectangle and an array of wall coordinates.
+ * Returns an array of wall coordinates.
  *
  * @private
  *
@@ -498,7 +501,7 @@ function getRoomWalls(grid, rect, roomNumber) {
                          h === -wallSize || h === height);
 
             if (isWall) {
-                walls.push([ xCord, yCord ]);
+                walls.push({ x: xCord, y: yCord });
             }
 
             /** @type {CellValue} cell */
@@ -587,14 +590,14 @@ const makeDoor = (doorRectangle, { from, to, direction, type }) => {
  *
  * @returns {Door[]}
  */
-const getExtraDoors = (grid, rooms, existingDoors) => {
+function getExtraDoors(grid, rooms, existingDoors) {
     let doors = [];
 
     rooms.forEach((room) => {
         let { roomNumber, settings } = room.config;
         let { [knobs.dungeonConnections ]: connectionChance } = settings;
 
-        let chance = Number(connectionChance);
+        let chance = Number(connectionChance); // TODO is the Number cast necessary?
 
         if (!chance) {
             return;
@@ -610,7 +613,7 @@ const getExtraDoors = (grid, rooms, existingDoors) => {
             }
         });
 
-        room.config.walls.forEach(([ x, y ]) => {
+        room.config.walls.forEach(({ x, y }) => {
             let cell = grid[x][y];
 
             if (cell !== cellWall) {
@@ -665,7 +668,7 @@ const getExtraDoors = (grid, rooms, existingDoors) => {
     });
 
     return doors;
-};
+}
 
 /**
  * Returns an array of rooms and an array of doors.

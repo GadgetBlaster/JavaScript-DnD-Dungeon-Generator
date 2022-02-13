@@ -147,8 +147,14 @@ export default ({ assert, describe, it }) => {
                         },
                     };
 
-                    assert(() => drawRooms(gridDimensions, [ room ], grid, 1, room))
-                        .throws('Previous room requires wall cells');
+                    const prevGridRoom = {
+                        rect: { x: 1, y: 1, width: 1, height: 1 },
+                        type: room,
+                        roomNumber: 1,
+                    };
+
+                    assert(() => drawRooms(gridDimensions, [ room ], grid, 1, prevGridRoom))
+                        .throws('Previous grid room requires wall coordinates in drawRooms()');
                 });
             });
 
@@ -784,8 +790,25 @@ export default ({ assert, describe, it }) => {
                 height: 2,
             };
 
-            const expectedCords = [ [2, 3], [2, 4], [3, 2], [3, 5], [4, 2], [4, 5], [5, 2], [5, 5], [6, 3], [6, 4] ];
-            const expectedCornerCords = [ [2, 2], [2, 5], [6, 2], [6, 5] ];
+            const expectedCords = [
+                { x: 2, y: 3 },
+                { x: 2, y: 4 },
+                { x: 3, y: 2 },
+                { x: 3, y: 5 },
+                { x: 4, y: 2 },
+                { x: 4, y: 5 },
+                { x: 5, y: 2 },
+                { x: 5, y: 5 },
+                { x: 6, y: 3 },
+                { x: 6, y: 4 },
+            ];
+
+            const expectedCornerCords = [
+                { x: 2, y: 2 },
+                { x: 2, y: 5 },
+                { x: 6, y: 2 },
+                { x: 6, y: 5 },
+            ];
 
             describe('when the room type is "room"', () => {
                 const walls = getRoomWalls(grid, rect, 7);
@@ -795,16 +818,16 @@ export default ({ assert, describe, it }) => {
 
                     walls && assert(walls.length).equals(10);
                     walls && expectedCords.forEach((cords) => {
-                        assert(walls.shift()).equalsArray(cords);
+                        assert(walls.shift()).equalsObject(cords);
                     });
                 });
 
                 it('should update the grid with correctly placed `cellWall` and `cellCornerWall` indicators', () => {
-                    expectedCords.forEach(([ x, y ]) => {
+                    expectedCords.forEach(({ x, y }) => {
                         assert(grid[x][y]).equals(cellWall);
                     });
 
-                    expectedCornerCords.forEach(([ x, y ]) => {
+                    expectedCornerCords.forEach(({ x, y }) => {
                         assert(grid[x][y]).equals(cellCornerWall);
                     });
                 });
