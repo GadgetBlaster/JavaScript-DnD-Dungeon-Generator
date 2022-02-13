@@ -5,13 +5,13 @@ import { unitState } from './unit/state.js';
 import run from './unit/run.js';
 import suite from './unit/suite.js';
 
-import { attachClickDelegate, getTriggers } from './ui/action.js';
+import { attachClickDelegate, getTriggers } from './controller/action.js';
 import { getKnobPanel } from './ui/form.js';
 import { getNav } from './ui/nav.js';
 
 // -- Types --------------------------------------------------------------------
 
-/** @typedef {import('./ui/action.js').Sections} Sections */
+/** @typedef {import('./controller/action.js').Sections} Sections */
 
 // -- Config -------------------------------------------------------------------
 

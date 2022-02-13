@@ -5,7 +5,7 @@ import { toss } from '../utility/tools.js';
 
 // -- Types --------------------------------------------------------------------
 
-/** @typedef {import('./action.js').Action} Action */
+/** @typedef {import('../controller/action.js').Action} Action */
 
 // -- Config -------------------------------------------------------------------
 

@@ -9,7 +9,8 @@ import element from '../utility/test/tests.element.js';
 import roll    from '../utility/test/tests.roll.js';
 import tools   from '../utility/test/tests.tools.js';
 
-import action     from '../ui/test/tests.action.js';
+import action     from '../controller/test/tests.action.js';
+
 import block      from '../ui/test/tests.block.js';
 import button     from '../ui/test/tests.button.js';
 import field      from '../ui/test/tests.field.js';
@@ -50,7 +51,8 @@ export default {
     '/app/utility/test/tests.roll.js'   : roll,
     '/app/utility/test/tests.tools.js'  : tools,
 
-    '/app/ui/test/tests.action.js'    : action,
+    '/app/controller/test/tests.action.js': action,
+
     '/app/ui/test/tests.block.js'     : block,
     '/app/ui/test/tests.button.js'    : button,
     '/app/ui/test/tests.field.js'     : field,

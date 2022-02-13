@@ -2,11 +2,11 @@
 
 import { chunk, toss, isRequired } from '../utility/tools.js';
 
-import { article, section } from './block.js';
-import { getActiveNavItem, setActiveNavItem } from './nav.js';
-import { getFormData, getKnobPanel } from './form.js';
-import { list } from './list.js';
-import { subtitle } from './typography.js';
+import { article, section } from '../ui/block.js';
+import { getActiveNavItem, setActiveNavItem } from '../ui/nav.js';
+import { getFormData, getKnobPanel } from '../ui/form.js';
+import { list } from '../ui/list.js';
+import { subtitle } from '../ui/typography.js';
 
 import {
     getDoorwayList,
@@ -23,7 +23,7 @@ import { generateRooms } from '../room/generate.js';
 
 // -- Type Imports -------------------------------------------------------------
 
-/** @typedef {import('./nav.js').Page} Page */
+/** @typedef {import('../ui/nav.js').Page} Page */
 
 // -- Types --------------------------------------------------------------------
 
