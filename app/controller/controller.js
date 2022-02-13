@@ -103,10 +103,11 @@ const getDataset = (target) => target instanceof HTMLElement ? target.dataset : 
 /**
  * Returns a trigger function for the given action.
  *
+ * @private
+ * @throws
+ *
  * @param {Triggers} triggers
  * @param {Action} action
- *
- * @throws
  *
  * @returns {Trigger?}
  */
@@ -119,23 +120,20 @@ function getTrigger(triggers, action) {
 /**
  * Generator event handler.
  *
- * TODO tests!
- *
+ * @private
  * @throws
  *
  * @param {Pick<Sections, "content" | "knobs" | "nav">} sections
  */
-const onGenerate = ({ content, knobs, nav }) => {
+function onGenerate({ content, knobs, nav }) {
     let settings  = getFormData(knobs);
     let page      = getActiveNavItem(nav);
     let generator = generators[page];
 
-    if (!generator) {
-        throw new Error('Invalid page');
-    }
+    isRequired(generator, 'Invalid active page in onGenerate()');
 
     content.innerHTML = generator(settings);
-};
+}
 
 /**
  * Navigation event handler.
@@ -214,8 +212,10 @@ function toggleVisibility(container, e) {
 }
 
 export {
+    generators       as testGenerators,
     getDataset       as testGetDataset,
     getTrigger       as testGetTrigger,
+    onGenerate       as testOnGenerate,
     onNavigate       as testOnNavigate,
     toggleAccordion  as testToggleAccordion,
     toggleVisibility as testToggleVisibility,

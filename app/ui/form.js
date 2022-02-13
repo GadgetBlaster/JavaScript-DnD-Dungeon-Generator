@@ -7,11 +7,11 @@ import { select, input, slider, fieldLabel } from './field.js';
 import { toDash, toss } from '../utility/tools.js';
 import { getKnobConfig, typeSelect, typeNumber, typeRange } from '../controller/knobs.js';
 
-// -- Types --------------------------------------------------------------------
+// -- Type Imports -------------------------------------------------------------
 
+/** @typedef {import('../controller/controller.js').Action} Action */
 /** @typedef {import('../controller/knobs.js').KnobSet} KnobSet */
 /** @typedef {import('../controller/knobs.js').KnobSettings} KnobSettings */
-/** @typedef {import('./action').Action} Action */
 /** @typedef {import('./nav.js').Page} Page */
 
 // -- Config -------------------------------------------------------------------

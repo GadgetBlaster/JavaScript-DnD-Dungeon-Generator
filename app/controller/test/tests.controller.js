@@ -1,9 +1,13 @@
 // @ts-check
 
 import {
+    // Config
+    testGenerators as generators,
+
     // Private Functions
     testGetDataset       as getDataset,
     testGetTrigger       as getTrigger,
+    testOnGenerate       as onGenerate,
     testOnNavigate       as onNavigate,
     testToggleAccordion  as toggleAccordion,
     testToggleVisibility as toggleVisibility,
@@ -12,6 +16,9 @@ import {
     attachClickDelegate,
     getTriggers,
 } from '../controller.js';
+
+import { getKnobPanel } from '../../ui/form.js';
+import { pages } from '../../ui/nav.js';
 
 /** @typedef {import('../controller.js').Trigger} Trigger */
 
@@ -33,6 +40,48 @@ const getMockClickEvent = (targetEl) => ({
 export default ({ assert, describe, it }) => {
 
     // -- Private Functions ----------------------------------------------------
+
+    describe('generators', () => {
+        it('includes a function for each page', () => {
+            pages.forEach((page) => {
+                assert(generators[page]).isFunction();
+            });
+        });
+
+        describe('items', () => {
+            it('returns generated items', () => {
+                // TODO
+            });
+        });
+
+        describe('rooms', () => {
+            it('returns generated rooms', () => {
+                // TODO
+            });
+        });
+
+        describe('dungeon', () => {
+            it('returns a generated dungeon', () => {
+                const result = generators.dungeon({
+                    dungeonComplexity : 2,
+                    dungeonConnections: 0,
+                    dungeonMaps       : 0,
+                    dungeonTraps      : 0,
+                    itemCondition     : 'average',
+                    itemQuantity      : 'zero',
+                    itemRarity        : 'legendary',
+                    itemType          : 'random',
+                    roomCondition     : 'average',
+                    // roomCount room only
+                    roomFurnishing    : 'zero',
+                    roomSize          : 'small',
+                    roomType          : 'room',
+                });
+
+                assert(RegExp('<svg(.+?)>(.+?)</svg>').test(result)).isTrue();
+            });
+        });
+    });
 
     describe('getDataset()', () => {
         describe('given an HTML element target', () => {
@@ -109,12 +158,54 @@ export default ({ assert, describe, it }) => {
 
                 assert(contentEl.innerHTML).equals('Fake home content');
                 assert(knobsEl.innerHTML).stringIncludes('Generate');
+                assert(roomsButton.dataset.active).equals('true');
+                assert(dungeonButton.dataset.active).isUndefined();
+            });
+        });
+    });
 
-                assert(navEl.querySelector('[data-active="true"]').attributes['data-target'].value)
-                    .equals('rooms');
+    describe('onGenerate()', () => {
+        it('should generate content', () => {
+            const contentEl = document.createElement('div');
 
-                assert(navEl.querySelector('[data-target="dungeon"]').attributes['data-active'])
-                    .isUndefined();
+            const knobsEl   = document.createElement('form');
+            knobsEl.innerHTML = getKnobPanel('items');
+
+            const itemsButton = document.createElement('button');
+            itemsButton.dataset.active = 'true';
+            itemsButton.dataset.target = 'items';
+
+            const navEl = document.createElement('div');
+            navEl.appendChild(itemsButton);
+
+            onGenerate({
+                content: contentEl,
+                knobs  : knobsEl,
+                nav    : navEl,
+            });
+
+            assert(contentEl.innerHTML)
+                .stringIncludes('<section>')
+                .stringIncludes('</section>');
+        });
+
+        describe('when the page is invalid', () => {
+            it('should throw', () => {
+                const contentEl = document.createElement('div');
+                const knobsEl   = document.createElement('form');
+
+                const badButton = document.createElement('button');
+                badButton.dataset.active = 'true';
+                badButton.dataset.target = 'evil-button';
+
+                const navEl = document.createElement('div');
+                navEl.appendChild(badButton);
+
+                assert(() => onGenerate({
+                    content: contentEl,
+                    knobs  : knobsEl,
+                    nav    : navEl,
+                })).throws('Invalid active page in onGenerate()');
             });
         });
     });

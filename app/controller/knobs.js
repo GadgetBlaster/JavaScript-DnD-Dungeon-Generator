@@ -1,6 +1,7 @@
 
 // @ts-check
-// TODO move to ui/knobs.js and add unit tests
+
+// TODO add unit tests
 
 import { conditions, probability as conditionProbability } from '../attribute/condition.js';
 import { furnitureQuantityList, probability as furnitureQuantityProbability } from '../item/furnishing.js';
@@ -11,40 +12,51 @@ import { rarities, probability as rarityProbability } from '../attribute/rarity.
 import { roomTypes } from '../room/room.js';
 import { sizes } from '../attribute/size.js';
 
-// -- Types --------------------------------------------------------------------
+// -- Type Imports -------------------------------------------------------------
 
 /** @typedef {import('../attribute/condition.js').Condition} Condition */
 /** @typedef {import('../attribute/quantity.js').Quantity} Quantity */
 /** @typedef {import('../attribute/rarity').Rarity} Rarity */
 /** @typedef {import('../attribute/size').Size} Size */
+/** @typedef {import('../ui/nav').Page} Page */
+
+// -- Types --------------------------------------------------------------------
 
 /**
  * @typedef {object} ItemConfig
  *
- * @prop {Condition} condition
- * @prop {Quantity} quantity
- * @prop {Rarity} rarity
- * @prop {string} type
+ * @prop {Condition} itemCondition
+ * @prop {Quantity} itemQuantity
+ * @prop {Rarity} itemRarity
+ * @prop {string} itemType // TODO add type
  */
 
 /**
- * @typedef {object} RoomConfig
+ * @typedef {object} RoomConfigBase
  *
- * @prop {Condition} condition
- * @prop {number} count
- * @prop {string} furnishing
- * @prop {Size} size
- * @prop {string} type
+ * @prop {Condition} roomCondition
+ * @prop {number} roomCount
+ * @prop {string} roomFurnishing // TODO add type
+ * @prop {Size} roomSize
+ * @prop {string} roomType // TODO add type
  */
 
 /**
- * @typedef {object} DungeonConfig
+ * @typedef {object} DungeonConfigBase
  *
- * @prop {string} complexity
- * @prop {string} connections
- * @prop {string} maps
- * @prop {string} traps
+ * @prop {number} dungeonComplexity
+ * @prop {number} dungeonConnections
+ * @prop {number} dungeonMaps
+ * @prop {number} dungeonTraps
  */
+
+/** @typedef {RoomConfigBase | ItemConfig} RoomConfig */
+
+/**
+ * @typedef {DungeonConfigBase
+ *     | Omit<RoomConfigBase, "roomCount">
+ *     | ItemConfig
+ * } DungeonConfig */
 
 /**
  * @typedef {object} KnobSettings
@@ -55,16 +67,17 @@ import { sizes } from '../attribute/size.js';
  * @prop {string} type
  * @prop {number} [min]
  * @prop {number} [max]
- * @prop {any} [value]
- * @prop {any[]} [values]
+ * @prop {any} [value] // TODO
+ * @prop {any[]} [values] // TODO
+ * @prop {Set<Page>} [pages]
  */
 
 /**
  * @typedef {object} KnobSet
  *
  * @prop {string} label
- * @prop {{ [key: string]: string }} [labels]
- * @prop {Set<string>} [pages]
+ * @prop {{ [key in Page]?: string }} [labels]
+ * @prop {Set<Page>} [pages]
  * @prop {KnobSettings[]} fields
  */
 
@@ -116,7 +129,7 @@ export const knobs = {
 const config = [
     {
         label : 'Dungeon Settings',
-        pages : new Set([ pages.dungeon ]),
+        pages : new Set([ 'dungeon' ]),
         fields: [
             {
                 label : 'Complexity',
@@ -156,14 +169,14 @@ const config = [
     },
     {
         label : 'Room Settings',
-        pages : new Set([ pages.dungeon, pages.room ]),
+        pages : new Set([ 'dungeon', 'rooms' ]),
         fields: [
             {
                 label : 'Rooms',
                 name  : knobs.roomCount,
                 desc  : 'Number of rooms to generate',
                 type  : typeNumber,
-                pages : new Set([ pages.room ]),
+                pages : new Set([ 'rooms' ]),
                 value : 1,
             },
             {
@@ -199,10 +212,10 @@ const config = [
     {
         label : 'Item Settings',
         labels: {
-            [pages.dungeon]: 'Room Contents',
-            [pages.room]   : 'Room Contents',
+            dungeon: 'Room Contents',
+            rooms  : 'Room Contents',
         },
-        pages : new Set([ pages.dungeon, pages.room, pages.items ]),
+        pages : new Set([ 'dungeon', 'rooms', 'items' ]),
         fields: [
             {
                 label : 'Quantity',
@@ -236,6 +249,12 @@ const config = [
     },
 ];
 
+/**
+ * TODO
+ * @param {*} knobSet
+ * @param {*} page
+ * @returns
+ */
 const getFields = (knobSet, page) => {
     let fields = knobSet.fields.reduce((fieldsArray, knobSettings) => {
         if (knobSettings.pages && !knobSettings.pages.has(page)) {
@@ -253,7 +272,12 @@ const getFields = (knobSet, page) => {
     };
 };
 
-export const getKnobConfig = (page = pages.dungeon) => {
+/**
+ * TODO
+ * @param {*} page
+ * @returns
+ */
+export const getKnobConfig = (page = 'dungeon') => {
     return config.reduce((knobSets, knobSet) => {
         if (!knobSet.pages.has(page)) {
             return knobSets;

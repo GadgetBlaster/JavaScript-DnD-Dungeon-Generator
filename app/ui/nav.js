@@ -7,13 +7,30 @@ import { button } from './button.js';
 /** @typedef {"dungeon" | "rooms" | "items"} Page */
 /** @typedef {import('../controller/controller.js').Sections} Sections */
 
+
+// -- Types --------------------------------------------------------------------
+
+/** @typedef {typeof conditions[number]} Condition */
+
 // -- Config -------------------------------------------------------------------
 
-export const pages = {
-    dungeon: 'dungeon',
-    room: 'rooms',
-    items: 'items',
-};
+export const conditions = Object.freeze(/** @type {const} */ ([
+    'decaying',
+    'busted',
+    'poor',
+    'average',
+    'good',
+    'exquisite',
+]));
+
+
+// -- Config -------------------------------------------------------------------
+
+export const pages = Object.freeze(/** @type {const} */ ([
+    'dungeon',
+    'rooms',
+    'items',
+]));
 
 // -- Private Functions --------------------------------------------------------
 
