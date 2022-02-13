@@ -152,7 +152,7 @@ export {
  *
  * @returns {boolean}
  */
-const checkForAdjacentDoor = (grid, { x, y }) => {
+function checkForAdjacentDoor(grid, { x, y }) {
     return [ -1, 1 ].some((adjust) => {
         let xAdjust = x + adjust;
         let yAdjust = y + adjust;
@@ -166,7 +166,7 @@ const checkForAdjacentDoor = (grid, { x, y }) => {
 
         return false;
     });
-};
+}
 
 /**
  * Returns a door object for the given rectangle, connections, direction, and
@@ -174,7 +174,7 @@ const checkForAdjacentDoor = (grid, { x, y }) => {
  *
  * @private
  *
- * @param {Rectangle} doorRectangle
+ * @param {Rectangle} rectangle
  * @param {{
  *     from: number;
  *     to: number;
@@ -184,7 +184,7 @@ const checkForAdjacentDoor = (grid, { x, y }) => {
  *
  * @returns {Door}
  */
-function createDoor(doorRectangle, { from, to, direction, type }) {
+function createDoor(rectangle, { from, to, direction, type }) {
     if (!type) {
         // TODO inject probability
         type = doorProbability.roll();
@@ -194,7 +194,7 @@ function createDoor(doorRectangle, { from, to, direction, type }) {
     let locked = lockable.has(type) && rollPercentile(lockedChance);
 
     return {
-        rect: drawDoor(doorRectangle, { direction, type, locked }),
+        rect: drawDoor(rectangle, { direction, type, locked }),
         type,
         locked,
         connections: {
