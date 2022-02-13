@@ -82,14 +82,14 @@ export function formatDungeon(dungeon) {
 
     let legend   = drawLegend({ mapWidth: mapDimensions.gridWidth });
     let sections = formatRoomRows(rooms, doors);
-    console.log(sections);
+
     return section(map) + section(legend) + sections;
 }
 
 /**
  * Formats output for the item generation page.
  *
- * @param {Item[]} items
+ * @param {string[]} items // TODO refactor to Item[]
  */
 export function formatItems(items) {
     return section(article(items.join('')));

@@ -1,6 +1,6 @@
 // @ts-check
 
-// -- Types --------------------------------------------------------------------
+// -- Type Imports -------------------------------------------------------------
 
 /** @typedef {import('./state.js').Utility} Utility */
 /** @typedef {import('./state').State} State */
