@@ -43,6 +43,28 @@ export {
 // -- Private Functions --------------------------------------------------------
 
 /**
+ * Returns a maximum grid width and height for the dungeon.
+ *
+ * @private
+ *
+ * @param {number} complexity
+ *
+ * @returns {Dimensions}
+ */
+function generateMapDimensions(complexity) {
+    let dimensionMin = complexity * complexityMultiplierMinXY;
+    let dimensionMax = complexity * complexityMultiplierMaxXY;
+
+    let width  = roll(dimensionMin, dimensionMax);
+    let height = roll(dimensionMin, dimensionMax);
+
+    return {
+        width,
+        height,
+    };
+}
+
+/**
  * Returns an array of trap descriptions.
  *
  * TODO can duplicate traps be placed in the same room?
@@ -72,28 +94,6 @@ function generateTraps(trapMin) {
 }
 
 /**
- * Returns a maximum grid width and height for the dungeon.
- *
- * @private
- *
- * @param {number} complexity
- *
- * @returns {Dimensions}
- */
-function getMapDimensions(complexity) {
-    let dimensionMin = complexity * complexityMultiplierMinXY;
-    let dimensionMax = complexity * complexityMultiplierMaxXY;
-
-    let width  = roll(dimensionMin, dimensionMax);
-    let height = roll(dimensionMin, dimensionMax);
-
-    return {
-        width,
-        height,
-    };
-}
-
-/**
  * Returns a maximum room count for the dungeon.
  *
  * TODO fix name
@@ -109,9 +109,9 @@ function getMxRoomCount(complexity) {
 }
 
 export {
-    generateTraps    as testGenerateTraps,
-    getMapDimensions as testGetMapDimensions,
-    getMxRoomCount   as testGetMxRoomCount,
+    generateMapDimensions as testGenerateMapDimensions,
+    generateTraps         as testGenerateTraps,
+    getMxRoomCount        as testGetMxRoomCount,
 };
 
 // -- Public Functions ---------------------------------------------------------
@@ -155,7 +155,7 @@ export function generateDungeon(settings) {
 
     // TODO break out everything before generateMap() into
     // generateDungeonRooms() for testing since excess rooms are discarded
-    let gridDimensions  = getMapDimensions(complexity); // TODO rename to generateMapDimensions
+    let gridDimensions  = generateMapDimensions(complexity);
     let dungeon         = generateMap(gridDimensions, rooms);
     let { doors, keys } = getRoomDoor(dungeon.doors);
 

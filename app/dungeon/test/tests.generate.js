@@ -8,9 +8,9 @@ import {
     testTrapCountMultiplier           as trapCountMultiplier,
 
     // Private Functions
-    testGenerateTraps    as generateTraps,
-    testGetMapDimensions as getMapDimensions,
-    testGetMxRoomCount   as getMxRoomCount,
+    testGenerateMapDimensions as generateMapDimensions,
+    testGenerateTraps         as generateTraps,
+    testGetMxRoomCount        as getMxRoomCount,
 
     // Public functions
     generateDungeon,
@@ -25,6 +25,33 @@ import trapList from '../../room/trap.js';
 export default ({ assert, describe, it }) => {
 
     // -- Private Functions ----------------------------------------------------
+
+    describe('generateMapDimensions()', () => {
+        describe('given a complexity of 2', () => {
+            const complexity = 2;
+            const dimensions = generateMapDimensions(complexity);
+
+            const min = complexity * complexityMultiplierMinXY;
+            const max = complexity * complexityMultiplierMaxXY;
+
+            const { width, height } = dimensions;
+
+            it('should return a `GridDimensions` object', () => {
+                assert(width).isNumber();
+                assert(height).isNumber();
+            });
+
+            it('`gridWidth` should be between the calculated min and max', () => {
+                assert(width >= min).isTrue();
+                assert(width <= max).isTrue();
+            });
+
+            it('`gridHeight` should be between the calculated min and max', () => {
+                assert(height >= min).isTrue();
+                assert(height <= max).isTrue();
+            });
+        });
+    });
 
     describe('generateTraps()', () => {
         describe('given a minimum trap count of 0', () => {
@@ -59,33 +86,6 @@ export default ({ assert, describe, it }) => {
 
                 assert(traps.length >= min).isTrue();
                 assert(traps.length <= max).isTrue();
-            });
-        });
-    });
-
-    describe('getMapDimensions()', () => {
-        describe('given a complexity of 2', () => {
-            const complexity = 2;
-            const dimensions = getMapDimensions(complexity);
-
-            const min = complexity * complexityMultiplierMinXY;
-            const max = complexity * complexityMultiplierMaxXY;
-
-            const { width, height } = dimensions;
-
-            it('should return a `GridDimensions` object', () => {
-                assert(width).isNumber();
-                assert(height).isNumber();
-            });
-
-            it('`gridWidth` should be between the calculated min and max', () => {
-                assert(width >= min).isTrue();
-                assert(width <= max).isTrue();
-            });
-
-            it('`gridHeight` should be between the calculated min and max', () => {
-                assert(height >= min).isTrue();
-                assert(height <= max).isTrue();
             });
         });
     });
