@@ -26,7 +26,7 @@ import {
 // -- Types --------------------------------------------------------------------
 
 /** @typedef {(Event) => void} Trigger */
-/** @typedef {{ [key in Action]?: Trigger }} Triggers */
+/** @typedef {{ [key in Action]: Trigger }} Triggers */
 
 /**
  * @typedef {object} Sections
@@ -41,7 +41,6 @@ import {
 /**
  * @typedef {"accordion"
  * | "generate"
- * | "home"
  * | "navigate"
  * | "toggle"
  * } Action
@@ -141,7 +140,7 @@ const onGenerate = ({ content, knobs, nav }) => {
 /**
  * Navigation event handler.
  *
- * TODO tests!
+ * @private
  *
  * @param {Pick<Sections, "content" | "knobs" | "nav">} sections
  * @param {string} homeContent
@@ -162,6 +161,7 @@ function onNavigate({ content, knobs, nav }, homeContent, e) {
  * attribute on a click event's `target` element.
  *
  * @private
+ * @throws
  *
  * @param {HTMLElement} container
  * @param {Event} e
@@ -216,6 +216,7 @@ function toggleVisibility(container, e) {
 export {
     getDataset       as testGetDataset,
     getTrigger       as testGetTrigger,
+    onNavigate       as testOnNavigate,
     toggleAccordion  as testToggleAccordion,
     toggleVisibility as testToggleVisibility,
 };
@@ -247,7 +248,7 @@ export function attachClickDelegate(docBody, triggers) {
 /**
  * Get triggers
  *
- * @param {Sections} sections
+ * @param {Pick<Sections, "body" | "content" | "knobs" | "nav" >} sections
  * @param {string} homeContent
  *
  * @returns {Triggers}

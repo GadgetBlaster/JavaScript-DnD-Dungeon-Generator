@@ -4,14 +4,28 @@ import {
     // Private Functions
     testGetDataset       as getDataset,
     testGetTrigger       as getTrigger,
+    testOnNavigate       as onNavigate,
     testToggleAccordion  as toggleAccordion,
     testToggleVisibility as toggleVisibility,
 
     // Public Functions
     attachClickDelegate,
+    getTriggers,
 } from '../controller.js';
 
 /** @typedef {import('../controller.js').Trigger} Trigger */
+
+/**
+ * Mocked event with target.
+ *
+ * @param {HTMLElement} targetEl
+ *
+ * @returns {Event}
+ */
+const getMockClickEvent = (targetEl) => ({
+    ...new CustomEvent('click', { bubbles: true }),
+    target: targetEl,
+});
 
 /**
  * @param {import('../../unit/state.js').Utility} utility
@@ -48,10 +62,59 @@ export default ({ assert, describe, it }) => {
 
         describe('given an action that exists on the given triggers', () => {
             it('returns the action', () => {
-                const triggers = { navigate: () => 'success' };
-                const trigger  = getTrigger(triggers, 'navigate');
+                const triggers = {
+                    accordion: () => 'accordion',
+                    generate : () => 'generate',
+                    navigate : () => 'navigate',
+                    toggle   : () => 'toggle',
+                };
 
-                assert(trigger()).equals('success');
+                const accordion = getTrigger(triggers, 'accordion');
+                const generate  = getTrigger(triggers, 'generate');
+                const navigate  = getTrigger(triggers, 'navigate');
+                const toggle    = getTrigger(triggers, 'toggle');
+
+                assert(accordion()).equals('accordion');
+                assert(generate()).equals('generate');
+                assert(navigate()).equals('navigate');
+                assert(toggle()).equals('toggle');
+            });
+        });
+    });
+
+    describe('onNavigate()', () => {
+        describe('given an event with the target page of "rooms"', () => {
+            it('should update the content, knobs, and nav', () => {
+                const contentEl = document.createElement('div');
+                const knobsEl   = document.createElement('form');
+
+                const dungeonButton = document.createElement('button');
+                dungeonButton.dataset.target = 'dungeon';
+                dungeonButton.dataset.active = 'true';
+
+                const roomsButton = document.createElement('button');
+                roomsButton.dataset.target = 'rooms';
+
+                const navEl = document.createElement('div');
+                navEl.appendChild(dungeonButton);
+                navEl.appendChild(roomsButton);
+
+                const sections = {
+                    content: contentEl,
+                    knobs  : knobsEl,
+                    nav    : navEl,
+                };
+
+                onNavigate(sections, 'Fake home content', getMockClickEvent(roomsButton));
+
+                assert(contentEl.innerHTML).equals('Fake home content');
+                assert(knobsEl.innerHTML).stringIncludes('Generate');
+
+                assert(navEl.querySelector('[data-active="true"]').attributes['data-target'].value)
+                    .equals('rooms');
+
+                assert(navEl.querySelector('[data-target="dungeon"]').attributes['data-active'])
+                    .isUndefined();
             });
         });
     });
@@ -86,13 +149,8 @@ export default ({ assert, describe, it }) => {
 
             const collapseAll = () => each({ collapsed: true });
 
+            /** @type {HTMLElement} targetEl */
             const targetEl = container.querySelector('[data-action="accordion"][data-target="1"]');
-
-            const onTargetElClick = (el, callback) => {
-                el.addEventListener('click', callback);
-                el.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-                el.removeEventListener('click', callback);
-            };
 
             describe('when an accordion section is collapsed', () => {
                 it('should expand that accordion item', () => {
@@ -101,10 +159,8 @@ export default ({ assert, describe, it }) => {
                     /** @type {HTMLElement} sectionEl */
                     const sectionEl = container.querySelector('[data-collapsed][data-id="1"]');
 
-                    onTargetElClick(targetEl, (e) => {
-                        toggleAccordion(container, e);
-                        assert(sectionEl.dataset.collapsed).equals('false');
-                    });
+                    toggleAccordion(container, getMockClickEvent(targetEl));
+                    assert(sectionEl.dataset.collapsed).equals('false');
                 });
             });
 
@@ -116,10 +172,8 @@ export default ({ assert, describe, it }) => {
                     const sectionEl = container.querySelector('[data-collapsed][data-id="1"]');
                     sectionEl.dataset.collapsed = 'false';
 
-                    onTargetElClick(targetEl, (e) => {
-                        toggleAccordion(container, e);
-                        assert(sectionEl.dataset.collapsed).equals('true');
-                    });
+                    toggleAccordion(container, getMockClickEvent(targetEl));
+                    assert(sectionEl.dataset.collapsed).equals('true');
                 });
             });
 
@@ -131,18 +185,15 @@ export default ({ assert, describe, it }) => {
                     const sectionEle = container.querySelector('[data-collapsed][data-id="2"]');
                     sectionEle.dataset.collapsed = 'false';
 
-                    onTargetElClick(targetEl, (e) => {
-                        toggleAccordion(container, e);
-                        assert(sectionEle.dataset.collapsed).equals('true');
-                    });
+                    toggleAccordion(container, getMockClickEvent(targetEl));
+                    assert(sectionEle.dataset.collapsed).equals('true');
                 });
             });
 
             describe('given an event with no click target' , () => {
                 it('should throw', () => {
-                    onTargetElClick(document.createElement('button'), (e) => {
-                        assert(() => toggleAccordion(container, e)).throws('Missing target for accordion toggle');
-                    });
+                    const e = getMockClickEvent(document.createElement('button'));
+                    assert(() => toggleAccordion(container, e)).throws('Missing target for accordion toggle');
                 });
             });
 
@@ -153,10 +204,8 @@ export default ({ assert, describe, it }) => {
                     button.dataset.action = 'accordion';
                     button.dataset.target = 'nope';
 
-                    onTargetElClick(button, (e) => {
-                        assert(() => toggleAccordion(container, e))
-                            .throws('Invalid accordion section target "nope"');
-                    });
+                    assert(() => toggleAccordion(container, getMockClickEvent(button)))
+                        .throws('Invalid accordion section target "nope"');
                 });
             });
         });
@@ -172,12 +221,6 @@ export default ({ assert, describe, it }) => {
 
         container.appendChild(paragraph);
 
-        const onTargetElClick = (el, callback) => {
-            el.addEventListener('click', callback);
-            el.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-            el.removeEventListener('click', callback);
-        };
-
         describe('given an event with a valid target', () => {
             const button = document.createElement('button');
 
@@ -187,10 +230,8 @@ export default ({ assert, describe, it }) => {
                 it('should hide the element', () => {
                     paragraph.hidden = false;
 
-                    onTargetElClick(button, (e) => {
-                        toggleVisibility(container, e);
-                        assert(paragraph.hidden).isTrue();
-                    });
+                    toggleVisibility(container, getMockClickEvent(button));
+                    assert(paragraph.hidden).isTrue();
                 });
             });
 
@@ -198,10 +239,8 @@ export default ({ assert, describe, it }) => {
                 it('should hide the element', () => {
                     paragraph.hidden = true;
 
-                    onTargetElClick(button, (e) => {
-                        toggleVisibility(container, e);
-                        assert(paragraph.hidden).isFalse();
-                    });
+                    toggleVisibility(container, getMockClickEvent(button));
+                    assert(paragraph.hidden).isFalse();
                 });
             });
         });
@@ -210,10 +249,8 @@ export default ({ assert, describe, it }) => {
             it('should throw', () => {
                 const button = document.createElement('button');
 
-                onTargetElClick(button, (e) => {
-                    assert(() => toggleVisibility(container, e))
-                        .throws('Missing target for visibility toggle');
-                });
+                assert(() => toggleVisibility(container, getMockClickEvent(button)))
+                    .throws('Missing target for visibility toggle');
             });
         });
 
@@ -223,10 +260,8 @@ export default ({ assert, describe, it }) => {
 
                 button.dataset.target = 'frodo';
 
-                onTargetElClick(button, (e) => {
-                    assert(() => toggleVisibility(container, e))
-                        .throws('Invalid visibility toggle target "frodo"');
-                });
+                assert(() => toggleVisibility(container, getMockClickEvent(button)))
+                    .throws('Invalid visibility toggle target "frodo"');
             });
         });
     });
@@ -240,7 +275,7 @@ export default ({ assert, describe, it }) => {
             const button2   = document.createElement('button');
             const button3   = document.createElement('button');
 
-            button.dataset.action  = 'home';
+            button.dataset.action  = 'generate';
             button3.dataset.action = 'invalid-action';
 
             container.appendChild(button);
@@ -249,16 +284,18 @@ export default ({ assert, describe, it }) => {
 
             const events = [];
 
+            const trigger = (e) => events.push(e);
             const triggers = {
-                home: /** @type {Trigger} */ (e) => {
-                    events.push(e);
-                },
+                accordion: trigger,
+                generate : trigger,
+                navigate : trigger,
+                toggle   : trigger,
             };
 
             attachClickDelegate(container, triggers);
 
             describe('when the clicked element has a valid `data-action` attribute', () => {
-                button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+                button.dispatchEvent(new CustomEvent('click', { bubbles: true }));
                 const event = events.pop();
 
                 it('should trigger the click delegate and call the action', () => {
@@ -273,10 +310,29 @@ export default ({ assert, describe, it }) => {
 
             describe('when the click target has no action', () => {
                 it('should not call any actions', () => {
-                    button2.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+                    button2.dispatchEvent(new CustomEvent('click', { bubbles: true }));
                     assert(events.length).equals(0);
                 });
             });
+        });
+    });
+
+    describe('getTriggers()', () => {
+        it('should return an object containing all application triggers', () => {
+            const fakeEl   = document.createElement('div');
+            const sections = {
+                body   : fakeEl,
+                content: fakeEl,
+                knobs  : fakeEl,
+                nav    : fakeEl,
+            };
+
+            const triggers = getTriggers(sections, '');
+
+            assert(triggers.accordion).isFunction();
+            assert(triggers.generate).isFunction();
+            assert(triggers.navigate).isFunction();
+            assert(triggers.toggle).isFunction();
         });
     });
 };

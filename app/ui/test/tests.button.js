@@ -7,7 +7,7 @@ import { button, infoLabel } from '../button.js';
  */
 export default ({ assert, describe, it }) => {
     describe('button()', () => {
-        let buttonHTML = button('click me', 'home');
+        let buttonHTML = button('click me', 'navigate');
 
         it('should return an html button element string', () => {
             assert(buttonHTML).isElementTag('button');
@@ -22,7 +22,7 @@ export default ({ assert, describe, it }) => {
         });
 
         it('should have a `data-action` attribute by default', () => {
-            assert(buttonHTML).stringIncludes('data-action="home"');
+            assert(buttonHTML).stringIncludes('data-action="navigate"');
         });
 
         it('should include the label', () => {
@@ -45,7 +45,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given a `label` that matches the `infoLabel`', () => {
             it('should contain a `data-info="true"` attribute', () => {
-                assert(button(infoLabel, 'home'))
+                assert(button(infoLabel, 'navigate'))
                     .stringIncludes('data-info="true"');
             });
         });
@@ -59,6 +59,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given an invalid `size` option', () => {
             it('should throw', () => {
+                // @ts-expect-error
                 assert(() => button('Magic missile', 'toggle', { size: 'invalid-size' }))
                     .throws('Invalid button size');
             });
