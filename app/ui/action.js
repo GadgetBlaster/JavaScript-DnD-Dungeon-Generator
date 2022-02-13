@@ -1,6 +1,6 @@
 // @ts-check
 
-import { chunk, toss } from '../utility/tools.js';
+import { chunk, toss, isRequired } from '../utility/tools.js';
 
 import { article, section } from './block.js';
 import { getActiveNavItem, setActiveNavItem } from './nav.js';
@@ -130,9 +130,13 @@ const getDataset = (target) => target instanceof HTMLElement ? target.dataset : 
  * @returns {Trigger?}
  */
 function getTrigger(triggers, action) {
-    action && !triggers[action] && toss(`Invalid action "${action}"`);
+    if (!action) {
+        return;
+    }
 
-    return action && triggers[action];
+    isRequired(triggers[action], `Invalid action "${action}"`);
+
+    return triggers[action];
 }
 
 /**
