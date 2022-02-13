@@ -174,7 +174,8 @@ function onNavigate({ content, knobs, nav }, homeContent, e) {
 }
 
 /**
- * Toggle accordion
+ * Toggles an accordion element identified by the value of the `data-target`
+ * attribute on a click event's `target` element.
  *
  * @private
  *
@@ -205,10 +206,33 @@ function toggleAccordion(container, e) {
     targetSectionEl.dataset.collapsed = isCollapsed ? 'false' : 'true';
 }
 
+/**
+ * Toggles visibility of an element identified by the value of the `data-target`
+ * attribute on a click event's `target` element.
+ *
+ * @private
+ *
+ * @param {Element} container
+ * @param {Event} e
+ */
+function toggleVisibility(container, e) {
+    let { target } = getDataset(e.target);
+
+    !target && toss('Missing target for visibility toggle');
+
+    /** @type {HTMLElement} targetEl */
+    let targetEl = container.querySelector(`[data-id="${target}"]`);
+
+    !targetEl && toss(`Invalid visibility toggle target \`${target}\``);
+
+    targetEl.hidden = !targetEl.hidden;
+}
+
 export {
-    getDataset      as testGetDataset,
-    getTrigger      as testGetTrigger,
-    toggleAccordion as testToggleAccordion,
+    getDataset       as testGetDataset,
+    getTrigger       as testGetTrigger,
+    toggleAccordion  as testToggleAccordion,
+    toggleVisibility as testToggleVisibility,
 };
 
 // -- Public Functions ---------------------------------------------------------
@@ -247,22 +271,3 @@ export const getTriggers = ({ body, content, knobs, nav }, homeContent) => ({
     navigate : (e) => onNavigate({ content, knobs, nav }, homeContent, e),
     toggle   : (e) => toggleVisibility(body, e),
 });
-
-/**
- * Toggle visibility
- *
- * @param {Element} container
- * @param {Event} e
- */
-export function toggleVisibility(container, e) {
-    let { target } = getDataset(e.target);
-
-    !target && toss('Missing target for visibility toggle');
-
-    /** @type {HTMLElement} targetEl */
-    let targetEl = container.querySelector(`[data-id="${target}"]`);
-
-    !targetEl && toss(`Invalid visibility toggle target \`${target}\``);
-
-    targetEl.hidden = !targetEl.hidden;
-}
