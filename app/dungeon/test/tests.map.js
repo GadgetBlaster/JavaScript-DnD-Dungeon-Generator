@@ -8,6 +8,7 @@ import {
 
     // Private Functions
     testCheckForAdjacentDoor as checkForAdjacentDoor,
+    testCreateDoor           as createDoor,
     testDrawRooms            as drawRooms,
     testGetDoor              as getDoor,
     testGetDoorCells         as getDoorCells,
@@ -17,7 +18,6 @@ import {
     testGetRoomDrawing       as getRoomDrawing,
     testGetRooms             as getRooms,
     testGetRoomWalls         as getRoomWalls,
-    testMakeDoor             as makeDoor,
 
     // Public functions
     generateMap,
@@ -72,6 +72,32 @@ export default ({ assert, describe, it }) => {
             it('returns true', () => {
                 const grid = createBlankGrid({ width: 3, height: 3 });
                 assert(checkForAdjacentDoor(grid, { x: 1, y: 1 })).isFalse();
+            });
+        });
+    });
+
+
+    describe('createDoor()', () => {
+        it('should return a door config', () => {
+            const door = createDoor({
+                x: 1,
+                y: 2,
+                width: 4,
+                height: 3,
+            }, {
+                from: 1,
+                to: 2,
+                direction: 'south',
+                type: 'library',
+            });
+
+            assert(door).isObject();
+            assert(door.rect).isString();
+            assert(door.type).equals('library');
+            assert(door.locked).isBoolean();
+            assert(door.connections).equalsObject({
+                1: { direction: 'south', to: 2 },
+                2: { direction: 'north', to: 1 },
             });
         });
     });
@@ -1058,31 +1084,6 @@ export default ({ assert, describe, it }) => {
                     doorConfig && assert(doorConfig.rect).isString();
                     doorConfig && assert(doorTypes.includes(doorConfig.type)).isTrue();
                 });
-            });
-        });
-    });
-
-    describe('makeDoor()', () => {
-        it('should return a door config', () => {
-            const door = makeDoor({
-                x: 1,
-                y: 2,
-                width: 4,
-                height: 3,
-            }, {
-                from: 1,
-                to: 2,
-                direction: 'south',
-                type: 'library',
-            });
-
-            assert(door).isObject();
-            assert(door.rect).isString();
-            assert(door.type).equals('library');
-            assert(door.locked).isBoolean();
-            assert(door.connections).equalsObject({
-                1: { direction: 'south', to: 2 },
-                2: { direction: 'north', to: 1 },
             });
         });
     });

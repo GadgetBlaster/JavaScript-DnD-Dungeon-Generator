@@ -169,6 +169,44 @@ const checkForAdjacentDoor = (grid, { x, y }) => {
 };
 
 /**
+ * Returns a door object for the given rectangle, connections, direction, and
+ * type.
+ *
+ * @private
+ *
+ * @param {Rectangle} doorRectangle
+ * @param {{
+ *     from: number;
+ *     to: number;
+ *     direction: Direction;
+ *     type: RoomType;
+ * }} args
+ *
+ * @returns {Door}
+ */
+function createDoor(doorRectangle, { from, to, direction, type }) {
+    if (!type) {
+        // TODO inject probability
+        type = doorProbability.roll();
+    }
+
+    // TODO inject probability
+    let locked = lockable.has(type) && rollPercentile(lockedChance);
+
+    return {
+        rect: drawDoor(doorRectangle, { direction, type, locked }),
+        type,
+        locked,
+        connections: {
+            [from]: { direction, to },
+            [to]  : { direction: directionOppositeLookup[direction], to: from },
+        },
+        // TODO size is returning NaN, likely unused?
+        size: Math.max(doorRectangle.width, doorRectangle.height),
+    };
+}
+
+/**
  * Draws rooms to a map grid and returns the results.
  *
  * TODO rename, not a draw method
@@ -304,7 +342,7 @@ function getDoor(grid, gridRoom, prevGridRoom, { allowSecret } = {}) {
     let to         = prevGridRoom ? prevGridRoom.roomNumber : outside;
     let type       = allowSecret && secretProbability.roll();
 
-    return makeDoor(doorRectangle, { from, to, direction, type });
+    return createDoor(doorRectangle, { from, to, direction, type });
 }
 
 /**
@@ -540,45 +578,6 @@ function getRoomDrawing(gridRoom, { hasTraps } = {}) {
 }
 
 /**
- * Returns a door config.
- *
- * TODO rename to createDoor()
- *
- * @private
- *
- * @param {Rectangle} doorRectangle
- * @param {{
- *     from: number;
- *     to: number;
- *     direction: Direction;
- *     type: RoomType;
- * }} args
- *
- * @returns {Door}
- */
-const makeDoor = (doorRectangle, { from, to, direction, type }) => {
-    if (!type) {
-        // TODO inject probability
-        type = doorProbability.roll();
-    }
-
-    // TODO inject probability
-    let locked = lockable.has(type) && rollPercentile(lockedChance);
-
-    return {
-        rect: drawDoor(doorRectangle, { direction, type, locked }),
-        type,
-        locked,
-        connections: {
-            [from]: { direction, to },
-            [to]  : { direction: directionOppositeLookup[direction], to: from },
-        },
-        // TODO size is returning NaN, likely unused?
-        size: Math.max(doorRectangle.width, doorRectangle.height),
-    };
-};
-
-/**
  * Returns an array of Door configs for the additional connections to the given
  * Room, if any.
  *
@@ -646,7 +645,7 @@ function getExtraDoors(grid, rooms, existingDoors) {
                     let direction = adjust === -1 ? 'west' : 'east';
                     let type      = secretProbability.roll(); // TODO inject `secretProbability`
 
-                    doors.push(makeDoor(doorRectangle, { from: roomNumber, to: xConnect, direction, type }));
+                    doors.push(createDoor(doorRectangle, { from: roomNumber, to: xConnect, direction, type }));
                 }
 
                 let yConnect    = yCell && Number.isInteger(yCell) && yCell;
@@ -661,7 +660,7 @@ function getExtraDoors(grid, rooms, existingDoors) {
                     let direction = adjust === -1 ? 'north' : 'south';
                     let type      = secretProbability.roll(); // TODO inject `secretProbability`
 
-                    doors.push(makeDoor(doorRectangle, { from: roomNumber, to: yConnect, direction, type }));
+                    doors.push(createDoor(doorRectangle, { from: roomNumber, to: yConnect, direction, type }));
                 }
             });
         });
@@ -712,6 +711,7 @@ function getRooms(gridDimensions, roomConfigs, grid) {
 
 export {
     checkForAdjacentDoor as testCheckForAdjacentDoor,
+    createDoor           as testCreateDoor,
     drawRooms            as testDrawRooms,
     getDoor              as testGetDoor,
     getDoorCells         as testGetDoorCells,
@@ -721,7 +721,6 @@ export {
     getRoomDrawing       as testGetRoomDrawing,
     getRooms             as testGetRooms,
     getRoomWalls         as testGetRoomWalls,
-    makeDoor             as testMakeDoor,
 };
 
 // -- Public Functions ---------------------------------------------------------
