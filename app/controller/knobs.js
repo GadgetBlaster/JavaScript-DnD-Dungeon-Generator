@@ -19,8 +19,6 @@ import { sizes } from '../attribute/size.js';
 /** @typedef {import('../attribute/size').Size} Size */
 
 /**
- * Item config
- *
  * @typedef {object} ItemConfig
  *
  * @prop {Condition} condition
@@ -30,8 +28,6 @@ import { sizes } from '../attribute/size.js';
  */
 
 /**
- * Room config
- *
  * @typedef {object} RoomConfig
  *
  * @prop {Condition} condition
@@ -42,8 +38,6 @@ import { sizes } from '../attribute/size.js';
  */
 
 /**
- * Dungeon config
- *
  * @typedef {object} DungeonConfig
  *
  * @prop {string} complexity
@@ -53,8 +47,6 @@ import { sizes } from '../attribute/size.js';
  */
 
 /**
- * Knob settings
- *
  * @typedef {object} KnobSettings
  *
  * @prop {string} label
@@ -68,8 +60,6 @@ import { sizes } from '../attribute/size.js';
  */
 
 /**
- * Knob set
- *
  * @typedef {object} KnobSet
  *
  * @prop {string} label
