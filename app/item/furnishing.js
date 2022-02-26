@@ -3,9 +3,13 @@
 import { capacity } from './types/container.js';
 import { rollArrayItem, createProbability } from '../utility/roll.js';
 
+// -- Type Imports -------------------------------------------------------------
+
 /** @typedef {import('./item.js').ItemBase} ItemBase */
 /** @typedef {import('./item.js').Item} Item */
 /** @typedef {import('../room/room.js').RoomType} RoomType */
+
+// -- Config -------------------------------------------------------------------
 
 /** @type {Omit<ItemBase, "name">} */
 const defaults = {

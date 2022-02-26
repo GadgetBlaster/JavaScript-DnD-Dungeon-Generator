@@ -18,11 +18,12 @@ import { list } from '../ui/list.js';
 import { roll, rollArrayItem } from '../utility/roll.js';
 import { getRange, probability as quantityProbability } from '../attribute/quantity.js';
 
-// -- Types --------------------------------------------------------------------
+// -- Type Imports -------------------------------------------------------------
 
 /** @typedef {import('./item.js').Item} Item */
 /** @typedef {import('../attribute/quantity').Quantity} Quantity */
 /** @typedef {import('../controller/knobs.js').ItemConfig} ItemConfig */
+/** @typedef {import('../controller/knobs.js').Config} Config */
 
 // -- Config -------------------------------------------------------------------
 
@@ -165,7 +166,7 @@ export {
  * TODO separate HTMl from generation logic
  * TODO rename to generateItemsDescription
  *
- * @param {ItemConfig} config
+ * @param {Config} config
  *
  * @returns {string[]}
  */

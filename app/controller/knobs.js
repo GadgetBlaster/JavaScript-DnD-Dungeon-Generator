@@ -50,13 +50,15 @@ import { sizes } from '../attribute/size.js';
  * @prop {number} dungeonTraps
  */
 
-/** @typedef {RoomConfigBase | ItemConfig} RoomConfig */
+/** @typedef {RoomConfigBase & ItemConfig} RoomConfig */
 
 /**
  * @typedef {DungeonConfigBase
- *     | Omit<RoomConfigBase, "roomCount">
- *     | ItemConfig
+ *     & Omit<RoomConfigBase, "roomCount">
+ *     & ItemConfig
  * } DungeonConfig */
+
+/** @typedef {ItemConfig | RoomConfig | DungeonConfig } Config */
 
 /**
  * @typedef {object} KnobSettings

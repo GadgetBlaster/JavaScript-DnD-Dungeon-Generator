@@ -20,9 +20,11 @@ import treasure from './types/treasure.js';
 import trinket from './types/trinket.js';
 import weapon from './types/weapon.js';
 
-// -- Config -------------------------------------------------------------------
+// -- Type Imports -------------------------------------------------------------
 
 /** @typedef {import('./item.js').ItemBase} ItemBase */
+
+// -- Config -------------------------------------------------------------------
 
 /** @type {ItemBase[]} */
 export default [

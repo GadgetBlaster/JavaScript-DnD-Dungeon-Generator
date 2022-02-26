@@ -8,11 +8,14 @@ import { probability as conditionProbability } from '../attribute/condition.js';
 import { probability as rarityProbability } from '../attribute/rarity.js';
 import set from './set.js';
 
-// -- Types --------------------------------------------------------------------
+// -- Type Imports -------------------------------------------------------------
 
 /** @typedef {import('../attribute/rarity.js').Rarity} Rarity */
 /** @typedef {import('../attribute/size.js').Size} Size */
 /** @typedef {import('../attribute/condition.js').Condition} Condition */
+/** @typedef {import('../controller/knobs.js').Config} Config */
+
+// -- Types --------------------------------------------------------------------
 
 /** @typedef {typeof itemTypes[number]} ItemType */
 

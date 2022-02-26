@@ -1,6 +1,6 @@
 // @ts-check
 
-// -- Types --------------------------------------------------------------------
+// -- Type Imports -------------------------------------------------------------
 
 /** @typedef {import('../attribute/condition').Condition} Condition */
 /** @typedef {import('../attribute/rarity').Rarity} Rarity */
