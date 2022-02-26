@@ -7,6 +7,7 @@ import state  from './test/tests.state.js';
 
 import element from '../utility/test/tests.element.js';
 import roll    from '../utility/test/tests.roll.js';
+import shape   from '../utility/test/tests.shape.js';
 import tools   from '../utility/test/tests.tools.js';
 
 import controller from '../controller/test/tests.controller.js';
@@ -49,6 +50,7 @@ export default {
 
     '/app/utility/test/tests.element.js': element,
     '/app/utility/test/tests.roll.js'   : roll,
+    '/app/utility/test/tests.shape.js'  : shape,
     '/app/utility/test/tests.tools.js'  : tools,
 
     '/app/controller/test/tests.controller.js': controller,

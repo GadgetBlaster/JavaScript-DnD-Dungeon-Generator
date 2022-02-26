@@ -1,57 +1,19 @@
 // @ts-check
 
+import { defaultFontSize, drawCircle, drawLine, drawRect, drawText } from '../utility/shape.js';
 import { element } from '../utility/element.js';
-import { isRequired } from '../utility/tools.js';
 import doorType, { lockable } from '../room/door.js';
 
-// TODO move base shape draw functions to `/utility/draw.js`
+// -- Type Imports -------------------------------------------------------------
 
-// -- Types --------------------------------------------------------------------
-
-/** @typedef {import('../utility/element.js').Attributes} Attributes */
+/** @typedef {import('../utility/shape.js').Circle} Circle */
+/** @typedef {import('../utility/shape.js').PixelRectangle} PixelRectangle */
 /** @typedef {import('./grid').Coordinates} Coordinates */
 /** @typedef {import('./grid').Dimensions} Dimensions */
 /** @typedef {import('./grid').Rectangle} Rectangle */
 /** @typedef {import('./map').Direction} Direction */
 
-// -- Pixel Definitions --------------------------------------------------------
-
-/**
- * @typedef PixelCoordinates
- *
- * @prop {number} x
- * @prop {number} y
- */
-
-/**
- * @typedef PixelDimensions
- *
- * @prop {number} width
- * @prop {number} height
- */
-
-/** @typedef {PixelCoordinates & PixelDimensions} PixelRectangle */
-
-// -- Shape Definitions --------------------------------------------------------
-
-/**
- * @typedef Circle
- *
- * @prop {number} cx
- * @prop {number} cy
- * @prop {number} r
- */
-
-/**
- * @typedef Line
- *
- * @prop {number} x1
- * @prop {number} y1
- * @prop {number} x2
- * @prop {number} y2
- * @prop {string} color
- * @prop {number} width
- */
+// -- Types -------------------------------------------------------------
 
 // -- Room Defs ----------------------------------------------------------------
 
@@ -68,7 +30,6 @@ export const pxCell = 24;
 
 const pxBorder     = 2;
 const pxGridLine   = 1;
-const pxTextOffset = 2;
 
 const colorGridFill     = '#f0f0f0';
 const colorGridStroke   = '#cfcfcf';
@@ -77,7 +38,6 @@ const colorPillarFill   = '#f9f9f9';
 const colorPillarStroke = 'rgba(207, 207, 207, 0.7)';
 const colorRoomFill     = 'rgba(255, 255, 255, 0.7)';
 const colorRoomStroke   = '#a9a9a9';
-const colorText         = '#666666';
 const colorTransparent  = 'transparent';
 const colorTrapFill     = 'rgba(207, 207, 207, 0.8)';
 
@@ -99,10 +59,7 @@ export const labelMinHeight = 2;
 const pillarGridThreshold = 6;
 const pillarGridInset     = 1;
 
-const fontSizeNormal = 14;
-const fontSizeSmall  = 10;
-
-const lineDashLength = 5;
+const fontSizeSmall = 10;
 
 export {
     colorLockedFill     as testColorLockedFill,
@@ -112,79 +69,14 @@ export {
     doorInset           as testDoorInset,
     doorSecretLabel     as testDoorSecretLabel,
     doorWidth           as testDoorWidth,
-    lineDashLength      as testLineDashLength,
     pillarGridInset     as testPillarGridInset,
     pillarGridThreshold as testPillarGridThreshold,
-    pxTextOffset        as testPxTextOffset,
     radiusHole          as testRadiusHole,
     radiusPillar        as testRadiusPillar,
     trapLabel           as testTrapLabel,
 };
 
 // -- Private Functions --------------------------------------------------------
-
-/**
- * Returns an SVG circle element string.
- *
- * @private
- *
- * @param {Circle} circle
- * @param {object} [options]
- *     @param {string} [options.fill]
- *     @param {string} [options.stroke]
- *
- * @returns {string}
- */
-function drawCircle({ cx, cy, r }, { fill, stroke } = {}) {
-    isRequired(cx, 'cx is required by drawCircle()');
-    isRequired(cy, 'cy is required by drawCircle()');
-    isRequired(r,  'r is required by drawCircle()');
-
-    let attributes = {
-        cx,
-        cy,
-        r,
-        fill,
-        'shape-rendering': 'geometricPrecision',
-        ...(stroke && { stroke, 'stroke-width': 2 }),
-    };
-
-    return element('circle', null, attributes);
-}
-
-/**
- * Returns an SVG line element string.
- *
- * @private
- *
- * @param {Line} args
- * @param {object} [options = {}]
- *     @param {boolean} [options.dashed]
- *
- * @returns {string}
- */
-function drawLine({ x1, y1, x2, y2, color, width }, { dashed } = {}) {
-    isRequired(x1,    'x1 is required by drawLine()');
-    isRequired(y1,    'y1 is required by drawLine()');
-    isRequired(x2,    'x2 is required by drawLine()');
-    isRequired(y2,    'y2 is required by drawLine()');
-    isRequired(color, 'color is required by drawLine()');
-    isRequired(width, 'width is required by drawLine()');
-
-    let attributes = {
-        x1,
-        y1,
-        x2,
-        y2,
-        stroke: color,
-        'shape-rendering': 'crispEdges',
-        'stroke-linecap': 'square',
-        'stroke-width': width,
-        ...(dashed && { 'stroke-dasharray': lineDashLength }),
-    };
-
-    return element('line', null, attributes);
-}
 
 /**
  * Draws an map pillar.
@@ -223,25 +115,6 @@ function drawPillarCell({ x, y }) {
     let cy = rect.y + (rect.height / 2);
 
     return drawPillar({ cx, cy }, { stroke: colorPillarStroke });
-}
-
-/**
- * Returns an SVG rectangle element string.
- *
- * @private
- *
- * @param {PixelRectangle} rectangle
- * @param {Attributes} [attributes]
- *
- * @returns {string}
- */
-function drawRect({ x, y, width, height }, attributes = {}) {
-    isRequired(x,      'x is required by drawRect()');
-    isRequired(y,      'y is required by drawRect()');
-    isRequired(width,  'width is required by drawRect()');
-    isRequired(height, 'height is required by drawRect()');
-
-    return element('rect', null, { x, y, width, height, ...attributes });
 }
 
 /**
@@ -286,7 +159,7 @@ function drawRoomText({ x, y, width, height }, { roomNumber, roomLabel }) {
     let middleX = (x + (width  / 2));
     let middleY = (y + (height / 2));
 
-    let fontSize = fontSizeNormal;
+    let fontSize = defaultFontSize;
     let labelY   = roomLabel ? middleY - (fontSize / 2) : middleY;
 
     let text = drawText(roomNumber, { x: middleX, y: labelY }, { fontSize });
@@ -298,33 +171,6 @@ function drawRoomText({ x, y, width, height }, { roomNumber, roomLabel }) {
     }
 
     return text;
-}
-
-/**
- * Returns an SVG text element string.
- *
- * @private
- *
- * @param {string | number} text
- * @param {PixelCoordinates} coordinates
- * @param {object} [options]
- *     @param {number} [options.fontSize = 14]
- *     @param {string} [options.fill = '#666666']
- *
- * @returns {string}
- */
-function drawText(text, { x, y }, { fontSize = fontSizeNormal, fill = colorText } = {}) {
-    let attributes = {
-        x,
-        y: y + pxTextOffset,
-        fill,
-        'alignment-baseline': 'middle',
-        'font-family': 'monospace',
-        'font-size': `${fontSize}px`,
-        'text-anchor': 'middle',
-    };
-
-    return element('text', text, attributes);
 }
 
 /**
