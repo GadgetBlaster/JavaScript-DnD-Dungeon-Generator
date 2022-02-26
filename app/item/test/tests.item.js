@@ -8,7 +8,6 @@ import {
     // Public Functions
     generateItem,
 } from '../item.js';
-import { knobs } from '../../controller/knobs.js';
 
 /**
  * @param {import('../../unit/state.js').Utility}
@@ -53,17 +52,16 @@ export default ({ assert, describe, it }) => {
     // TODO incomplete test coverage
     describe('generateItem()', () => {
         const itemSettings = {
-            // TODO
-            [knobs.itemCondition]: 'average',
-            [knobs.itemQuantity] : 'one',
-            [knobs.itemRarity]   : 'exotic',
-            [knobs.itemType]     : 'treasure',
+            itemCondition: 'average',
+            itemQuantity : 'one',
+            itemRarity   : 'exotic',
+            itemType     : 'treasure',
         };
 
         describe('given no `itemCondition` setting', () => {
             it('should throw', () => {
                 let settings = { ...itemSettings };
-                delete settings[knobs.itemCondition];
+                delete settings.itemCondition;
                 assert(() => generateItem(settings)).throws('Item condition is required in generateItem()');
             });
         });
@@ -71,7 +69,7 @@ export default ({ assert, describe, it }) => {
         describe('given no `itemQuantity` setting', () => {
             it('should throw', () => {
                 let settings = { ...itemSettings };
-                delete settings[knobs.itemQuantity];
+                delete settings.itemQuantity;
                 assert(() => generateItem(settings)).throws('Item quantity is required in generateItem()');
             });
         });
@@ -79,7 +77,7 @@ export default ({ assert, describe, it }) => {
         describe('given an `itemQuantity` of zero', () => {
             it('should throw', () => {
                 let settings = { ...itemSettings };
-                settings[knobs.itemQuantity] = 'zero';
+                settings.itemQuantity = 'zero';
                 assert(() => generateItem(settings)).throws('Item quantity cannot be zero');
             });
         });
@@ -87,7 +85,7 @@ export default ({ assert, describe, it }) => {
         describe('given no `itemRarity` setting', () => {
             it('should throw', () => {
                 let settings = { ...itemSettings };
-                delete settings[knobs.itemRarity];
+                delete settings.itemRarity;
                 assert(() => generateItem(settings)).throws('Item rarity is required in generateItem()');
             });
         });
@@ -95,7 +93,7 @@ export default ({ assert, describe, it }) => {
         describe('given no `itemQuantity` setting', () => {
             it('should throw', () => {
                 let settings = { ...itemSettings };
-                delete settings[knobs.itemType];
+                delete settings.itemType;
                 assert(() => generateItem(settings)).throws('Item type is required in generateItem()');
             });
         });

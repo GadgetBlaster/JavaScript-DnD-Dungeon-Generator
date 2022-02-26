@@ -27,7 +27,6 @@ import {
 import { createBlankGrid, wallSize } from '../grid.js';
 import { dimensionRanges } from '../../room/dimensions.js';
 import { generateRooms } from '../../room/generate.js';
-import { knobs } from '../../controller/knobs.js';
 import { labelMinWidth, labelMinHeight, testTrapLabel as trapLabel } from '../draw.js';
 import { list as doorTypes } from '../../room/door.js';
 
@@ -109,8 +108,8 @@ export default ({ assert, describe, it }) => {
             const grid = createBlankGrid(gridDimensions);
             const room = {
                 settings: {
-                    [knobs.roomType]: 'room',
-                    [knobs.roomSize]: 'tiny',
+                    roomType: 'room',
+                    roomSize: 'tiny',
                 },
             };
 
@@ -134,8 +133,8 @@ export default ({ assert, describe, it }) => {
                 const grid = createBlankGrid(gridDimensions);
                 const room = {
                     settings: {
-                        [knobs.roomType]: 'room',
-                        [knobs.roomSize]: 'small',
+                        roomType: 'room',
+                        roomSize: 'small',
                     },
                 };
 
@@ -151,8 +150,8 @@ export default ({ assert, describe, it }) => {
                 const grid = createBlankGrid(gridDimensions);
                 const room = {
                     settings: {
-                        [knobs.roomType]: 'room',
-                        [knobs.roomSize]: 'massive',
+                        roomType: 'room',
+                        roomSize: 'massive',
                     },
                 };
 
@@ -168,8 +167,8 @@ export default ({ assert, describe, it }) => {
                     const grid = createBlankGrid(gridDimensions);
                     const room = {
                         settings: {
-                            [knobs.roomType]: 'room',
-                            [knobs.roomSize]: 'tiny',
+                            roomType: 'room',
+                            roomSize: 'tiny',
                         },
                     };
 
@@ -204,8 +203,8 @@ export default ({ assert, describe, it }) => {
                     const room = {
                         roomNumber: 2,
                         settings: {
-                            [knobs.roomType]: 'room',
-                            [knobs.roomSize]: 'medium',
+                            roomType: 'room',
+                            roomSize: 'medium',
                         },
                     };
 
@@ -246,8 +245,8 @@ export default ({ assert, describe, it }) => {
                     const hallway = {
                         roomNumber: 2,
                         settings: {
-                            [knobs.roomType]: 'hallway',
-                            [knobs.roomSize]: 'small',
+                            roomType: 'hallway',
+                            roomSize: 'small',
                         },
                     };
 
@@ -574,7 +573,7 @@ export default ({ assert, describe, it }) => {
                     type: 'room',
                     roomNumber: 1,
                     settings: {
-                        [knobs.dungeonConnections]: connectionChance,
+                        dungeonConnections: connectionChance,
                     },
                 };
 
@@ -590,7 +589,7 @@ export default ({ assert, describe, it }) => {
                     type: 'room',
                     roomNumber: 2,
                     settings: {
-                        [knobs.dungeonConnections]: connectionChance,
+                        dungeonConnections: connectionChance,
                     },
                 };
 
@@ -695,7 +694,7 @@ export default ({ assert, describe, it }) => {
                     type: 'room',
                     roomNumber: 1,
                     settings: {
-                        [knobs.dungeonConnections]: connectionChance,
+                        dungeonConnections: connectionChance,
                     },
                 };
 
@@ -711,7 +710,7 @@ export default ({ assert, describe, it }) => {
                     type: 'room',
                     roomNumber: 2,
                     settings: {
-                        [knobs.dungeonConnections]: connectionChance,
+                        dungeonConnections: connectionChance,
                     },
                 };
 
@@ -972,7 +971,7 @@ export default ({ assert, describe, it }) => {
         describe('given a room config with a missing room type', () => {
             it('should throw', () => {
                 assert(() => getRoomDimensions(gridDimensions, {
-                    settings: { [knobs.roomSize]: 'small' },
+                    settings: { roomSize: 'small' },
                 })).throws('roomType is required in getRoomDimensions()');
             });
         });
@@ -980,7 +979,7 @@ export default ({ assert, describe, it }) => {
         describe('given a room config with a missing room size', () => {
             it('should throw', () => {
                 assert(() => getRoomDimensions(gridDimensions, {
-                    settings: { [knobs.roomType]: 'library' },
+                    settings: { roomType: 'library' },
                 })).throws('roomSize is required in getRoomDimensions()');
             });
         });
@@ -990,8 +989,8 @@ export default ({ assert, describe, it }) => {
             it('should return a room width and height ', () => {
                 const dimensions = getRoomDimensions(gridDimensions, {
                     settings: {
-                        [knobs.roomSize]: 'small',
-                        [knobs.roomType]: 'hallway',
+                        roomSize: 'small',
+                        roomType: 'hallway',
                     },
                 });
 
@@ -1006,8 +1005,8 @@ export default ({ assert, describe, it }) => {
 
                 const { width, height } = getRoomDimensions(gridDimensions, {
                     settings: {
-                        [knobs.roomSize]: 'small',
-                        [knobs.roomType]: 'room',
+                        roomSize: 'small',
+                        roomType: 'room',
                     },
                 });
 
@@ -1025,8 +1024,8 @@ export default ({ assert, describe, it }) => {
 
                 const { width, height } = getRoomDimensions(miniMapDimensions, {
                     settings: {
-                        [knobs.roomSize]: 'massive',
-                        [knobs.roomType]: 'room',
+                        roomSize: 'massive',
+                        roomType: 'room',
                     },
                 });
 
@@ -1050,8 +1049,8 @@ export default ({ assert, describe, it }) => {
                 type: 'room',
                 roomNumber: 1,
                 settings: {
-                    [knobs.roomSize]: 'small',
-                    [knobs.roomType]: 'room',
+                    roomSize: 'small',
+                    roomType: 'room',
                 },
             };
 
@@ -1093,14 +1092,14 @@ export default ({ assert, describe, it }) => {
     describe('generateMap()', () => {
         it('should generate a map, rooms, and doors', () => {
             const { map, rooms, doors } = generateMap({ width: 30, height: 24 }, generateRooms({
-                [knobs.itemCondition]: 'average',
-                [knobs.itemQuantity] : 'one',
-                [knobs.itemRarity]   : 'average',
-                [knobs.itemType]     : 'miscellaneous',
-                [knobs.roomSize]     : 'medium',
-                [knobs.roomCount]    : 34,
-                [knobs.roomType]     : 'room',
-                [knobs.roomCondition]: 'average',
+                itemCondition: 'average',
+                itemQuantity : 'one',
+                itemRarity   : 'average',
+                itemType     : 'miscellaneous',
+                roomSize     : 'medium',
+                roomCount    : 34,
+                roomType     : 'room',
+                roomCondition: 'average',
             }));
 
             assert(map).isString();

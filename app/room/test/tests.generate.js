@@ -5,7 +5,6 @@ import {
 } from '../generate.js';
 
 import { furnitureQuantity } from '../../item/furnishing.js';
-import { knobs } from '../../controller/knobs.js';
 
 /**
  * @param {import('../../unit/state.js').Utility} utility
@@ -13,16 +12,15 @@ import { knobs } from '../../controller/knobs.js';
 export default ({ assert, describe, it }) => {
     describe('generateRooms()', () => {
         const config = {
-            // TODO
-            [knobs.itemCondition]: 'average',
-            [knobs.itemQuantity]: 'zero',
-            [knobs.itemRarity]: 'exotic',
-            [knobs.itemType]: 'treasure',
-            [knobs.roomCondition]: 'average',
-            [knobs.roomCount]: 1,
-            [knobs.roomSize]: 'medium',
-            [knobs.roomType]: 'room',
-            [knobs.roomFurnishing]: furnitureQuantity.none,
+            itemCondition : 'average',
+            itemQuantity  : 'zero',
+            itemRarity    : 'exotic',
+            itemType      : 'treasure',
+            roomCondition : 'average',
+            roomCount     : 1,
+            roomSize      : 'medium',
+            roomType      : 'room',
+            roomFurnishing: furnitureQuantity.none,
         };
 
         describe('required configs', () => {
@@ -48,7 +46,7 @@ export default ({ assert, describe, it }) => {
                 it('should return an array with 2 `Room`s', () => {
                     const rooms = generateRooms({
                         ...config,
-                        [knobs.roomCount]: 2,
+                        roomCount: 2,
                     });
 
                     assert(rooms).isArray();
@@ -64,9 +62,8 @@ export default ({ assert, describe, it }) => {
             describe('given a `knobs.itemQuantity` of "couple"', () => {
                 it('should return an array of `Room` objects with two items', () => {
                     const rooms = generateRooms({
-                        // TODO
                         ...config,
-                        [knobs.itemQuantity]: 'couple',
+                        itemQuantity: 'couple',
                     }).pop();
 
                     assert(rooms.items[0]).stringIncludes('Items (2)');
@@ -75,10 +72,9 @@ export default ({ assert, describe, it }) => {
                 describe('given a `roomFurnishing` of `furnishing.minimum`', () => {
                     it('should return an array of `Room` objects with three items', () => {
                         const rooms = generateRooms({
-                            // TODO
                             ...config,
-                            [knobs.itemQuantity]: 'couple',
-                            [knobs.roomFurnishing]: furnitureQuantity.minimum,
+                            itemQuantity  : 'couple',
+                            roomFurnishing: furnitureQuantity.minimum,
                         }).pop();
 
                         assert(rooms.items[0]).stringIncludes('Items (3)');

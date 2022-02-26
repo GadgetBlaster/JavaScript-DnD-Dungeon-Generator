@@ -11,7 +11,6 @@ import {
     generateItems,
 } from '../generate.js';
 
-import { knobs } from '../../controller/knobs.js';
 import { quantityMinimum, quantityMaximum } from '../../attribute/quantity.js';
 import {
     anyRoomFurniture,
@@ -102,11 +101,10 @@ export default ({ assert, describe, it }) => {
     describe('generateItemObjects()', () => {
         describe('given a count of 1', () => {
             const items = generateItemObjects(1, {
-                // TODO
-                [knobs.itemCondition]: 'random',
-                [knobs.itemQuantity] : 'one',
-                [knobs.itemRarity]   : 'random',
-                [knobs.itemType]     : 'random',
+                itemCondition: 'random',
+                itemQuantity : 'one',
+                itemRarity   : 'random',
+                itemType     : 'random',
             });
 
             const entries = Object.entries(items);
@@ -127,11 +125,10 @@ export default ({ assert, describe, it }) => {
 
         describe('given a count greater than 1', () => {
             const items = generateItemObjects(3, {
-                // TODO
-                [knobs.itemCondition]: 'random',
-                [knobs.itemQuantity] : 'one',
-                [knobs.itemRarity]   : 'random',
-                [knobs.itemType]     : 'random',
+                itemCondition: 'random',
+                itemQuantity : 'one',
+                itemRarity   : 'random',
+                itemType     : 'random',
             });
 
             const entries = Object.entries(items);
@@ -144,11 +141,10 @@ export default ({ assert, describe, it }) => {
 
         describe('when duplicates of the same item are generated', () => {
             const items = generateItemObjects(3, {
-                // TODO
-                [knobs.itemCondition]: 'average',
-                [knobs.itemQuantity] : 'one',
-                [knobs.itemRarity]   : 'common',
-                [knobs.itemType]     : 'mysterious',
+                itemCondition: 'average',
+                itemQuantity : 'one',
+                itemRarity   : 'common',
+                itemType     : 'mysterious',
             });
 
             const entries = Object.entries(items);
@@ -309,11 +305,10 @@ export default ({ assert, describe, it }) => {
 
     describe('generateItems()', () => {
         const settings = {
-            // TODO
-            [knobs.itemCondition] : 'average',
-            [knobs.itemQuantity]  : 'one',
-            [knobs.itemRarity]    : 'average',
-            [knobs.itemType]      : 'clothing',
+            itemCondition: 'average',
+            itemQuantity : 'one',
+            itemRarity   : 'average',
+            itemType     : 'clothing',
         };
 
         it('should return an array of strings', () => {
@@ -350,14 +345,14 @@ export default ({ assert, describe, it }) => {
             it('should throw', () => {
                 assert(() => generateItems({
                     ...settings,
-                    [knobs.roomType]: 'room',
+                    roomType: 'room',
                 })).throws('roomCondition is required for room items in generateItems()');
             });
         });
 
         describe('given a random `itemQuantity`', () => {
             it('should return an array of strings', () => {
-                const results = generateItems({ ...settings, [knobs.itemQuantity]: 'random' });
+                const results = generateItems({ ...settings, itemQuantity: 'random' });
                 assert(results).isArray();
                 assert(results.find((item) => typeof item !== 'string')).isUndefined();
             });
@@ -366,7 +361,7 @@ export default ({ assert, describe, it }) => {
         describe('given an `itemQuantity` of zero', () => {
             describe('when there is no room', () => {
                 it('should return an array with only a title', () => {
-                    const results = generateItems({ ...settings, [knobs.itemQuantity]: 'zero' });
+                    const results = generateItems({ ...settings, itemQuantity: 'zero' });
                     assert(results).isArray();
                     assert(results.pop()).stringIncludes('Items (0)');
                 });
@@ -376,10 +371,9 @@ export default ({ assert, describe, it }) => {
                 it('should return an empty array', () => {
                     const results = generateItems({
                         ...settings,
-                        // TODO
-                        [knobs.itemQuantity]: 'zero',
-                        [knobs.roomType]: 'room',
-                        [knobs.roomCondition]: 'average',
+                        itemQuantity : 'zero',
+                        roomType     : 'room',
+                        roomCondition: 'average',
                     });
                     assert(results).isArray();
                     assert(results.length).equals(0);

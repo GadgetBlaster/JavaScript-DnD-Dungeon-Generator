@@ -1,6 +1,5 @@
 // @ts-check
 
-import { knobs } from '../controller/knobs.js';
 import { toss } from '../utility/tools.js';
 import { rollArrayItem, roll } from '../utility/roll.js';
 import { strong, em } from '../ui/typography.js';
@@ -166,11 +165,10 @@ export {
  */
 export const generateItem = (config) => {
     let {
-        // TODO
-        [knobs.itemCondition]: conditionSetting,
-        [knobs.itemQuantity] : quantitySetting,
-        [knobs.itemRarity]   : raritySetting,
-        [knobs.itemType]     : itemType,
+        itemCondition: conditionSetting,
+        itemQuantity : quantitySetting,
+        itemRarity   : raritySetting,
+        itemType     : itemType,
     } = config;
 
     !conditionSetting && toss('Item condition is required in generateItem()');

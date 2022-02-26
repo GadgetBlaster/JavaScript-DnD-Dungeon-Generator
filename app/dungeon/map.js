@@ -25,7 +25,6 @@ import {
     secretProbability,
 } from '../room/door.js';
 
-import { knobs } from '../controller/knobs.js';
 import { roll, rollArrayItem, rollPercentile } from '../utility/roll.js';
 import { isRequired, toWords } from '../utility/tools.js';
 
@@ -228,7 +227,7 @@ function drawRooms(gridDimensions, mapRooms, grid, roomNumber, prevGridRoom) {
     let isFork    = roomNumber === 1 ? false : true;
 
     mapRooms.forEach((roomConfig) => {
-        let { [knobs.roomType]: type } = roomConfig.settings;
+        let { roomType: type } = roomConfig.settings;
 
         let roomDimensions = getRoomDimensions(gridDimensions, roomConfig);
 
@@ -467,8 +466,8 @@ function getRoomDimensions(gridDimensions, roomConfig) {
     // TODO just pass settings
     let {
         settings: {
-            [knobs.roomSize]: roomSize,
-            [knobs.roomType]: roomType,
+            roomSize: roomSize,
+            roomType: roomType,
         },
     } = roomConfig;
 
@@ -592,7 +591,7 @@ function getExtraDoors(grid, rooms, existingDoors) {
 
     rooms.forEach((room) => {
         let { roomNumber, settings } = room.config;
-        let { [knobs.dungeonConnections ]: connectionChance } = settings;
+        let { dungeonConnections: connectionChance } = settings;
 
         let chance = Number(connectionChance); // TODO is the Number cast necessary?
 

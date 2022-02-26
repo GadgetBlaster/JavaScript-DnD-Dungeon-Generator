@@ -1,6 +1,5 @@
 // @ts-check
 
-import { knobs } from '../controller/knobs.js';
 import { roll, rollArrayItem, rollPercentile } from '../utility/roll.js';
 import { toss } from '../utility/tools.js';
 
@@ -236,7 +235,7 @@ export {
  */
 export function getRoomFeatures(config) {
     let {
-        [knobs.roomType]: roomTypeSetting, // TODO
+        roomType: roomTypeSetting,
     } = config;
 
     if (roomTypeSetting === 'hallway') {

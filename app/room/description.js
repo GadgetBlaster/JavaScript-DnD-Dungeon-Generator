@@ -7,7 +7,6 @@ import { em, paragraph, strong, subtitle, title } from '../ui/typography.js';
 import { furnitureQuantity } from '../item/furnishing.js';
 import { getEnvironmentDescription } from './environment.js';
 import { indicateRarity } from '../attribute/rarity.js';
-import { knobs } from '../controller/knobs.js';
 import { list } from '../ui/list.js';
 import { rollArrayItem } from '../utility/roll.js';
 import doorType, { appendDoorway, outside } from './door.js';
@@ -53,11 +52,10 @@ const mapDescriptions = [
  */
 function getContentDescription(config) {
     let {
-        // TODO
-        [knobs.itemQuantity]  : itemQuantity,
-        [knobs.itemRarity]    : itemRarity,
-        [knobs.roomFurnishing]: roomFurnishing,
-        [knobs.roomType]      : roomType = 'room',
+        itemQuantity  : itemQuantity,
+        itemRarity    : itemRarity,
+        roomFurnishing: roomFurnishing,
+        roomType      : roomType = 'room',
     } = config;
 
     if (!itemQuantity || itemQuantity === 'zero') {
@@ -128,11 +126,10 @@ function getContentRarityDetail(rarity) {
  */
 function getDescription(config) {
     let {
-        // TODO
-        [knobs.itemQuantity]:  itemQuantity,
-        [knobs.roomCondition]: roomCondition,
-        [knobs.roomSize]:      roomSize,
-        [knobs.roomType]:      roomType = 'room',
+        itemQuantity:  itemQuantity,
+        roomCondition: roomCondition,
+        roomSize:      roomSize,
+        roomType:      roomType = 'room',
     } = config;
 
     let typeString = getRoomTypeLabel(roomType);
@@ -217,9 +214,8 @@ function getFurnitureDetail(roomFurnishing) {
  */
 function getItemConditionDescription(config) {
     let {
-        // TODO
-        [knobs.itemQuantity] : itemQuantity,
-        [knobs.itemCondition]: itemCondition,
+        itemQuantity : itemQuantity,
+        itemCondition: itemCondition,
     } = config;
 
     if (itemQuantity === 'zero') {
@@ -407,8 +403,8 @@ export function getRoomDescription(room, roomDoors) {
     let { settings, roomNumber, size: roomDimensions } = room;
 
     let {
-        [knobs.roomCount]: roomCount,
-        [knobs.roomType] : type,
+        roomCount: roomCount,
+        roomType : type,
     } = settings;
 
     let numberLabel = roomCount > 1 ? ` ${roomNumber}` : '';

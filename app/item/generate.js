@@ -13,7 +13,6 @@ import { em, paragraph, subtitle } from '../ui/typography.js';
 import { generateItem } from './item.js';
 import { getRarityDescription, getConditionDescription, getItemDescription } from './description.js';
 import { isRequired } from '../utility/tools.js';
-import { knobs } from '../controller/knobs.js';
 import { list } from '../ui/list.js';
 import { roll, rollArrayItem } from '../utility/roll.js';
 import { getRange, probability as quantityProbability } from '../attribute/quantity.js';
@@ -172,14 +171,13 @@ export {
  */
 export function generateItems(config) {
     let {
-        // TODO
-        [knobs.roomType]      : roomType,
-        [knobs.itemCondition] : itemCondition,
-        [knobs.itemQuantity]  : itemQuantity,
-        [knobs.itemRarity]    : itemRarity,
-        [knobs.itemType]      : itemType,
-        [knobs.roomFurnishing]: furnitureQuantity,
-        [knobs.roomCondition] : roomCondition,
+        roomType      : roomType,
+        itemCondition : itemCondition,
+        itemQuantity  : itemQuantity,
+        itemRarity    : itemRarity,
+        itemType      : itemType,
+        roomFurnishing: furnitureQuantity,
+        roomCondition : roomCondition,
     } = config;
 
     isRequired(itemCondition, 'itemCondition is required in generateItems()');

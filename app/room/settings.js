@@ -2,7 +2,6 @@
 
 // TODO move functionality to `/room/generate.js`
 
-import { knobs } from '../controller/knobs.js';
 import { probability as conditionProbability } from '../attribute/condition.js';
 import { probability as furnitureQuantityProbability } from '../item/furnishing.js';
 import { probability as quantityProbability } from '../attribute/quantity.js';
@@ -40,15 +39,17 @@ const uniformRarityChance = 10;
 /**
  * An object of randomization functions for room configs.
  *
+ * TODO use field list type
+ *
  * @type {{ [knobSetting: string]: () => string }}
  */
 const roomRandomizations = {
-    [knobs.itemCondition] : () => rollUniformity(uniformConditionChance, conditionProbability),
-    [knobs.itemQuantity]  : () => quantityProbability.roll(),
-    [knobs.itemRarity]    : () => rollUniformity(uniformRarityChance, rarityProbability),
-    [knobs.roomCondition] : () => conditionProbability.roll(),
-    [knobs.roomFurnishing]: () => furnitureQuantityProbability.roll(),
-    [knobs.roomType]      : () => rollRoomType(roomTypeProbability.roll()),
+    itemCondition : () => rollUniformity(uniformConditionChance, conditionProbability),
+    itemQuantity  : () => quantityProbability.roll(),
+    itemRarity    : () => rollUniformity(uniformRarityChance, rarityProbability),
+    roomCondition : () => conditionProbability.roll(),
+    roomFurnishing: () => furnitureQuantityProbability.roll(),
+    roomType      : () => rollRoomType(roomTypeProbability.roll()),
 };
 
 // -- Private Functions --------------------------------------------------------
@@ -126,12 +127,12 @@ function applyRandomization(config, randomizations) {
         }
     });
 
-    if (settings[knobs.roomSize] === random) {
-        settings[knobs.roomSize] = rollRoomSize(settings[knobs.roomType]);
+    if (settings.roomSize === random) {
+        settings.roomSize = rollRoomSize(settings.roomType);
     }
 
-    if (settings[knobs.roomType] === 'hallway' && settings[knobs.itemQuantity] === 'numerous') {
-        settings[knobs.itemQuantity] = 'several';
+    if (settings.roomType === 'hallway' && settings.itemQuantity === 'numerous') {
+        settings.itemQuantity = 'several';
     }
 
     return settings;

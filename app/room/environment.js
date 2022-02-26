@@ -3,7 +3,6 @@
 import { getRoomFeatures } from './feature.js';
 import { getRoomTypeLabel } from './description.js';
 import { getVegetationDescription } from './vegetation.js';
-import { knobs } from '../controller/knobs.js';
 import { roll, rollArrayItem, rollPercentile } from '../utility/roll.js';
 import { toss } from '../utility/tools.js';
 
@@ -192,9 +191,8 @@ function getGroundDesc() {
  */
  function getStructureDesc(config, roomStructure) {
     let {
-        // TODO
-        [knobs.roomType]: typeSetting,
-        [knobs.roomSize]: roomSize,
+        roomType: typeSetting,
+        roomSize: roomSize,
     } = config;
 
     let type = getRoomTypeLabel(typeSetting);

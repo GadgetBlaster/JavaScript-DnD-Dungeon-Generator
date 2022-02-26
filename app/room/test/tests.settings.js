@@ -11,7 +11,6 @@ import {
 
 import { conditions } from '../../attribute/condition.js';
 import { furnitureQuantity } from '../../item/furnishing.js';
-import { knobs } from '../../controller/knobs.js';
 import { quantities } from '../../attribute/quantity.js';
 import { rarities } from '../../attribute/rarity.js';
 import { roomTypes } from '../room.js';
@@ -61,36 +60,34 @@ export default ({ assert, describe, it }) => {
         describe('given a `KnobSettings` object', () => {
             it('should return a `RoomConfig` object', () => {
                 const roomConfig = applyRoomRandomization({
-                    // TODO
-                    [knobs.itemCondition] : 'random',
-                    [knobs.itemQuantity]  : 'random',
-                    [knobs.itemRarity]    : 'random',
-                    [knobs.roomCondition] : 'random',
-                    [knobs.roomFurnishing]: 'random',
-                    [knobs.roomSize]      : 'random',
-                    [knobs.roomType]      : 'random',
+                    itemCondition : 'random',
+                    itemQuantity  : 'random',
+                    itemRarity    : 'random',
+                    roomCondition : 'random',
+                    roomFurnishing: 'random',
+                    roomSize      : 'random',
+                    roomType      : 'random',
                 });
 
                 assert(roomConfig).isObject();
 
-                assert([ ...conditions, 'random' ].includes(roomConfig[knobs.itemCondition])).isTrue();
-                assert(conditions.includes(roomConfig[knobs.roomCondition])).isTrue();
-                assert(Object.keys(furnitureQuantity).includes(roomConfig[knobs.roomFurnishing])).isTrue();
-                assert(quantities.includes(roomConfig[knobs.itemQuantity])).isTrue();
-                assert([ ...rarities, 'random' ].includes(roomConfig[knobs.itemRarity])).isTrue();
-                assert(roomTypes.includes(roomConfig[knobs.roomType])).isTrue();
-                assert(sizes.includes(roomConfig[knobs.roomSize])).isTrue();
+                assert([ ...conditions, 'random' ].includes(roomConfig.itemCondition)).isTrue();
+                assert(conditions.includes(roomConfig.roomCondition)).isTrue();
+                assert(Object.keys(furnitureQuantity).includes(roomConfig.roomFurnishing)).isTrue();
+                assert(quantities.includes(roomConfig.itemQuantity)).isTrue();
+                assert([ ...rarities, 'random' ].includes(roomConfig.itemRarity)).isTrue();
+                assert(roomTypes.includes(roomConfig.roomType)).isTrue();
+                assert(sizes.includes(roomConfig.roomSize)).isTrue();
             });
 
             describe('given a room type of "hallway" and an item quantity of `quantity.numerous`', () => {
                 it('should limit the item quantity to `quantity.several`', () => {
                     const roomConfig = applyRoomRandomization({
-                        // TODO
-                        [knobs.itemQuantity]: 'numerous',
-                        [knobs.roomType]: 'hallway',
+                        itemQuantity: 'numerous',
+                        roomType    : 'hallway',
                     });
 
-                    assert(roomConfig[knobs.itemQuantity]).equals('several');
+                    assert(roomConfig.itemQuantity).equals('several');
                 });
             });
         });

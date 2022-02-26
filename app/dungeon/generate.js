@@ -3,7 +3,6 @@
 import { generateMap } from './map.js';
 import { generateRooms } from '../room/generate.js';
 import { getRoomDoor } from '../room/door.js';
-import { knobs } from '../controller/knobs.js';
 import { roll, rollArrayItem } from '../utility/roll.js';
 import { isRequired } from '../utility/tools.js';
 import trapList from '../room/trap.js';
@@ -119,18 +118,17 @@ export {
 /**
  * Returns a dungeon.
  *
- * @param {DungeonConfig} settings // TODO config
+ * @param {DungeonConfig} config
  *
  * @returns {Dungeon}
  */
-export function generateDungeon(settings) {
+export function generateDungeon(config) {
     let {
-        // TODO
-        [knobs.dungeonComplexity] : complexity,
-        [knobs.dungeonConnections]: connections,
-        [knobs.dungeonMaps]       : maps,
-        [knobs.dungeonTraps]      : trapMin,
-    } = settings;
+        dungeonComplexity : complexity,
+        dungeonConnections: connections,
+        dungeonMaps       : maps,
+        dungeonTraps      : trapMin,
+    } = config;
 
     isRequired(complexity,  'dungeonComplexity is required in generateDungeon()');
     isRequired(connections, 'dungeonConnections is required in generateDungeon()');
@@ -138,9 +136,9 @@ export function generateDungeon(settings) {
     isRequired(trapMin,     'dungeonTraps is required in generateDungeon()');
 
     // TODO merge to new object instead of overwriting
-    settings[knobs.roomCount] = getMxRoomCount(complexity);
+    config.roomCount = getMxRoomCount(complexity);
 
-    let rooms = generateRooms(settings);
+    let rooms = generateRooms(config);
     let traps = generateTraps(trapMin);
 
     traps.length && traps.forEach((trap) => {

@@ -3,7 +3,6 @@
 import { applyRoomRandomization } from './settings.js';
 import { generateItems } from '../item/generate.js';
 import { isRequired } from '../utility/tools.js';
-import { knobs } from '../controller/knobs.js';
 
 // -- Types --------------------------------------------------------------------
 
@@ -29,12 +28,11 @@ import { knobs } from '../controller/knobs.js';
  * @returns {Room[]}
  */
 export function generateRooms(config) {
-    // TODO Use object properties directly, not key constants
     let {
-        [knobs.roomSize]: roomSize,
-        [knobs.roomCount]: roomCount,
-        [knobs.roomType]: roomType,
-        [knobs.roomCondition]: roomCondition,
+        roomSize     : roomSize,
+        roomCount    : roomCount,
+        roomType     : roomType,
+        roomCondition: roomCondition,
     } = config;
 
     isRequired(roomCondition, 'roomCondition is required in generateRooms()');

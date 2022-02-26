@@ -16,7 +16,6 @@ import {
     generateDungeon,
 } from '../generate.js';
 
-import { knobs } from '../../controller/knobs.js';
 import trapList from '../../room/trap.js';
 
 /**
@@ -103,17 +102,17 @@ export default ({ assert, describe, it }) => {
         const complexity = 3;
 
         const config = {
-            [knobs.dungeonComplexity] : complexity,
-            [knobs.dungeonConnections]: 0,
-            [knobs.dungeonMaps]       : 0,
-            [knobs.dungeonTraps]      : 0,
-            [knobs.itemCondition]     : 'average',
-            [knobs.itemQuantity]      : 'zero',
-            [knobs.itemRarity]        : 'average',
-            [knobs.itemType]          : 'miscellaneous',
-            [knobs.roomCondition]     : 'average',
-            [knobs.roomSize]          : 'medium',
-            [knobs.roomType]          : 'room',
+            dungeonComplexity : complexity,
+            dungeonConnections: 0,
+            dungeonMaps       : 0,
+            dungeonTraps      : 0,
+            itemCondition     : 'average',
+            itemQuantity      : 'zero',
+            itemRarity        : 'average',
+            itemType          : 'miscellaneous',
+            roomCondition     : 'average',
+            roomSize          : 'medium',
+            roomType          : 'room',
         };
 
         const dungeon = generateDungeon(config);
