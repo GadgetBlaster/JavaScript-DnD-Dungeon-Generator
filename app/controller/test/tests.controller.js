@@ -189,6 +189,7 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('onGenerate()', () => {
+        // TODO flaky test, items can be zero?
         it('generates content', () => {
             const contentEl = document.createElement('div');
 
