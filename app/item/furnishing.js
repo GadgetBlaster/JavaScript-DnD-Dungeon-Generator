@@ -9,6 +9,10 @@ import { rollArrayItem, createProbability } from '../utility/roll.js';
 /** @typedef {import('./item.js').Item} Item */
 /** @typedef {import('../room/room.js').RoomType} RoomType */
 
+// -- Types --------------------------------------------------------------------
+
+/** @typedef {keyof furnishing} FurnishingType */
+
 // -- Config -------------------------------------------------------------------
 
 /** @type {Omit<ItemBase, "name">} */
@@ -19,9 +23,6 @@ const defaults = {
     type    : 'furnishing',
 };
 
-/**
- * @type {Object<string, ItemBase>}
- */
 const furnishing = {
     alchemy  : { name: 'Alchemy equipment' },
     anvil    : { name: 'Anvil' },

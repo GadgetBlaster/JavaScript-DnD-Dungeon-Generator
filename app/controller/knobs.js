@@ -1,4 +1,3 @@
-
 // @ts-check
 
 // TODO add unit tests
@@ -15,8 +14,10 @@ import { sizes } from '../attribute/size.js';
 
 /** @typedef {import('../attribute/condition.js').Condition} Condition */
 /** @typedef {import('../attribute/quantity.js').Quantity} Quantity */
-/** @typedef {import('../attribute/rarity').Rarity} Rarity */
-/** @typedef {import('../attribute/size').Size} Size */
+/** @typedef {import('../attribute/rarity.js').Rarity} Rarity */
+/** @typedef {import('../attribute/size.js').Size} Size */
+/** @typedef {import('../item/item.js').ItemType} ItemType */
+/** @typedef {import('../room/room.js').RoomType} RoomType */
 /** @typedef {import('../ui/nav').Page} Page */
 
 // -- Types --------------------------------------------------------------------
@@ -27,7 +28,7 @@ import { sizes } from '../attribute/size.js';
  * @prop {Condition} itemCondition
  * @prop {Quantity} itemQuantity
  * @prop {Rarity} itemRarity
- * @prop {string} itemType // TODO add type
+ * @prop {ItemType} itemType
  */
 
 /**
@@ -37,7 +38,7 @@ import { sizes } from '../attribute/size.js';
  * @prop {number} roomCount
  * @prop {string} roomFurnishing // TODO add type
  * @prop {Size} roomSize
- * @prop {string} roomType // TODO add type
+ * @prop {RoomType} roomType
  */
 
 /**
