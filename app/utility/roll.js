@@ -20,14 +20,7 @@ const maxPercent = 100;
 // -- Public Functions ---------------------------------------------------------
 
 /**
- * Create probability
- *
- * @todo Each entry should have a probability key that is a fixed percent
- *     instead of building upon the last key. For example:
- *     `[[ 20, 'boats' ], [ 10, 'horses' ]]` for 1-20: boats, 21-30: horses
- *     instead of the current api:
- *     `[[ 20, 'boats' ], [ 30, 'horses' ]]` for 1-20: boats, 21-30: horses
- *     Then sort by largest % first and validate the total is 100 or less.
+ * Returns a probability roll and description in a closure.
  *
  * @param {[ number, string ][]} config
  *
@@ -42,12 +35,13 @@ export function createProbability(config) {
     try {
         map = new Map(config);
     } catch (e) {
-        throw new TypeError('Invalid `config` for Map');
+        toss('Invalid `config` for Map in `createProbability()`');
     }
 
     map.forEach((value, key) => {
         typeof value !== 'string' && toss(`Probability value "${value}" must be a string`);
         !Number.isInteger(key) && toss(`Probability key "${key}" must be an integer`);
+
         key < minPercent && toss(`Probability key "${key}" must be ${minPercent} or greater`);
         key > maxPercent && toss(`Probability key "${key}" exceeds ${maxPercent}`);
     });

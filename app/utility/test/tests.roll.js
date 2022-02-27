@@ -81,7 +81,7 @@ export default ({ assert, describe, it }) => {
             it('throws', () => {
                 // @ts-expect-error
                 assert(() => { createProbability([ 'junk' ]); })
-                    .throws('Invalid `config` for Map');
+                    .throws('Invalid `config` for Map in `createProbability()`');
             });
         });
 

@@ -1,8 +1,11 @@
 // @ts-check
 
 import {
-    element,
+    // Private Functions
     testCreateAttributes as createAttributes,
+
+    // Public Functions
+    element,
 } from '../element.js';
 
 /**
