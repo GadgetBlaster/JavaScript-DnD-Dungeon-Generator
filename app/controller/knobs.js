@@ -90,7 +90,6 @@ import { sizes } from '../attribute/size.js';
  * @typedef {object} KnobSet
  *
  * @prop {string} label
- * @prop {{ [key in Page]?: string }} [labels]
  * @prop {Set<Page>} [pages]
  * @prop {KnobSettings[]} fields
  */
@@ -209,10 +208,6 @@ const config = [
     },
     {
         label : 'Item Settings',
-        labels: {
-            dungeon: 'Room Contents',
-            rooms  : 'Room Contents',
-        },
         pages : new Set([ 'dungeon', 'rooms', 'items' ]),
         fields: [
             {

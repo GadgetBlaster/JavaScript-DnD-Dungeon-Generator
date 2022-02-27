@@ -98,20 +98,14 @@ const renderFields = (fields) => fields.map((settings) => {
  * @private
  *
  * @param {KnobSet[]} knobs
- * @param {string} [page]
  *
  * @returns {string}
  */
-const renderKnobs = (knobs, page) => knobs.map((knobSet) => {
+const renderKnobs = (knobs) => knobs.map((knobSet) => {
     let {
         label,
-        labels,
         fields,
     } = knobSet;
-
-    if (labels && labels[page]) {
-        label = labels[page];
-    }
 
     let fieldsetId = `fieldset-${toDash(label)}`;
     let handle = button(label, 'accordion', { target: fieldsetId });
@@ -157,4 +151,4 @@ export function getFormData(knobContainer) {
  * @returns {string}
  */
 export const getKnobPanel = (page = 'dungeon') =>
-    submitButton + renderKnobs(getKnobConfig(page), page);
+    submitButton + renderKnobs(getKnobConfig(page));

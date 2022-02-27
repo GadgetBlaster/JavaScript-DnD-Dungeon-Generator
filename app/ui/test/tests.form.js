@@ -218,31 +218,6 @@ export default ({ assert, describe, it }) => {
             });
         });
 
-        describe('given a labels setting', () => {
-            const labels = { farm: 'Superior digging tools', mine: 'Funky mining tools' };
-            const config = { label: 'Shovels', labels, fields: [] };
-
-            describe('given no page param', () => {
-                const result = renderKnobs([ config ]);
-
-                it('should render the default label', () => {
-                    assert(result)
-                        .stringIncludes('Shovels')
-                        .stringExcludes('tools');
-                });
-            });
-
-            describe('given a page param', () => {
-                const result = renderKnobs([ config ], 'farm');
-
-                it('should render the correct label', () => {
-                    assert(result)
-                        .stringIncludes('Superior digging tools')
-                        .stringExcludes('Shovels');
-                });
-            });
-        });
-
         describe('given an array of fields', () => {
             const fields = [
                 { name: 'size',        label: 'Size',        desc: 'Size?',        type: typeNumber             },
