@@ -3,16 +3,23 @@
 import { article } from '../ui/block.js';
 import { capacity, itemSizeSpace, maxItemQuantitySmall } from './types/container.js';
 import {
+    hideItemDetails,
+    indicateItemRarity,
+    itemsByRarity,
+    itemsByType,
+} from './item.js';
+import {
     anyRoomFurniture,
     furnishing,
     furnishingByRoomType,
     furnishingQuantityRanges,
     requiredRoomFurniture,
 } from './furnishing.js';
-import { em, paragraph, subtitle } from '../ui/typography.js';
-import { generateItem } from './item.js';
+import { probability as conditionProbability } from '../attribute/condition.js';
+import { probability as rarityProbability } from '../attribute/rarity.js';
+import { em, paragraph, strong, subtitle } from '../ui/typography.js';
 import { getRarityDescription, getConditionDescription, getItemDescription } from './description.js';
-import { isRequired } from '../utility/tools.js';
+import { isRequired, toss } from '../utility/tools.js';
 import { list } from '../ui/list.js';
 import { roll, rollArrayItem } from '../utility/roll.js';
 import { getRange, probability as quantityProbability } from '../attribute/quantity.js';
@@ -75,6 +82,111 @@ function generateFurnishings(roomType, quantity) {
 
     return furniture;
 }
+
+/**
+ * Generates an item config based on room settings.
+ *
+ * @TODO break out or inject randomization logic for testing.
+ * @TODO move to generate.js
+ *
+ * @param {Config} config
+ *
+ * @returns {Item}
+ */
+const generateItem = (config) => {
+    let {
+        itemCondition: conditionSetting,
+        itemQuantity : quantitySetting,
+        itemRarity   : raritySetting,
+        itemType     : itemType,
+    } = config;
+
+    !conditionSetting && toss('Item condition is required in generateItem()');
+    !itemType         && toss('Item type is required in generateItem()');
+    !quantitySetting  && toss('Item quantity is required in generateItem()');
+    !raritySetting    && toss('Item rarity is required in generateItem()');
+    quantitySetting === 'zero' && toss('Item quantity cannot be zero');
+
+    let itemRarity    = raritySetting;
+    let itemCondition = conditionSetting;
+
+    if (raritySetting === 'random') {
+        itemRarity = rarityProbability.roll();
+    }
+
+    let randomItem;
+
+    // TODO break out into function, add early returns for undefined groups.
+    if (itemType === 'random') {
+        randomItem = itemsByRarity[itemRarity] && rollArrayItem(itemsByRarity[itemRarity]);
+    } else {
+        let itemsByTypeAndRarity = itemsByType[itemType] && itemsByType[itemType][itemRarity];
+        randomItem = itemsByTypeAndRarity && itemsByTypeAndRarity.length && rollArrayItem(itemsByTypeAndRarity);
+    }
+
+    // TODO add type
+    let item = randomItem || {
+        name: 'Mysterious object',
+        type: 'mysterious',
+    };
+
+    if (hideItemDetails.has(item.type)) {
+        itemCondition = 'average';
+        itemRarity    = 'average';
+    }
+
+    if (itemCondition === 'random') {
+        itemCondition = conditionProbability.roll();
+    }
+
+    let isSingle          = quantitySetting === 'one';
+    let indicateRare      = (isSingle || raritySetting === 'random')    && indicateItemRarity.has(itemRarity);
+    let indicateCondition = (isSingle || conditionSetting === 'random') && itemCondition !== 'average';
+
+    let name = indicateRare ? strong(item.name) : item.name;
+
+    let notes = [];
+
+    if (indicateRare) {
+        notes.push(itemRarity);
+    }
+
+    if (indicateCondition) {
+        notes.push(itemCondition);
+    }
+
+    let noteText = notes.length ? ` (${em(notes.join(', '))})` : '';
+
+    let maxCount = 1;
+
+    if (item.quantity > 1) {
+        maxCount = roll(1, item.quantity);
+
+        // TODO breakout into function
+        if (maxCount > 1) {
+            if (item.type === 'coin') {
+                // TODO pluralize()
+                name = `${maxCount} ${name}${maxCount > 1 ? 's' : ''}`;
+            } else {
+                name += `, set of ${maxCount}`;
+            }
+        }
+    }
+
+    if (item.variants) {
+        let variant = rollArrayItem(item.variants);
+        name += `, ${variant}`;
+    }
+
+    return {
+        label: name + noteText,
+        name,
+        quantity: maxCount, // TODO count?
+        rarity: itemRarity,
+        size: item.size,
+        type: item.type,
+    };
+};
 
 /**
  * Generate item objects
@@ -153,6 +265,7 @@ function getItemCount(itemQuantity) {
 
 export {
     generateFurnishings  as testGenerateFurnishings,
+    generateItem         as testGenerateItem,
     generateItemObjects  as testGenerateItemObjects,
     getFurnishingObjects as testGetFurnishingObjects,
     getItemCount         as testGetItemCount,
