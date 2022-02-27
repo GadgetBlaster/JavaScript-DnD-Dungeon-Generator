@@ -55,26 +55,26 @@ export default ({ assert, describe, it }) => {
         const pillarCoordinates = { cx: 114, cy: 214 };
         const pillar = drawPillar(pillarCoordinates);
 
-        it('should return a `<circle />` element string', () => {
+        it('returns a `<circle />` element string', () => {
             assert(pillar).isElementTag('circle');
         });
 
-        it('it should have the correct `cx` and `cy` attributes', () => {
+        it('has the correct `cx` and `cy` attributes', () => {
             assert(pillar)
                 .stringIncludes('cx="114"')
                 .stringIncludes('cy="214"');
         });
 
-        it('it should have pillar fill color', () => {
+        it('haves the pillar fill color', () => {
             assert(pillar).stringIncludes(`fill="${colorPillarFill}"`);
         });
 
-        it('it should have the room stroke color by default', () => {
+        it('haves the room stroke color by default', () => {
             assert(pillar).stringIncludes(`stroke="${colorRoomStroke}"`);
         });
 
         describe('given a stroke option', () => {
-            it('should add to or override the default attributes', () => {
+            it('adds to or overrides the default attributes', () => {
                 const redPillar = drawPillar(pillarCoordinates, { stroke: 'red' });
                 assert(redPillar).stringIncludes('stroke="red"');
             });
@@ -84,12 +84,12 @@ export default ({ assert, describe, it }) => {
     describe('drawPillarCell()', () => {
         const pillarCell = drawPillarCell({ x: 15, y: 25 });
 
-        it('should return a `<circle />` element string', () => {
+        it('returns a `<circle />` element string', () => {
             assert(pillarCell).isElementTag('circle');
         });
 
         describe('given attributes', () => {
-            it('it should have `cx` and `cy` attributes in the center of the cell', () => {
+            it('has `cx` and `cy` attributes in the center of the cell', () => {
                 const pxHalfCell = (pxCell / 2);
 
                 const cx = (15 * pxCell) + pxHalfCell;
@@ -112,7 +112,7 @@ export default ({ assert, describe, it }) => {
         };
 
         describe('given a room `width` less than `pillarThreshold`', () => {
-            it('should return an empty string', () => {
+            it('returns an empty string', () => {
                 const pillars = drawRoomPillars({
                     ...roomRectangle,
                     width: pillarGridThreshold - 1,
@@ -123,7 +123,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a room `height` less than `pillarThreshold`', () => {
-            it('should return an empty string', () => {
+            it('returns an empty string', () => {
                 const pillars = drawRoomPillars({
                     ...roomRectangle,
                     height: pillarGridThreshold - 1,
@@ -137,12 +137,12 @@ export default ({ assert, describe, it }) => {
             const pillars = drawRoomPillars(roomRectangle);
             const matches = pillars.match(/<circle(.+?)\/>/g);
 
-            it('should return four `<circle />` element strings', () => {
+            it('returns four `<circle />` element strings', () => {
                 assert(matches).isArray();
                 matches && assert(matches.length).equals(4);
             });
 
-            it('should place a pillar in the center of each corner cell of the room, inset by `pillarInset`', () => {
+            it('places a pillar in the center of each corner cell of the room, inset by `pillarInset`', () => {
                 const { x, y, width, height } = roomRectangle;
 
                 const innerWidth  = width  - (pillarGridInset * 2);
@@ -185,20 +185,20 @@ export default ({ assert, describe, it }) => {
 
         const roomText = drawRoomText(roomTextConfig, { roomNumber: 42 });
 
-        it('should return a single `<text>` element string', () => {
+        it('returns a single `<text>` element string', () => {
             assert(roomText).isElementTag('text');
         });
 
-        it('should contain the roomLabel as the content', () => {
+        it('contains the roomLabel as the content', () => {
             assert(/<text(.+?)>42<\/text>/.test(roomText)).isTrue();
         });
 
-        it('the `x` coordinate should be the horizontal center of the room rect', () => {
+        it('the `x` coordinate is at the horizontal center of the room rect', () => {
             const x = roomTextConfig.x + (roomTextConfig.width / 2);
             assert(roomText).stringIncludes(`x="${x}"`);
         });
 
-        it('the `y` coordinate should be the vertical center of the room rect plus the `pxTextOffset`', () => {
+        it('the `y` coordinate is at the vertical center of the room rect plus the `pxTextOffset`', () => {
             const y = (roomTextConfig.y + (roomTextConfig.height / 2)) + pxTextOffset;
             assert(roomText).stringIncludes(`y="${y}"`);
         });
@@ -209,14 +209,14 @@ export default ({ assert, describe, it }) => {
                 roomLabel: 'Thar be dragons',
             });
 
-            it('should return two `<text>` element strings', () => {
+            it('returns two `<text>` element strings', () => {
                 const matches = roomTextWithLabel.match(/<text(.+?)>(.+?)<\/text>/g);
 
                 assert(matches).isArray();
                 matches && assert(matches.length).equals(2);
             });
 
-            it('should contain the roomLabel as the content', () => {
+            it('contains the roomLabel as the content', () => {
                 assert(/<text(.+?)>Thar be dragons<\/text>/.test(roomTextWithLabel)).isTrue();
             });
         });
@@ -230,15 +230,15 @@ export default ({ assert, describe, it }) => {
             height: 60,
         });
 
-        it('should return a `<text>` element string', () => {
+        it('returns a `<text>` element string', () => {
             assert(trapText).isElementTag('text');
         });
 
-        it('should contain the trap label', () => {
+        it('contains the trap label', () => {
             assert(RegExp(`<text(.+?)>${trapLabel}</text>`).test(trapText)).isTrue();
         });
 
-        it('the `x` and `y` coordinates should be the center of the lower left cell of the room', () => {
+        it('the `x` and `y` coordinates are at the center of the lower left cell of the room', () => {
             const pxHalfCell = (pxCell / 2);
 
             const x = 10 + pxHalfCell;
@@ -250,7 +250,7 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getRectAttrs()', () => {
-        it('should return each value multiplied by `pxCell`', () => {
+        it('returns each value multiplied by `pxCell`', () => {
             /** @type {Rectangle} */
             const { x, y, width, height } = getRectAttrs({
                 x: 12,
@@ -280,11 +280,11 @@ export default ({ assert, describe, it }) => {
         const door     = drawDoor(rectangle, doorArgs);
         const doorRect = door.slice(0, door.indexOf('/>') + 2);
 
-        it('should return a string starting with a `<rect />` element string', () => {
+        it('returns a string starting with a `<rect />` element string', () => {
             assert(doorRect).isElementTag('rect');
         });
 
-        it('the `<rect />` should have the correct `x` and `y` attributes', () => {
+        it('the `<rect />` has the correct `x` and `y` attributes', () => {
             const { x, y } = rectangle;
 
             assert(doorRect)
@@ -292,7 +292,7 @@ export default ({ assert, describe, it }) => {
                 .stringIncludes(`y="${y * pxCell}"`);
         });
 
-        it('the `<rect />` should have the correct `width` and `height` attributes', () => {
+        it('the `<rect />` has the correct `width` and `height` attributes', () => {
             const { width, height } = rectangle;
 
             assert(doorRect)
@@ -311,7 +311,7 @@ export default ({ assert, describe, it }) => {
         describe('door orientations', () => {
             describe('door wall lines', () => {
                 describe('when the door direction is north or south', () => {
-                    it('should include two horizontal wall lines with correct coordinate attributes', () => {
+                    it('includes two horizontal wall lines with correct coordinate attributes', () => {
                         const { x, y, width, height } = northSouthDoorRect;
 
                         const line1x = x * pxCell;
@@ -340,7 +340,7 @@ export default ({ assert, describe, it }) => {
                 });
 
                 describe('when the door direction is east or west', () => {
-                    it('should include two horizontal wall lines with correct coordinate attributes', () => {
+                    it('includes two horizontal wall lines with correct coordinate attributes', () => {
                         const { x, y, width, height } = eastWestDoorRect;
 
                         const x1 = x * pxCell;
@@ -371,7 +371,7 @@ export default ({ assert, describe, it }) => {
 
             describe('when the door type is lockable', () => {
                 describe('when the door is locked', () => {
-                    it('should set the door rectangle fill to `colorLockedFill`', () => {
+                    it('sets the door rectangle fill to `colorLockedFill`', () => {
                         const lockedDoor = drawDoor(rectangle, {
                             ...doorArgs,
                             locked: true,
@@ -389,7 +389,7 @@ export default ({ assert, describe, it }) => {
                         type: doorType.wooden,
                     });
 
-                    it('should include a horizontal line in the center of the cell ', () => {
+                    it('includes a horizontal line in the center of the cell ', () => {
                         const x1 = x * pxCell;
                         const x2 = (x + width) * pxCell;
                         const y1 = (y + (height / 2)) * pxCell;
@@ -407,7 +407,7 @@ export default ({ assert, describe, it }) => {
                             line.includes(`y2="${y2}"`)).length).equals(1);
                     });
 
-                    it('should include a horizontal inset rectangle representing the door', () => {
+                    it('includes a horizontal inset rectangle representing the door', () => {
                         const rectCenterY = (y * pxCell) + ((height * pxCell) / 2);
 
                         const rectX = (x * pxCell) + (doorInset / 2);
@@ -436,7 +436,7 @@ export default ({ assert, describe, it }) => {
                         type: doorType.wooden,
                     });
 
-                    it('should include a vertical line in the center of the cell ', () => {
+                    it('includes a vertical line in the center of the cell ', () => {
                         const x1 = (x + (width / 2)) * pxCell;
                         const x2 = x1;
                         const y1 = y * pxCell;
@@ -454,7 +454,7 @@ export default ({ assert, describe, it }) => {
                             line.includes(`y2="${y2}"`)).length).equals(1);
                     });
 
-                    it('should include a vertical inset rectangle representing the door', () => {
+                    it('includes a vertical inset rectangle representing the door', () => {
                         const rectCenterX = (x * pxCell) + ((width  * pxCell) / 2);
 
                         const rectX = rectCenterX  - (doorWidth / 2);
@@ -479,7 +479,7 @@ export default ({ assert, describe, it }) => {
 
             describe('when the door is an archway', () => {
                 describe('when the door direction is north or south', () => {
-                    it('should draw two vertically centered pillars on the left and right of the cell', () => {
+                    it('draws two vertically centered pillars on the left and right of the cell', () => {
                         const { x, y, width, height } = northSouthDoorRect;
                         const archwayDoor = drawDoor(northSouthDoorRect, {
                             ...northSouthDoorArgs,
@@ -505,7 +505,7 @@ export default ({ assert, describe, it }) => {
                 });
 
                 describe('when the door direction is east or west', () => {
-                    it('should draw two horizontally centered pillars at the top and bottom of the cell', () => {
+                    it('draws two horizontally centered pillars at the top and bottom of the cell', () => {
                         const { x, y, width, height } = eastWestDoorRect;
                         const archwayDoor = drawDoor(eastWestDoorRect, {
                             ...eastWestDoorArgs,
@@ -533,7 +533,7 @@ export default ({ assert, describe, it }) => {
 
             describe('when the door is a hole', () => {
                 describe('when the door direction is north or south', () => {
-                    it('should draw a circle with a radius of `radiusHole` centered horizontally', () => {
+                    it('draws a circle with a radius of `radiusHole` centered horizontally', () => {
                         const { x, y, width, height } = northSouthDoorRect;
                         const archwayDoor = drawDoor(northSouthDoorRect, {
                             ...northSouthDoorArgs,
@@ -556,7 +556,7 @@ export default ({ assert, describe, it }) => {
                 });
 
                 describe('when the door direction is east or west', () => {
-                    it('should draw a circle centered vertically', () => {
+                    it('draws a circle centered vertically', () => {
                         const { x, y, width, height } = eastWestDoorRect;
                         const archwayDoor = drawDoor(eastWestDoorRect, {
                             ...eastWestDoorArgs,
@@ -583,17 +583,17 @@ export default ({ assert, describe, it }) => {
                 const secretDoor = drawDoor(rectangle, { ...doorArgs, type: doorType.secret });
                 const secretDoorRect = secretDoor.slice(0, secretDoor.indexOf('/>') + 2);
 
-                it('should have a transparent fill and stroke', () => {
+                it('has a transparent fill and stroke', () => {
                     assert(secretDoorRect)
                         .stringIncludes('fill="transparent"')
                         .stringIncludes('stroke="transparent"');
                 });
 
-                it('should include the secret door label', () => {
+                it('includes the secret door label', () => {
                     assert(RegExp(`<text(.+?)>${doorSecretLabel}</text>`, 'g').test(secretDoor)).isTrue();
                 });
 
-                it('should have dashed lines for the walls', () => {
+                it('has dashed lines for the walls', () => {
                     const matches = secretDoor
                         .match(RegExp(`<line(.+?)stroke-dasharray="${dashLength}"(.+?)/>`, 'g'));
 
@@ -606,13 +606,13 @@ export default ({ assert, describe, it }) => {
                 const concealedDoor = drawDoor(rectangle, { ...doorArgs, type: doorType.concealed });
                 const concealedDoorRect = concealedDoor.slice(0, concealedDoor.indexOf('/>') + 2);
 
-                it('should have a transparent fill and stroke', () => {
+                it('has a transparent fill and stroke', () => {
                     assert(concealedDoorRect)
                         .stringIncludes('fill="transparent"')
                         .stringIncludes('stroke="transparent"');
                 });
 
-                it('should include the concealed door label', () => {
+                it('includes the concealed door label', () => {
                     assert(RegExp(`<text(.+?)>${doorConcealedLabel}</text>`, 'g').test(concealedDoor)).isTrue();
                 });
             });
@@ -672,11 +672,11 @@ export default ({ assert, describe, it }) => {
         const dimensions = { width: 12, height: 14 };
         const map = drawMap(dimensions, '');
 
-        it('should return an SVG element string', () => {
+        it('returns an SVG element string', () => {
             assert(map).isElementTag('svg');
         });
 
-        it('should have correct width and heigh attributes', () => {
+        it('has correct width and heigh attributes', () => {
             const pxWidth = dimensions.width * pxCell;
             const pxHeight = dimensions.height * pxCell;
 
@@ -685,7 +685,7 @@ export default ({ assert, describe, it }) => {
                 .stringIncludes(`height="${pxHeight}"`);
         });
 
-        it('should include the content', () => {
+        it('includes the content', () => {
             const content = drawRect({ x: 0, y: 0, width: 10, height: 10 });
             const mapWithContent = drawMap(dimensions, content);
 
@@ -703,12 +703,12 @@ export default ({ assert, describe, it }) => {
         const room     = drawRoom(rectangle, text);
         const roomRect = room.slice(0, room.indexOf('/>') + 2);
 
-        it('should include a `<rect />` element string', () => {
+        it('includes a `<rect />` element string', () => {
             assert(roomRect).isElementTag('rect');
         });
 
         describe('the rect element', () => {
-            it('should have correct attributes', () => {
+            it('has correct attributes', () => {
                 assert(roomRect)
                     .stringIncludes('x="24"')
                     .stringIncludes('y="48"')
@@ -717,12 +717,12 @@ export default ({ assert, describe, it }) => {
             });
         });
 
-        it('should include a <text> element string containing the room number', () => {
+        it('includes a <text> element string containing the room number', () => {
             assert(/<text(.+?)>11<\/text>/.test(room)).isTrue();
         });
 
         describe('given a room label', () => {
-            it('should include a `<text>` element string containing the room number', () => {
+            it('includes a `<text>` element string containing the room number', () => {
                 const roomWithLabel = drawRoom(rectangle, { ...text, roomLabel: 'Goblin Cafeteria' });
 
                 assert(/<text(.+?)>Goblin Cafeteria<\/text>/.test(roomWithLabel)).isTrue();
@@ -730,7 +730,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('when the room\'s width and height is greater than or equal to `pillarThreshold`', () => {
-            it('should include 4 pillar circles', () => {
+            it('includes 4 pillar circles', () => {
                 const width  = pillarGridThreshold;
                 const height = pillarGridThreshold;
 
@@ -744,7 +744,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('when the room has a trap', () => {
-            it('should include a `<text>` trap indicator', () => {
+            it('includes a `<text>` trap indicator', () => {
                 const roomWithTrap = drawRoom(rectangle, text, { hasTraps: true });
 
                 assert(RegExp(`<text(.+?)>${trapLabel}</text>`).test(roomWithTrap)).isTrue();

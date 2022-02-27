@@ -14,11 +14,11 @@ export default ({ assert, describe, it }) => {
         const mapWidth = 40;
         const legend = drawLegend({ mapWidth });
 
-        it('should return an unordered list', () => {
+        it('returns an unordered list', () => {
             assert(/<ul(.*?)>(.+?)<\/ul>/.test(legend)).isTrue();
         });
 
-        it('should return a list item for each legend item', () => {
+        it('returns a list item for each legend item', () => {
             [
                 `${cellFeet} x ${cellFeet} ft`,
                 'Room',
@@ -38,7 +38,7 @@ export default ({ assert, describe, it }) => {
 
         });
 
-        it('should have a width equal to the mapWidth in pixels', () => {
+        it('has a width equal to the `mapWidth` in pixels', () => {
             const width  = 40 * pxCell;
             const regExp = RegExp(`<ul(.*?)style="width: ${width}px;"(.*?)>`);
 

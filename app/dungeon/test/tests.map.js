@@ -79,7 +79,7 @@ export default ({ assert, describe, it }) => {
 
 
     describe('createDoor()', () => {
-        it('should return a door config', () => {
+        it('returns a door config', () => {
             const door = createDoor({
                 x: 1,
                 y: 2,
@@ -106,7 +106,7 @@ export default ({ assert, describe, it }) => {
     describe('drawRooms()', () => {
         const gridDimensions = { width: 12, height: 12 };
 
-        it('should return an AppliedRoomResults object', () => {
+        it('returns an AppliedRoomResults object', () => {
             const grid = createBlankGrid(gridDimensions);
             const room = {
                 settings: {
@@ -131,7 +131,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('the first room', () => {
-            it('should be connected to an edge of the map', () => {
+            it('is connected to an edge of the map', () => {
                 const grid = createBlankGrid(gridDimensions);
                 const room = {
                     settings: {
@@ -148,7 +148,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('when a room cannot be placed on the grid', () => {
-            it('should return the room in the skipped param', () => {
+            it('returns the room in the skipped param', () => {
                 const grid = createBlankGrid(gridDimensions);
                 const room = {
                     settings: {
@@ -165,7 +165,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given a previous room', () => {
             describe('when the previous room has no wall cells', () => {
-                it('should throw', () => {
+                it('throws', () => {
                     const grid = createBlankGrid(gridDimensions);
                     const room = {
                         settings: {
@@ -186,7 +186,7 @@ export default ({ assert, describe, it }) => {
             });
 
             describe('when connecting to a room', () => {
-                it('should connect the rooms', () => {
+                it('connects the rooms', () => {
                     const grid = createBlankGrid(gridDimensions);
                     let prevRect = {
                         x: 1,
@@ -228,7 +228,7 @@ export default ({ assert, describe, it }) => {
             });
 
             describe('when connecting a hallway to a room', () => {
-                it('should connect the hallway to the previous room', () => {
+                it('connects the hallway to the previous room', () => {
                     const grid = createBlankGrid(gridDimensions);
                     const prevRect = {
                         x: 1,
@@ -271,7 +271,7 @@ export default ({ assert, describe, it }) => {
 
     describe('getDoor()', () => {
         // TODO needs test w/o previous room
-        it('should return a Door object', () => {
+        it('returns a Door object', () => {
             // w = cellWall
             // c = cellCornerWall
             // 1 = room 1
@@ -350,7 +350,7 @@ export default ({ assert, describe, it }) => {
             };
 
             describe('when the room is adjacent to the north edge', () => {
-                it('should return connections to the north edge', () => {
+                it('returns connections to the north edge', () => {
                     const grid = createBlankGrid({ width: 10, height: 10 });
                     const rect = {
                         ...rectConfig,
@@ -373,7 +373,7 @@ export default ({ assert, describe, it }) => {
             });
 
             describe('when the room is adjacent to the east edge', () => {
-                it('should return connections to the east edge', () => {
+                it('returns connections to the east edge', () => {
                     const grid = createBlankGrid({ width: 10, height: 10 });
                     const rect = {
                         ...rectConfig,
@@ -396,7 +396,7 @@ export default ({ assert, describe, it }) => {
             });
 
             describe('when the room is adjacent to the south edge', () => {
-                it('should return connections to the south edge', () => {
+                it('returns connections to the south edge', () => {
                     const grid = createBlankGrid({ width: 10, height: 10 });
                     const rect = {
                         ...rectConfig,
@@ -419,7 +419,7 @@ export default ({ assert, describe, it }) => {
             });
 
             describe('when the room is adjacent to the west edge', () => {
-                it('should return connections to the west edge', () => {
+                it('returns connections to the west edge', () => {
                     const grid = createBlankGrid({ width: 10, height: 10 });
                     const rect = {
                         ...rectConfig,
@@ -443,7 +443,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a previous room', () => {
-            it('should return connections to the previous room', () => {
+            it('returns connections to the previous room', () => {
                 // w = cellWall
                 // c = cellCornerWall
                 // 1 = room 1
@@ -509,31 +509,31 @@ export default ({ assert, describe, it }) => {
         };
 
         describe('given a grid cell on the north side of a room', () => {
-            it('should return "north"', () => {
+            it('returns "north"', () => {
                 assert(getDoorDirection({ x: 2, y: 1 }, roomRect)).equals('north');
             });
         });
 
         describe('given a grid cell on the east side of a room', () => {
-            it('should return "east', () => {
+            it('returns "east', () => {
                 assert(getDoorDirection({ x: 4, y: 2 }, roomRect)).equals('east');
             });
         });
 
         describe('given a grid cell on the south side of a room', () => {
-            it('should return "south"', () => {
+            it('returns "south"', () => {
                 assert(getDoorDirection({ x: 2, y: 4 }, roomRect)).equals('south');
             });
         });
 
         describe('given a grid cell on the south side of a room', () => {
-            it('should return "west"', () => {
+            it('returns "west"', () => {
                 assert(getDoorDirection({ x: 1, y: 2 }, roomRect)).equals('west');
             });
         });
 
         describe('given an invalid cell', () => {
-            it('should throw', () => {
+            it('throws', () => {
                 // TODO [ 1, 1 ] should throw as well
                 assert(() => getDoorDirection({ x: 0, y: 0 }, roomRect))
                     .throws('Invalid door coordinates in getDoorDirection()');
@@ -622,7 +622,7 @@ export default ({ assert, describe, it }) => {
             }
 
             describe('given a 0% chance of connections', () => {
-                it('should return an empty array', () => {
+                it('returns an empty array', () => {
                     const { grid, rooms } = getRoomsForTest(0);
                     assert(getExtraDoors(grid, rooms, [])).equalsArray([]);
                 });
@@ -632,7 +632,7 @@ export default ({ assert, describe, it }) => {
                 const { grid, rooms } = getRoomsForTest(100);
                 const doors = getExtraDoors(grid, rooms, []);
 
-                it('should return a array with a door config', () => {
+                it('returns a array with a door config', () => {
                     assert(doors).isArray();
                     doors && assert(doors.length).equals(1);
 
@@ -647,13 +647,13 @@ export default ({ assert, describe, it }) => {
                     });
                 });
 
-                it('should update the grid with a correctly placed door cell', () => {
+                it('updates the grid with a correctly placed door cell', () => {
                     assert(grid[4][4]).equals(cellDoor);
                 });
             });
 
             describe('given an existing connecting between the rooms', () => {
-                it('should return an empty array', () => {
+                it('returns an empty array', () => {
                     const { grid, rooms } = getRoomsForTest(100);
                     const existingDoors = getExtraDoors(grid, rooms, []);
 
@@ -743,7 +743,7 @@ export default ({ assert, describe, it }) => {
             }
 
             describe('given a 0% chance of connections', () => {
-                it('should return an empty array', () => {
+                it('returns an empty array', () => {
                     const { grid, rooms } = getRoomsForTest(0);
                     assert(getExtraDoors(grid, rooms, [])).equalsArray([]);
                 });
@@ -753,7 +753,7 @@ export default ({ assert, describe, it }) => {
                 const { grid, rooms } = getRoomsForTest(100);
                 const doors = getExtraDoors(grid, rooms, []);
 
-                it('should return a array with a door config', () => {
+                it('returns a array with a door config', () => {
                     assert(doors).isArray();
                     doors && assert(doors.length).equals(1);
 
@@ -767,13 +767,13 @@ export default ({ assert, describe, it }) => {
                     });
                 });
 
-                it('should update the grid with a correctly placed door cell', () => {
+                it('updates the grid with a correctly placed door cell', () => {
                     assert(grid[4][2]).equals(cellDoor);
                 });
             });
 
             describe('given an existing connecting between the rooms', () => {
-                it('should return an empty array', () => {
+                it('returns an empty array', () => {
                     const { grid, rooms } = getRoomsForTest(100);
                     const existingDoors = getExtraDoors(grid, rooms, []);
 
@@ -786,7 +786,7 @@ export default ({ assert, describe, it }) => {
 
     describe('getRoomWalls()', () => {
         describe('given a room config without a roomNumber', () => {
-            it('should throw', () => {
+            it('throws', () => {
                 const grid = createBlankGrid({ width: 8, height: 6 });
 
                 // @ts-expect-error
@@ -840,7 +840,7 @@ export default ({ assert, describe, it }) => {
             describe('when the room type is "room"', () => {
                 const walls = getRoomWalls(grid, rect, 7);
 
-                it('should return an array of wall cells', () => {
+                it('returns an array of wall cells', () => {
                     assert(walls).isArray();
 
                     walls && assert(walls.length).equals(10);
@@ -849,7 +849,7 @@ export default ({ assert, describe, it }) => {
                     });
                 });
 
-                it('should update the grid with correctly placed `cellWall` and `cellCornerWall` indicators', () => {
+                it('updates the grid with correctly placed `cellWall` and `cellCornerWall` indicators', () => {
                     expectedCords.forEach(({ x, y }) => {
                         assert(grid[x][y]).equals(cellWall);
                     });
@@ -877,7 +877,7 @@ export default ({ assert, describe, it }) => {
         describe('when the room type is "room"', () => {
             const drawing = getRoomDrawing(gridRoom);
 
-            it('should return an SVG element rect for the room rect', () => {
+            it('returns an SVG element rect for the room rect', () => {
                 assert(drawing).isString();
 
                 const rectMatches = drawing.match(/<rect(.+?) \/>/g);
@@ -886,13 +886,13 @@ export default ({ assert, describe, it }) => {
                 rectMatches && assert(rectMatches.pop()).isElementTag('rect');
             });
 
-            it('should include the room number in the room rect', () => {
+            it('includes the room number in the room rect', () => {
                 assert(/<text(.+?)>7<\/text>/.test(drawing)).isTrue();
             });
         });
 
         describe('when the width and height are at least `labelMinRoomWidth` and `labelMinRoomHeight`', () => {
-            it('should not include the room label in the room rect', () => {
+            it('the room label is not included with the room rect', () => {
                 const rectWithLabelDimensions = getRoomDrawing({
                     ...gridRoom,
                     rect: {
@@ -914,7 +914,7 @@ export default ({ assert, describe, it }) => {
             };
 
             describe('when the room width is less than `labelMinRoomWidth`', () => {
-                it('should not include the room label in the room rect', () => {
+                it('the room label is not included with the room rect', () => {
                     const libraryDrawing = getRoomDrawing({
                         ...libraryGridRoom,
                         rect: {
@@ -929,7 +929,7 @@ export default ({ assert, describe, it }) => {
             });
 
             describe('when the room height is less than `labelMinRoomHeight`', () => {
-                it('should not include the room label in the room rect', () => {
+                it('the room label is not included with the room rect', () => {
                     const libraryDrawing = getRoomDrawing({
                         ...libraryGridRoom,
                         rect: {
@@ -944,7 +944,7 @@ export default ({ assert, describe, it }) => {
             });
 
             describe('when the room width and height are equal to `labelMinRoomWidth` & `labelMinRoomHeight`', () => {
-                it('should include the room label in the room rect', () => {
+                it('the room label is included with the room rect', () => {
                     const libraryDrawing = getRoomDrawing({
                         ...libraryGridRoom,
                         rect: {
@@ -960,7 +960,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a truthy `hasTraps` option', () => {
-            it('should include a `<text>` trap indicator in the room rect', () => {
+            it('includes a `<text>` trap indicator in the room rect', () => {
                 const trappedRoomDrawing = getRoomDrawing(gridRoom, { hasTraps: true });
                 assert(RegExp(`<text(.+?)>${trapLabel}</text>`).test(trappedRoomDrawing)).isTrue();
             });
@@ -971,7 +971,7 @@ export default ({ assert, describe, it }) => {
         const gridDimensions = { width: 10, height: 6 };
 
         describe('given a room config with a missing room type', () => {
-            it('should throw', () => {
+            it('throws', () => {
                 assert(() => getRoomDimensions(gridDimensions, {
                     settings: { roomSize: 'small' },
                 })).throws('roomType is required in getRoomDimensions()');
@@ -979,7 +979,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a room config with a missing room size', () => {
-            it('should throw', () => {
+            it('throws', () => {
                 assert(() => getRoomDimensions(gridDimensions, {
                     settings: { roomType: 'library' },
                 })).throws('roomSize is required in getRoomDimensions()');
@@ -988,7 +988,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given a room type which requires custom dimensions', () => {
             // TODO need to inject randomization for testing
-            it('should return a room width and height ', () => {
+            it('returns a room width and height ', () => {
                 const dimensions = getRoomDimensions(gridDimensions, {
                     settings: {
                         roomSize: 'small',
@@ -1002,7 +1002,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a room type which does not require custom dimensions', () => {
-            it('should return a room width and height within the range specified for the room size', () => {
+            it('returns a room width and height within the range specified for the room size', () => {
                 const [ minSize, maxSize ] = dimensionRanges.small;
 
                 const { width, height } = getRoomDimensions(gridDimensions, {
@@ -1018,7 +1018,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('when the room dimensions are larger than the grid dimensions', () => {
-            it('should return a room width and height no larger than the grid width minus twice the wall size', () => {
+            it('returns a room width and height no larger than the grid width minus twice the wall size', () => {
                 const gridWidth  = 5;
                 const gridHeight = 5;
 
@@ -1056,7 +1056,7 @@ export default ({ assert, describe, it }) => {
                 },
             };
 
-            it('should return an object containing rooms and doors', () => {
+            it('returns an object containing rooms and doors', () => {
                 const { rooms, doors } = getRooms({
                     width: gridWidth,
                     height: gridHeight,
@@ -1092,7 +1092,7 @@ export default ({ assert, describe, it }) => {
     // -- Public Functions -----------------------------------------------------
 
     describe('generateMap()', () => {
-        it('should generate a map, rooms, and doors', () => {
+        it('generates a map, rooms, and doors', () => {
             const { map, rooms, doors } = generateMap({ width: 30, height: 24 }, generateRooms({
                 itemCondition: 'average',
                 itemQuantity : 'one',
@@ -1120,14 +1120,14 @@ export default ({ assert, describe, it }) => {
 
     describe('getGridAsText()', () => {
         describe('given a blank grid', () => {
-            it('should return an string representing the grid', () => {
+            it('returns an string representing the grid', () => {
                 const grid = createBlankGrid({ width: 3, height: 3 });
                 assert(getGridAsText(grid)).equals('. . .\n. . .\n. . .');
             });
         });
 
         describe('given a grid with a room on it', () => {
-            it('should return an string containing the walls, corners, room number, and blank cells', () => {
+            it('returns an string containing the walls, corners, room number, and blank cells', () => {
                 const grid = createBlankGrid({ width: 5, height: 5 });
 
                 grid[1][1] = cellCornerWall;
@@ -1156,7 +1156,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given dimensions for a horizontal rectangle grid', () => {
-            it('should return an string representing the grid', () => {
+            it('returns an string representing the grid', () => {
                 const grid = createBlankGrid({ width: 7, height: 4 });
                 assert(getGridAsText(grid)).equals(
                     '. . . . . . .\n' +
@@ -1168,7 +1168,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given dimensions for a vertical rectangle grid', () => {
-            it('should return an string representing the grid', () => {
+            it('returns an string representing the grid', () => {
                 const grid = createBlankGrid({ width: 3, height: 5 });
                 assert(getGridAsText(grid)).equals(
                     '. . .\n' +

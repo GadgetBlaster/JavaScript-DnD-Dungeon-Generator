@@ -35,17 +35,17 @@ export default ({ assert, describe, it }) => {
 
             const { width, height } = dimensions;
 
-            it('should return a `GridDimensions` object', () => {
+            it('returns a `GridDimensions` object', () => {
                 assert(width).isNumber();
                 assert(height).isNumber();
             });
 
-            it('`gridWidth` should be between the calculated min and max', () => {
+            it('`gridWidth` is between the calculated min and max', () => {
                 assert(width >= min).isTrue();
                 assert(width <= max).isTrue();
             });
 
-            it('`gridHeight` should be between the calculated min and max', () => {
+            it('`gridHeight` is between the calculated min and max', () => {
                 assert(height >= min).isTrue();
                 assert(height <= max).isTrue();
             });
@@ -54,7 +54,7 @@ export default ({ assert, describe, it }) => {
 
     describe('generateTraps()', () => {
         describe('given a minimum trap count of 0', () => {
-            it('should return an empty array', () => {
+            it('returns an empty array', () => {
                 assert(generateTraps(0)).equalsArray([]);
             });
         });
@@ -62,15 +62,15 @@ export default ({ assert, describe, it }) => {
         describe('given a minimum trap count of 1', () => {
             const traps = generateTraps(1);
 
-            it('should return an array', () => {
+            it('returns an array', () => {
                 assert(traps).isArray();
             });
 
-            it('should return an array of traps', () => {
+            it('returns an array of traps', () => {
                 assert(traps.find((trap) => !trapList.includes(trap))).isUndefined();
             });
 
-            it('should return an array length between 1 and `trapCountMultiplier`', () => {
+            it('returns an array length between 1 and `trapCountMultiplier`', () => {
                 assert(traps.length >= 1).isTrue();
                 assert(traps.length <= 5).isTrue();
             });
@@ -80,7 +80,7 @@ export default ({ assert, describe, it }) => {
             const min   = 12;
             const traps = generateTraps(min);
 
-            it('should return an array length between 12 and 12 * `trapCountMultiplier`', () => {
+            it('returns an array length between 12 and 12 * `trapCountMultiplier`', () => {
                 const max = min * trapCountMultiplier;
 
                 assert(traps.length >= min).isTrue();
@@ -90,7 +90,7 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getMxRoomCount()', () => {
-        it('should return the given `complexity` multiplied by `complexityRoomCountMultiplier`', () => {
+        it('returns the given `complexity` multiplied by `complexityRoomCountMultiplier`', () => {
             const complexity = 9;
             assert(getMxRoomCount(complexity)).equals(complexity * complexityRoomCountMultiplier);
         });
@@ -127,7 +127,7 @@ export default ({ assert, describe, it }) => {
             assert(dungeon.mapDimensions.gridHeight).isNumber();
         });
 
-        it('should generate a number of `Room` config less than or equal to the max room count', () => {
+        it('generates a number of `Room` config less than or equal to the max room count', () => {
             assert(dungeon.rooms.length < getMxRoomCount(complexity)).isTrue();
         });
 
@@ -142,7 +142,7 @@ export default ({ assert, describe, it }) => {
                     const incompleteConfig = { ...config };
                     delete incompleteConfig[requiredConfig];
 
-                    it('should throw', () => {
+                    it('throws', () => {
                         // @ts-expect-error
                         assert(() => generateDungeon(incompleteConfig))
                             .throws(`${requiredConfig} is required in generateDungeon()`);

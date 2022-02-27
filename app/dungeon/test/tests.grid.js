@@ -42,7 +42,7 @@ export default ({ assert, describe, it }) => {
 
             describe('given a 1 x 1 rectangle', () => {
                 describe('when the rectangle is in bounds', () => {
-                    it('should return true', () => {
+                    it('returns true', () => {
                         assert(isEmptyCell(grid, rect)).isTrue();
                     });
                 });
@@ -54,14 +54,14 @@ export default ({ assert, describe, it }) => {
                         { y: 0 },
                         { y: gridHeight - 1 },
                     ].forEach((rectCord) => {
-                        it('should return false', () => {
+                        it('returns false', () => {
                             assert(isEmptyCell(grid, { ...rect, ...rectCord })).isFalse();
                         });
                     });
                 });
 
                 describe('when the rectangle overlaps an occupied cell', () => {
-                    it('should return false', () => {
+                    it('returns false', () => {
                         const populatedGrid = createBlankGrid({ width: gridWidth, height: gridHeight });
                         populatedGrid[1][1] = cellWall;
 
@@ -78,7 +78,7 @@ export default ({ assert, describe, it }) => {
                 };
 
                 describe('when the rectangle is in bounds', () => {
-                    it('should return true', () => {
+                    it('returns true', () => {
                         assert(isEmptyCell(grid, rect2)).isTrue();
                     });
                 });
@@ -90,14 +90,14 @@ export default ({ assert, describe, it }) => {
                         { y: 0 },
                         { y: gridHeight - 1 },
                     ].forEach((rectCord) => {
-                        it('should return false', () => {
+                        it('returns false', () => {
                             assert(isEmptyCell(grid, { ...rect2, ...rectCord })).isFalse();
                         });
                     });
                 });
 
                 describe('when the rectangle overlaps an occupied cell', () => {
-                    it('should return false', () => {
+                    it('returns false', () => {
                         const populatedGrid = createBlankGrid({ width: gridWidth, height: gridHeight });
                         populatedGrid[2][3] = cellWall;
 
@@ -117,7 +117,7 @@ export default ({ assert, describe, it }) => {
         };
 
         describe('given coordinates that are the upper left corner wall', () => {
-            it('should return true', () => {
+            it('returns true', () => {
                 assert(isRoomCorner({
                     ...minMax,
                     x: minMax.minX + wallSize,
@@ -127,7 +127,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given coordinates that are the upper right corner wall', () => {
-            it('should return true', () => {
+            it('returns true', () => {
                 assert(isRoomCorner({
                     ...minMax,
                     x: minMax.maxX - wallSize,
@@ -137,7 +137,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given coordinates that are the lower right corner wall', () => {
-            it('should return true', () => {
+            it('returns true', () => {
                 assert(isRoomCorner({
                     ...minMax,
                     x: minMax.maxX - wallSize,
@@ -147,7 +147,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given coordinates that are the lower left corner wall', () => {
-            it('should return true', () => {
+            it('returns true', () => {
                 assert(isRoomCorner({
                     ...minMax,
                     x: minMax.minX + wallSize,
@@ -157,7 +157,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given coordinates that are not a corner', () => {
-            it('should return false', () => {
+            it('returns false', () => {
                 assert(isRoomCorner({
                     ...minMax,
                     x: 10,
@@ -199,7 +199,7 @@ export default ({ assert, describe, it }) => {
         const grid = { width: gridWidth, height: gridHeight };
 
         describe('given a room that does not fit in the inset grid content area', () => {
-            it('should throw', () => {
+            it('throws', () => {
                 const room = {
                     width:  gridWidth  - wallSize,
                     height: gridHeight - wallSize,
@@ -210,7 +210,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a room that fits in the inset grid content area', () => {
-            it('should return grid coordinates along the edge of a wall', () => {
+            it('returns grid coordinates along the edge of a wall', () => {
                 const { x, y } = getStartingPoint(grid, { width: 1, height: 1 });
 
                 assert(x).isNumber();
@@ -263,7 +263,7 @@ export default ({ assert, describe, it }) => {
                 { x: 6, y: 4 },
             ];
 
-            it('should return an array of valid room connection coordinates', () => {
+            it('returns an array of valid room connection coordinates', () => {
                 const validCords = getValidRoomConnections(grid, roomDimensions, prevRoomRect);
 
                 assert(validCords).isArray();
@@ -343,7 +343,7 @@ export default ({ assert, describe, it }) => {
                 { x: 7, y: 7 },
             ];
 
-            it('should return an array of valid room connection coordinates', () => {
+            it('returns an array of valid room connection coordinates', () => {
                 const validCords = getValidRoomConnections(grid, roomDimensions, prevRoomRect);
 
                 assert(validCords).isArray();
@@ -412,7 +412,7 @@ export default ({ assert, describe, it }) => {
                 { x: 6, y: 5 },
             ];
 
-            it('should return an array of valid room connection coordinates that account for the grid edges', () => {
+            it('returns an array of valid room connection coordinates that account for the grid edges', () => {
                 const validCords = getValidRoomConnections(grid, roomDimensions, prevRoomRect);
 
                 assert(validCords).isArray();
