@@ -18,19 +18,14 @@ import { appendRoomTypes } from './room.js';
 /** @typedef {import('../attribute/size.js').Size} Size */
 /** @typedef {import('../controller/knobs.js').DungeonConfig} DungeonConfig */
 /** @typedef {import('../controller/knobs.js').RoomConfig} RoomConfig */
+/** @typedef {import('../dungeon/grid.js').Dimensions} Dimensions */
 /** @typedef {import('../dungeon/map.js').Connection} Connection */
 /** @typedef {import('./door.js').DoorKey} DoorKey */
 /** @typedef {import('./door.js').DoorType} DoorType */
-/** @typedef {import('./door.js').RoomDoor} RoomDoor */
 /** @typedef {import('./room.js').RoomType} RoomType */
 
 // -- Config -------------------------------------------------------------------
 
-/**
- * Map descriptions
- *
- * @type {string[]}
- */
 const mapDescriptions = [
     'Searching the room reveals a map that appears to be of the dungeon.',
     'A large map of the dungeon is hanging on the wall.',
@@ -278,13 +273,11 @@ function getKeyDetail(type) {
  *
  * @private
  *
- * @param {Size} roomSize
+ * @param {Dimensions} roomSize
  *
  * @returns {string}
  */
-function getRoomDimensionsDescription(roomSize) {
-    let [ width, height ] = roomSize; // TODO use Dimensions type
-
+function getRoomDimensionsDescription({ width, height }) {
     return `${width * cellFeet} x ${height * cellFeet} feet`;
 }
 
@@ -424,8 +417,12 @@ export function getRoomDescription(room, roomDoors) {
     let numberLabel = roomCount > 1 ? ` ${roomNumber}` : '';
     let typeLabel   = type !== 'room' ? ` - ${capitalize(getRoomTypeLabel(type))}` : '';
     let roomTitle   = title(`Room${numberLabel}${typeLabel}`);
-    let dimensions  = roomDimensions ? element('span', getRoomDimensionsDescription(roomDimensions)) : '';
-    let header      = element('header', roomTitle + dimensions);
+    let dimensions  = roomDimensions ? element('span', getRoomDimensionsDescription({
+        width: roomDimensions[0],
+        height: roomDimensions[1],
+    })) : '';
+
+    let header = element('header', roomTitle + dimensions);
 
     let content = header + subtitle('Description') + paragraph([
         getDescription(settings),

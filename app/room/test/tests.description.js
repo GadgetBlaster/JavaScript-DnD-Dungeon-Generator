@@ -506,9 +506,8 @@ export default ({ assert, describe, it }) => {
     describe('getRoomDimensionsDescription()', () => {
         describe('given a room size of 2 x 3', () => {
             it('should return a string with the dimensions multiplied by `cellFeet`', () => {
-                assert(getRoomDimensionsDescription([ 2, 3 ]))
-                    .stringIncludes(`${2 * cellFeet}`)
-                    .stringIncludes(`${3 * cellFeet}`);
+                assert(getRoomDimensionsDescription({ width: 2, height: 3 }))
+                    .equals(`${2 * cellFeet} x ${3 * cellFeet} feet`);
             });
         });
     });
@@ -711,8 +710,13 @@ export default ({ assert, describe, it }) => {
                         size: [ 12, 8 ],
                     };
 
+                    const dimensions = {
+                        width: room.size[0],
+                        height: room.size[1],
+                    };
+
                     assert(getRoomDescription(room))
-                        .stringIncludes(`<span>${getRoomDimensionsDescription(room.size)}</span>`);
+                        .stringIncludes(`<span>${getRoomDimensionsDescription(dimensions)}</span>`);
                 });
             });
         });
