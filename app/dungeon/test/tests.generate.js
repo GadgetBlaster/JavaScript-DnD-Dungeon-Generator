@@ -10,7 +10,7 @@ import {
     // Private Functions
     testGenerateMapDimensions as generateMapDimensions,
     testGenerateTraps         as generateTraps,
-    testGetMxRoomCount        as getMxRoomCount,
+    testGetMaxRoomCount       as getMaxRoomCount,
 
     // Public functions
     generateDungeon,
@@ -89,10 +89,10 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('getMxRoomCount()', () => {
+    describe('getMaxRoomCount()', () => {
         it('returns the given `complexity` multiplied by `complexityRoomCountMultiplier`', () => {
             const complexity = 9;
-            assert(getMxRoomCount(complexity)).equals(complexity * complexityRoomCountMultiplier);
+            assert(getMaxRoomCount(complexity)).equals(complexity * complexityRoomCountMultiplier);
         });
     });
 
@@ -128,7 +128,7 @@ export default ({ assert, describe, it }) => {
         });
 
         it('generates a number of `Room` config less than or equal to the max room count', () => {
-            assert(dungeon.rooms.length < getMxRoomCount(complexity)).isTrue();
+            assert(dungeon.rooms.length < getMaxRoomCount(complexity)).isTrue();
         });
 
         describe('required configs', () => {

@@ -93,9 +93,7 @@ function generateTraps(trapMin) {
 }
 
 /**
- * Returns a maximum room count for the dungeon.
- *
- * TODO fix name
+ * Returns the maximum room count for the dungeon's complexity.
  *
  * @private
  *
@@ -103,14 +101,14 @@ function generateTraps(trapMin) {
  *
  * @returns {number}
  */
-function getMxRoomCount(complexity) {
+function getMaxRoomCount(complexity) {
     return complexity * complexityRoomCountMultiplier;
 }
 
 export {
     generateMapDimensions as testGenerateMapDimensions,
     generateTraps         as testGenerateTraps,
-    getMxRoomCount        as testGetMxRoomCount,
+    getMaxRoomCount       as testGetMaxRoomCount,
 };
 
 // -- Public Functions ---------------------------------------------------------
@@ -136,7 +134,7 @@ export function generateDungeon(config) {
     isRequired(trapMin,     'dungeonTraps is required in generateDungeon()');
 
     // TODO merge to new object instead of overwriting
-    config.roomCount = getMxRoomCount(complexity);
+    config.roomCount = getMaxRoomCount(complexity);
 
     let rooms = generateRooms(config);
     let traps = generateTraps(trapMin);

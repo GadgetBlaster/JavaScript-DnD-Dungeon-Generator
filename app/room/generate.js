@@ -10,11 +10,11 @@ import { isRequired } from '../utility/tools.js';
 /** @typedef {import('../controller/knobs.js').RoomConfig} RoomConfig */
 
 /**
- * TODO move to room.js?
  * @typedef {object} Room
  *
- * @prop {DungeonConfig | RoomConfig} settings
  * @prop {string[]} items
+ * @prop {number} roomNumber
+ * @prop {number} roomNumber
  */
 
 // -- Public Functions ---------------------------------------------------------
@@ -22,6 +22,8 @@ import { isRequired } from '../utility/tools.js';
 /**
  * Generates a randomized array of random room configs for the given knob
  * settings.
+ *
+ * TODO rename to generateRoomSettings
  *
  * @param {DungeonConfig | RoomConfig} config
  *

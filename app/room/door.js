@@ -103,9 +103,8 @@ export const lockedChance = 25;
 // -- Public Functions ---------------------------------------------------------
 
 /**
- * Get room door
+ * Returns an array of room doors and keys.
  *
- * TODO simplify?
  * TODO move to generate.js
  *
  * @param {Door[]} doors
@@ -130,13 +129,6 @@ export function getRoomDoors(doors) {
                 roomDoors[roomNumber] = [];
             }
 
-            let roomDoor = {
-                // TODO safe to drop unnecessary `connections` from config?
-                // Is it already there?
-                ...door,
-                // connection: door.connections[roomNumber],
-            };
-
             if (door.locked) {
                 roomKeys.push({
                     type: door.type,
@@ -144,7 +136,7 @@ export function getRoomDoors(doors) {
                 });
             }
 
-            roomDoors[roomNumber].push(roomDoor);
+            roomDoors[roomNumber].push(door);
         });
     });
 

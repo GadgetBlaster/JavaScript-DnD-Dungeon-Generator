@@ -73,7 +73,7 @@ import { isRequired, toWords } from '../utility/tools.js';
  * @typedef {object} Door
  *
  * @prop {string} rect
- * @prop {string} type
+ * @prop {DoorType} type
  * @prop {boolean} locked
  * @prop {{ [roomNumber: number]: Connection }} connections
  * @prop {number} size
