@@ -10,7 +10,7 @@ import { attachClickDelegate, getTriggers } from './controller/controller.js';
 import { getKnobPanel } from './ui/form.js';
 import { getNav } from './ui/nav.js';
 
-// -- Types --------------------------------------------------------------------
+// -- Type Imports -------------------------------------------------------------
 
 /** @typedef {import('./controller/controller.js').Sections} Sections */
 
@@ -33,7 +33,7 @@ const footerContent = sections.footer.innerHTML;
 const testSummary = getSummaryLink(run(unitState(), suite));
 
 sections.nav.innerHTML    = getNav();
-sections.knobs.innerHTML  = getKnobPanel();
+sections.knobs.innerHTML  = getKnobPanel('dungeon');
 sections.footer.innerHTML = testSummary + footerContent;
 
 attachClickDelegate(sections.body, getTriggers(sections, homeContent));

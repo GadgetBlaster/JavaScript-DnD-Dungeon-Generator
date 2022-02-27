@@ -237,7 +237,7 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getKnobPanel()', () => {
-        let knobs = getKnobPanel();
+        let knobs = getKnobPanel('dungeon');
 
         it('should return a string', () => {
             assert(knobs).isString();
@@ -249,12 +249,12 @@ export default ({ assert, describe, it }) => {
             );
         });
 
-        it('should include three fieldsets by default', () => {
+        it('should include three fieldsets for the `dungeon` panel', () => {
             assert(knobs.match(/<fieldset(.*?)>(.*?)<\/fieldset>/g).length).equals(3);
         });
 
-        describe('give a page', () => {
-            it('should return the field sets for the given page', () => {
+        describe('give the `items` page', () => {
+            it('should return the field sets for the `items` page', () => {
                 let itemKnobs = getKnobPanel('items');
                 assert(itemKnobs.match(/<fieldset(.*?)>(.*?)<\/fieldset>/g).length).equals(1);
             });

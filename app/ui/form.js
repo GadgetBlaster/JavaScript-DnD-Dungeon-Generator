@@ -86,7 +86,7 @@ const renderFields = (fields) => fields.map((settings) => {
     let knob       = getKnob(settings);
     let descId     = desc && `info-${name}`;
     let descButton = button(infoLabel, 'toggle', { target: descId, size: 'auto' });
-    let descText   = paragraph(small(desc), { hidden: true, 'data-id': descId }); // TODO style instead of `<small>`
+    let descText   = paragraph(small(desc), { hidden: true, 'data-id': descId });
     let knobLabel  = fieldLabel(label + descButton);
 
     return div(knobLabel + descText + knob);
@@ -146,9 +146,9 @@ export function getFormData(knobContainer) {
 /**
  * Update form knobs when changing pages.
  *
- * @param {Page} [page = "dungeon"] // TODO make rquired
+ * @param {Page} page
  *
  * @returns {string}
  */
-export const getKnobPanel = (page = 'dungeon') =>
+export const getKnobPanel = (page) =>
     submitButton + renderKnobs(getKnobConfig(page));
