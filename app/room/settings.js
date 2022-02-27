@@ -6,7 +6,6 @@ import { probability as conditionProbability } from '../attribute/condition.js';
 import { probability as furnitureQuantityProbability } from '../item/furnishing.js';
 import { probability as quantityProbability } from '../attribute/quantity.js';
 import { probability as rarityProbability } from '../attribute/rarity.js';
-import { random } from '../utility/random.js';
 import { rollArrayItem, rollPercentile } from '../utility/roll.js';
 import { roomTypeSizes } from './dimensions.js';
 import { roomTypes, probability as roomTypeProbability } from './room.js';
@@ -77,7 +76,7 @@ const rollRoomSize = (type) => rollArrayItem(roomTypeSizes[type]);
  * @returns {RoomType} roomType
  */
 function rollRoomType(type) {
-    if (type === random) {
+    if (type === 'random') {
         return rollArrayItem(roomTypes);
     }
 
@@ -118,7 +117,7 @@ function applyRandomization(config, randomizations) {
     let settings = { ...config };
 
     Object.keys(settings).forEach((key) => {
-        if (settings[key] !== random) {
+        if (settings[key] !== 'random') {
             return;
         }
 
@@ -129,7 +128,7 @@ function applyRandomization(config, randomizations) {
         }
     });
 
-    if (settings.roomSize === random) {
+    if (settings.roomSize === 'random') {
         settings.roomSize = rollRoomSize(settings.roomType);
     }
 
