@@ -75,7 +75,7 @@ Object.keys(furnishing).forEach((key) => {
     });
 });
 
-export default furnishing; // TODO export named
+export { furnishing };
 
 let {
     alchemy,

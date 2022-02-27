@@ -2,8 +2,9 @@
 
 import { article } from '../ui/block.js';
 import { capacity, itemSizeSpace, maxItemQuantitySmall } from './types/container.js';
-import furnishing, {
+import {
     anyRoomFurniture,
+    furnishing,
     furnishingByRoomType,
     furnishingQuantityRanges,
     requiredRoomFurniture,
