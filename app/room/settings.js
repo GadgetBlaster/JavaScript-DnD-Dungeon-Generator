@@ -16,6 +16,8 @@ import { roomTypes, probability as roomTypeProbability } from './room.js';
 /** @typedef {import('../attribute/size.js').Size} Size */
 /** @typedef {import('../controller/knobs.js').DungeonConfig} DungeonConfig */
 /** @typedef {import('../controller/knobs.js').RoomConfig} RoomConfig */
+/** @typedef {import('../controller/knobs.js').RoomConfigFields} RoomConfigFields */
+/** @typedef {import('../controller/knobs.js').ItemConfigFields} ItemConfigFields */
 /** @typedef {import('../utility/roll.js').Probability} Probability */
 /** @typedef {import('./generate.js').Room} Room */
 /** @typedef {import('./room.js').RoomType} RoomType */
@@ -41,15 +43,15 @@ const uniformRarityChance = 10;
  *
  * TODO use field list type
  *
- * @type {{ [knobSetting: string]: () => string }}
+ * @type {{ [key in RoomConfigFields & ItemConfigFields]: () => string }}
  */
 const roomRandomizations = {
-    itemCondition : () => rollUniformity(uniformConditionChance, conditionProbability),
-    itemQuantity  : () => quantityProbability.roll(),
-    itemRarity    : () => rollUniformity(uniformRarityChance, rarityProbability),
-    roomCondition : () => conditionProbability.roll(),
-    roomFurnishing: () => furnitureQuantityProbability.roll(),
-    roomType      : () => rollRoomType(roomTypeProbability.roll()),
+    itemCondition        : () => rollUniformity(uniformConditionChance, conditionProbability),
+    itemQuantity         : () => quantityProbability.roll(),
+    itemRarity           : () => rollUniformity(uniformRarityChance, rarityProbability),
+    roomCondition        : () => conditionProbability.roll(),
+    roomFurnitureQuantity: () => furnitureQuantityProbability.roll(),
+    roomType             : () => rollRoomType(roomTypeProbability.roll()),
 };
 
 // -- Private Functions --------------------------------------------------------

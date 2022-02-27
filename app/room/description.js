@@ -48,17 +48,17 @@ const mapDescriptions = [
  */
 function getContentDescription(config) {
     let {
-        itemQuantity  : itemQuantity,
-        itemRarity    : itemRarity,
-        roomFurnishing: roomFurnishing,
-        roomType      : roomType = 'room',
+        itemQuantity,
+        itemRarity,
+        roomFurnitureQuantity,
+        roomType = 'room', // TODO require
     } = config;
 
     if (!itemQuantity || itemQuantity === 'zero') {
         return;
     }
 
-    let furniture = getFurnitureDetail(roomFurnishing);
+    let furniture = getFurnitureDetail(roomFurnitureQuantity);
     let rarity    = getContentRarityDetail(itemRarity);
     let type      = getRoomTypeLabel(roomType).toLowerCase();
 
@@ -178,12 +178,12 @@ function getDoorwayDescription({ type, size, locked }) {
  *
  * @private
  *
- * @param {FurnitureQuantity} roomFurnishing
+ * @param {FurnitureQuantity} furnitureQuantity
  *
  * @returns {string}
  */
-function getFurnitureDetail(roomFurnishing) {
-    switch (roomFurnishing) {
+function getFurnitureDetail(furnitureQuantity) {
+    switch (furnitureQuantity) {
         case 'minimum':
             return 'minimal furnishings';
 

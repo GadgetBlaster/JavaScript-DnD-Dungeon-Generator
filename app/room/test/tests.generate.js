@@ -8,15 +8,15 @@ import { generateRooms } from '../generate.js';
 export default ({ assert, describe, it }) => {
     describe('generateRooms()', () => {
         const config = {
-            itemCondition : 'average',
-            itemQuantity  : 'zero',
-            itemRarity    : 'exotic',
-            itemType      : 'treasure',
-            roomCondition : 'average',
-            roomCount     : 1,
-            roomSize      : 'medium',
-            roomType      : 'room',
-            roomFurnishing: 'none',
+            itemCondition        : 'average',
+            itemQuantity         : 'zero',
+            itemRarity           : 'exotic',
+            itemType             : 'treasure',
+            roomCondition        : 'average',
+            roomCount            : 1,
+            roomSize             : 'medium',
+            roomType             : 'room',
+            roomFurnitureQuantity: 'none',
         };
 
         describe('required configs', () => {
@@ -65,12 +65,12 @@ export default ({ assert, describe, it }) => {
                     assert(rooms.items[0]).stringIncludes('Items (2)');
                 });
 
-                describe('given a `roomFurnishing` of `furnishing.minimum`', () => {
+                describe('given a `roomFurnitureQuantity` of `minimum`', () => {
                     it('should return an array of `Room` objects with three items', () => {
                         const rooms = generateRooms({
                             ...config,
-                            itemQuantity  : 'couple',
-                            roomFurnishing: 'minimum',
+                            itemQuantity         : 'couple',
+                            roomFurnitureQuantity: 'minimum',
                         }).pop();
 
                         assert(rooms.items[0]).stringIncludes('Items (3)');

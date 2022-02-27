@@ -61,20 +61,20 @@ export default ({ assert, describe, it }) => {
         describe('given a `KnobSettings` object', () => {
             it('should return a `RoomConfig` object', () => {
                 const roomConfig = applyRoomRandomization({
-                    itemCondition : 'random',
-                    itemQuantity  : 'random',
-                    itemRarity    : 'random',
-                    roomCondition : 'random',
-                    roomFurnishing: 'random',
-                    roomSize      : 'random',
-                    roomType      : 'random',
+                    itemCondition        : 'random',
+                    itemQuantity         : 'random',
+                    itemRarity           : 'random',
+                    roomCondition        : 'random',
+                    roomFurnitureQuantity: 'random',
+                    roomSize             : 'random',
+                    roomType             : 'random',
                 });
 
                 assert(roomConfig).isObject();
 
                 assert([ ...conditions, 'random' ].includes(roomConfig.itemCondition)).isTrue();
                 assert(conditions.includes(roomConfig.roomCondition)).isTrue();
-                assert(furnitureQuantities.includes(roomConfig.roomFurnishing)).isTrue();
+                assert(furnitureQuantities.includes(roomConfig.roomFurnitureQuantity)).isTrue();
                 assert(quantities.includes(roomConfig.itemQuantity)).isTrue();
                 assert([ ...rarities, 'random' ].includes(roomConfig.itemRarity)).isTrue();
                 assert(roomTypes.includes(roomConfig.roomType)).isTrue();

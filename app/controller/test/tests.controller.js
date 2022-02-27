@@ -59,10 +59,10 @@ export default ({ assert, describe, it }) => {
         /** @type {RoomConfig} roomSettings */
         const roomSettingsBase = {
             ...itemSettings,
-            roomCondition     : 'average',
-            roomFurnishing    : 'none', // TODO 'zero' when updated to Quantity
-            roomSize          : 'small',
-            roomType          : 'room',
+            roomCondition        : 'average',
+            roomFurnitureQuantity: 'none',
+            roomSize             : 'small',
+            roomType             : 'room',
         };
 
         it('includes a function for each page', () => {

@@ -17,6 +17,7 @@ import { sizes } from '../attribute/size.js';
 /** @typedef {import('../attribute/rarity.js').Rarity} Rarity */
 /** @typedef {import('../attribute/size.js').Size} Size */
 /** @typedef {import('../item/item.js').ItemType} ItemType */
+/** @typedef {import('../item/furnishing').FurnitureQuantity} FurnitureQuantity */
 /** @typedef {import('../room/room.js').RoomType} RoomType */
 /** @typedef {import('../ui/nav').Page} Page */
 
@@ -36,7 +37,7 @@ import { sizes } from '../attribute/size.js';
  *
  * @prop {Condition} roomCondition
  * @prop {number} roomCount
- * @prop {string} roomFurnishing // TODO add type
+ * @prop {FurnitureQuantity} roomFurnitureQuantity
  * @prop {Size} roomSize
  * @prop {RoomType} roomType
  */
@@ -199,7 +200,7 @@ const config = [
             },
             {
                 label : 'Furnishing',
-                name  : 'roomFurnishing',
+                name  : 'roomFurnitureQuantity',
                 desc  : descFurnitureQuantity + ' ' + furnitureQuantityProbability.description,
                 type  : typeSelect,
                 values: getValues(furnitureQuantities),

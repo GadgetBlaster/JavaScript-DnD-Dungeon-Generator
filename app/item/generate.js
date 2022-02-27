@@ -176,7 +176,7 @@ export function generateItems(config) {
         itemQuantity,
         itemRarity,
         itemType,
-        roomFurnishing: furnitureQuantity,
+        roomFurnitureQuantity,
         roomCondition,
     } = config;
 
@@ -206,7 +206,7 @@ export function generateItems(config) {
     let smallItems = [];
     let remaining  = [];
 
-    let furnishings   = inRoom ? generateFurnishings(roomType, furnitureQuantity) : [];
+    let furnishings   = inRoom ? generateFurnishings(roomType, roomFurnitureQuantity) : [];
     let furnishingObj = getFurnishingObjects(furnishings, roomCondition);
 
     let total = count + furnishings.length;

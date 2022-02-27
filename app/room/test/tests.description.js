@@ -75,7 +75,7 @@ export default ({ assert, describe, it }) => {
                     describe('given a room furnishing of `furnished`', () => {
                         it('should contain the word "furniture"', () => {
                             assert(getContentDescription({
-                                roomFurnishing: 'furnished',
+                                roomFurnitureQuantity: 'furnished',
                                 itemQuantity  : itemQuantity,
                             })).stringIncludes('furniture');
                         });
@@ -279,11 +279,11 @@ export default ({ assert, describe, it }) => {
 
         describe('given a furniture quantity other than `none`', () => {
             let positiveFurnitureQuantities = furnitureQuantities
-                .filter((roomFurnishing) => roomFurnishing !== 'none');
+                .filter((quantity) => quantity !== 'none');
 
-            positiveFurnitureQuantities.forEach((roomFurnishing) => {
+            positiveFurnitureQuantities.forEach((quantity) => {
                 it('should return a string including "furniture" or "furnishings"', () => {
-                    let detail = getFurnitureDetail(roomFurnishing);
+                    let detail = getFurnitureDetail(quantity);
                     let isOk = detail.includes('furniture') || detail.includes('furnishings');
                     assert(isOk).isTrue();
                 });
