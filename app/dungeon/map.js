@@ -12,8 +12,6 @@ import {
     drawGrid,
     drawMap,
     drawRoom,
-    labelMinHeight,
-    labelMinWidth,
 } from './draw.js';
 
 import { dimensionRanges, customDimensions } from '../room/dimensions.js';
@@ -109,6 +107,12 @@ const cellDoor = 'd';
 /** @type {CellValue} cellCornerWall */
 const cellCornerWall = 'c';
 
+/** Minium room width in grid cells required to show a room label. */
+const labelMinRoomWidth = 3;
+
+/** Minium room height in grid cells required to show a room label. */
+const labelMinRoomHeight = 2;
+
 /**
  * Directions.
  *
@@ -134,9 +138,11 @@ const directionOppositeLookup = Object.freeze({
 const maxDoorGridUnits = 4;
 
 export {
-    cellCornerWall as testCellCornerWall,
-    cellDoor       as testCellDoor,
-    cellWall       as testCellWall,
+    cellCornerWall     as testCellCornerWall,
+    cellDoor           as testCellDoor,
+    cellWall           as testCellWall,
+    labelMinRoomWidth  as testLabelMinRoomWidth,
+    labelMinRoomHeight as testLabelMinRoomHeight,
 };
 
 // -- Private Functions --------------------------------------------------------
@@ -568,7 +574,7 @@ function getRoomDrawing(gridRoom, { hasTraps } = {}) {
     let { rect, type, roomNumber } = gridRoom;
     let { width, height } = rect;
 
-    let showRoomLabel = type !== 'room' && width >= labelMinWidth && height >= labelMinHeight;
+    let showRoomLabel = type !== 'room' && width >= labelMinRoomWidth && height >= labelMinRoomHeight;
     let roomLabel     = showRoomLabel && toWords(type);
 
     return drawRoom(rect, { roomNumber, roomLabel }, { hasTraps });

@@ -52,10 +52,6 @@ const doorConcealedLabel = 'C';
 
 const trapLabel = 'T';
 
-// TODO move to map.js
-export const labelMinWidth  = 3;
-export const labelMinHeight = 2;
-
 const pillarGridThreshold = 6;
 const pillarGridInset     = 1;
 

@@ -2,9 +2,11 @@
 
 import {
     // Config
-    testCellCornerWall as cellCornerWall,
-    testCellDoor       as cellDoor,
-    testCellWall       as cellWall,
+    testCellCornerWall     as cellCornerWall,
+    testCellDoor           as cellDoor,
+    testCellWall           as cellWall,
+    testLabelMinRoomWidth  as labelMinRoomWidth,
+    testLabelMinRoomHeight as labelMinRoomHeight,
 
     // Private Functions
     testCheckForAdjacentDoor as checkForAdjacentDoor,
@@ -27,7 +29,7 @@ import {
 import { createBlankGrid, wallSize } from '../grid.js';
 import { dimensionRanges } from '../../room/dimensions.js';
 import { generateRooms } from '../../room/generate.js';
-import { labelMinWidth, labelMinHeight, testTrapLabel as trapLabel } from '../draw.js';
+import { testTrapLabel as trapLabel } from '../draw.js';
 import { list as doorTypes } from '../../room/door.js';
 
 /** @typedef {import('../map.js').GridRoom} GridRoom */
@@ -889,14 +891,14 @@ export default ({ assert, describe, it }) => {
             });
         });
 
-        describe('when the width and height are at least `labelMinWidth` and `labelMinHeight`', () => {
+        describe('when the width and height are at least `labelMinRoomWidth` and `labelMinRoomHeight`', () => {
             it('should not include the room label in the room rect', () => {
                 const rectWithLabelDimensions = getRoomDrawing({
                     ...gridRoom,
                     rect: {
                         ...gridRoom.rect,
-                        width: labelMinWidth,
-                        height: labelMinHeight,
+                        width: labelMinRoomWidth,
+                        height: labelMinRoomHeight,
                     },
                 });
 
@@ -911,14 +913,14 @@ export default ({ assert, describe, it }) => {
                 type: 'library',
             };
 
-            describe('when the room width is less than or equal to `labelMinWidth`', () => {
+            describe('when the room width is less than `labelMinRoomWidth`', () => {
                 it('should not include the room label in the room rect', () => {
                     const libraryDrawing = getRoomDrawing({
                         ...libraryGridRoom,
                         rect: {
                             ...libraryGridRoom.rect,
-                            width: labelMinWidth - 1,
-                            height: labelMinWidth,
+                            width: labelMinRoomWidth - 1,
+                            height: labelMinRoomHeight,
                         },
                     });
 
@@ -926,14 +928,14 @@ export default ({ assert, describe, it }) => {
                 });
             });
 
-            describe('when the room width is less than or equal to `labelMinHeight`', () => {
+            describe('when the room height is less than `labelMinRoomHeight`', () => {
                 it('should not include the room label in the room rect', () => {
                     const libraryDrawing = getRoomDrawing({
                         ...libraryGridRoom,
                         rect: {
                             ...libraryGridRoom.rect,
-                            width: labelMinHeight,
-                            height: labelMinHeight - 1,
+                            width: labelMinRoomWidth,
+                            height: labelMinRoomHeight - 1,
                         },
                     });
 
@@ -941,14 +943,14 @@ export default ({ assert, describe, it }) => {
                 });
             });
 
-            describe('when the room width and height are less than or equal to `labelMinHeight`', () => {
+            describe('when the room width and height are equal to `labelMinRoomWidth` & `labelMinRoomHeight`', () => {
                 it('should include the room label in the room rect', () => {
                     const libraryDrawing = getRoomDrawing({
                         ...libraryGridRoom,
                         rect: {
                             ...libraryGridRoom.rect,
-                            width: labelMinWidth,
-                            height: labelMinHeight,
+                            width: labelMinRoomWidth,
+                            height: labelMinRoomHeight,
                         },
                     });
 
