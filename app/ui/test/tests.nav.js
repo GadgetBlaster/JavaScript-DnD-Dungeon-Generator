@@ -26,15 +26,24 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getNav()', () => {
-        it('should be a string', () => {
-            assert(getNav()).isString();
+        const nav = getNav('dungeon');
+
+        it('returns a string', () => {
+            assert(nav).isString();
         });
 
-        it('should contain 3 nav buttons', () => {
-            const nav = getNav();
+        it('contains 3 nav buttons', () => {
             assert(/<button(.+?)data-target="dungeon"(.+?)>(.+?)<\/button>/.test(nav)).isTrue();
             assert(/<button(.+?)data-target="rooms"(.+?)>(.+?)<\/button>/.test(nav)).isTrue();
             assert(/<button(.+?)data-target="items"(.+?)>(.+?)<\/button>/.test(nav)).isTrue();
+        });
+
+        it('sets the correct active item', () => {
+            const dungeonItem = nav.match(/<button(.+?)>Dungeon<\/button>/).pop();
+
+            assert(dungeonItem)
+                .stringIncludes('data-target="dungeon"')
+                .stringIncludes('data-active="true"');
         });
     });
 

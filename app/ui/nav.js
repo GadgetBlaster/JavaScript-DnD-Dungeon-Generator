@@ -62,11 +62,11 @@ export function getActiveNavItem(nav) {
 /**
  * Returns the main Navigation as an HTML element string.
  *
- * @param {Page} activePage // TODO add tests
+ * @param {Page} activePage
  *
  * @returns {string}
  */
-export const getNav = (activePage = 'dungeon') => [
+export const getNav = (activePage) => [
     button('Dungeon', 'navigate', { target: 'dungeon', active: activePage === 'dungeon' }),
     button('Rooms',   'navigate', { target: 'rooms',   active: activePage === 'rooms' }),
     button('Items',   'navigate', { target: 'items',   active: activePage === 'items' }),

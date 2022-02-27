@@ -32,7 +32,7 @@ const footerContent = sections.footer.innerHTML;
 
 const testSummary = getSummaryLink(run(unitState(), suite));
 
-sections.nav.innerHTML    = getNav();
+sections.nav.innerHTML    = getNav('dungeon');
 sections.knobs.innerHTML  = getKnobPanel('dungeon');
 sections.footer.innerHTML = testSummary + footerContent;
 
