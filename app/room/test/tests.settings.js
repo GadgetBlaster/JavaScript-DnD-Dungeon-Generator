@@ -10,7 +10,7 @@ import {
 } from '../settings.js';
 
 import { conditions } from '../../attribute/condition.js';
-import { furnitureQuantity } from '../../item/furnishing.js';
+import { furnitureQuantities } from '../../item/furnishing.js';
 import { quantities } from '../../attribute/quantity.js';
 import { rarities } from '../../attribute/rarity.js';
 import { roomTypes } from '../room.js';
@@ -74,7 +74,7 @@ export default ({ assert, describe, it }) => {
 
                 assert([ ...conditions, 'random' ].includes(roomConfig.itemCondition)).isTrue();
                 assert(conditions.includes(roomConfig.roomCondition)).isTrue();
-                assert(Object.keys(furnitureQuantity).includes(roomConfig.roomFurnishing)).isTrue();
+                assert(furnitureQuantities.includes(roomConfig.roomFurnishing)).isTrue();
                 assert(quantities.includes(roomConfig.itemQuantity)).isTrue();
                 assert([ ...rarities, 'random' ].includes(roomConfig.itemRarity)).isTrue();
                 assert(roomTypes.includes(roomConfig.roomType)).isTrue();

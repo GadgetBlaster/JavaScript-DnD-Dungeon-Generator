@@ -1,10 +1,6 @@
 // @ts-check
 
-import {
-    generateRooms,
-} from '../generate.js';
-
-import { furnitureQuantity } from '../../item/furnishing.js';
+import { generateRooms } from '../generate.js';
 
 /**
  * @param {import('../../unit/state.js').Utility} utility
@@ -20,7 +16,7 @@ export default ({ assert, describe, it }) => {
             roomCount     : 1,
             roomSize      : 'medium',
             roomType      : 'room',
-            roomFurnishing: furnitureQuantity.none,
+            roomFurnishing: 'none',
         };
 
         describe('required configs', () => {
@@ -74,7 +70,7 @@ export default ({ assert, describe, it }) => {
                         const rooms = generateRooms({
                             ...config,
                             itemQuantity  : 'couple',
-                            roomFurnishing: furnitureQuantity.minimum,
+                            roomFurnishing: 'minimum',
                         }).pop();
 
                         assert(rooms.items[0]).stringIncludes('Items (3)');

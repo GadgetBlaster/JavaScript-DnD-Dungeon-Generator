@@ -4,7 +4,6 @@ import { capitalize, indefiniteArticle, isRequired, toss, toWords } from '../uti
 import { cellFeet } from '../dungeon/grid.js';
 import { element } from '../utility/element.js';
 import { em, paragraph, strong, subtitle, title } from '../ui/typography.js';
-import { furnitureQuantity } from '../item/furnishing.js';
 import { getEnvironmentDescription } from './environment.js';
 import { indicateRarity } from '../attribute/rarity.js';
 import { list } from '../ui/list.js';
@@ -20,6 +19,7 @@ import { appendRoomTypes } from './room.js';
 /** @typedef {import('../controller/knobs.js').RoomConfig} RoomConfig */
 /** @typedef {import('../dungeon/grid.js').Dimensions} Dimensions */
 /** @typedef {import('../dungeon/map.js').Connection} Connection */
+/** @typedef {import('../item/furnishing.js').FurnitureQuantity} FurnitureQuantity */
 /** @typedef {import('./door.js').DoorKey} DoorKey */
 /** @typedef {import('./door.js').DoorType} DoorType */
 /** @typedef {import('./room.js').RoomType} RoomType */
@@ -178,20 +178,20 @@ function getDoorwayDescription({ type, size, locked }) {
  *
  * @private
  *
- * @param {string} roomFurnishing
+ * @param {FurnitureQuantity} roomFurnishing
  *
  * @returns {string}
  */
 function getFurnitureDetail(roomFurnishing) {
     switch (roomFurnishing) {
-        case furnitureQuantity.minimum:
+        case 'minimum':
             return 'minimal furnishings';
 
-        case furnitureQuantity.sparse:
+        case 'sparse':
             return 'sparse furnishings';
 
-        case furnitureQuantity.average:
-        case furnitureQuantity.furnished:
+        case 'average':
+        case 'furnished':
             return 'some furniture';
 
         default:

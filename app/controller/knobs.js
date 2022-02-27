@@ -3,7 +3,7 @@
 // TODO add unit tests
 
 import { conditions, probability as conditionProbability } from '../attribute/condition.js';
-import { furnitureQuantityList, probability as furnitureQuantityProbability } from '../item/furnishing.js';
+import { furnitureQuantities, probability as furnitureQuantityProbability } from '../item/furnishing.js';
 import { itemTypes } from '../item/item.js';
 import { quantities, probability as quantityProbability } from '../attribute/quantity.js';
 import { rarities, probability as rarityProbability } from '../attribute/rarity.js';
@@ -202,7 +202,7 @@ const config = [
                 name  : 'roomFurnishing',
                 desc  : descFurnitureQuantity + ' ' + furnitureQuantityProbability.description,
                 type  : typeSelect,
-                values: getValues(furnitureQuantityList),
+                values: getValues(furnitureQuantities),
             },
         ],
     },

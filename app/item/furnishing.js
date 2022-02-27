@@ -12,6 +12,7 @@ import { rollArrayItem, createProbability } from '../utility/roll.js';
 // -- Types --------------------------------------------------------------------
 
 /** @typedef {keyof furnishing} FurnishingType */
+/** @typedef {typeof furnitureQuantities[number]} FurnitureQuantity */
 
 // -- Config -------------------------------------------------------------------
 
@@ -23,6 +24,7 @@ const defaults = {
     type    : 'furnishing',
 };
 
+/** @type {{ [furnishing: string]: ItemBase }} */
 const furnishing = {
     alchemy  : { name: 'Alchemy equipment' },
     anvil    : { name: 'Anvil' },
@@ -73,7 +75,7 @@ Object.keys(furnishing).forEach((key) => {
     });
 });
 
-export default furnishing;
+export default furnishing; // TODO export named
 
 let {
     alchemy,
@@ -108,9 +110,10 @@ let {
 } = furnishing;
 
 /**
- * @type {{ [key in RoomType]: Item[] }}
+ * @type {{ [key in RoomType]?: ItemBase[] }}
  */
 export const furnishingByRoomType = {
+    /* eslint-disable max-len */
     armory    : [ anvil, bench, cabinet, forge, lamp, rack, tableLg, shelf, torch, workbench ],
     atrium    : [ bench, carpet, pillar ],
     ballroom  : [ bench, carpet, chair, fireplace, lamp, tableLg, tableSm ],
@@ -134,12 +137,13 @@ export const furnishingByRoomType = {
     throne    : [ bench, carpet, lamp, pillar, tableLg, throne, torch ],
     torture   : [ fireplace, torch, workbench ],
     treasury  : [ carpet, desk, lamp, mirror, rack, tableLg, tableSm ],
+    /* eslint-enable max-len */
 };
 
 /**
  * Furniture that must be included in a specific room type.
  *
- * @type {{ [key in RoomType]: FurnishingType }}
+ * @type {{ [key in RoomType]?: ItemBase[] }}
  */
 export const requiredRoomFurniture = {
     armory    : [ rack ],
@@ -159,28 +163,26 @@ export const requiredRoomFurniture = {
 
 export const anyRoomFurniture = [ painting, tapestry ];
 
-// TODO use standard quantity values
-export const furnitureQuantity = {
-    none     : 'none',
-    minimum  : 'minimum',
-    sparse   : 'sparse',
-    average  : 'average',
-    furnished: 'furnished',
-};
-
-export const furnitureQuantityList = Object.keys(furnitureQuantity);
+export const furnitureQuantities = Object.freeze(/** @type {const} */ ([
+    'none',
+    'minimum',
+    'sparse',
+    'average',
+    'furnished',
+]));
 
 export const probability = createProbability([
-    [ 25,  furnitureQuantity.none      ],
-    [ 75,  furnitureQuantity.minimum   ],
-    [ 92,  furnitureQuantity.sparse    ],
-    [ 98,  furnitureQuantity.average   ],
-    [ 100, furnitureQuantity.furnished ],
+    [ 25,  'none'      ],
+    [ 75,  'minimum'   ],
+    [ 92,  'sparse'    ],
+    [ 98,  'average'   ],
+    [ 100, 'furnished' ],
 ]);
 
+/** @type {{ [key in FurnitureQuantity]?: number }} */
 export const furnishingQuantityRanges = {
-    [furnitureQuantity.minimum]  : 1,
-    [furnitureQuantity.sparse]   : 2,
-    [furnitureQuantity.average]  : 4,
-    [furnitureQuantity.furnished]: 6,
+    minimum  : 1,
+    sparse   : 2,
+    average  : 4,
+    furnished: 6,
 };

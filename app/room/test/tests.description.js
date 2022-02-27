@@ -22,11 +22,11 @@ import {
 
 import { appendRoomTypes } from '../room.js';
 import { cellFeet } from '../../dungeon/grid.js';
-import { furnitureQuantity } from '../../item/furnishing.js';
-import { indicateRarity, rarities } from '../../attribute/rarity.js';
-import { quantities } from '../../attribute/quantity.js';
 import { conditions } from '../../attribute/condition.js';
+import { furnitureQuantities } from '../../item/furnishing.js';
+import { indicateRarity, rarities } from '../../attribute/rarity.js';
 import { lockable, appendDoorway, outside } from '../door.js';
+import { quantities } from '../../attribute/quantity.js';
 
 /**
  * @param {import('../../unit/state.js').Utility} utility
@@ -72,10 +72,10 @@ export default ({ assert, describe, it }) => {
                         });
                     });
 
-                    describe('given a room furnishing of `furnitureQuantity.furnished`', () => {
+                    describe('given a room furnishing of `furnished`', () => {
                         it('should contain the word "furniture"', () => {
                             assert(getContentDescription({
-                                roomFurnishing: furnitureQuantity.furnished,
+                                roomFurnishing: 'furnished',
                                 itemQuantity  : itemQuantity,
                             })).stringIncludes('furniture');
                         });
@@ -271,15 +271,15 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getFurnitureDetail()', () => {
-        describe('given `furnitureQuantity.none`', () => {
+        describe('given `none`', () => {
             it('should return an empty string', () => {
-                assert(getFurnitureDetail(furnitureQuantity.none)).equals('');
+                assert(getFurnitureDetail('none')).equals('');
             });
         });
 
-        describe('given a furniture quantity other than `furnitureQuantity.none`', () => {
-            let positiveFurnitureQuantities = Object.values(furnitureQuantity)
-                .filter((roomFurnishing) => roomFurnishing !== furnitureQuantity.none);
+        describe('given a furniture quantity other than `none`', () => {
+            let positiveFurnitureQuantities = furnitureQuantities
+                .filter((roomFurnishing) => roomFurnishing !== 'none');
 
             positiveFurnitureQuantities.forEach((roomFurnishing) => {
                 it('should return a string including "furniture" or "furnishings"', () => {

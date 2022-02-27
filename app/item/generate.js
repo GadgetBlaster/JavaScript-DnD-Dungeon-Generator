@@ -6,7 +6,6 @@ import furnishing, {
     anyRoomFurniture,
     furnishingByRoomType,
     furnishingQuantityRanges,
-    furnitureQuantity, // TODO rename?
     requiredRoomFurniture,
 } from './furnishing.js';
 import { em, paragraph, subtitle } from '../ui/typography.js';
@@ -19,10 +18,11 @@ import { getRange, probability as quantityProbability } from '../attribute/quant
 
 // -- Type Imports -------------------------------------------------------------
 
-/** @typedef {import('./item.js').Item} Item */
 /** @typedef {import('../attribute/quantity').Quantity} Quantity */
-/** @typedef {import('../controller/knobs.js').ItemConfig} ItemConfig */
 /** @typedef {import('../controller/knobs.js').Config} Config */
+/** @typedef {import('../controller/knobs.js').ItemConfig} ItemConfig */
+/** @typedef {import('./furnishing').FurnitureQuantity} FurnitureQuantity */
+/** @typedef {import('./item.js').Item} Item */
 
 // -- Config -------------------------------------------------------------------
 
@@ -46,14 +46,14 @@ const maxColumnsRoom = 2;
  * @private
  *
  * @param {string} roomType
- * @param {Quantity} quantity
+ * @param {FurnitureQuantity} quantity
  *
  * @returns {Item[]}
  */
 function generateFurnishings(roomType, quantity) {
     let furniture = [];
 
-    if (quantity === furnitureQuantity.none) {
+    if (quantity === 'none') {
         return furniture;
     }
 
@@ -171,13 +171,13 @@ export {
  */
 export function generateItems(config) {
     let {
-        roomType      : roomType,
-        itemCondition : itemCondition,
-        itemQuantity  : itemQuantity,
-        itemRarity    : itemRarity,
-        itemType      : itemType,
+        roomType,
+        itemCondition,
+        itemQuantity,
+        itemRarity,
+        itemType,
         roomFurnishing: furnitureQuantity,
-        roomCondition : roomCondition,
+        roomCondition,
     } = config;
 
     isRequired(itemCondition, 'itemCondition is required in generateItems()');
