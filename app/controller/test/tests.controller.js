@@ -467,6 +467,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('generate', () => {
+            // TODO flaky test
             it('updates the content', () => {
                 /** @type {HTMLElement} */
                 const generateButtonEl = knobsEl.querySelector('[data-action="generate"]');

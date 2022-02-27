@@ -9,17 +9,18 @@ import { getEnvironmentDescription } from './environment.js';
 import { indicateRarity } from '../attribute/rarity.js';
 import { list } from '../ui/list.js';
 import { rollArrayItem } from '../utility/roll.js';
-import doorType, { appendDoorway, outside } from './door.js';
+import { appendDoorway, outside } from './door.js';
 import { appendRoomTypes } from './room.js';
 
 // -- Types --------------------------------------------------------------------
 
 /** @typedef {import('../attribute/rarity.js').Rarity} Rarity */
 /** @typedef {import('../attribute/size.js').Size} Size */
-/** @typedef {import('../dungeon/map.js').Connection} Connection */
 /** @typedef {import('../controller/knobs.js').DungeonConfig} DungeonConfig */
 /** @typedef {import('../controller/knobs.js').RoomConfig} RoomConfig */
+/** @typedef {import('../dungeon/map.js').Connection} Connection */
 /** @typedef {import('./door.js').DoorKey} DoorKey */
+/** @typedef {import('./door.js').DoorType} DoorType */
 /** @typedef {import('./door.js').RoomDoor} RoomDoor */
 /** @typedef {import('./room.js').RoomType} RoomType */
 
@@ -245,25 +246,25 @@ function getItemConditionDescription(config) {
  *
  * @private
  *
- * @param {string} type
+ * @param {DoorType} type
  *
  * @returns {string}
  */
 function getKeyDetail(type) {
     switch (type) {
-        case doorType.brass:
-        case doorType.iron:
-        case doorType.steel:
-        case doorType.stone:
+        case 'brass':
+        case 'iron':
+        case 'steel':
+        case 'stone':
             return capitalize(type) + ' key';
 
-        case doorType.wooden:
+        case 'wooden':
             return 'Wooden handled key';
 
-        case doorType.portcullis:
+        case 'portcullis':
             return 'Large rusty key';
 
-        case doorType.mechanical:
+        case 'mechanical':
             return 'A mechanical leaver';
 
         default:
@@ -298,7 +299,7 @@ function getRoomDimensionsDescription(roomSize) {
  */
 function getRoomDoorwayDescription(roomDoors) {
     let descParts = roomDoors.map(({ type, connection, size, locked }) => {
-        if (type === doorType.concealed || type === doorType.secret) {
+        if (type === 'concealed' || type === 'secret') {
             return;
         }
 
@@ -358,7 +359,7 @@ export const getDoorwayList = (roomDoors) => {
         let desc    = getDoorwayDescription({ type, size, locked });
         let connect = to === outside ? 'leading out of the dungeon' : `to Room ${to}`;
         let text    = `${capitalize(direction)} ${connect} (${em(desc)})`;
-        let secret  = type === doorType.concealed || type === doorType.secret;
+        let secret  = type === 'concealed' || type === 'secret';
 
         return secret ? strong(text) : text;
     });

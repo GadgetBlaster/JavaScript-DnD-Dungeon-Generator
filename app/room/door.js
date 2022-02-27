@@ -2,10 +2,14 @@
 
 import { createProbability } from '../utility/roll.js';
 
-// -- Types --------------------------------------------------------------------
+// -- Type Imports -------------------------------------------------------------
 
 /** @typedef {import('../dungeon/map.js').Connection} Connection */
 /** @typedef {import('../utility/roll.js').Probability} Probability */
+
+// -- Types --------------------------------------------------------------------
+
+/** @typedef {typeof doorTypes[number]} DoorType */
 
 /**
  * TODO RoomDoor
@@ -27,28 +31,21 @@ import { createProbability } from '../utility/roll.js';
 
 // -- Config -------------------------------------------------------------------
 
-/**
- * Door types
- */
-const door = {
-    archway   : 'archway',
-    brass     : 'brass',
-    concealed : 'concealed',
-    hole      : 'hole',
-    iron      : 'iron',
-    mechanical: 'mechanical',
-    passageway: 'passageway',
-    portal    : 'portal',
-    portcullis: 'portcullis',
-    secret    : 'secret',
-    steel     : 'steel',
-    stone     : 'stone',
-    wooden    : 'wooden',
-};
-
-export default door;
-
-export const list = Object.keys(door);
+export const doorTypes = Object.freeze(/** @type {const} */ ([
+    'archway',
+    'brass',
+    'concealed',
+    'hole',
+    'iron',
+    'mechanical',
+    'passageway',
+    'portal',
+    'portcullis',
+    'secret',
+    'steel',
+    'stone',
+    'wooden',
+]));
 
 // TODO Move to directions?
 export const outside = 'outside';
@@ -56,54 +53,56 @@ export const outside = 'outside';
 /**
  * Set of doorway types that should have "doorway" appended to their
  * description.
+ *
+ * @type {Set<DoorType>}
  */
 export const appendDoorway = new Set([
-    door.brass,
-    door.iron,
-    door.mechanical,
-    door.steel,
-    door.stone,
-    door.wooden,
+    'brass',
+    'iron',
+    'mechanical',
+    'steel',
+    'stone',
+    'wooden',
 ]);
 
 /**
  * Set of doorway types that can be locked and hae an associated key.
+ *
+ * @type {Set<DoorType>}
  */
 export const lockable = new Set([
-    door.brass,
-    door.iron,
-    door.mechanical,
-    door.portcullis,
-    door.steel,
-    door.stone,
-    door.wooden,
+    'brass',
+    'iron',
+    'mechanical',
+    'portcullis',
+    'steel',
+    'stone',
+    'wooden',
 ]);
 
 /**
  * Probability distribution table of door types.
  */
 export const probability = createProbability([
-    [ 20,  door.passageway ],
-    [ 40,  door.archway    ],
-    [ 55,  door.hole       ],
-    [ 60,  door.mechanical ],
-    [ 65,  door.portcullis ],
-    [ 75,  door.wooden     ],
-    [ 80,  door.steel      ],
-    [ 85,  door.iron       ],
-    [ 90,  door.brass      ],
-    [ 95,  door.stone      ],
-    [ 100, door.portal     ],
+    [ 20,  'passageway' ],
+    [ 40,  'archway'    ],
+    [ 55,  'hole'       ],
+    [ 60,  'mechanical' ],
+    [ 65,  'portcullis' ],
+    [ 75,  'wooden'     ],
+    [ 80,  'steel'      ],
+    [ 85,  'iron'       ],
+    [ 90,  'brass'      ],
+    [ 95,  'stone'      ],
+    [ 100, 'portal'     ],
 ]);
 
 /**
  * Probability distribution table for secret doors.
- *
- * TODO return type
  */
 export const secretProbability = createProbability([
-    [ 15, door.concealed ],
-    [ 30, door.secret    ],
+    [ 15, 'concealed' ],
+    [ 30, 'secret'    ],
 ]);
 
 /**

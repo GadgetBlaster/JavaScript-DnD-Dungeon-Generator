@@ -4,7 +4,6 @@ import { cellFeet } from './grid.js';
 import { drawMap, drawRoom, drawDoor, drawGrid, pxCell } from './draw.js';
 import { small } from '../ui/typography.js';
 import { list } from '../ui/list.js';
-import doorType from '../room/door.js';
 
 // -- Types --------------------------------------------------------------------
 
@@ -39,13 +38,13 @@ export function drawLegend({ mapWidth }) {
         [scale]       : drawGrid(gridDimensions),
         'Room'        : drawRoom(gridRectangle, { roomNumber: 1 }),
         'Trapped Room': drawRoom(gridRectangle, { roomNumber: '' }, { hasTraps: true }),
-        'Passageway'  : drawDoor(gridRectangle, { direction, type: doorType.passageway }),
-        'Archway'     : drawDoor(gridRectangle, { direction, type: doorType.archway }),
-        'Doorway'     : drawDoor(gridRectangle, { direction, type: doorType.wooden }),
-        'Locked Door' : drawDoor(gridRectangle, { direction, type: doorType.wooden, locked: true }),
-        'Hole'        : drawDoor(gridRectangle, { direction, type: doorType.hole }),
-        'Secret'      : drawDoor(gridRectangle, { direction, type: doorType.secret }),
-        'Concealed'   : drawDoor(gridRectangle, { direction, type: doorType.concealed }),
+        'Passageway'  : drawDoor(gridRectangle, { direction, type: 'passageway' }),
+        'Archway'     : drawDoor(gridRectangle, { direction, type: 'archway' }),
+        'Doorway'     : drawDoor(gridRectangle, { direction, type: 'wooden' }),
+        'Locked Door' : drawDoor(gridRectangle, { direction, type: 'wooden', locked: true }),
+        'Hole'        : drawDoor(gridRectangle, { direction, type: 'hole' }),
+        'Secret'      : drawDoor(gridRectangle, { direction, type: 'secret' }),
+        'Concealed'   : drawDoor(gridRectangle, { direction, type: 'concealed' }),
     };
 
     return list(Object.keys(legend).map((key) => {

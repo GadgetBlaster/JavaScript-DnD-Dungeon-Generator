@@ -26,7 +26,7 @@ import { furnitureQuantity } from '../../item/furnishing.js';
 import { indicateRarity, rarities } from '../../attribute/rarity.js';
 import { quantities } from '../../attribute/quantity.js';
 import { conditions } from '../../attribute/condition.js';
-import doorType, { lockable, appendDoorway, outside } from '../door.js';
+import { lockable, appendDoorway, outside } from '../door.js';
 
 /**
  * @param {import('../../unit/state.js').Utility} utility
@@ -330,15 +330,15 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getKeyDetail()', () => {
-        describe('given `doorType.mechanical`', () => {
+        describe('given a door type of `mechanical`', () => {
             it('should contain the word "leaver"', () => {
-                assert(getKeyDetail(doorType.mechanical)).stringIncludes('leaver');
+                assert(getKeyDetail('mechanical')).stringIncludes('leaver');
             });
         });
 
-        describe('given a lockable door type other than `doorType.mechanical`', () => {
+        describe('given a lockable door type other than `mechanical`', () => {
             let lockableNonMechanicalDoorTypes = [ ...lockable ]
-                .filter((type) => type !== doorType.mechanical);
+                .filter((type) => type !== 'mechanical');
 
             lockableNonMechanicalDoorTypes.forEach((type) => {
                 describe(`door type \`${type}\``, () => {
@@ -349,7 +349,7 @@ export default ({ assert, describe, it }) => {
             });
         });
 
-        describe('given an undefined `doorType`', () => {
+        describe('given an undefined door type', () => {
             it('should include the word "Key"', () => {
                 assert(getKeyDetail('Undefined key type')).stringIncludes('Key');
             });
@@ -357,23 +357,23 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getRoomDoorwayDescription()', () => {
-        describe('give a single `doorType.concealed`', () => {
+        describe('give a single `concealed`', () => {
             it('should return undefined', () => {
-                assert(getRoomDoorwayDescription([ { type: doorType.concealed } ]))
+                assert(getRoomDoorwayDescription([ { type: 'concealed' } ]))
                     .isUndefined();
             });
         });
 
-        describe('give a single `doorType.secret`', () => {
+        describe('give a single door with type `secret`', () => {
             it('should return undefined', () => {
-                assert(getRoomDoorwayDescription([ { type: doorType.secret } ]))
+                assert(getRoomDoorwayDescription([ { type: 'secret' } ]))
                     .isUndefined();
             });
         });
 
         describe('given a single door config', () => {
             const config = {
-                type: doorType.passageway,
+                type: 'passageway',
                 size: 1,
                 connection: { direction: 'north', to: 2 },
             };
@@ -393,7 +393,7 @@ export default ({ assert, describe, it }) => {
             });
 
             it('should include the door type', () => {
-                assert(desc).stringIncludes(doorType.passageway);
+                assert(desc).stringIncludes('passageway');
             });
 
             it('should capitalize the sentence', () => {
@@ -403,7 +403,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given a door object connected to the outside on the south wall', () => {
             const config = [{
-                type: doorType.passageway,
+                type: 'passageway',
                 size: 1,
                 connection: { direction: 'south', to: outside },
             }];
@@ -417,12 +417,12 @@ export default ({ assert, describe, it }) => {
         describe('given two door configs', () => {
             const config = [
                 {
-                    type: doorType.archway,
+                    type: 'archway',
                     size: 1,
                     connection: { direction: 'south', to: 2 },
                 },
                 {
-                    type: doorType.passageway,
+                    type: 'passageway',
                     size: 1,
                     connection: { direction: 'north', to: 1 },
                 },
@@ -438,8 +438,8 @@ export default ({ assert, describe, it }) => {
 
             it('should include both door types', () => {
                 assert(desc)
-                    .stringIncludes(doorType.archway)
-                    .stringIncludes(doorType.passageway);
+                    .stringIncludes('archway')
+                    .stringIncludes('passageway');
             });
 
             it('should include both directions', () => {
@@ -448,7 +448,7 @@ export default ({ assert, describe, it }) => {
                     .stringIncludes('north');
             });
 
-            describe('when the first door is of type `doorType.archway`', () => {
+            describe('when the first door is of type `archway`', () => {
                 it('should prefix the doorway description type with "An"', () => {
                     assert(desc.startsWith('An')).isTrue();
                 });
@@ -458,17 +458,17 @@ export default ({ assert, describe, it }) => {
         describe('given three doors configs', () => {
             const config = [
                 {
-                    type: doorType.archway,
+                    type: 'archway',
                     size: 1,
                     connection: { direction: 'south', to: 2 },
                 },
                 {
-                    type: doorType.passageway,
+                    type: 'passageway',
                     size: 1,
                     connection: { direction: 'north', to: 3 },
                 },
                 {
-                    type: doorType.hole,
+                    type: 'hole',
                     size: 1,
                     connection: { direction: 'east', to: 4 },
                 },
@@ -476,9 +476,9 @@ export default ({ assert, describe, it }) => {
 
             it('should separate each description with a comma and the last with `and`', () => {
                 assert(getRoomDoorwayDescription(config))
-                    .stringIncludes(` ${doorType.archway} leads south,`)
-                    .stringIncludes(` ${doorType.passageway} leads north,`)
-                    .stringIncludes(`, and a ${doorType.hole} leads east`);
+                    .stringIncludes(' archway leads south,')
+                    .stringIncludes(' passageway leads north,')
+                    .stringIncludes(', and a hole leads east');
             });
         });
     });
@@ -499,11 +499,11 @@ export default ({ assert, describe, it }) => {
         describe('given two door configs', () => {
             const config = [
                 {
-                    type: doorType.archway,
+                    type: 'archway',
                     connection: { direction: 'south', to: 2 },
                 },
                 {
-                    type: doorType.passageway,
+                    type: 'passageway',
                     connection: { direction: 'north', to: 3 },
                 },
             ];
@@ -520,14 +520,14 @@ export default ({ assert, describe, it }) => {
 
             it('should include an html list item for each doorway', () => {
                 assert(doorwayList)
-                    .stringIncludes(`<li>South to Room 2 (<em>${doorType.archway}</em>)</li>`)
-                    .stringIncludes(`<li>North to Room 3 (<em>${doorType.passageway}</em>)</li>`);
+                    .stringIncludes('<li>South to Room 2 (<em>archway</em>)</li>')
+                    .stringIncludes('<li>North to Room 3 (<em>passageway</em>)</li>');
             });
         });
 
         describe('given a door that connects to the outside', () => {
             const config = [{
-                type: doorType.archway,
+                type: 'archway',
                 connection: { direction: 'south', to: outside },
             }];
 
@@ -537,7 +537,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a secret or concealed door', () => {
-            [ doorType.concealed, doorType.secret ].forEach((type) => {
+            [ 'concealed', 'secret' ].forEach((type) => {
                 const config = [{
                     type,
                     connection: { direction: 'east', to: 1 },
@@ -734,7 +734,7 @@ export default ({ assert, describe, it }) => {
                 it('should include a description of the room\'s doors', () => {
                     const room = { settings: { roomCount: 1, roomType: 'room' }};
                     const roomDoors = [{
-                        type: doorType.passageway,
+                        type: 'passageway',
                         size: 1,
                         connection: { direction: 'south', to: outside },
                     }];

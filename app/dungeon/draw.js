@@ -2,10 +2,11 @@
 
 import { defaultFontSize, drawCircle, drawLine, drawRect, drawText } from '../utility/shape.js';
 import { element } from '../utility/element.js';
-import doorType, { lockable } from '../room/door.js';
+import { lockable } from '../room/door.js';
 
 // -- Type Imports -------------------------------------------------------------
 
+/** @typedef {import('../room/door').DoorType} DoorType */
 /** @typedef {import('../utility/shape.js').Circle} Circle */
 /** @typedef {import('../utility/shape.js').PixelRectangle} PixelRectangle */
 /** @typedef {import('./grid').Coordinates} Coordinates */
@@ -14,8 +15,6 @@ import doorType, { lockable } from '../room/door.js';
 /** @typedef {import('./map').Direction} Direction */
 
 // -- Types -------------------------------------------------------------
-
-// -- Room Defs ----------------------------------------------------------------
 
 /**
  * @typedef RoomText
@@ -230,7 +229,7 @@ export {
  * @param {Rectangle} rectangle
  * @param {object} args
  *     @param {Direction} args.direction
- *     @param {string} args.type
+ *     @param {DoorType} args.type
  *     @param {boolean} [args.locked] // TODO move to options param
  *
  * @returns {string}
@@ -239,7 +238,7 @@ export function drawDoor(rectangle, { direction, type, locked }) {
     // TODO doors should only ever be 1 wide or 1 tall depending on direction
 
     let rectAttributes = getRectAttrs(rectangle);
-    let isSecret  = type === doorType.secret || type === doorType.concealed;
+    let isSecret  = type === 'secret' || type === 'concealed';
     let color     = isSecret ? colorTransparent : colorRoomFill;
 
     let attributes = {
@@ -308,7 +307,7 @@ export function drawDoor(rectangle, { direction, type, locked }) {
             'stroke-width': pxBorder,
         }));
 
-    } else if (type === doorType.archway) {
+    } else if (type === 'archway') {
         let cx  = isVertical ? x      : xHalf;
         let cy  = isVertical ? yHalf  : y;
         let cx2 = isVertical ? xRight : cx;
@@ -316,7 +315,7 @@ export function drawDoor(rectangle, { direction, type, locked }) {
 
         details.push(drawPillar({ cx, cy }));
         details.push(drawPillar({ cx: cx2, cy: cy2 }));
-    } else if (type === doorType.hole) {
+    } else if (type === 'hole') {
         lineCords.push(divisionLineCords);
 
         let { x1, y1 } = divisionLineCords;
@@ -325,9 +324,9 @@ export function drawDoor(rectangle, { direction, type, locked }) {
         let cy = isVertical ? y1 : yHalf;
 
         details.push(drawCircle({ cx, cy, r: radiusHole }, { fill: colorPillarFill }));
-    } else if (type === doorType.secret) {
+    } else if (type === 'secret') {
         details.push(drawText(doorSecretLabel, { x: xHalf, y: yHalf }));
-    } else if (type === doorType.concealed) {
+    } else if (type === 'concealed') {
         details.push(drawText(doorConcealedLabel, { x: xHalf, y: yHalf }));
     }
 

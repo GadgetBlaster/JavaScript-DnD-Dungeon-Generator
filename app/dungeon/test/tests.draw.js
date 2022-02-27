@@ -37,8 +37,6 @@ import {
     drawRect,
 } from '../../utility/shape.js';
 
-import doorType from '../../room/door.js';
-
 /** @typedef {import('../../utility/shape.js').Circle} Circle */
 /** @typedef {import('../draw.js').RoomText} RoomText */
 /** @typedef {import('../map.js').Rectangle} Rectangle */
@@ -274,7 +272,7 @@ export default ({ assert, describe, it }) => {
         const doorArgs  = {
             direction: 'south',
             locked: false,
-            type: doorType.passageway,
+            type: 'passageway',
         };
 
         const door     = drawDoor(rectangle, doorArgs);
@@ -375,7 +373,7 @@ export default ({ assert, describe, it }) => {
                         const lockedDoor = drawDoor(rectangle, {
                             ...doorArgs,
                             locked: true,
-                            type: doorType.wooden,
+                            type: 'wooden',
                         });
 
                         assert(RegExp(`<rect(.+?)fill="${colorLockedFill}"(.+?)>`).test(lockedDoor)).isTrue();
@@ -386,7 +384,7 @@ export default ({ assert, describe, it }) => {
                     const { x, y, width, height } = northSouthDoorRect;
                     const lockableDoor = drawDoor(northSouthDoorRect, {
                         ...northSouthDoorArgs,
-                        type: doorType.wooden,
+                        type: 'wooden',
                     });
 
                     it('includes a horizontal line in the center of the cell ', () => {
@@ -433,7 +431,7 @@ export default ({ assert, describe, it }) => {
                     const { x, y, width, height } = eastWestDoorRect;
                     const lockableDoor = drawDoor(eastWestDoorRect, {
                         ...eastWestDoorArgs,
-                        type: doorType.wooden,
+                        type: 'wooden',
                     });
 
                     it('includes a vertical line in the center of the cell ', () => {
@@ -483,7 +481,7 @@ export default ({ assert, describe, it }) => {
                         const { x, y, width, height } = northSouthDoorRect;
                         const archwayDoor = drawDoor(northSouthDoorRect, {
                             ...northSouthDoorArgs,
-                            type: doorType.archway,
+                            type: 'archway',
                         });
 
                         const cx1 = x * pxCell;
@@ -509,7 +507,7 @@ export default ({ assert, describe, it }) => {
                         const { x, y, width, height } = eastWestDoorRect;
                         const archwayDoor = drawDoor(eastWestDoorRect, {
                             ...eastWestDoorArgs,
-                            type: doorType.archway,
+                            type: 'archway',
                         });
 
                         const cx  = (x * pxCell) + ((width / 2) * pxCell);
@@ -537,7 +535,7 @@ export default ({ assert, describe, it }) => {
                         const { x, y, width, height } = northSouthDoorRect;
                         const archwayDoor = drawDoor(northSouthDoorRect, {
                             ...northSouthDoorArgs,
-                            type: doorType.hole,
+                            type: 'hole',
                         });
 
                         const cx = (x + (width  / 2)) * pxCell;
@@ -560,7 +558,7 @@ export default ({ assert, describe, it }) => {
                         const { x, y, width, height } = eastWestDoorRect;
                         const archwayDoor = drawDoor(eastWestDoorRect, {
                             ...eastWestDoorArgs,
-                            type: doorType.hole,
+                            type: 'hole',
                         });
 
                         const cx = (x + (width  / 2)) * pxCell;
@@ -580,7 +578,7 @@ export default ({ assert, describe, it }) => {
             });
 
             describe('when the door is a secret door', () => {
-                const secretDoor = drawDoor(rectangle, { ...doorArgs, type: doorType.secret });
+                const secretDoor = drawDoor(rectangle, { ...doorArgs, type: 'secret' });
                 const secretDoorRect = secretDoor.slice(0, secretDoor.indexOf('/>') + 2);
 
                 it('has a transparent fill and stroke', () => {
@@ -603,7 +601,7 @@ export default ({ assert, describe, it }) => {
             });
 
             describe('when the door is a concealed door', () => {
-                const concealedDoor = drawDoor(rectangle, { ...doorArgs, type: doorType.concealed });
+                const concealedDoor = drawDoor(rectangle, { ...doorArgs, type: 'concealed' });
                 const concealedDoorRect = concealedDoor.slice(0, concealedDoor.indexOf('/>') + 2);
 
                 it('has a transparent fill and stroke', () => {

@@ -1,7 +1,8 @@
 // @ts-check
 
-import door, {
+import {
     appendDoorway,
+    doorTypes,
     getRoomDoor,
     lockable,
     probability,
@@ -11,25 +12,25 @@ import door, {
  * @param {import('../../unit/state.js').Utility} utility
  */
 export default ({ assert, describe, it }) => {
-    describe('`door`', () => {
-        it('should be an object of strings', () => {
-            assert(door).isObject();
+    describe('`doorTypes`', () => {
+        it('should be an array of strings', () => {
+            assert(doorTypes).isArray();
 
-            const invalidDoor = Object.values(door).find((value) => typeof value !== 'string');
+            const invalidDoor = Object.values(doorTypes).find((value) => typeof value !== 'string');
             assert(invalidDoor).isUndefined();
         });
     });
 
     describe('`appendDoorway`', () => {
         it('should be a set of door types', () => {
-            const invalidDoor = [ ...appendDoorway ].find((appendDoor) => !door[appendDoor]);
+            const invalidDoor = [ ...appendDoorway ].find((door) => !doorTypes.includes(door));
             assert(invalidDoor).isUndefined();
         });
     });
 
     describe('`lockable`', () => {
         it('should be a set of door types', () => {
-            const invalidDoor = [ ...lockable ].find((lockedDoor) => !door[lockedDoor]);
+            const invalidDoor = [ ...lockable ].find((door) => !doorTypes.includes(door));
             assert(invalidDoor).isUndefined();
         });
     });
@@ -58,7 +59,7 @@ export default ({ assert, describe, it }) => {
                     },
                     locked: false,
                     size: 2,
-                    type: door.archway,
+                    type: 'archway',
                 },
             ];
 
@@ -82,13 +83,13 @@ export default ({ assert, describe, it }) => {
                 const lockedDungeonDoors = { ...dungeonDoors };
 
                 lockedDungeonDoors[0].locked = true;
-                lockedDungeonDoors[0].type = door.wooden;
+                lockedDungeonDoors[0].type   = 'wooden';
 
                 it('should return a RoomDoors object with an array of Keys', () => {
                     const roomDoorKeys = getRoomDoor(dungeonDoors).keys;
 
                     assert(roomDoorKeys[0]).equalsObject({
-                        type: door.wooden,
+                        type: 'wooden',
                         connections: {
                             1: { direction: 'north', to: 2 },
                             2: { direction: 'south', to: 1 },

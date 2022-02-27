@@ -30,7 +30,7 @@ import { createBlankGrid, wallSize } from '../grid.js';
 import { dimensionRanges } from '../../room/dimensions.js';
 import { generateRooms } from '../../room/generate.js';
 import { testTrapLabel as trapLabel } from '../draw.js';
-import { list as doorTypes } from '../../room/door.js';
+import { doorTypes } from '../../room/door.js';
 
 /** @typedef {import('../map.js').GridRoom} GridRoom */
 /** @typedef {import('../../room/room.js').RoomType} RoomType */
