@@ -7,7 +7,7 @@ import { paragraph } from '../ui/typography.js';
 import { plural } from '../utility/tools.js';
 import run from './run.js';
 
-// -- Types --------------------------------------------------------------------
+// -- Types Imports ------------------------------------------------------------
 
 /** @typedef {import('../utility/element').Attributes} Attributes */
 /** @typedef {import('./assert.js').Result} Result */
@@ -15,6 +15,8 @@ import run from './run.js';
 /** @typedef {import('./state.js').Entry} Entry */
 /** @typedef {import('./state.js').State} State */
 /** @typedef {import('./state.js').Summary} Summary */
+
+// -- Types --------------------------------------------------------------------
 
 /**
  * @typedef {object} OutputOptions
@@ -28,7 +30,7 @@ import run from './run.js';
 // -- Config -------------------------------------------------------------------
 
 /**
- * HTML escapes
+ * HTML escape character lookup.
  */
 const htmlEscapes = {
     '"': '&quot;',
@@ -49,46 +51,18 @@ const unitUrl = './unit.html';
 // -- Private Functions --------------------------------------------------------
 
 /**
- * Log entry
- *
- * @param {string} message
- * @param {Attributes} [attributes]
- *
- * @returns {string}
- */
-const logEntry = (message, attributes) => element('li', escapeHTML(message), attributes);
-
-/**
- * Make params
- *
- * @param {object} entries
- *
- * @returns {string}
- */
-function makeParams(entries) {
-    let params = Object.entries(entries)
-        .filter(([ , value ]) => Boolean(value))
-        .map(([ key, value ]) => `${key}=${value}`)
-        .join('&');
-
-    return params && `?${params}`;
-}
-
-// -- Public Functions ---------------------------------------------------------
-// TODO private funcs
-/**
- * Escape HTML for output as text content.
+ * Returns escaped HTML for output as text content.
  *
  * @param {string} string
  *
  * @returns {string}
  */
-export function escapeHTML(string) {
+function escapeHTML(string) {
     return string.replace(/[&<>"'\/]/g, (match) => htmlEscapes[match]);
 }
 
 /**
- * Get result log
+ * Returns the result log as an HTML string.
  *
  * @param {Result[]} results
  * @param {object} [options]
@@ -96,7 +70,7 @@ export function escapeHTML(string) {
  *
  * @returns {string}
  */
-export function getLog(results, { verbose } = {}) {
+function getLog(results, { verbose } = {}) {
     return results.map(({ isOk, msg }) => {
         if (verbose && isOk) {
             return logEntry(msg);
@@ -107,60 +81,12 @@ export function getLog(results, { verbose } = {}) {
 }
 
 /**
- * Get navigation
- *
- * @param {object} options
- *     @param {string} [options.scope]
- *     @param {boolean} [options.verbose]
- *
- * @returns {string}
- */
-export const getNav = ({ scope, verbose }) => [
-    link('All', unitUrl + makeParams({ scope: null, verbose }), !scope ? { 'data-active': true } : null),
-    link('Tests', unitUrl + makeParams({ scope: 'list', verbose }), scope === 'list' ? { 'data-active': true } : null),
-    element('span', '', { role: 'presentation', 'data-separator': true }),
-    link('Verbose', unitUrl + makeParams({ scope, verbose: !verbose }), verbose ? { 'data-active': verbose } : null),
-].join('');
-
-/**
- * Get unit test output.
- *
- * @param {object} suite
- * @param {State} state
- * @param {OutputOptions} [options]
- */
- export function getOutput(suite, state, options = {}) {
-    let { scope } = options;
-
-    if (scope === 'list') {
-        return getTestList(suite, options);
-    }
-
-    let list = Object.keys(suite);
-    let testScope = list.includes(scope) ? scope : undefined;
-    let summary = run(state, suite, testScope);
-
-    return getResults(summary, options);
-}
-
-/**
- * Result Msg
- *
- * @param {CurrentScope[]} entries
- *
- * @returns {string}
- */
-export const getResultMessage = (entries) => entries.reduce((accumulator, value, index) => {
-    return `${accumulator}${'  '.repeat(index)}${value.msg}\n`;
-}, '').trim();
-
-/**
- * Get test results
+ * Returns test results as an HTML string.
  *
  * @param {Summary} summary
  * @param {OutputOptions} [options]
  */
-export function getResults(summary, options = {}) {
+function getResults(summary, options = {}) {
     let {
         errors,
         failures,
@@ -203,7 +129,7 @@ export function getResults(summary, options = {}) {
 }
 
 /**
- * Get test suite list
+ * Returns the unit test suite list as an HTML string.
  *
  * @param {string[]} scopes
  * @param {object} [options]
@@ -211,20 +137,20 @@ export function getResults(summary, options = {}) {
  *
  * @returns {string}
  */
-export function getSuiteList(scopes, { verbose } = {}) {
+function getSuiteList(scopes, { verbose } = {}) {
     return scopes.map((scope) => {
         return element('li', link(scope, makeParams({ scope, verbose })));
     }).join('');
 }
 
 /**
- * Get test summary.
+ * Returns the unit test summary as an HTML string.
  *
  * @param {Summary} summary
  *
  * @returns {string}
  */
-export function getSummary(summary) {
+function getSummary(summary) {
     let {
         assertionsText,
         checkedForText,
@@ -241,33 +167,7 @@ export function getSummary(summary) {
 }
 
 /**
- * Get test summary link.
- *
- * @param {Summary} summary
- *
- * @returns {string}
- */
-export function getSummaryLink(summary) {
-    let {
-        assertionsText,
-        checkedForText,
-        issuesText,
-    } = getSummaryParts(summary);
-
-    if (issuesText) {
-        let assertionContent = element('p', `${checkedForText} ${assertionsText}`);
-        let encounterContent = element('p', link(issuesText, unitUrl, {
-            'data-error': true,
-        }));
-
-        return assertionContent + encounterContent;
-    }
-
-    return paragraph(`${checkedForText} ${link(assertionsText, unitUrl)}`);
-}
-
-/**
- * Get test summary parts.
+ * Returns an object summarizing unit test results.
  *
  * @param {Summary} summary
  *
@@ -277,7 +177,7 @@ export function getSummaryLink(summary) {
  *     issuesText?: string;
  * }}
  */
-export function getSummaryParts(summary) {
+function getSummaryParts(summary) {
     let { assertions, errors, failures } = summary;
 
     let checkedForText = `Checked for ${assertions}`;
@@ -307,13 +207,127 @@ export function getSummaryParts(summary) {
 }
 
 /**
- * Get unit test list
+ * Returns a list of unit tests as an HTML string.
  *
  * @param {object} suite
  * @param {OutputOptions} [options]
  */
-export function getTestList(suite, { verbose } = {}) {
+function getTestList(suite, { verbose } = {}) {
     let list = getSuiteList(Object.keys(suite), { verbose });
 
     return element('h1', 'Spell book') + element('ul', list);
+}
+
+/**
+ * Returns a unit test log entry as an HTML string.
+ *
+ * @param {string} message
+ * @param {Attributes} [attributes]
+ *
+ * @returns {string}
+ */
+const logEntry = (message, attributes) => element('li', escapeHTML(message), attributes);
+
+/**
+ * Constructs URL params for the unit test navigation.
+ *
+ * @param {object} entries
+ *
+ * @returns {string}
+ */
+function makeParams(entries) {
+    let params = Object.entries(entries)
+        .filter(([ , value ]) => Boolean(value))
+        .map(([ key, value ]) => `${key}=${value}`)
+        .join('&');
+
+    return params && `?${params}`;
+}
+
+export {
+    escapeHTML      as testEscapeHTML,
+    getLog          as testGetLog,
+    getResults      as testGetResults,
+    getSuiteList    as testGetSuiteList,
+    getSummary      as testGetSummary,
+    getSummaryParts as testGetSummaryParts,
+    getTestList     as testGetTestList,
+};
+
+// -- Public Functions ---------------------------------------------------------
+
+/**
+ * Returns the unit test interface's navigation as an HTML string.
+ *
+ * TODO rename to getTestNav
+ *
+ * @param {object} options
+ *     @param {string} [options.scope]
+ *     @param {boolean} [options.verbose]
+ *
+ * @returns {string}
+ */
+export const getNav = ({ scope, verbose }) => [
+    link('All', unitUrl + makeParams({ scope: null, verbose }), !scope ? { 'data-active': true } : null),
+    link('Tests', unitUrl + makeParams({ scope: 'list', verbose }), scope === 'list' ? { 'data-active': true } : null),
+    element('span', '', { role: 'presentation', 'data-separator': true }),
+    link('Verbose', unitUrl + makeParams({ scope, verbose: !verbose }), verbose ? { 'data-active': verbose } : null),
+].join('');
+
+/**
+ * Returns unit test output as an HTML string.
+ *
+ * @param {object} suite
+ * @param {State} state
+ * @param {OutputOptions} [options]
+ */
+export function getOutput(suite, state, options = {}) {
+    let { scope } = options;
+
+    if (scope === 'list') {
+        return getTestList(suite, options);
+    }
+
+    let list = Object.keys(suite);
+    let testScope = list.includes(scope) ? scope : undefined;
+    let summary = run(state, suite, testScope);
+
+    return getResults(summary, options);
+}
+
+/**
+ * Returns an assertion result's message string.
+ *
+ * @param {CurrentScope[]} entries
+ *
+ * @returns {string}
+ */
+export const getResultMessage = (entries) => entries.reduce((accumulator, value, index) => {
+    return `${accumulator}${'  '.repeat(index)}${value.msg}\n`;
+}, '').trim();
+
+/**
+ * Returns a link to the test summary as an HTML string.
+ *
+ * @param {Summary} summary
+ *
+ * @returns {string}
+ */
+export function getSummaryLink(summary) {
+    let {
+        assertionsText,
+        checkedForText,
+        issuesText,
+    } = getSummaryParts(summary);
+
+    if (issuesText) {
+        let assertionContent = element('p', `${checkedForText} ${assertionsText}`);
+        let encounterContent = element('p', link(issuesText, unitUrl, {
+            'data-error': true,
+        }));
+
+        return assertionContent + encounterContent;
+    }
+
+    return paragraph(`${checkedForText} ${link(assertionsText, unitUrl)}`);
 }

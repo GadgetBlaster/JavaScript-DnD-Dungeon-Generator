@@ -125,6 +125,9 @@ let nonUndefinedTypes = (() => excludingType('undefined'))();
  * @param {import('../state.js').Utility} utility
  */
 export default ({ assert, describe, it }) => {
+
+    // -- Public Functions -----------------------------------------------------
+
     assertions.forEach((func) => {
         describe(`${func.name}()`, () => {
             // @ts-expect-error

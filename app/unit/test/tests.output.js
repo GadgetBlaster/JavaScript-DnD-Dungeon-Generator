@@ -1,17 +1,20 @@
 // @ts-check
 
 import {
-    escapeHTML,
-    getLog,
+    // Private Functions
+    testEscapeHTML      as escapeHTML,
+    testGetLog          as getLog,
+    testGetResults      as getResults,
+    testGetSuiteList    as getSuiteList,
+    testGetSummary      as getSummary,
+    testGetSummaryParts as getSummaryParts,
+    testGetTestList     as getTestList,
+
+    // Public Functions
     getNav,
     getOutput,
     getResultMessage,
-    getResults,
-    getSuiteList,
-    getSummary,
     getSummaryLink,
-    getSummaryParts,
-    getTestList,
 } from '../output.js';
 
 const noop = () => {};
@@ -20,6 +23,9 @@ const noop = () => {};
  * @param {import('../state.js').Utility} utility
  */
 export default ({ assert, describe, it }) => {
+
+    // -- Private Functions ----------------------------------------------------
+
     describe('escapeHTML()', () => {
         describe('given an HTML string', () => {
             it('should return a string with escaped HTML', () => {
@@ -86,169 +92,6 @@ export default ({ assert, describe, it }) => {
                             '<li class="fail">no way</li>',
                         ].join(''));
                 });
-            });
-        });
-    });
-
-    describe('getNav()', () => {
-        describe('given no options', () => {
-            const nav = getNav({});
-
-            it('should contain the urls', () => {
-                [
-                    './unit.html',
-                    './unit.html?scope=list',
-                    './unit.html?verbose=true',
-                ].forEach((url) => {
-                    assert(nav).stringIncludes(url);
-                });
-            });
-
-            it('should mark the "All" link as active', () => {
-                assert(nav).stringIncludes('<a data-active="true" href="./unit.html">All</a>');
-            });
-        });
-
-        describe('given a `scope` option', () => {
-            const nav = getNav({ scope: 'fake' });
-
-            it('should contain the urls', () => {
-                [
-                    './unit.html',
-                    './unit.html?scope=list',
-                    './unit.html?scope=fake&verbose=true',
-                ].forEach((url) => {
-                    assert(nav).stringIncludes(url);
-                });
-            });
-
-            it('should not mark the "All" link as active', () => {
-                assert(nav).stringIncludes('<a href="./unit.html">All</a>');
-            });
-        });
-
-        describe('given a `scope` option of "list"', () => {
-            it('should mark the "Tests" link as active', () => {
-                assert(getNav({ scope: 'list' }))
-                    .stringIncludes('<a data-active="true" href="./unit.html?scope=list">Tests</a>');
-            });
-        });
-
-        describe('given a truthy `verbose` option', () => {
-            const nav = getNav({ verbose: true });
-
-            it('should contain the urls', () => {
-                [
-                    './unit.html?verbose=true',
-                    './unit.html?scope=list&verbose=true',
-                    './unit.html',
-                ].forEach((url) => {
-                    assert(nav).stringIncludes(url);
-                });
-            });
-
-            it('should mark the "Verbose" link as active', () => {
-                assert(getNav({ verbose: true }))
-                    .stringIncludes('<a data-active="true" href="./unit.html">Verbose</a>');
-            });
-        });
-
-        describe('given a `scope` and truthy `verbose` options', () => {
-            const html = getNav({ scope: 'fake', verbose: true });
-
-            it('should contain the urls', () => {
-                [
-                    './unit.html?verbose=true',
-                    './unit.html?scope=list&verbose=true',
-                    './unit.html?scope=fake',
-                ].forEach((url) => {
-                    assert(html).stringIncludes(url);
-                });
-            });
-        });
-    });
-
-    describe('getOutput()', () => {
-        const suite = { '/test/tests.fake.js': noop };
-        const state = {
-            getSummary: () => ({
-                assertions: 1,
-                errors    : [],
-                failures  : 0,
-                results   : [ { isOk: true, msg: 'fake test result' } ],
-            }),
-            onError: noop,
-            runUnits: noop,
-        };
-
-        it('should return test results', () => {
-            assert(getOutput(suite, state)).stringIncludes('Mumbling incantations');
-        });
-
-        describe('given a `scope` option of `list`', () => {
-            it('should return a list of tests', () => {
-                assert(getOutput(suite, state, { scope: 'list' }))
-                    .stringIncludes('<ul><li><a href="?scope=/test/tests.fake.js">/test/tests.fake.js</a></li></ul>');
-            });
-        });
-
-        describe('given a `scope` option for a specific test', () => {
-            it('should only call `runUnits()` on the `scope` test path', () => {
-                let scopesCalled = [];
-
-                const scopedSuite = {
-                    '/test/tests.fake.js' : noop,
-                    '/test/tests.fake2.js': noop,
-                };
-
-                const scopedState = {
-                    ...state,
-                    runUnits: (path) => { scopesCalled.push(path); },
-                };
-
-                getOutput(scopedSuite, scopedState, { scope: '/test/tests.fake.js' });
-
-                assert(scopesCalled.length).equals(1);
-                assert(scopesCalled[0]).equals('/test/tests.fake.js');
-            });
-        });
-    });
-
-    describe('getResultMessage()', () => {
-        describe('given an empty array', () => {
-            it('should return an empty string', () => {
-                assert(getResultMessage([])).equals('');
-            });
-        });
-
-        describe('given a single entry', () => {
-            it('should return the entry', () => {
-                assert(getResultMessage([ {
-                    msg  : 'just us chickens',
-                    scope: 'describe()',
-                } ])).equals('just us chickens');
-            });
-        });
-
-        describe('given three entries', () => {
-            const entries = getResultMessage([
-                { msg: 'jimmy', scope: 'default()'  },
-                { msg: 'joey',  scope: 'describe()' },
-                { msg: 'sarah', scope: 'it()'       },
-            ]);
-
-            const lines = entries.split(`\n`);
-
-            it('should return each entry on a new line', () => {
-                assert(lines[0].trim()).equals('jimmy');
-                assert(lines[1].trim()).equals('joey');
-                assert(lines[2].trim()).equals('sarah');
-            });
-
-            it('should indent each line with two spaces', () => {
-                assert(lines[0]).stringExcludes('  ');
-                assert(lines[1]).stringIncludes('  ');
-                assert(lines[2]).stringIncludes('    ');
             });
         });
     });
@@ -484,42 +327,6 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('getSummaryLink()', () => {
-        const defaultSummary = {
-            assertions: 0,
-            errors    : [],
-            failures  : 0,
-            results   : [],
-        };
-
-        it('should return a string', () => {
-            assert(getSummaryLink({ ...defaultSummary })).isString();
-        });
-
-        it('should return a link to `./unit.html', () => {
-            const summary = getSummaryLink({ ...defaultSummary });
-            assert(/<a href=".\/unit.html">(.+?)<\/a>/.test(summary)).isTrue();
-        });
-
-        describe('given errors', () => {
-            it('the link should include a `data-error` attribute', () => {
-                const summary = getSummaryLink({
-                    ...defaultSummary,
-                    errors: [ { isOk: false, msg: 'Bad dates' } ],
-                });
-
-                assert(/<a data-error="true" href=".\/unit.html">(.+?)<\/a>/.test(summary)).isTrue();
-            });
-        });
-
-        describe('given failures', () => {
-            it('the link should include a `data-error` attribute', () => {
-                const summary = getSummaryLink({ ...defaultSummary, failures: 1 });
-                assert(/<a data-error="true" href=".\/unit.html">(.+?)<\/a>/.test(summary)).isTrue();
-            });
-        });
-    });
-
     describe('getSummaryParts()', () => {
         const defaultSummary = {
             assertions: 0,
@@ -688,4 +495,206 @@ export default ({ assert, describe, it }) => {
                 .stringIncludes('<li><a href="?scope=/test/tests.fake2.js">/test/tests.fake2.js</a></li>');
         });
     });
+
+    // -- Public Functions -----------------------------------------------------
+
+    describe('getNav()', () => {
+        describe('given no options', () => {
+            const nav = getNav({});
+
+            it('should contain the urls', () => {
+                [
+                    './unit.html',
+                    './unit.html?scope=list',
+                    './unit.html?verbose=true',
+                ].forEach((url) => {
+                    assert(nav).stringIncludes(url);
+                });
+            });
+
+            it('should mark the "All" link as active', () => {
+                assert(nav).stringIncludes('<a data-active="true" href="./unit.html">All</a>');
+            });
+        });
+
+        describe('given a `scope` option', () => {
+            const nav = getNav({ scope: 'fake' });
+
+            it('should contain the urls', () => {
+                [
+                    './unit.html',
+                    './unit.html?scope=list',
+                    './unit.html?scope=fake&verbose=true',
+                ].forEach((url) => {
+                    assert(nav).stringIncludes(url);
+                });
+            });
+
+            it('should not mark the "All" link as active', () => {
+                assert(nav).stringIncludes('<a href="./unit.html">All</a>');
+            });
+        });
+
+        describe('given a `scope` option of "list"', () => {
+            it('should mark the "Tests" link as active', () => {
+                assert(getNav({ scope: 'list' }))
+                    .stringIncludes('<a data-active="true" href="./unit.html?scope=list">Tests</a>');
+            });
+        });
+
+        describe('given a truthy `verbose` option', () => {
+            const nav = getNav({ verbose: true });
+
+            it('should contain the urls', () => {
+                [
+                    './unit.html?verbose=true',
+                    './unit.html?scope=list&verbose=true',
+                    './unit.html',
+                ].forEach((url) => {
+                    assert(nav).stringIncludes(url);
+                });
+            });
+
+            it('should mark the "Verbose" link as active', () => {
+                assert(getNav({ verbose: true }))
+                    .stringIncludes('<a data-active="true" href="./unit.html">Verbose</a>');
+            });
+        });
+
+        describe('given a `scope` and truthy `verbose` options', () => {
+            const html = getNav({ scope: 'fake', verbose: true });
+
+            it('should contain the urls', () => {
+                [
+                    './unit.html?verbose=true',
+                    './unit.html?scope=list&verbose=true',
+                    './unit.html?scope=fake',
+                ].forEach((url) => {
+                    assert(html).stringIncludes(url);
+                });
+            });
+        });
+    });
+
+    describe('getOutput()', () => {
+        const suite = { '/test/tests.fake.js': noop };
+        const state = {
+            getSummary: () => ({
+                assertions: 1,
+                errors    : [],
+                failures  : 0,
+                results   : [ { isOk: true, msg: 'fake test result' } ],
+            }),
+            onError: noop,
+            runUnits: noop,
+        };
+
+        it('should return test results', () => {
+            assert(getOutput(suite, state)).stringIncludes('Mumbling incantations');
+        });
+
+        describe('given a `scope` option of `list`', () => {
+            it('should return a list of tests', () => {
+                assert(getOutput(suite, state, { scope: 'list' }))
+                    .stringIncludes('<ul><li><a href="?scope=/test/tests.fake.js">/test/tests.fake.js</a></li></ul>');
+            });
+        });
+
+        describe('given a `scope` option for a specific test', () => {
+            it('should only call `runUnits()` on the `scope` test path', () => {
+                let scopesCalled = [];
+
+                const scopedSuite = {
+                    '/test/tests.fake.js' : noop,
+                    '/test/tests.fake2.js': noop,
+                };
+
+                const scopedState = {
+                    ...state,
+                    runUnits: (path) => { scopesCalled.push(path); },
+                };
+
+                getOutput(scopedSuite, scopedState, { scope: '/test/tests.fake.js' });
+
+                assert(scopesCalled.length).equals(1);
+                assert(scopesCalled[0]).equals('/test/tests.fake.js');
+            });
+        });
+    });
+
+    describe('getResultMessage()', () => {
+        describe('given an empty array', () => {
+            it('should return an empty string', () => {
+                assert(getResultMessage([])).equals('');
+            });
+        });
+
+        describe('given a single entry', () => {
+            it('should return the entry', () => {
+                assert(getResultMessage([ {
+                    msg  : 'just us chickens',
+                    scope: 'describe()',
+                } ])).equals('just us chickens');
+            });
+        });
+
+        describe('given three entries', () => {
+            const entries = getResultMessage([
+                { msg: 'jimmy', scope: 'default()'  },
+                { msg: 'joey',  scope: 'describe()' },
+                { msg: 'sarah', scope: 'it()'       },
+            ]);
+
+            const lines = entries.split(`\n`);
+
+            it('should return each entry on a new line', () => {
+                assert(lines[0].trim()).equals('jimmy');
+                assert(lines[1].trim()).equals('joey');
+                assert(lines[2].trim()).equals('sarah');
+            });
+
+            it('should indent each line with two spaces', () => {
+                assert(lines[0]).stringExcludes('  ');
+                assert(lines[1]).stringIncludes('  ');
+                assert(lines[2]).stringIncludes('    ');
+            });
+        });
+    });
+
+    describe('getSummaryLink()', () => {
+        const defaultSummary = {
+            assertions: 0,
+            errors    : [],
+            failures  : 0,
+            results   : [],
+        };
+
+        it('should return a string', () => {
+            assert(getSummaryLink({ ...defaultSummary })).isString();
+        });
+
+        it('should return a link to `./unit.html', () => {
+            const summary = getSummaryLink({ ...defaultSummary });
+            assert(/<a href=".\/unit.html">(.+?)<\/a>/.test(summary)).isTrue();
+        });
+
+        describe('given errors', () => {
+            it('the link should include a `data-error` attribute', () => {
+                const summary = getSummaryLink({
+                    ...defaultSummary,
+                    errors: [ { isOk: false, msg: 'Bad dates' } ],
+                });
+
+                assert(/<a data-error="true" href=".\/unit.html">(.+?)<\/a>/.test(summary)).isTrue();
+            });
+        });
+
+        describe('given failures', () => {
+            it('the link should include a `data-error` attribute', () => {
+                const summary = getSummaryLink({ ...defaultSummary, failures: 1 });
+                assert(/<a data-error="true" href=".\/unit.html">(.+?)<\/a>/.test(summary)).isTrue();
+            });
+        });
+    });
+
 };

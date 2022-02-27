@@ -21,6 +21,9 @@ const mockUnit = {
  * @param {import('../state.js').Utility} utility
  */
 export default ({ assert, describe, it }) => {
+
+    // -- Public Functions -----------------------------------------------------
+
     describe('given a suite of test functions', () => {
         let names     = [];
         let functions = [];

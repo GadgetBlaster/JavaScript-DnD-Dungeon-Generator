@@ -6,7 +6,10 @@ import { unitState } from '../state.js';
  * @param {import('../state.js').Utility} utility
  */
 export default ({ assert, describe, it }) => {
-    describe('returns', () => {
+
+    // -- Public Functions -----------------------------------------------------
+
+    describe('unitState()', () => {
         const unitObj = unitState();
 
         it('should return a object', () => {
@@ -426,7 +429,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('_runAssert()', () => {
+    describe('runUnits()', () => {
         const { runUnits, getSummary } = unitState();
 
         describe('when an assertion is made', () => {
@@ -505,7 +508,7 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('describe()', () => {
-        describe('when one `describe` function is called', () => {
+        describe('when one `describe()` function is called', () => {
             const { runUnits, getSummary } = unitState();
 
             runUnits('/fake/suite', (utility) => {
