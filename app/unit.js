@@ -1,6 +1,6 @@
 // @ts-check
 
-import { getNav, getOutput } from './unit/output.js';
+import { getTestNav, getOutput } from './unit/output.js';
 import { unitState } from './unit/state.js';
 import suite from './unit/suite.js';
 
@@ -33,7 +33,7 @@ const verbose = Boolean(urlParams.get('verbose'));
 
 // -- Initialization -----------------------------------------------------------
 
-navContainer.innerHTML     = getNav({ scope, verbose });
+navContainer.innerHTML     = getTestNav({ scope, verbose });
 contentContainer.innerHTML = getOutput(suite, unitState(), {
     scope,
     verbose,

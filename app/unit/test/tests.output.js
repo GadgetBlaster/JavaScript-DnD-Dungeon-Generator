@@ -11,10 +11,10 @@ import {
     testGetTestList     as getTestList,
 
     // Public Functions
-    getNav,
     getOutput,
     getResultMessage,
     getSummaryLink,
+    getTestNav,
 } from '../output.js';
 
 const noop = () => {};
@@ -498,84 +498,6 @@ export default ({ assert, describe, it }) => {
 
     // -- Public Functions -----------------------------------------------------
 
-    describe('getNav()', () => {
-        describe('given no options', () => {
-            const nav = getNav({});
-
-            it('should contain the urls', () => {
-                [
-                    './unit.html',
-                    './unit.html?scope=list',
-                    './unit.html?verbose=true',
-                ].forEach((url) => {
-                    assert(nav).stringIncludes(url);
-                });
-            });
-
-            it('should mark the "All" link as active', () => {
-                assert(nav).stringIncludes('<a data-active="true" href="./unit.html">All</a>');
-            });
-        });
-
-        describe('given a `scope` option', () => {
-            const nav = getNav({ scope: 'fake' });
-
-            it('should contain the urls', () => {
-                [
-                    './unit.html',
-                    './unit.html?scope=list',
-                    './unit.html?scope=fake&verbose=true',
-                ].forEach((url) => {
-                    assert(nav).stringIncludes(url);
-                });
-            });
-
-            it('should not mark the "All" link as active', () => {
-                assert(nav).stringIncludes('<a href="./unit.html">All</a>');
-            });
-        });
-
-        describe('given a `scope` option of "list"', () => {
-            it('should mark the "Tests" link as active', () => {
-                assert(getNav({ scope: 'list' }))
-                    .stringIncludes('<a data-active="true" href="./unit.html?scope=list">Tests</a>');
-            });
-        });
-
-        describe('given a truthy `verbose` option', () => {
-            const nav = getNav({ verbose: true });
-
-            it('should contain the urls', () => {
-                [
-                    './unit.html?verbose=true',
-                    './unit.html?scope=list&verbose=true',
-                    './unit.html',
-                ].forEach((url) => {
-                    assert(nav).stringIncludes(url);
-                });
-            });
-
-            it('should mark the "Verbose" link as active', () => {
-                assert(getNav({ verbose: true }))
-                    .stringIncludes('<a data-active="true" href="./unit.html">Verbose</a>');
-            });
-        });
-
-        describe('given a `scope` and truthy `verbose` options', () => {
-            const html = getNav({ scope: 'fake', verbose: true });
-
-            it('should contain the urls', () => {
-                [
-                    './unit.html?verbose=true',
-                    './unit.html?scope=list&verbose=true',
-                    './unit.html?scope=fake',
-                ].forEach((url) => {
-                    assert(html).stringIncludes(url);
-                });
-            });
-        });
-    });
-
     describe('getOutput()', () => {
         const suite = { '/test/tests.fake.js': noop };
         const state = {
@@ -693,6 +615,84 @@ export default ({ assert, describe, it }) => {
             it('the link should include a `data-error` attribute', () => {
                 const summary = getSummaryLink({ ...defaultSummary, failures: 1 });
                 assert(/<a data-error="true" href=".\/unit.html">(.+?)<\/a>/.test(summary)).isTrue();
+            });
+        });
+    });
+
+    describe('getTestNav()', () => {
+        describe('given no options', () => {
+            const nav = getTestNav({});
+
+            it('should contain the urls', () => {
+                [
+                    './unit.html',
+                    './unit.html?scope=list',
+                    './unit.html?verbose=true',
+                ].forEach((url) => {
+                    assert(nav).stringIncludes(url);
+                });
+            });
+
+            it('should mark the "All" link as active', () => {
+                assert(nav).stringIncludes('<a data-active="true" href="./unit.html">All</a>');
+            });
+        });
+
+        describe('given a `scope` option', () => {
+            const nav = getTestNav({ scope: 'fake' });
+
+            it('should contain the urls', () => {
+                [
+                    './unit.html',
+                    './unit.html?scope=list',
+                    './unit.html?scope=fake&verbose=true',
+                ].forEach((url) => {
+                    assert(nav).stringIncludes(url);
+                });
+            });
+
+            it('should not mark the "All" link as active', () => {
+                assert(nav).stringIncludes('<a href="./unit.html">All</a>');
+            });
+        });
+
+        describe('given a `scope` option of "list"', () => {
+            it('should mark the "Tests" link as active', () => {
+                assert(getTestNav({ scope: 'list' }))
+                    .stringIncludes('<a data-active="true" href="./unit.html?scope=list">Tests</a>');
+            });
+        });
+
+        describe('given a truthy `verbose` option', () => {
+            const nav = getTestNav({ verbose: true });
+
+            it('should contain the urls', () => {
+                [
+                    './unit.html?verbose=true',
+                    './unit.html?scope=list&verbose=true',
+                    './unit.html',
+                ].forEach((url) => {
+                    assert(nav).stringIncludes(url);
+                });
+            });
+
+            it('should mark the "Verbose" link as active', () => {
+                assert(getTestNav({ verbose: true }))
+                    .stringIncludes('<a data-active="true" href="./unit.html">Verbose</a>');
+            });
+        });
+
+        describe('given a `scope` and truthy `verbose` options', () => {
+            const html = getTestNav({ scope: 'fake', verbose: true });
+
+            it('should contain the urls', () => {
+                [
+                    './unit.html?verbose=true',
+                    './unit.html?scope=list&verbose=true',
+                    './unit.html?scope=fake',
+                ].forEach((url) => {
+                    assert(html).stringIncludes(url);
+                });
             });
         });
     });

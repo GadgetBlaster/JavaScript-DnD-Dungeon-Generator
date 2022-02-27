@@ -53,6 +53,8 @@ const unitUrl = './unit.html';
 /**
  * Returns escaped HTML for output as text content.
  *
+ * @private
+ *
  * @param {string} string
  *
  * @returns {string}
@@ -63,6 +65,8 @@ function escapeHTML(string) {
 
 /**
  * Returns the result log as an HTML string.
+ *
+ * @private
  *
  * @param {Result[]} results
  * @param {object} [options]
@@ -82,6 +86,8 @@ function getLog(results, { verbose } = {}) {
 
 /**
  * Returns test results as an HTML string.
+ *
+ * @private
  *
  * @param {Summary} summary
  * @param {OutputOptions} [options]
@@ -131,6 +137,8 @@ function getResults(summary, options = {}) {
 /**
  * Returns the unit test suite list as an HTML string.
  *
+ * @private
+ *
  * @param {string[]} scopes
  * @param {object} [options]
  *     @param {boolean} [options.verbose]
@@ -145,6 +153,8 @@ function getSuiteList(scopes, { verbose } = {}) {
 
 /**
  * Returns the unit test summary as an HTML string.
+ *
+ * @private
  *
  * @param {Summary} summary
  *
@@ -168,6 +178,8 @@ function getSummary(summary) {
 
 /**
  * Returns an object summarizing unit test results.
+ *
+ * @private
  *
  * @param {Summary} summary
  *
@@ -209,8 +221,12 @@ function getSummaryParts(summary) {
 /**
  * Returns a list of unit tests as an HTML string.
  *
+ * @private
+ *
  * @param {object} suite
  * @param {OutputOptions} [options]
+ *
+ * @returns {string}
  */
 function getTestList(suite, { verbose } = {}) {
     let list = getSuiteList(Object.keys(suite), { verbose });
@@ -221,6 +237,8 @@ function getTestList(suite, { verbose } = {}) {
 /**
  * Returns a unit test log entry as an HTML string.
  *
+ * @private
+ *
  * @param {string} message
  * @param {Attributes} [attributes]
  *
@@ -230,6 +248,8 @@ const logEntry = (message, attributes) => element('li', escapeHTML(message), att
 
 /**
  * Constructs URL params for the unit test navigation.
+ *
+ * @private
  *
  * @param {object} entries
  *
@@ -257,29 +277,13 @@ export {
 // -- Public Functions ---------------------------------------------------------
 
 /**
- * Returns the unit test interface's navigation as an HTML string.
- *
- * TODO rename to getTestNav
- *
- * @param {object} options
- *     @param {string} [options.scope]
- *     @param {boolean} [options.verbose]
- *
- * @returns {string}
- */
-export const getNav = ({ scope, verbose }) => [
-    link('All', unitUrl + makeParams({ scope: null, verbose }), !scope ? { 'data-active': true } : null),
-    link('Tests', unitUrl + makeParams({ scope: 'list', verbose }), scope === 'list' ? { 'data-active': true } : null),
-    element('span', '', { role: 'presentation', 'data-separator': true }),
-    link('Verbose', unitUrl + makeParams({ scope, verbose: !verbose }), verbose ? { 'data-active': verbose } : null),
-].join('');
-
-/**
  * Returns unit test output as an HTML string.
  *
  * @param {object} suite
  * @param {State} state
  * @param {OutputOptions} [options]
+ *
+ * @returns {string}
  */
 export function getOutput(suite, state, options = {}) {
     let { scope } = options;
@@ -331,3 +335,19 @@ export function getSummaryLink(summary) {
 
     return paragraph(`${checkedForText} ${link(assertionsText, unitUrl)}`);
 }
+
+/**
+ * Returns the unit test interface's navigation as an HTML string.
+ *
+ * @param {object} options
+ *     @param {string} [options.scope]
+ *     @param {boolean} [options.verbose]
+ *
+ * @returns {string}
+ */
+ export const getTestNav = ({ scope, verbose }) => [
+    link('All', unitUrl + makeParams({ scope: null, verbose }), !scope ? { 'data-active': true } : null),
+    link('Tests', unitUrl + makeParams({ scope: 'list', verbose }), scope === 'list' ? { 'data-active': true } : null),
+    element('span', '', { role: 'presentation', 'data-separator': true }),
+    link('Verbose', unitUrl + makeParams({ scope, verbose: !verbose }), verbose ? { 'data-active': verbose } : null),
+].join('');
