@@ -30,10 +30,9 @@ import { isRequired, toWords } from '../utility/tools.js';
 
 /** @typedef {import('../controller/knobs.js').DungeonConfig} DungeonConfig */
 /** @typedef {import('../controller/knobs.js').RoomConfig} RoomConfig */
-
+/** @typedef {import('../room/door.js').DoorType} DoorType */
 /** @typedef {import('../room/generate.js').Room} Room */
 /** @typedef {import('../room/room.js').RoomType} RoomType */
-
 /** @typedef {import('./grid.js').CellValue} CellValue */
 /** @typedef {import('./grid.js').Coordinates} Coordinates */
 /** @typedef {import('./grid.js').Dimensions} Dimensions */
@@ -65,7 +64,7 @@ import { isRequired, toWords } from '../utility/tools.js';
  * @typedef {object} Connection
  *
  * @prop {Direction} direction
- * @prop {number | string} to - Room number or "outside"
+ * @prop {number | string} to - Room number or "outside" // TODO make outside 0
  */
 
 /** @typedef {"north" | "east" | "south" | "west"} Direction */
@@ -77,7 +76,6 @@ import { isRequired, toWords } from '../utility/tools.js';
  * @prop {string} type
  * @prop {boolean} locked
  * @prop {{ [roomNumber: number]: Connection }} connections
- * @prop {Connection} connection
  * @prop {number} size
  */
 
@@ -184,7 +182,7 @@ function checkForAdjacentDoor(grid, { x, y }) {
  *     from: number;
  *     to: number;
  *     direction: Direction;
- *     type: RoomType;
+ *     type: DoorType;
  * }} args
  *
  * @returns {Door}

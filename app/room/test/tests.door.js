@@ -3,7 +3,7 @@
 import {
     appendDoorway,
     doorTypes,
-    getRoomDoor,
+    getRoomDoors,
     lockable,
     probability,
 } from '../door.js';
@@ -49,7 +49,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('getRoomDoor()', () => {
+    describe('getRoomDoors()', () => {
         describe('given an array with a single room door', () => {
             const dungeonDoors = [
                 {
@@ -65,16 +65,16 @@ export default ({ assert, describe, it }) => {
 
             describe('when the door is not locked', () => {
                 it('should return a RoomDoors object with no keys', () => {
-                    const roomDoors = getRoomDoor(dungeonDoors);
+                    const roomDoors = getRoomDoors(dungeonDoors);
                     assert(roomDoors.keys).equalsArray([]);
                 });
 
                 it('should return a RoomDoors object with a doors lookup', () => {
-                    const roomDoors = getRoomDoor(dungeonDoors).doors;
+                    const roomDoors = getRoomDoors(dungeonDoors).doors;
 
                     assert(roomDoors).equalsObject({
-                        1: [ { ...dungeonDoors[0], connection: { direction: 'north', to: 2 } } ],
-                        2: [ { ...dungeonDoors[0], connection: { direction: 'south', to: 1 } } ],
+                        1: [ dungeonDoors[0] ],
+                        2: [ dungeonDoors[0] ],
                     });
                 });
             });
@@ -86,7 +86,7 @@ export default ({ assert, describe, it }) => {
                 lockedDungeonDoors[0].type   = 'wooden';
 
                 it('should return a RoomDoors object with an array of Keys', () => {
-                    const roomDoorKeys = getRoomDoor(dungeonDoors).keys;
+                    const roomDoorKeys = getRoomDoors(dungeonDoors).keys;
 
                     assert(roomDoorKeys[0]).equalsObject({
                         type: 'wooden',

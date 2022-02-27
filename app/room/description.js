@@ -1,6 +1,6 @@
 // @ts-check
 
-import { capitalize, indefiniteArticle, toWords } from '../utility/tools.js';
+import { capitalize, indefiniteArticle, isRequired, toss, toWords } from '../utility/tools.js';
 import { cellFeet } from '../dungeon/grid.js';
 import { element } from '../utility/element.js';
 import { em, paragraph, strong, subtitle, title } from '../ui/typography.js';
@@ -294,17 +294,23 @@ function getRoomDimensionsDescription(roomSize) {
  * @private
  *
  * @param {RoomDoor[]} roomDoors
+ * @param {number} roomNumber
  *
  * @returns {?string}
  */
-function getRoomDoorwayDescription(roomDoors) {
-    let descParts = roomDoors.map(({ type, connection, size, locked }) => {
+function getRoomDoorwayDescription(roomDoors, roomNumber) {
+    isRequired(roomNumber, '`roomNumber` is required in `getRoomDoorwayDescription()`'); // TODO add test
+
+    let descParts = roomDoors.map(({ type, connections, size, locked }) => {
         if (type === 'concealed' || type === 'secret') {
             return;
         }
 
-        /** @type {Connection} connection */
-        let { direction, to } = connection;
+        if (!connections[roomNumber]) {
+            toss('Invalid roomNumber for door connections in `getRoomDoorwayDescription()`'); // TODO add test
+        }
+
+        let { direction, to } = connections[roomNumber];
 
         let desc = getDoorwayDescription({ type, size, locked });
         let out  = to === outside ? ' out of the dungeon' : '';
@@ -349,12 +355,19 @@ export {
  * Get doorway list
  *
  * @param {RoomDoor[]} roomDoors
+ * @param {number} roomNumber
  *
  * @returns {?string}
  */
-export const getDoorwayList = (roomDoors) => {
-    let doorList = roomDoors.map(({ type, connection, size, locked }) => {
-        let { direction, to } = connection;
+export const getDoorwayList = (roomDoors, roomNumber) => {
+    isRequired(roomNumber, '`roomNumber` is required in `getDoorwayList()`'); // TODO add test
+
+    let doorList = roomDoors.map(({ type, connections, size, locked }) => {
+        if (!connections[roomNumber]) {
+            toss('Invalid roomNumber for door connections in `getDoorwayList()`'); // TODO add test
+        }
+
+        let { direction, to } = connections[roomNumber];
 
         let desc    = getDoorwayDescription({ type, size, locked });
         let connect = to === outside ? 'leading out of the dungeon' : `to Room ${to}`;
@@ -419,7 +432,7 @@ export function getRoomDescription(room, roomDoors) {
         ...getEnvironmentDescription(settings),
         getContentDescription(settings),
         getItemConditionDescription(settings),
-        ...(roomDoors ? [ getRoomDoorwayDescription(roomDoors) ] : []),
+        ...(roomDoors ? [ getRoomDoorwayDescription(roomDoors, roomNumber) ] : []),
     ].filter(Boolean).join('. ')+'.');
 
     return content;

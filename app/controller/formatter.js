@@ -41,9 +41,11 @@ const roomsPerRow = 3;
  * @returns {string}
  */
 function formatRoom(room, doors) {
-    let roomDoors = doors && doors[room.roomNumber];
+    let { roomNumber } = room;
+
+    let roomDoors = doors && doors[roomNumber];
     let desc      = getRoomDescription(room, roomDoors);
-    let doorList  = roomDoors ? getDoorwayList(roomDoors) : '';
+    let doorList  = roomDoors ? getDoorwayList(roomDoors, roomNumber) : '';
     let items     = room.items.join('');
     let map       = room.map ? getMapDescription() : '';
     let keys      = room.keys ? getKeyDescription(room.keys) : '';

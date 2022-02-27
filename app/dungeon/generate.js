@@ -2,7 +2,7 @@
 
 import { generateMap } from './map.js';
 import { generateRooms } from '../room/generate.js';
-import { getRoomDoor } from '../room/door.js';
+import { getRoomDoors } from '../room/door.js';
 import { roll, rollArrayItem } from '../utility/roll.js';
 import { isRequired } from '../utility/tools.js';
 import trapList from '../room/trap.js';
@@ -155,7 +155,7 @@ export function generateDungeon(config) {
     // generateDungeonRooms() for testing since excess rooms are discarded
     let gridDimensions  = generateMapDimensions(complexity);
     let dungeon         = generateMap(gridDimensions, rooms);
-    let { doors, keys } = getRoomDoor(dungeon.doors);
+    let { doors, keys } = getRoomDoors(dungeon.doors);
 
     keys.length && keys.forEach((key) => {
         let room = rollArrayItem(dungeon.rooms);

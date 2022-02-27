@@ -5,6 +5,7 @@ import { createProbability } from '../utility/roll.js';
 // -- Type Imports -------------------------------------------------------------
 
 /** @typedef {import('../dungeon/map.js').Connection} Connection */
+/** @typedef {import('../dungeon/map.js').Door} Door */
 /** @typedef {import('../utility/roll.js').Probability} Probability */
 
 // -- Types --------------------------------------------------------------------
@@ -12,21 +13,10 @@ import { createProbability } from '../utility/roll.js';
 /** @typedef {typeof doorTypes[number]} DoorType */
 
 /**
- * TODO RoomDoor
- */
-
-/**
  * @typedef {Object} DoorKey
  *
- * @prop {{ [key: number]: Connection }} connections
+ * @prop {{ [roomNumber: number]: Connection }} connections
  * @prop {string} type - Door type
- */
-
-/**
- * @typedef {object} RoomDoors
- *
- * @prop {DoorKey[]} keys
- * @prop {{ [key: number]: RoomDoor[] }} doors
  */
 
 // -- Config -------------------------------------------------------------------
@@ -115,42 +105,51 @@ export const lockedChance = 25;
 /**
  * Get room door
  *
- * TODO rename to plural & simplify?
+ * TODO simplify?
+ * TODO move to generate.js
  *
- * @param {RoomDoor[]} doors
+ * @param {Door[]} doors
  *
- * @returns {RoomDoors}
+ * @returns {{
+ *     keys: DoorKey[];
+ *     doors: {
+ *         [roomNumber: number]: Door[];
+ *     };
+ * }}
  */
-export function getRoomDoor(doors) {
-    let lookup = {};
-    let keys   = [];
+export function getRoomDoors(doors) {
+    /** @type {{ [roomNumber: number]: Door[] }} */
+    let roomDoors = {};
+
+    /** @type {DoorKey[]} */
+    let roomKeys  = [];
 
     doors.forEach((door) => {
         Object.keys(door.connections).forEach((roomNumber) => {
-            if (!lookup[roomNumber]) {
-                lookup[roomNumber] = [];
+            if (!roomDoors[roomNumber]) {
+                roomDoors[roomNumber] = [];
             }
 
             let roomDoor = {
                 // TODO safe to drop unnecessary `connections` from config?
                 // Is it already there?
                 ...door,
-                connection: door.connections[roomNumber],
+                // connection: door.connections[roomNumber],
             };
 
             if (door.locked) {
-                keys.push({
+                roomKeys.push({
                     type: door.type,
                     connections: door.connections,
                 });
             }
 
-            lookup[roomNumber].push(roomDoor);
+            roomDoors[roomNumber].push(roomDoor);
         });
     });
 
     return {
-        keys,
-        doors: lookup, // TODO
+        keys: roomKeys,
+        doors: roomDoors,
     };
 }
