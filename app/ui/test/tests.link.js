@@ -6,6 +6,9 @@ import { link } from '../link.js';
  * @param {import('../../unit/state.js').Utility} utility
  */
 export default ({ assert, describe, it }) => {
+
+    // -- Public Functions -----------------------------------------------------
+
     describe('link()', () => {
         it('should return an html anchor element string', () => {
             assert(link('')).isElementTag('a');
@@ -36,4 +39,5 @@ export default ({ assert, describe, it }) => {
             });
         });
     });
+
 };

@@ -11,6 +11,9 @@ import {
  * @param {import('../../unit/state.js').Utility} utility
  */
 export default ({ assert, describe, it }) => {
+
+    // -- Public Functions -----------------------------------------------------
+
     describe('fieldLabel()', () => {
         describe('given a `label`', () => {
             it('should return an html button element string', () => {
@@ -172,4 +175,5 @@ export default ({ assert, describe, it }) => {
             });
         });
     });
+
 };

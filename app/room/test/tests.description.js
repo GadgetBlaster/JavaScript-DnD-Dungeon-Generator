@@ -28,6 +28,8 @@ import { indicateRarity, rarities } from '../../attribute/rarity.js';
 import { lockable, appendDoorway, outside } from '../door.js';
 import { quantities } from '../../attribute/quantity.js';
 
+/** @typedef {import('../../controller/knobs.js').RoomConfig} RoomConfig */
+
 /**
  * @param {import('../../unit/state.js').Utility} utility
  */
@@ -35,18 +37,43 @@ export default ({ assert, describe, it }) => {
 
     // -- Private Functions ----------------------------------------------------
 
-    describe('getContentsDescription()', () => {
-        describe('given no item quantity', () => {
-            it('should return `undefined`', () => {
-                assert(getContentDescription({})).isUndefined();
+    describe('getRoomContentDescription()', () => {
+        /** @type {RoomConfig} */
+        const config = {
+            itemCondition        : 'average',
+            itemQuantity         : 'zero',
+            itemRarity           : 'average',
+            itemType             : 'armor',
+            roomCondition        : 'average',
+            roomCount            : 1,
+            roomFurnitureQuantity: 'none',
+            roomSize             : 'medium',
+            roomType             : 'room',
+        };
+
+        describe('given no roomType', () => {
+            it('throws', () => {
+                const missingRoomType = { ...config };
+                delete missingRoomType.roomType;
+
+                assert(() => getContentDescription(missingRoomType))
+                    .throws('roomType is required in `getRoomContentDescription()`');
+            });
+        });
+
+        describe('given no itemQuantity', () => {
+            it('throws', () => {
+                const missingItemQuantity = { ...config };
+                delete missingItemQuantity.itemQuantity;
+
+                assert(() => getContentDescription(missingItemQuantity))
+                    .throws('invalid itemQuantity in `getRoomContentDescription()`');
             });
         });
 
         describe('given an item quantity of "zero"', () => {
             it('should return `undefined`', () => {
-                assert(getContentDescription({
-                    itemQuantity: 'zero',
-                })).isUndefined();
+                assert(getContentDescription(config)).isUndefined();
             });
         });
 
@@ -58,6 +85,7 @@ export default ({ assert, describe, it }) => {
                 describe(`given an item quantity of "${itemQuantity}"`, () => {
                     it('should contain the given room type', () => {
                         assert(getContentDescription({
+                            ...config,
                             roomType    : 'atrium',
                             itemQuantity: itemQuantity,
                         })).stringIncludes('atrium');
@@ -66,26 +94,33 @@ export default ({ assert, describe, it }) => {
                     describe('given an item rarity of "rare"', () => {
                         it('should contain the word "rare"', () => {
                             assert(getContentDescription({
+                                ...config,
                                 itemRarity  : 'rare',
                                 itemQuantity: itemQuantity,
                             })).stringIncludes('rare');
                         });
                     });
 
-                    describe('given a room furnishing of `furnished`', () => {
-                        it('should contain the word "furniture"', () => {
-                            assert(getContentDescription({
-                                roomFurnitureQuantity: 'furnished',
-                                itemQuantity  : itemQuantity,
-                            })).stringIncludes('furniture');
+                    describe('given a roomFurnitureQuantity of "none"', () => {
+                        it('should not contain the word "furniture" or "furnishings"', () => {
+                            const noFurnishingConfig = {
+                                ...config,
+                                itemQuantity: itemQuantity,
+                            };
+
+                            assert(getContentDescription(noFurnishingConfig))
+                                .stringExcludes('furniture')
+                                .stringExcludes('furnishings');
                         });
                     });
 
-                    describe('given no room furnishing', () => {
-                        it('should not contain the word "furniture" or "furnishings"', () => {
-                            assert(getContentDescription({ itemQuantity: itemQuantity }))
-                                .stringExcludes('furniture')
-                                .stringExcludes('furnishings');
+                    describe('given a room furnishing of "furnished"', () => {
+                        it('should contain the word "furniture"', () => {
+                            assert(getContentDescription({
+                                ...config,
+                                roomFurnitureQuantity: 'furnished',
+                                itemQuantity  : itemQuantity,
+                            })).stringIncludes('furniture');
                         });
                     });
                 });
@@ -631,13 +666,16 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getRoomDescription()', () => {
+        const roomConfig = {
+            roomCount   : 1,
+            roomType    : 'room',
+            itemQuantity: 'zero',
+        };
+
         describe('header', () => {
             it('should include an html header', () => {
                 const room = {
-                    settings: {
-                        roomCount: 1,
-                        roomType : 'room',
-                    },
+                    settings: roomConfig,
                 };
 
                 assert(getRoomDescription(room))
@@ -647,10 +685,7 @@ export default ({ assert, describe, it }) => {
             describe('subtitle', () => {
                 it('should include an html subtitle', () => {
                     const room = {
-                        settings: {
-                            roomCount: 1,
-                            roomType : 'room',
-                        },
+                        settings: roomConfig,
                     };
 
                     assert(getRoomDescription(room)).stringIncludes('<h3>Description</h3>');
@@ -660,10 +695,7 @@ export default ({ assert, describe, it }) => {
             describe('given `roomCount` of `1` and a `roomType` of "room"', () => {
                 it('should not include the room number or the room type in the html title', () => {
                     const room = {
-                        settings: {
-                            roomCount: 1,
-                            roomType : 'room',
-                        },
+                        settings: roomConfig,
                         roomNumber: 1,
                     };
 
@@ -675,8 +707,8 @@ export default ({ assert, describe, it }) => {
                 it('should include the room number in the html title', () => {
                     const room = {
                         settings: {
+                            ...roomConfig,
                             roomCount: 2,
-                            roomType : 'room',
                         },
                         roomNumber: 1,
                     };
@@ -689,7 +721,7 @@ export default ({ assert, describe, it }) => {
                 it('should include the room type in the html title', () => {
                     const room = {
                         settings: {
-                            roomCount: 1,
+                            ...roomConfig,
                             roomType : 'atrium',
                         },
                         roomNumber: 1,
@@ -704,7 +736,7 @@ export default ({ assert, describe, it }) => {
                 it('should include an html span containing the room dimensions', () => {
                     const room = {
                         settings: {
-                            roomCount: 1,
+                            ...roomConfig,
                             roomType : 'room',
                         },
                         size: [ 12, 8 ],
@@ -724,10 +756,7 @@ export default ({ assert, describe, it }) => {
         describe('description', () => {
             it('should include the room description in an html paragraph', () => {
                 const room = {
-                    settings: {
-                        roomCount: 1,
-                        roomType : 'room',
-                    },
+                    settings: roomConfig,
                 };
 
                 assert(getRoomDescription(room))
@@ -742,8 +771,7 @@ export default ({ assert, describe, it }) => {
                 it('should include a description of the room contents', () => {
                     const room = {
                         settings: {
-                            roomCount   : 1,
-                            roomType    : 'room',
+                            ...roomConfig,
                             itemQuantity: 'one',
                         },
                     };
@@ -755,8 +783,7 @@ export default ({ assert, describe, it }) => {
             describe('given an item condition', () => {
                 it('should include a description of the room content\'s condition', () => {
                     const room = { settings: {
-                        roomCount    : 1,
-                        roomType     : 'room',
+                        ...roomConfig,
                         itemQuantity : 'one',
                         itemCondition: 'busted',
                     }};
@@ -767,7 +794,11 @@ export default ({ assert, describe, it }) => {
 
             describe('given room doors', () => {
                 it('should include a description of the room\'s doors', () => {
-                    const room = { roomNumber: 1, settings: { roomCount: 1, roomType: 'room' }};
+                    const room = {
+                        settings: roomConfig,
+                        roomNumber: 1,
+                    };
+
                     const roomDoors = [{
                         type: 'passageway',
                         size: 1,

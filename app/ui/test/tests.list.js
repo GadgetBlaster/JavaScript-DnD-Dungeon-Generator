@@ -6,6 +6,9 @@ import { list } from '../list.js';
  * @param {import('../../unit/state.js').Utility} utility
  */
 export default ({ assert, describe, it }) => {
+
+    // -- Public Functions -----------------------------------------------------
+
     describe('list()', () => {
         describe('given no `items` param', () => {
             it('should throw', () => {
@@ -50,4 +53,5 @@ export default ({ assert, describe, it }) => {
             });
         });
     });
+
 };

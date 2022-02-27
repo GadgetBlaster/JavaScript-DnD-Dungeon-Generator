@@ -6,6 +6,9 @@ import { button, infoLabel } from '../button.js';
  * @param {import('../../unit/state.js').Utility} utility
  */
 export default ({ assert, describe, it }) => {
+
+    // -- Public Functions -----------------------------------------------------
+
     describe('button()', () => {
         let buttonHTML = button('click me', 'navigate');
 
@@ -86,4 +89,5 @@ export default ({ assert, describe, it }) => {
             });
         });
     });
+
 };

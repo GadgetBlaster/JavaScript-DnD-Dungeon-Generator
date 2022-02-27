@@ -10,6 +10,9 @@ import {
  * @param {import('../../unit/state.js').Utility} utility
  */
 export default ({ assert, describe, it }) => {
+
+    // -- Public Functions -----------------------------------------------------
+
     describe('getActiveNavItem()', () => {
         describe('given a container with three nav buttons', () => {
             const container = document.createElement('div');
@@ -85,4 +88,5 @@ export default ({ assert, describe, it }) => {
             });
         });
     });
+
 };

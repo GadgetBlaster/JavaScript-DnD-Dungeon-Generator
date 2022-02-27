@@ -37,24 +37,26 @@ const mapDescriptions = [
 // -- Private Functions --------------------------------------------------------
 
 /**
- * Get contents description
+ * Returns a description of the items in the room.
  *
  * @private
- * @throws // TODO
+ * @throws
  *
  * @param {RoomConfig | DungeonConfig} config
  *
- * @returns {string|undefined}
+ * @returns {string}
  */
 function getContentDescription(config) {
     let {
         itemQuantity,
         itemRarity,
         roomFurnitureQuantity,
-        roomType = 'room', // TODO require
+        roomType,
     } = config;
 
-    if (!itemQuantity || itemQuantity === 'zero') {
+    isRequired(roomType, 'roomType is required in `getRoomContentDescription()`');
+
+    if (itemQuantity === 'zero') {
         return;
     }
 
@@ -90,7 +92,8 @@ function getContentDescription(config) {
             furnitureText = furniture ? (' amongst ' + furniture ) : '';
             return `There are numerous ${rarity} objects littering the ${type}${furnitureText}`;
 
-        // TODO default throw
+        default:
+            toss('invalid itemQuantity in `getRoomContentDescription()`');
     }
 }
 

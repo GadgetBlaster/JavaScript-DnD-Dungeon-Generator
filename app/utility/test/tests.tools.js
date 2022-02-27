@@ -19,6 +19,8 @@ import {
  */
 export default ({ assert, describe, it }) => {
 
+    // -- Public Functions -----------------------------------------------------
+
     // -- Typography -----------------------------------------------------------
 
     describe('capitalize()', () => {

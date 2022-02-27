@@ -29,6 +29,9 @@ const type = {
  * @param {import('../../unit/state.js').Utility} utility
  */
 export default ({ assert, describe, it }) => {
+
+    // -- Public Functions -----------------------------------------------------
+
     Object.entries(type).forEach(([ name, func ]) => {
         describe(`${name}()`, () => {
             describe('when called', () => {
@@ -56,4 +59,5 @@ export default ({ assert, describe, it }) => {
             });
         });
     });
+
 };

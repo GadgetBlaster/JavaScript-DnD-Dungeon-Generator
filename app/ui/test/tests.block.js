@@ -18,6 +18,9 @@ const blocks = {
  * @param {import('../../unit/state.js').Utility} utility
  */
 export default ({ assert, describe, it }) => {
+
+    // -- Public Functions -----------------------------------------------------
+
     describe('blocks', () => {
         Object.entries(blocks).forEach(([ name, func ]) => {
             describe(`#${name}`, () => {
@@ -45,4 +48,5 @@ export default ({ assert, describe, it }) => {
             });
         });
     });
+
 };
