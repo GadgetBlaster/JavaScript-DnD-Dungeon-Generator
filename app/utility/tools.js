@@ -50,17 +50,15 @@ export function listSentence(parts) {
 }
 
 /**
- * Plural
+ * Pluralize
  *
  * @param {number} count
  * @param {string} string
  * @param {string} [suffix = 's']
  *
- * @todo rename to pluralize
- *
  * @returns {string}
  */
-export function plural(count, string, suffix = 's') {
+export function pluralize(count, string, suffix = 's') {
     return `${string}${count !== 1 ? suffix : ''}`;
 }
 

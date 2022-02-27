@@ -4,7 +4,7 @@ import { div } from '../ui/block.js';
 import { element } from '../utility/element.js';
 import { link } from '../ui/link.js';
 import { paragraph } from '../ui/typography.js';
-import { plural } from '../utility/tools.js';
+import { pluralize } from '../utility/tools.js';
 import run from './run.js';
 
 // -- Types Imports ------------------------------------------------------------
@@ -107,11 +107,11 @@ function getResults(summary, options = {}) {
     } = options;
 
     if (onError && failures) {
-        onError(`Encountered ${failures} ${plural(failures, 'ogre')}!`);
+        onError(`Encountered ${failures} ${pluralize(failures, 'ogre')}!`);
     }
 
     if (onError && errors.length) {
-        onError(`Encountered ${errors.length} ${plural(errors.length, 'dragon')}!`);
+        onError(`Encountered ${errors.length} ${pluralize(errors.length, 'dragon')}!`);
     }
 
     if (onSuccess && !failures && !errors.length) {
@@ -193,11 +193,11 @@ function getSummaryParts(summary) {
     let { assertions, errors, failures } = summary;
 
     let checkedForText = `Checked for ${assertions}`;
-    let assertionsText = `mischievous ${plural(assertions, 'kobold')}`;
+    let assertionsText = `mischievous ${pluralize(assertions, 'kobold')}`;
 
     if (failures || errors.length) {
-        let failureText = ` ${failures} ${plural(failures, 'ogre')}`;
-        let errorText   = ` ${errors.length} ${plural(errors.length, 'dragon')}`;
+        let failureText = ` ${failures} ${pluralize(failures, 'ogre')}`;
+        let errorText   = ` ${errors.length} ${pluralize(errors.length, 'dragon')}`;
 
         let issuesText = 'Encountered';
         issuesText += failures ? failureText : '';

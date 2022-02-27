@@ -353,7 +353,7 @@ export default ({ assert, describe, it }) => {
             });
 
             describe('`checkedForText`', () => {
-                it('"kobolds" should be plural', () => {
+                it('"kobolds" is plural', () => {
                     assert(result.assertionsText).stringIncludes('kobolds');
                 });
             });
@@ -387,7 +387,7 @@ export default ({ assert, describe, it }) => {
             });
 
             describe('`checkedForText`', () => {
-                it('"kobolds" should be plural', () => {
+                it('"kobolds" is plural', () => {
                     assert(result.assertionsText).stringIncludes('kobolds');
                 });
             });

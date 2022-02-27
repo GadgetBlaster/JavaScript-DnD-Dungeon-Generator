@@ -8,7 +8,7 @@ import {
     isOdd,
     isRequired,
     listSentence,
-    plural,
+    pluralize,
     toDash,
     toss,
     toWords,
@@ -78,34 +78,34 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('plural()', () => {
+    describe('pluralize()', () => {
         describe('given a count of 1', () => {
             it('should return the string', () => {
-                assert(plural(1, 'cat')).equals('cat');
+                assert(pluralize(1, 'cat')).equals('cat');
             });
         });
 
         describe('given a count of 0', () => {
             it('should return a pluralized string', () => {
-                assert(plural(0, 'cat')).equals('cats');
+                assert(pluralize(0, 'cat')).equals('cats');
             });
         });
 
         describe('given a count of 2', () => {
             it('should return a pluralized string', () => {
-                assert(plural(2, 'cat')).equals('cats');
+                assert(pluralize(2, 'cat')).equals('cats');
             });
         });
 
         describe('given a count of 3', () => {
             it('should return the string', () => {
-                assert(plural(3, 'cat')).equals('cats');
+                assert(pluralize(3, 'cat')).equals('cats');
             });
         });
 
         describe('given a count of 2 and a suffix of `es`', () => {
             it('should return the string', () => {
-                assert(plural(2, 'walrus', 'es')).equals('walruses');
+                assert(pluralize(2, 'walrus', 'es')).equals('walruses');
             });
         });
     });
