@@ -49,7 +49,6 @@ export default ({ assert, describe, it }) => {
 
         describe('given a uniformity condition of 0%', () => {
             it('should return undefined', () => {
-                // TODO flaky test via `roll(minPercent, maxPercent)`
                 assert(rollUniformity(0, fakeProbability)).isUndefined();
             });
         });

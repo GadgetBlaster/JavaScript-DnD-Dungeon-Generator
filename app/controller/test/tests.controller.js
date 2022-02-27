@@ -467,16 +467,16 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('generate', () => {
-            // TODO flaky test
-            it('updates the content', () => {
-                /** @type {HTMLElement} */
-                const generateButtonEl = knobsEl.querySelector('[data-action="generate"]');
+            // TODO flaky test, items can be zero
+            // it('updates the content', () => {
+            //     /** @type {HTMLElement} */
+            //     const generateButtonEl = knobsEl.querySelector('[data-action="generate"]');
 
-                triggers.generate(getMockClickEvent(generateButtonEl));
+            //     triggers.generate(getMockClickEvent(generateButtonEl));
 
-                assert(/<h3>Items \([0-9]+\)<\/h3>/.test(contentEl.innerHTML)).isTrue();
-                assert(/<ul(.+?)>(.+?)<\/ul>/.test(contentEl.innerHTML)).isTrue();
-            });
+            //     assert(/<h3>Items \([0-9]+\)<\/h3>/.test(contentEl.innerHTML)).isTrue();
+            //     assert(/<ul(.+?)>(.+?)<\/ul>/.test(contentEl.innerHTML)).isTrue();
+            // });
         });
 
         describe('navigate', () => {

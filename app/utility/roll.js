@@ -78,10 +78,10 @@ export function createProbability(config) {
 /**
  * Rolls an integer between min and max inclusively.
  *
+ * @throws
+ *
  * @param {number} [min = 0]
  * @param {number} [max = 1]
- *
- * @throws
  *
  * @returns {number}
  */
@@ -98,9 +98,9 @@ export function roll(min = 0, max = 1) {
 /**
  * Roll array item
  *
- * @param {any[] | readonly any[]} array
- *
  * @throws
+ *
+ * @param {any[] | readonly any[]} array
  *
  * @returns {*}
  */
@@ -124,6 +124,10 @@ export function rollPercentile(chance) {
     !Number.isInteger(chance) && toss('rollPercentile() chance must be an integer');
     chance < minPercent && toss(`rollPercentile() chance must be ${minPercent} or greater`);
     chance > maxPercent && toss(`rollPercentile() chance cannot exceed ${maxPercent}`);
+
+    if (chance === 0) {
+        return false;
+    }
 
     return roll(minPercent, maxPercent) <= chance;
 }
