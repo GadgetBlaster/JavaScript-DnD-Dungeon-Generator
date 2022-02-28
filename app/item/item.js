@@ -27,6 +27,7 @@ import set from './set.js';
 
 /**
  * @TODO duplicate typedef. Consolidate and standardize. Use this type.
+ * @TODO move to generate.js
  *
  * @typedef {object} Item
  *

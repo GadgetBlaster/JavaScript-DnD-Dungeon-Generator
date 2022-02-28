@@ -8,6 +8,7 @@ import { isRequired } from '../utility/tools.js';
 
 /** @typedef {import('../controller/knobs.js').DungeonConfig} DungeonConfig */
 /** @typedef {import('../controller/knobs.js').RoomConfig} RoomConfig */
+/** @typedef {import('../item/item.js').Item} Item */
 
 /**
  * @typedef {object} Room
@@ -23,18 +24,21 @@ import { isRequired } from '../utility/tools.js';
  * Generates a randomized array of random room configs for the given knob
  * settings.
  *
- * TODO rename to generateRoomSettings
+ * TODO rename to generateRoomConfigs
  *
- * @param {DungeonConfig | RoomConfig} config
+ * @param {RoomConfig | DungeonConfig} config
  *
- * @returns {Room[]}
+ * @returns {{
+ *     settings: RoomConfig | DungeonConfig; // TODO rename key to `config`
+ *     items: string[]; // TODO update type to `Item[]`
+ * }[]}
  */
 export function generateRooms(config) {
     let {
-        roomSize     : roomSize,
-        roomCount    : roomCount,
-        roomType     : roomType,
-        roomCondition: roomCondition,
+        roomSize,
+        roomCount,
+        roomType,
+        roomCondition,
     } = config;
 
     isRequired(roomCondition, 'roomCondition is required in generateRooms()');
@@ -45,11 +49,11 @@ export function generateRooms(config) {
     let count = Math.floor(Number(roomCount));
 
     return [ ...Array(count) ].map(() => {
-        let roomSettings = applyRoomRandomization(config);
+        let roomConfig = applyRoomRandomization(config);
 
         return {
-            settings: roomSettings,
-            items: generateItems(roomSettings),
+            settings: roomConfig,
+            items: generateItems(roomConfig),
         };
     });
 }
