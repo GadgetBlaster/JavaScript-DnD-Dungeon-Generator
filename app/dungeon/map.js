@@ -33,6 +33,7 @@ import { isRequired, toWords } from '../utility/tools.js';
 /** @typedef {import('../room/door.js').DoorType} DoorType */
 /** @typedef {import('../room/generate.js').Room} Room */
 /** @typedef {import('../room/room.js').RoomType} RoomType */
+/** @typedef {import('../utility/roll.js').Probability} Probability */
 /** @typedef {import('./grid.js').CellValue} CellValue */
 /** @typedef {import('./grid.js').Coordinates} Coordinates */
 /** @typedef {import('./grid.js').Dimensions} Dimensions */
@@ -78,7 +79,6 @@ import { isRequired, toWords } from '../utility/tools.js';
  * @prop {DoorType} type
  * @prop {boolean} locked
  * @prop {Connections} connections
- * @prop {number} size
  */
 
 /** @typedef {{ [roomNumber: number]: Door[] }} Doors */
@@ -176,28 +176,19 @@ function checkForAdjacentDoor(grid, { x, y }) {
 }
 
 /**
- * Returns a door object for the given rectangle, connections, direction, and
- * type.
+ * Returns a door object for the given rectangle, door type, direction, and
+ * connections.
  *
  * @private
  *
  * @param {Rectangle} rectangle
- * @param {{
- *     direction: Direction;
- *     from: number;
- *     to: number;
- *     type: DoorType;
- * }} args
+ * @param {DoorType} type
+ * @param {{ direction: Direction; from: number; to: number; }} roomConnection
+ * @param {number} [lockedChance = 0]
  *
  * @returns {Door}
  */
-function createDoor(rectangle, { direction, from, to, type }) {
-    if (!type) {
-        // TODO inject probability
-        type = /** @type {DoorType} */ (doorProbability.roll());
-    }
-
-    // TODO inject probability
+function createDoor(rectangle, type, { direction, from, to }, lockedChance = 0) {
     let locked = lockable.has(type) && rollPercentile(lockedChance);
 
     return {
@@ -345,10 +336,10 @@ function getDoor(grid, gridRoom, prevGridRoom, { allowSecret } = {}) {
     let doorRectangle = { x, y, width, height };
 
     let from = gridRoom.roomNumber; // TODO string vs number type
-    let to   = prevGridRoom ? prevGridRoom.roomNumber : outside;
-    let type = allowSecret && secretProbability.roll();
+    let to   = prevGridRoom ? prevGridRoom.roomNumber : outside; // TODO outside 0
+    let type = getDoorType(doorProbability, allowSecret && secretProbability);
 
-    return createDoor(doorRectangle, { from, to, direction, type });
+    return createDoor(doorRectangle, type, { direction, from, to }, lockedChance);
 }
 
 /**
@@ -459,6 +450,28 @@ function getDoorDirection({ x, y }, roomRect) {
     }
 
     throw new TypeError('Invalid door coordinates in getDoorDirection()');
+}
+
+/**
+ * Returns a door type based on door probability tables
+ *
+ * TODO unit tests
+ *
+ * @param {Probability} doorTypeProbability
+ * @param {Probability} isSecretProbability
+ *
+ * @returns {DoorType}
+ */
+function getDoorType(doorTypeProbability, isSecretProbability) {
+    if (isSecretProbability) {
+        let secretDoorType = /** @type {DoorType | undefined} */ (isSecretProbability.roll());
+
+        if (secretDoorType) {
+            return secretDoorType;
+        }
+    }
+
+    return /** @type {DoorType} */ (doorTypeProbability.roll());
 }
 
 /**
@@ -639,7 +652,7 @@ function getExtraDoors(grid, rooms, existingDoors) {
                 let xCell = grid[xAdjust] && grid[xAdjust][y];
                 let yCell = grid[x] && grid[x][yAdjust];
 
-                let xConnect    = xCell && Number.isInteger(xCell) && xCell;
+                let xConnect    = xCell && Number.isInteger(xCell) && Number(xCell);
                 let canConnectX = xConnect && xConnect !== roomNumber && !connectedTo.has(xConnect);
 
                 if (canConnectX && rollPercentile(chance)) {
@@ -648,13 +661,18 @@ function getExtraDoors(grid, rooms, existingDoors) {
                     connectedTo.add(xConnect);
 
                     /** @type {Direction} */
-                    let direction = adjust === -1 ? 'west' : 'east';
-                    let type      = secretProbability.roll(); // TODO inject `secretProbability`
+                    let direction  = adjust === -1 ? 'west' : 'east';
+                    let type       = getDoorType(doorProbability, secretProbability);
+                    let connection = {
+                        direction,
+                        from: roomNumber,
+                        to  : xConnect,
+                    };
 
-                    doors.push(createDoor(doorRectangle, { from: roomNumber, to: xConnect, direction, type }));
+                    doors.push(createDoor(doorRectangle, type, connection, lockedChance));
                 }
 
-                let yConnect    = yCell && Number.isInteger(yCell) && yCell;
+                let yConnect    = yCell && Number.isInteger(yCell) && Number(yCell);
                 let canConnectY = yConnect && yConnect !== roomNumber && !connectedTo.has(yConnect);
 
                 if (canConnectY && rollPercentile(chance)) {
@@ -663,10 +681,15 @@ function getExtraDoors(grid, rooms, existingDoors) {
                     connectedTo.add(yConnect);
 
                     /** @type {Direction} */
-                    let direction = adjust === -1 ? 'north' : 'south';
-                    let type      = secretProbability.roll(); // TODO inject `secretProbability`
+                    let direction  = adjust === -1 ? 'north' : 'south';
+                    let type       = getDoorType(doorProbability, secretProbability);
+                    let connection = {
+                        direction,
+                        from: roomNumber,
+                        to  : yConnect,
+                    };
 
-                    doors.push(createDoor(doorRectangle, { from: roomNumber, to: yConnect, direction, type }));
+                    doors.push(createDoor(doorRectangle, type, connection, lockedChance));
                 }
             });
         });
@@ -722,6 +745,7 @@ export {
     getDoor              as testGetDoor,
     getDoorCells         as testGetDoorCells,
     getDoorDirection     as testGetDoorDirection,
+    getDoorType          as testGetDoorType,
     getExtraDoors        as testGetExtraDoors,
     getRoomDimensions    as testGetRoomDimensions,
     getRoomDrawing       as testGetRoomDrawing,

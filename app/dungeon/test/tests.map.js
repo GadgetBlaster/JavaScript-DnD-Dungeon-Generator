@@ -15,6 +15,7 @@ import {
     testGetDoor              as getDoor,
     testGetDoorCells         as getDoorCells,
     testGetDoorDirection     as getDoorDirection,
+    testGetDoorType          as getDoorType,
     testGetExtraDoors        as getExtraDoors,
     testGetRoomDimensions    as getRoomDimensions,
     testGetRoomDrawing       as getRoomDrawing,
@@ -79,22 +80,22 @@ export default ({ assert, describe, it }) => {
 
 
     describe('createDoor()', () => {
+        // TODO test locked, test locked types
         it('returns a door config', () => {
             const door = createDoor({
                 x: 1,
                 y: 2,
                 width: 4,
                 height: 3,
-            }, {
+            }, 'stone', {
+                direction: 'south',
                 from: 1,
                 to: 2,
-                direction: 'south',
-                type: 'library',
             });
 
             assert(door).isObject();
             assert(door.rect).isString();
-            assert(door.type).equals('library');
+            assert(door.type).equals('stone');
             assert(door.locked).isBoolean();
             assert(door.connections).equalsObject({
                 1: { direction: 'south', to: 2 },
@@ -214,8 +215,6 @@ export default ({ assert, describe, it }) => {
 
                     assert(result.doors).isArray();
 
-                    // TODO door.size is undefined in this test, require missing
-                    // size
                     const door = result.doors.pop();
                     assert(door.type).isString();
                     assert(door.connections).isObject();
@@ -539,6 +538,10 @@ export default ({ assert, describe, it }) => {
                     .throws('Invalid door coordinates in getDoorDirection()');
             });
         });
+    });
+
+    describe('getDoorType()', () => {
+        // TODO
     });
 
     describe('getExtraDoors()', () => {
