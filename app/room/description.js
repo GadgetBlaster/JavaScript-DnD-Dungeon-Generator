@@ -353,9 +353,9 @@ export {
 // -- Public Functions ---------------------------------------------------------
 
 /**
- * Get doorway list
+ * Returns a list of doorways.
  *
- * @param {RoomDoor[]} roomDoors
+ * @param {Door[]} roomDoors
  * @param {number} roomNumber
  *
  * @returns {?string}
@@ -409,8 +409,8 @@ export const getMapDescription = () => {
 /**
  * Get room description
  *
- * @param {RoomSettings} room // TODO
- * @param {RoomDoor[]} [roomDoors]
+ * @param {RoomSettings} room
+ * @param {Door[]} [roomDoors]
  *
  * @returns {string}
  */
