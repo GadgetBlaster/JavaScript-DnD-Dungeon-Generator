@@ -183,18 +183,18 @@ function checkForAdjacentDoor(grid, { x, y }) {
  *
  * @param {Rectangle} rectangle
  * @param {{
+ *     direction: Direction;
  *     from: number;
  *     to: number;
- *     direction: Direction;
  *     type: DoorType;
  * }} args
  *
  * @returns {Door}
  */
-function createDoor(rectangle, { from, to, direction, type }) {
+function createDoor(rectangle, { direction, from, to, type }) {
     if (!type) {
         // TODO inject probability
-        type = doorProbability.roll();
+        type = /** @type {DoorType} */ (doorProbability.roll());
     }
 
     // TODO inject probability
@@ -341,11 +341,12 @@ function getDoor(grid, gridRoom, prevGridRoom, { allowSecret } = {}) {
         }
     });
 
-    /** @type {Rectangle} doorRectangle */
+    /** @type {Rectangle} */
     let doorRectangle = { x, y, width, height };
-    let from       = gridRoom.roomNumber; // TODO string vs number type
-    let to         = prevGridRoom ? prevGridRoom.roomNumber : outside;
-    let type       = allowSecret && secretProbability.roll();
+
+    let from = gridRoom.roomNumber; // TODO string vs number type
+    let to   = prevGridRoom ? prevGridRoom.roomNumber : outside;
+    let type = allowSecret && secretProbability.roll();
 
     return createDoor(doorRectangle, { from, to, direction, type });
 }
@@ -583,7 +584,7 @@ function getRoomDrawing(gridRoom, { hasTraps } = {}) {
 }
 
 /**
- * Returns an array of Door configs for the additional connections to the given
+ * Returns an array of Door configs for additional connections to the given
  * Room, if any.
  *
  * @private
@@ -599,9 +600,9 @@ function getExtraDoors(grid, rooms, existingDoors) {
 
     rooms.forEach((room) => {
         let { roomNumber, settings } = room.config;
-        let { dungeonConnections: connectionChance } = settings;
+        let { dungeonConnections } = settings;
 
-        let chance = Number(connectionChance); // TODO is the Number cast necessary?
+        let chance = Number(dungeonConnections);
 
         if (!chance) {
             return;
@@ -629,7 +630,7 @@ function getExtraDoors(grid, rooms, existingDoors) {
             }
 
             [ -1, 1 ].forEach((adjust) => {
-                /** @type {Rectangle} doorRectangle */
+                /** @type {Rectangle} */
                 let doorRectangle = { x, y, width: wallSize, height: wallSize };
 
                 let xAdjust = x + adjust;
@@ -646,7 +647,7 @@ function getExtraDoors(grid, rooms, existingDoors) {
 
                     connectedTo.add(xConnect);
 
-                    /** @type {Direction} direction */
+                    /** @type {Direction} */
                     let direction = adjust === -1 ? 'west' : 'east';
                     let type      = secretProbability.roll(); // TODO inject `secretProbability`
 
@@ -661,7 +662,7 @@ function getExtraDoors(grid, rooms, existingDoors) {
 
                     connectedTo.add(yConnect);
 
-                    /** @type {Direction} direction */
+                    /** @type {Direction} */
                     let direction = adjust === -1 ? 'north' : 'south';
                     let type      = secretProbability.roll(); // TODO inject `secretProbability`
 

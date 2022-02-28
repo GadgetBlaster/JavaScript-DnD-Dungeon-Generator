@@ -335,6 +335,7 @@ export function drawDoor(rectangle, { direction, type, locked }) {
     let lineOptions = { dashed: isSecret };
     let lines       = lineCords.map((cords) => drawLine({ ...cords, ...lineAttrs }, lineOptions)).join('');
 
+    // TODO use `drawRect()`
     return element('rect', null, attributes) + lines + details.join('');
 }
 
