@@ -2,13 +2,14 @@
 
 import { capitalize, indefiniteArticle, isRequired, toss, toWords } from '../utility/tools.js';
 import { cellFeet } from '../dungeon/grid.js';
+import { outside } from '../dungeon/map.js';
 import { element } from '../utility/element.js';
 import { em, paragraph, strong, subtitle, title } from '../ui/typography.js';
 import { getEnvironmentDescription } from './environment.js';
 import { indicateRarity } from '../attribute/rarity.js';
 import { list } from '../ui/list.js';
 import { rollArrayItem } from '../utility/roll.js';
-import { appendDoorway, lockable, outside } from './door.js';
+import { appendDoorway, lockable } from './door.js';
 import { appendRoomTypes } from './room.js';
 
 // -- Types --------------------------------------------------------------------

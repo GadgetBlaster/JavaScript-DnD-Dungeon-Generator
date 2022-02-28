@@ -2,6 +2,7 @@
 
 import {
     // Config
+    outside,
     testCellCornerWall     as cellCornerWall,
     testCellDoor           as cellDoor,
     testCellWall           as cellWall,
@@ -144,7 +145,7 @@ export default ({ assert, describe, it }) => {
                 const result = drawRooms(gridDimensions, [ room, room ], grid, 1);
                 const firstDoor = result.doors.shift();
 
-                assert(Boolean(firstDoor.connections.outside)).isTrue();
+                assert(Boolean(firstDoor.connections[outside])).isTrue();
             });
         });
 

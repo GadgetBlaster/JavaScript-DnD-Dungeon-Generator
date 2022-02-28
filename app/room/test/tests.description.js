@@ -22,10 +22,11 @@ import {
 
 import { appendRoomTypes } from '../room.js';
 import { cellFeet } from '../../dungeon/grid.js';
+import { outside } from '../../dungeon/map.js';
 import { conditions } from '../../attribute/condition.js';
 import { furnitureQuantities } from '../../item/furnishing.js';
 import { indicateRarity, rarities } from '../../attribute/rarity.js';
-import { lockable, appendDoorway, outside } from '../door.js';
+import { lockable, appendDoorway } from '../door.js';
 import { quantities } from '../../attribute/quantity.js';
 
 /** @typedef {import('../../controller/knobs.js').RoomConfig} RoomConfig */

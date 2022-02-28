@@ -18,7 +18,6 @@ import { dimensionRanges, customDimensions } from '../room/dimensions.js';
 import {
     lockable,
     lockedChance,
-    outside,
     probability as doorProbability,
     secretProbability,
 } from '../room/door.js';
@@ -65,7 +64,10 @@ import { isRequired, toWords } from '../utility/tools.js';
  * @typedef {object} Connection
  *
  * @prop {Direction} direction
- * @prop {number | string} to - Room number or "outside" // TODO make outside 0
+ *     Direction of the room connection.
+ *
+ * @prop {number} to
+ *     Room number at the associated direction.
  */
 
 /** @typedef {{ [roomNumber: number]: Connection }} Connections */
@@ -114,6 +116,9 @@ const labelMinRoomWidth = 3;
 
 /** Minium room height in grid cells required to show a room label. */
 const labelMinRoomHeight = 2;
+
+/** Room number connection leading out of the dungeon. */
+export const outside = 0;
 
 /**
  * Directions.
@@ -336,7 +341,7 @@ function getDoor(grid, gridRoom, prevGridRoom, { allowSecret } = {}) {
     let doorRectangle = { x, y, width, height };
 
     let from = gridRoom.roomNumber; // TODO string vs number type
-    let to   = prevGridRoom ? prevGridRoom.roomNumber : outside; // TODO outside 0
+    let to   = prevGridRoom ? prevGridRoom.roomNumber : outside;
     let type = getDoorType(doorProbability, allowSecret && secretProbability);
 
     return createDoor(doorRectangle, type, { direction, from, to }, lockedChance);

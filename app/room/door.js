@@ -39,9 +39,6 @@ export const doorTypes = Object.freeze(/** @type {const} */ ([
     'wooden',
 ]));
 
-// TODO make room number 0
-export const outside = 'outside';
-
 /**
  * Set of doorway types that should have "doorway" appended to their
  * description.
