@@ -2,7 +2,6 @@
 
 import {
     // Config
-    pxCell,
     testColorLockedFill     as colorLockedFill,
     testColorPillarFill     as colorPillarFill,
     testColorRoomStroke     as colorRoomStroke,
@@ -12,6 +11,7 @@ import {
     testDoorWidth           as doorWidth,
     testPillarGridInset     as pillarGridInset,
     testPillarGridThreshold as pillarGridThreshold,
+    testPxCell              as pxCell,
     testRadiusHole          as radiusHole,
     testRadiusPillar        as radiusPillar,
     testTrapLabel           as trapLabel,

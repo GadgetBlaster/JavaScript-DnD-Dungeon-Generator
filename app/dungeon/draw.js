@@ -25,7 +25,7 @@ import { lockable } from '../room/door.js';
 
 // -- Config -------------------------------------------------------------------
 
-export const pxCell = 24;
+const pxCell = 24;
 
 const pxBorder     = 2;
 const pxGridLine   = 1;
@@ -66,6 +66,7 @@ export {
     doorWidth           as testDoorWidth,
     pillarGridInset     as testPillarGridInset,
     pillarGridThreshold as testPillarGridThreshold,
+    pxCell              as testPxCell,
     radiusHole          as testRadiusHole,
     radiusPillar        as testRadiusPillar,
     trapLabel           as testTrapLabel,

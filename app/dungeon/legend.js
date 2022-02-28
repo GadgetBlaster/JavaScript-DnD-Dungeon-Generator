@@ -1,7 +1,7 @@
 // @ts-check
 
 import { cellFeet } from './grid.js';
-import { drawMap, drawRoom, drawDoor, drawGrid, pxCell } from './draw.js';
+import { drawMap, drawRoom, drawDoor, drawGrid } from './draw.js';
 import { small } from '../ui/typography.js';
 import { list } from '../ui/list.js';
 
@@ -16,12 +16,9 @@ import { list } from '../ui/list.js';
 /**
  * Returns an unordered list of labeled map features.
  *
- * @param {object} args
- *     @param {number} args.mapWidth
- *
  * @returns {string}
  */
-export function drawLegend({ mapWidth }) {
+export function drawLegend() {
 
     /** @type {Dimensions} gridDimensions */
     let gridDimensions = { width: 1, height: 1 };
@@ -49,5 +46,5 @@ export function drawLegend({ mapWidth }) {
 
     return list(Object.keys(legend).map((key) => {
         return drawMap(gridDimensions, legend[key]) + small(key);
-    }), { 'data-grid': true, style: `width: ${mapWidth * pxCell}px;` });
+    }), { 'data-grid': true });
 }

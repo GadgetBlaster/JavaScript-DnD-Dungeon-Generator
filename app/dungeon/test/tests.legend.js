@@ -1,6 +1,5 @@
 // @ts-check
 
-import { pxCell } from '../draw.js';
 import { cellFeet } from '../grid.js';
 import {
     drawLegend,
@@ -11,8 +10,7 @@ import {
  */
 export default ({ assert, describe, it }) => {
     describe('drawLegend()', () => {
-        const mapWidth = 40;
-        const legend = drawLegend({ mapWidth });
+        const legend = drawLegend();
 
         it('returns an unordered list', () => {
             assert(/<ul(.*?)>(.+?)<\/ul>/.test(legend)).isTrue();
@@ -36,13 +34,6 @@ export default ({ assert, describe, it }) => {
             });
 
 
-        });
-
-        it('has a width equal to the `mapWidth` in pixels', () => {
-            const width  = 40 * pxCell;
-            const regExp = RegExp(`<ul(.*?)style="width: ${width}px;"(.*?)>`);
-
-            assert(regExp.test(legend)).isTrue();
         });
     });
 };

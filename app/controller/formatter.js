@@ -21,10 +21,10 @@ import {
 
 // -- Type Imports -------------------------------------------------------------
 
-/** @typedef {import('../room/generate.js').Room} Room */
 /** @typedef {import('../dungeon/generate.js').Dungeon} Dungeon */
-/** @typedef {import('../room/door.js').RoomDoor} RoomDoor */
+/** @typedef {import('../dungeon/map.js').Doors} Doors */
 /** @typedef {import('../item/item.js').Item} Item */
+/** @typedef {import('../room/generate.js').Room} Room */
 
 // -- Config -------------------------------------------------------------------
 
@@ -36,7 +36,7 @@ const roomsPerRow = 3;
  * Formats room generation.
  *
  * @param {Room} room
- * @param {RoomDoor[]} [doors] // TODO doors should be included on Room?
+ * @param {Doors} [doors]
  *
  * @returns {string}
  */
@@ -58,7 +58,7 @@ function formatRoom(room, doors) {
  * Returns formatted rooms chunked into row sections.
  *
  * @param {Room[]} rooms
- * @param {RoomDoor[]} [doors]
+ * @param {Doors} [doors]
  *
  * @returns {string}
  */
@@ -80,9 +80,9 @@ function formatRoomRows(rooms, doors) {
  * @param {Dungeon} dungeon
  */
 export function formatDungeon(dungeon) {
-    let { map, rooms, doors, mapDimensions } = dungeon;
+    let { map, rooms, doors } = dungeon;
 
-    let legend   = drawLegend({ mapWidth: mapDimensions.gridWidth });
+    let legend   = drawLegend();
     let sections = formatRoomRows(rooms, doors);
 
     return section(map) + section(legend) + sections;

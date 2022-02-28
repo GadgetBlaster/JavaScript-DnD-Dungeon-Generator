@@ -20,7 +20,6 @@ import trapList from '../room/trap.js';
  * @prop {string} map // TODO rename to mapVector?
  * @prop {Room[]} rooms
  * @prop {Doors} doors
- * @prop {Dimensions} gridDimensions
  */
 
 // -- Config -------------------------------------------------------------------
@@ -44,7 +43,7 @@ export {
 /**
  * Returns generate dungeon room configs.
  *
- * @param {DungeonConfig} config
+ * @param {Omit<DungeonConfig, "roomCount">} config
  *
  * @returns {object} // TODO
  */
@@ -149,7 +148,7 @@ export {
 /**
  * Returns a dungeon.
  *
- * @param {DungeonConfig} config
+ * @param {Omit<DungeonConfig, "roomCount">} config
  *
  * @returns {Dungeon}
  */
@@ -192,10 +191,5 @@ export function generateDungeon(config) {
         map  : dungeon.map,
         rooms: dungeon.rooms,
         doors: doors,
-        // TODO update to Dimensions
-        mapDimensions: {
-            gridWidth: gridDimensions.width,
-            gridHeight: gridDimensions.height,
-        },
     };
 }

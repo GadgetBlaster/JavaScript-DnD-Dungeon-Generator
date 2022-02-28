@@ -19,6 +19,10 @@ import {
 import trapList from '../../room/trap.js';
 
 /**
+ * @typedef {import('../../controller/knobs.js').DungeonConfig} DungeonConfig
+ */
+
+/**
  * @param {import('../../unit/state.js').Utility} utility
  */
 export default ({ assert, describe, it }) => {
@@ -101,18 +105,20 @@ export default ({ assert, describe, it }) => {
     describe('generateDungeon()', () => {
         const complexity = 3;
 
+        /** @type {Omit<DungeonConfig, "roomCount">} */
         const config = {
-            dungeonComplexity : complexity,
-            dungeonConnections: 0,
-            dungeonMaps       : 0,
-            dungeonTraps      : 0,
-            itemCondition     : 'average',
-            itemQuantity      : 'zero',
-            itemRarity        : 'average',
-            itemType          : 'miscellaneous',
-            roomCondition     : 'average',
-            roomSize          : 'medium',
-            roomType          : 'room',
+            dungeonComplexity    : complexity,
+            dungeonConnections   : 0,
+            dungeonMaps          : 0,
+            dungeonTraps         : 0,
+            itemCondition        : 'average',
+            itemQuantity         : 'zero',
+            itemRarity           : 'average',
+            itemType             : 'miscellaneous',
+            roomCondition        : 'average',
+            roomFurnitureQuantity: 'none',
+            roomSize             : 'medium',
+            roomType             : 'room',
         };
 
         const dungeon = generateDungeon(config);
@@ -122,9 +128,6 @@ export default ({ assert, describe, it }) => {
             assert(dungeon.map).isString();
             assert(/<svg(.*?)>(.*?)<\/svg>/.test(dungeon.map)).isTrue();
             assert(dungeon.rooms).isArray();
-            assert(dungeon.mapDimensions).isObject();
-            assert(dungeon.mapDimensions.gridWidth).isNumber();
-            assert(dungeon.mapDimensions.gridHeight).isNumber();
         });
 
         it('generates a number of `Room` config less than or equal to the max room count', () => {
@@ -143,7 +146,6 @@ export default ({ assert, describe, it }) => {
                     delete incompleteConfig[requiredConfig];
 
                     it('throws', () => {
-                        // @ts-expect-error
                         assert(() => generateDungeon(incompleteConfig))
                             .throws(`${requiredConfig} is required in generateDungeon()`);
                     });
