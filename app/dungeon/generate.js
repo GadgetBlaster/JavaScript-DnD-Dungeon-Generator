@@ -12,14 +12,14 @@ import trapList from '../room/trap.js';
 /** @typedef {import('../controller/knobs.js').DungeonConfig} DungeonConfig */
 /** @typedef {import('../room/generate').Room} Room */
 /** @typedef {import('./grid.js').Dimensions} Dimensions */
-/** @typedef {import('./map.js').Door} Door */
+/** @typedef {import('./map.js').Doors} Doors */
 
 /**
  * @typedef {object} Dungeon
  *
  * @prop {string} map // TODO rename to mapVector?
  * @prop {Room[]} rooms
- * @prop {Door[]} doors
+ * @prop {Doors} doors
  * @prop {Dimensions} gridDimensions
  */
 
@@ -166,11 +166,8 @@ export function generateDungeon(config) {
     isRequired(dungeonMaps,        'dungeonMaps is required in generateDungeon()');
     isRequired(dungeonTraps,       'dungeonTraps is required in generateDungeon()');
 
-    let rooms = generateDungeonRooms(config);
-
-    // TODO break out everything before generateMap() into
-    // generateDungeonRooms() for testing since excess rooms are discarded
     let gridDimensions  = generateMapDimensions(dungeonComplexity);
+    let rooms           = generateDungeonRooms(config);
     let dungeon         = generateMap(gridDimensions, rooms);
     let { doors, keys } = getRoomDoors(dungeon.doors);
 

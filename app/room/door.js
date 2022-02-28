@@ -5,7 +5,9 @@ import { createProbability } from '../utility/roll.js';
 // -- Type Imports -------------------------------------------------------------
 
 /** @typedef {import('../dungeon/map.js').Connection} Connection */
+/** @typedef {import('../dungeon/map.js').Connections} Connections */
 /** @typedef {import('../dungeon/map.js').Door} Door */
+/** @typedef {import('../dungeon/map.js').Doors} Doors */
 /** @typedef {import('../utility/roll.js').Probability} Probability */
 
 // -- Types --------------------------------------------------------------------
@@ -15,7 +17,7 @@ import { createProbability } from '../utility/roll.js';
 /**
  * @typedef {Object} DoorKey
  *
- * @prop {{ [roomNumber: number]: Connection }} connections
+ * @prop {Connections} connections
  * @prop {string} type - Door type
  */
 
@@ -37,7 +39,7 @@ export const doorTypes = Object.freeze(/** @type {const} */ ([
     'wooden',
 ]));
 
-// TODO Move to directions?
+// TODO make room number 0
 export const outside = 'outside';
 
 /**
@@ -111,13 +113,11 @@ export const lockedChance = 25;
  *
  * @returns {{
  *     keys: DoorKey[];
- *     doors: {
- *         [roomNumber: number]: Door[];
- *     };
+ *     doors: Doors;
  * }}
  */
 export function getRoomDoors(doors) {
-    /** @type {{ [roomNumber: number]: Door[] }} */
+    /** @type {Doors} */
     let roomDoors = {};
 
     /** @type {DoorKey[]} */

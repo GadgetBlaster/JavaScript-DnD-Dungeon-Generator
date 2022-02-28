@@ -67,6 +67,8 @@ import { isRequired, toWords } from '../utility/tools.js';
  * @prop {number | string} to - Room number or "outside" // TODO make outside 0
  */
 
+/** @typedef {{ [roomNumber: number]: Connection }} Connections */
+
 /** @typedef {"north" | "east" | "south" | "west"} Direction */
 
 /**
@@ -75,9 +77,11 @@ import { isRequired, toWords } from '../utility/tools.js';
  * @prop {string} rect
  * @prop {DoorType} type
  * @prop {boolean} locked
- * @prop {{ [roomNumber: number]: Connection }} connections
+ * @prop {Connections} connections
  * @prop {number} size
  */
+
+/** @typedef {{ [roomNumber: number]: Door[] }} Doors */
 
 /**
  * @typedef {object} GridRoom
