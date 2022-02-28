@@ -294,13 +294,13 @@ function getRoomDimensionsDescription({ width, height }) {
  *
  * @private
  *
- * @param {RoomDoor[]} roomDoors
+ * @param {Door[]} roomDoors
  * @param {number} roomNumber
  *
  * @returns {?string}
  */
 function getRoomDoorwayDescription(roomDoors, roomNumber) {
-    isRequired(roomNumber, '`roomNumber` is required in `getRoomDoorwayDescription()`'); // TODO add test
+    isRequired(roomNumber, 'roomNumber is required in getRoomDoorwayDescription()');
 
     let descParts = roomDoors.map(({ type, connections, size, locked }) => {
         if (type === 'concealed' || type === 'secret') {
@@ -308,7 +308,7 @@ function getRoomDoorwayDescription(roomDoors, roomNumber) {
         }
 
         if (!connections[roomNumber]) {
-            toss('Invalid roomNumber for door connections in `getRoomDoorwayDescription()`'); // TODO add test
+            toss('invalid door connections for roomNumber in getRoomDoorwayDescription()');
         }
 
         let { direction, to } = connections[roomNumber];

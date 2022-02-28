@@ -416,33 +416,50 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getRoomDoorwayDescription()', () => {
-        describe('give a single `concealed`', () => {
+        const door = {
+            connections: {
+                1: { direction: 'south', to: 2 },
+                2: { direction: 'north', to: 1 },
+            },
+            locked: false,
+            size: 1,
+            type: 'passageway',
+        };
+
+        describe('given no room number', () => {
+            it('throws', () => {
+                // @ts-expect-error
+                assert(() => getRoomDoorwayDescription([ door ]))
+                    .throws('roomNumber is required in getRoomDoorwayDescription()');
+            });
+        });
+
+        describe('given a door which does not connect to the room number', () => {
+            it('throws', () => {
+                assert(() => getRoomDoorwayDescription([ door ], 3))
+                    .throws('invalid door connections for roomNumber in getRoomDoorwayDescription()');
+            });
+        });
+
+        describe('given a single concealed door', () => {
             it('returns undefined', () => {
-                assert(getRoomDoorwayDescription([ { type: 'concealed' } ], 1))
+                assert(getRoomDoorwayDescription([ { ...door, type: 'concealed' } ], 1))
                     .isUndefined();
             });
         });
 
-        describe('give a single door with type `secret`', () => {
+        describe('given a single door with type "secret"', () => {
             it('returns undefined', () => {
-                assert(getRoomDoorwayDescription([ { type: 'secret' } ], 1))
+                assert(getRoomDoorwayDescription([ { ...door, type: 'secret' } ], 1))
                     .isUndefined();
             });
         });
 
         describe('given a single door config', () => {
-            const config = {
-                type: 'passageway',
-                size: 1,
-                connections: {
-                    2: { direction: 'north', to: 2 },
-                },
-            };
-
-            const desc = getRoomDoorwayDescription([ config ], 2);
+            const desc = getRoomDoorwayDescription([ door ], 2);
 
             it('includes the door description', () => {
-                assert(desc).stringIncludes(getDoorwayDescription(config));
+                assert(desc).stringIncludes(getDoorwayDescription(door));
             });
 
             it('includes the word "single"', () => {
@@ -464,8 +481,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given a door object connected to the outside on the south wall', () => {
             const config = [{
-                type: 'passageway',
-                size: 1,
+                ...door,
                 connections: {
                     4: { direction: 'south', to: outside },
                     5: { direction: 'north', to: 4 },
@@ -481,20 +497,22 @@ export default ({ assert, describe, it }) => {
         describe('given two door configs', () => {
             const config = [
                 {
-                    type: 'archway',
-                    size: 1,
                     connections: {
                         1: { direction: 'south', to: 2 },
                         2: { direction: 'north', to: 1 },
                     },
+                    locked: false,
+                    size: 1,
+                    type: 'archway',
                 },
                 {
-                    type: 'passageway',
-                    size: 1,
                     connections: {
                         1: { direction: 'east', to: 3 },
                         3: { direction: 'west', to: 1 },
                     },
+                    locked: false,
+                    size: 1,
+                    type: 'passageway',
                 },
             ];
 
@@ -528,28 +546,31 @@ export default ({ assert, describe, it }) => {
         describe('given three doors configs', () => {
             const config = [
                 {
-                    type: 'archway',
-                    size: 1,
                     connections: {
                         1: { direction: 'south', to: 2 },
                         2: { direction: 'north', to: 1 },
                     },
+                    locked: false,
+                    size: 1,
+                    type: 'archway',
                 },
                 {
-                    type: 'passageway',
-                    size: 1,
                     connections: {
                         1: { direction: 'north', to: 3 },
                         3: { direction: 'south', to: 1 },
                     },
+                    locked: false,
+                    type: 'passageway',
+                    size: 1,
                 },
                 {
-                    type: 'hole',
-                    size: 1,
                     connections: {
                         1: { direction: 'east', to: 4 },
                         4: { direction: 'west', to: 1 },
                     },
+                    locked: false,
+                    type: 'hole',
+                    size: 1,
                 },
             ];
 
