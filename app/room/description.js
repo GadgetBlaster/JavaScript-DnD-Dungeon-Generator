@@ -8,7 +8,7 @@ import { getEnvironmentDescription } from './environment.js';
 import { indicateRarity } from '../attribute/rarity.js';
 import { list } from '../ui/list.js';
 import { rollArrayItem } from '../utility/roll.js';
-import { appendDoorway, outside } from './door.js';
+import { appendDoorway, lockable, outside } from './door.js';
 import { appendRoomTypes } from './room.js';
 
 // -- Types --------------------------------------------------------------------
@@ -19,6 +19,7 @@ import { appendRoomTypes } from './room.js';
 /** @typedef {import('../controller/knobs.js').RoomConfig} RoomConfig */
 /** @typedef {import('../dungeon/grid.js').Dimensions} Dimensions */
 /** @typedef {import('../dungeon/map.js').Connection} Connection */
+/** @typedef {import('../dungeon/map.js').Door} Door */
 /** @typedef {import('../item/furnishing.js').FurnitureQuantity} FurnitureQuantity */
 /** @typedef {import('./door.js').DoorKey} DoorKey */
 /** @typedef {import('./door.js').DoorType} DoorType */
@@ -149,19 +150,23 @@ function getDescription(config) {
 }
 
 /**
- * Get doorway description
+ * Returns a description for the given door.
  *
  * @private
+ * @throws
  *
- * @param {RoomDoor} door
+ * @param {Pick<Door, "type" | "size" | "locked">} door
  *
  * @returns {string}
  */
 function getDoorwayDescription({ type, size, locked }) {
-    let sizeDesc;
+    if (locked && !lockable.has(type)) {
+        toss(`invalid locked setting for non-lockable door type "${type}" in getDoorwayDescription()`);
+    }
+
     let append = appendDoorway.has(type) && 'doorway';
 
-    // TODO guard against non-lockable doors
+    let sizeDesc;
 
     if (size === 2) {
         sizeDesc = append ? 'double wide' : 'wide';
