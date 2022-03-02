@@ -1,14 +1,9 @@
 // @ts-check
 
-import { chunk } from '../utility/tools.js';
-
 import { article, section } from '../ui/block.js';
-
+import { drawLegend } from '../dungeon/legend.js';
 import { list } from '../ui/list.js';
 import { subtitle } from '../ui/typography.js';
-
-import { drawLegend } from '../dungeon/legend.js';
-
 import {
     getDoorwayList,
     getKeyDescription,
@@ -22,13 +17,10 @@ import {
 // -- Type Imports -------------------------------------------------------------
 
 /** @typedef {import('../dungeon/generate.js').Dungeon} Dungeon */
+/** @typedef {import('../dungeon/map.js').Door} Door */
 /** @typedef {import('../dungeon/map.js').Doors} Doors */
 /** @typedef {import('../item/generate.js').Item} Item */
 /** @typedef {import('../room/generate.js').Room} Room */
-
-// -- Config -------------------------------------------------------------------
-
-const roomsPerRow = 3;
 
 // -- Private Functions --------------------------------------------------------
 
@@ -36,16 +28,15 @@ const roomsPerRow = 3;
  * Formats room generation.
  *
  * @param {Room} room
- * @param {Doors} [doors]
+ * @param {Door[]} [doors]
  *
  * @returns {string}
  */
 function formatRoom(room, doors) {
     let { roomNumber } = room;
 
-    let roomDoors = doors && doors[roomNumber];
-    let desc      = getRoomDescription(room, roomDoors);
-    let doorList  = roomDoors ? getDoorwayList(roomDoors, roomNumber) : '';
+    let desc      = getRoomDescription(room, doors);
+    let doorList  = doors ? getDoorwayList(doors, roomNumber) : '';
     let items     = room.items.join('');
     let map       = room.map ? getMapDescription() : '';
     let keys      = room.keys ? getKeyDescription(room.keys) : '';
@@ -55,21 +46,17 @@ function formatRoom(room, doors) {
 }
 
 /**
- * Returns formatted rooms chunked into row sections.
+ * Formats room generation.
  *
  * @param {Room[]} rooms
- * @param {Doors} [doors]
+ * @param {Doors} [doors = {}]
  *
  * @returns {string}
  */
-function formatRoomRows(rooms, doors) {
-    let sections = chunk(rooms, roomsPerRow);
-
-    return sections.map((roomChunk) => {
-        let row = roomChunk.map((room) => formatRoom(room, doors)).join('');
-
-        return section(row, { 'data-grid': 3 });
-    }).join('');
+function formatRoomGrid(rooms, doors = {}) {
+    return section(rooms.map((room) =>
+        formatRoom(room, doors[room.roomNumber])).join('')
+    , { 'data-grid': 3 });
 }
 
 // -- Public Functions ---------------------------------------------------------
@@ -82,10 +69,9 @@ function formatRoomRows(rooms, doors) {
 export function formatDungeon(dungeon) {
     let { map, rooms, doors } = dungeon;
 
-    let legend   = drawLegend();
-    let sections = formatRoomRows(rooms, doors);
-
-    return section(map) + section(legend) + sections;
+    return section(map)
+        + section(drawLegend())
+        + formatRoomGrid(rooms, doors);
 }
 
 /**
@@ -98,16 +84,17 @@ export function formatItems(items) {
 }
 
 /**
- * Formats room generation.
+ * Formats output for the room generation page.
  *
  * @param {Room[]} rooms
  *
  * @returns {string}
  */
 export function formatRooms(rooms) {
+    // TODO should already be set
     rooms.forEach((_, i) => {
         rooms[i].roomNumber = i + 1;
     });
 
-    return formatRoomRows(rooms);
+    return formatRoomGrid(rooms);
 }
