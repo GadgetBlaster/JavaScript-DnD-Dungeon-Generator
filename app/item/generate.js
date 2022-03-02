@@ -26,11 +26,30 @@ import { getRange, probability as quantityProbability } from '../attribute/quant
 
 // -- Type Imports -------------------------------------------------------------
 
-/** @typedef {import('../attribute/quantity').Quantity} Quantity */
+/** @typedef {import('../attribute/condition.js').Condition} Condition */
+/** @typedef {import('../attribute/quantity.js').Quantity} Quantity */
+/** @typedef {import('../attribute/rarity.js').Rarity} Rarity */
+/** @typedef {import('../attribute/size.js').Size} Size */
 /** @typedef {import('../controller/knobs.js').Config} Config */
 /** @typedef {import('../controller/knobs.js').ItemConfig} ItemConfig */
-/** @typedef {import('./furnishing').FurnitureQuantity} FurnitureQuantity */
-/** @typedef {import('./item.js').Item} Item */
+/** @typedef {import('./furnishing.js').FurnitureQuantity} FurnitureQuantity */
+/** @typedef {import('./item.js').ItemType} ItemType */
+
+// -- Types --------------------------------------------------------------------
+
+/**
+ * @typedef {object} Item
+ *
+ * @prop {string} name
+ * @prop {string} label
+ * @prop {Condition} condition
+ * @prop {Rarity} rarity
+ * @prop {Size} size
+ * @prop {ItemType} type
+ * @prop {number} count
+ * @prop {number} [capacity] - Max number of small items found inside
+ * @prop {string[]} [variants] - Array of variations
+*/
 
 // -- Config -------------------------------------------------------------------
 

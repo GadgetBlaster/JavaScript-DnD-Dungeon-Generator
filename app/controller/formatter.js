@@ -23,7 +23,7 @@ import {
 
 /** @typedef {import('../dungeon/generate.js').Dungeon} Dungeon */
 /** @typedef {import('../dungeon/map.js').Doors} Doors */
-/** @typedef {import('../item/item.js').Item} Item */
+/** @typedef {import('../item/generate.js').Item} Item */
 /** @typedef {import('../room/generate.js').Room} Room */
 
 // -- Config -------------------------------------------------------------------

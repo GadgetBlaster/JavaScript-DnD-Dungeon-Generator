@@ -2,9 +2,9 @@
 
 // -- Type Imports -------------------------------------------------------------
 
-/** @typedef {import('../attribute/condition').Condition} Condition */
-/** @typedef {import('../attribute/rarity').Rarity} Rarity */
-/** @typedef {import('./item.js').Item} Item */
+/** @typedef {import('../attribute/condition.js').Condition} Condition */
+/** @typedef {import('../attribute/rarity.js').Rarity} Rarity */
+/** @typedef {import('./generate.js').Item} Item */
 
 // -- Config -------------------------------------------------------------------
 

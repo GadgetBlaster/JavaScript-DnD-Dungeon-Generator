@@ -4,11 +4,13 @@ import { applyRoomRandomization } from './settings.js';
 import { generateItems } from '../item/generate.js';
 import { isRequired } from '../utility/tools.js';
 
-// -- Types --------------------------------------------------------------------
+// -- Type Imports -------------------------------------------------------------
 
 /** @typedef {import('../controller/knobs.js').DungeonConfig} DungeonConfig */
 /** @typedef {import('../controller/knobs.js').RoomConfig} RoomConfig */
-/** @typedef {import('../item/item.js').Item} Item */
+/** @typedef {import('../item/generate.js').Item} Item */
+
+// -- Types --------------------------------------------------------------------
 
 /**
  * @typedef {object} Room

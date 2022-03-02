@@ -6,7 +6,7 @@ import {
     getRarityDescription,
 } from '../description.js';
 
-/** @typedef {import('../item.js').Item} Item */
+/** @typedef {import('../generate.js').Item} Item */
 
 /**
  * @param {import('../../unit/state.js').Utility} utility
@@ -29,6 +29,7 @@ export default ({ assert, describe, it }) => {
     describe('getItemDescription()', () => {
         /** @type {Item} item */
         const item = {
+            condition: 'average',
             count: 1,
             label: 'Bubbling goblin juice',
             name: 'Goblin juice',

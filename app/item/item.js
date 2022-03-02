@@ -6,8 +6,6 @@ import set from './set.js';
 
 /** @typedef {import('../attribute/rarity.js').Rarity} Rarity */
 /** @typedef {import('../attribute/size.js').Size} Size */
-/** @typedef {import('../attribute/condition.js').Condition} Condition */
-/** @typedef {import('../controller/knobs.js').Config} Config */
 
 // -- Types --------------------------------------------------------------------
 
@@ -24,23 +22,6 @@ import set from './set.js';
  * @prop {number} [capacity] - Max number of small items found inside
  * @prop {string[]} [variants] - Array of variations
  */
-
-/**
- * @TODO duplicate typedef. Consolidate and standardize. Use this type.
- * @TODO move to generate.js
- *
- * @typedef {object} Item
- *
- * @prop {string} name
- * @prop {string} label
- * @prop {Condition} condition
- * @prop {Rarity} rarity
- * @prop {Size} size
- * @prop {ItemType} type
- * @prop {number} count
- * @prop {number} [capacity] - Max number of small items found inside
- * @prop {string[]} [variants] - Array of variations
-*/
 
 // -- Config -------------------------------------------------------------------
 

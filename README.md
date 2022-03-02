@@ -18,7 +18,7 @@ A multi-dimensional array is generated to represent the dungeon grid. Rooms and 
 
 The application is organized by a top level `/app/app.js` file that initializes the app and the following directories:
 
-- `/app/attributes/*` - Contains configurations for reusable attributes such as
+- `/app/attribute/*` - Contains configurations for reusable attributes such as
 size and condition.
 - `/app/controller/*` - Application controller code
 - `/app/dungeon/*` - Code related to generating dungeons

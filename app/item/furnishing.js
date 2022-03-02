@@ -5,9 +5,9 @@ import { rollArrayItem, createProbability } from '../utility/roll.js';
 
 // -- Type Imports -------------------------------------------------------------
 
-/** @typedef {import('./item.js').ItemBase} ItemBase */
-/** @typedef {import('./item.js').Item} Item */
 /** @typedef {import('../room/room.js').RoomType} RoomType */
+/** @typedef {import('./generate.js').Item} Item */
+/** @typedef {import('./item.js').ItemBase} ItemBase */
 
 // -- Types --------------------------------------------------------------------
 

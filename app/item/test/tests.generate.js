@@ -20,7 +20,7 @@ import {
     requiredRoomFurniture,
 } from '../furnishing.js';
 
-/** @typedef {import('../item.js').Item} Item */
+/** @typedef {import('../generate.js').Item} Item */
 
 /**
  * @param {import('../../unit/state.js').Utility} utility
