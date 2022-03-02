@@ -31,7 +31,6 @@ import { getRange, probability as quantityProbability } from '../attribute/quant
 /** @typedef {import('../attribute/rarity.js').Rarity} Rarity */
 /** @typedef {import('../attribute/size.js').Size} Size */
 /** @typedef {import('../controller/knobs.js').Config} Config */
-/** @typedef {import('../controller/knobs.js').ItemConfig} ItemConfig */
 /** @typedef {import('./furnishing.js').FurnitureQuantity} FurnitureQuantity */
 /** @typedef {import('./item.js').ItemType} ItemType */
 

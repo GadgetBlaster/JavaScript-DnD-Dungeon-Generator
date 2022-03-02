@@ -27,6 +27,8 @@ import {
 /**
  * Formats room generation.
  *
+ * @private
+ *
  * @param {Room} room
  * @param {Door[]} [doors]
  *
@@ -48,15 +50,18 @@ function formatRoom(room, doors) {
 /**
  * Formats room generation.
  *
+ * @private
+ *
  * @param {Room[]} rooms
  * @param {Doors} [doors = {}]
  *
  * @returns {string}
  */
 function formatRoomGrid(rooms, doors = {}) {
-    return section(rooms.map((room) =>
-        formatRoom(room, doors[room.roomNumber])).join('')
-    , { 'data-grid': 3 });
+    let formattedRooms = rooms.map((room) =>
+        formatRoom(room, doors[room.roomNumber])).join('');
+
+    return section(formattedRooms, { 'data-grid': 3 });
 }
 
 // -- Public Functions ---------------------------------------------------------

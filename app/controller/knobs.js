@@ -51,9 +51,14 @@ import { sizes } from '../attribute/size.js';
  * @prop {number} dungeonTraps
  */
 
-/** @typedef {RoomConfigBase & ItemConfig} RoomConfig */
-/** @typedef {DungeonConfigBase & RoomConfig} DungeonConfig */
-/** @typedef {ItemConfig | RoomConfig | DungeonConfig } Config */
+/** @typedef {ItemConfig & RoomConfigBase} RoomConfig */
+/** @typedef {ItemConfig & RoomConfigBase & DungeonConfigBase} DungeonConfig */
+
+/**
+ * @typedef {ItemConfig
+ *     & Partial<RoomConfigBase>
+ *     & Partial<DungeonConfigBase>
+ * } Config */
 
 /** @typedef {keyof ItemConfig} ItemConfigFields */
 /** @typedef {keyof RoomConfigBase} RoomConfigFields */
