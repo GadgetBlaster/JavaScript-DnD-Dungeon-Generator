@@ -26,20 +26,20 @@ import { sizes } from '../attribute/size.js';
 /**
  * @typedef {object} ItemConfig
  *
- * @prop {Condition} itemCondition
- * @prop {Quantity} itemQuantity
- * @prop {Rarity} itemRarity
- * @prop {ItemType} itemType
+ * @prop {Condition | "random"} itemCondition
+ * @prop {Quantity | "random"} itemQuantity
+ * @prop {Rarity | "random"} itemRarity
+ * @prop {ItemType | "random"} itemType
  */
 
 /**
  * @typedef {object} RoomConfigBase
  *
- * @prop {Condition} roomCondition
+ * @prop {Condition | "random"} roomCondition
  * @prop {number} roomCount
- * @prop {FurnitureQuantity} roomFurnitureQuantity
- * @prop {Size} roomSize
- * @prop {RoomType} roomType
+ * @prop {FurnitureQuantity | "random"} roomFurnitureQuantity
+ * @prop {Size | "random"} roomSize
+ * @prop {RoomType | "random"} roomType
  */
 
 /**
