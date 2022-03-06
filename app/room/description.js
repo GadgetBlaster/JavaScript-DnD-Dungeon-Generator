@@ -95,7 +95,7 @@ function getContentDescription(config) {
             return `There are numerous ${rarity} objects littering the ${type}${furnitureText}`;
 
         default:
-            toss('invalid itemQuantity in `getRoomContentDescription()`');
+            toss('Invalid itemQuantity in `getRoomContentDescription()`');
     }
 }
 
@@ -309,7 +309,7 @@ function getRoomDoorwayDescription(roomDoors, roomNumber) {
         }
 
         if (!connections[roomNumber]) {
-            toss('invalid door connections for roomNumber in getRoomDoorwayDescription()');
+            toss('Invalid door connections for roomNumber in getRoomDoorwayDescription()');
         }
 
         let { direction, to } = connections[roomNumber];

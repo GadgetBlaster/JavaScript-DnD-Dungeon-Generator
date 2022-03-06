@@ -69,7 +69,7 @@ export default ({ assert, describe, it }) => {
                 delete missingItemQuantity.itemQuantity;
 
                 assert(() => getContentDescription(missingItemQuantity))
-                    .throws('invalid itemQuantity in `getRoomContentDescription()`');
+                    .throws('Invalid itemQuantity in `getRoomContentDescription()`');
             });
         });
 
@@ -438,7 +438,7 @@ export default ({ assert, describe, it }) => {
         describe('given a door which does not connect to the room number', () => {
             it('throws', () => {
                 assert(() => getRoomDoorwayDescription([ door ], 3))
-                    .throws('invalid door connections for roomNumber in getRoomDoorwayDescription()');
+                    .throws('Invalid door connections for roomNumber in getRoomDoorwayDescription()');
             });
         });
 
