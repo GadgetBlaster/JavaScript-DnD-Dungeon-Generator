@@ -3,39 +3,32 @@
 import { capitalize, listSentence, toss } from '../utility/tools.js';
 import { roll, rollPercentile, rollArrayItem } from '../utility/roll.js';
 
-// -- Types --------------------------------------------------------------------
+// -- Type Imports -------------------------------------------------------------
 
 /** @typedef {import('../controller/knobs.js').DungeonConfig} DungeonConfig */
 /** @typedef {import('../controller/knobs.js').RoomConfig} RoomConfig */
 
+// -- Type Imports -------------------------------------------------------------
+
+/** @typedef {typeof vegetationType[number]} VegetationType */
+
 // -- Config -------------------------------------------------------------------
 
-/**
- * Percentile chance to include a vegetation description with a room.
- *
- * @type {number}
- */
+/** Percentile chance to include a vegetation description with a room. */
 const vegetationChance = 60;
 
-/**
- * Maximum number of vegetation for a room.
- *
- * @type {number}
- */
+/** Maximum number of vegetation for a room. */
 const maxVegetation = 3;
 
-/**
- * Vegetation types
- */
-export const vegetation = {
-    ferns    : 'ferns',
-    flowers  : 'flowers',
-    grass    : 'grass',
-    moss     : 'moss',
-    mushrooms: 'mushrooms',
-    roots    : 'roots',
-    vines    : 'vines',
-};
+export const vegetationType = Object.freeze(/** @type {const} */ ([
+    'ferns',
+    'flowers',
+    'grass',
+    'moss',
+    'mushrooms',
+    'roots',
+    'vines',
+]));
 
 // -- Private Functions --------------------------------------------------------
 
@@ -45,7 +38,7 @@ export const vegetation = {
  * @private
  * @throws
  *
- * @param {string} type
+ * @param {VegetationType} type
  * @param {object} [options]
  *     @param {boolean} [options.variation = true | false]
  *
@@ -53,8 +46,8 @@ export const vegetation = {
  */
 function getDescription(type, { variation = Boolean(roll()) } = {}) {
     switch (type) {
-        case vegetation.ferns:
-        case vegetation.flowers: {
+        case 'ferns':
+        case 'flowers': {
             let description = variation
                 ? 'are somehow growing here'
                 : 'are growing from cracks in the walls';
@@ -62,31 +55,31 @@ function getDescription(type, { variation = Boolean(roll()) } = {}) {
             return `${type} ${description}`;
         }
 
-        case vegetation.grass:
+        case 'grass':
             return variation
                 ? 'grass pokes through cracks in the floor'
                 : 'patches of grass decorate the ground';
 
-        case vegetation.moss:
+        case 'moss':
             return variation
                 ? 'moss covers the entire room'
                 : 'damp moss clings to the walls';
 
-        case vegetation.mushrooms:
+        case 'mushrooms':
             return variation
                 ? 'glowing mushrooms illuminate your surroundings'
                 : 'strange mushrooms are scattered about';
 
-        case vegetation.roots:
+        case 'roots':
             return variation
                 ? 'roots push through the walls and ceiling'
                 : 'roots disrupt the ground';
 
-        case vegetation.vines:
+        case 'vines':
             return `vines ${variation ? 'cover' : 'cling to'} the walls`;
 
         default:
-            toss('Invalid vegetation type');
+            toss(`Invalid vegetation type "${type}" in getDescription()`);
     }
 }
 
@@ -121,7 +114,7 @@ export function getVegetationDescription(config, { count = roll(1, maxVegetation
     let types = new Set();
 
     for (let i = 0; i < count; i++) {
-        types.add(rollArrayItem(Object.keys(vegetation)));
+        types.add(rollArrayItem(vegetationType));
     }
 
     let roomVegetation = [ ...types ].map((type) => getDescription(type));

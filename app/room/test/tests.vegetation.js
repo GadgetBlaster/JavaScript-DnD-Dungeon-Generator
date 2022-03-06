@@ -6,7 +6,7 @@ import {
 
     // Public Functions
     getVegetationDescription, // TODO
-    vegetation,
+    vegetationType,
 } from '../vegetation.js';
 
 /**
@@ -17,23 +17,27 @@ export default ({ assert, describe, it }) => {
     // -- Private Functions ----------------------------------------------------
 
     describe('getDescription()', () => {
-        Object.values(vegetation).forEach((roomVegetation) => {
+        vegetationType.forEach((roomVegetation) => {
             describe(`given a room vegetation of \`${roomVegetation}\``, () => {
                 it('should return a string', () => {
-                    assert(getDescription(roomVegetation, { variation: false })).isString();
+                    assert(getDescription(roomVegetation, { variation: false }))
+                        .isString();
                 });
             });
 
             describe('variations', () => {
                 it('should return a string', () => {
-                    assert(getDescription(roomVegetation, { variation: true })).isString();
+                    assert(getDescription(roomVegetation, { variation: true }))
+                        .isString();
                 });
             });
         });
 
         describe('given an invalid room vegetation', () => {
             it('should throw', () => {
-                assert(() => getDescription('bowling balls')).throws('Invalid vegetation type');
+                // @ts-expect-error
+                assert(() => getDescription('bowling balls'))
+                    .throws('Invalid vegetation type "bowling balls" in getDescription()');
             });
         });
     });
