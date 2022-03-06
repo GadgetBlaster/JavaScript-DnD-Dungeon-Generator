@@ -1,5 +1,9 @@
 // @ts-check
 
+// -- Types --------------------------------------------------------------------
+
+/** @typedef {{ min: number; max: number }} NumberRange */
+
 // -- Typography ---------------------------------------------------------------
 
 /**
@@ -83,7 +87,7 @@ export const toWords = (text) => text.replace(/([A-Z])/g, ' $1').toLowerCase();
 // -- Numeric ------------------------------------------------------------------
 
 /**
- * Is odd
+ * Returns true if the given number is even.
  *
  * @param {number} num
  *
@@ -92,7 +96,7 @@ export const toWords = (text) => text.replace(/([A-Z])/g, ' $1').toLowerCase();
 export const isEven = (num)  => num % 2 === 0;
 
 /**
- * Is odd
+ * Returns true if the given number is odd.
  *
  * @param {number} num
  *
@@ -103,7 +107,7 @@ export const isOdd = (num)  => num % 2 !== 0;
 // -- Array --------------------------------------------------------------------
 
 /**
- * Chunk
+ * Returns the given array chunked by size.
  *
  * @param {*[]} array
  * @param {number} size
@@ -121,6 +125,46 @@ export const chunk = (array, size) => array.reduce((newArray, item, index) => {
 
     return newArray;
 }, []);
+
+// -- Object -------------------------------------------------------------------
+
+/**
+ * Returns an object containing of `NumberRange`s for each provided key.
+ *
+ * @param {{ [key: string]: number }} minimums
+ *     An object of minimums values.
+ *
+ * @param {number} [maximum = Number.POSITIVE_INFINITY]
+ *     Maximum value for the largest quantity
+ *
+ * @returns {{ [key: string]: NumberRange }}
+ */
+export function createRangeLookup(minimums, maximum = Number.POSITIVE_INFINITY) {
+    let entries = Object.entries(minimums || {});
+
+    entries.length < 1 && toss('Invalid minimums object given in createRangeLookup()');
+
+    let rangeLookup;
+
+    try {
+        rangeLookup = entries.reduce((ranges, quantity, index, lookup) => {
+            let [ key, min ] = quantity;
+
+            let next = index + 1;
+            let max  = lookup[next] ? lookup[next][1] - 1 : maximum;
+
+            max < min && toss(`Max cannot be less than min in in createRangeLookup() for key "${key}"`);
+
+            ranges[key] = { min, max };
+
+            return ranges;
+        }, {});
+    } catch (e) {
+        throw e;
+    }
+
+    return rangeLookup;
+}
 
 // -- Throw --------------------------------------------------------------------
 

@@ -3,6 +3,7 @@
 import {
     capitalize,
     chunk,
+    createRangeLookup,
     indefiniteArticle,
     isEven,
     isOdd,
@@ -247,6 +248,65 @@ export default ({ assert, describe, it }) => {
             it('should have a chunk identical to the array', () => {
                 let chunks = chunk(Array.from(Array(3).keys()), 4);
                 assert(chunks[0]).equalsArray([ 0, 1, 2 ]);
+            });
+        });
+    });
+
+    // -- Object ---------------------------------------------------------------
+
+    describe('createRangeLookup()', () => {
+        describe('given no minimums object', () => {
+            it('throws', () => {
+                // @ts-expect-error
+                assert(() => createRangeLookup())
+                    .throws('Invalid minimums object given in createRangeLookup()');
+            });
+        });
+
+        describe('given an empty minimums object', () => {
+            it('throws', () => {
+                assert(() => createRangeLookup({}))
+                    .throws('Invalid minimums object given in createRangeLookup()');
+            });
+        });
+
+        describe('given a minimums object with an invalid minimum', () => {
+            it('throws', () => {
+                assert(() => createRangeLookup({ first: 100, second: 99 }))
+                    .throws('Max cannot be less than min in in createRangeLookup() for key "first"');
+            });
+        });
+
+        describe('given a minimums object with a single minimum', () => {
+            it('should return a range lookup keyed the same as the minimums object', () => {
+                assert(createRangeLookup({ gopher: 23 }))
+                    .equalsObject({ gopher: { min: 23, max: Number.POSITIVE_INFINITY }});
+            });
+        });
+
+        describe('given a minimums object with a maximum value', () => {
+            it('should return a range lookup with the correct maximum', () => {
+                assert(createRangeLookup({ gopher: 23 }, 32))
+                    .equalsObject({ gopher: { min: 23, max: 32 }});
+            });
+        });
+
+        describe('given a minimums object with several values', () => {
+            it('should return a range lookup with correct ranges', () => {
+                assert(createRangeLookup({
+                    gopher: 23,
+                    bird  : 24,
+                    dog   : 32,
+                    cat   : 36,
+                    monkey: 48,
+                }, 62))
+                    .equalsObject({
+                        gopher: { min: 23, max: 23 },
+                        bird  : { min: 24, max: 31 },
+                        dog   : { min: 32, max: 35 },
+                        cat   : { min: 36, max: 47 },
+                        monkey: { min: 48, max: 62 },
+                    });
             });
         });
     });
