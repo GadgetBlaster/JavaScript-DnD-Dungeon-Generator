@@ -634,20 +634,29 @@ export default ({ assert, describe, it }) => {
 
         describe('given a function that does not throw', () => {
             it('should return a falsy `isOk` property', () => {
-                assert(throws(() => {}, 'junk').isOk).isFalse();
+                const result = throws(() => {}, 'junk');
+
+                assert(result.isOk).isFalse();
+                assert(result.msg).equals('expected function to throw');
             });
         });
 
         describe('given a function that throws', () => {
             describe('given a function that throws an unexpected error message', () => {
                 it('should return a falsy `isOk` property', () => {
-                    assert(throws(() => { throw new TypeError('Junk'); }, 'Not junk').isOk).isFalse();
+                    const result = throws(() => { throw new TypeError('Junk'); }, 'Not junk');
+
+                    assert(result.isOk).isFalse();
+                    assert(result.msg).equals('expected "Junk" to equal "Not junk"');
                 });
             });
 
             describe('given a function that throws the expected error message', () => {
                 it('should return a falsy `isOk` property', () => {
-                    assert(throws(() => { throw new TypeError('Peanuts'); }, 'Peanuts').isOk).isTrue();
+                    const result = throws(() => { throw new TypeError('Peanuts'); }, 'Peanuts');
+
+                    assert(result.isOk).isTrue();
+                    assert(result.msg).equals('expected "Peanuts" to equal "Peanuts"');
                 });
             });
         });

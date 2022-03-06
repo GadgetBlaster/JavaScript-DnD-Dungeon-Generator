@@ -272,7 +272,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given a minimums object with an invalid minimum', () => {
             it('throws', () => {
-                assert(() => createRangeLookup({ first: 100, second: 99 }))
+                assert(() => createRangeLookup({ first: 100, second: 100 }))
                     .throws('Max cannot be less than min in in createRangeLookup() for key "first"');
             });
         });

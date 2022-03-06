@@ -144,26 +144,18 @@ export function createRangeLookup(minimums, maximum = Number.POSITIVE_INFINITY) 
 
     entries.length < 1 && toss('Invalid minimums object given in createRangeLookup()');
 
-    let rangeLookup;
+    return entries.reduce((ranges, quantity, index, lookup) => {
+        let [ key, min ] = quantity;
 
-    try {
-        rangeLookup = entries.reduce((ranges, quantity, index, lookup) => {
-            let [ key, min ] = quantity;
+        let next = index + 1;
+        let max  = lookup[next] ? lookup[next][1] - 1 : maximum;
 
-            let next = index + 1;
-            let max  = lookup[next] ? lookup[next][1] - 1 : maximum;
+        max < min && toss(`Max cannot be less than min in in createRangeLookup() for key "${key}"`);
 
-            max < min && toss(`Max cannot be less than min in in createRangeLookup() for key "${key}"`);
+        ranges[key] = { min, max };
 
-            ranges[key] = { min, max };
-
-            return ranges;
-        }, {});
-    } catch (e) {
-        throw e;
-    }
-
-    return rangeLookup;
+        return ranges;
+    }, {});
 }
 
 // -- Throw --------------------------------------------------------------------

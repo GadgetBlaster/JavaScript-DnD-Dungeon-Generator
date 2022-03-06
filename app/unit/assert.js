@@ -214,7 +214,7 @@ export function throws(func, expectedErrorMsg) {
     if (!errorMsg) {
         return {
             isOk: false,
-            msg: `expected function "${func.name}" to throw`,
+            msg: 'expected function to throw',
         };
     }
 
