@@ -12,6 +12,8 @@ const maxPercent = 100;
 /**
  * Returns a probability roll and description in a closure.
  *
+ * @throws
+ *
  * @param {Map<number, any>} distributionTable
  *
  * @returns {Readonly<{

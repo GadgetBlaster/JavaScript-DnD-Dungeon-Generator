@@ -125,8 +125,8 @@ export default ({ assert, describe, it }) => {
 
         it('should return a `Dungeon` object', () => {
             assert(dungeon).isObject();
-            assert(dungeon.map).isString();
-            assert(/<svg(.*?)>(.*?)<\/svg>/.test(dungeon.map)).isTrue();
+            assert(dungeon.mapSvg).isString();
+            assert(/<svg(.*?)>(.*?)<\/svg>/.test(dungeon.mapSvg)).isTrue();
             assert(dungeon.rooms).isArray();
         });
 

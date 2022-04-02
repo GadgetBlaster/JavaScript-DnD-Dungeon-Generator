@@ -72,9 +72,9 @@ function formatRoomGrid(rooms, doors = {}) {
  * @param {Dungeon} dungeon
  */
 export function formatDungeon(dungeon) {
-    let { map, rooms, doors } = dungeon;
+    let { mapSvg, rooms, doors } = dungeon;
 
-    return section(map)
+    return section(mapSvg)
         + section(drawLegend())
         + formatRoomGrid(rooms, doors);
 }
