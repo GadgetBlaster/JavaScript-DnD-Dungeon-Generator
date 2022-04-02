@@ -96,7 +96,7 @@ export function formatItems(items) {
  * @returns {string}
  */
 export function formatRooms(rooms) {
-    // TODO should already be set
+    // TODO roomNumber should already be set
     rooms.forEach((_, i) => {
         rooms[i].roomNumber = i + 1;
     });

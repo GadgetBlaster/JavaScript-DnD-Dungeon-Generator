@@ -2,7 +2,7 @@
 
 import { getRoomFeatures } from './feature.js';
 import { getRoomTypeLabel } from './description.js';
-import { getVegetationDescription } from './vegetation.js';
+import { getRoomVegetationDescription } from './vegetation.js';
 import { roll, rollArrayItem, rollPercentile } from '../utility/roll.js';
 import { toss } from '../utility/tools.js';
 
@@ -285,7 +285,7 @@ export function getEnvironmentDescription(config) {
     let roomVegetation;
 
     if (supportsVegetation.has(roomStructure)) {
-        roomVegetation = getVegetationDescription(config);
+        roomVegetation = getRoomVegetationDescription(config);
     }
 
     return [

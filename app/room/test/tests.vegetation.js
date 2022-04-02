@@ -5,7 +5,7 @@ import {
     testGetDescription as getDescription,
 
     // Public Functions
-    getVegetationDescription, // TODO
+    getRoomVegetationDescription, // TODO
     vegetationType,
 } from '../vegetation.js';
 
@@ -44,7 +44,7 @@ export default ({ assert, describe, it }) => {
 
     // -- Public Functions -----------------------------------------------------
 
-    describe('getVegetationDescription()', () => {
+    describe('getRoomVegetationDescription()', () => {
         // TODO inject probability before adding test coverage.
         /*
         describe('given a count of one', () => {

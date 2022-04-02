@@ -26,7 +26,6 @@
         ],
 
         "keyword-spacing"     : [ "warn", { "before": true } ],
-        "max-len"             : [ "warn", { "code": 120, "comments": 80 } ],
         "no-case-declarations": [ "warn"  ],
         "no-extra-semi"       : [ "warn"  ],
         "no-shadow"           : [ "warn"  ],

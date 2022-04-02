@@ -93,7 +93,6 @@ export {
  * Generate vegetation description
  *
  * TODO extract noop to caller
- * TODO rename to getRoomVegetation()
  * TODO hook up room settings
  *
  * @param {DungeonConfig | RoomConfig} config
@@ -102,7 +101,7 @@ export {
  *
  * @returns {string}
  */
-export function getVegetationDescription(config, { count = roll(1, maxVegetation) } = {}) {
+export function getRoomVegetationDescription(config, { count = roll(1, maxVegetation) } = {}) {
     if (!rollPercentile(vegetationChance)) {
         return;
     }
