@@ -27,7 +27,6 @@ import door            from '../room/test/tests.door.js';
 import environment     from '../room/test/tests.environment.js';
 import feature         from '../room/test/tests.feature.js';
 import generateRooms   from '../room/test/tests.generate.js';
-import settings        from '../room/test/tests.settings.js';
 import vegetation      from '../room/test/tests.vegetation.js';
 
 import itemDescription from '../item/test/tests.description.js';
@@ -70,7 +69,6 @@ export default {
     '/app/room/test/tests.environment.js': environment,
     '/app/room/test/tests.feature.js'    : feature,
     '/app/room/test/tests.generate.js'   : generateRooms,
-    '/app/room/test/tests.settings.js'   : settings,
     '/app/room/test/tests.vegetation.js' : vegetation,
 
     '/app/item/test/tests.description.js' : itemDescription,
