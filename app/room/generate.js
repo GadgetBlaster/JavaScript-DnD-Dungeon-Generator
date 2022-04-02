@@ -20,6 +20,7 @@ import { roomTypeSizes } from './dimensions.js';
 /** @typedef {import('../item/generate.js').Item} Item */
 /** @typedef {import('../utility/roll.js').Probability} Probability */
 /** @typedef {import('./room.js').RoomType} RoomType */
+/** @typedef {import('./room.js').RoomTypeProbabilities} RoomTypeProbabilities */
 
 // -- Types --------------------------------------------------------------------
 
@@ -31,46 +32,86 @@ import { roomTypeSizes } from './dimensions.js';
  * @prop {number} roomNumber
  */
 
+/**
+ * TODO use field list type
+ *
+ * @typedef {{
+ *   [key in RoomConfigFields & ItemConfigFields]: () => string
+ * }} RoomRandomizations
+ */
+
 // -- Config -------------------------------------------------------------------
 
 /**
  * Percentile chance that items in the room have uniform condition.
- *
- * @type {number}
  */
- const uniformConditionChance = 10;
+const uniformConditionChance = 10;
 
- /**
-  * Percentile chance that items in the room have uniform rarity.
-  *
-  * @type {number}
-  */
- const uniformRarityChance = 10;
+/**
+ * Percentile chance that items in the room have uniform rarity.
+ */
+const uniformRarityChance = 10;
 
- /**
-  * An object of randomization functions for room configs.
-  *
-  * TODO use field list type
-  *
-  * @type {{ [key in RoomConfigFields & ItemConfigFields]: () => string }}
-  */
- const roomRandomizations = {
-     itemCondition        : () => rollUniformity(uniformConditionChance, conditionProbability),
-     itemQuantity         : () => quantityProbability.roll(),
-     itemRarity           : () => rollUniformity(uniformRarityChance, rarityProbability),
-     roomCondition        : () => conditionProbability.roll(),
-     roomFurnitureQuantity: () => furnitureQuantityProbability.roll(),
-     roomType             : () => rollRoomType(roomTypeProbability.roll()),
- };
+/**
+ * An object of randomization functions for room configs.
+ *
+ * @type {RoomRandomizations}
+ */
+const roomRandomizations = {
+    itemCondition        : () => rollUniformity(uniformConditionChance, conditionProbability),
+    itemQuantity         : () => quantityProbability.roll(),
+    itemRarity           : () => rollUniformity(uniformRarityChance, rarityProbability),
+    roomCondition        : () => conditionProbability.roll(),
+    roomFurnitureQuantity: () => furnitureQuantityProbability.roll(),
+    roomType             : () => rollRoomType(roomTypeProbability.roll()),
+};
+
+export {
+    roomRandomizations as testRoomRandomizations,
+};
 
 // -- Private Functions --------------------------------------------------------
+
+/**
+ * Applies randomization to the given room configs.
+ *
+ * @param {RoomConfig | DungeonConfig} config
+ * @param {RoomRandomizations} randomizations
+ *
+ * @returns {DungeonConfig | RoomConfig}
+ */
+function applyRoomRandomization(config, randomizations) {
+    let randomizedConfig = { ...config };
+
+    Object.keys(randomizedConfig).forEach((key) => {
+        if (randomizedConfig[key] !== 'random') {
+            return;
+        }
+
+        let randomValue = randomizations[key] && randomizations[key]();
+
+        if (randomValue) {
+            randomizedConfig[key] = randomValue;
+        }
+    });
+
+    if (randomizedConfig.roomSize === 'random') {
+        randomizedConfig.roomSize = rollRoomSize(randomizedConfig.roomType);
+    }
+
+    if (randomizedConfig.roomType === 'hallway' && randomizedConfig.itemQuantity === 'numerous') {
+        randomizedConfig.itemQuantity = 'several';
+    }
+
+    return randomizedConfig;
+}
 
 /**
  * Returns a randomly selected appropriate room size for a room type.
  *
  * @private
  *
- * @param {RoomType} type
+ * @param {RoomType | "random"} type
  *
  * @returns {Size} size
  */
@@ -81,7 +122,7 @@ const rollRoomSize = (type) => rollArrayItem(roomTypeSizes[type]);
  *
  * @private
  *
- * @param {RoomType | "random"} type
+ * @param {RoomTypeProbabilities} type
  *
  * @returns {RoomType} roomType
  */
@@ -116,57 +157,16 @@ function rollUniformity(uniformityChance, probability) {
 }
 
 export {
-    rollRoomType   as testRollRoomType,
-    rollUniformity as testRollUniformity,
+    applyRoomRandomization as testApplyRoomRandomization,
+    rollRoomType           as testRollRoomType,
+    rollUniformity         as testRollUniformity,
 };
 
 // -- Public Functions ---------------------------------------------------------
 
-// TODO consolidate with applyRoomRandomization?
-function applyRandomization(config, randomizations) {
-    let settings = { ...config };
-
-    Object.keys(settings).forEach((key) => {
-        if (settings[key] !== 'random') {
-            return;
-        }
-
-        let randomValue = randomizations[key] && randomizations[key]();
-
-        if (randomValue) {
-            settings[key] = randomValue;
-        }
-    });
-
-    if (settings.roomSize === 'random') {
-        settings.roomSize = rollRoomSize(settings.roomType);
-    }
-
-    if (settings.roomType === 'hallway' && settings.itemQuantity === 'numerous') {
-        settings.itemQuantity = 'several';
-    }
-
-    return settings;
-}
-
-/**
- * Apply room randomizations
- *
- * TODO rename to `applyRoomRandomizations`
- *
- * @param {RoomConfig | DungeonConfig} config
- *
- * @returns {DungeonConfig | RoomConfig}
- */
-export function applyRoomRandomization(config) {
-    return applyRandomization(config, roomRandomizations);
-}
-
 /**
  * Generates a randomized array of random room configs for the given knob
  * settings.
- *
- * TODO rename to generateRoomConfigs
  *
  * @param {RoomConfig | DungeonConfig} config
  *
@@ -191,7 +191,7 @@ export function generateRooms(config) {
     let count = Math.floor(Number(roomCount));
 
     return [ ...Array(count) ].map(() => {
-        let roomConfig = applyRoomRandomization(config);
+        let roomConfig = applyRoomRandomization(config, roomRandomizations);
 
         return {
             settings: roomConfig,

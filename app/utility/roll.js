@@ -6,10 +6,10 @@ import { toss } from './tools.js';
 
 /**
  * @typedef {object} Probability
- *     Probability distribution table.
+ *     Probability object which rolls against the provided distribution table.
  *
  * @prop {string} description
- * @prop {() => string} roll
+ * @prop {() => any} roll
  */
 
 // -- Config -------------------------------------------------------------------
@@ -22,7 +22,7 @@ const maxPercent = 100;
 /**
  * Returns a probability roll and description in a closure.
  *
- * @param {[ number, string ][]} config
+ * @param {[ number, string ][]} config // TODO name distributionTable
  *
  * @returns {Probability}
  */

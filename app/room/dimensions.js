@@ -32,7 +32,9 @@ export const dimensionRanges = {
 };
 
 /**
- * Room sizes
+ * A lookup of room sizes by room types.
+ *
+ * Room types which are not included in the lookup can be of any size.
  *
  * TODO make into Sets?
  *
@@ -81,13 +83,13 @@ export const customDimensions = {
  *
  * Rename to `roomSizesByType` & combine with constant object
  *
- * @type {{ [key: string]: string[] }}
+ * @type {{ RoomType: Size[] }}
  */
 export const roomTypeSizes = roomTypes.reduce((obj, roomType) => {
     obj[roomType] = roomSizes[roomType] || sizes;
 
     return obj;
-}, {});
+}, /** @type {{ RoomType: Size[] }} */ ({}));
 
 export {
     hallLengthMin as testHallLengthMin,
