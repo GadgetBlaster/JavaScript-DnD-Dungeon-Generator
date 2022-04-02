@@ -198,14 +198,31 @@ export default ({ assert, describe, it }) => {
         const gridHeight = 5;
         const grid = { width: gridWidth, height: gridHeight };
 
-        describe('given a room that does not fit in the inset grid content area', () => {
+        describe('given a room that does not fit in the inset grid content area horizontally', () => {
             it('throws', () => {
                 const room = {
-                    width:  gridWidth  - wallSize,
+                    // Inset grid width is `gridWidth - (wallSize * 2)` so a
+                    // room with a `gridWidth - wallSize` width is too large.
+                    width:  gridWidth - wallSize,
+                    height: gridHeight - (wallSize * 2),
+                };
+
+                assert(() => getStartingPoint(grid, room))
+                    .throws('Invalid gridWidth "4" in getStartingPoint()');
+            });
+        });
+
+        describe('given a room that does not fit in the inset grid content area vertically', () => {
+            it('throws', () => {
+                const room = {
+                    width:  gridWidth - (wallSize * 2),
+                    // Inset grid height is `gridHeight - (wallSize * 2)` so a
+                    // room with a `gridHeight - wallSize` height is too large.
                     height: gridHeight - wallSize,
                 };
 
-                assert(() => getStartingPoint(grid, room)).throws('Invalid min or max in getStartingPoint()');
+                assert(() => getStartingPoint(grid, room))
+                    .throws('Invalid gridHeight "5" in getStartingPoint()');
             });
         });
 

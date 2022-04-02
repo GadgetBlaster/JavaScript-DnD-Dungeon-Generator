@@ -2,6 +2,7 @@
 
 import { directions } from './map.js';
 import { roll, rollArrayItem } from '../utility/roll.js';
+import { toss } from '../utility/tools.js';
 
 // -- Types --------------------------------------------------------------------
 
@@ -149,9 +150,8 @@ export function getStartingPoint(gridDimensions, roomDimensions) {
     let maxX = gridWidth  - roomWidth  - wallSize;
     let maxY = gridHeight - roomHeight - wallSize;
 
-    if (maxX < minX || maxY < minY) {
-        throw new TypeError('Invalid min or max in getStartingPoint()');
-    }
+    maxX < minX && toss(`Invalid gridWidth "${gridWidth}" in getStartingPoint()`);
+    maxY < minY && toss(`Invalid gridHeight "${gridHeight}" in getStartingPoint()`);
 
     let x;
     let y;

@@ -225,7 +225,7 @@ export default ({ assert, describe, it }) => {
                     content: contentEl,
                     knobs  : knobsEl,
                     nav    : navEl,
-                })).throws('Invalid active page in onGenerate()');
+                })).throws('Invalid active page "evil-button" in onGenerate()');
             });
         });
     });

@@ -130,7 +130,7 @@ function onGenerate({ content, knobs, nav }) {
     let page      = getActiveNavItem(nav);
     let generator = generators[page];
 
-    isRequired(generator, 'Invalid active page in onGenerate()');
+    isRequired(generator, `Invalid active page "${page}" in onGenerate()`);
 
     content.innerHTML = generator(settings);
 }
