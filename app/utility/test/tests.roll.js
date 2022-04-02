@@ -15,8 +15,8 @@ export default ({ assert, describe, it }) => {
     // -- Public Functions -----------------------------------------------------
 
     describe('createProbability()', () => {
-        describe('given a valid `config`', () => {
-            const probability = createProbability([[ 23, 'boats' ]]);
+        describe('given a valid distribution table', () => {
+            const probability = createProbability(new Map(([[ 23, 'boats' ]])));
 
             it('returns an object`', () => {
                 assert(probability).isObject();
@@ -34,12 +34,12 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('probability description', () => {
-            const probability = createProbability([
+            const probability = createProbability(new Map([
                 [ 23, 'boats' ],
                 [ 55, 'horses' ],
-            ]);
+            ]));
 
-            it('includes the probability range and value for each `config` entry', () => {
+            it('includes the probability range and value for each distribution table entry', () => {
                 assert(probability.description)
                     .stringIncludes('1-23% boats')
                     .stringIncludes('24-55% horses');
@@ -47,68 +47,48 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('roll()', () => {
-            const probability = createProbability([
+            const probability = createProbability(new Map([
                 [ 50,  'potion of healing' ],
                 [ 100, 'potion of love' ],
-            ]);
+            ]));
 
-            it('returns one of the values in the `config`', () => {
+            it('returns one of the values from the distribution table', () => {
                 const result = probability.roll();
                 assert([ 'potion of healing', 'potion of love' ].includes(result)).isTrue();
             });
         });
 
-        it('returns an object', () => {
-            assert(createProbability([[ 23, 'boats' ]])).isObject();
-        });
-
-        describe('given a `config` that is not an array', () => {
+        describe('given a distribution table that is not a Map', () => {
             it('throws', () => {
                 // @ts-expect-error
                 assert(() => { createProbability('junk'); })
-                    .throws('Probability `config` must be an array');
+                    .throws('Probability distribution table must be a Map');
             });
         });
 
-        describe('given an empty `config`', () => {
+        describe('given an empty distribution table', () => {
             it('throws', () => {
-                assert(() => { createProbability([]); })
-                    .throws('Probability config must have values');
+                assert(() => { createProbability(new Map([])); })
+                    .throws('Probability distribution table must have values');
             });
         });
 
-        describe('given a `config` that is not a 2 dimensional array', () => {
-            it('throws', () => {
-                // @ts-expect-error
-                assert(() => { createProbability([ 'junk' ]); })
-                    .throws('Invalid `config` for Map in `createProbability()`');
-            });
-        });
-
-        describe('given a `config` with invalid map keys', () => {
+        describe('given a distribution table with invalid map keys', () => {
             it('throws', () => {
                 // @ts-expect-error
-                assert(() => { createProbability([[ 'bad', 'panda' ]]); })
+                assert(() => { createProbability(new Map([[ 'bad', 'panda' ]])); })
                     .throws('Probability key "bad" must be an integer');
             });
         });
 
-        describe('given a `config` with invalid map values', () => {
-            it('throws', () => {
-                // @ts-expect-error
-                assert(() => { createProbability([[ 23, 99 ]]); })
-                    .throws('Probability value "99" must be a string');
-            });
-        });
-
-        describe('given a `config` with an out of bounds probability', () => {
+        describe('given a distribution table with an out of bounds probability', () => {
             describe('given a map key less than `1`', () => {
                 it('throws', () => {
                     assert(() => {
-                        createProbability([
+                        createProbability(new Map([
                             [ -10,  'backpack' ],
                             [ 50, 'belt pouch' ],
-                        ]);
+                        ]));
                     }).throws('Probability key "-10" must be 0 or greater');
                 });
             });
@@ -116,10 +96,10 @@ export default ({ assert, describe, it }) => {
             describe('given a map key greater than `100`', () => {
                 it('throws', () => {
                     assert(() => {
-                        createProbability([
+                        createProbability(new Map([
                             [ 1,  'backpack' ],
                             [ 102, 'belt pouch' ],
-                        ]);
+                        ]));
                     }).throws('Probability key "102" exceeds 100');
                 });
             });

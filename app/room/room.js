@@ -9,7 +9,6 @@ import { createProbability } from '../utility/roll.js';
 // -- Types --------------------------------------------------------------------
 
 /** @typedef {typeof roomTypes[number]} RoomType */
-/** @typedef {"hallway" | "room" | "random"} RoomTypeProbabilities */
 
 // -- Config -------------------------------------------------------------------
 
@@ -55,14 +54,15 @@ export const appendRoomTypes = new Set([
 ]);
 
 /**
- * Probability distribution table of room types.
+ * Generic room type probability.
  *
- * @type {Pick<Probability, "description"> & {
- *   roll: () => RoomTypeProbabilities;
+ * @type {{
+ *   description: string;
+ *   roll: () => "hallway" | "room" | "random";
  * }}
  */
-export const probability = createProbability([
+export const probability = createProbability(new Map([
     [ 40,  'hallway' ],
     [ 65,  'room'    ],
     [ 100, 'random'  ],
-]);
+]));

@@ -30,7 +30,15 @@ export const indicateRarity = new Set([
     'uncommon',
 ]);
 
-export const probability = createProbability([
+/**
+ * Rarity probability.
+ *
+ * @type {Readonly<{
+ *   description: string;
+ *   roll: () => Rarity;
+ * }>}
+ */
+export const probability = createProbability(new Map([
     [ 25,  'abundant'  ],
     [ 45,  'common'    ],
     [ 65,  'average'   ],
@@ -38,4 +46,4 @@ export const probability = createProbability([
     [ 93,  'rare'      ],
     [ 99,  'exotic'    ],
     [ 100, 'legendary' ],
-]);
+]));

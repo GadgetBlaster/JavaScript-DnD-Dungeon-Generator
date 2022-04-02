@@ -171,13 +171,21 @@ export const furnitureQuantities = Object.freeze(/** @type {const} */ ([
     'furnished',
 ]));
 
-export const probability = createProbability([
+/**
+ * Furnishing quantity probability.
+ *
+ * @type {Readonly<{
+ *   description: string;
+ *   roll: () => FurnitureQuantity;
+ * }>}
+ */
+export const probability = createProbability(new Map([
     [ 25,  'none'      ],
     [ 75,  'minimum'   ],
     [ 92,  'sparse'    ],
     [ 98,  'average'   ],
     [ 100, 'furnished' ],
-]);
+]));
 
 /** @type {{ [key in FurnitureQuantity]?: number }} */
 export const furnishingQuantityRanges = {

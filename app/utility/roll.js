@@ -2,16 +2,6 @@
 
 import { toss } from './tools.js';
 
-// -- Types --------------------------------------------------------------------
-
-/**
- * @typedef {object} Probability
- *     Probability object which rolls against the provided distribution table.
- *
- * @prop {string} description
- * @prop {() => any} roll
- */
-
 // -- Config -------------------------------------------------------------------
 
 const minPercent = 0;
@@ -22,23 +12,18 @@ const maxPercent = 100;
 /**
  * Returns a probability roll and description in a closure.
  *
- * @param {[ number, string ][]} config // TODO name distributionTable
+ * @param {Map<number, any>} distributionTable
  *
- * @returns {Probability}
+ * @returns {Readonly<{
+ *   description: string;
+ *   roll: () => any;
+ * }>}
  */
-export function createProbability(config) {
-    !Array.isArray(config) && toss('Probability `config` must be an array');
-    !config.length && toss('Probability config must have values');
+export function createProbability(distributionTable) {
+    !(distributionTable instanceof Map) && toss('Probability distribution table must be a Map');
+    !distributionTable.size && toss('Probability distribution table must have values');
 
-    let map;
-
-    try {
-        map = new Map(config);
-    } catch (e) {
-        toss('Invalid `config` for Map in `createProbability()`');
-    }
-
-    map.forEach((value, key) => {
+    distributionTable.forEach((value, key) => {
         typeof value !== 'string' && toss(`Probability value "${value}" must be a string`);
         !Number.isInteger(key) && toss(`Probability key "${key}" must be an integer`);
 
@@ -46,27 +31,27 @@ export function createProbability(config) {
         key > maxPercent && toss(`Probability key "${key}" exceeds ${maxPercent}`);
     });
 
-    let sorted = [ ...map.keys() ].sort((a, b) => a - b);
+    let sorted = [ ...distributionTable.keys() ].sort((a, b) => a - b);
 
     let description = 'Random probability: ' + sorted.reduce((acc, key, index) => {
         let prev  = sorted[index - 1];
         let start = prev ? (prev + 1) : 1;
         let end   = key;
 
-        acc.push(`${start}-${end}% ${map.get(key)}`);
+        acc.push(`${start}-${end}% ${distributionTable.get(key)}`);
 
         return acc;
     }, []).join(', ');
 
-    return {
+    return Object.freeze({
         description,
         roll: () => {
             let result = roll(minPercent, maxPercent);
             let key    = sorted.find((val) => result <= val);
 
-            return map.get(key);
+            return distributionTable.get(key);
         },
-    };
+    });
 }
 
 /**

@@ -19,7 +19,15 @@ export const quantities = Object.freeze(/** @type {const} */ ([
     'numerous',
 ]));
 
-export const probability = createProbability([
+/**
+ * Quantity probability.
+ *
+ * @type {Readonly<{
+ *   description: string;
+ *   roll: () => Quantity;
+ * }>}
+ */
+export const probability = createProbability(new Map([
     [ 5,   'zero'     ],
     [ 10,  'one'      ],
     [ 15,  'couple'   ],
@@ -28,7 +36,7 @@ export const probability = createProbability([
     [ 65,  'several'  ],
     [ 96,  'many'     ],
     [ 100, 'numerous' ],
-]);
+]));
 
 /**
  * Minimum count of items for each quantity.

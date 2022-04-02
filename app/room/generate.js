@@ -20,7 +20,6 @@ import { roomTypeSizes } from './dimensions.js';
 /** @typedef {import('../item/generate.js').Item} Item */
 /** @typedef {import('../utility/roll.js').Probability} Probability */
 /** @typedef {import('./room.js').RoomType} RoomType */
-/** @typedef {import('./room.js').RoomTypeProbabilities} RoomTypeProbabilities */
 
 // -- Types --------------------------------------------------------------------
 
@@ -75,6 +74,8 @@ export {
 /**
  * Applies randomization to the given room configs.
  *
+ * @private
+ *
  * @param {RoomConfig | DungeonConfig} config
  * @param {RoomRandomizations} randomizations
  *
@@ -122,7 +123,7 @@ const rollRoomSize = (type) => rollArrayItem(roomTypeSizes[type]);
  *
  * @private
  *
- * @param {RoomTypeProbabilities} type
+ * @param {RoomType | "random"} type
  *
  * @returns {RoomType} roomType
  */

@@ -8,7 +8,6 @@ import { createProbability } from '../utility/roll.js';
 /** @typedef {import('../dungeon/map.js').Connections} Connections */
 /** @typedef {import('../dungeon/map.js').Door} Door */
 /** @typedef {import('../dungeon/map.js').Doors} Doors */
-/** @typedef {import('../utility/roll.js').Probability} Probability */
 
 // -- Types --------------------------------------------------------------------
 
@@ -70,9 +69,14 @@ export const lockable = new Set([
 ]);
 
 /**
- * Probability distribution table of door types.
+ * Door type probability.
+ *
+ * @type {Readonly<{
+ *   description: string;
+ *   roll: () => DoorType;
+ * }>}
  */
-export const probability = createProbability([
+export const probability = createProbability(new Map([
     [ 20,  'passageway' ],
     [ 40,  'archway'    ],
     [ 55,  'hole'       ],
@@ -84,15 +88,20 @@ export const probability = createProbability([
     [ 90,  'brass'      ],
     [ 95,  'stone'      ],
     [ 100, 'portal'     ],
-]);
+]));
 
 /**
- * Probability distribution table for secret doors.
+ * Secret door type probability.
+ *
+ * @type {Readonly<{
+ *   description: string;
+ *   roll: () => "concealed" | "secret" | undefined;
+ * }>}
  */
-export const secretProbability = createProbability([
+export const secretProbability = createProbability(new Map([
     [ 15, 'concealed' ],
     [ 30, 'secret'    ],
-]);
+]));
 
 /**
  * Percentile chance that a lockable door will be locked.
