@@ -18,7 +18,8 @@ import { roomTypeSizes } from './dimensions.js';
 /** @typedef {import('../controller/knobs.js').RoomConfig} RoomConfig */
 /** @typedef {import('../controller/knobs.js').RoomConfigFields} RoomConfigFields */
 /** @typedef {import('../item/generate.js').Item} Item */
-/** @typedef {import('../utility/roll.js').Probability} Probability */
+/** @typedef {import('./door.js').Door} Door */
+/** @typedef {import('./door.js').DoorKey} DoorKey */
 /** @typedef {import('./room.js').RoomType} RoomType */
 
 // -- Types --------------------------------------------------------------------
@@ -26,9 +27,19 @@ import { roomTypeSizes } from './dimensions.js';
 /**
  * @typedef {object} Room
  *
- * @prop {string[]} items
+ * @prop {string} description
  * @prop {number} roomNumber
- * @prop {number} roomNumber
+ * @prop {Size} size
+ * @prop {RoomType} type
+ * @prop {string} [contentDescription]
+ * @prop {string} [doorwayDescription]
+ * @prop {string} [environmentDescription]
+ * @prop {string} [itemDescription]
+ * @prop {Door[]} [doors]
+ * @prop {Item[]} [items]
+ * @prop {DoorKey[]} [keys]
+ * @prop {string[]} [maps]
+ * @prop {string[]} [traps]
  */
 
 /**

@@ -43,6 +43,8 @@ export {
 /**
  * Returns generate dungeon room configs.
  *
+ * TODO move trap generate to room generation?
+ *
  * @param {Omit<DungeonConfig, "roomCount">} config
  *
  * @returns {object} // TODO
@@ -98,26 +100,27 @@ function generateMapDimensions(complexity) {
 /**
  * Returns an array of trap descriptions.
  *
- * TODO can duplicate traps be placed in the same room?
+ * TODO should duplicate traps be able to be placed in the same room?
  *
  * @private
  *
- * @param {number} dungeonTraps
+ * @param {number} count
  *
  * @returns {string[]}
  */
-function generateTraps(dungeonTraps) {
+function generateTraps(count) {
     let traps = [];
 
-    if (dungeonTraps < 1) {
+    if (count < 1) {
         return traps;
     }
 
-    let max   = dungeonTraps * trapCountMultiplier;
-    let min   = Math.max(1, (max - trapCountMultiplier - dungeonTraps));
-    let count = roll(min, max);
+    let max = count * trapCountMultiplier;
+    let min = Math.max(1, (max - trapCountMultiplier - count));
 
-    for (let i = 0; i < count; i++) {
+    let trapCount = roll(min, max);
+
+    for (let i = 0; i < trapCount; i++) {
         traps.push(rollArrayItem(trapList));
     }
 

@@ -275,6 +275,8 @@ export {
 /**
  * Get environment description
  *
+ * TODO return sentences .filter(Boolean).join('. ')+'.');
+ *
  * @param {RoomConfig | DungeonConfig} config
  *
  * @returns {string[]}
