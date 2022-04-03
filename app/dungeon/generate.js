@@ -10,6 +10,8 @@ import trapList from '../room/trap.js';
 // -- Types --------------------------------------------------------------------
 
 /** @typedef {import('../controller/knobs.js').DungeonConfig} DungeonConfig */
+/** @typedef {import('../item/generate.js').Item} Item */
+/** @typedef {import('../room/door.js').DoorKey} DoorKey */
 /** @typedef {import('../room/generate').Room} Room */
 /** @typedef {import('./grid.js').Dimensions} Dimensions */
 /** @typedef {import('./map.js').Doors} Doors */
@@ -20,6 +22,17 @@ import trapList from '../room/trap.js';
  * @prop {string} mapSvg
  * @prop {Room[]} rooms
  * @prop {Doors} doors
+ */
+
+/**
+ * @typedef {Room & {
+ *     roomNumber: number;
+ *     doors: Doors;
+ *     items?: Item[];
+ *     keys?: DoorKey[];
+ *     maps?: string[];
+ *     traps?: string[];
+ * }} DungeonRoom
  */
 
 // -- Config -------------------------------------------------------------------

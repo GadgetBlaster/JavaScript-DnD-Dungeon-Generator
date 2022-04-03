@@ -2,6 +2,8 @@
 
 import { createProbability } from '../utility/roll.js';
 
+// TODO move to dungeon/* and rename everything to "connections"
+
 // -- Type Imports -------------------------------------------------------------
 
 /** @typedef {import('../dungeon/map.js').Connection} Connection */
@@ -111,9 +113,10 @@ export const lockedChance = 25;
 // -- Public Functions ---------------------------------------------------------
 
 /**
- * Returns an array of room doors and keys.
+ * Returns a Rooms lookup and an array of DoorKeys.
  *
  * TODO move to generate.js
+ * TODO rework/rename
  *
  * @param {Door[]} doors
  *

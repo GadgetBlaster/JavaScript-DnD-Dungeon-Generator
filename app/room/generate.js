@@ -13,6 +13,8 @@ import { roomTypeSizes } from './dimensions.js';
 // -- Type Imports -------------------------------------------------------------
 
 /** @typedef {import('../attribute/size.js').Size} Size */
+/** @typedef {import('../attribute/condition.js').Condition} Condition */
+/** @typedef {import('../item/furnishing').FurnitureQuantity} FurnitureQuantity */
 /** @typedef {import('../controller/knobs.js').DungeonConfig} DungeonConfig */
 /** @typedef {import('../controller/knobs.js').ItemConfigFields} ItemConfigFields */
 /** @typedef {import('../controller/knobs.js').RoomConfig} RoomConfig */
@@ -27,19 +29,11 @@ import { roomTypeSizes } from './dimensions.js';
 /**
  * @typedef {object} Room
  *
- * @prop {string} description
- * @prop {number} roomNumber
+ * @prop {Condition} condition
  * @prop {Size} size
  * @prop {RoomType} type
- * @prop {string} [contentDescription]
- * @prop {string} [doorwayDescription]
- * @prop {string} [environmentDescription]
- * @prop {string} [itemDescription]
- * @prop {Door[]} [doors]
+ * @prop {FurnitureQuantity} furnitureQuantity
  * @prop {Item[]} [items]
- * @prop {DoorKey[]} [keys]
- * @prop {string[]} [maps]
- * @prop {string[]} [traps]
  */
 
 /**

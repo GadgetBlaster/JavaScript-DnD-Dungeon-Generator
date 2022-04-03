@@ -12,7 +12,7 @@ import { rollArrayItem } from '../utility/roll.js';
 import { appendDoorway, lockable } from './door.js';
 import { appendRoomTypes } from './room.js';
 
-// -- Types --------------------------------------------------------------------
+// -- Type Imports -------------------------------------------------------------
 
 /** @typedef {import('../attribute/rarity.js').Rarity} Rarity */
 /** @typedef {import('../attribute/size.js').Size} Size */
@@ -25,6 +25,18 @@ import { appendRoomTypes } from './room.js';
 /** @typedef {import('./door.js').DoorKey} DoorKey */
 /** @typedef {import('./door.js').DoorType} DoorType */
 /** @typedef {import('./room.js').RoomType} RoomType */
+
+// -- Types --------------------------------------------------------------------
+
+/**
+ * @typedef {object} RoomDescription
+ *
+ * @prop {string} description
+ * @prop {string} environment
+ * @prop {string} [contents]
+ * @prop {string} [items]
+ * @prop {string} [doorways]
+ */
 
 // -- Config -------------------------------------------------------------------
 
@@ -410,7 +422,7 @@ export const getMapDescription = () => {
 /**
  * Get room description
  *
- * @param {RoomSettings} room
+ * @param {RoomConfig} room
  * @param {Door[]} [roomDoors]
  *
  * @returns {string}
