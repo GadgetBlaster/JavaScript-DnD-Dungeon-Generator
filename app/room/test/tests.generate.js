@@ -1,13 +1,10 @@
 // @ts-check
 
 import {
-    // Config
-    testRoomRandomizations as roomRandomizations,
-
     // Private Functions
     testApplyRoomRandomization as applyRoomRandomization,
+    testRollRoomSize           as rollRoomSize,
     testRollRoomType           as rollRoomType,
-    testRollUniformity         as rollUniformity,
 
     // Public Functions
     generateRooms,
@@ -18,7 +15,12 @@ import { furnitureQuantities } from '../../item/furnishing.js';
 import { quantities } from '../../attribute/quantity.js';
 import { rarities } from '../../attribute/rarity.js';
 import { roomTypes } from '../room.js';
+import { roomTypeSizes } from '../dimensions.js';
 import { sizes } from '../../attribute/size.js';
+
+/** @typedef {import('../../controller/knobs.js').RoomConfig} RoomConfig */
+/** @typedef {import('../../controller/knobs.js').DungeonConfig} DungeonConfig */
+/** @typedef {import('../../controller/knobs.js').ItemConfigFields} ItemConfigFields */
 
 /**
  * @param {import('../../unit/state.js').Utility} utility
@@ -28,37 +30,151 @@ export default ({ assert, describe, it }) => {
     // -- Private Functions ----------------------------------------------------
 
     describe('applyRoomRandomization()', () => {
-        describe('given a `KnobSettings` object', () => {
-            it('should return a `RoomConfig` object', () => {
-                const roomConfig = applyRoomRandomization({
-                    itemCondition        : 'random',
-                    itemQuantity         : 'random',
-                    itemRarity           : 'random',
-                    roomCondition        : 'random',
-                    roomFurnitureQuantity: 'random',
-                    roomSize             : 'random',
-                    roomType             : 'random',
-                }, roomRandomizations);
+        /** @type {RoomConfig} */
+        const roomConfig = {
+            itemCondition        : 'random',
+            itemQuantity         : 'random',
+            itemRarity           : 'random',
+            itemType             : 'random',
+            roomCondition        : 'random',
+            roomCount            : 1,
+            roomFurnitureQuantity: 'random',
+            roomSize             : 'random',
+            roomType             : 'random',
+        };
 
-                assert(roomConfig).isObject();
+        /** @type {DungeonConfig} */
+        const dungeonConfig = {
+            ...roomConfig,
+            dungeonComplexity : 12,
+            dungeonConnections: 13,
+            dungeonMaps       : 1,
+            dungeonTraps      : 2,
+        };
 
-                assert([ ...conditions, 'random' ].includes(roomConfig.itemCondition)).isTrue();
-                assert(conditions.includes(roomConfig.roomCondition)).isTrue();
-                assert(furnitureQuantities.includes(roomConfig.roomFurnitureQuantity)).isTrue();
-                assert(quantities.includes(roomConfig.itemQuantity)).isTrue();
-                assert([ ...rarities, 'random' ].includes(roomConfig.itemRarity)).isTrue();
-                assert(roomTypes.includes(roomConfig.roomType)).isTrue();
-                assert(sizes.includes(roomConfig.roomSize)).isTrue();
+        Object.entries({ RoomConfig: roomConfig, DungeonConfig: dungeonConfig }).forEach(([ typeName, config ]) => {
+            describe(`given a ${typeName} object with "random" values`, () => {
+                it('returns randomized item and room configs', () => {
+                    const randomizedRoomConfig = applyRoomRandomization(config, {
+                        isRandomItemConditionUniform: true,
+                        isRandomItemRarityUniform: true,
+                    });
+
+                    assert(randomizedRoomConfig).isObject();
+
+                    // @ts-expect-error
+                    assert(conditions.includes(randomizedRoomConfig.itemCondition)).isTrue();
+                    // @ts-expect-error
+                    assert(rarities.includes(randomizedRoomConfig.itemRarity)).isTrue();
+                    assert(quantities.includes(randomizedRoomConfig.itemQuantity)).isTrue();
+                    assert(conditions.includes(randomizedRoomConfig.roomCondition)).isTrue();
+                    assert(furnitureQuantities.includes(randomizedRoomConfig.roomFurnitureQuantity)).isTrue();
+                    assert(roomTypes.includes(randomizedRoomConfig.roomType)).isTrue();
+                    assert(sizes.includes(randomizedRoomConfig.roomSize)).isTrue();
+                });
+            });
+        });
+
+        describe('given a specific room condition', () => {
+            it('returns the room condition un-modified', () => {
+                const randomizedRoomConfig = applyRoomRandomization({ ...roomConfig, roomFurnitureQuantity: 'furnished' });
+                assert(randomizedRoomConfig.roomFurnitureQuantity).equals('furnished');
+            });
+        });
+
+        describe('given a specific room furniture quantity', () => {
+            it('returns the room furniture quantity un-modified', () => {
+                const randomizedRoomConfig = applyRoomRandomization({ ...roomConfig, roomCondition: 'exquisite' });
+                assert(randomizedRoomConfig.roomCondition).equals('exquisite');
+            });
+        });
+
+        describe('given a specific room type', () => {
+            it('returns the room type un-modified', () => {
+                const randomizedRoomConfig = applyRoomRandomization({ ...roomConfig, roomType: 'armory' });
+                assert(randomizedRoomConfig.roomType).equals('armory');
+            });
+        });
+
+        describe('given a specific room size', () => {
+            it('returns the room type un-modified', () => {
+                const randomizedRoomConfig = applyRoomRandomization({ ...roomConfig, roomSize: 'small' });
+                assert(randomizedRoomConfig.roomSize).equals('small');
+            });
+        });
+
+        describe('given a specific item condition', () => {
+            it('returns the item condition un-modified', () => {
+                const randomizedItemConfig = applyRoomRandomization({ ...roomConfig, itemCondition: 'decaying' });
+                assert(randomizedItemConfig.itemCondition).equals('decaying');
+            });
+        });
+
+        describe('given an item condition of "random"', () => {
+            describe('when `isRandomItemConditionUniform` is falsy', () => {
+                it('returns "random"', () => {
+                    const randomizedItemConfig = applyRoomRandomization({ ...roomConfig, itemCondition: 'random' });
+                    assert(randomizedItemConfig.itemCondition).equals('random');
+                });
             });
 
-            describe('given a room type of "hallway" and an item quantity of `quantity.numerous`', () => {
-                it('should limit the item quantity to `quantity.several`', () => {
-                    const roomConfig = applyRoomRandomization({
-                        itemQuantity: 'numerous',
-                        roomType    : 'hallway',
-                    }, roomRandomizations);
+            describe('when `isRandomItemConditionUniform` is true', () => {
+                it('returns a randomized item condition', () => {
+                    const randomizedItemConfig = applyRoomRandomization({ ...roomConfig, itemCondition: 'random' }, {
+                        isRandomItemConditionUniform: true,
+                    });
 
-                    assert(roomConfig.itemQuantity).equals('several');
+                    // @ts-expect-error
+                    assert(conditions.includes(randomizedItemConfig.itemCondition)).isTrue();
+                });
+            });
+        });
+
+        describe('given a specific item rarity', () => {
+            it('returns the item rarity un-modified', () => {
+                const randomizedItemConfig = applyRoomRandomization({ ...roomConfig, itemRarity: 'rare' });
+                assert(randomizedItemConfig.itemRarity).equals('rare');
+            });
+        });
+
+        describe('given an item rarity of "random"', () => {
+            describe('when `isRandomItemRarityUniform` is falsy', () => {
+                it('returns "random"', () => {
+                    const randomizedItemConfig = applyRoomRandomization({ ...roomConfig, itemRarity: 'random' });
+                    assert(randomizedItemConfig.itemRarity).equals('random');
+                });
+            });
+
+            describe('when `isRandomItemRarityUniform` is true', () => {
+                it('returns a randomized item rarity', () => {
+                    const randomizedItemConfig = applyRoomRandomization({ ...roomConfig, itemRarity: 'random' }, {
+                        isRandomItemRarityUniform: true,
+                    });
+
+                    // @ts-expect-error
+                    assert(rarities.includes(randomizedItemConfig.itemRarity)).isTrue();
+                });
+            });
+        });
+
+        describe('given a room type of "hallway" and an item quantity of "numerous"', () => {
+            it('limits the item quantity to "several"', () => {
+                const randomizedItemConfig = applyRoomRandomization({
+                    ...roomConfig,
+                    roomType: 'hallway',
+                    itemQuantity: 'numerous',
+                });
+
+                assert(randomizedItemConfig.itemQuantity).equals('several');
+            });
+        });
+    });
+
+    describe('rollRoomSize()', () => {
+        roomTypes.forEach((roomType) => {
+            describe(`give a room type of "${roomType}"`, () => {
+                it('returns a size appropriate for the room type', () => {
+                    assert(roomTypeSizes[roomType].includes(rollRoomSize(roomType))).isTrue();
                 });
             });
         });
@@ -66,31 +182,14 @@ export default ({ assert, describe, it }) => {
 
     describe('rollRoomType()', () => {
         describe('given a room type other than "random"', () => {
-            it('should return it', () => {
+            it('returns the room type', () => {
                 assert(rollRoomType('smithy')).equals('smithy');
             });
         });
 
-        describe('given a room type of `random`', () => {
-            it('should return a random room type', () => {
+        describe('given a room type of "random"', () => {
+            it('returns a random room type', () => {
                 assert(roomTypes.includes(rollRoomType('random'))).isTrue();
-            });
-        });
-    });
-
-    describe('rollUniformity()', () => {
-        const fakeProbability = { roll: () => 'fake result', description: 'fake' };
-
-        describe('given a uniformity condition of 100%', () => {
-            it('should call roll() on the probability object', () => {
-                const result = rollUniformity(100, fakeProbability);
-                assert(result).equals('fake result');
-            });
-        });
-
-        describe('given a uniformity condition of 0%', () => {
-            it('should return undefined', () => {
-                assert(rollUniformity(0, fakeProbability)).isUndefined();
             });
         });
     });

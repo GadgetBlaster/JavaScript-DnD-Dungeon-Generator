@@ -24,6 +24,7 @@ import { appendRoomTypes } from './room.js';
 /** @typedef {import('../item/furnishing.js').FurnitureQuantity} FurnitureQuantity */
 /** @typedef {import('./door.js').DoorKey} DoorKey */
 /** @typedef {import('./door.js').DoorType} DoorType */
+/** @typedef {import('./generate').Room} Room */
 /** @typedef {import('./room.js').RoomType} RoomType */
 
 // -- Types --------------------------------------------------------------------
@@ -422,7 +423,7 @@ export const getMapDescription = () => {
 /**
  * Get room description
  *
- * @param {RoomConfig} room
+ * @param {Room} room
  * @param {Door[]} [roomDoors]
  *
  * @returns {string}

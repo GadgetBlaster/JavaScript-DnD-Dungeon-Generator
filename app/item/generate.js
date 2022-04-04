@@ -302,13 +302,13 @@ export {
  */
 export function generateItems(config) {
     let {
-        roomType,
         itemCondition,
         itemQuantity,
         itemRarity,
         itemType,
-        roomFurnitureQuantity,
         roomCondition,
+        roomFurnitureQuantity,
+        roomType,
     } = config;
 
     isRequired(itemCondition, 'itemCondition is required in generateItems()');
