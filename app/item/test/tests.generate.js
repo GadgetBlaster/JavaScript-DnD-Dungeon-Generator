@@ -21,6 +21,7 @@ import {
 } from '../furnishing.js';
 
 /** @typedef {import('../generate.js').Item} Item */
+/** @typedef {import('../../controller/knobs').ItemConfig} ItemConfig */
 
 /**
  * @param {import('../../unit/state.js').Utility} utility
@@ -100,6 +101,7 @@ export default ({ assert, describe, it }) => {
 
     // TODO incomplete test coverage
     describe('generateItem()', () => {
+        /** @type {ItemConfig} */
         const itemSettings = {
             itemCondition: 'average',
             itemQuantity : 'one',
@@ -362,21 +364,20 @@ export default ({ assert, describe, it }) => {
     // -- Public Functions -----------------------------------------------------
 
     describe('generateItems()', () => {
-        const settings = {
+        /** @type {ItemConfig} */
+        const config = {
             itemCondition: 'average',
             itemQuantity : 'one',
             itemRarity   : 'average',
             itemType     : 'clothing',
         };
 
-        it('should return an array of strings', () => {
-            const results = generateItems(settings);
-            assert(results).isArray();
-            assert(results.find((item) => typeof item !== 'string')).isUndefined();
-        });
+        it('should return a object', () => {
+            const results = generateItems(config);
 
-        it('the first item should be a title containing the number of Items', () => {
-            assert(generateItems(settings).shift()).stringIncludes('Items (1)');
+            assert(results).isObject();
+            assert(results.items).isArray();
+            assert(results.containers).isArray();
         });
 
         describe('required configs', () => {
@@ -387,11 +388,10 @@ export default ({ assert, describe, it }) => {
                 'itemType',
             ].forEach((requiredConfig) => {
                 describe(`given no \`${requiredConfig}\``, () => {
-                    const incompleteConfig = { ...settings };
+                    const incompleteConfig = { ...config };
                     delete incompleteConfig[requiredConfig];
 
                     it('should throw', () => {
-                        // @ts-expect-error // TODO double check
                         assert(() => generateItems(incompleteConfig))
                             .throws(`${requiredConfig} is required in generateItems()`);
                     });
@@ -402,43 +402,49 @@ export default ({ assert, describe, it }) => {
         describe('given a `roomType` and no `roomCondition`', () => {
             it('should throw', () => {
                 assert(() => generateItems({
-                    ...settings,
+                    ...config,
                     roomType: 'room',
                 })).throws('roomCondition is required for room items in generateItems()');
             });
         });
 
         describe('given a random `itemQuantity`', () => {
-            it('should return an array of strings', () => {
-                const results = generateItems({ ...settings, itemQuantity: 'random' });
-                assert(results).isArray();
-                assert(results.find((item) => typeof item !== 'string')).isUndefined();
+            it('should return an randomized item quantity', () => {
+                const results = generateItems({ ...config, itemQuantity: 'random' });
+                assert(results).isObject();
             });
         });
 
         describe('given an `itemQuantity` of zero', () => {
             describe('when there is no room', () => {
-                it('should return an array with only a title', () => {
-                    const results = generateItems({ ...settings, itemQuantity: 'zero' });
-                    assert(results).isArray();
-                    assert(results.pop()).stringIncludes('Items (0)');
+                it('returns empty results', () => {
+                    const results = generateItems({ ...config, itemQuantity: 'zero' });
+
+                    assert(results.containers.length).equals(0);
+                    assert(results.descriptions.length).equals(0);
+                    assert(results.items.length).equals(0);
                 });
             });
 
             describe('when there is a room', () => {
-                it('should return an empty array', () => {
+                it('returns empty results', () => {
                     const results = generateItems({
-                        ...settings,
+                        ...config,
                         itemQuantity : 'zero',
                         roomType     : 'room',
                         roomCondition: 'average',
                     });
-                    assert(results).isArray();
-                    assert(results.length).equals(0);
+
+                    assert(results.containers.length).equals(0);
+                    assert(results.descriptions.length).equals(0);
+                    assert(results.items.length).equals(0);
                 });
             });
         });
 
+        describe('given a specific `itemQuantity`', () => {
+
+        });
         // TODO incomplete test coverage
     });
 };

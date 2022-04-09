@@ -11,6 +11,7 @@ import shape   from '../utility/test/tests.shape.js';
 import tools   from '../utility/test/tests.tools.js';
 
 import controller from '../controller/test/tests.controller.js';
+import formatter from '../controller/test/tests.formatter.js';
 
 import block      from '../ui/test/tests.block.js';
 import button     from '../ui/test/tests.button.js';
@@ -53,6 +54,7 @@ export default {
     '/app/utility/test/tests.tools.js'  : tools,
 
     '/app/controller/test/tests.controller.js': controller,
+    '/app/controller/test/tests.formatter.js': formatter,
 
     '/app/ui/test/tests.block.js'     : block,
     '/app/ui/test/tests.button.js'    : button,

@@ -11,9 +11,9 @@ import { generateItems } from '../item/generate.js';
 import { generateRooms } from '../room/generate.js';
 
 import {
-    formatDungeon,
-    formatRooms,
-    formatItems,
+    formatDungeonPage,
+    formatItemsPage,
+    formatRoomsPage,
 } from './formatter.js';
 
 // -- Type Imports -------------------------------------------------------------
@@ -59,12 +59,12 @@ const generators = {
 /**
  * Generates and formats output for the item generation page.
  *
- * @param {ItemConfig} settings
+ * @param {ItemConfig} config
  *
  * @returns {string}
  */
-function itemGenerator(settings) {
-    return formatItems(generateItems(settings));
+function itemGenerator(config) {
+    return formatItemsPage(generateItems(config));
 }
 
 /**
@@ -75,7 +75,7 @@ function itemGenerator(settings) {
  * @returns {string}
  */
 function roomGenerator(settings) {
-    return formatRooms(generateRooms(settings));
+    return formatRoomsPage(generateRooms(settings));
 }
 
 /**
@@ -86,7 +86,7 @@ function roomGenerator(settings) {
  * @returns {string}
  */
 function dungeonGenerator(settings) {
-    return formatDungeon(generateDungeon(settings));
+    return formatDungeonPage(generateDungeon(settings));
 }
 
 /**

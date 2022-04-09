@@ -13,12 +13,13 @@ import {
     furnishing,
     furnishingByRoomType,
     furnishingQuantityRanges,
+    probability as roomFurnishingProbability,
     requiredRoomFurniture,
 } from './furnishing.js';
 import { probability as conditionProbability } from '../attribute/condition.js';
 import { probability as rarityProbability } from '../attribute/rarity.js';
 import { em, paragraph, strong, subtitle } from '../ui/typography.js';
-import { getRarityDescription, getConditionDescription, getItemDescription } from './description.js';
+import { getRarityDescription, getConditionDescription } from './description.js';
 import { isRequired, toss } from '../utility/tools.js';
 import { list } from '../ui/list.js';
 import { roll, rollArrayItem } from '../utility/roll.js';
@@ -32,6 +33,7 @@ import { getRange, probability as quantityProbability } from '../attribute/quant
 /** @typedef {import('../attribute/size.js').Size} Size */
 /** @typedef {import('../controller/knobs.js').Config} Config */
 /** @typedef {import('./furnishing.js').FurnitureQuantity} FurnitureQuantity */
+/** @typedef {import('./item.js').ItemBase} ItemBase */
 /** @typedef {import('./item.js').ItemType} ItemType */
 
 // -- Types --------------------------------------------------------------------
@@ -48,7 +50,19 @@ import { getRange, probability as quantityProbability } from '../attribute/quant
  * @prop {number} count
  * @prop {number} [capacity] - Max number of small items found inside
  * @prop {string[]} [variants] - Array of variations
-*/
+ */
+
+/**
+ * @typedef {Item & { contents: Item[] }} Container
+ */
+
+/**
+ * @typedef {object} ItemSet
+ *
+ * @prop {string[]} descriptions
+ * @prop {Item[]} items
+ * @prop {Container[]} containers
+ */
 
 // -- Config -------------------------------------------------------------------
 
@@ -141,13 +155,19 @@ const generateItem = (config) => {
         randomItem = itemsByTypeAndRarity && itemsByTypeAndRarity.length && rollArrayItem(itemsByTypeAndRarity);
     }
 
-    // TODO add type
+    /** @type {ItemBase} */
     let item = randomItem || {
         name: 'Mysterious object',
         type: 'mysterious',
     };
 
-    if (hideItemDetails.has(item.type)) {
+    let {
+        type,
+        name,
+        maxCount = 1,
+    } = item;
+
+    if (hideItemDetails.has(type)) {
         itemCondition = 'average';
         itemRarity    = 'average';
     }
@@ -156,32 +176,32 @@ const generateItem = (config) => {
         itemCondition = conditionProbability.roll();
     }
 
-    let isSingle          = quantitySetting === 'one';
-    let indicateRare      = (isSingle || raritySetting === 'random')    && indicateItemRarity.has(itemRarity);
-    let indicateCondition = (isSingle || conditionSetting === 'random') && itemCondition !== 'average';
 
-    let name = indicateRare ? strong(item.name) : item.name;
+    // TODO move to formatting
+    // let isSingle = quantitySetting === 'one';
+    // let indicateRare      = (isSingle || raritySetting === 'random')    && indicateItemRarity.has(itemRarity);
+    // let indicateCondition = (isSingle || conditionSetting === 'random') && itemCondition !== 'average';
 
-    let notes = [];
 
-    if (indicateRare) {
-        notes.push(itemRarity);
-    }
+    // let notes = [];
 
-    if (indicateCondition) {
-        notes.push(itemCondition);
-    }
+    // if (indicateRare) {
+    //     notes.push(itemRarity);
+    // }
 
-    let noteText = notes.length ? ` (${em(notes.join(', '))})` : '';
+    // if (indicateCondition) {
+    //     notes.push(itemCondition);
+    // }
 
-    let maxCount = 1;
+    // let noteText = notes.length ? ` (${em(notes.join(', '))})` : '';
 
-    if (item.quantity > 1) {
-        maxCount = roll(1, item.quantity);
+    if (maxCount > 1) {
+        // TODO return as an object for formatting later
+        maxCount = roll(1, maxCount);
 
         // TODO breakout into function
         if (maxCount > 1) {
-            if (item.type === 'coin') {
+            if (type === 'coin') {
                 // TODO pluralize()
                 name = `${maxCount} ${name}${maxCount > 1 ? 's' : ''}`;
             } else {
@@ -196,7 +216,7 @@ const generateItem = (config) => {
     }
 
     return {
-        label: name + noteText,
+        label: name,
         name,
         quantity: maxCount, // TODO count?
         rarity: itemRarity,
@@ -298,7 +318,7 @@ export {
  *
  * @param {Config} config
  *
- * @returns {string[]}
+ * @returns {ItemSet}
  */
 export function generateItems(config) {
     let {
@@ -316,7 +336,7 @@ export function generateItems(config) {
     isRequired(itemRarity,    'itemRarity is required in generateItems()');
     isRequired(itemType,      'itemType is required in generateItems()');
 
-    let inRoom = Boolean(roomType); // TODO Boolean cast necessary?
+    let inRoom = Boolean(roomType);
 
     if (inRoom && !roomCondition) {
         isRequired(roomCondition, 'roomCondition is required for room items in generateItems()');
@@ -327,22 +347,33 @@ export function generateItems(config) {
     }
 
     if (itemQuantity === 'zero') {
-        return inRoom ? [] : [ subtitle('Items (0)') ];
+        return {
+            containers: [],
+            descriptions: [],
+            items: [],
+        };
+    }
+
+    if (roomFurnitureQuantity === 'random') {
+        roomFurnitureQuantity = roomFurnishingProbability.roll();
     }
 
     let count = getItemCount(itemQuantity);
     let items = generateItemObjects(count, config);
 
     let containers = [];
+
+    /** @type {Item[]} */
     let smallItems = [];
+
     let remaining  = [];
 
+    // TODO did i break these?
     let furnishings   = inRoom ? generateFurnishings(roomType, roomFurnitureQuantity) : [];
     let furnishingObj = getFurnishingObjects(furnishings, roomCondition);
 
-    let total = count + furnishings.length;
-
     // TODO break out into function for testing
+    // distributeItems() ?
     Object.keys(furnishingObj).forEach((key) => {
         let item = furnishingObj[key];
 
@@ -354,11 +385,10 @@ export function generateItems(config) {
         remaining.push(item);
     });
 
-    // TODO break out into function for testing
     Object.keys(items).forEach((key) => {
         let item = items[key];
 
-        if (item.type === itemType.container) {
+        if (item.type === 'container') {
             containers.push(item);
             return;
         }
@@ -394,7 +424,7 @@ export function generateItems(config) {
                 continue;
             }
 
-            if (item.quantity > maxItemQuantitySmall) {
+            if (item.count > maxItemQuantitySmall) {
                 continue;
             }
 
@@ -415,31 +445,28 @@ export function generateItems(config) {
         }
     });
 
+    /** @type {Item[]} */
     let emptyContainers = [];
 
-    let containerList = containers.map((container) => {
-        let hasStuff = container.contents;
+    /** @type {Container[]} */
+    let containerList = [];
 
-        if (!hasStuff) {
+    containers.forEach((container) => {
+        if (!container.contents) {
             emptyContainers.push(container);
             return;
         }
 
-        let containerItems = container.contents.length && container.contents.map((item) => getItemDescription(item));
-        let desc  = getItemDescription(container);
+        containerList.push(container);
+    });
 
-        return article(desc + (containerItems ? list(containerItems) : ''));
-    }).filter(Boolean).join('');
+    // Remaining items
+    /** @type {Item[]} */
+    let itemList = remaining.concat(smallItems, emptyContainers).map((item) => item);
 
-    let notContained = remaining.concat(smallItems, emptyContainers).map((item) => getItemDescription(item));
-    let maxColumns   = inRoom ? maxColumnsRoom : maxColumnsItems;
-    let columns      = Math.min(maxColumns, Math.max(1, Math.floor(notContained.length / maxColumns)));
-
-    let itemList = containerList;
-
-    if (notContained.length) {
-        itemList += list(notContained, { 'data-columns': columns });
-    }
+    // TODO move to formatting
+    // let maxColumns   = inRoom ? maxColumnsRoom : maxColumnsItems;
+    // let columns      = Math.min(maxColumns, Math.max(1, Math.floor(notContained.length / maxColumns)));
 
     let descriptions = [];
 
@@ -453,11 +480,9 @@ export function generateItems(config) {
         rarityDescription && descriptions.push(rarityDescription);
     }
 
-    let description = descriptions.length && paragraph(descriptions.map((desc) => desc).join(' | '));
-
-    return [
-        subtitle(`Items (${total})`),
-        description,
-        itemList,
-    ].filter(Boolean);
+    return {
+        containers: containerList,
+        descriptions,
+        items: itemList,
+    };
 }

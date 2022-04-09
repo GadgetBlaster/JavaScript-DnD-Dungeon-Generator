@@ -23,6 +23,8 @@ import { roomTypeSizes } from './dimensions.js';
 /** @typedef {import('../controller/knobs.js').RoomConfigFields} RoomConfigFields */
 /** @typedef {import('../item/furnishing').FurnitureQuantity} FurnitureQuantity */
 /** @typedef {import('../item/generate.js').Item} Item */
+/** @typedef {import('../item/generate.js').ItemSet} ItemSet */
+/** @typedef {import('../dungeon/grid.js').Coordinates} Coordinates */
 /** @typedef {import('./door.js').Door} Door */
 /** @typedef {import('./door.js').DoorKey} DoorKey */
 /** @typedef {import('./room.js').RoomType} RoomType */
@@ -32,10 +34,14 @@ import { roomTypeSizes } from './dimensions.js';
 /**
  * @typedef {object} Room
  *
- * // TODO name rename `settings` to `config`
- *
- * @prop {RoomConfig | DungeonConfig} settings
- * @prop {string[]} items // TODO Item[]
+ * @prop {RoomConfig | DungeonConfig} settings  // TODO name rename `settings` to `config`
+ * @prop {ItemSet} itemSet
+ * @prop {number} roomNumber
+ * @prop {boolean} [map]                        // TODO rename to `hasMap`
+ * @prop {DoorKey[]} [keys]
+ * @prop {number[]} [size]                      // TODO {Dimensions} dimensions
+ * @prop {Coordinates[]} [walls]
+ * @prop {string[]} [traps]                     // TODO `Trap` type
  */
 
 /**
@@ -177,7 +183,7 @@ export {
  *
  * @param {RoomConfig | DungeonConfig} config
  *
- * @returns {Room[]}
+ * @returns {Omit<Room, "roomNumber">[]}
  */
 export function generateRooms(config) {
     let {
@@ -203,7 +209,7 @@ export function generateRooms(config) {
         let roomConfig = { ...config, ...randomizedRoomConfig };
 
         return {
-            items: generateItems(roomConfig),
+            itemSet: generateItems(roomConfig),
             settings: roomConfig, // TODO name `config`
         };
     });

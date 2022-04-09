@@ -3,13 +3,14 @@
 import { article, section } from '../ui/block.js';
 import { drawLegend } from '../dungeon/legend.js';
 import { list } from '../ui/list.js';
-import { subtitle } from '../ui/typography.js';
+import { subtitle, title } from '../ui/typography.js';
 import {
     getDoorwayList,
     getKeyDescription,
     getMapDescription,
     getRoomDescription,
 } from '../room/description.js';
+import { isRequired } from '../utility/tools.js';
 
 // TODO all HTML formatting should be excluded until this step, such as item
 // lists, etc
@@ -20,9 +21,62 @@ import {
 /** @typedef {import('../dungeon/map.js').Door} Door */
 /** @typedef {import('../dungeon/map.js').Doors} Doors */
 /** @typedef {import('../item/generate.js').Item} Item */
+/** @typedef {import('../item/generate.js').ItemSet} ItemSet */
 /** @typedef {import('../room/generate.js').Room} Room */
 
 // -- Private Functions --------------------------------------------------------
+
+/**
+ * Get item description
+ *
+ * TODO use in formatter
+ *
+ * @param {Item} item
+ *
+ * @returns {string}
+ */
+function getItemDescription(item) {
+    let { label, count } = item;
+
+    return count === 1 ? label : `${label} (${count})`;
+}
+
+
+/**
+ * Formats output for the item display.
+ *
+ * @private
+ *
+ * @param {ItemSet} itemSet
+ *
+ * @returns {string}
+ */
+function formatItems(itemSet) {
+    // TODO note text
+    // TODO columns
+
+    let total = itemSet.items.reduce((tally, { count }) => tally + count, 0) +
+        itemSet.containers.reduce((tally, { count }) => tally + count, 0);
+
+    let itemsList = itemSet.items.length ? list(itemSet.items.map((item) => getItemDescription(item))) : '';
+    let containerList = '';
+
+    if (itemSet.containers.length) {
+        containerList = itemSet.containers.map((item) => {
+            isRequired(item.contents, 'Contents are required in containers');
+
+            let content = getItemDescription(item)
+                + list(item.contents.map((containerItem) => getItemDescription(containerItem)));
+
+            return article(content);
+        }).join('');
+    }
+
+    return subtitle(`Items (${total})`) +
+        containerList +
+        itemsList +
+        itemSet.descriptions.join('');
+}
 
 /**
  * Formats room generation.
@@ -39,7 +93,7 @@ function formatRoom(room, doors) {
 
     let desc      = getRoomDescription(room, doors);
     let doorList  = doors ? getDoorwayList(doors, roomNumber) : '';
-    let items     = room.items.join('');
+    let items     = formatItems(room.itemSet);
     let map       = room.map ? getMapDescription() : '';
     let keys      = room.keys ? getKeyDescription(room.keys) : '';
     let traps     = room.traps ? subtitle(`Traps (${room.traps.length})`) + list(room.traps) : '';
@@ -64,6 +118,10 @@ function formatRoomGrid(rooms, doors = {}) {
     return section(formattedRooms, { 'data-grid': 3 });
 }
 
+export {
+    getItemDescription as testGetItemDescription,
+};
+
 // -- Public Functions ---------------------------------------------------------
 
 /**
@@ -71,7 +129,7 @@ function formatRoomGrid(rooms, doors = {}) {
  *
  * @param {Dungeon} dungeon
  */
-export function formatDungeon(dungeon) {
+export function formatDungeonPage(dungeon) {
     let { mapSvg, rooms, doors } = dungeon;
 
     return section(mapSvg)
@@ -82,10 +140,12 @@ export function formatDungeon(dungeon) {
 /**
  * Formats output for the item generation page.
  *
- * @param {string[]} items // TODO refactor to Item[]
+ * @param {ItemSet} itemSet
+ *
+ * @returns {string}
  */
-export function formatItems(items) {
-    return section(article(items.join('')));
+export function formatItemsPage(itemSet) {
+    return section(article(formatItems(itemSet)));
 }
 
 /**
@@ -95,7 +155,7 @@ export function formatItems(items) {
  *
  * @returns {string}
  */
-export function formatRooms(rooms) {
+export function formatRoomsPage(rooms) {
     // TODO roomNumber should already be set
     rooms.forEach((_, i) => {
         rooms[i].roomNumber = i + 1;

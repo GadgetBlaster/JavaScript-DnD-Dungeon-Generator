@@ -172,6 +172,7 @@ export default ({ assert, describe, it }) => {
     // -- Public Functions -----------------------------------------------------
 
     describe('generateRooms()', () => {
+        /** @type {RoomConfig} */
         const config = {
             itemCondition        : 'average',
             itemQuantity         : 'zero',
@@ -196,7 +197,6 @@ export default ({ assert, describe, it }) => {
                     delete incompleteConfig[requiredConfig];
 
                     it('should throw', () => {
-                        // @ts-expect-error
                         assert(() => generateRooms(incompleteConfig))
                             .throws(`${requiredConfig} is required in generateRooms()`);
                     });
@@ -204,7 +204,7 @@ export default ({ assert, describe, it }) => {
             });
 
             describe('given a `roomCount` of 2', () => {
-                it('should return an array with 2 `Room`s', () => {
+                it('returns an array with 2 room objects', () => {
                     const rooms = generateRooms({
                         ...config,
                         roomCount: 2,
@@ -215,30 +215,38 @@ export default ({ assert, describe, it }) => {
 
                     rooms && rooms.forEach((roomConfig) => {
                         assert(roomConfig.settings).isObject();
-                        assert(roomConfig.items).isArray();
+                        assert(roomConfig.itemSet).isObject();
                     });
                 });
             });
 
             describe('given a `knobs.itemQuantity` of "couple"', () => {
-                it('should return an array of `Room` objects with two items', () => {
-                    const rooms = generateRooms({
+                it('returns an array of room objects with two items each', () => {
+                    const room = generateRooms({
                         ...config,
                         itemQuantity: 'couple',
                     }).pop();
 
-                    assert(rooms.items[0]).stringIncludes('Items (2)');
+                    const { items, containers } = room.itemSet;
+                    const itemCount = items.reduce((total, { count }) => total + count, 0);
+                    const containerCount = containers.reduce((total, { count }) => total + count, 0);
+
+                    assert(itemCount + containerCount).equals(2);
                 });
 
                 describe('given a `roomFurnitureQuantity` of `minimum`', () => {
-                    it('should return an array of `Room` objects with three items', () => {
-                        const rooms = generateRooms({
+                    it('returns an array of room objects with three items', () => {
+                        const room = generateRooms({
                             ...config,
                             itemQuantity         : 'couple',
                             roomFurnitureQuantity: 'minimum',
                         }).pop();
 
-                        assert(rooms.items[0]).stringIncludes('Items (3)');
+                        const { items, containers } = room.itemSet;
+                        const itemCount = items.reduce((total, { count }) => total + count, 0);
+                        const containerCount = containers.reduce((total, { count }) => total + count, 0);
+
+                        assert(itemCount + containerCount).equals(3);
                     });
                 });
             });

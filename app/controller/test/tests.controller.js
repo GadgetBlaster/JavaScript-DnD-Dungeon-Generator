@@ -56,7 +56,7 @@ export default ({ assert, describe, it }) => {
             itemType     : 'random',
         };
 
-        /** @type {RoomConfig} roomSettings */
+        /** @type {RoomConfig} */
         const roomSettingsBase = {
             ...itemSettings,
             roomCondition        : 'average',
@@ -74,7 +74,7 @@ export default ({ assert, describe, it }) => {
         describe('items', () => {
             it('returns generated items', () => {
                 const result = generators.items(itemSettings);
-                assert(result).stringIncludes('<h3>Items (1)</h3>');
+                assert(result).stringIncludes('Items (1)');
                 assert(/<ul(.+?)>(.+?)<\/ul>/.test(result)).isTrue();
             });
         });

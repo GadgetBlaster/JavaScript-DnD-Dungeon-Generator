@@ -34,18 +34,20 @@ const indicateRarity = new Set([
     return showCondition && `Item Condition: ${condition}`;
 }
 
-/**
- * Get item description
- *
- * @param {Item} item
- *
- * @returns {string}
- */
-export function getItemDescription(item) {
-    let { label, count } = item;
+// /**
+//  * Get item description
+//  *
+//  * TODO use in formatter
+//  *
+//  * @param {Item} item
+//  *
+//  * @returns {string}
+//  */
+// export function getItemDescription(item) {
+//     let { label, count } = item;
 
-    return count === 1 ? label : `${label} (${count})`;
-}
+//     return count === 1 ? label : `${label} (${count})`;
+// }
 
 /**
  * Get rarity description for a group of items.
