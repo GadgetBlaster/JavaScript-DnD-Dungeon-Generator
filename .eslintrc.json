@@ -32,7 +32,7 @@
         "no-extra-semi"       : [ "warn"  ],
         "no-shadow"           : [ "warn"  ],
         "no-undef"            : [ "error" ],
-        "no-unused-vars"      : [ "error" ],
+        "no-unused-vars"      : [ "warn" ],
         "semi"                : [ "warn", "always" ]
     }
 }

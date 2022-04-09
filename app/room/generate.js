@@ -75,13 +75,13 @@ const uniformItemRarityChance = 10;
  *     @param {boolean} [options.isRandomItemRarityUniform]
  *
  * @returns {{
- *     itemCondition: Condition | "random";
- *     itemQuantity: Quantity;
- *     itemRarity: Rarity | "random";
- *     roomCondition: Condition;
- *     roomFurnitureQuantity: FurnitureQuantity;
- *     roomSize: Size;
- *     roomType: RoomType;
+ *     itemCondition?: Condition | "random";
+ *     itemQuantity?: Quantity;
+ *     itemRarity?: Rarity | "random";
+ *     roomCondition?: Condition;
+ *     roomFurnitureQuantity?: FurnitureQuantity;
+ *     roomSize?: Size;
+ *     roomType?: RoomType;
  * }}
  */
 function applyRoomRandomization(config, {
@@ -89,41 +89,46 @@ function applyRoomRandomization(config, {
     isRandomItemRarityUniform,
 } = {}) {
     let randomizedRoomConfig = {};
+    let roomType = config.roomType;
+    let itemQuantity = config.itemQuantity;
 
     // Room config
 
-    randomizedRoomConfig.roomCondition = config.roomCondition === 'random'
-        ? conditionProbability.roll()
-        : config.roomCondition;
+    if (config.roomCondition === 'random') {
+        randomizedRoomConfig.roomCondition = conditionProbability.roll();
+    }
 
-    randomizedRoomConfig.roomFurnitureQuantity = config.roomFurnitureQuantity === 'random'
-        ? furnitureQuantityProbability.roll()
-        : config.roomFurnitureQuantity;
+    if (config.roomFurnitureQuantity === 'random') {
+        randomizedRoomConfig.roomFurnitureQuantity = furnitureQuantityProbability.roll();
+    }
 
-    randomizedRoomConfig.roomType = config.roomType === 'random'
-        ? rollRoomType(roomTypeProbability.roll())
-        : config.roomType;
+    if (roomType === 'random') {
+        roomType = rollRoomType(roomTypeProbability.roll());
+        randomizedRoomConfig.roomType = roomType;
+    }
 
-    randomizedRoomConfig.roomSize = config.roomSize === 'random'
-        ? rollRoomSize(randomizedRoomConfig.roomType)
-        : config.roomSize;
+    if (config.roomSize === 'random') {
+        randomizedRoomConfig.roomSize = rollRoomSize(roomType);
+    }
 
     // Item config
 
-    randomizedRoomConfig.itemCondition = config.itemCondition === 'random' && isRandomItemConditionUniform
-        ? conditionProbability.roll()
-        : config.itemCondition;
+    if (config.itemCondition === 'random' && isRandomItemConditionUniform) {
+        randomizedRoomConfig.itemCondition = conditionProbability.roll();
+    }
 
-    randomizedRoomConfig.itemRarity = config.itemRarity === 'random' && isRandomItemRarityUniform
-        ? rarityProbability.roll()
-        : config.itemRarity;
+    if (config.itemRarity === 'random' && isRandomItemRarityUniform) {
+        randomizedRoomConfig.itemRarity = rarityProbability.roll();
+    }
 
-    randomizedRoomConfig.itemQuantity = config.itemQuantity === 'random'
-        ? quantityProbability.roll()
-        : config.itemQuantity;
+    if (config.itemQuantity === 'random') {
+        itemQuantity = quantityProbability.roll();
+        randomizedRoomConfig.itemQuantity = itemQuantity;
+    }
 
     // TODO replace with max item quantity per room type config
-    if (randomizedRoomConfig.roomType === 'hallway' && randomizedRoomConfig.itemQuantity === 'numerous') {
+    // move to separate function?
+    if (roomType === 'hallway' && itemQuantity === 'numerous') {
         randomizedRoomConfig.itemQuantity = /** @type {Quantity} */ ('several');
     }
 
@@ -131,7 +136,7 @@ function applyRoomRandomization(config, {
 }
 
 /**
- * Returns a randomly selected appropriate room size for a room type.
+ * Returns a randomly selected room size appropriate to the given room type.
  *
  * @private
  *

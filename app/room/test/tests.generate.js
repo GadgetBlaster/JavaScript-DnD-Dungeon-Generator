@@ -62,9 +62,9 @@ export default ({ assert, describe, it }) => {
 
                     assert(randomizedRoomConfig).isObject();
 
-                    // @ts-expect-error
+                    // @ts-expect-error assert `itemCondition` is not "random"
                     assert(conditions.includes(randomizedRoomConfig.itemCondition)).isTrue();
-                    // @ts-expect-error
+                    // @ts-expect-error assert `itemRarity` is not "random"
                     assert(rarities.includes(randomizedRoomConfig.itemRarity)).isTrue();
                     assert(quantities.includes(randomizedRoomConfig.itemQuantity)).isTrue();
                     assert(conditions.includes(randomizedRoomConfig.roomCondition)).isTrue();
@@ -75,46 +75,28 @@ export default ({ assert, describe, it }) => {
             });
         });
 
-        describe('given a specific room condition', () => {
-            it('returns the room condition un-modified', () => {
-                const randomizedRoomConfig = applyRoomRandomization({ ...roomConfig, roomFurnitureQuantity: 'furnished' });
-                assert(randomizedRoomConfig.roomFurnitureQuantity).equals('furnished');
-            });
-        });
-
-        describe('given a specific room furniture quantity', () => {
-            it('returns the room furniture quantity un-modified', () => {
-                const randomizedRoomConfig = applyRoomRandomization({ ...roomConfig, roomCondition: 'exquisite' });
-                assert(randomizedRoomConfig.roomCondition).equals('exquisite');
-            });
-        });
-
-        describe('given a specific room type', () => {
-            it('returns the room type un-modified', () => {
-                const randomizedRoomConfig = applyRoomRandomization({ ...roomConfig, roomType: 'armory' });
-                assert(randomizedRoomConfig.roomType).equals('armory');
-            });
-        });
-
-        describe('given a specific room size', () => {
-            it('returns the room type un-modified', () => {
-                const randomizedRoomConfig = applyRoomRandomization({ ...roomConfig, roomSize: 'small' });
-                assert(randomizedRoomConfig.roomSize).equals('small');
-            });
-        });
-
-        describe('given a specific item condition', () => {
-            it('returns the item condition un-modified', () => {
-                const randomizedItemConfig = applyRoomRandomization({ ...roomConfig, itemCondition: 'decaying' });
-                assert(randomizedItemConfig.itemCondition).equals('decaying');
+        Object.entries({
+            itemCondition: 'decaying',
+            itemQuantity: 'abundant',
+            itemRarity: 'rare',
+            roomCondition: 'exquisite',
+            roomFurnitureQuantity: 'furnished',
+            roomSize: 'small',
+            roomType: 'armory',
+        }).forEach(([ field, value ]) => {
+            describe(`given a specific ${field} value of "${value}"`, () => {
+                it('returns undefined for the field', () => {
+                    const randomizedRoomConfig = applyRoomRandomization({ ...roomConfig, [field]: value });
+                    assert(randomizedRoomConfig[field]).isUndefined();
+                });
             });
         });
 
         describe('given an item condition of "random"', () => {
             describe('when `isRandomItemConditionUniform` is falsy', () => {
-                it('returns "random"', () => {
+                it('returns an undefined item condition', () => {
                     const randomizedItemConfig = applyRoomRandomization({ ...roomConfig, itemCondition: 'random' });
-                    assert(randomizedItemConfig.itemCondition).equals('random');
+                    assert(randomizedItemConfig.itemCondition).isUndefined();
                 });
             });
 
@@ -130,18 +112,11 @@ export default ({ assert, describe, it }) => {
             });
         });
 
-        describe('given a specific item rarity', () => {
-            it('returns the item rarity un-modified', () => {
-                const randomizedItemConfig = applyRoomRandomization({ ...roomConfig, itemRarity: 'rare' });
-                assert(randomizedItemConfig.itemRarity).equals('rare');
-            });
-        });
-
         describe('given an item rarity of "random"', () => {
             describe('when `isRandomItemRarityUniform` is falsy', () => {
-                it('returns "random"', () => {
+                it('returns an undefined item rarity', () => {
                     const randomizedItemConfig = applyRoomRandomization({ ...roomConfig, itemRarity: 'random' });
-                    assert(randomizedItemConfig.itemRarity).equals('random');
+                    assert(randomizedItemConfig.itemRarity).isUndefined();
                 });
             });
 
