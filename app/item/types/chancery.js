@@ -1,14 +1,14 @@
 // @ts-check
 
-/** @typedef {import('../item.js').ItemBase} ItemBase */
+/** @typedef {import('../item.js').ItemPartial} ItemPartial */
 
-/** @type {Omit<ItemBase, "name">} */
+/** @type {Omit<ItemPartial, "name">} */
 const defaults = {
     rarity: 'uncommon',
     type  : 'chancery',
 };
 
-/** @type {{ [name: string]: Partial<ItemBase>}} */
+/** @type {{ [name: string]: Partial<ItemPartial>}} */
 const chanceryItems = {
     'Abacus'           : { rarity: 'rare' },
     'Book'             : { rarity: 'common' },
@@ -29,7 +29,7 @@ const chanceryItems = {
     'Wax seal'         : { size: 'tiny' },
 };
 
-/** @type {ItemBase[]} */
+/** @type {ItemPartial[]} */
 export default Object.entries(chanceryItems).map(([ name, config ]) => ({
     name,
     ...defaults,

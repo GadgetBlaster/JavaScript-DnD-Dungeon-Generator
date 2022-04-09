@@ -1,13 +1,13 @@
 // @ts-check
 
-/** @typedef {import('../item.js').ItemBase} ItemBase */
+/** @typedef {import('../item.js').ItemPartial} ItemPartial */
 
-/** @type {Omit<ItemBase, "name">} */
+/** @type {Omit<ItemPartial, "name">} */
 const defaults = {
     type: 'food',
 };
 
-/** @type {{ [name: string]: Partial<ItemBase>}} */
+/** @type {{ [name: string]: Partial<ItemPartial>}} */
 const food = {
     'Bread, loaf'    : { maxCount: 3 },
     'Butter'         : { variants: [ 'bucket', 'bowl', 'block' ] },
@@ -38,7 +38,7 @@ const food = {
     'Wheat'          : { variants: [ 'pouch', 'bag', 'sack' ]  },
 };
 
-/** @type {ItemBase[]} */
+/** @type {ItemPartial[]} */
 export default Object.entries(food).map(([ name, config ]) => ({
     name,
     ...defaults,

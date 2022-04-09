@@ -1,15 +1,15 @@
 // @ts-check
 
-/** @typedef {import('../item.js').ItemBase} ItemBase */
+/** @typedef {import('../item.js').ItemPartial} ItemPartial */
 
-/** @type {Omit<ItemBase, "name">} */
+/** @type {Omit<ItemPartial, "name">} */
 const defaults = {
     type  : 'weapon',
     rarity: 'uncommon',
     size  : 'medium',
 };
 
-/** @type {{ [name: string]: Partial<ItemBase>}} */
+/** @type {{ [name: string]: Partial<ItemPartial>}} */
 const weapons = {
     'Battleaxe'      : { rarity: 'average' },
     'Blowgun'        : null,
@@ -51,7 +51,7 @@ const weapons = {
     'Whip'           : null,
 };
 
-/** @type {ItemBase[]} */
+/** @type {ItemPartial[]} */
 export default Object.entries(weapons).map(([ name, config ]) => ({
     name,
     ...defaults,

@@ -1,8 +1,8 @@
 // @ts-check
 
-/** @typedef {import('../item.js').ItemBase} ItemBase */
+/** @typedef {import('../item.js').ItemPartial} ItemPartial */
 
-/** @type {Omit<ItemBase, "name">} */
+/** @type {Omit<ItemPartial, "name">} */
 const defaults = {
     rarity: 'exotic',
     type  : 'trinket',
@@ -111,5 +111,5 @@ const trinkets = [
     'A metal urn containing the ashes of a hero',
 ];
 
-/** @type {ItemBase[]} */
+/** @type {ItemPartial[]} */
 export default trinkets.map((name) => ({ ...defaults, name }));

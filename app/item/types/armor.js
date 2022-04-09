@@ -1,15 +1,15 @@
 // @ts-check
 
-/** @typedef {import('../item.js').ItemBase} ItemBase */
+/** @typedef {import('../item.js').ItemPartial} ItemPartial */
 
-/** @type {Omit<ItemBase, "name">} */
+/** @type {Omit<ItemPartial, "name">} */
 const defaults = {
     rarity: 'uncommon',
     type  : 'armor',
     size  : 'medium',
 };
 
-/** @type {{ [name: string]: Partial<ItemBase>}} */
+/** @type {{ [name: string]: Partial<ItemPartial>}} */
 const armor = {
     'Breastplate'          : { rarity: 'rare' },
     'Chain mail'           : { rarity: 'rare' },
@@ -26,7 +26,7 @@ const armor = {
     'Studded leather armor': null,
 };
 
-/** @type {ItemBase[]} */
+/** @type {ItemPartial[]} */
 export default Object.entries(armor).map(([ name, config ]) => ({
     name,
     ...defaults,

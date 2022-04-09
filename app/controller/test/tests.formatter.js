@@ -19,7 +19,6 @@ export default ({ assert, describe, it }) => {
         const item = {
             condition: 'average',
             count: 1,
-            label: 'Bubbling goblin juice',
             name: 'Goblin juice',
             rarity: 'abundant',
             size: 'medium',
@@ -28,7 +27,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given an item count of 1', () => {
             it('should return the item label', () => {
-                assert(getItemDescription(item)).equals('Bubbling goblin juice');
+                assert(getItemDescription(item)).equals('Goblin juice');
             });
         });
 
@@ -37,7 +36,7 @@ export default ({ assert, describe, it }) => {
                 assert(getItemDescription({
                     ...item,
                     count: 12,
-                })).equals('Bubbling goblin juice (12)');
+                })).equals('Goblin juice (12)');
             });
         });
     });

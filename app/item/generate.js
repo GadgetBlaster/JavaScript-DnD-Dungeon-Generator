@@ -1,13 +1,7 @@
 // @ts-check
 
-import { article } from '../ui/block.js';
 import { capacity, itemSizeSpace, maxItemQuantitySmall } from './types/container.js';
-import {
-    hideItemDetails,
-    indicateItemRarity,
-    itemsByRarity,
-    itemsByType,
-} from './item.js';
+import { hideItemDetails, itemsByRarity, itemsByType, mysteriousObject } from './item.js';
 import {
     anyRoomFurniture,
     furnishing,
@@ -18,10 +12,8 @@ import {
 } from './furnishing.js';
 import { probability as conditionProbability } from '../attribute/condition.js';
 import { probability as rarityProbability } from '../attribute/rarity.js';
-import { em, paragraph, strong, subtitle } from '../ui/typography.js';
 import { getRarityDescription, getConditionDescription } from './description.js';
 import { isRequired, toss } from '../utility/tools.js';
-import { list } from '../ui/list.js';
 import { roll, rollArrayItem } from '../utility/roll.js';
 import { getRange, probability as quantityProbability } from '../attribute/quantity.js';
 
@@ -42,7 +34,6 @@ import { getRange, probability as quantityProbability } from '../attribute/quant
  * @typedef {object} Item
  *
  * @prop {string} name
- * @prop {string} label
  * @prop {Condition} condition
  * @prop {Rarity} rarity
  * @prop {Size} size
@@ -87,10 +78,11 @@ const maxColumnsRoom = 2;
  *
  * @param {string} roomType
  * @param {FurnitureQuantity} quantity
+ * @param {Condition} [roomCondition]
  *
  * @returns {Item[]}
  */
-function generateFurnishings(roomType, quantity) {
+function generateFurnishings(roomType, quantity, roomCondition = 'average') {
     let furniture = [];
 
     if (quantity === 'none') {
@@ -99,7 +91,10 @@ function generateFurnishings(roomType, quantity) {
 
     if (requiredRoomFurniture[roomType]) {
         requiredRoomFurniture[roomType].forEach((item) => {
-            furniture.push(item);
+            furniture.push({
+                ...item,
+                condition: roomCondition,
+            });
         });
     }
 
@@ -109,7 +104,12 @@ function generateFurnishings(roomType, quantity) {
         : Object.values(furnishing);
 
     for (let i = 0; i < extraItems; i++) {
-        furniture.push(rollArrayItem(itemSet));
+        let item = rollArrayItem(itemSet);
+
+        furniture.push({
+            ...item,
+            condition: roomCondition,
+        });
     }
 
     return furniture;
@@ -126,22 +126,20 @@ function generateFurnishings(roomType, quantity) {
  */
 const generateItem = (config) => {
     let {
-        itemCondition: conditionSetting,
-        itemQuantity : quantitySetting,
-        itemRarity   : raritySetting,
-        itemType     : itemType,
+        itemCondition,
+        itemQuantity,
+        itemRarity,
+        itemType,
     } = config;
 
-    !conditionSetting && toss('Item condition is required in generateItem()');
-    !itemType         && toss('Item type is required in generateItem()');
-    !quantitySetting  && toss('Item quantity is required in generateItem()');
-    !raritySetting    && toss('Item rarity is required in generateItem()');
-    quantitySetting === 'zero' && toss('Item quantity cannot be zero');
+    !itemCondition && toss('Item condition is required in generateItem()');
+    !itemType      && toss('Item type is required in generateItem()');
+    !itemQuantity  && toss('Item quantity is required in generateItem()');
+    !itemRarity    && toss('Item rarity is required in generateItem()');
 
-    let itemRarity    = raritySetting;
-    let itemCondition = conditionSetting;
+    itemQuantity === 'zero' && toss('Item quantity cannot be zero');
 
-    if (raritySetting === 'random') {
+    if (itemRarity === 'random') {
         itemRarity = rarityProbability.roll();
     }
 
@@ -156,10 +154,7 @@ const generateItem = (config) => {
     }
 
     /** @type {ItemBase} */
-    let item = randomItem || {
-        name: 'Mysterious object',
-        type: 'mysterious',
-    };
+    let item = randomItem || mysteriousObject;
 
     let {
         type,
@@ -176,49 +171,30 @@ const generateItem = (config) => {
         itemCondition = conditionProbability.roll();
     }
 
-
-    // TODO move to formatting
-    // let isSingle = quantitySetting === 'one';
-    // let indicateRare      = (isSingle || raritySetting === 'random')    && indicateItemRarity.has(itemRarity);
-    // let indicateCondition = (isSingle || conditionSetting === 'random') && itemCondition !== 'average';
-
-
-    // let notes = [];
-
-    // if (indicateRare) {
-    //     notes.push(itemRarity);
-    // }
-
-    // if (indicateCondition) {
-    //     notes.push(itemCondition);
-    // }
-
-    // let noteText = notes.length ? ` (${em(notes.join(', '))})` : '';
+    let count = 1;
 
     if (maxCount > 1) {
-        // TODO return as an object for formatting later
-        maxCount = roll(1, maxCount);
+        count = roll(1, maxCount);
 
-        // TODO breakout into function
-        if (maxCount > 1) {
+        // TODO breakout into function. move to formatting
+        if (count > 1) {
             if (type === 'coin') {
                 // TODO pluralize()
                 name = `${maxCount} ${name}${maxCount > 1 ? 's' : ''}`;
             } else {
-                name += `, set of ${maxCount}`;
+                name += `, set of ${count}`;
             }
         }
     }
 
     if (item.variants) {
-        let variant = rollArrayItem(item.variants);
-        name += `, ${variant}`;
+        name += `, ${rollArrayItem(item.variants)}`;
     }
 
     return {
-        label: name,
         name,
-        quantity: maxCount, // TODO count?
+        count,
+        condition: itemCondition,
         rarity: itemRarity,
         size: item.size,
         type: item.type,
@@ -228,29 +204,34 @@ const generateItem = (config) => {
 /**
  * Generate item objects
  *
+ * TODO rename to getItemObjects
+ *
  * @private
  *
  * @param {number} count
  * @param {Config} config
  *
- * @returns {{ [label: string]: Item }}
+ * @returns {Item[]}
  */
-const generateItemObjects = (count, config) => [ ...Array(count) ].reduce((obj) => {
+const generateItemObjects = (count, config) => Object.values([ ...Array(count) ].reduce((items) => {
     let item  = generateItem(config);
-    let label = item.label;
+    let { condition, name } = item;
 
-    // TODO use an identifier instead of label?
-    if (!obj[label]) {
-        obj[label] = { ...item };
-        obj[label].count = 1;
+    let key = `${name}-${condition}`;
 
-        return obj;
+    if (!items[key]) {
+        items[key] = {
+            ...item,
+            count: 1,
+        };
+
+        return items;
     }
 
-    obj[label].count++;
+    items[key].count++;
 
-    return obj; // TODO rename to `items`
-}, {});
+    return items;
+}, {}));
 
 /**
  * Get furnishing objects
@@ -261,29 +242,27 @@ const generateItemObjects = (count, config) => [ ...Array(count) ].reduce((obj) 
  * @private
  *
  * @param {Item[]} furnishings
- * @param {string} roomCondition
  *
- * @returns {{ [label: string]: Item }}
+ * @returns {Item[]}
  */
-const getFurnishingObjects = (furnishings, roomCondition) => furnishings.reduce((obj, item) => {
-    let label = item.label;
+const getFurnishingObjects = (furnishings) => Object.values(furnishings.reduce((obj, item) => {
+    let { name, condition } = item;
 
-    if (roomCondition !== 'average') {
-        label += ` (${em(roomCondition)})`;
-    }
+    let key = `${name}-${condition}`;
 
-    // TODO use an identifier instead of label?
-    if (!obj[label]) {
-        obj[label] = { ...item, label };
-        obj[label].count = 1;
+    if (!obj[key]) {
+        obj[key] = {
+            ...item,
+            count: 1,
+        };
 
         return obj;
     }
 
-    obj[label].count++;
+    obj[key].count++;
 
     return obj;
-}, {});
+}, {}));
 
 /**
  * Get item count based on quantity config.
@@ -366,28 +345,24 @@ export function generateItems(config) {
     /** @type {Item[]} */
     let smallItems = [];
 
+    /** @type {Item[]} */
     let remaining  = [];
 
-    // TODO did i break these?
-    let furnishings   = inRoom ? generateFurnishings(roomType, roomFurnitureQuantity) : [];
-    let furnishingObj = getFurnishingObjects(furnishings, roomCondition);
+    let furnishingConfigs = inRoom ? generateFurnishings(roomType, roomFurnitureQuantity, roomCondition) : [];
+    let furnishings = getFurnishingObjects(furnishingConfigs);
 
     // TODO break out into function for testing
     // distributeItems() ?
-    Object.keys(furnishingObj).forEach((key) => {
-        let item = furnishingObj[key];
-
-        if (item.capacity) {
-            containers.push(item);
+    furnishings.forEach((furnishingItem) => {
+        if (furnishingItem.capacity) {
+            containers.push(furnishingItem);
             return;
         }
 
-        remaining.push(item);
+        remaining.push(furnishingItem);
     });
 
-    Object.keys(items).forEach((key) => {
-        let item = items[key];
-
+    items.forEach((item) => {
         if (item.type === 'container') {
             containers.push(item);
             return;

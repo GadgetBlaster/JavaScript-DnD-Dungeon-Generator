@@ -1,14 +1,14 @@
 // @ts-check
 
-/** @typedef {import('../item.js').ItemBase} ItemBase */
+/** @typedef {import('../item.js').ItemPartial} ItemPartial */
 
-/** @type {Omit<ItemBase, "name">} */
+/** @type {Omit<ItemPartial, "name">} */
 const defaults = {
     rarity: 'rare',
     type  : 'mystic',
 };
 
-/** @type {{ [name: string]: Partial<ItemBase>}} */
+/** @type {{ [name: string]: Partial<ItemPartial>}} */
 const mysticItems = {
     'Arcane focus' : { variants: [ 'crystal', 'orb', 'rod', 'staff', 'wand' ] },
     'Druidic focus': null,
@@ -17,7 +17,7 @@ const mysticItems = {
     'Spellbook'    : null,
 };
 
-/** @type {ItemBase[]} */
+/** @type {ItemPartial[]} */
 export default Object.entries(mysticItems).map(([ name, config ]) => ({
     name,
     ...defaults,

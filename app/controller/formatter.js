@@ -2,8 +2,9 @@
 
 import { article, section } from '../ui/block.js';
 import { drawLegend } from '../dungeon/legend.js';
+import { indicateItemRarity } from '../item/item.js';
 import { list } from '../ui/list.js';
-import { subtitle, title } from '../ui/typography.js';
+import { subtitle } from '../ui/typography.js';
 import {
     getDoorwayList,
     getKeyDescription,
@@ -11,6 +12,7 @@ import {
     getRoomDescription,
 } from '../room/description.js';
 import { isRequired } from '../utility/tools.js';
+
 
 // TODO all HTML formatting should be excluded until this step, such as item
 // lists, etc
@@ -29,18 +31,40 @@ import { isRequired } from '../utility/tools.js';
 /**
  * Get item description
  *
- * TODO use in formatter
+ * TODO uniformity formatting?
  *
  * @param {Item} item
  *
  * @returns {string}
  */
 function getItemDescription(item) {
-    let { label, count } = item;
+    let {
+        condition,
+        count,
+        name,
+        rarity,
+    } = item;
 
-    return count === 1 ? label : `${label} (${count})`;
+    let indicateRare      = indicateItemRarity.has(rarity);
+
+    let notes = [];
+
+    if (count > 1) {
+        notes.push(count);
+    }
+
+    if (indicateRare) {
+        notes.push(rarity);
+    }
+
+    if (condition !== 'average') {
+        notes.push(`${condition} condition`);
+    }
+
+    let noteText = notes.join(', ');
+
+    return name + (noteText ? ` (${noteText})` : '');
 }
-
 
 /**
  * Formats output for the item display.

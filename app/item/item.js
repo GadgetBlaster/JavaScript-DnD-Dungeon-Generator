@@ -12,13 +12,25 @@ import set from './set.js';
 /** @typedef {typeof itemTypes[number]} ItemType */
 
 /**
- * @typedef {object} ItemBase
+ * @typedef {object} ItemPartial
  *
  * @prop {string} name
  * @prop {Rarity} [rarity]
  * @prop {Size} [size]
  * @prop {ItemType} [type]
  * @prop {number} [maxCount]
+ * @prop {number} [capacity] - Max number of small items found inside
+ * @prop {string[]} [variants] - Array of variations
+ */
+
+/**
+ * @typedef {object} ItemBase
+ *
+ * @prop {string} name
+ * @prop {Rarity} rarity
+ * @prop {Size} size
+ * @prop {ItemType} type
+ * @prop {number} maxCount
  * @prop {number} [capacity] - Max number of small items found inside
  * @prop {string[]} [variants] - Array of variations
  */
@@ -81,6 +93,12 @@ export const hideItemDetails = new Set([
     'treasure',
 ]);
 
+/** @type {ItemBase} */
+export const mysteriousObject = {
+    ...defaults,
+    name: 'Mysterious object',
+};
+
 /**
  * Item configs.
  *
@@ -118,8 +136,8 @@ const {
     });
 
     return {
-        itemsByRarity: /** @type {{ [key in Rarity]: ItemBase[] }} */ (byRarity),
-        itemsByType: /** @type {{ [key in ItemType]: { [key in Rarity]: ItemBase[] }}} */ (byType),
+        itemsByRarity: /** @type {{ [key in Rarity]: ItemPartial[] }} */ (byRarity),
+        itemsByType: /** @type {{ [key in ItemType]: { [key in Rarity]: ItemPartial[] }}} */ (byType),
     };
 })();
 

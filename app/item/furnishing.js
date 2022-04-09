@@ -7,7 +7,7 @@ import { rollArrayItem, createProbability } from '../utility/roll.js';
 
 /** @typedef {import('../room/room.js').RoomType} RoomType */
 /** @typedef {import('./generate.js').Item} Item */
-/** @typedef {import('./item.js').ItemBase} ItemBase */
+/** @typedef {import('./item.js').ItemPartial} ItemPartial */
 
 // -- Types --------------------------------------------------------------------
 
@@ -16,7 +16,7 @@ import { rollArrayItem, createProbability } from '../utility/roll.js';
 
 // -- Config -------------------------------------------------------------------
 
-/** @type {Omit<ItemBase, "name">} */
+/** @type {Omit<ItemPartial, "name">} */
 const defaults = {
     maxCount: 1,
     rarity  : 'average',
@@ -24,7 +24,7 @@ const defaults = {
     type    : 'furnishing',
 };
 
-/** @type {{ [furnishing: string]: ItemBase }} */
+/** @type {{ [furnishing: string]: ItemPartial }} */
 const furnishing = {
     alchemy  : { name: 'Alchemy equipment' },
     anvil    : { name: 'Anvil' },
@@ -68,7 +68,7 @@ Object.keys(furnishing).forEach((key) => {
         label += `, ${variant}`;
     }
 
-    furnishing[key] = /** @type {Item} */ ({
+    furnishing[key] = /** @type {ItemPartial} */ ({
         ...defaults,
         ...item,
         label,
@@ -110,7 +110,7 @@ let {
 } = furnishing;
 
 /**
- * @type {{ [key in RoomType]?: ItemBase[] }}
+ * @type {{ [key in RoomType]?: ItemPartial[] }}
  */
 export const furnishingByRoomType = {
     /* eslint-disable max-len */
@@ -143,7 +143,7 @@ export const furnishingByRoomType = {
 /**
  * Furniture that must be included in a specific room type.
  *
- * @type {{ [key in RoomType]?: ItemBase[] }}
+ * @type {{ [key in RoomType]?: ItemPartial[] }}
  */
 export const requiredRoomFurniture = {
     armory    : [ rack ],

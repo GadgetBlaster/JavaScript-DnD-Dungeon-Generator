@@ -1,13 +1,13 @@
 // @ts-check
 
-/** @typedef {import('../item.js').ItemBase} ItemBase */
+/** @typedef {import('../item.js').ItemPartial} ItemPartial */
 
-/** @type {Omit<ItemBase, "name">} */
+/** @type {Omit<ItemPartial, "name">} */
 const defaults = {
     rarity: 'common',
 };
 
-/** @type {{ [name: string]: Partial<ItemBase>}} */
+/** @type {{ [name: string]: Partial<ItemPartial>}} */
 const miscellaneousItems = {
     'Bell'       : null,
     'Bone'       : { variants: [ 'rib', 'pelvis', 'femur', 'leg', 'arm' ] },
@@ -34,7 +34,7 @@ const miscellaneousItems = {
     'Totem'      : null,
 };
 
-/** @type {ItemBase[]} */
+/** @type {ItemPartial[]} */
 export default Object.entries(miscellaneousItems).map(([ name, config ]) => ({
     name,
     ...defaults,

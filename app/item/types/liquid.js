@@ -1,6 +1,6 @@
 // @ts-check
 
-/** @typedef {import('../item.js').ItemBase} ItemBase */
+/** @typedef {import('../item.js').ItemPartial} ItemPartial */
 
 const variants = [
     'barrel',
@@ -15,14 +15,14 @@ const variants = [
     'waterskin',
 ];
 
-/** @type {Omit<ItemBase, "name">} */
+/** @type {Omit<ItemPartial, "name">} */
 const defaults = {
     rarity  : 'uncommon',
     type    : 'liquid',
     variants: variants,
 };
 
-/** @type {{ [name: string]: Partial<ItemBase>}} */
+/** @type {{ [name: string]: Partial<ItemPartial>}} */
 const liquids = {
     'Acid'            : null,
     'Alchemist’s fire': null,
@@ -42,7 +42,7 @@ const liquids = {
     'Wine, fine'      : { rarity: 'rare' },
 };
 
-/** @type {ItemBase[]} */
+/** @type {ItemPartial[]} */
 export default Object.entries(liquids).map(([ name, config ]) => ({
     name,
     ...defaults,

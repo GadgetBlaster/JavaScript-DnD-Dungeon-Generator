@@ -1,15 +1,15 @@
 // @ts-check
 
-/** @typedef {import('../item.js').ItemBase} ItemBase */
+/** @typedef {import('../item.js').ItemPartial} ItemPartial */
 
-/** @type {Omit<ItemBase, "name">} */
+/** @type {Omit<ItemPartial, "name">} */
 const defaults = {
     maxCount: 100,
     type    : 'coin',
     rarity  : 'uncommon',
 };
 
-/** @type {{ [name: string]: Partial<ItemBase>}} */
+/** @type {{ [name: string]: Partial<ItemPartial>}} */
 const coins = {
     'Copper piece'  : { rarity: 'common' },
     'Silver piece'  : null,
@@ -18,7 +18,7 @@ const coins = {
     'Platinum piece': { rarity: 'exotic' },
 };
 
-/** @type {ItemBase[]} */
+/** @type {ItemPartial[]} */
 export default Object.entries(coins).map(([ name, config ]) => ({
     name,
     ...defaults,

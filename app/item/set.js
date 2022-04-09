@@ -22,11 +22,11 @@ import weapon from './types/weapon.js';
 
 // -- Type Imports -------------------------------------------------------------
 
-/** @typedef {import('./item.js').ItemBase} ItemBase */
+/** @typedef {import('./item.js').ItemPartial} ItemPartial */
 
 // -- Config -------------------------------------------------------------------
 
-/** @type {ItemBase[]} */
+/** @type {ItemPartial[]} */
 export default [
     ...ammo,
     ...armor,

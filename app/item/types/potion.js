@@ -1,8 +1,8 @@
 // @ts-check
 
-/** @typedef {import('../item.js').ItemBase} ItemBase */
+/** @typedef {import('../item.js').ItemPartial} ItemPartial */
 
-/** @type {Omit<ItemBase, "name">} */
+/** @type {Omit<ItemPartial, "name">} */
 const defaults = {
     rarity: 'rare',
     type  : 'potion',
@@ -13,5 +13,5 @@ const potions = [
     'Potion of healing',
 ];
 
-/** @type {ItemBase[]} */
+/** @type {ItemPartial[]} */
 export default potions.map((name) => ({ ...defaults, name }));
