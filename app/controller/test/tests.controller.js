@@ -74,7 +74,8 @@ export default ({ assert, describe, it }) => {
         describe('items', () => {
             it('returns generated items', () => {
                 const result = generators.items(itemSettings);
-                assert(result).stringIncludes('Items (1)');
+                // TODO make less brittle to HTML changes
+                assert(result).stringIncludes('<h3>Items<span data-info="true"> ( 1 ) </span></h3>');
                 assert(/<ul(.+?)>(.+?)<\/ul>/.test(result)).isTrue();
             });
         });
@@ -88,7 +89,8 @@ export default ({ assert, describe, it }) => {
                 });
 
                 assert(result).stringIncludes('<h2>Room</h2>');
-                assert(result).stringIncludes('<h3>Items (1)</h3>');
+                // TODO make less brittle to HTML changes
+                assert(result).stringIncludes('<h3>Items<span data-info="true"> ( 1 ) </span></h3>');
                 assert(/<ul(.+?)>(.+?)<\/ul>/.test(result)).isTrue();
             });
         });

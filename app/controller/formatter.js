@@ -4,7 +4,7 @@ import { article, section } from '../ui/block.js';
 import { drawLegend } from '../dungeon/legend.js';
 import { indicateItemRarity } from '../item/item.js';
 import { list } from '../ui/list.js';
-import { paragraph, subtitle } from '../ui/typography.js';
+import { paragraph, span, subtitle } from '../ui/typography.js';
 import {
     getDoorwayList,
     getKeyDescription,
@@ -29,6 +29,12 @@ import { capitalize, isRequired } from '../utility/tools.js';
 // -- Private Functions --------------------------------------------------------
 
 /**
+ *
+ * @returns
+ */
+const detail = (content) => span(` ( ${content} ) `, { 'data-info': true });
+
+/**
  * Get item description
  *
  * TODO uniformity formatting?
@@ -45,7 +51,7 @@ function getItemDescription(item) {
         rarity,
     } = item;
 
-    let indicateRare      = indicateItemRarity.has(rarity);
+    let indicateRare = indicateItemRarity.has(rarity);
 
     let notes = [];
 
@@ -63,7 +69,7 @@ function getItemDescription(item) {
 
     let noteText = notes.join(', ');
 
-    return name + (noteText ? ` (${noteText})` : '');
+    return name + (noteText ? detail(noteText) : '');
 }
 
 /**
@@ -112,7 +118,7 @@ function formatItems(itemSet) {
         description += paragraph(`Item Rarity: ${capitalize(rarityUniformity)}`);
     }
 
-    return subtitle(`Items (${total})`) +
+    return subtitle('Items' + detail(total)) +
         description +
         containerList +
         itemsList;
@@ -136,7 +142,7 @@ function formatRoom(room, doors) {
     let items     = formatItems(room.itemSet);
     let map       = room.map ? getMapDescription() : '';
     let keys      = room.keys ? getKeyDescription(room.keys) : '';
-    let traps     = room.traps ? subtitle(`Traps (${room.traps.length})`) + list(room.traps) : '';
+    let traps     = room.traps ? subtitle('Traps' + detail(room.traps.length)) + list(room.traps) : '';
 
     return article(desc + doorList + items + map + keys + traps);
 }

@@ -39,6 +39,18 @@ export const paragraph = (label, attributes) => element('p', label, attributes);
 export const small = (label, attributes) => element('small', label, attributes);
 
 /**
+ * Returns an HTML span element string.
+ *
+ * TODO tests
+ *
+ * @param {string} label
+ * @param {Attributes} [attributes]
+ *
+ * @returns {string}
+ */
+export const span = (label, attributes) => element('span', label, attributes);
+
+/**
  * Returns an HTML strong element string.
  *
  * @param {string} label

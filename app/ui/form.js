@@ -190,7 +190,7 @@ export function getKnobPanel(page, { config, isExpanded } = {}) {
 
     let knobContainerAttrs = isExpanded ? { 'data-grid': 3 } : {};
 
-    let content = div(submitButton + expandButton, { 'data-flex': 'between' })
+    let content = div(submitButton + expandButton, { 'data-flex': 'between', 'data-spacing': 'default' })
         + div(knobs, knobContainerAttrs);
 
     return content;

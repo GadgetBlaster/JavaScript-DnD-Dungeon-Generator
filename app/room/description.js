@@ -369,6 +369,8 @@ export {
 /**
  * Returns a list of doorways.
  *
+ * TODO return an object an handle formatting in formatter.js
+ *
  * @param {Door[]} roomDoors
  * @param {number} roomNumber
  *
@@ -398,6 +400,8 @@ export const getDoorwayList = (roomDoors, roomNumber) => {
 /**
  * Get key description
  *
+ * TODO move to formatter.js
+ *
  * @param {DoorKey[]} keys
  *
  * @returns {string}
@@ -414,6 +418,8 @@ export const getKeyDescription = (keys) => {
 /**
  * Get map description
  *
+ * TODO move to formatter.js
+ *
  * @returns {string}
  */
 export const getMapDescription = () => {
@@ -422,6 +428,8 @@ export const getMapDescription = () => {
 
 /**
  * Get room description
+ *
+ * TODO return an object an handle formatting in formatter.js
  *
  * @param {Room} room
  * @param {Door[]} [roomDoors]

@@ -4,22 +4,50 @@
 :root {
     --font-default: 'Varela', monospace;
     --font-logo: 'Pompiere', monospace;
-    --font-size: 13px;
 
-    --border-radius: 4px;
+    --font-size-title: 22px;
+    --font-size-subtitle: 18px;
+    --font-size-default: 14px;
+    --font-size-small: 13px;
+    --font-size-tiny: 12px;
+
+    --leading-default: 1.4rem;
+    --leading-loose: 1.6rem;
+    --leading-tight: 1.2rem;
+
+    --button-font-size: 13px;
+    --label-font-size: 13px;
+
+    --border-radius: 3px;
 
     --transitionDuration: 500ms;
 
     --color-action-1: #BF0252;
     --color-action-2: #F2065F;
     --color-error: #FF0000;
-    --color-gray-10: #cccccc;
+
+    --color-gray-10: #E6E6E6;
+    --color-gray-12: #a3a3a3;
+    --color-gray-15: #798282;
     --color-gray-20: #4f5252;
     --color-gray-30: #363838;
     --color-gray-40: #0C0F0F;
-    --color-header: #70003C;
+
     --color-secondary: #08B3BD;
     --color-white: #ffffff;
+
+    --text-color: var(--color-gray-10);
+    --link-color: #FF4289;
+
+    --bg-header: #70003C;
+    --bg-sidebar: var(--color-gray-40);
+    --bg-main: var(--color-gray-20);
+
+    --spacing-default: 20px;
+    --spacing-medium: 10px;
+    --spacing-small: 5px;
+
+    --sidebar-width: 220px;
 }
 
 /* Focus */
@@ -36,11 +64,11 @@ html {
 }
 
 body {
-    color: var(--color-gray-30);
-    font-size: 13px;
-    line-height: 1.4;
+    color: var(--color-gray-10);
+    background: var(--bg-main);
+    font-size: var(--font-size-default);
+    line-height: var(--leading-default);
     font-family: var(--font-default);
-    background: var(--color-white);
     display: grid;
     height: 100%;
     margin: 0;
@@ -51,17 +79,15 @@ body {
 }
 
 header {
-    grid-area: header;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: var(--color-header);
 }
 
 aside {
     grid-area: left;
-    width: 320px;
-    background: var(--color-gray-40);
+    width: var(--sidebar-width);
+    background: var(--bg-sidebar);
     color: var(--color-white);
 }
 
@@ -79,8 +105,14 @@ main {
 }
 
 footer {
+    font-size: var(--font-size-small);
+    line-height: var(--leading-tight);
     text-align: center;
     padding: 20px;
+}
+
+footer p {
+    line-height: var(--leading-tight);
 }
 
 nav {
@@ -101,27 +133,18 @@ section {
     page-break-inside: avoid;
 }
 
-article {
-    border: 1px solid var(--color-gray-10);
-    padding: 20px;
-}
+/* App Header */
 
-article header {
-    background: none;
-    border-bottom: 1px solid var(--color-gray-10);
-    align-items: baseline;
-}
-
-article article {
-    padding: 10px;
-    margin-bottom: 10px;
+body > header {
+    grid-area: header;
+    background: var(--bg-header);
 }
 
 /* Logo */
 
 header > a {
     color: var(--color-white);
-    font-size: 22px;
+    font-size: var(--font-size-title);
     font-family: var(--font-logo);
     padding: 10px 20px;
     margin: 0;
@@ -134,7 +157,7 @@ header > a:hover {
 /* Links */
 
 a {
-    color: var(--color-action-2);
+    color: var(--link-color);
     text-decoration: none;
 }
 
@@ -152,7 +175,7 @@ header nav a {
     border: 0;
     background: var(--color-action-1);
     color: var(--color-white);
-    font-size: var(--font-size);
+    font-size: var(--button-font-size);
     font-family: var(--font-default);
     display: inline-flex;
     align-items: center;
@@ -221,15 +244,36 @@ hr {
     margin: 20px 0;
 }
 
+/* Articles */
+
+article {
+    background: var(--bg-sidebar);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-default);
+}
+
+article header {
+    border-bottom: 1px solid var(--color-gray-15);
+    align-items: baseline;
+    padding-bottom: var(--spacing-medium);
+}
+
+article article {
+    border: 1px solid var(--color-gray-15);
+    border-radius: 0;
+    padding: var(--spacing-medium);
+    margin-bottom: var(--spacing-medium);
+}
+
+article [data-info] {
+    color: var(--color-gray-12);
+}
+
 /* Form */
 
 form {
     display: flex;
     flex-direction: column;
-}
-
-form > div {
-    margin: 20px;
 }
 
 fieldset {
@@ -265,9 +309,10 @@ fieldset[data-collapsed="true"] > section {
 }
 
 label {
+    font-size: var(--label-font-size);
     display: flex;
     justify-content: space-between;
-    margin-bottom: 10px;
+    margin-bottom: var(--spacing-small);
 }
 
 input,
@@ -277,7 +322,7 @@ select {
     box-sizing: border-box;
     border-radius: var(--border-radius);
     border: 0;
-    font-size: var(--font-size);
+    font-size: var(--font-size-default);
 }
 
 input {
@@ -300,7 +345,7 @@ input[type=range]::-webkit-slider-thumb {
     height: 16px;
     width: 16px;
     border-radius: 50%;
-    background: #ffffff;
+    background: var(--color-white);
     cursor: pointer;
 }
 
@@ -308,7 +353,7 @@ input[type=range]::-moz-range-thumb {
     height: 16px;
     width: 16px;
     border-radius: 50%;
-    background: #ffffff;
+    background: var(--color-white);
     cursor: pointer;
 }
 
@@ -335,19 +380,19 @@ h1, h2, h3 {
 }
 
 h1 {
-    font-size: 22px;
+    font-size: var(--font-size-title);
     font-family: var(--font-logo);
     margin: 0;
 }
 
 h2 {
-    font-size: 16px;
+    font-size: var(--font-size-title);
     margin: 0;
 }
 
 h3 {
-    font-size: 14px;
-    margin: 20px 0 10px 0;
+    font-size: var(--font-size-subtitle);
+    margin: var(--spacing-default) 0 var(--spacing-medium) 0;
 }
 
 h3:first-child {
@@ -355,22 +400,24 @@ h3:first-child {
 }
 
 p {
-    margin: 10px 0;
+    line-height: var(--leading-loose);
+    margin: var(--spacing-medium) 0;
 }
 
 small {
-    font-size: 12px;
+    font-size: var(--font-size-small);
 }
 
 /* Lists */
 
 ul {
-    padding-left: 20px;
-    margin: 10px 0 0 0;
+    line-height: var(--leading-loose);
+    padding-left: var(--spacing-default);
+    margin: var(--spacing-medium) 0 0 0;
 }
 
 li {
-    padding-right: 20px;
+    padding-right: var(--spacing-default);
 }
 
 ul[data-grid] {
@@ -433,6 +480,12 @@ ul[data-grid] li small {
 
 [data-grid="3"] {
     grid-template-columns: repeat(3, 1fr);
+}
+
+/* Spacing */
+
+[data-spacing="default"] {
+    margin: var(--spacing-default);
 }
 
 /* Print */

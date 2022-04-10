@@ -33,10 +33,11 @@ export default ({ assert, describe, it }) => {
 
         describe('given an item count larger than 1', () => {
             it('should return the item label with the count appended', () => {
+                // TODO make less brittle to HTML changes
                 assert(getItemDescription({
                     ...item,
                     count: 12,
-                })).equals('Goblin juice (12)');
+                })).equals('Goblin juice<span data-info="true"> ( 12 ) </span>');
             });
         });
     });
