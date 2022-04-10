@@ -119,14 +119,23 @@ function getTrigger(triggers, action) {
 }
 
 /**
+ * Returns a boolean to indicate if the sidebar is expanded
+ *
+ * @param {HTMLElement} body
+ *
+ * @returns {boolean}
+ */
+const isSidebarExpanded = (body) => body.dataset.layout === 'expanded-sidebar';
+
+/**
  * Generator event handler.
  *
  * @private
  * @throws
  *
- * @param {Pick<Sections, "content" | "knobs" | "nav">} sections
+ * @param {Pick<Sections, "body" | "content" | "knobs" | "nav">} sections
  */
-function onGenerate({ content, knobs, nav }) {
+function onGenerate({ body, content, knobs, nav }) {
     let config    = getFormData(knobs);
     let page      = getActiveNavItem(nav);
     let generator = generators[page];
@@ -134,6 +143,10 @@ function onGenerate({ content, knobs, nav }) {
     isRequired(generator, `Invalid active page "${page}" in onGenerate()`);
 
     content.innerHTML = generator(config);
+
+    if (isSidebarExpanded(body)) {
+        toggleExpand({ body, knobs, nav });
+    }
 }
 
 /**
@@ -141,16 +154,18 @@ function onGenerate({ content, knobs, nav }) {
  *
  * @private
  *
- * @param {Pick<Sections, "content" | "knobs" | "nav">} sections
+ * @param {Pick<Sections, "body" | "content" | "knobs" | "nav">} sections
  * @param {string} homeContent
  * @param {Event} e
  */
-function onNavigate({ content, knobs, nav }, homeContent, e) {
+function onNavigate({ body, content, knobs, nav }, homeContent, e) {
     let { target: page } = getDataset(e.target);
 
     setActiveNavItem(nav, /** @type {Page} */ (page));
 
-    knobs.innerHTML   = getKnobPanel(/** @type {Page} */ (page));
+    let isExpanded = isSidebarExpanded(body);
+
+    knobs.innerHTML   = getKnobPanel(/** @type {Page} */ (page), { isExpanded });
     content.innerHTML = homeContent;
 }
 
@@ -193,12 +208,20 @@ function toggleAccordion(container, e) {
  *
  * @private
  *
- * @param {HTMLElement} body
+ * @param {Pick<Sections, "body" | "knobs" | "nav">} sections
  */
-function toggleExpand(body) {
-    let isCollapsed = body.dataset.layout === 'default';
+function toggleExpand({ body, knobs, nav }) {
+    body.dataset.layout = body.dataset.layout === 'expanded-sidebar'
+        ? 'default'
+        : 'expanded-sidebar';
 
-    body.dataset.layout = isCollapsed ? 'expanded-sidebar' : 'default';
+    let page = getActiveNavItem(nav);
+    let isExpanded = isSidebarExpanded(body);
+
+    knobs.innerHTML = getKnobPanel(page, {
+        config: getFormData(knobs),
+        isExpanded,
+    });
 }
 
 /**
@@ -259,17 +282,21 @@ export function attachClickDelegate(docBody, triggers) {
 }
 
 /**
- * Get triggers
+ * Returns an object of action triggers.
  *
- * @param {Pick<Sections, "body" | "content" | "knobs" | "nav" >} sections
+ * @param {Pick<Sections, "body" | "content" | "knobs" | "nav">} sections
  * @param {string} homeContent
  *
  * @returns {Triggers}
  */
-export const getTriggers = ({ body, content, knobs, nav }, homeContent) => ({
-    accordion: (e) => toggleAccordion(body, e),
-    expand   : ( ) => toggleExpand(body),
-    generate : ( ) => onGenerate({ content, knobs, nav }),
-    navigate : (e) => onNavigate({ content, knobs, nav }, homeContent, e),
-    toggle   : (e) => toggleVisibility(body, e),
-});
+export function getTriggers(sections, homeContent) {
+    let { body, knobs, nav } = sections;
+
+    return {
+        accordion: (e) => toggleAccordion(body, e),
+        expand   : ( ) => toggleExpand({ body, knobs, nav }),
+        generate : ( ) => onGenerate(sections),
+        navigate : (e) => onNavigate(sections, homeContent, e),
+        toggle   : (e) => toggleVisibility(body, e),
+    };
+}

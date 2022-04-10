@@ -196,6 +196,7 @@ button[data-action="accordion"] {
 
 button[data-action="generate"] {
     flex-grow: 1;
+    max-width: 236px;
 }
 
 button[data-action="expand"] {
@@ -205,6 +206,10 @@ button[data-action="expand"] {
 button[data-action="expand"] span {
     transform: rotate(180deg);
     pointer-events: none;
+}
+
+[data-layout="expanded-sidebar"] button[data-action="expand"] span {
+    transform: rotate(0);
 }
 
 /* Hr */
@@ -241,6 +246,10 @@ fieldset > button {
 
 fieldset > button:hover {
     background: var(--color-gray-20);
+}
+
+fieldset > h2 {
+    padding: 4px 20px;
 }
 
 fieldset > section {
@@ -405,6 +414,9 @@ ul[data-grid] li small {
     flex-direction: column;
 }
 
+[data-flex="between"] {
+    justify-content: space-between;
+}
 
 /* Grid */
 

@@ -2,9 +2,9 @@
 
 import {
     // Private Functions
-    testFormatKnobs as formatKnobs,
-    testGetFields   as getFields,
-    testGetKnob     as getKnob,
+    testFormatKnobAccordions as formatKnobAccordions,
+    testGetFields            as getFields,
+    testGetKnob              as getKnob,
 
     // Public Functions
     getFormData,
@@ -27,15 +27,15 @@ export default ({ assert, describe, it }) => {
 
     // -- Private Functions ----------------------------------------------------
 
-    describe('formatKnobs()', () => {
+    describe('formatKnobAccordions()', () => {
         describe('given an empty array', () => {
             it('returns an empty string', () => {
-                assert(formatKnobs([])).equals('');
+                assert(formatKnobAccordions([])).equals('');
             });
         });
 
         describe('given a knob config', () => {
-            const result = formatKnobs([ { label: 'Shovels', fields: [] } ]);
+            const result = formatKnobAccordions([ { label: 'Shovels', fields: [] } ]);
 
             it('returns an html fieldset element string', () => {
                 assert(/<fieldset(.*?)>(.*?)<\/fieldset>/.test(result)).isTrue();
@@ -65,7 +65,7 @@ export default ({ assert, describe, it }) => {
                 { name: 'dungeonTraps', label: 'Traps',         desc: 'Traps?',         type: typeSelect, values: [ '1' ] },
             ];
 
-            const result = formatKnobs([ { label: 'Shovels', fields } ]);
+            const result = formatKnobAccordions([ { label: 'Shovels', fields } ]);
 
             it('includes an HTML input string and label for each knob setting', () => {
                 assert(result)
@@ -80,7 +80,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given multiple knob configs', () => {
             it('should collapsed all sections except the first', () => {
-                const result = formatKnobs([
+                const result = formatKnobAccordions([
                     { label: 'Shovels', fields: [] },
                     { label: 'Gardening Tools', fields: [] },
                     { label: 'Weed Whackers', fields: [] },
@@ -255,6 +255,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
+    // TODO tests for `config` & `isExpanded` options
     describe('getKnobPanel()', () => {
         let knobs = getKnobPanel('dungeon');
 

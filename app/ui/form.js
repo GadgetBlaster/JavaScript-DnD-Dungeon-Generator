@@ -4,7 +4,7 @@ import { button, infoLabel } from './button.js';
 import { div, fieldset, section } from './block.js';
 import { element } from '../utility/element.js';
 import { getKnobConfig, typeSelect, typeNumber, typeRange } from '../controller/knobs.js';
-import { paragraph, small } from './typography.js';
+import { paragraph, small, title } from './typography.js';
 import { select, input, slider, fieldLabel } from './field.js';
 import { toDash, toss } from '../utility/tools.js';
 
@@ -30,8 +30,8 @@ const expandButton = button(element('span', '&#x25C1'), 'expand', {
 // -- Private Functions --------------------------------------------------------
 
 /**
- * Returns an HTML fieldset elements string containing from elements for the
- * given knobs.
+ * Returns a set of HTML fieldset accordion element strings containing form
+ * elements for the given knobs.
  *
  * @private
  *
@@ -39,7 +39,7 @@ const expandButton = button(element('span', '&#x25C1'), 'expand', {
  *
  * @returns {string}
  */
-const formatKnobs = (knobs) => knobs.map((knobSet, i) => {
+const formatKnobAccordions = (knobs) => knobs.map((knobSet, i) => {
     let {
         label,
         fields,
@@ -54,6 +54,25 @@ const formatKnobs = (knobs) => knobs.map((knobSet, i) => {
     };
 
     return fieldset(handle + section(getFields(fields)), attrs);
+}).join('');
+
+/**
+ * Returns a set of HTML fieldset element strings containing form elements for
+ * the given knobs.
+ *
+ * @private
+ *
+ * @param {KnobSet[]} knobs
+ *
+ * @returns {string}
+ */
+const formatKnobSections = (knobs) => knobs.map((knobSet) => {
+    let {
+        label,
+        fields,
+    } = knobSet;
+
+    return fieldset(title(label) + section(getFields(fields)));
 }).join('');
 
 /**
@@ -115,7 +134,6 @@ function getKnob(settings) {
 
     switch (type) {
         case typeSelect:
-            console.log(value);
             return select(name, values, value);
 
         case typeNumber:
@@ -130,9 +148,9 @@ function getKnob(settings) {
 }
 
 export {
-    formatKnobs as testFormatKnobs,
-    getFields   as testGetFields,
-    getKnob     as testGetKnob,
+    formatKnobAccordions as testFormatKnobAccordions,
+    getFields            as testGetFields,
+    getKnob              as testGetKnob,
 };
 
 // -- Public Functions ---------------------------------------------------------
@@ -158,14 +176,22 @@ export function getFormData(knobContainer) {
  * Update form knobs when changing pages.
  *
  * @param {Page} page
- * @param {Config} [config]
+ * @param {object} [options]
+ *     @param {Config} [options.config]
+ *     @param {boolean} [options.isExpanded]
  *
  * @returns {string}
  */
-export function getKnobPanel(page, config) {
-    let knobs = formatKnobs(getKnobConfig(page, config));
-    let content = div(submitButton + expandButton, { 'data-flex': true })
-        + div(knobs);
+export function getKnobPanel(page, { config, isExpanded } = {}) {
+    let knobConfig = getKnobConfig(page, config);
+    let knobs = isExpanded
+        ? formatKnobSections(knobConfig)
+        : formatKnobAccordions(knobConfig);
+
+    let knobContainerAttrs = isExpanded ? { 'data-grid': 3 } : {};
+
+    let content = div(submitButton + expandButton, { 'data-flex': 'between' })
+        + div(knobs, knobContainerAttrs);
 
     return content;
 }

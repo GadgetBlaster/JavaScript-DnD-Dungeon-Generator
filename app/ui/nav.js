@@ -53,10 +53,10 @@ const getElements = (collection) => [ ...collection ].map((el) =>
  *
  * @param {HTMLElement} nav
  *
- * @returns {string}
+ * @returns {Page}
  */
 export function getActiveNavItem(nav) {
-    return getElements(nav.children).find((btn) => btn.dataset.active).dataset.target;
+    return /** @type {Page} */ (getElements(nav.children).find((btn) => btn.dataset.active).dataset.target);
 }
 
 /**

@@ -160,6 +160,7 @@ export default ({ assert, describe, it }) => {
     describe('onNavigate()', () => {
         describe('given an event with the target page of "rooms"', () => {
             it('updates the content, knobs, and nav elements', () => {
+                const bodyEl    = document.createElement('div');
                 const contentEl = document.createElement('div');
                 const knobsEl   = document.createElement('form');
 
@@ -173,6 +174,7 @@ export default ({ assert, describe, it }) => {
                 const roomsButton = navEl.querySelector('[data-target="rooms"]');
 
                 const sections = {
+                    body   : bodyEl,
                     content: contentEl,
                     knobs  : knobsEl,
                     nav    : navEl,
