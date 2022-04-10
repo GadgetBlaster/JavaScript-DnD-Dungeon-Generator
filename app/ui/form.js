@@ -57,10 +57,13 @@ function getKnob(settings) {
     switch (type) {
         case typeSelect:
             return select(name, values);
+
         case typeNumber:
             return input(name, { type: 'number' , value });
+
         case typeRange:
             return slider(name, { min, max, value });
+
         default:
             toss('Invalid knob type');
     }
@@ -101,7 +104,7 @@ const renderFields = (fields) => fields.map((settings) => {
  *
  * @returns {string}
  */
-const renderKnobs = (knobs) => knobs.map((knobSet) => {
+const renderKnobs = (knobs) => knobs.map((knobSet, i) => {
     let {
         label,
         fields,
@@ -111,7 +114,7 @@ const renderKnobs = (knobs) => knobs.map((knobSet) => {
     let handle = button(label, 'accordion', { target: fieldsetId });
 
     let attrs = {
-        'data-collapsed': true,
+        'data-collapsed': i === 0 ? false : true,
         'data-id': fieldsetId,
     };
 

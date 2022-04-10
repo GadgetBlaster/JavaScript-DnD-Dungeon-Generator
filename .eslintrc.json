@@ -17,7 +17,7 @@
             }
         ],
 
-        "indent": [ "warn", 4 ],
+        "indent": [ "warn", 4, { "SwitchCase": 1 } ],
 
         "quotes": [
             "warn",

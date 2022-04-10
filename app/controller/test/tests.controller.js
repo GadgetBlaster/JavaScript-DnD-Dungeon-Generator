@@ -435,8 +435,8 @@ export default ({ assert, describe, it }) => {
         const navEl     = document.createElement('nav');
 
         contentEl.innerHTML = 'Fake homepage content';
-        knobsEl.innerHTML  = knobHTML;
-        navEl.innerHTML    = navHTML;
+        knobsEl.innerHTML   = knobHTML;
+        navEl.innerHTML     = navHTML;
 
         bodyEl.appendChild(navEl);
         bodyEl.appendChild(knobsEl);
@@ -459,10 +459,11 @@ export default ({ assert, describe, it }) => {
 
                 /** @type {HTMLElement} */
                 const fieldsetEl = knobsEl.querySelector('[data-id="fieldset-item-settings"]');
+                const wasCollapsed = fieldsetEl.dataset.collapsed === 'true';
 
                 triggers.accordion(getMockClickEvent(accordionButtonEl));
 
-                assert(fieldsetEl.dataset.collapsed).equals('false');
+                assert(fieldsetEl.dataset.collapsed).equals(wasCollapsed ? 'false' : 'true');
             });
         });
 

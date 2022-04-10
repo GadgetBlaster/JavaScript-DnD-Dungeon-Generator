@@ -22,8 +22,6 @@ import {
 
 import { itemTypes } from '../item.js';
 import { conditions } from '../../attribute/condition.js';
-import { furnitureQuantities } from '../../item/furnishing.js';
-import { quantities } from '../../attribute/quantity.js';
 import { rarities } from '../../attribute/rarity.js';
 import { sizes } from '../../attribute/size.js';
 

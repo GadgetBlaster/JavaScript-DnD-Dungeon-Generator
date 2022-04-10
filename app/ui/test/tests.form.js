@@ -190,7 +190,7 @@ export default ({ assert, describe, it }) => {
 
     describe('renderKnobs()', () => {
         describe('given an empty array', () => {
-            it('should return an empty string', () => {
+            it('returns an empty string', () => {
                 assert(renderKnobs([])).equals('');
             });
         });
@@ -198,40 +198,59 @@ export default ({ assert, describe, it }) => {
         describe('given a knob config', () => {
             const result = renderKnobs([ { label: 'Shovels', fields: [] } ]);
 
-            it('should return an html fieldset element string', () => {
+            it('returns an html fieldset element string', () => {
                 assert(/<fieldset(.*?)>(.*?)<\/fieldset>/.test(result)).isTrue();
             });
 
-            it('should contain the correct data-id', () => {
+            it('contains the correct data-id', () => {
                 assert(result).stringIncludes('data-id="fieldset-shovels"');
             });
 
-            it('should be collapsed by default', () => {
-                assert(result).stringIncludes('data-collapsed="true"');
-            });
-
-            it('should include an html accordion button', () => {
+            it('includes an html accordion button', () => {
                 const snapshot = '<button data-action="accordion" data-size="small" data-target="fieldset-shovels" ' +
                     'type="button">Shovels</button>';
 
                 assert(result).stringIncludes(snapshot);
             });
+
+            it('does not collapse the first section', () => {
+                assert(result).stringIncludes('data-collapsed="false"');
+            });
         });
 
         describe('given an array of fields', () => {
+            /** @type {import('../../controller/knobs.js').KnobSettings[]} */
             const fields = [
-                { name: 'size',        label: 'Size',        desc: 'Size?',        type: typeNumber             },
-                { name: 'shape',       label: 'Shape',       desc: 'Shape?',       type: typeRange              },
-                { name: 'squishiness', label: 'Squishiness', desc: 'Squishiness?', type: typeSelect, values: [ '1' ] },
+                { name: 'roomSize',     label: 'Room Size',     desc: 'Room Size?',     type: typeNumber },
+                { name: 'itemQuantity', label: 'Item Quantity', desc: 'Item Quantity?', type: typeRange  },
+                { name: 'dungeonTraps', label: 'Traps',         desc: 'Traps?',         type: typeSelect, values: [ '1' ] },
             ];
 
             const result = renderKnobs([ { label: 'Shovels', fields } ]);
 
-            it('should include an HTML input string for each knob setting', () => {
+            it('includes an HTML input string and label for each knob setting', () => {
                 assert(result)
-                    .stringIncludes('<input name="size" type="number" />')
-                    .stringIncludes('<input name="shape" type="range" />')
-                    .stringIncludes('<select name="squishiness"><option value="1">1</option></select>');
+                    .stringIncludes('Room Size')
+                    .stringIncludes('<input name="roomSize" type="number" />')
+                    .stringIncludes('Item Quantity')
+                    .stringIncludes('<input name="itemQuantity" type="range" />')
+                    .stringIncludes('Traps')
+                    .stringIncludes('<select name="dungeonTraps"><option value="1">1</option></select>');
+            });
+        });
+
+        describe('given multiple knob configs', () => {
+            it('should collapsed all sections except the first', () => {
+                const result = renderKnobs([
+                    { label: 'Shovels', fields: [] },
+                    { label: 'Gardening Tools', fields: [] },
+                    { label: 'Weed Whackers', fields: [] },
+                ]);
+
+                assert(result)
+                    .stringIncludes('<fieldset data-collapsed="false" data-id="fieldset-shovels">')
+                    .stringIncludes('<fieldset data-collapsed="true" data-id="fieldset-gardening-tools">')
+                    .stringIncludes('<fieldset data-collapsed="true" data-id="fieldset-weed-whackers">');
             });
         });
     });
