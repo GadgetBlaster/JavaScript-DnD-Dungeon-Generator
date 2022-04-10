@@ -1,11 +1,14 @@
 // @ts-check
 
-import { attachClickDelegate, getTriggers } from './controller/controller.js';
-import { getNav } from './ui/nav.js';
 import { getSummaryLink } from './unit/output.js';
 import { unitState } from './unit/state.js';
 import run from './unit/run.js';
 import suite from './unit/suite.js';
+
+import { attachClickDelegate, getTriggers } from './controller/controller.js';
+
+import { getKnobPanel } from './ui/form.js';
+import { getNav, setActiveNavItem } from './ui/nav.js';
 
 // -- Type Imports -------------------------------------------------------------
 
@@ -31,8 +34,8 @@ const testSummary = getSummaryLink(run(unitState(), suite));
 const triggers = getTriggers(sections, homeContent);
 
 sections.nav.innerHTML    = getNav('dungeon');
+sections.knobs.innerHTML  = getKnobPanel('dungeon');
 sections.footer.innerHTML = testSummary + footerContent;
 
-triggers.navigate({ target: 'dungeon' });
-
+setActiveNavItem(sections.nav, 'dungeon');
 attachClickDelegate(sections.body, triggers);

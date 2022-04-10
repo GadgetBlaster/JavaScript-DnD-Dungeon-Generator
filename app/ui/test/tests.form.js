@@ -2,9 +2,9 @@
 
 import {
     // Private Functions
-    testGetFields as getFields,
-    testGetKnob   as getKnob,
-    testGetKnobs  as getKnobs,
+    testFormatKnobs as formatKnobs,
+    testGetFields   as getFields,
+    testGetKnob     as getKnob,
 
     // Public Functions
     getFormData,
@@ -26,6 +26,73 @@ const fakeKnob = {
 export default ({ assert, describe, it }) => {
 
     // -- Private Functions ----------------------------------------------------
+
+    describe('formatKnobs()', () => {
+        describe('given an empty array', () => {
+            it('returns an empty string', () => {
+                assert(formatKnobs([])).equals('');
+            });
+        });
+
+        describe('given a knob config', () => {
+            const result = formatKnobs([ { label: 'Shovels', fields: [] } ]);
+
+            it('returns an html fieldset element string', () => {
+                assert(/<fieldset(.*?)>(.*?)<\/fieldset>/.test(result)).isTrue();
+            });
+
+            it('contains the correct data-id', () => {
+                assert(result).stringIncludes('data-id="fieldset-shovels"');
+            });
+
+            it('includes an html accordion button', () => {
+                const snapshot = '<button data-action="accordion" data-size="small" data-target="fieldset-shovels" ' +
+                    'type="button">Shovels</button>';
+
+                assert(result).stringIncludes(snapshot);
+            });
+
+            it('does not collapse the first section', () => {
+                assert(result).stringIncludes('data-collapsed="false"');
+            });
+        });
+
+        describe('given an array of fields', () => {
+            /** @type {import('../../controller/knobs.js').KnobSettings[]} */
+            const fields = [
+                { name: 'roomSize',     label: 'Room Size',     desc: 'Room Size?',     type: typeNumber },
+                { name: 'itemQuantity', label: 'Item Quantity', desc: 'Item Quantity?', type: typeRange  },
+                { name: 'dungeonTraps', label: 'Traps',         desc: 'Traps?',         type: typeSelect, values: [ '1' ] },
+            ];
+
+            const result = formatKnobs([ { label: 'Shovels', fields } ]);
+
+            it('includes an HTML input string and label for each knob setting', () => {
+                assert(result)
+                    .stringIncludes('Room Size')
+                    .stringIncludes('<input name="roomSize" type="number" />')
+                    .stringIncludes('Item Quantity')
+                    .stringIncludes('<input name="itemQuantity" type="range" />')
+                    .stringIncludes('Traps')
+                    .stringIncludes('<select name="dungeonTraps"><option value="1">1</option></select>');
+            });
+        });
+
+        describe('given multiple knob configs', () => {
+            it('should collapsed all sections except the first', () => {
+                const result = formatKnobs([
+                    { label: 'Shovels', fields: [] },
+                    { label: 'Gardening Tools', fields: [] },
+                    { label: 'Weed Whackers', fields: [] },
+                ]);
+
+                assert(result)
+                    .stringIncludes('<fieldset data-collapsed="false" data-id="fieldset-shovels">')
+                    .stringIncludes('<fieldset data-collapsed="true" data-id="fieldset-gardening-tools">')
+                    .stringIncludes('<fieldset data-collapsed="true" data-id="fieldset-weed-whackers">');
+            });
+        });
+    });
 
     describe('getFields()', () => {
         describe('given an empty array', () => {
@@ -147,73 +214,6 @@ export default ({ assert, describe, it }) => {
         describe('given a type of `typeRange`', () => {
             it('should return an html input element string', () => {
                 assert(getKnob({ ...fakeKnob, type: typeRange })).isElementTag('input');
-            });
-        });
-    });
-
-    describe('getKnobs()', () => {
-        describe('given an empty array', () => {
-            it('returns an empty string', () => {
-                assert(getKnobs([])).equals('');
-            });
-        });
-
-        describe('given a knob config', () => {
-            const result = getKnobs([ { label: 'Shovels', fields: [] } ]);
-
-            it('returns an html fieldset element string', () => {
-                assert(/<fieldset(.*?)>(.*?)<\/fieldset>/.test(result)).isTrue();
-            });
-
-            it('contains the correct data-id', () => {
-                assert(result).stringIncludes('data-id="fieldset-shovels"');
-            });
-
-            it('includes an html accordion button', () => {
-                const snapshot = '<button data-action="accordion" data-size="small" data-target="fieldset-shovels" ' +
-                    'type="button">Shovels</button>';
-
-                assert(result).stringIncludes(snapshot);
-            });
-
-            it('does not collapse the first section', () => {
-                assert(result).stringIncludes('data-collapsed="false"');
-            });
-        });
-
-        describe('given an array of fields', () => {
-            /** @type {import('../../controller/knobs.js').KnobSettings[]} */
-            const fields = [
-                { name: 'roomSize',     label: 'Room Size',     desc: 'Room Size?',     type: typeNumber },
-                { name: 'itemQuantity', label: 'Item Quantity', desc: 'Item Quantity?', type: typeRange  },
-                { name: 'dungeonTraps', label: 'Traps',         desc: 'Traps?',         type: typeSelect, values: [ '1' ] },
-            ];
-
-            const result = getKnobs([ { label: 'Shovels', fields } ]);
-
-            it('includes an HTML input string and label for each knob setting', () => {
-                assert(result)
-                    .stringIncludes('Room Size')
-                    .stringIncludes('<input name="roomSize" type="number" />')
-                    .stringIncludes('Item Quantity')
-                    .stringIncludes('<input name="itemQuantity" type="range" />')
-                    .stringIncludes('Traps')
-                    .stringIncludes('<select name="dungeonTraps"><option value="1">1</option></select>');
-            });
-        });
-
-        describe('given multiple knob configs', () => {
-            it('should collapsed all sections except the first', () => {
-                const result = getKnobs([
-                    { label: 'Shovels', fields: [] },
-                    { label: 'Gardening Tools', fields: [] },
-                    { label: 'Weed Whackers', fields: [] },
-                ]);
-
-                assert(result)
-                    .stringIncludes('<fieldset data-collapsed="false" data-id="fieldset-shovels">')
-                    .stringIncludes('<fieldset data-collapsed="true" data-id="fieldset-gardening-tools">')
-                    .stringIncludes('<fieldset data-collapsed="true" data-id="fieldset-weed-whackers">');
             });
         });
     });

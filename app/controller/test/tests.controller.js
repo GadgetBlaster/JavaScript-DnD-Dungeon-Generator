@@ -483,7 +483,7 @@ export default ({ assert, describe, it }) => {
         describe('navigate', () => {
             it('updates the content', () => {
                 /** @type {HTMLElement} */
-                const roomsButtonEl = knobsEl.querySelector('[data-action="navigate"][data-target="rooms"]');
+                const roomsButtonEl = navEl.querySelector('[data-action="navigate"][data-target="rooms"]');
 
                 triggers.navigate(getMockClickEvent(roomsButtonEl));
 

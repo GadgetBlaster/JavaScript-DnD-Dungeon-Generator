@@ -16,10 +16,11 @@ import { toWords, toss } from '../utility/tools.js';
  *
  * @param {string} value
  * @param {string} label
+ * @param {Attributes} [attributes]
  *
  * @returns {string}
  */
-const option = (value, label) => element('option', label, { value });
+const option = (value, label, attributes = {}) => element('option', label, { value, ...attributes });
 
 // -- Public Functions ---------------------------------------------------------
 
@@ -57,12 +58,17 @@ export function input(name, attributes = {}) {
  *
  * @param {string} name
  * @param {string[]} values
+ * @param {string} [selectedValue]
  *
  * @returns {string}
  */
-export function select(name, values) {
+export function select(name, values, selectedValue) {
     !values.length && toss('Select fields require option values');
-    let options = values.map((value) => option(value, toWords(value))).join('');
+
+    let options = values.map((value) => {
+        let attrs = value === selectedValue ? { selected: true } : {};
+        return option(value, toWords(value), attrs);
+    }).join('');
 
     return element('select', options, { name });
 }

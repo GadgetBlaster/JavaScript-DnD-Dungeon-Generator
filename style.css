@@ -8,6 +8,8 @@
 
     --border-radius: 4px;
 
+    --transitionDuration: 500ms;
+
     --color-action-1: #BF0252;
     --color-action-2: #F2065F;
     --color-error: #FF0000;
@@ -58,14 +60,18 @@ header {
 
 aside {
     grid-area: left;
-    width: 220px;
+    width: 320px;
     background: var(--color-gray-40);
     color: var(--color-white);
 }
 
-form {
-    display: flex;
-    flex-direction: column;
+[data-layout="expanded-sidebar"] main {
+    display: none;
+}
+
+[data-layout="expanded-sidebar"] aside {
+    width: 100%;
+    grid-area: left / main;
 }
 
 main {
@@ -132,7 +138,8 @@ a {
     text-decoration: none;
 }
 
-a:hover {
+a:hover,
+a:focus {
     text-decoration: underline;
 }
 
@@ -150,6 +157,8 @@ header nav a {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    padding: 0;
+    transition: background var(--transitionDuration);
 }
 
 button:hover,
@@ -185,6 +194,19 @@ button[data-action="accordion"] {
     justify-content: left;
 }
 
+button[data-action="generate"] {
+    flex-grow: 1;
+}
+
+button[data-action="expand"] {
+    width: 33px;
+}
+
+button[data-action="expand"] span {
+    transform: rotate(180deg);
+    pointer-events: none;
+}
+
 /* Hr */
 
 hr {
@@ -196,10 +218,13 @@ hr {
 
 /* Form */
 
-form > button,
+form {
+    display: flex;
+    flex-direction: column;
+}
+
 form > div {
     margin: 20px;
-    text-align: center;
 }
 
 fieldset {
@@ -294,15 +319,6 @@ input[type=range]::-moz-range-track {
     border-radius: var(--border-radius);
 }
 
-/* Errors */
-
-[data-error] {
-    color: var(--color-white);
-    background: var(--color-error);
-    padding: 5px 10px;
-    display: inline-block;
-}
-
 /* Type */
 
 h1, h2, h3 {
@@ -363,6 +379,32 @@ ul[data-grid] li {
 ul[data-grid] li small {
     margin-left: 10px;
 }
+
+/* Alignment */
+
+[data-align="center"] {
+    text-align: center;
+}
+
+/* Errors */
+
+[data-error] {
+    color: var(--color-white);
+    background: var(--color-error);
+    padding: 5px 10px;
+    display: inline-block;
+}
+
+/* Flex */
+
+[data-flex] {
+    display: flex;
+}
+
+[data-flex="column"] {
+    flex-direction: column;
+}
+
 
 /* Grid */
 

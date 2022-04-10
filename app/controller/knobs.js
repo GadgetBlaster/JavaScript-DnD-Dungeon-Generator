@@ -95,6 +95,7 @@ import { sizes } from '../attribute/size.js';
 
 // -- Config -------------------------------------------------------------------
 
+// TODO Replace with type checking
 export const typeSelect = 'select';
 export const typeNumber = 'number';
 export const typeRange  = 'range';
@@ -117,12 +118,8 @@ const getValues = (values) => {
     ];
 };
 
- /**
-  * Config
-  *
-  * @type {KnobSet[]}
-  */
-const config = [
+/** @type {KnobSet[]} */
+const knobs = [
     {
         label : 'Dungeon Settings',
         pages : new Set([ 'dungeon' ]),
@@ -241,19 +238,30 @@ const config = [
     },
 ];
 
+// -- Private Functions --------------------------------------------------------
+
 /**
  * TODO
- * @param {*} knobSet
- * @param {*} page
- * @returns
+ *
+ * @param {KnobSet} knobSet
+ * @param {Page} page
+ * @param {Config} [config]
+ *
+ * @returns {}
  */
-const getFields = (knobSet, page) => {
+const getFields = (knobSet, page, config) => {
     let fields = knobSet.fields.reduce((fieldsArray, knobSettings) => {
         if (knobSettings.pages && !knobSettings.pages.has(page)) {
             return fieldsArray;
         }
 
-        fieldsArray.push(knobSettings);
+        let settings = { ...knobSettings };
+
+        if (config && config[settings.name]) {
+            settings.value = config[settings.name];
+        }
+
+        fieldsArray.push(settings);
 
         return fieldsArray;
     }, []);
@@ -264,18 +272,24 @@ const getFields = (knobSet, page) => {
     };
 };
 
+// -- Public Functions ---------------------------------------------------------
+
+
 /**
  * TODO
- * @param {*} page
- * @returns
+ *
+ * @param {Page} page
+ * @param {Config} [config]
+ *
+ * @returns {KnobSet[]}
  */
-export const getKnobConfig = (page = 'dungeon') => {
-    return config.reduce((knobSets, knobSet) => {
+export const getKnobConfig = (page, config) => {
+    return knobs.reduce((knobSets, knobSet) => {
         if (!knobSet.pages.has(page)) {
             return knobSets;
         }
 
-        knobSets.push(getFields(knobSet, page));
+        knobSets.push(getFields(knobSet, page, config));
 
         return knobSets;
     }, []);

@@ -40,6 +40,7 @@ import {
 
 /**
  * @typedef {"accordion"
+ * | "expand"
  * | "generate"
  * | "navigate"
  * | "toggle"
@@ -70,23 +71,23 @@ function itemGenerator(config) {
 /**
  * Generates and formats output for the room generation page.
  *
- * @param {RoomConfig} settings
+ * @param {RoomConfig} config
  *
  * @returns {string}
  */
-function roomGenerator(settings) {
-    return formatRoomsPage(generateRooms(settings));
+function roomGenerator(config) {
+    return formatRoomsPage(generateRooms(config));
 }
 
 /**
  * Generates and formats output for the dungeon generation page.
  *
- * @param {DungeonConfig} settings
+ * @param {DungeonConfig} config
  *
  * @returns {string}
  */
-function dungeonGenerator(settings) {
-    return formatDungeonPage(generateDungeon(settings));
+function dungeonGenerator(config) {
+    return formatDungeonPage(generateDungeon(config));
 }
 
 /**
@@ -126,13 +127,13 @@ function getTrigger(triggers, action) {
  * @param {Pick<Sections, "content" | "knobs" | "nav">} sections
  */
 function onGenerate({ content, knobs, nav }) {
-    let settings  = getFormData(knobs);
+    let config    = getFormData(knobs);
     let page      = getActiveNavItem(nav);
     let generator = generators[page];
 
     isRequired(generator, `Invalid active page "${page}" in onGenerate()`);
 
-    content.innerHTML = generator(settings);
+    content.innerHTML = generator(config);
 }
 
 /**
@@ -149,8 +150,7 @@ function onNavigate({ content, knobs, nav }, homeContent, e) {
 
     setActiveNavItem(nav, /** @type {Page} */ (page));
 
-    knobs.innerHTML = getKnobPanel(/** @type {Page} */ (page));
-
+    knobs.innerHTML   = getKnobPanel(/** @type {Page} */ (page));
     content.innerHTML = homeContent;
 }
 
@@ -186,6 +186,19 @@ function toggleAccordion(container, e) {
     let isCollapsed = targetSectionEl.dataset.collapsed === 'true';
 
     targetSectionEl.dataset.collapsed = isCollapsed ? 'false' : 'true';
+}
+
+/**
+ * Toggles the generation form from sidebar to full screen.
+ *
+ * @private
+ *
+ * @param {HTMLElement} body
+ */
+function toggleExpand(body) {
+    let isCollapsed = body.dataset.layout === 'default';
+
+    body.dataset.layout = isCollapsed ? 'expanded-sidebar' : 'default';
 }
 
 /**
@@ -255,6 +268,7 @@ export function attachClickDelegate(docBody, triggers) {
  */
 export const getTriggers = ({ body, content, knobs, nav }, homeContent) => ({
     accordion: (e) => toggleAccordion(body, e),
+    expand   : ( ) => toggleExpand(body),
     generate : ( ) => onGenerate({ content, knobs, nav }),
     navigate : (e) => onNavigate({ content, knobs, nav }, homeContent, e),
     toggle   : (e) => toggleVisibility(body, e),

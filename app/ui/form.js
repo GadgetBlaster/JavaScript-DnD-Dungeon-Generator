@@ -2,6 +2,7 @@
 
 import { button, infoLabel } from './button.js';
 import { div, fieldset, section } from './block.js';
+import { element } from '../utility/element.js';
 import { getKnobConfig, typeSelect, typeNumber, typeRange } from '../controller/knobs.js';
 import { paragraph, small } from './typography.js';
 import { select, input, slider, fieldLabel } from './field.js';
@@ -10,6 +11,7 @@ import { toDash, toss } from '../utility/tools.js';
 // -- Type Imports -------------------------------------------------------------
 
 /** @typedef {import('../controller/controller.js').Action} Action */
+/** @typedef {import('../controller/knobs.js').Config} Config */
 /** @typedef {import('../controller/knobs.js').KnobSet} KnobSet */
 /** @typedef {import('../controller/knobs.js').KnobSettings} KnobSettings */
 /** @typedef {import('./nav.js').Page} Page */
@@ -21,7 +23,38 @@ const submitButton = button('Generate', 'generate', {
     type: 'submit',
 });
 
+const expandButton = button(element('span', '&#x25C1'), 'expand', {
+    size: 'auto',
+});
+
 // -- Private Functions --------------------------------------------------------
+
+/**
+ * Returns an HTML fieldset elements string containing from elements for the
+ * given knobs.
+ *
+ * @private
+ *
+ * @param {KnobSet[]} knobs
+ *
+ * @returns {string}
+ */
+const formatKnobs = (knobs) => knobs.map((knobSet, i) => {
+    let {
+        label,
+        fields,
+    } = knobSet;
+
+    let fieldsetId = `fieldset-${toDash(label)}`;
+    let handle = button(label, 'accordion', { target: fieldsetId });
+
+    let attrs = {
+        'data-collapsed': i === 0 ? false : true,
+        'data-id': fieldsetId,
+    };
+
+    return fieldset(handle + section(getFields(fields)), attrs);
+}).join('');
 
 /**
  * Returns HTML form field element strings for the given fields.
@@ -82,7 +115,8 @@ function getKnob(settings) {
 
     switch (type) {
         case typeSelect:
-            return select(name, values);
+            console.log(value);
+            return select(name, values, value);
 
         case typeNumber:
             return input(name, { type: 'number' , value });
@@ -95,37 +129,10 @@ function getKnob(settings) {
     }
 }
 
-/**
- * Returns an HTML fieldset elements string containing from elements for the
- * given knobs.
- *
- * @private
- *
- * @param {KnobSet[]} knobs
- *
- * @returns {string}
- */
-const getKnobs = (knobs) => knobs.map((knobSet, i) => {
-    let {
-        label,
-        fields,
-    } = knobSet;
-
-    let fieldsetId = `fieldset-${toDash(label)}`;
-    let handle = button(label, 'accordion', { target: fieldsetId });
-
-    let attrs = {
-        'data-collapsed': i === 0 ? false : true,
-        'data-id': fieldsetId,
-    };
-
-    return fieldset(handle + section(getFields(fields)), attrs);
-}).join('');
-
 export {
-    getFields as testGetFields,
-    getKnob   as testGetKnob,
-    getKnobs  as testGetKnobs,
+    formatKnobs as testFormatKnobs,
+    getFields   as testGetFields,
+    getKnob     as testGetKnob,
 };
 
 // -- Public Functions ---------------------------------------------------------
@@ -135,15 +142,15 @@ export {
  *
  * @param {HTMLElement} knobContainer
  *
- * @returns {Object<string, *>}
+ * @returns {Config}
  */
 export function getFormData(knobContainer) {
-    return getInputElements(knobContainer).reduce((set, item) => {
+    return getInputElements(knobContainer).reduce((setting, item) => {
         let { name, value } = item;
 
-        set[name] = value;
+        setting[name] = value;
 
-        return set;
+        return setting;
     }, {});
 }
 
@@ -151,8 +158,14 @@ export function getFormData(knobContainer) {
  * Update form knobs when changing pages.
  *
  * @param {Page} page
+ * @param {Config} [config]
  *
  * @returns {string}
  */
-export const getKnobPanel = (page) =>
-    submitButton + getKnobs(getKnobConfig(page));
+export function getKnobPanel(page, config) {
+    let knobs = formatKnobs(getKnobConfig(page, config));
+    let content = div(submitButton + expandButton, { 'data-flex': true })
+        + div(knobs);
+
+    return content;
+}
