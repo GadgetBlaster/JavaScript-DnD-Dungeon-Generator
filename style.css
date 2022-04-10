@@ -26,11 +26,11 @@
     --color-action-2: #F2065F;
     --color-error: #FF0000;
 
-    --color-gray-10: #E6E6E6;
+    --color-gray-10: #F2F2F2;
     --color-gray-12: #a3a3a3;
     --color-gray-15: #798282;
     --color-gray-20: #4f5252;
-    --color-gray-30: #363838;
+    --color-gray-30: #3B3D3D;
     --color-gray-40: #0C0F0F;
 
     --color-secondary: #08B3BD;
@@ -39,9 +39,9 @@
     --text-color: var(--color-gray-10);
     --link-color: #FF4289;
 
+    --bg-article: var(--color-gray-30);
     --bg-header: #70003C;
-    --bg-sidebar: var(--color-gray-40);
-    --bg-main: var(--color-gray-20);
+    --bg: var(--color-gray-40);
 
     --spacing-default: 20px;
     --spacing-medium: 10px;
@@ -64,8 +64,8 @@ html {
 }
 
 body {
-    color: var(--color-gray-10);
-    background: var(--bg-main);
+    color: var(--text-color);
+    background: var(--bg);
     font-size: var(--font-size-default);
     line-height: var(--leading-default);
     font-family: var(--font-default);
@@ -87,7 +87,6 @@ header {
 aside {
     grid-area: left;
     width: var(--sidebar-width);
-    background: var(--bg-sidebar);
     color: var(--color-white);
 }
 
@@ -124,7 +123,7 @@ nav {
 
 nav span[data-separator] {
     margin: 0 15px;
-    border-left: 1px solid var(--color-gray-10);
+    border-left: 1px solid var(--color-white);
     height: 15px;
 }
 
@@ -240,14 +239,14 @@ button[data-action="expand"] span {
 hr {
     height: 0;
     border: 0;
-    border-bottom: 1px solid var(--color-gray-10);
+    border-bottom: 1px solid var(--color-gray-15);
     margin: 20px 0;
 }
 
 /* Articles */
 
 article {
-    background: var(--bg-sidebar);
+    background: var(--bg-article);
     border-radius: var(--border-radius);
     padding: var(--spacing-default);
 }

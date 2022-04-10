@@ -1,12 +1,13 @@
 // @ts-check
 
 import {
-    paragraph,
-    strong,
-    title,
-    subtitle,
-    small,
     em,
+    paragraph,
+    small,
+    span,
+    strong,
+    subtitle,
+    title,
 } from '../typography.js';
 
 /** @typedef {import('../../utility/element').Attributes} Attributes */
@@ -22,6 +23,7 @@ const type = {
     'h3'    : subtitle,
     'p'     : paragraph,
     'small' : small,
+    'span'  : span,
     'strong': strong,
 };
 
