@@ -2,9 +2,9 @@
 
 import {
     // Private Functions
-    testGetKnob      as getKnob,
-    testRenderFields as renderFields,
-    testRenderKnobs  as renderKnobs,
+    testGetFields as getFields,
+    testGetKnob   as getKnob,
+    testGetKnobs  as getKnobs,
 
     // Public Functions
     getFormData,
@@ -26,6 +26,102 @@ const fakeKnob = {
 export default ({ assert, describe, it }) => {
 
     // -- Private Functions ----------------------------------------------------
+
+    describe('getFields()', () => {
+        describe('given an empty array', () => {
+            it('should return an empty string', () => {
+                assert(getFields([])).equals('');
+            });
+        });
+
+        describe('given a knob with no name', () => {
+            it('should throw', () => {
+                const knob = { ...fakeKnob };
+                delete knob.name;
+
+                assert(() => getFields([ knob ]))
+                    .throws('Missing required knob name');
+            });
+        });
+
+        describe('given a knob with no label', () => {
+            it('should throw', () => {
+                const knob = { ...fakeKnob };
+                delete knob.label;
+
+                assert(() => getFields([ knob ]))
+                    .throws('Missing required knob label');
+            });
+        });
+
+        describe('given a knob with no description', () => {
+            it('should throw', () => {
+                const knob = { ...fakeKnob };
+                delete knob.desc;
+
+                assert(() => getFields([ knob ]))
+                    .throws('Missing required knob description');
+            });
+        });
+
+
+        describe('given settings for a single knob', () => {
+            const knob = { name: 'size', label: 'Size', desc: 'Pi', type: typeNumber };
+
+            describe('given a name, label, and type', () => {
+                const result = getFields([ knob ]);
+
+                it('should return a string', () => {
+                    assert(result).isString();
+                });
+
+                it('should include an html input string', () => {
+                    assert(result).stringIncludes('<input name="size" type="number" />');
+                });
+
+                it('should include an html label string', () => {
+                    assert(/<label>Size(.*?)<\/label>/.test(result)).isTrue();
+                });
+            });
+
+            describe('given a description', () => {
+                const result = getFields([ { ...knob, desc: 'Toad\'s tenacity'} ]);
+
+                it('should include an html info button string', () => {
+                    const snapshot = '<button data-action="toggle" data-size="auto" data-target="info-size" ' +
+                        'data-info="true" type="button">?</button>';
+
+                    assert(result).stringIncludes(snapshot);
+                });
+
+                it('should include an hidden html info paragraph string', () => {
+                    const snapshot = '<p hidden="true" data-id="info-size"><small>Toad\'s tenacity</small></p>';
+                    assert(result).stringIncludes(snapshot);
+                });
+            });
+        });
+
+        describe('given settings for multiple knobs', () => {
+            const result = getFields([
+                { name: 'size',        label: 'Size',        desc: 'Size?',        type: typeNumber                  },
+                { name: 'shape',       label: 'Shape',       desc: 'Shape?',       type: typeRange                   },
+                { name: 'squishiness', label: 'Squishiness', desc: 'Squishiness?', type: typeSelect, values: [ '1' ] },
+            ]);
+
+            it('should include an html input string for each knob setting', () => {
+                assert(result)
+                    .stringIncludes('<input name="size" type="number" />')
+                    .stringIncludes('<input name="shape" type="range" />')
+                    .stringIncludes('<select name="squishiness"><option value="1">1</option></select>');
+            });
+
+            it('should include an HTML label string for each knob setting', () => {
+                assert(/<label>Size(.*?)<\/label>/.test(result)).isTrue();
+                assert(/<label>Shape(.*?)<\/label>/.test(result)).isTrue();
+                assert(/<label>Squishiness(.*?)<\/label>/.test(result)).isTrue();
+            });
+        });
+    });
 
     describe('getKnob()', () => {
         describe('given an invalid type', () => {
@@ -55,98 +151,69 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('renderFields()', () => {
+    describe('getKnobs()', () => {
         describe('given an empty array', () => {
-            it('should return an empty string', () => {
-                assert(renderFields([])).equals('');
+            it('returns an empty string', () => {
+                assert(getKnobs([])).equals('');
             });
         });
 
-        describe('given a knob with no name', () => {
-            it('should throw', () => {
-                const knob = { ...fakeKnob };
-                delete knob.name;
+        describe('given a knob config', () => {
+            const result = getKnobs([ { label: 'Shovels', fields: [] } ]);
 
-                assert(() => renderFields([ knob ]))
-                    .throws('Missing required knob name');
+            it('returns an html fieldset element string', () => {
+                assert(/<fieldset(.*?)>(.*?)<\/fieldset>/.test(result)).isTrue();
+            });
+
+            it('contains the correct data-id', () => {
+                assert(result).stringIncludes('data-id="fieldset-shovels"');
+            });
+
+            it('includes an html accordion button', () => {
+                const snapshot = '<button data-action="accordion" data-size="small" data-target="fieldset-shovels" ' +
+                    'type="button">Shovels</button>';
+
+                assert(result).stringIncludes(snapshot);
+            });
+
+            it('does not collapse the first section', () => {
+                assert(result).stringIncludes('data-collapsed="false"');
             });
         });
 
-        describe('given a knob with no label', () => {
-            it('should throw', () => {
-                const knob = { ...fakeKnob };
-                delete knob.label;
+        describe('given an array of fields', () => {
+            /** @type {import('../../controller/knobs.js').KnobSettings[]} */
+            const fields = [
+                { name: 'roomSize',     label: 'Room Size',     desc: 'Room Size?',     type: typeNumber },
+                { name: 'itemQuantity', label: 'Item Quantity', desc: 'Item Quantity?', type: typeRange  },
+                { name: 'dungeonTraps', label: 'Traps',         desc: 'Traps?',         type: typeSelect, values: [ '1' ] },
+            ];
 
-                assert(() => renderFields([ knob ]))
-                    .throws('Missing required knob label');
-            });
-        });
+            const result = getKnobs([ { label: 'Shovels', fields } ]);
 
-        describe('given a knob with no description', () => {
-            it('should throw', () => {
-                const knob = { ...fakeKnob };
-                delete knob.desc;
-
-                assert(() => renderFields([ knob ]))
-                    .throws('Missing required knob description');
-            });
-        });
-
-
-        describe('given settings for a single knob', () => {
-            const knob = { name: 'size', label: 'Size', desc: 'Pi', type: typeNumber };
-
-            describe('given a name, label, and type', () => {
-                const result = renderFields([ knob ]);
-
-                it('should return a string', () => {
-                    assert(result).isString();
-                });
-
-                it('should include an html input string', () => {
-                    assert(result).stringIncludes('<input name="size" type="number" />');
-                });
-
-                it('should include an html label string', () => {
-                    assert(/<label>Size(.*?)<\/label>/.test(result)).isTrue();
-                });
-            });
-
-            describe('given a description', () => {
-                const result = renderFields([ { ...knob, desc: 'Toad\'s tenacity'} ]);
-
-                it('should include an html info button string', () => {
-                    const snapshot = '<button data-action="toggle" data-size="auto" data-target="info-size" ' +
-                        'data-info="true" type="button">?</button>';
-
-                    assert(result).stringIncludes(snapshot);
-                });
-
-                it('should include an hidden html info paragraph string', () => {
-                    const snapshot = '<p hidden="true" data-id="info-size"><small>Toad\'s tenacity</small></p>';
-                    assert(result).stringIncludes(snapshot);
-                });
-            });
-        });
-
-        describe('given settings for multiple knobs', () => {
-            const result = renderFields([
-                { name: 'size',        label: 'Size',        desc: 'Size?',        type: typeNumber                  },
-                { name: 'shape',       label: 'Shape',       desc: 'Shape?',       type: typeRange                   },
-                { name: 'squishiness', label: 'Squishiness', desc: 'Squishiness?', type: typeSelect, values: [ '1' ] },
-            ]);
-
-            it('should include an html input string for each knob setting', () => {
+            it('includes an HTML input string and label for each knob setting', () => {
                 assert(result)
-                    .stringIncludes('<input name="size" type="number" />')
-                    .stringIncludes('<input name="shape" type="range" />')
-                    .stringIncludes('<select name="squishiness"><option value="1">1</option></select>');
+                    .stringIncludes('Room Size')
+                    .stringIncludes('<input name="roomSize" type="number" />')
+                    .stringIncludes('Item Quantity')
+                    .stringIncludes('<input name="itemQuantity" type="range" />')
+                    .stringIncludes('Traps')
+                    .stringIncludes('<select name="dungeonTraps"><option value="1">1</option></select>');
             });
+        });
 
-            it('should include an HTML label string for each knob setting', () => {
-                assert(/<label>Size(.*?)<\/label>/.test(result)).isTrue();
-                assert(/<label>Shape(.*?)<\/label>/.test(result)).isTrue();
-                assert(/<label>Squishiness(.*?)<\/label>/.test(result)).isTrue();
+        describe('given multiple knob configs', () => {
+            it('should collapsed all sections except the first', () => {
+                const result = getKnobs([
+                    { label: 'Shovels', fields: [] },
+                    { label: 'Gardening Tools', fields: [] },
+                    { label: 'Weed Whackers', fields: [] },
+                ]);
+
+                assert(result)
+                    .stringIncludes('<fieldset data-collapsed="false" data-id="fieldset-shovels">')
+                    .stringIncludes('<fieldset data-collapsed="true" data-id="fieldset-gardening-tools">')
+                    .stringIncludes('<fieldset data-collapsed="true" data-id="fieldset-weed-whackers">');
             });
         });
     });
@@ -184,73 +251,6 @@ export default ({ assert, describe, it }) => {
                 assert(results.gopher).equals('ralph');
                 assert(results.lion).equals('bob');
                 assert(results.hats).equals('12');
-            });
-        });
-    });
-
-    describe('renderKnobs()', () => {
-        describe('given an empty array', () => {
-            it('returns an empty string', () => {
-                assert(renderKnobs([])).equals('');
-            });
-        });
-
-        describe('given a knob config', () => {
-            const result = renderKnobs([ { label: 'Shovels', fields: [] } ]);
-
-            it('returns an html fieldset element string', () => {
-                assert(/<fieldset(.*?)>(.*?)<\/fieldset>/.test(result)).isTrue();
-            });
-
-            it('contains the correct data-id', () => {
-                assert(result).stringIncludes('data-id="fieldset-shovels"');
-            });
-
-            it('includes an html accordion button', () => {
-                const snapshot = '<button data-action="accordion" data-size="small" data-target="fieldset-shovels" ' +
-                    'type="button">Shovels</button>';
-
-                assert(result).stringIncludes(snapshot);
-            });
-
-            it('does not collapse the first section', () => {
-                assert(result).stringIncludes('data-collapsed="false"');
-            });
-        });
-
-        describe('given an array of fields', () => {
-            /** @type {import('../../controller/knobs.js').KnobSettings[]} */
-            const fields = [
-                { name: 'roomSize',     label: 'Room Size',     desc: 'Room Size?',     type: typeNumber },
-                { name: 'itemQuantity', label: 'Item Quantity', desc: 'Item Quantity?', type: typeRange  },
-                { name: 'dungeonTraps', label: 'Traps',         desc: 'Traps?',         type: typeSelect, values: [ '1' ] },
-            ];
-
-            const result = renderKnobs([ { label: 'Shovels', fields } ]);
-
-            it('includes an HTML input string and label for each knob setting', () => {
-                assert(result)
-                    .stringIncludes('Room Size')
-                    .stringIncludes('<input name="roomSize" type="number" />')
-                    .stringIncludes('Item Quantity')
-                    .stringIncludes('<input name="itemQuantity" type="range" />')
-                    .stringIncludes('Traps')
-                    .stringIncludes('<select name="dungeonTraps"><option value="1">1</option></select>');
-            });
-        });
-
-        describe('given multiple knob configs', () => {
-            it('should collapsed all sections except the first', () => {
-                const result = renderKnobs([
-                    { label: 'Shovels', fields: [] },
-                    { label: 'Gardening Tools', fields: [] },
-                    { label: 'Weed Whackers', fields: [] },
-                ]);
-
-                assert(result)
-                    .stringIncludes('<fieldset data-collapsed="false" data-id="fieldset-shovels">')
-                    .stringIncludes('<fieldset data-collapsed="true" data-id="fieldset-gardening-tools">')
-                    .stringIncludes('<fieldset data-collapsed="true" data-id="fieldset-weed-whackers">');
             });
         });
     });

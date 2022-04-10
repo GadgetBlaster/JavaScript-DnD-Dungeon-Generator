@@ -2,10 +2,10 @@
 
 import { button, infoLabel } from './button.js';
 import { div, fieldset, section } from './block.js';
+import { getKnobConfig, typeSelect, typeNumber, typeRange } from '../controller/knobs.js';
 import { paragraph, small } from './typography.js';
 import { select, input, slider, fieldLabel } from './field.js';
 import { toDash, toss } from '../utility/tools.js';
-import { getKnobConfig, typeSelect, typeNumber, typeRange } from '../controller/knobs.js';
 
 // -- Type Imports -------------------------------------------------------------
 
@@ -22,6 +22,32 @@ const submitButton = button('Generate', 'generate', {
 });
 
 // -- Private Functions --------------------------------------------------------
+
+/**
+ * Returns HTML form field element strings for the given fields.
+ *
+ * @private
+ * @throws
+ *
+ * @param {KnobSettings[]} fields
+ *
+ * @returns {string}
+ */
+const getFields = (fields) => fields.map((settings) => {
+    let { desc, label, name } = settings;
+
+    !name  && toss('Missing required knob name');
+    !label && toss('Missing required knob label');
+    !desc  && toss('Missing required knob description');
+
+    let knob       = getKnob(settings);
+    let descId     = desc && `info-${name}`;
+    let descButton = button(infoLabel, 'toggle', { target: descId, size: 'auto' });
+    let descText   = paragraph(small(desc), { hidden: true, 'data-id': descId });
+    let knobLabel  = fieldLabel(label + descButton);
+
+    return div(knobLabel + descText + knob);
+}).join('');
 
 /**
  * Returns an array of HTMLInputElement children for the knob container.
@@ -70,33 +96,8 @@ function getKnob(settings) {
 }
 
 /**
- * Renders form fields for the given knob settings configurations.
- *
- * @private
- * @throws
- *
- * @param {KnobSettings[]} fields
- *
- * @returns {string}
- */
-const renderFields = (fields) => fields.map((settings) => {
-    let { desc, label, name } = settings;
-
-    !name  && toss('Missing required knob name');
-    !label && toss('Missing required knob label');
-    !desc  && toss('Missing required knob description');
-
-    let knob       = getKnob(settings);
-    let descId     = desc && `info-${name}`;
-    let descButton = button(infoLabel, 'toggle', { target: descId, size: 'auto' });
-    let descText   = paragraph(small(desc), { hidden: true, 'data-id': descId });
-    let knobLabel  = fieldLabel(label + descButton);
-
-    return div(knobLabel + descText + knob);
-}).join('');
-
-/**
- * Renders a fieldset containing from elements for the given knob sets.
+ * Returns an HTML fieldset elements string containing from elements for the
+ * given knobs.
  *
  * @private
  *
@@ -104,7 +105,7 @@ const renderFields = (fields) => fields.map((settings) => {
  *
  * @returns {string}
  */
-const renderKnobs = (knobs) => knobs.map((knobSet, i) => {
+const getKnobs = (knobs) => knobs.map((knobSet, i) => {
     let {
         label,
         fields,
@@ -118,13 +119,13 @@ const renderKnobs = (knobs) => knobs.map((knobSet, i) => {
         'data-id': fieldsetId,
     };
 
-    return fieldset(handle + section(renderFields(fields)), attrs);
+    return fieldset(handle + section(getFields(fields)), attrs);
 }).join('');
 
 export {
-    getKnob      as testGetKnob,
-    renderFields as testRenderFields,
-    renderKnobs  as testRenderKnobs,
+    getFields as testGetFields,
+    getKnob   as testGetKnob,
+    getKnobs  as testGetKnobs,
 };
 
 // -- Public Functions ---------------------------------------------------------
@@ -154,4 +155,4 @@ export function getFormData(knobContainer) {
  * @returns {string}
  */
 export const getKnobPanel = (page) =>
-    submitButton + renderKnobs(getKnobConfig(page));
+    submitButton + getKnobs(getKnobConfig(page));
