@@ -29,10 +29,12 @@ import { capitalize, isRequired } from '../utility/tools.js';
 // -- Private Functions --------------------------------------------------------
 
 /**
+ * TODO tets
+ * @param {string} content
  *
- * @returns
+ * @returns {string}
  */
-const detail = (content) => span(` ( ${content} ) `, { 'data-info': true });
+const detail = (content) => span(` ( ${content} )`, { 'data-info': true });
 
 /**
  * Get item description

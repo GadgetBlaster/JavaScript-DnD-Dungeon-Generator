@@ -6,6 +6,8 @@ import {
 
     // Public Functions
     element,
+    parseHtml,
+    parseSvg,
 } from '../element.js';
 
 /**
@@ -106,6 +108,68 @@ export default ({ assert, describe, it }) => {
                     assert(() => element('img', 'I do not belong here'))
                         .throws('Content is not allowed in self closing elements');
                 });
+            });
+        });
+    });
+
+    describe('parseHtml()', () => {
+        describe('given a valid HTML string', () => {
+            it('returns the string parsed as an HTMLDocument', () => {
+                const doc = parseHtml('<main><h1>Monsters and Monoliths</h1></main>');
+
+                assert(doc instanceof HTMLBodyElement).isTrue();
+                assert(doc.querySelector('h1').textContent).equals('Monsters and Monoliths');
+            });
+        });
+
+        describe('given plain text', () => {
+            it('returns the string parsed as an HTMLDocument', () => {
+                const doc = parseHtml('Just Monsters, no Monoliths');
+
+                assert(doc instanceof HTMLBodyElement).isTrue();
+                assert(doc.textContent).equals('Just Monsters, no Monoliths');
+            });
+        });
+
+        describe('given plain text and HTML', () => {
+            it('returns the string parsed as an HTMLDocument', () => {
+                const doc = parseHtml('Just Monsters, <em>some</em> Monoliths');
+
+                assert(doc instanceof HTMLBodyElement).isTrue();
+                assert(doc.textContent).equals('Just Monsters, some Monoliths');
+                assert(Boolean(doc.querySelector('em'))).isTrue();
+            });
+        });
+
+        describe('given an invalid HTML string', () => {
+            it('returns null', () => {
+                assert(parseHtml('<beware bad HTML')).isNull();
+            });
+        });
+    });
+
+    describe('parseSvg()', () => {
+        describe('given a valid SVG string', () => {
+            it('returns the string parsed as an XMLDocument', () => {
+                const doc = parseSvg('<svg><rect x="288" y="210" width="216" height="240"></rect><text x="396" y="410">Happiness</text></svg>');
+
+                assert(doc instanceof XMLDocument).isTrue();
+                assert(Boolean(doc.querySelector('rect'))).isTrue();
+                assert(doc.querySelector('rect').getAttribute('x')).equals('288');
+                assert(doc.querySelector('rect').getAttribute('y')).equals('210');
+                assert(doc.querySelector('rect').getAttribute('width')).equals('216');
+                assert(doc.querySelector('rect').getAttribute('height')).equals('240');
+
+                assert(Boolean(doc.querySelector('text'))).isTrue();
+                assert(doc.querySelector('text').getAttribute('x')).equals('396');
+                assert(doc.querySelector('text').getAttribute('y')).equals('410');
+                assert(doc.querySelector('text').textContent).equals('Happiness');
+            });
+        });
+
+        describe('given an invalid XVG string', () => {
+            it('returns null', () => {
+                assert(parseSvg('<svg><text>beware bad SVG')).isNull();
             });
         });
     });

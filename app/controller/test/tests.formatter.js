@@ -5,6 +5,8 @@ import {
     testGetItemDescription as getItemDescription,
 } from '../formatter.js';
 
+import { parseHtml } from '../../utility/element.js';
+
 /** @typedef {import('../../item/generate').Item} Item */
 
 /**
@@ -26,18 +28,15 @@ export default ({ assert, describe, it }) => {
         };
 
         describe('given an item count of 1', () => {
-            it('should return the item label', () => {
+            it('returns the item label', () => {
                 assert(getItemDescription(item)).equals('Goblin juice');
             });
         });
 
         describe('given an item count larger than 1', () => {
-            it('should return the item label with the count appended', () => {
-                // TODO make less brittle to HTML changes
-                assert(getItemDescription({
-                    ...item,
-                    count: 12,
-                })).equals('Goblin juice<span data-info="true"> ( 12 ) </span>');
+            it('returns the item label with the count appended', () => {
+                let desc = parseHtml(getItemDescription({ ...item, count: 12 }));
+                assert(desc.textContent).equals('Goblin juice ( 12 )');
             });
         });
     });
