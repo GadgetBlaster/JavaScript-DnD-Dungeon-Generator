@@ -4,6 +4,7 @@ import set from './set.js';
 
 // -- Type Imports -------------------------------------------------------------
 
+/** @typedef {import('../attribute/condition').Condition} Condition */
 /** @typedef {import('../attribute/rarity.js').Rarity} Rarity */
 /** @typedef {import('../attribute/size.js').Size} Size */
 
@@ -84,6 +85,18 @@ export const indicateItemRarity = new Set([
 ]);
 
 /**
+ * Rarities that should be indicated for a set of items.
+ *
+ * @type {Set<Rarity>}
+ */
+export const indicateItemSetRarity = new Set([
+    'uncommon',
+    'rare',
+    'exotic',
+    'legendary',
+]);
+
+/**
  * Item types that should have their details hidden.
  *
  * @type {Set<ItemType>}
@@ -91,6 +104,15 @@ export const indicateItemRarity = new Set([
 export const hideItemDetails = new Set([
     'coin',
     'treasure',
+]);
+
+/**
+ * Rarities that should be indicated for a set of items.
+ *
+ * @type {Set<Condition>}
+ */
+export const hideItemSetCondition = new Set([
+    'average',
 ]);
 
 /** @type {ItemBase} */

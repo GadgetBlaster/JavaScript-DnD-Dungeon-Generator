@@ -1,7 +1,14 @@
 // @ts-check
 
 import { capacity, itemSizeSpace, maxItemQuantitySmall } from './types/container.js';
-import { hideItemDetails, itemsByRarity, itemsByType, mysteriousObject } from './item.js';
+import {
+    hideItemSetCondition,
+    hideItemDetails,
+    indicateItemSetRarity,
+    itemsByRarity,
+    itemsByType,
+    mysteriousObject,
+} from './item.js';
 import {
     anyRoomFurniture,
     furnishing,
@@ -12,7 +19,6 @@ import {
 } from './furnishing.js';
 import { probability as conditionProbability } from '../attribute/condition.js';
 import { probability as rarityProbability } from '../attribute/rarity.js';
-import { getRarityDescription, getConditionDescription } from './description.js';
 import { isRequired, toss } from '../utility/tools.js';
 import { roll, rollArrayItem } from '../utility/roll.js';
 import { getRange, probability as quantityProbability } from '../attribute/quantity.js';
@@ -50,9 +56,10 @@ import { getRange, probability as quantityProbability } from '../attribute/quant
 /**
  * @typedef {object} ItemSet
  *
- * @prop {string[]} descriptions
  * @prop {Item[]} items
  * @prop {Container[]} containers
+ * @prop {Condition} [conditionUniformity]
+ * @prop {Rarity} [rarityUniformity]
  */
 
 // -- Config -------------------------------------------------------------------
@@ -292,9 +299,6 @@ export {
 /**
  * Generate items
  *
- * TODO separate HTMl from generation logic
- * TODO rename to generateItemsDescription
- *
  * @param {Config} config
  *
  * @returns {ItemSet}
@@ -328,7 +332,6 @@ export function generateItems(config) {
     if (itemQuantity === 'zero') {
         return {
             containers: [],
-            descriptions: [],
             items: [],
         };
     }
@@ -435,29 +438,24 @@ export function generateItems(config) {
         containerList.push(container);
     });
 
-    // Remaining items
     /** @type {Item[]} */
     let itemList = remaining.concat(smallItems, emptyContainers).map((item) => item);
 
-    // TODO move to formatting
-    // let maxColumns   = inRoom ? maxColumnsRoom : maxColumnsItems;
-    // let columns      = Math.min(maxColumns, Math.max(1, Math.floor(notContained.length / maxColumns)));
+    let conditionUniformity;
+    let rarityUniformity;
 
-    let descriptions = [];
-
-    if (itemQuantity !== 'one' && itemCondition !== 'random') {
-        let conditionDescription = getConditionDescription(itemCondition);
-        conditionDescription && descriptions.push(conditionDescription);
+    if (itemQuantity !== 'one' && itemCondition !== 'random' && !hideItemSetCondition.has(itemCondition)) {
+        conditionUniformity = itemCondition;
     }
 
-    if (itemQuantity !== 'one' && itemRarity !== 'random') {
-        let rarityDescription = getRarityDescription(itemRarity);
-        rarityDescription && descriptions.push(rarityDescription);
+    if (itemQuantity !== 'one' && itemRarity !== 'random' && indicateItemSetRarity.has(itemRarity)) {
+        rarityUniformity = itemRarity;
     }
 
     return {
+        conditionUniformity,
         containers: containerList,
-        descriptions,
         items: itemList,
+        rarityUniformity,
     };
 }

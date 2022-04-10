@@ -4,14 +4,14 @@ import { article, section } from '../ui/block.js';
 import { drawLegend } from '../dungeon/legend.js';
 import { indicateItemRarity } from '../item/item.js';
 import { list } from '../ui/list.js';
-import { subtitle } from '../ui/typography.js';
+import { paragraph, subtitle } from '../ui/typography.js';
 import {
     getDoorwayList,
     getKeyDescription,
     getMapDescription,
     getRoomDescription,
 } from '../room/description.js';
-import { isRequired } from '../utility/tools.js';
+import { capitalize, isRequired } from '../utility/tools.js';
 
 
 // TODO all HTML formatting should be excluded until this step, such as item
@@ -76,16 +76,22 @@ function getItemDescription(item) {
  * @returns {string}
  */
 function formatItems(itemSet) {
-    // TODO note text
     // TODO columns
 
-    let total = itemSet.items.reduce((tally, { count }) => tally + count, 0) +
+    let {
+        conditionUniformity,
+        containers,
+        items,
+        rarityUniformity,
+    } = itemSet;
+
+    let total = items.reduce((tally, { count }) => tally + count, 0) +
         itemSet.containers.reduce((tally, { count }) => tally + count, 0);
 
-    let itemsList = itemSet.items.length ? list(itemSet.items.map((item) => getItemDescription(item))) : '';
+    let itemsList = items.length ? list(items.map((item) => getItemDescription(item))) : '';
     let containerList = '';
 
-    if (itemSet.containers.length) {
+    if (containers.length) {
         containerList = itemSet.containers.map((item) => {
             isRequired(item.contents, 'Contents are required in containers');
 
@@ -96,10 +102,20 @@ function formatItems(itemSet) {
         }).join('');
     }
 
+    let description = '';
+
+    if (conditionUniformity) {
+        description += paragraph(`Item Condition: ${capitalize(conditionUniformity)}`);
+    }
+
+    if (rarityUniformity) {
+        description += paragraph(`Item Rarity: ${capitalize(rarityUniformity)}`);
+    }
+
     return subtitle(`Items (${total})`) +
+        description +
         containerList +
-        itemsList +
-        itemSet.descriptions.join('');
+        itemsList;
 }
 
 /**

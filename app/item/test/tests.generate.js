@@ -370,7 +370,8 @@ export default ({ assert, describe, it }) => {
                     const results = generateItems({ ...config, itemQuantity: 'zero' });
 
                     assert(results.containers.length).equals(0);
-                    assert(results.descriptions.length).equals(0);
+                    assert(results.conditionUniformity).isUndefined();
+                    assert(results.rarityUniformity).isUndefined();
                     assert(results.items.length).equals(0);
                 });
             });
@@ -385,7 +386,8 @@ export default ({ assert, describe, it }) => {
                     });
 
                     assert(results.containers.length).equals(0);
-                    assert(results.descriptions.length).equals(0);
+                    assert(results.conditionUniformity).isUndefined();
+                    assert(results.rarityUniformity).isUndefined();
                     assert(results.items.length).equals(0);
                 });
             });

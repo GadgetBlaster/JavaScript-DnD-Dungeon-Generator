@@ -244,9 +244,22 @@ export default ({ assert, describe, it }) => {
 
                         const { items, containers } = room.itemSet;
                         const itemCount = items.reduce((total, { count }) => total + count, 0);
-                        const containerCount = containers.reduce((total, { count }) => total + count, 0);
 
-                        assert(itemCount + containerCount).equals(3);
+                        const {
+                            containerCount,
+                            containerContentCount,
+                        } = containers.reduce((totals, { count, contents }) => {
+                            totals.containerCount = totals.containerCount + count;
+                            totals.containerContentCount = totals.containerContentCount +
+                                contents.reduce((total, { count: contentsCount }) => total + contentsCount, 0);
+
+                            return totals;
+                        }, {
+                            containerCount: 0,
+                            containerContentCount: 0,
+                        });
+
+                        assert(itemCount + containerCount + containerContentCount).equals(3);
                     });
                 });
             });

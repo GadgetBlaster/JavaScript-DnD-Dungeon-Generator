@@ -30,7 +30,6 @@ import feature         from '../room/test/tests.feature.js';
 import generateRooms   from '../room/test/tests.generate.js';
 import vegetation      from '../room/test/tests.vegetation.js';
 
-import itemDescription from '../item/test/tests.description.js';
 import generateItems   from '../item/test/tests.generate.js';
 import item            from '../item/test/tests.item.js';
 
@@ -73,7 +72,6 @@ export default {
     '/app/room/test/tests.generate.js'   : generateRooms,
     '/app/room/test/tests.vegetation.js' : vegetation,
 
-    '/app/item/test/tests.description.js' : itemDescription,
     '/app/item/test/tests.generate.js'    : generateItems,
     '/app/item/test/tests.item.js'        : item,
 

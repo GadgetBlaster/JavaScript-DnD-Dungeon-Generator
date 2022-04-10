@@ -106,12 +106,21 @@ function getResults(summary, options = {}) {
         verbose,
     } = options;
 
-    if (onError && failures) {
-        onError(`Encountered ${failures} ${pluralize(failures, 'ogre')}!`);
-    }
 
-    if (onError && errors.length) {
-        onError(`Encountered ${errors.length} ${pluralize(errors.length, 'dragon')}!`);
+    if (onError && (failures || errors.length)) {
+        let messages = [];
+
+        if (failures) {
+            messages.push(`Encountered ${failures} ${pluralize(failures, 'ogre')}!`)
+        }
+
+        if (errors.length) {
+            messages.push(`Encountered ${errors.length} ${pluralize(errors.length, 'dragon')}!`);
+        }
+
+        let logEntries = results.filter(({ isOk }) => !isOk).map(({ msg }) => msg).join('');
+
+        onError(...messages, logEntries);
     }
 
     if (onSuccess && !failures && !errors.length) {
@@ -131,7 +140,7 @@ function getResults(summary, options = {}) {
         + paragraph(scope || 'All Tests')
         + div(dots)
         + paragraph(getSummary(summary))
-        + element('ul', log);
+        + (log ? element('ul', log) : '');
 }
 
 /**

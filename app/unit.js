@@ -9,12 +9,12 @@ import suite from './unit/suite.js';
 /**
  * Container unit test output is rendered to.
  */
- const contentContainer = document.getElementById('content');
+const contentContainer = document.getElementById('content');
 
- /**
+/**
  * Container unit test navigation is rendered to.
  */
- const navContainer = document.getElementById('nav');
+const navContainer = document.getElementById('nav');
 
 /**
  * URL params
