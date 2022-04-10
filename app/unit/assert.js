@@ -2,6 +2,10 @@
 
 import { selfClosingElements } from '../utility/element.js';
 
+// -- Type Imports -------------------------------------------------------------
+
+/** @typedef {import('../utility/element.js').Attributes} Attributes */
+
 // -- Types --------------------------------------------------------------------
 
 /**
@@ -15,7 +19,12 @@ import { selfClosingElements } from '../utility/element.js';
 
 // -- Public Functions ---------------------------------------------------------
 
-/** @type {(value: any, expected: any) => Result} equals */
+/**
+ * @param {any} value
+ * @param {string | number | boolean} expected
+ *
+ * @returns {Result}
+ */
 export function equals(value, expected) {
     let isOk = expected === value;
     let msg  = `expected "${value}" to equal "${expected}"`;
@@ -44,7 +53,12 @@ export function equalsArray(value, expected) {
     return { msg, isOk };
 }
 
-/** @type {(value: any, expected: object) => Result} equalsObject */
+/**
+ * @param {any} value
+ * @param {object} expected
+ *
+ * @returns {Result}
+ */
 export function equalsObject(value, expected) {
     let checkType = isObject(value);
 
@@ -59,6 +73,39 @@ export function equalsObject(value, expected) {
     let msg  = `expected object\n\n${valueString}\n\nto equal\n\n${expectedString}`;
 
     return { msg, isOk };
+}
+
+/**
+ * TODO tests
+ * @param {any} element
+ * @param {Attributes} attributes
+ *
+ * @returns {Result}
+ */
+export function hasAttributes(element, attributes) {
+    if (!(element instanceof Element)) {
+        return {
+            msg: `expected "${element}" to be an HTMLElement or SVGElement`,
+            isOk: false,
+        };
+    }
+
+    let isOk = true;
+    let msgs = [];
+
+    Object.entries(attributes).forEach(([ attr, value ]) => {
+        let result = equals(element.getAttribute(attr), value);
+        msgs.push(result.msg);
+
+        if (!result.isOk) {
+            isOk = false;
+        }
+    });
+
+    return {
+        isOk,
+        msg: msgs.join(', '),
+    };
 }
 
 /** @type {(value: any) => Result} isArray */
@@ -134,7 +181,7 @@ export function isNumber(value) {
 
 /** @type {(value: any) => Result} isObject */
 export function isObject(value) {
-    let isOk = !!value && typeof value === 'object' && !Array.isArray(value);
+    let isOk = !!value && typeof value === 'object' && !Array.isArray(value) && !(value instanceof Element);
     let msg  = `expected "${value}" to be an object`;
 
     return { msg, isOk };

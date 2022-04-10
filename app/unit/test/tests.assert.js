@@ -4,6 +4,7 @@ import {
     equals,
     equalsArray,
     equalsObject,
+    hasAttributes,
     isArray,
     isBoolean,
     isElementTag,
@@ -23,6 +24,7 @@ import {
 const assertions = [
     equals,
     equalsArray,
+    hasAttributes,
     isArray,
     isBoolean,
     isElementTag,
@@ -52,6 +54,9 @@ const groups = {
     boolean: {
         '`false`': false,
         '`true`' : true,
+    },
+    element: {
+        'an element': document.createElement('p'),
     },
     function: {
         'a function': equals, // Any function will do
@@ -97,29 +102,15 @@ const excludingType = (type) => {
     return Object.values(remaining).flatMap((group) => Object.entries(group));
 };
 
-/** {any[][]} nonArrayTypes */
-const nonArrayTypes = (() => excludingType('array'))();
-
-/** {any[][]} nonBooleanTypes */
-const nonBooleanTypes = (() => excludingType('boolean'))();
-
-/** {any[][]} nonFunctionTypes */
-let nonFunctionTypes = (() => excludingType('function'))();
-
-/** {any[][]}  nonNullTypes */
-let nonNullTypes = (() => excludingType('null'))();
-
-/** {any[][]} nonNumberTypes */
-let nonNumberTypes = (() => excludingType('number'))();
-
-/** {any[][]} nonObjectTypes */
-let nonObjectTypes = (() => excludingType('object'))();
-
-/** {any[][]} nonStringTypes */
-let nonStringTypes = (() => excludingType('string'))();
-
-/** {any[][]} nonUndefinedTypes */
-let nonUndefinedTypes = (() => excludingType('undefined'))();
+const nonArrayTypes     = (() => excludingType('array'))();
+const nonBooleanTypes   = (() => excludingType('boolean'))();
+const nonElementTypes   = (() => excludingType('element'))();
+const nonFunctionTypes  = (() => excludingType('function'))();
+const nonNullTypes      = (() => excludingType('null'))();
+const nonNumberTypes    = (() => excludingType('number'))();
+const nonObjectTypes    = (() => excludingType('object'))();
+const nonStringTypes    = (() => excludingType('string'))();
+const nonUndefinedTypes = (() => excludingType('undefined'))();
 
 /**
  * @param {import('../state.js').Utility} utility
@@ -291,6 +282,26 @@ export default ({ assert, describe, it }) => {
 
                         assert(equalsObject(obj1, obj2).isOk).isFalse();
                     });
+                });
+            });
+        });
+    });
+
+    describe('hasAttributes()', () => {
+        describe('given an element which contains attributes', () => {
+            it('should return a truthy `isOk` property', () => {
+                let el = document.createElement('p');
+                el.setAttribute('id', 'super-hot');
+                el.setAttribute('data-custom', 'hot-wheels');
+
+                assert(hasAttributes(el, { id: 'super-hot', 'data-custom': 'hot-wheels' }).isOk).isTrue();
+            });
+        });
+
+        nonElementTypes.forEach(([ key, value ]) => {
+            describe(`given ${key}`, () => {
+                it('should return a falsy `isOk` property', () => {
+                    assert(hasAttributes(value, {}).isOk).isFalse();
                 });
             });
         });

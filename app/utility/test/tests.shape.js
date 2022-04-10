@@ -11,6 +11,8 @@ import {
     drawText,
 } from '../shape.js';
 
+import { parseSvg } from '../../utility/element.js';
+
 /** @typedef {import('../shape.js').Circle} Circle */
 /** @typedef {import('../shape.js').Line} Line */
 /** @typedef {import('../shape.js').PixelRectangle} PixelRectangle */
@@ -26,15 +28,15 @@ export default ({ assert, describe, it }) => {
         /** @type {Circle} */
         const circleSettings = { cx: 110, cy: 210, r: 310 };
         const circle = drawCircle(circleSettings);
+        const svgEl = parseSvg(circle);
+        const circleEl = svgEl && [ ...parseSvg(circle).children ].pop();
 
-        it('should return a `<circle />` element string', () => {
+        it('returns a `<circle />` element string', () => {
             assert(circle).isElementTag('circle');
         });
 
         it('should have the correct `cx` and `cy`, attributes', () => {
-            assert(circle)
-                .stringIncludes('cx="110"')
-                .stringIncludes('cy="210"');
+            assert(circleEl).hasAttributes({ cx: '110', cy: '210' });
         });
 
         describe('given a `fill` color', () => {
