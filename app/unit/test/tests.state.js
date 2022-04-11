@@ -399,7 +399,7 @@ export default ({ assert, describe, it }) => {
                         const assertEntries = Object.entries(assertObj);
 
                         assertEntries.forEach(([ key, func ]) => {
-                            describe(`#${key}`, () => {
+                            describe(`${key}()`, () => {
                                 it('should be a function', () => {
                                     assert(func).isFunction();
                                 });

@@ -9,8 +9,6 @@ import { selfClosingElements } from '../utility/element.js';
 // -- Types --------------------------------------------------------------------
 
 /**
- * Result
- *
  * @typedef {Object} Result
  *
  * @prop {string} msg
@@ -32,7 +30,12 @@ export function equals(value, expected) {
     return { msg, isOk };
 }
 
-/** @type {(value: any, expected: any[]) => Result} equalsArray */
+/**
+ * @param {any} value
+ * @param {any[]} expected
+ *
+ * @returns {Result}
+ */
 export function equalsArray(value, expected) {
     let checkType = isArray(value);
 
@@ -76,25 +79,30 @@ export function equalsObject(value, expected) {
 }
 
 /**
- * TODO tests
  * @param {any} element
- * @param {Attributes} attributes
+ * @param {string[]} attributes
  *
  * @returns {Result}
  */
-export function hasAttributes(element, attributes) {
-    if (!(element instanceof Element)) {
-        return {
-            msg: `expected "${element}" to be an HTMLElement or SVGElement`,
-            isOk: false,
-        };
+export function excludesAttributes(element, attributes) {
+    let checkElType = isElement(element);
+
+    if (!checkElType.isOk) {
+        return checkElType;
+    }
+
+    let checkAttrsType = isArray(attributes);
+
+    if (!checkAttrsType.isOk) {
+        return checkAttrsType;
     }
 
     let isOk = true;
     let msgs = [];
 
-    Object.entries(attributes).forEach(([ attr, value ]) => {
-        let result = equals(element.getAttribute(attr), value);
+    attributes.forEach((attr) => {
+        let result = isNull(element.getAttribute(attr));
+
         msgs.push(result.msg);
 
         if (!result.isOk) {
@@ -108,7 +116,49 @@ export function hasAttributes(element, attributes) {
     };
 }
 
-/** @type {(value: any) => Result} isArray */
+/**
+ * @param {any} element
+ * @param {Attributes} attributes
+ *
+ * @returns {Result}
+ */
+export function hasAttributes(element, attributes) {
+    let checkElType = isElement(element);
+
+    if (!checkElType.isOk) {
+        return checkElType;
+    }
+
+    let checkAttrsType = isObject(attributes);
+
+    if (!checkAttrsType.isOk) {
+        return checkAttrsType;
+    }
+
+    let isOk = true;
+    let msgs = [];
+
+    Object.entries(attributes).forEach(([ attr, value ]) => {
+        let result = equals(element.getAttribute(attr), value);
+
+        msgs.push(result.msg);
+
+        if (!result.isOk) {
+            isOk = false;
+        }
+    });
+
+    return {
+        isOk,
+        msg: msgs.join(', '),
+    };
+}
+
+/**
+ * @param {any} value
+ *
+ * @returns {Result}
+ */
 export function isArray(value) {
     let isOk = Array.isArray(value);
     let msg  = `expected "${value}" to be an array`;
@@ -116,7 +166,11 @@ export function isArray(value) {
     return { msg, isOk };
 }
 
-/** @type {(value: any) => Result} isBoolean */
+/**
+ * @param {any} value
+ *
+ * @returns {Result}
+ */
 export function isBoolean(value) {
     let isOk = typeof value === 'boolean';
     let msg  = `expected "${value}" to be boolean`;
@@ -124,7 +178,27 @@ export function isBoolean(value) {
     return { msg, isOk };
 }
 
-/** @type {(value: any, tag: string) => Result} isElementTag */
+/**
+ * @param {any} element
+ *
+ * @returns {Result}
+ */
+export function isElement(element) {
+    let msg = `expected "${element}" to be an Element`;
+
+    if (element instanceof Element) {
+        return { msg, isOk: true };
+    }
+
+    return { msg, isOk: false };
+}
+
+/**
+ * @param {any} value
+ * @param {string} tag
+ *
+ * @returns {Result}
+ */
 export function isElementTag(value, tag) {
     let checkType = isString(value);
 
@@ -147,7 +221,11 @@ export function isElementTag(value, tag) {
     return { msg, isOk: isSingleTag };
 }
 
-/** @type {(value: any) => Result} isFalse */
+/**
+ * @param {any} value
+ *
+ * @returns {Result}
+ */
 export function isFalse(value) {
     let isOk = value === false;
     let msg  = `expected "${value}" to be false`;
@@ -155,7 +233,11 @@ export function isFalse(value) {
     return { msg, isOk };
 }
 
-/** @type {(value: any) => Result} isFunction */
+/**
+ * @param {any} value
+ *
+ * @returns {Result}
+ */
 export function isFunction(value) {
     let isOk = typeof value === 'function';
     let msg  = `expected "${value}" to be a function`;
@@ -163,7 +245,11 @@ export function isFunction(value) {
     return { msg, isOk };
 }
 
-/** @type {(value: any) => Result} isNull */
+/**
+ * @param {any} value
+ *
+ * @returns {Result}
+ */
 export function isNull(value) {
     let isOk = value === null;
     let msg  = `expected "${value}" to be a null`;
@@ -171,7 +257,11 @@ export function isNull(value) {
     return { msg, isOk };
 }
 
-/** @type {(value: any) => Result} isNumber */
+/**
+ * @param {any} value
+ *
+ * @returns {Result}
+ */
 export function isNumber(value) {
     let isOk = typeof value === 'number' && !isNaN(value);
     let msg  = `expected "${value}" to be a number`;
@@ -179,15 +269,27 @@ export function isNumber(value) {
     return { msg, isOk };
 }
 
-/** @type {(value: any) => Result} isObject */
+/**
+ * @param {any} value
+ *
+ * @returns {Result}
+ */
 export function isObject(value) {
-    let isOk = !!value && typeof value === 'object' && !Array.isArray(value) && !(value instanceof Element);
+    let isOk = Boolean(value)
+        && typeof value === 'object'
+        && !Array.isArray(value)
+        && !(value instanceof Element);
+
     let msg  = `expected "${value}" to be an object`;
 
     return { msg, isOk };
 }
 
-/** @type {(value: any) => Result} isString */
+/**
+ * @param {any} value
+ *
+ * @returns {Result}
+ */
 export function isString(value) {
     let isOk = typeof value === 'string';
     let msg  = `expected "${value}" to be a string`;
@@ -195,7 +297,11 @@ export function isString(value) {
     return { msg, isOk };
 }
 
-/** @type {(value: any) => Result} isTrue */
+/**
+ * @param {any} value
+ *
+ * @returns {Result}
+ */
 export function isTrue(value) {
     let isOk = value === true;
     let msg  = `expected "${value}" to be true`;
@@ -203,7 +309,11 @@ export function isTrue(value) {
     return { msg, isOk };
 }
 
-/** @type {(value: any) => Result} isUndefined */
+/**
+ * @param {any} value
+ *
+ * @returns {Result}
+ */
 export function isUndefined(value) {
     let isOk = value === undefined;
     let msg  = `expected "${value}" to be undefined`;
@@ -211,7 +321,14 @@ export function isUndefined(value) {
     return { msg, isOk };
 }
 
-/** @type {(value: any, includes: string) => Result} stringIncludes */
+/**
+ * @throws
+ *
+ * @param {any} value
+ * @param {string} includes
+ *
+ * @returns {Result}
+ */
 export function stringIncludes(value, includes) {
     let checkType = isString(value);
 
@@ -220,7 +337,7 @@ export function stringIncludes(value, includes) {
     }
 
     if (includes === '') {
-        throw new TypeError('Invalid empty string expected in `stringIncludes`');
+        throw new TypeError('Invalid empty string expected in stringIncludes()');
     }
 
     let isOk = value.includes(includes);
@@ -229,7 +346,14 @@ export function stringIncludes(value, includes) {
     return { msg, isOk };
 }
 
-/** @type {(value: any, excludes: string) => Result} stringExcludes */
+/**
+ * @throws
+ *
+ * @param {any} value
+ * @param {string} excludes
+ *
+ * @returns {Result}
+ */
 export function stringExcludes(value, excludes) {
     let checkType = isString(value);
 
@@ -242,7 +366,12 @@ export function stringExcludes(value, excludes) {
     return { msg, isOk: !isOk };
 }
 
-/** @type {(func: any, expectedErrorMsg: string) => Result} throws */
+/**
+ * @param {() => any} func
+ * @param {string} expectedErrorMsg
+ *
+ * @returns {Result}
+ */
 export function throws(func, expectedErrorMsg) {
     let checkFunc = isFunction(func);
 

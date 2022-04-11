@@ -29,28 +29,34 @@ export default ({ assert, describe, it }) => {
         const circleSettings = { cx: 110, cy: 210, r: 310 };
         const circle = drawCircle(circleSettings);
         const svgEl = parseSvg(circle);
-        const circleEl = svgEl && [ ...parseSvg(circle).children ].pop();
+        const circleEl = svgEl && svgEl.querySelector('circle');
 
         it('returns a `<circle />` element string', () => {
             assert(circle).isElementTag('circle');
         });
 
-        it('should have the correct `cx` and `cy`, attributes', () => {
+        it('has the correct `cx` and `cy` attributes', () => {
             assert(circleEl).hasAttributes({ cx: '110', cy: '210' });
         });
 
         describe('given a `fill` color', () => {
-            it('should have a `fill` color attributes', () => {
-                assert(drawCircle(circleSettings, { fill: 'pink' }))
-                    .stringIncludes('fill="pink"');
+            it('has a `fill` color attributes', () => {
+                let filledCircleSvg = parseSvg(drawCircle(circleSettings, { fill: 'pink' }));
+                let filledCircleEl  = filledCircleSvg && filledCircleSvg.querySelector('circle');
+
+                assert(filledCircleEl).hasAttributes({ fill: 'pink' });
             });
         });
 
         describe('given a `stroke` color', () => {
-            it('should have `stroke` color and `stroke-width` attributes', () => {
-                assert(drawCircle(circleSettings, { stroke: 'blue' }))
-                    .stringIncludes('stroke-width="2"')
-                    .stringIncludes('stroke="blue"');
+            it('has `stroke` color and `stroke-width` attributes', () => {
+                let strokeCircleSvg = parseSvg(drawCircle(circleSettings, { stroke: 'blue' }));
+                let strokeCircleEl  = strokeCircleSvg && strokeCircleSvg.querySelector('circle');
+
+                assert(strokeCircleEl).hasAttributes({
+                    'stroke-width': '2',
+                    stroke: 'blue',
+                });
             });
         });
 
@@ -60,7 +66,7 @@ export default ({ assert, describe, it }) => {
                 delete settings[required];
 
                 describe(`when \`${required}\` is omitted`, () => {
-                    it('should throw', () => {
+                    it('throws', () => {
                         assert(() => drawCircle(settings)).throws(`${required} is required by drawCircle()`);
                     });
                 });
@@ -80,35 +86,42 @@ export default ({ assert, describe, it }) => {
         };
 
         const line = drawLine(lineSettings);
+        const svgEl = parseSvg(line);
+        const lineEl = svgEl && svgEl.querySelector('line');
 
-        it('should return a `<line />` element string', () => {
+        it('returns a `<line />` element string', () => {
             assert(line).isElementTag('line');
         });
 
-        it('should have the correct `x1`, `y1`, `x2`, and `y2` attributes', () => {
-            assert(line)
-                .stringIncludes('x1="10"')
-                .stringIncludes('y1="20"')
-                .stringIncludes('x2="300"')
-                .stringIncludes('y2="400"');
+        it('has correct `x1`, `y1`, `x2`, and `y2` attributes', () => {
+            assert(lineEl).hasAttributes({
+                x1: '10',
+                y1: '20',
+                x2: '300',
+                y2: '400',
+            });
         });
 
-        it('should have the correct `stroke` color attribute', () => {
-            assert(line).stringIncludes('stroke="gray"');
+        it('has correct `stroke` color attribute', () => {
+            assert(lineEl).hasAttributes({ stroke: 'gray' });
         });
 
-        it('should have the correct `stroke-width` attribute', () => {
-            assert(line).stringIncludes('stroke-width="2"');
+        it('has correct `stroke-width` attribute', () => {
+            assert(lineEl).hasAttributes({ 'stroke-width': '2' });
         });
 
-        it('should not have the `stroke-dasharray` attribute', () => {
-            assert(line).stringExcludes('stroke-dasharray');
+        it('does not have the `stroke-dasharray` attribute', () => {
+            assert(lineEl).excludesAttributes([ 'stroke-dasharray' ]);
         });
 
         describe('given a truthy `dashed` option', () => {
             it('should have the `stroke-dasharray` attribute', () => {
-                assert(drawLine(lineSettings, { dashed: true }))
-                    .stringIncludes(`stroke-dasharray="${dashLength}"`);
+                let dashedLineSvgEl = parseSvg(drawLine(lineSettings, { dashed: true }));
+                let dashedLineEl = dashedLineSvgEl && dashedLineSvgEl.querySelector('line');
+
+                assert(dashedLineEl).hasAttributes({
+                    'stroke-dasharray': dashLength.toString(),
+                });
             });
         });
 
@@ -117,8 +130,8 @@ export default ({ assert, describe, it }) => {
                 let settings = { ...lineSettings };
                 delete settings[required];
 
-                describe(`when \`${required}\` is omitted`, () => {
-                    it('should throw', () => {
+                describe(`when "${required}" is omitted`, () => {
+                    it('throws', () => {
                         assert(() => drawLine(settings)).throws(`${required} is required by drawLine()`);
                     });
                 });

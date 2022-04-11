@@ -4,9 +4,11 @@ import {
     equals,
     equalsArray,
     equalsObject,
+    excludesAttributes,
     hasAttributes,
     isArray,
     isBoolean,
+    isElement,
     isElementTag,
     isFalse,
     isFunction,
@@ -24,9 +26,11 @@ import {
 const assertions = [
     equals,
     equalsArray,
+    excludesAttributes,
     hasAttributes,
     isArray,
     isBoolean,
+    isElement,
     isElementTag,
     isFalse,
     isFunction,
@@ -124,15 +128,15 @@ export default ({ assert, describe, it }) => {
             // @ts-expect-error
             const result = func();
 
-            it('should return an Object', () => {
+            it('should return an object', () => {
                 assert(result).isObject();
             });
 
-            it('should return an Object with a `msg` string property', () => {
+            it('should return an object with a `msg` string property', () => {
                 assert(result.msg).isString();
             });
 
-            it('should return an Object with an `isOk` boolean property', () => {
+            it('should return an object with an `isOk` boolean property', () => {
                 assert(result.isOk).isBoolean();
             });
         });
@@ -287,10 +291,62 @@ export default ({ assert, describe, it }) => {
         });
     });
 
+    describe('excludesAttributes()', () => {
+        let el = document.createElement('p');
+
+        describe('given an element which contains no attributes', () => {
+            it('returns a truthy `isOk` property', () => {
+                assert(excludesAttributes(el, [ 'id' ]).isOk).isTrue();
+            });
+        });
+
+        describe('given an invalid attributes expectation', () => {
+            it('returns a false `isOk` property', () => {
+                assert(excludesAttributes(el, null).isOk).isFalse();
+            });
+        });
+
+        describe('given an element which contains the unexpected attribute', () => {
+            it('returns a false `isOk` property', () => {
+                el.setAttribute('id', 'super-hot');
+                assert(excludesAttributes(el, [ 'id' ]).isOk).isFalse();
+            });
+        });
+
+        describe('given a non-element type', () => {
+            it('return a false `isOk` property', () => {
+                assert(excludesAttributes('', []).isOk).isFalse();
+            });
+        });
+
+        describe('given a non-array expectation', () => {
+            it('return a false `isOk` property', () => {
+                // @ts-expect-error
+                assert(excludesAttributes(el, '').isOk).isFalse();
+            });
+        });
+    });
+
     describe('hasAttributes()', () => {
+        let el = document.createElement('p');
+
+        describe('given an element which contains no attributes', () => {
+            it('returns a false `isOk` property and an aggregated `msg` property', () => {
+                let result = hasAttributes(el, { id: 'super-hot', 'data-custom': 'hot-wheels' });
+
+                assert(result.isOk).isFalse();
+                assert(result.msg).equals('expected "null" to equal "super-hot", expected "null" to equal "hot-wheels"');
+            });
+        });
+
+        describe('given an invalid attributes expectation', () => {
+            it('returns a false `isOk` property', () => {
+                assert(hasAttributes(el, null).isOk).isFalse();
+            });
+        });
+
         describe('given an element which contains attributes', () => {
-            it('should return a truthy `isOk` property', () => {
-                let el = document.createElement('p');
+            it('returns a truthy `isOk` property', () => {
                 el.setAttribute('id', 'super-hot');
                 el.setAttribute('data-custom', 'hot-wheels');
 
@@ -343,41 +399,19 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('isFalse()', () => {
-        describe('given `false`', () => {
-            it('should return a truthy `isOk` property', () => {
-                assert(isFalse(false).isOk).isTrue();
-            });
-        });
-
-        describe('given `true`', () => {
-            it('should return a falsy `isOk` property', () => {
-                assert(isFalse(true).isOk).isFalse();
-            });
-        });
-
-        nonBooleanTypes.forEach(([ key, value ]) => {
-            describe(`given ${key}`, () => {
-                it('should return a falsy `isOk` property', () => {
-                    assert(isFalse(value).isOk).isFalse();
-                });
-            });
-        });
-    });
-
-    describe('isFunction()', () => {
-        Object.entries(groups.function).forEach(([ key, value ]) => {
+    describe('isElement()', () => {
+        Object.entries(groups.element).forEach(([ key, value ]) => {
             describe(`given ${key}`, () => {
                 it('should return a truthy `isOk` property', () => {
-                    assert(isFunction(value).isOk).isTrue();
+                    assert(isElement(value).isOk).isTrue();
                 });
             });
         });
 
-        nonFunctionTypes.forEach(([ key, value ]) => {
+        nonElementTypes.forEach(([ key, value ]) => {
             describe(`given ${key}`, () => {
                 it('should return a falsy `isOk` property', () => {
-                    assert(isFunction(value).isOk).isFalse();
+                    assert(isElement(value).isOk).isFalse();
                 });
             });
         });
@@ -458,6 +492,46 @@ export default ({ assert, describe, it }) => {
             describe(`given ${key}`, () => {
                 it('should return a falsy `isOk` property', () => {
                     assert(isString(value).isOk).isFalse();
+                });
+            });
+        });
+    });
+
+    describe('isFalse()', () => {
+        describe('given `false`', () => {
+            it('should return a truthy `isOk` property', () => {
+                assert(isFalse(false).isOk).isTrue();
+            });
+        });
+
+        describe('given `true`', () => {
+            it('should return a falsy `isOk` property', () => {
+                assert(isFalse(true).isOk).isFalse();
+            });
+        });
+
+        nonBooleanTypes.forEach(([ key, value ]) => {
+            describe(`given ${key}`, () => {
+                it('should return a falsy `isOk` property', () => {
+                    assert(isFalse(value).isOk).isFalse();
+                });
+            });
+        });
+    });
+
+    describe('isFunction()', () => {
+        Object.entries(groups.function).forEach(([ key, value ]) => {
+            describe(`given ${key}`, () => {
+                it('should return a truthy `isOk` property', () => {
+                    assert(isFunction(value).isOk).isTrue();
+                });
+            });
+        });
+
+        nonFunctionTypes.forEach(([ key, value ]) => {
+            describe(`given ${key}`, () => {
+                it('should return a falsy `isOk` property', () => {
+                    assert(isFunction(value).isOk).isFalse();
                 });
             });
         });
@@ -610,7 +684,7 @@ export default ({ assert, describe, it }) => {
         describe('given an empty string', () => {
             it('should return a falsy `isOk` property', () => {
                 assert(() => stringIncludes('long sword +1', ''))
-                    .throws('Invalid empty string expected in `stringIncludes`');
+                    .throws('Invalid empty string expected in stringIncludes()');
             });
         });
     });
