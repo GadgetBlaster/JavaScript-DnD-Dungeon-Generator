@@ -83,16 +83,18 @@ export function element(tag, content = '', attributes = {}) {
  * Parses and returns an HTMLDocument fro the given HTML string, or null if the
  * string cannot be parsed.
  *
+ * @throws
+ *
  * @pram {string} string
  *
- * @returns {HTMLBodyElement | null} string
+ * @returns {HTMLBodyElement}
  */
 export function parseHtml(string) {
     let doc = domParser.parseFromString(string, 'text/html');
     let body = doc.querySelector('body');
 
     if (!body.children.length && !body.textContent) {
-        return null;
+        toss(`Invalid HTML string "${string}"`);
     }
 
     return body;
@@ -104,15 +106,13 @@ export function parseHtml(string) {
  *
  * @pram {string} string
  *
- * @returns {XMLDocument | null} string
+ * @returns {XMLDocument}
  */
 export function parseSvg(string) {
     let doc = domParser.parseFromString(string, 'image/svg+xml');
     let errorNode = doc.querySelector('parsererror');
 
-    if (errorNode) {
-        return null;
-    }
+    errorNode && toss(`Invalid SVG string "${string}"`);
 
     return doc;
 }

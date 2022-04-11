@@ -142,8 +142,9 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given an invalid HTML string', () => {
-            it('returns null', () => {
-                assert(parseHtml('<beware bad HTML')).isNull();
+            it('throws', () => {
+                assert(() => parseHtml('<beware bad HTML'))
+                    .throws('Invalid HTML string "<beware bad HTML"');
             });
         });
     });
@@ -167,9 +168,10 @@ export default ({ assert, describe, it }) => {
             });
         });
 
-        describe('given an invalid XVG string', () => {
-            it('returns null', () => {
-                assert(parseSvg('<svg><text>beware bad SVG')).isNull();
+        describe('given an invalid SVG string', () => {
+            it('throws', () => {
+                assert(() => parseSvg('<svg><text>beware bad SVG'))
+                    .throws('Invalid SVG string "<svg><text>beware bad SVG"');
             });
         });
     });

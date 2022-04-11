@@ -27,9 +27,9 @@ export default ({ assert, describe, it }) => {
     describe('drawCircle()', () => {
         /** @type {Circle} */
         const circleSettings = { cx: 110, cy: 210, r: 310 };
-        const circle = drawCircle(circleSettings);
-        const svgEl = parseSvg(circle);
-        const circleEl = svgEl && svgEl.querySelector('circle');
+
+        const circle   = drawCircle(circleSettings);
+        const circleEl = parseSvg(circle).querySelector('circle');
 
         it('returns a `<circle />` element string', () => {
             assert(circle).isElementTag('circle');
@@ -41,22 +41,19 @@ export default ({ assert, describe, it }) => {
 
         describe('given a `fill` color', () => {
             it('has a `fill` color attributes', () => {
-                let filledCircleSvg = parseSvg(drawCircle(circleSettings, { fill: 'pink' }));
-                let filledCircleEl  = filledCircleSvg && filledCircleSvg.querySelector('circle');
+                let filledCircle = drawCircle(circleSettings, { fill: 'pink' });
 
-                assert(filledCircleEl).hasAttributes({ fill: 'pink' });
+                assert(parseSvg(filledCircle).querySelector('circle'))
+                    .hasAttributes({ fill: 'pink' });
             });
         });
 
         describe('given a `stroke` color', () => {
             it('has `stroke` color and `stroke-width` attributes', () => {
-                let strokeCircleSvg = parseSvg(drawCircle(circleSettings, { stroke: 'blue' }));
-                let strokeCircleEl  = strokeCircleSvg && strokeCircleSvg.querySelector('circle');
+                let strokeCircle = drawCircle(circleSettings, { stroke: 'blue' });
 
-                assert(strokeCircleEl).hasAttributes({
-                    'stroke-width': '2',
-                    stroke: 'blue',
-                });
+                assert(parseSvg(strokeCircle).querySelector('circle'))
+                    .hasAttributes({ 'stroke-width': '2', stroke: 'blue' });
             });
         });
 
@@ -85,9 +82,8 @@ export default ({ assert, describe, it }) => {
             width: 2,
         };
 
-        const line = drawLine(lineSettings);
-        const svgEl = parseSvg(line);
-        const lineEl = svgEl && svgEl.querySelector('line');
+        const line   = drawLine(lineSettings);
+        const lineEl = parseSvg(line).querySelector('line');
 
         it('returns a `<line />` element string', () => {
             assert(line).isElementTag('line');
@@ -115,13 +111,11 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a truthy `dashed` option', () => {
-            it('should have the `stroke-dasharray` attribute', () => {
-                let dashedLineSvgEl = parseSvg(drawLine(lineSettings, { dashed: true }));
-                let dashedLineEl = dashedLineSvgEl && dashedLineSvgEl.querySelector('line');
+            it('has the `stroke-dasharray` attribute', () => {
+                let dashedLine = drawLine(lineSettings, { dashed: true });
 
-                assert(dashedLineEl).hasAttributes({
-                    'stroke-dasharray': dashLength.toString(),
-                });
+                assert(parseSvg(dashedLine).querySelector('line'))
+                    .hasAttributes({ 'stroke-dasharray': dashLength.toString() });
             });
         });
 
@@ -142,25 +136,28 @@ export default ({ assert, describe, it }) => {
     describe('drawRect()', () => {
         /** @type {PixelRectangle} */
         const rectSettings = { x: 24, y: 48, width: 72, height: 96 };
-        const rect = drawRect(rectSettings);
 
-        it('should return a `<rect />` element string', () => {
+        const rect   = drawRect(rectSettings);
+        const rectEl = parseSvg(rect).querySelector('rect');
+
+        it('returns a `<rect />` element string', () => {
             assert(rect).isElementTag('rect');
         });
 
-        it('should have correct attributes', () => {
-            assert(rect)
-                .stringIncludes('x="24"')
-                .stringIncludes('y="48"')
-                .stringIncludes('width="72"')
-                .stringIncludes('height="96"');
+        it('has correct attributes', () => {
+            assert(rectEl).hasAttributes({
+                x     : '24',
+                y     : '48',
+                width : '72',
+                height: '96',
+            });
         });
 
         describe('given extra attributes', () => {
-            it('should include the attributes on the element', () => {
-                assert(drawRect(rectSettings, { stroke: 'red', fill: 'purple' }))
-                    .stringIncludes('stroke="red"')
-                    .stringIncludes('fill="purple"');
+            it('includes the attributes on the element', () => {
+                const styledRect = drawRect(rectSettings, { stroke: 'red', fill: 'purple' });
+                assert(parseSvg(styledRect).querySelector('rect'))
+                    .hasAttributes({ stroke: 'red', fill: 'purple' });
             });
         });
 
@@ -170,7 +167,7 @@ export default ({ assert, describe, it }) => {
                 delete settings[required];
 
                 describe(`when \`${required}\` is omitted`, () => {
-                    it('should throw', () => {
+                    it('throws', () => {
                         assert(() => drawRect(settings)).throws(`${required} is required by drawRect()`);
                     });
                 });
@@ -179,35 +176,38 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('drawText()', () => {
-        const textElement = drawText('Wizard Tower', { x: 20, y: 20 });
+        const text   = drawText('Wizard Tower', { x: 20, y: 20 });
+        const textEl = parseSvg(text).querySelector('text');
 
-        it('should return a `<text>` element string', () => {
-            assert(textElement).isElementTag('text');
+        it('returns a `<text>` element string', () => {
+            assert(text).isElementTag('text');
         });
 
-        it('should have the correct `x` attribute', () => {
-            assert(textElement).stringIncludes('x="20"');
+        it('has the correct `x` attribute', () => {
+            assert(textEl).hasAttributes({ x: '20' });
         });
 
-        it('should have the correct `y` attribute including the `pxTextOffset`', () => {
-            assert(textElement).stringIncludes('y="22"');
+        it('has the correct `y` attribute including the `pxTextOffset`', () => {
+            assert(textEl).hasAttributes({ y: '22' });
         });
 
-        it('should contain the text as the content', () => {
-            assert(/<text(.+?)>Wizard Tower<\/text>/.test(textElement)).isTrue();
+        it('contains the text as the content', () => {
+            assert(textEl.textContent).equals('Wizard Tower')
         });
 
         describe('given a `fontSize` option', () => {
-            it('should have the correct `font-size` attribute', () => {
+            it('has the correct `font-size` attribute', () => {
                 const customFontSizeTextElement = drawText('Goblin Lair', { x: 0, y: 0 }, { fontSize: 24 });
-                assert(customFontSizeTextElement).stringIncludes('font-size="24px"');
+                assert(parseSvg(customFontSizeTextElement).querySelector('text'))
+                    .hasAttributes({ 'font-size': '24px' });
             });
         });
 
         describe('given a `fill` option', () => {
-            it('should have the correct `fill` color attribute', () => {
+            it('has the correct `fill` color attribute', () => {
                 const customFillTextElement = drawText('Goblin Zeppelin', { x: 0, y: 0 }, { fill: 'purple' });
-                assert(customFillTextElement).stringIncludes('fill="purple"');
+                assert(parseSvg(customFillTextElement).querySelector('text'))
+                    .hasAttributes({ fill: 'purple' });
             });
         });
     });
