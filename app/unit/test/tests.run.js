@@ -42,7 +42,7 @@ export default ({ assert, describe, it }) => {
 
         const results = run({ ...mockUnit, runUnits, getSummary }, suite);
 
-        it('should call `runUnits` for each function in the suite', () => {
+        it('calls `runUnits()` for each function in the suite', () => {
             const keys = Object.keys(suite);
 
             names.forEach((name, index) => {
@@ -50,13 +50,13 @@ export default ({ assert, describe, it }) => {
             });
         });
 
-        it('should inject a tests function into `runUnits` for each test file', () => {
+        it('injects a tests function into `runUnits()` for each test file', () => {
             functions.forEach((func) => {
                 assert(func).isFunction();
             });
         });
 
-        it('should call `getSummary` returning the test summary', () => {
+        it('calls `getSummary()` and returns the summary', () => {
             assert(results).equalsObject(mockSummary);
         });
     });
@@ -69,7 +69,7 @@ export default ({ assert, describe, it }) => {
         // @ts-expect-error
         run({ ...mockUnit, onError });
 
-        it('should call `onError` returning a string containing `Invalid`', () => {
+        it('calls `onError()` and returns a string that includes "Invalid"', () => {
             assert(onErrorResult)
                 .isString()
                 .stringIncludes('Invalid');
@@ -84,7 +84,7 @@ export default ({ assert, describe, it }) => {
         // @ts-expect-error
         run({ ...mockUnit, onError }, 'junk');
 
-        it('should call `onError` returning a string containing `Invalid`', () => {
+        it('calls `onError()` and returns a string that includes "Invalid"', () => {
             assert(onErrorResult)
                 .isString()
                 .stringIncludes('Invalid');
@@ -98,7 +98,7 @@ export default ({ assert, describe, it }) => {
 
         run({ ...mockUnit, onError }, {});
 
-        it('should call `onError` and return a string containing `Empty`', () => {
+        it('calls `onError()` and returns a string that includes "Empty"', () => {
             assert(onErrorResult)
                 .isString()
                 .stringIncludes('Empty');
@@ -118,7 +118,7 @@ export default ({ assert, describe, it }) => {
 
         run({ ...mockUnit, runUnits }, suite, scope);
 
-        it('should call `runUnits` once for the scoped function', () => {
+        it('calls `runUnits()` once for the scoped function', () => {
             assert(unitsRun.length).equals(1);
             assert(unitsRun[0]).equals(scope);
         });
@@ -133,7 +133,7 @@ export default ({ assert, describe, it }) => {
 
         run({ ...mockUnit, onError }, suite, scope);
 
-        it('should call `onError` returning a string containing `Invalid` and `scope`', () => {
+        it('calls `onError()` and returns a string that includes "Invalid" and the test scope', () => {
             assert(onErrorResult)
                 .isString()
                 .stringIncludes('Invalid')
@@ -149,7 +149,7 @@ export default ({ assert, describe, it }) => {
 
         run({ ...mockUnit, onError }, suite);
 
-        it('should call `onError` returning a string containing `Invalid` and `scope`', () => {
+        it('calls `onError()` and returns a string that includes "Invalid" and the test scope', () => {
             assert(onErrorResult)
                 .isString()
                 .stringIncludes('Invalid')
@@ -166,7 +166,7 @@ export default ({ assert, describe, it }) => {
 
         run({ ...mockUnit, onError, runUnits }, suite);
 
-        it('should call `onError` returning a string containing an error', () => {
+        it('calls `onError()` and returns a string that includes the error', () => {
             assert(onErrorResult)
                 .isString()
                 .stringIncludes('Error')
@@ -183,7 +183,7 @@ export default ({ assert, describe, it }) => {
 
         run({ ...mockUnit, onError, runUnits }, suite);
 
-        it('should call `onError` returning the error string', () => {
+        it('calls `onError()` and returns the error string', () => {
             assert(onErrorResult)
                 .isString()
                 .equals('Something is wrong');

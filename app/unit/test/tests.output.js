@@ -17,6 +17,8 @@ import {
     getTestNav,
 } from '../output.js';
 
+import { parseHtml } from '../../utility/element.js';
+
 const noop = () => {};
 
 /**
@@ -28,7 +30,7 @@ export default ({ assert, describe, it }) => {
 
     describe('escapeHTML()', () => {
         describe('given an HTML string', () => {
-            it('should return a string with escaped HTML', () => {
+            it('returns a string with escaped HTML', () => {
                 const html   = '<h1 class="logo">Sal\'s Soups &amp; Sandwiches</h1>';
                 const expect = '&lt;h1 class=&quot;logo&quot;&gt;Sal&#x27;s Soups &amp;amp; Sandwiches&lt;&#x2F;h1&gt;';
 
@@ -39,7 +41,7 @@ export default ({ assert, describe, it }) => {
 
     describe('getLog()', () => {
         describe('given no results', () => {
-            it('should return an empty string', () => {
+            it('returns an empty string', () => {
                 assert(getLog([])).equals('');
             });
         });
@@ -50,13 +52,13 @@ export default ({ assert, describe, it }) => {
                 { isOk: false, msg: 'failure' },
             ];
 
-            it('should return only the failure', () => {
+            it('returns only the failure', () => {
                 assert(getLog(results))
                     .equals('<li class="fail">failure</li>');
             });
 
             describe('given the verbose flag', () => {
-                it('should return the success and the failure', () => {
+                it('returns the success and the failure', () => {
                     assert(getLog(results, { verbose: true }))
                         .equals([
                             '<li>success</li>',
@@ -74,7 +76,7 @@ export default ({ assert, describe, it }) => {
                 { isOk: false, msg: 'no way' },
             ];
 
-            it('should return only the two failures', () => {
+            it('returns only the two failures', () => {
                 assert(getLog(results))
                     .equals([
                         '<li class="fail">nope</li>',
@@ -83,7 +85,7 @@ export default ({ assert, describe, it }) => {
             });
 
             describe('given the verbose flag', () => {
-                it('should return the two success and the two failures', () => {
+                it('returns the two success and the two failures', () => {
                     assert(getLog(results, { verbose: true }))
                         .equals([
                             '<li>yep</li>',
@@ -107,49 +109,46 @@ export default ({ assert, describe, it }) => {
 
             let result = getResults(summary);
 
-            it('should render one passing dot', () => {
-                const matches = result
-                    .match(/<span data-ok="ok" class="dot"><\/span>/g);
-
-                assert(matches).isArray();
-                matches && assert(matches.length).equals(1);
+            it('returns one passing dot', () => {
+                const dots = parseHtml(getResults(summary)).querySelectorAll('span[data-ok="ok"]');
+                assert(dots.length).equals(1);
             });
 
-            it('should render a summary', () => {
+            it('includes a summary', () => {
                 assert(result).stringIncludes('Checked for 1 mischievous kobold');
             });
 
             describe('given no options', () => {
-                it('should output "All Tests"', () => {
+                it('includes "All Tests"', () => {
                     assert(result).stringIncludes('All Tests');
                 });
 
-                it('should not output passing log entries', () => {
+                it('excludes passing log entries', () => {
                     assert(result).stringExcludes('fake success result');
                 });
             });
 
             describe('given the `verbose` option', () => {
-                it('should output the log with successful entries', () => {
+                it('includes successful log entries', () => {
                     assert(getResults(summary, { verbose: true }))
                         .stringIncludes('fake success result');
                 });
             });
 
             describe('given the `scope` option', () => {
-                it('should output the scope', () => {
+                it('includes the test scope', () => {
                     assert(getResults(summary, { scope: '/test/tests.fake.js' }))
                         .stringIncludes('/test/tests.fake.js');
                 });
 
-                it('should not output "All Tests"', () => {
+                it('excludes "All Tests"', () => {
                     assert(getResults(summary, { scope: '/test/tests.fake.js' }))
                         .stringExcludes('All Tests');
                 });
             });
 
             describe('given an `onSuccess` option', () => {
-                it('should call `onSuccess` and return the success message', () => {
+                it('calls `onSuccess` and return the success message', () => {
                     let successLog;
 
                     getResults(summary, { onSuccess: (msg) => { successLog = msg; }});
@@ -170,16 +169,13 @@ export default ({ assert, describe, it }) => {
                 ],
             };
 
-            it('should render two passing dots', () => {
-                const matches = getResults(summary)
-                    .match(/<span data-ok="ok" class="dot"><\/span>/g);
-
-                assert(matches).isArray();
-                matches && assert(matches.length).equals(2);
+            it('includes two passing dots', () => {
+                const dots = parseHtml(getResults(summary)).querySelectorAll('span[data-ok="ok"]');
+                assert(dots.length).equals(2);
             });
 
             describe('given the `verbose` option', () => {
-                it('should output the log with all entries', () => {
+                it('includes all log entries', () => {
                     assert(getResults(summary, { verbose: true }))
                         .stringIncludes('fake success result')
                         .stringIncludes('another success result');
@@ -197,20 +193,17 @@ export default ({ assert, describe, it }) => {
 
             let result = getResults(summary);
 
-            it('should render one failing dot', () => {
-                const matches = result
-                    .match(/<span data-ok="fail" class="dot"><\/span>/g);
-
-                assert(matches).isArray();
-                matches && assert(matches.length).equals(1);
+            it('includes one failing dot', () => {
+                const dots = parseHtml(getResults(summary)).querySelectorAll('span[data-ok="fail"]');
+                assert(dots.length).equals(1);
             });
 
-            it('should output the log with the failure entries', () => {
+            it('returns a log with the failure', () => {
                 assert(result).stringIncludes('fake failure');
             });
 
             describe('given an `onError` option', () => {
-                it('should call `onError` and return the failure message', () => {
+                it('calls `onError` and returns the failure message', () => {
                     let errorLog;
 
                     getResults(summary, { onError: (msg) => { errorLog = msg; }});
@@ -230,20 +223,17 @@ export default ({ assert, describe, it }) => {
 
             let result = getResults(summary);
 
-            it('should render one failing dot', () => {
-                const matches = result
-                    .match(/<span data-ok="fail" class="dot"><\/span>/g);
-
-                assert(matches).isArray();
-                matches && assert(matches.length).equals(1);
+            it('includes one failing dot', () => {
+                const dots = parseHtml(getResults(summary)).querySelectorAll('span[data-ok="fail"]');
+                assert(dots.length).equals(1);
             });
 
-            it('should output the log with the error entry', () => {
+            it('returns a log with the error', () => {
                 assert(result).stringIncludes('fake error');
             });
 
             describe('given an `onError` option', () => {
-                it('should call `onError` and return the error message', () => {
+                it('calls `onError` and returns the error message', () => {
                     let errorLog;
 
                     getResults(summary, { onError: (msg) => { errorLog = msg; }});
@@ -257,36 +247,28 @@ export default ({ assert, describe, it }) => {
     describe('getSuiteList()', () => {
         describe('given an array of scopes', () => {
             const scopes = [ '/scope/one', '/scope/two' ];
-            const html   = getSuiteList(scopes);
+            const doc    = parseHtml(getSuiteList(scopes));
 
-            it('should return an html list with an `<li>` and `</li>` for each scope', () => {
-                const matches = html.match(/<li>(.+?)<\/li>/g);
-
-                assert(matches).isArray();
-                matches && assert(matches.length).equals(scopes.length);
+            it('returns an html list with an list item for each scope', () => {
+                const items = doc.querySelectorAll('li');
+                assert(items.length).equals(scopes.length);
             });
 
-            it('should return an html link with `?scope=scope` as the link\'s `href`', () => {
+            it('returns an html link for each scope with `?scope=scope` as the link\'s `href`', () => {
                 scopes.forEach((scope) => {
-                    assert(html).stringIncludes(`<a href="?scope=${scope}">`);
+                    assert(Boolean(doc.querySelector(`a[href="?scope=${scope}"]`))).isTrue();
                 });
-
-                const matches = html.match(/<\/a>/g);
-
-                assert(matches).isArray();
-                matches && assert(matches.length).equals(scopes.length);
             });
         });
 
         describe('given the `verbose` option', () => {
             const scopes = [ '/scope/one', '/scope/two' ];
-            const html   = getSuiteList(scopes, { verbose: true });
+            const doc    = parseHtml(getSuiteList(scopes, { verbose: true }));
 
-            it('should return an html list with `&verbose=true` for each scope', () => {
-                const matches = html.match(/&verbose=true/g);
-
-                assert(matches).isArray();
-                matches && assert(matches.length).equals(scopes.length);
+            it('returns an html link with `&verbose=true` on each link', () => {
+                doc.querySelectorAll('a').forEach((link) => {
+                    assert(link.getAttribute('href')).stringIncludes('&verbose=true');
+                });
             });
         });
     });
@@ -299,30 +281,30 @@ export default ({ assert, describe, it }) => {
             results   : [],
         };
 
-        it('should return a string', () => {
+        it('returns a string', () => {
             assert(getSummary({ ...defaultSummary })).isString();
         });
 
-        it('should return a span with the "ok" class', () => {
-            const summary = getSummary({ ...defaultSummary });
-            assert(/<span class="ok">(.+?)<\/span>/.test(summary)).isTrue();
+        it('returns a span with the "ok" class', () => {
+            const summaryDoc = parseHtml(getSummary({ ...defaultSummary }));
+            assert(Boolean(summaryDoc.querySelector('span[class="ok"]'))).isTrue();
         });
 
         describe('given errors', () => {
-            it('should return a span with the "fail" class', () => {
-                const summary = getSummary({
+            it('returns a span with the "fail" class', () => {
+                const summaryDoc = parseHtml(getSummary({
                     ...defaultSummary,
                     errors: [ { isOk: false, msg: 'Bad dates' } ],
-                });
+                }));
 
-                assert(/<span class="fail">(.+?)<\/span>/.test(summary)).isTrue();
+                assert(Boolean(summaryDoc.querySelector('span[class="fail"]'))).isTrue();
             });
         });
 
         describe('given failures', () => {
-            it('should return a span with the "fail" class', () => {
-                const summary = getSummary({ ...defaultSummary, failures: 1 });
-                assert(/<span class="fail">(.+?)<\/span>/.test(summary)).isTrue();
+            it('returns a span with the "fail" class', () => {
+                const summaryDoc = parseHtml(getSummary({ ...defaultSummary, failures: 1 }));
+                assert(Boolean(summaryDoc.querySelector('span[class="fail"]'))).isTrue();
             });
         });
     });
@@ -335,7 +317,7 @@ export default ({ assert, describe, it }) => {
             results   : [],
         };
 
-        it('should return an object with `assertionsText` and `checkedForText` string properties', () => {
+        it('returns an object with `assertionsText` and `checkedForText` string properties', () => {
             const result = getSummaryParts({ ...defaultSummary });
 
             assert(result).isObject();
@@ -347,7 +329,7 @@ export default ({ assert, describe, it }) => {
             const result = getSummaryParts({ ...defaultSummary });
 
             describe('`assertionsText`', () => {
-                it('should contain "0"', () => {
+                it('includes "0"', () => {
                     assert(result.checkedForText).stringIncludes('0');
                 });
             });
@@ -363,13 +345,13 @@ export default ({ assert, describe, it }) => {
             const result = getSummaryParts({ ...defaultSummary, assertions: 1 });
 
             describe('`assertionsText`', () => {
-                it('should contain "1"', () => {
+                it('includes "1"', () => {
                     assert(result.checkedForText).stringIncludes('1');
                 });
             });
 
             describe('`checkedForText`', () => {
-                it('"kobold" should be singular', () => {
+                it('"kobold" is singular', () => {
                     assert(result.assertionsText)
                         .stringIncludes('kobold')
                         .stringExcludes('kobolds');
@@ -381,7 +363,7 @@ export default ({ assert, describe, it }) => {
             const result = getSummaryParts({ ...defaultSummary, assertions: 2 });
 
             describe('`assertionsText`', () => {
-                it('should contain "2"', () => {
+                it('includes "2"', () => {
                     assert(result.checkedForText).stringIncludes('2');
                 });
             });
@@ -394,21 +376,21 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given no errors or failures', () => {
-            it('should not return a `issuesText` property', () => {
+            it('excludes an `issuesText` property', () => {
                 assert(getSummaryParts({ ...defaultSummary }).issuesText)
                     .isUndefined();
             });
         });
 
         describe('given failures', () => {
-            it('should return an object with `issuesText` string property', () => {
+            it('returns an object with an `issuesText` string property', () => {
                 const result = getSummaryParts({ ...defaultSummary, failures: 10 });
                 assert(result.issuesText).isString();
             });
 
             describe('`issuesText`', () => {
                 describe('given a single failure', () => {
-                    it('should contain "1 ogre"', () => {
+                    it('includes "1 ogre"', () => {
                         assert(getSummaryParts({ ...defaultSummary, failures: 1 }).issuesText)
                             .stringIncludes('1 ogre')
                             .stringExcludes('ogres');
@@ -416,7 +398,7 @@ export default ({ assert, describe, it }) => {
                 });
 
                 describe('given two failures', () => {
-                    it('should contain "2 ogres"', () => {
+                    it('includes "2 ogres"', () => {
                         assert(getSummaryParts({ ...defaultSummary, failures: 2 }).issuesText)
                             .stringIncludes('2 ogres');
                     });
@@ -425,7 +407,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given errors', () => {
-            it('should return an object with `issuesText` string property', () => {
+            it('returns an object with an `issuesText` string property', () => {
                 const result = getSummaryParts({
                     ...defaultSummary,
                     errors: [
@@ -440,7 +422,7 @@ export default ({ assert, describe, it }) => {
 
             describe('`issuesText`', () => {
                 describe('given a single error', () => {
-                    it('should contain "1 dragon"', () => {
+                    it('includes "1 dragon"', () => {
                         assert(getSummaryParts({
                             ...defaultSummary,
                             errors: [ { isOk: false, msg: 'lobster' } ],
@@ -451,7 +433,7 @@ export default ({ assert, describe, it }) => {
                 });
 
                 describe('given two errors', () => {
-                    it('should contain "2 dragons"', () => {
+                    it('includes "2 dragons"', () => {
                         assert(getSummaryParts({
                             ...defaultSummary,
                             errors: [
@@ -475,11 +457,11 @@ export default ({ assert, describe, it }) => {
             }).issuesText;
 
             describe('`issuesText`', () => {
-                it('should contain "2 ogres"', () => {
+                it('includes "2 ogres"', () => {
                     assert(result).stringIncludes('2 ogres');
                 });
 
-                it('should return a string containing "2 dragons"', () => {
+                it('includes "2 dragons"', () => {
                     assert(result).stringIncludes('2 dragons');
                 });
             });
@@ -487,12 +469,16 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getTestList()', () => {
-        it('should return an html list with an entry for each test in the suite', () => {
-            assert(getTestList({
-                '/test/tests.fake.js': noop,
-                '/test/tests.fake2.js': noop,
-            })).stringIncludes('<li><a href="?scope=/test/tests.fake.js">/test/tests.fake.js</a></li>')
-                .stringIncludes('<li><a href="?scope=/test/tests.fake2.js">/test/tests.fake2.js</a></li>');
+        it('returns an html list with an entry for each test in the suite', () => {
+            const suite = { '/test/tests.fake-0.js': noop, '/test/tests.fake-1.js': noop };
+            const doc   = parseHtml(getTestList(suite));
+
+            doc.querySelectorAll('li').forEach((item, i) => {
+                const testName = `/test/tests.fake-${i}.js`;
+
+                assert(Boolean(item.querySelector(`a[href="?scope=${testName}"]`))).isTrue();
+                assert(item.textContent).equals(testName);
+            });
         });
     });
 
@@ -511,19 +497,22 @@ export default ({ assert, describe, it }) => {
             runUnits: noop,
         };
 
-        it('should return test results', () => {
+        it('returns test results', () => {
             assert(getOutput(suite, state)).stringIncludes('Mumbling incantations');
         });
 
         describe('given a `scope` option of `list`', () => {
-            it('should return a list of tests', () => {
-                assert(getOutput(suite, state, { scope: 'list' }))
-                    .stringIncludes('<ul><li><a href="?scope=/test/tests.fake.js">/test/tests.fake.js</a></li></ul>');
+            it('returns a list of tests', () => {
+                const doc = parseHtml(getOutput(suite, state, { scope: 'list' }));
+
+                assert(Boolean(doc.querySelector('ul'))).isTrue();
+                assert(Boolean(doc.querySelector('li'))).isTrue();
+                assert(Boolean(doc.querySelector('a[href="?scope=/test/tests.fake.js"]'))).isTrue();
             });
         });
 
         describe('given a `scope` option for a specific test', () => {
-            it('should only call `runUnits()` on the `scope` test path', () => {
+            it('only calls `runUnits()` on the `scope` test path', () => {
                 let scopesCalled = [];
 
                 const scopedSuite = {
@@ -546,13 +535,13 @@ export default ({ assert, describe, it }) => {
 
     describe('getResultMessage()', () => {
         describe('given an empty array', () => {
-            it('should return an empty string', () => {
+            it('returns an empty string', () => {
                 assert(getResultMessage([])).equals('');
             });
         });
 
         describe('given a single entry', () => {
-            it('should return the entry', () => {
+            it('returns the entry', () => {
                 assert(getResultMessage([ {
                     msg  : 'just us chickens',
                     scope: 'describe()',
@@ -569,14 +558,14 @@ export default ({ assert, describe, it }) => {
 
             const lines = entries.split(`\n`);
 
-            it('should return each entry on a new line', () => {
+            it('returns each entry on a new line', () => {
                 assert(lines[0].trim()).equals('jimmy');
                 assert(lines[1].trim()).equals('joey');
                 assert(lines[2].trim()).equals('sarah');
             });
 
-            it('should indent each line with two spaces', () => {
-                assert(lines[0]).stringExcludes('  ');
+            it('indents each line with two spaces', () => {
+                assert(lines[0]).stringExcludes(' ');
                 assert(lines[1]).stringIncludes('  ');
                 assert(lines[2]).stringIncludes('    ');
             });
@@ -591,108 +580,101 @@ export default ({ assert, describe, it }) => {
             results   : [],
         };
 
-        it('should return a string', () => {
+        it('returns a string', () => {
             assert(getSummaryLink({ ...defaultSummary })).isString();
         });
 
-        it('should return a link to `./unit.html', () => {
-            const summary = getSummaryLink({ ...defaultSummary });
-            assert(/<a href=".\/unit.html">(.+?)<\/a>/.test(summary)).isTrue();
+        it('returns a link to `./unit.html`', () => {
+            const doc = parseHtml(getSummaryLink({ ...defaultSummary }));
+            assert(Boolean(doc.querySelector('a[href="./unit.html"]'))).isTrue();
         });
 
         describe('given errors', () => {
-            it('the link should include a `data-error` attribute', () => {
-                const summary = getSummaryLink({
+            it('include a link with a `data-error` attribute', () => {
+                const doc = parseHtml(getSummaryLink({
                     ...defaultSummary,
                     errors: [ { isOk: false, msg: 'Bad dates' } ],
-                });
+                }));
 
-                assert(/<a data-error="true" href=".\/unit.html">(.+?)<\/a>/.test(summary)).isTrue();
+                assert(Boolean(doc.querySelector('a[data-error="true"]'))).isTrue();
             });
         });
 
         describe('given failures', () => {
-            it('the link should include a `data-error` attribute', () => {
-                const summary = getSummaryLink({ ...defaultSummary, failures: 1 });
-                assert(/<a data-error="true" href=".\/unit.html">(.+?)<\/a>/.test(summary)).isTrue();
+            it('includes a link with a `data-error` attribute', () => {
+                const doc = parseHtml(getSummaryLink({ ...defaultSummary, failures: 1 }));
+                assert(Boolean(doc.querySelector('a[data-error="true"]'))).isTrue();
             });
         });
     });
 
     describe('getTestNav()', () => {
         describe('given no options', () => {
-            const nav = getTestNav({});
+            const navDoc = parseHtml(getTestNav({}));
 
-            it('should contain the urls', () => {
-                [
-                    './unit.html',
-                    './unit.html?scope=list',
-                    './unit.html?verbose=true',
-                ].forEach((url) => {
-                    assert(nav).stringIncludes(url);
-                });
+            it('contains unit test links', () => {
+                assert(navDoc.querySelector('a[href="./unit.html"]').textContent).equals('All');
+                assert(navDoc.querySelector('a[href="./unit.html?scope=list"]').textContent).equals('Tests');
+                assert(navDoc.querySelector('a[href="./unit.html?verbose=true"]').textContent).equals('Verbose');
             });
 
-            it('should mark the "All" link as active', () => {
-                assert(nav).stringIncludes('<a data-active="true" href="./unit.html">All</a>');
+            it('marks the "All" link as active', () => {
+                const link = navDoc.querySelector('a[href="./unit.html"]');
+
+                assert(link.textContent).equals('All');
+                assert(link).hasAttributes({ 'data-active': 'true' });
             });
         });
 
         describe('given a `scope` option', () => {
-            const nav = getTestNav({ scope: 'fake' });
+            const navDoc = parseHtml(getTestNav({ scope: 'fake' }));
 
-            it('should contain the urls', () => {
-                [
-                    './unit.html',
-                    './unit.html?scope=list',
-                    './unit.html?scope=fake&verbose=true',
-                ].forEach((url) => {
-                    assert(nav).stringIncludes(url);
-                });
+            it('includes the scope on the verbose link', () => {
+                const link = navDoc.querySelector('a[href="./unit.html?scope=fake&verbose=true"]');
+                assert(link.textContent).equals('Verbose');
             });
 
-            it('should not mark the "All" link as active', () => {
-                assert(nav).stringIncludes('<a href="./unit.html">All</a>');
+            it('does not mark the "All" link as active', () => {
+                const link = navDoc.querySelector('a[href="./unit.html"]');
+
+                assert(link.textContent).equals('All');
+                assert(link).excludesAttributes([ 'data-active' ]);
             });
         });
 
         describe('given a `scope` option of "list"', () => {
-            it('should mark the "Tests" link as active', () => {
-                assert(getTestNav({ scope: 'list' }))
-                    .stringIncludes('<a data-active="true" href="./unit.html?scope=list">Tests</a>');
+            it('marks the "Tests" link as active', () => {
+                const doc  = parseHtml(getTestNav({ scope: 'list' }));
+                const link = doc.querySelector('a[href="./unit.html?scope=list"]');
+
+                assert(link.textContent).equals('Tests');
+                assert(link).hasAttributes({ 'data-active': 'true' });
             });
         });
 
-        describe('given a truthy `verbose` option', () => {
-            const nav = getTestNav({ verbose: true });
+        describe('given a true `verbose` option', () => {
+            const navDoc = parseHtml(getTestNav({ verbose: true }));
 
-            it('should contain the urls', () => {
-                [
-                    './unit.html?verbose=true',
-                    './unit.html?scope=list&verbose=true',
-                    './unit.html',
-                ].forEach((url) => {
-                    assert(nav).stringIncludes(url);
-                });
+            it('contains verbose unit tests links', () => {
+                assert(navDoc.querySelector('a[href="./unit.html?verbose=true"]').textContent).equals('All');
+                assert(navDoc.querySelector('a[href="./unit.html?scope=list&verbose=true"]').textContent).equals('Tests');
+                assert(navDoc.querySelector('a[href="./unit.html"]').textContent).equals('Verbose');
             });
 
-            it('should mark the "Verbose" link as active', () => {
-                assert(getTestNav({ verbose: true }))
-                    .stringIncludes('<a data-active="true" href="./unit.html">Verbose</a>');
+            it('marks the "Verbose" link as active', () => {
+                const link = navDoc.querySelector('a[href="./unit.html"]');
+
+                assert(link.textContent).equals('Verbose');
+                assert(link).hasAttributes({ 'data-active': 'true' });
             });
         });
 
-        describe('given a `scope` and truthy `verbose` options', () => {
-            const html = getTestNav({ scope: 'fake', verbose: true });
+        describe('given a `scope` and a true `verbose` options', () => {
+            const doc = parseHtml(getTestNav({ scope: 'fake', verbose: true }));
 
-            it('should contain the urls', () => {
-                [
-                    './unit.html?verbose=true',
-                    './unit.html?scope=list&verbose=true',
-                    './unit.html?scope=fake',
-                ].forEach((url) => {
-                    assert(html).stringIncludes(url);
-                });
+            it('includes the scope on the verbose link', () => {
+                const link = doc.querySelector('a[href="./unit.html?scope=fake"]');
+                assert(link.textContent).equals('Verbose');
             });
         });
     });
