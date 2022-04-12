@@ -12,18 +12,10 @@ export default ({ assert, describe, it }) => {
     describe('unitState()', () => {
         const unitObj = unitState();
 
-        it('should return a object', () => {
+        it('returns an object with a `runUnits()` and `getSummary()` function properties', () => {
             assert(unitObj).isObject();
-        });
-
-        describe('properties', () => {
-            it('should return a object with a function property `runUnits`', () => {
-                assert(unitObj.runUnits).isFunction();
-            });
-
-            it('should return a object with a function property `getSummary`', () => {
-                assert(unitObj.getSummary).isFunction();
-            });
+            assert(unitObj.runUnits).isFunction();
+            assert(unitObj.getSummary).isFunction();
         });
     });
 
@@ -49,23 +41,23 @@ export default ({ assert, describe, it }) => {
             });
         });
 
-        it('should call the `tests` function param', () => {
+        it('calls the `tests()` function param', () => {
             assert(called).isTrue();
         });
 
-        it('should inject an `assert` function', () => {
+        it('injects an `assert()` function', () => {
             assert(assertFunc).isFunction();
         });
 
-        it('should inject a `describe` function', () => {
+        it('injects a `describe()` function', () => {
             assert(describeFunc).isFunction();
         });
 
-        it('should inject an `it` function', () => {
+        it('inject an `it()` function', () => {
             assert(itFunc).isFunction();
         });
 
-        it('should add the test key to the `msg` in `results`', () => {
+        it('adds the test key to the `msg` property on the `results` object', () => {
             const { results } = getSummary();
             assert(results.pop().msg).stringIncludes('/fake/suite');
         });
@@ -80,18 +72,18 @@ export default ({ assert, describe, it }) => {
 
         const entry = errors.pop();
 
-        it('should add a `Result` entry to `errors`', () => {
+        it('adds a `Result` entry to the `errors` array', () => {
             assert(entry).isObject();
             assert(entry.isOk).isBoolean();
             assert(entry.msg).isString();
         });
 
-        describe('the entry', () => {
-            it('should have the error string as its `msg`', () => {
+        describe('results entry', () => {
+            it('the error string is set to the `msg` property', () => {
                 assert(entry.msg).equals('Some unfortunate error');
             });
 
-            it('should have a falsy `isOk`', () => {
+            it('has a false `isOk` property', () => {
                 assert(entry.isOk).isFalse();
             });
         });
@@ -99,7 +91,7 @@ export default ({ assert, describe, it }) => {
 
     describe('nesting', () => {
         describe('when `it()` is called outside of a `describe()` callback', () => {
-            it('should throw', () => {
+            it('throws', () => {
                 unitState().runUnits('/fake/scope', (utility) => {
                     assert(utility.it)
                         .throws('it() must be called inside of describe()');
@@ -108,7 +100,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('when `assert()` is called outside of an `it()` callback', () => {
-            it('should throw', () => {
+            it('throws', () => {
                 unitState().runUnits('/fake/scope', (utility) => {
                     assert(utility.assert().equals)
                         .throws('assert() must be called inside of it()');
@@ -117,7 +109,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('when `describe()` is called inside of an `it()` callback', () => {
-            it('should throw', () => {
+            it('throws', () => {
                 unitState().runUnits('/fake/scope', (utility) => {
                     utility.describe('desc', () => {
                         utility.it('it', () => {
@@ -130,7 +122,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('when `it()` is called inside of an `it()` callback', () => {
-            it('should throw', () => {
+            it('throws', () => {
                 unitState().runUnits('/fake/scope', (utility) => {
                     utility.describe('desc', () => {
                         utility.it('it', () => {
@@ -144,68 +136,66 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getSummary()', () => {
-        describe('summary properties', () => {
+        describe('returns', () => {
             const { getSummary } = unitState();
             const summary = getSummary();
 
-            it('should return a object', () => {
+            it('returns an object', () => {
                 assert(summary).isObject();
             });
 
-            it('should return a object with a numeric `assertions` property', () => {
+            it('returns an object with a numeric `assertions` property', () => {
                 assert(summary.assertions).isNumber();
             });
 
-            it('should return a object with a numeric `failures` property', () => {
+            it('returns an object with a numeric `failures` property', () => {
                 assert(summary.failures).isNumber();
             });
 
-            it('should return a object with a `results` array property', () => {
+            it('returns an object with a `results` array property', () => {
                 assert(summary.results).isArray();
             });
 
-            it('should return a object with a `errors` array property', () => {
+            it('returns an object with an `errors` array property', () => {
                 assert(summary.errors).isArray();
             });
         });
 
-        describe('summary values', () => {
-            describe('when two of three assertions pass', () => {
-                const { runUnits, onError, getSummary } = unitState();
+        describe('when two of three assertions pass', () => {
+            const { runUnits, onError, getSummary } = unitState();
 
-                runUnits('/fake/suite', (utility) => {
-                    utility.describe('desc', () => {
-                        utility.it('it', () => {
-                            utility.assert().equals();
-                            utility.assert().equals();
-                            utility.assert(1).equals();
-                        });
+            runUnits('/fake/suite', (utility) => {
+                utility.describe('desc', () => {
+                    utility.it('it', () => {
+                        utility.assert().equals();
+                        utility.assert().equals();
+                        utility.assert(1).equals();
                     });
                 });
+            });
 
-                onError('Table flip');
+            onError('Table flip');
 
-                const summary = getSummary();
+            const summary = getSummary();
 
-                it('summary `assertions` should be 3', () => {
-                    assert(summary.assertions).equals(3);
-                });
+            it('summary `assertions` should be 3', () => {
+                assert(summary.assertions).equals(3);
+            });
 
-                it('summary `failures` should be 1', () => {
-                    assert(summary.failures).equals(1);
-                });
+            it('summary `failures` should be 1', () => {
+                assert(summary.failures).equals(1);
+            });
 
-                it('summary `results` should contain 2 successes', () => {
-                    assert(summary.results.filter(({ isOk }) => isOk).length).equals(2);
-                });
+            it('summary `results` should contain 2 successes', () => {
+                assert(summary.results.filter(({ isOk }) => isOk).length).equals(2);
+            });
 
-                it('summary `results` should contain 2 failures', () => {
-                    assert(summary.results.filter(({ isOk }) => !isOk).length).equals(2);
-                });
+            it('summary `results` should contain 2 failures', () => {
+                assert(summary.results.filter(({ isOk }) => !isOk).length).equals(2);
+            });
 
-                it('summary `errors` should contain 1 error', () => {
-                    assert(summary.errors.length).equals(1);
-                });
+            it('summary `errors` should contain 1 error', () => {
+                assert(summary.errors.length).equals(1);
             });
         });
 
@@ -246,7 +236,7 @@ export default ({ assert, describe, it }) => {
                 });
             });
 
-            describe('when an assertion is inside two `describe` callbacks', () => {
+            describe('when an assertion is inside two `describe()` callbacks', () => {
                 const { runUnits, getSummary } = unitState();
 
                 runUnits('/fake/suite', (utility) => {
@@ -261,14 +251,14 @@ export default ({ assert, describe, it }) => {
 
                 const { results } = getSummary();
 
-                it('should add both descriptions to the summary `results`', () => {
+                it('adds both descriptions to the summary `results`', () => {
                     assert(results.pop().msg)
                         .stringIncludes('description one')
                         .stringIncludes('description two');
                 });
             });
 
-            describe('when two assertions are made inside one `describe` callback and two `it` callbacks', () => {
+            describe('when two assertions are made inside one `describe()` callback and two `it()` callbacks', () => {
                 const { runUnits, getSummary } = unitState();
 
                 runUnits('/fake/suite', (utility) => {
@@ -281,7 +271,7 @@ export default ({ assert, describe, it }) => {
                 const { results } = getSummary();
 
                 describe('both summary `results`', () => {
-                    it('should contain the description', () => {
+                    it('includes the description', () => {
                         results.forEach(({ msg }) => {
                             assert(msg).stringIncludes('description one');
                         });
@@ -289,19 +279,19 @@ export default ({ assert, describe, it }) => {
                 });
 
                 describe('the first result `msg`', () => {
-                    it('should contain the first assertion', () => {
+                    it('includes the first assertion', () => {
                         assert(results[0].msg).stringIncludes('it one');
                     });
                 });
 
                 describe('the second result `msg`', () => {
-                    it('should contain the second assertion', () => {
+                    it('includes the second assertion', () => {
                         assert(results[1].msg).stringIncludes('it two');
                     });
                 });
             });
 
-            describe('when two assertions are made inside one `describe` and `it` callback', () => {
+            describe('when two assertions are made inside one `describe()` and one `it()` callback', () => {
                 const { runUnits, getSummary } = unitState();
 
                 runUnits('/fake/suite', (utility) => {
@@ -316,7 +306,7 @@ export default ({ assert, describe, it }) => {
                 const { results } = getSummary();
 
                 describe('both summary `results`', () => {
-                    it('should contain the description and assertion', () => {
+                    it('includes the description and assertion', () => {
                         results.forEach(({ msg }) => {
                             assert(msg)
                                 .stringIncludes('description one')
@@ -326,7 +316,7 @@ export default ({ assert, describe, it }) => {
                 });
             });
 
-            describe('no assertions are made inside `describe` and `it` callbacks', () => {
+            describe('no assertions are made inside `describe()` and `it()` callbacks', () => {
                 const { runUnits, getSummary } = unitState();
 
                 runUnits('/fake/suite', (utility) => {
@@ -341,14 +331,14 @@ export default ({ assert, describe, it }) => {
 
                 const { results } = getSummary();
 
-                it('should not add anything to the summary `results`', () => {
+                it('does not add anything to the summary `results`', () => {
                     assert(results.length).equals(0);
                 });
             });
         });
 
         describe('summary errors', () => {
-            describe('when two errors have added', () => {
+            describe('when two errors have been added', () => {
                 const { onError, getSummary } = unitState();
 
                 onError('Bad goblin!');
@@ -357,27 +347,27 @@ export default ({ assert, describe, it }) => {
                 const { errors } = getSummary();
 
                 describe('summary `errors`', () => {
-                    it('should contain 2 entries', () => {
+                    it('has 2 entries', () => {
                         assert(errors.length).equals(2);
                     });
                 });
 
                 describe('the first error in the summary', () => {
-                    it('should have a falsy `isOk` property', () => {
+                    it('has a false `isOk` property', () => {
                         assert(errors[0].isOk).isFalse();
                     });
 
-                    it('should have the error string as its `msg` property', () => {
+                    it('has the error string as its `msg` property', () => {
                         assert(errors[0].msg).equals('Bad goblin!');
                     });
                 });
 
                 describe('the second error in the summary', () => {
-                    it('should have a falsy `isOk` property', () => {
+                    it('has a false `isOk` property', () => {
                         assert(errors[1].isOk).isFalse();
                     });
 
-                    it('should have the error string as its `msg` property', () => {
+                    it('has the error string as its `msg` property', () => {
                         assert(errors[1].msg).equals('Critical fail');
                     });
                 });
@@ -390,36 +380,33 @@ export default ({ assert, describe, it }) => {
             utility.describe('desc', () => {
                 utility.it('it', () => {
                     const assertObj = utility.assert();
+                    const assertEntries = Object.entries(assertObj);
 
-                    it('should return an object', () => {
+                    it('returns an object', () => {
                         assert(assertObj).isObject();
                     });
 
-                    describe('object properties', () => {
-                        const assertEntries = Object.entries(assertObj);
+                    assertEntries.forEach(([ key, func ]) => {
+                        describe(`${key}()`, () => {
+                            it('is a function', () => {
+                                assert(func).isFunction();
+                            });
 
-                        assertEntries.forEach(([ key, func ]) => {
-                            describe(`${key}()`, () => {
-                                it('should be a function', () => {
-                                    assert(func).isFunction();
+                            describe('when the function is invoked', () => {
+                                const chainObj = func();
+
+                                it('returns an object', () => {
+                                    assert(chainObj).isObject();
                                 });
 
-                                describe('when invoked', () => {
-                                    const chainObj = func();
+                                it('returns an object with the same keys & values as `assertEntries`', () => {
+                                    const objectsDiffer = Object.entries(chainObj)
+                                        .some(([ key1, value1 ], index) => {
+                                            const [ key2, value2 ] = assertEntries[index];
+                                            return key1 !== key2 || value1.name !== value2.name;
+                                        });
 
-                                    it('should return an object', () => {
-                                        assert(chainObj).isObject();
-                                    });
-
-                                    it('should return an object with the same keys & values as `assertEntries`', () => {
-                                        const objectsDiffer = Object.entries(chainObj)
-                                            .some(([ key1, value1 ], index) => {
-                                                const [ key2, value2 ] = assertEntries[index];
-                                                return key1 !== key2 || value1.name !== value2.name;
-                                            });
-
-                                        assert(objectsDiffer).isFalse();
-                                    });
+                                    assert(objectsDiffer).isFalse();
                                 });
                             });
                         });
@@ -445,15 +432,15 @@ export default ({ assert, describe, it }) => {
 
             const { assertions, results } = getSummary();
 
-            it('should increment `assertions`', () => {
+            it('increments `assertions`', () => {
                 assert(assertions).equals(startingAssertions + 1);
             });
 
-            it('should add an entry to `results`', () => {
+            it('adds an entry to `results`', () => {
                 assert(results.length).equals(assertions);
             });
 
-            it('should add a `Result` entry to `results`', () => {
+            it('adds a `Result` entry to `results`', () => {
                 let result = results.pop();
 
                 assert(result).isObject();
@@ -475,11 +462,11 @@ export default ({ assert, describe, it }) => {
 
             const { failures, results } = getSummary();
 
-            it('should not increment `failures`', () => {
+            it('does not increment `failures`', () => {
                 assert(failures).equals(startingFailures);
             });
 
-            it('the last item in `results` should include the string `Pass`', () => {
+            it('the last item in `results` includes "Pass"', () => {
                 assert(results.pop().msg).stringIncludes('Pass');
             });
         });
@@ -497,11 +484,11 @@ export default ({ assert, describe, it }) => {
 
             const { failures, results } = getSummary();
 
-            it('should increment `failures`', () => {
+            it('increments `failures`', () => {
                 assert(failures).equals(startingFailures + 1);
             });
 
-            it('the last item in `results` should include the string `Failure`', () => {
+            it('the last item in `results` include the "Failure"', () => {
                 assert(results.pop().msg).stringIncludes('Failure');
             });
         });
@@ -521,7 +508,7 @@ export default ({ assert, describe, it }) => {
 
             const { results } = getSummary();
 
-            it('should add the description to the `msg` in `results`', () => {
+            it('adds the description to the `msg` in `results`', () => {
                 assert(results.pop().msg).stringIncludes('what snow is like');
             });
         });
@@ -546,23 +533,23 @@ export default ({ assert, describe, it }) => {
             const { results } = getSummary();
 
             describe('the first result `msg`', () => {
-                it('should contain the first description', () => {
+                it('includes the first description', () => {
                     let hasFirstAssertion = results[0].msg.includes('what is the meaning of life');
                     assert(hasFirstAssertion).isTrue();
                 });
 
-                it('should not contain the second description', () => {
+                it('excludes the second description', () => {
                     let hasFirstAssertion = results[0].msg.includes('the universe and everything');
                     assert(hasFirstAssertion).isFalse();
                 });
             });
             describe('the second result `msg`', () => {
-                it('should contain the second description', () => {
+                it('includes the second description', () => {
                     let hasFirstAssertion = results[1].msg.includes('the universe and everything');
                     assert(hasFirstAssertion).isTrue();
                 });
 
-                it('should not contain the first description', () => {
+                it('excludes the first description', () => {
                     let hasFirstAssertion = results[1].msg.includes('what is the meaning of life');
                     assert(hasFirstAssertion).isFalse();
                 });
@@ -583,7 +570,7 @@ export default ({ assert, describe, it }) => {
 
         const { results } = getSummary();
 
-        it('should add the assertion to the `msg` in `results`', () => {
+        it('adds the assertion to the `msg` in `results`', () => {
             assert(results.pop().msg).stringIncludes('should be wet like');
         });
     });
