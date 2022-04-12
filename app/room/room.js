@@ -35,7 +35,7 @@ export const roomTypes = Object.freeze(/** @type {const} */ ([
     'storage',
     'study',
     'throne',
-    'torture',
+    'tortureChamber',
     'treasury',
 ]));
 
@@ -50,7 +50,6 @@ export const appendRoomTypes = new Set([
     'shrine',
     'storage',
     'throne',
-    'torture',
 ]);
 
 /**

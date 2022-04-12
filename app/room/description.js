@@ -3,8 +3,7 @@
 import { capitalize, indefiniteArticle, isRequired, toss, toWords } from '../utility/tools.js';
 import { cellFeet } from '../dungeon/grid.js';
 import { outside } from '../dungeon/map.js';
-import { element } from '../utility/element.js';
-import { em, paragraph, strong, subtitle, title } from '../ui/typography.js';
+import { em, strong, subtitle } from '../ui/typography.js';
 import { getEnvironmentDescription } from './environment.js';
 import { indicateRarity } from '../attribute/rarity.js';
 import { list } from '../ui/list.js';
@@ -429,40 +428,60 @@ export const getMapDescription = () => {
 /**
  * Get room description
  *
- * TODO return an object an handle formatting in formatter.js
- *
  * @param {Room} room
  * @param {Door[]} [roomDoors]
  *
- * @returns {string}
+ * @returns {{
+ *   description: string;
+ *   dimensions?: string;
+ *   title: string;
+ *   type?: string;
+ *}}
  */
 export function getRoomDescription(room, roomDoors) {
-    let { settings, roomNumber, size: roomDimensions } = room;
+    let {
+        settings,
+        roomNumber,
+        size: roomDimensions,
+    } = room;
 
     let {
         roomCount: roomCount,
-        roomType : type,
+        roomType,
     } = settings;
 
-    let numberLabel = roomCount > 1 ? ` ${roomNumber}` : '';
-    let typeLabel   = type !== 'room' ? ` - ${capitalize(getRoomTypeLabel(type))}` : '';
-    let roomTitle   = title(`Room${numberLabel}${typeLabel}`);
-    let dimensions  = roomDimensions ? element('span', getRoomDimensionsDescription({
-        width: roomDimensions[0],
-        height: roomDimensions[1],
-    })) : '';
+    let number = roomCount > 1 ? ` ${roomNumber}` : '';
+    let title  = `Room${number}`;
+    let type;
 
-    let header = element('header', roomTitle + dimensions);
+    if (roomType !== 'room') {
+        // TODO can be random?
+        type = capitalize(getRoomTypeLabel(roomType));
+    }
 
-    let content = header + subtitle('Description') + paragraph([
+    let dimensions;
+
+    if (roomDimensions) {
+        dimensions = getRoomDimensionsDescription({
+            width: roomDimensions[0],
+            height: roomDimensions[1],
+        });
+    }
+
+    let description = [
         getDescription(settings),
         ...getEnvironmentDescription(settings),
         getContentDescription(settings),
         getItemConditionDescription(settings),
         ...(roomDoors ? [ getRoomDoorwayDescription(roomDoors, roomNumber) ] : []),
-    ].filter(Boolean).join('. ')+'.');
+    ].filter(Boolean).join('. ')+'.';
 
-    return content;
+    return {
+        description,
+        dimensions,
+        title,
+        type,
+    };
 }
 
 /**

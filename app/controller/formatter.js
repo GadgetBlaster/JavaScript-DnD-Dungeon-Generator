@@ -2,16 +2,17 @@
 
 import { article, section } from '../ui/block.js';
 import { drawLegend } from '../dungeon/legend.js';
+import { capitalize, isRequired } from '../utility/tools.js';
+import { element } from '../utility/element.js';
 import { indicateItemRarity } from '../item/item.js';
 import { list } from '../ui/list.js';
-import { paragraph, span, subtitle } from '../ui/typography.js';
+import { paragraph, span, subtitle, title } from '../ui/typography.js';
 import {
     getDoorwayList,
     getKeyDescription,
     getMapDescription,
     getRoomDescription,
 } from '../room/description.js';
-import { capitalize, isRequired } from '../utility/tools.js';
 
 
 // TODO all HTML formatting should be excluded until this step, such as item
@@ -139,14 +140,32 @@ function formatItems(itemSet) {
 function formatRoom(room, doors) {
     let { roomNumber } = room;
 
-    let desc      = getRoomDescription(room, doors);
+    let {
+        description,
+        dimensions,
+        title: roomTitle,
+        type,
+    } = getRoomDescription(room, doors);
+
+    let header = element('header', title(roomTitle)
+        + (dimensions ? span(dimensions) : ''));
+
     let doorList  = doors ? getDoorwayList(doors, roomNumber) : '';
     let items     = formatItems(room.itemSet);
     let map       = room.map ? getMapDescription() : '';
     let keys      = room.keys ? getKeyDescription(room.keys) : '';
     let traps     = room.traps ? subtitle('Traps' + detail(room.traps.length)) + list(room.traps) : '';
 
-    return article(desc + doorList + items + map + keys + traps);
+    return article(header
+        + (type ? paragraph(`Type: ${type}`) : '')
+        + subtitle('Description')
+        + paragraph(description)
+        + doorList
+        + items
+        + map
+        + keys
+        + traps
+    );
 }
 
 /**
