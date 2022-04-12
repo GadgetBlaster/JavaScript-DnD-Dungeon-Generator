@@ -4,25 +4,8 @@ import { button } from './button.js';
 
 // -- Types --------------------------------------------------------------------
 
-/** @typedef {"dungeon" | "rooms" | "items"} Page */
+/** @typedef {typeof pages[number]} Page */
 /** @typedef {import('../controller/controller.js').Sections} Sections */
-
-
-// -- Types --------------------------------------------------------------------
-
-/** @typedef {typeof conditions[number]} Condition */
-
-// -- Config -------------------------------------------------------------------
-
-export const conditions = Object.freeze(/** @type {const} */ ([
-    'decaying',
-    'busted',
-    'poor',
-    'average',
-    'good',
-    'exquisite',
-]));
-
 
 // -- Config -------------------------------------------------------------------
 
