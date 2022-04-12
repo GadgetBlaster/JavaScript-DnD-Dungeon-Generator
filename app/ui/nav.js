@@ -1,5 +1,6 @@
 // @ts-check
 
+import { capitalize } from '../utility/tools.js';
 import { button } from './button.js';
 
 // -- Types --------------------------------------------------------------------
@@ -13,6 +14,7 @@ export const pages = Object.freeze(/** @type {const} */ ([
     'dungeon',
     'rooms',
     'items',
+    // 'names',
 ]));
 
 // -- Private Functions --------------------------------------------------------
@@ -49,11 +51,11 @@ export function getActiveNavItem(nav) {
  *
  * @returns {string}
  */
-export const getNav = (activePage) => [
-    button('Dungeon', 'navigate', { target: 'dungeon', active: activePage === 'dungeon' }),
-    button('Rooms',   'navigate', { target: 'rooms',   active: activePage === 'rooms' }),
-    button('Items',   'navigate', { target: 'items',   active: activePage === 'items' }),
-].join('');
+export const getNav = (activePage) => pages.map((page) =>
+    button(capitalize(page), 'navigate', {
+        target: page,
+        active: activePage === page,
+    })).join('');
 
 /**
  * Sets the active navigation target.
