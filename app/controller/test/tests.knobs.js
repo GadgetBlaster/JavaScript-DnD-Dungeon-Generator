@@ -5,7 +5,7 @@ import {
     testKnobs as knobs,
 } from '../knobs.js';
 
-import { pages } from '../../ui/nav.js';
+import { pages } from '../controller.js';
 
 /**
  * @param {import('../../unit/state.js').Utility} utility

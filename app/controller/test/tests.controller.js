@@ -2,6 +2,7 @@
 
 import {
     // Config
+    pages,
     testGenerators as generators,
 
     // Private Functions
@@ -18,7 +19,7 @@ import {
 } from '../controller.js';
 
 import { getKnobPanel } from '../../ui/form.js';
-import { getNav, pages } from '../../ui/nav.js';
+import { getNav } from '../../ui/nav.js';
 
 /** @typedef {import('../controller.js').Trigger} Trigger */
 

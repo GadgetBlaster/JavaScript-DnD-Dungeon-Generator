@@ -19,7 +19,7 @@ import { sizes } from '../attribute/size.js';
 /** @typedef {import('../item/item.js').ItemType} ItemType */
 /** @typedef {import('../item/furnishing').FurnitureQuantity} FurnitureQuantity */
 /** @typedef {import('../room/room.js').RoomType} RoomType */
-/** @typedef {import('../ui/nav').Page} Page */
+/** @typedef {import('./controller.js').Page} Page */
 
 // -- Types --------------------------------------------------------------------
 

@@ -1,22 +1,13 @@
 // @ts-check
 
-import { capitalize } from '../utility/tools.js';
 import { button } from './button.js';
+import { capitalize } from '../utility/tools.js';
+import { pages } from '../controller/controller.js';
 
 // -- Types --------------------------------------------------------------------
 
-/** @typedef {typeof pages[number]} Page */
+/** @typedef {import('../controller/controller.js').Page} Page */
 /** @typedef {import('../controller/controller.js').Sections} Sections */
-
-// -- Config -------------------------------------------------------------------
-
-// TODO move to controller
-export const pages = Object.freeze(/** @type {const} */ ([
-    'dungeon',
-    'rooms',
-    'items',
-    // 'names', // Disabled
-]));
 
 // -- Private Functions --------------------------------------------------------
 

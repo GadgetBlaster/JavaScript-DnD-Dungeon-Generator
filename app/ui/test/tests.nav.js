@@ -1,10 +1,8 @@
 // @ts-check
 
 import { parseHtml } from '../../utility/element.js';
+import { pages } from '../../controller/controller.js';
 import {
-    // Config
-    pages,
-
     // Public Functions
     getActiveNavItem,
     getNav,
