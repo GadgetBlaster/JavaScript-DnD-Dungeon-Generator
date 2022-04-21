@@ -18,13 +18,15 @@ import { toDash, toss } from '../utility/tools.js';
 
 // -- Config -------------------------------------------------------------------
 
-const submitButton = button('Generate', 'generate', {
-    size: 'large',
-    type: 'submit',
-});
+const maxExpandedColumns = 3;
 
 const expandButton = button(element('span', '&#x25C1'), 'expand', {
     size: 'auto',
+});
+
+const submitButton = button('Generate', 'generate', {
+    size: 'large',
+    type: 'submit',
 });
 
 // -- Private Functions --------------------------------------------------------
@@ -188,10 +190,13 @@ export function getKnobPanel(page, { config, isExpanded } = {}) {
         ? formatKnobSections(knobConfig)
         : formatKnobAccordions(knobConfig);
 
-    let knobContainerAttrs = isExpanded ? { 'data-grid': 3 } : {};
+    let columnCount          = Math.min(knobConfig.length, maxExpandedColumns);
+    let knobContainerAttrs   = isExpanded ? { 'data-grid': columnCount } : {};
+    let buttonContainerAttrs = { 'data-flex': 'between', 'data-spacing': 'default' };
 
-    let content = div(submitButton + expandButton, { 'data-flex': 'between', 'data-spacing': 'default' })
-        + div(knobs, knobContainerAttrs);
+    let content =
+        div(submitButton + expandButton, buttonContainerAttrs) +
+        div(knobs, knobContainerAttrs);
 
     return content;
 }
