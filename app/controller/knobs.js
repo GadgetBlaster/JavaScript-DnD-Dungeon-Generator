@@ -77,7 +77,7 @@ import { sizes } from '../attribute/size.js';
  * @prop {string} label
  * @prop {ConfigFields} name
  * @prop {string} desc
- * @prop {string} type
+ * @prop {string} type // TODO
  * @prop {number} [min]
  * @prop {number} [max]
  * @prop {any} [value] // TODO
@@ -86,10 +86,10 @@ import { sizes } from '../attribute/size.js';
  */
 
 /**
- * @typedef {object} KnobSet
+ * @typedef {object} KnobConfig
  *
  * @prop {string} label
- * @prop {Set<Page>} [pages]
+ * @prop {Set<Page>} pages
  * @prop {KnobSettings[]} fields
  */
 
@@ -118,7 +118,7 @@ const getValues = (values) => {
     ];
 };
 
-/** @type {KnobSet[]} */
+/** @type {KnobConfig[]} */
 const knobs = [
     {
         label : 'Dungeon Settings',
@@ -238,16 +238,18 @@ const knobs = [
     },
 ];
 
+export { knobs as testKnobs };
+
 // -- Private Functions --------------------------------------------------------
 
 /**
  * TODO
  *
- * @param {KnobSet} knobSet
+ * @param {KnobConfig} knobSet
  * @param {Page} page
  * @param {Config} [config]
  *
- * @returns {}
+ * @returns {KnobConfig}
  */
 const getFields = (knobSet, page, config) => {
     let fields = knobSet.fields.reduce((fieldsArray, knobSettings) => {
@@ -281,7 +283,7 @@ const getFields = (knobSet, page, config) => {
  * @param {Page} page
  * @param {Config} [config]
  *
- * @returns {KnobSet[]}
+ * @returns {KnobConfig[]}
  */
 export const getKnobConfig = (page, config) => {
     return knobs.reduce((knobSets, knobSet) => {
