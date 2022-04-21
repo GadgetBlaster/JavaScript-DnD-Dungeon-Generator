@@ -15,16 +15,17 @@ export default ({ assert, describe, it }) => {
     // -- Config ---------------------------------------------------------------
 
     describe('knobs', () => {
-        it('is an array of objects', () => {
+        it('is an array', () => {
             assert(knobs).isArray();
-            knobs.forEach((knobConfig) => {
-                assert(knobConfig).isObject();
-            });
         });
 
         describe('each knob config', () => {
-            it('has correct label, pages, and fields properties', () => {
-                knobs.forEach((knobConfig) => {
+            knobs.forEach((knobConfig) => {
+                it('is an object', () => {
+                    assert(knobConfig).isObject();
+                });
+
+                it('has label, pages, and fields properties', () => {
                     assert(knobConfig.label).isString();
 
                     [ ...knobConfig.pages ].forEach((page) => {

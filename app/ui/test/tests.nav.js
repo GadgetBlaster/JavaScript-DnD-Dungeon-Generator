@@ -1,6 +1,11 @@
 // @ts-check
 
+import { parseHtml } from '../../utility/element.js';
 import {
+    // Config
+    pages,
+
+    // Public Functions
     getActiveNavItem,
     getNav,
     setActiveNavItem,
@@ -30,23 +35,22 @@ export default ({ assert, describe, it }) => {
 
     describe('getNav()', () => {
         const nav = getNav('dungeon');
+        const navHtml = parseHtml(getNav('dungeon'));
 
         it('returns a string', () => {
             assert(nav).isString();
         });
 
-        it('contains 3 nav buttons', () => {
-            assert(/<button(.+?)data-target="dungeon"(.+?)>(.+?)<\/button>/.test(nav)).isTrue();
-            assert(/<button(.+?)data-target="rooms"(.+?)>(.+?)<\/button>/.test(nav)).isTrue();
-            assert(/<button(.+?)data-target="items"(.+?)>(.+?)<\/button>/.test(nav)).isTrue();
+        it('contains a nav button for each page', () => {
+            pages.forEach((page) => {
+                const button = navHtml.querySelector(`button[data-target="${page}"]`);
+                assert(Boolean(button)).isTrue();
+            });
         });
 
         it('sets the correct active item', () => {
-            const dungeonItem = nav.match(/<button(.+?)>Dungeon<\/button>/).pop();
-
-            assert(dungeonItem)
-                .stringIncludes('data-target="dungeon"')
-                .stringIncludes('data-active="true"');
+            assert(navHtml.querySelector('button[data-target="dungeon"]'))
+                .hasAttributes({ 'data-active': 'true' });
         });
     });
 
@@ -62,13 +66,13 @@ export default ({ assert, describe, it }) => {
             describe('given a page which is already the active page', () => {
                 setActiveNavItem(nav, 'dungeon');
 
-                it('should remain the active element', () => {
+                it('remains the active element', () => {
                     /** @type {HTMLElement} targetEl */
                     const targetEl = nav.querySelector('[data-target="dungeon"]');
                     assert(targetEl.dataset.active).equals('true');
                 });
 
-                it('should be the only active element', () => {
+                it('is the only active element', () => {
                     assert(nav.querySelectorAll('[data-active]').length).equals(1);
                 });
             });
@@ -76,13 +80,13 @@ export default ({ assert, describe, it }) => {
             describe('given a page that is not the active page]', () => {
                 setActiveNavItem(nav, 'items');
 
-                it('should set the target element as the active element', () => {
+                it('sets the target element as the active element', () => {
                     /** @type {HTMLElement} targetEl */
                     const targetEl = nav.querySelector('[data-target="items"]');
                     assert(targetEl.dataset.active).equals('true');
                 });
 
-                it('should be the only active element', () => {
+                it('is the only active element', () => {
                     assert(nav.querySelectorAll('[data-active]').length).equals(1);
                 });
             });

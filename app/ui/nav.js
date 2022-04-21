@@ -10,11 +10,12 @@ import { button } from './button.js';
 
 // -- Config -------------------------------------------------------------------
 
+// TODO move to controller
 export const pages = Object.freeze(/** @type {const} */ ([
     'dungeon',
     'rooms',
     'items',
-    // 'names',
+    // 'names', // Disabled
 ]));
 
 // -- Private Functions --------------------------------------------------------

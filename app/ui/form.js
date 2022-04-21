@@ -12,7 +12,7 @@ import { toDash, toss } from '../utility/tools.js';
 
 /** @typedef {import('../controller/controller.js').Action} Action */
 /** @typedef {import('../controller/knobs.js').Config} Config */
-/** @typedef {import('../controller/knobs.js').KnobSet} KnobSet */
+/** @typedef {import('../controller/knobs.js').KnobConfig} KnobConfig */
 /** @typedef {import('../controller/knobs.js').KnobSettings} KnobSettings */
 /** @typedef {import('./nav.js').Page} Page */
 
@@ -35,7 +35,7 @@ const expandButton = button(element('span', '&#x25C1'), 'expand', {
  *
  * @private
  *
- * @param {KnobSet[]} knobs
+ * @param {KnobConfig[]} knobs
  *
  * @returns {string}
  */
@@ -62,7 +62,7 @@ const formatKnobAccordions = (knobs) => knobs.map((knobSet, i) => {
  *
  * @private
  *
- * @param {KnobSet[]} knobs
+ * @param {KnobConfig[]} knobs
  *
  * @returns {string}
  */

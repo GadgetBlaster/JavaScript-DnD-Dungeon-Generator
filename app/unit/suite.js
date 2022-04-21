@@ -12,6 +12,7 @@ import tools   from '../utility/test/tests.tools.js';
 
 import controller from '../controller/test/tests.controller.js';
 import formatter from '../controller/test/tests.formatter.js';
+import knobs from '../controller/test/tests.knobs.js';
 
 import block      from '../ui/test/tests.block.js';
 import button     from '../ui/test/tests.button.js';
@@ -54,6 +55,7 @@ export default {
 
     '/app/controller/test/tests.controller.js': controller,
     '/app/controller/test/tests.formatter.js': formatter,
+    '/app/controller/test/tests.knobs.js': knobs,
 
     '/app/ui/test/tests.block.js'     : block,
     '/app/ui/test/tests.button.js'    : button,

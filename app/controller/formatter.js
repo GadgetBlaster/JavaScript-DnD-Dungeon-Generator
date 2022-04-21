@@ -216,6 +216,16 @@ export function formatItemsPage(itemSet) {
 }
 
 /**
+ * TODO
+ * @param {string} name
+ *
+ * @returns {string}
+ */
+export function formatName(name) {
+    return section(article(title(name)));
+}
+
+/**
  * Formats output for the room generation page.
  *
  * @param {Room[]} rooms

@@ -1,20 +1,13 @@
 // @ts-check
 
-import { toss, isRequired } from '../utility/tools.js';
-
+import { formatDungeonPage, formatItemsPage, formatName, formatRoomsPage } from './formatter.js';
+import { generateDungeon } from '../dungeon/generate.js';
+import { generateItems } from '../item/generate.js';
+import { generateName } from '../name/generate.js';
+import { generateRooms } from '../room/generate.js';
 import { getActiveNavItem, setActiveNavItem } from '../ui/nav.js';
 import { getFormData, getKnobPanel } from '../ui/form.js';
-
-import { generateDungeon } from '../dungeon/generate.js';
-
-import { generateItems } from '../item/generate.js';
-import { generateRooms } from '../room/generate.js';
-
-import {
-    formatDungeonPage,
-    formatItemsPage,
-    formatRoomsPage,
-} from './formatter.js';
+import { toss, isRequired } from '../utility/tools.js';
 
 // -- Type Imports -------------------------------------------------------------
 
@@ -53,10 +46,21 @@ const generators = {
     dungeon: dungeonGenerator,
     items  : itemGenerator,
     rooms  : roomGenerator,
+    names  : nameGenerator,
 };
 
 // -- Private Functions --------------------------------------------------------
 
+/**
+ * Generates and formats output for the dungeon generation page.
+ *
+ * @param {DungeonConfig} config
+ *
+ * @returns {string}
+ */
+function dungeonGenerator(config) {
+    return formatDungeonPage(generateDungeon(config));
+}
 /**
  * Generates and formats output for the item generation page.
  *
@@ -66,6 +70,17 @@ const generators = {
  */
 function itemGenerator(config) {
     return formatItemsPage(generateItems(config));
+}
+
+/**
+ * TODO
+ *
+ * @param {NameConfig} config
+ *
+ * @returns {string}
+ */
+function nameGenerator(config) {
+    return formatName(generateName(config));
 }
 
 /**
@@ -79,16 +94,6 @@ function roomGenerator(config) {
     return formatRoomsPage(generateRooms(config));
 }
 
-/**
- * Generates and formats output for the dungeon generation page.
- *
- * @param {DungeonConfig} config
- *
- * @returns {string}
- */
-function dungeonGenerator(config) {
-    return formatDungeonPage(generateDungeon(config));
-}
 
 /**
  * Get element dataset.
