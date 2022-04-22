@@ -6,7 +6,7 @@ import { parseHtml } from '../../utility/element.js';
 import {
     // Config
     pages,
-    testGenerators as generators,
+    testGetGenerator as getGenerator,
 
     // Private Functions
     testGetDataset       as getDataset,
@@ -48,7 +48,25 @@ export default ({ assert, describe, it }) => {
 
     // -- Private Functions ----------------------------------------------------
 
-    describe('generators', () => {
+    describe('getDataset()', () => {
+        describe('given an HTML element target', () => {
+            it('returns the element\'s data attributes', () => {
+                const divEl = document.createElement('div');
+
+                divEl.dataset.type = 'blackKnight';
+
+                assert(getDataset(divEl)).equalsObject({ type: 'blackKnight' });
+            });
+        });
+
+        describe('given a target that is not an HTML element', () => {
+            it('returns an empty object', () => {
+                assert(getDataset(null)).equalsObject({});
+            });
+        });
+    });
+
+    describe('getGenerator()', () => {
         /** @type {ItemConfig} itemSettings */
         const itemSettings = {
             itemCondition: 'average',
@@ -66,15 +84,41 @@ export default ({ assert, describe, it }) => {
             roomType             : 'room',
         };
 
-        it('includes a function for each page', () => {
+        it('returns a function for each page', () => {
             pages.forEach((page) => {
-                assert(generators[page]).isFunction();
+                assert(getGenerator(page)).isFunction();
             });
         });
 
-        describe('items', () => {
+        describe('given an invalid page', () => {
+            it('throws', () => {
+                // @ts-expect-error
+                assert(() => getGenerator('poop'))
+                    .throws('Invalid active page "poop" in getGenerator()');
+            });
+        });
+
+        describe('dungeon generator', () => {
+            it('returns a generated dungeon', () => {
+                const dungeonGen = getGenerator('dungeon');
+                const result     = dungeonGen({
+                    ...itemSettings,
+                    ...roomSettingsBase,
+                    dungeonComplexity : 2,
+                    dungeonConnections: 0,
+                    dungeonMaps       : 0,
+                    dungeonTraps      : 0,
+                });
+
+                // TODO
+                assert(/<svg(.+?)>(.+?)<\/svg>/.test(result)).isTrue();
+            });
+        });
+
+        describe('item generator', () => {
             it('returns generated items', () => {
-                const body = parseHtml(generators.items(itemSettings));
+                const itemGen = getGenerator('items');
+                const body    = parseHtml(itemGen(itemSettings));
 
                 const title = body.querySelector('h2');
                 const list  = body.querySelector('ul');
@@ -87,9 +131,10 @@ export default ({ assert, describe, it }) => {
             });
         });
 
-        describe('rooms', () => {
+        describe('room generator', () => {
             it('returns generated rooms', () => {
-                const body = parseHtml(generators.rooms({
+                const roomGen = getGenerator('rooms');
+                const body    = parseHtml(roomGen({
                     ...itemSettings,
                     ...roomSettingsBase,
                     roomCount : 1,
@@ -104,40 +149,8 @@ export default ({ assert, describe, it }) => {
                 assert(subtitles[1].textContent).stringIncludes('Items');
                 assert(subtitles[1].querySelector('span[data-info="true"]').textContent)
                     .stringIncludes('1');
+
                 assert(list.querySelectorAll('li').length).equals(1);
-            });
-        });
-
-        describe('dungeon', () => {
-            it('returns a generated dungeon', () => {
-                const result = generators.dungeon({
-                    ...itemSettings,
-                    ...roomSettingsBase,
-                    dungeonComplexity : 2,
-                    dungeonConnections: 0,
-                    dungeonMaps       : 0,
-                    dungeonTraps      : 0,
-                });
-
-                assert(/<svg(.+?)>(.+?)<\/svg>/.test(result)).isTrue();
-            });
-        });
-    });
-
-    describe('getDataset()', () => {
-        describe('given an HTML element target', () => {
-            it('returns the element\'s data attributes', () => {
-                const divEl = document.createElement('div');
-
-                divEl.dataset.type = 'blackKnight';
-
-                assert(getDataset(divEl)).equalsObject({ type: 'blackKnight' });
-            });
-        });
-
-        describe('given a target that is not an HTML element', () => {
-            it('returns an empty object', () => {
-                assert(getDataset(null)).equalsObject({});
             });
         });
     });
@@ -225,26 +238,6 @@ export default ({ assert, describe, it }) => {
         //     assert(/<h3>Items \([0-9]+\)<\/h3>/.test(contentEl.innerHTML)).isTrue();
         //     assert(/<ul(.+?)>(.+?)<\/ul>/.test(contentEl.innerHTML)).isTrue();
         // });
-
-        describe('when the page is invalid', () => {
-            it('throws', () => {
-                const contentEl = document.createElement('div');
-                const knobsEl   = document.createElement('form');
-
-                const badButton = document.createElement('button');
-                badButton.dataset.active = 'true';
-                badButton.dataset.target = 'evil-button';
-
-                const navEl = document.createElement('div');
-                navEl.appendChild(badButton);
-
-                assert(() => onGenerate({
-                    content: contentEl,
-                    knobs  : knobsEl,
-                    nav    : navEl,
-                })).throws('Invalid active page "evil-button" in onGenerate()');
-            });
-        });
     });
 
     describe('toggleAccordion()', () => {

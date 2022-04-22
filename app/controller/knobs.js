@@ -55,10 +55,10 @@ import { sizes } from '../attribute/size.js';
 /** @typedef {ItemConfig & RoomConfigBase & DungeonConfigBase} DungeonConfig */
 
 /**
- * @typedef {Partial<ItemConfig
- *     & RoomConfigBase
- *     & DungeonConfigBase
- * >} Config */
+ * @typedef {Partial<ItemConfig>
+ *     & Partial<RoomConfigBase>
+ *     & Partial<DungeonConfigBase>
+ * } Config */
 
 /** @typedef {keyof ItemConfig} ItemConfigFields */
 /** @typedef {keyof RoomConfigBase} RoomConfigFields */
