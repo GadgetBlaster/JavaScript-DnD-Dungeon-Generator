@@ -5,6 +5,7 @@ import {
     article,
     div,
     fieldset,
+    header,
     section,
 } from '../block.js';
 
@@ -12,6 +13,7 @@ const blocks = {
     article,
     div,
     fieldset,
+    header,
     section,
 };
 

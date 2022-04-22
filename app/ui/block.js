@@ -39,6 +39,16 @@ export const div = (content, attributes) => element('div', content, attributes);
 export const fieldset = (content, attributes) => element('fieldset', content, attributes);
 
 /**
+ * Returns an HTML header element string.
+ *
+ * @param {string} content
+ * @param {Attributes} [attributes]
+ *
+ * @returns {string}
+ */
+export const header = (content, attributes) => element('header', content, attributes);
+
+/**
  * Returns an HTML section element string.
  *
  * @param {string} content

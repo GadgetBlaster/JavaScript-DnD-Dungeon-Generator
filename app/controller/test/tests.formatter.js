@@ -2,6 +2,7 @@
 
 import {
     // Private Functions
+    testDetail as detail,
     testGetItemDescription as getItemDescription,
 } from '../formatter.js';
 
@@ -28,7 +29,7 @@ export default ({ assert, describe, it }) => {
         };
 
         describe('given an item count of 1', () => {
-            it('returns the item label', () => {
+            it('returns the item label with no count', () => {
                 assert(getItemDescription(item)).equals('Goblin juice');
             });
         });
@@ -36,7 +37,7 @@ export default ({ assert, describe, it }) => {
         describe('given an item count larger than 1', () => {
             it('returns the item label with the count appended', () => {
                 let desc = parseHtml(getItemDescription({ ...item, count: 12 }));
-                assert(desc.textContent).equals('Goblin juice ( 12 )');
+                assert(desc.textContent).equals('Goblin juice (12)');
             });
         });
     });

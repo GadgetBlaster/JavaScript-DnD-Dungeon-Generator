@@ -255,6 +255,7 @@ article header {
     border-bottom: 1px solid var(--color-gray-15);
     align-items: baseline;
     padding-bottom: var(--spacing-medium);
+    margin-bottom: var(--spacing-medium);
 }
 
 article article {

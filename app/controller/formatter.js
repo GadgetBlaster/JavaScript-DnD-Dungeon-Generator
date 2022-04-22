@@ -1,9 +1,8 @@
 // @ts-check
 
-import { article, section } from '../ui/block.js';
+import { article, header, section } from '../ui/block.js';
 import { drawLegend } from '../dungeon/legend.js';
 import { capitalize, isRequired } from '../utility/tools.js';
-import { element } from '../utility/element.js';
 import { indicateItemRarity } from '../item/item.js';
 import { list } from '../ui/list.js';
 import { paragraph, span, subtitle, title } from '../ui/typography.js';
@@ -30,12 +29,13 @@ import {
 // -- Private Functions --------------------------------------------------------
 
 /**
- * TODO tets
+ * Returns an html element span string containing info detail text.
+ *
  * @param {string} content
  *
  * @returns {string}
  */
-const detail = (content) => span(` ( ${content} )`, { 'data-info': true });
+const detail = (content) => span(` (${content})`, { 'data-info': true });
 
 /**
  * Get item description
@@ -76,6 +76,22 @@ function getItemDescription(item) {
 }
 
 /**
+ * Returns an item set's total item count as a string.
+ *
+ * @private
+ *
+ * @param {ItemSet} itemSet
+ *
+ * @returns {string}
+ */
+function getItemTotal({ containers, items }) {
+    let itemCount = items.reduce((tally, { count }) => tally + count, 0);
+    let containerItemCount = containers.reduce((tally, { count }) => tally + count, 0);
+
+    return (itemCount + containerItemCount).toString();
+}
+
+/**
  * Formats output for the item display.
  *
  * @private
@@ -94,8 +110,6 @@ function formatItems(itemSet) {
         rarityUniformity,
     } = itemSet;
 
-    let total = items.reduce((tally, { count }) => tally + count, 0) +
-        itemSet.containers.reduce((tally, { count }) => tally + count, 0);
 
     let itemsList = items.length ? list(items.map((item) => getItemDescription(item))) : '';
     let containerList = '';
@@ -121,10 +135,9 @@ function formatItems(itemSet) {
         description += paragraph(`Item Rarity: ${capitalize(rarityUniformity)}`);
     }
 
-    return subtitle('Items' + detail(total)) +
-        description +
-        containerList +
-        itemsList;
+    return description
+        + containerList
+        + itemsList;
 }
 
 /**
@@ -138,7 +151,10 @@ function formatItems(itemSet) {
  * @returns {string}
  */
 function formatRoom(room, doors) {
-    let { roomNumber } = room;
+    let {
+        roomNumber,
+        itemSet,
+    } = room;
 
     let {
         description,
@@ -147,21 +163,24 @@ function formatRoom(room, doors) {
         type,
     } = getRoomDescription(room, doors);
 
-    let header = element('header', title(roomTitle)
+    let articleHeader = header(title(roomTitle)
         + (dimensions ? span(dimensions) : ''));
 
-    let doorList  = doors ? getDoorwayList(doors, roomNumber) : '';
-    let items     = formatItems(room.itemSet);
-    let map       = room.map ? getMapDescription() : '';
-    let keys      = room.keys ? getKeyDescription(room.keys) : '';
-    let traps     = room.traps ? subtitle('Traps' + detail(room.traps.length)) + list(room.traps) : '';
+    let doorList = doors ? getDoorwayList(doors, roomNumber) : '';
 
-    return article(header
+    let map   = room.map ? getMapDescription() : '';
+    let keys  = room.keys ? getKeyDescription(room.keys) : '';
+    let traps = room.traps
+        ? subtitle('Traps' + detail(room.traps.length.toString())) + list(room.traps)
+        : '';
+
+    return article(articleHeader
         + (type ? paragraph(`Type: ${type}`) : '')
         + subtitle('Description')
         + paragraph(description)
         + doorList
-        + items
+        + subtitle('Items' + detail(getItemTotal(itemSet)))
+        + formatItems(itemSet)
         + map
         + keys
         + traps
@@ -186,6 +205,7 @@ function formatRoomGrid(rooms, doors = {}) {
 }
 
 export {
+    detail as testDetail,
     getItemDescription as testGetItemDescription,
 };
 
@@ -212,7 +232,10 @@ export function formatDungeonPage(dungeon) {
  * @returns {string}
  */
 export function formatItemsPage(itemSet) {
-    return section(article(formatItems(itemSet)));
+    let content = header(title('Items' + detail(getItemTotal(itemSet))))
+        + formatItems(itemSet);
+
+    return section(article(content));
 }
 
 /**

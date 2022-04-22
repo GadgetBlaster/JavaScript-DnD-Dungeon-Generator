@@ -1,5 +1,8 @@
 // @ts-check
 
+import { getKnobPanel } from '../../ui/form.js';
+import { getNav } from '../../ui/nav.js';
+import { parseHtml } from '../../utility/element.js';
 import {
     // Config
     pages,
@@ -17,9 +20,6 @@ import {
     attachClickDelegate,
     getTriggers,
 } from '../controller.js';
-
-import { getKnobPanel } from '../../ui/form.js';
-import { getNav } from '../../ui/nav.js';
 
 /** @typedef {import('../controller.js').Trigger} Trigger */
 
@@ -74,25 +74,37 @@ export default ({ assert, describe, it }) => {
 
         describe('items', () => {
             it('returns generated items', () => {
-                const result = generators.items(itemSettings);
-                // TODO make less brittle to HTML changes
-                assert(result).stringIncludes('<h3>Items<span data-info="true"> ( 1 )</span></h3>');
-                assert(/<ul(.+?)>(.+?)<\/ul>/.test(result)).isTrue();
+                const body = parseHtml(generators.items(itemSettings));
+
+                const title = body.querySelector('h2');
+                const list  = body.querySelector('ul');
+
+                assert(title.textContent).stringIncludes('Items');
+                assert(title.querySelector('span[data-info="true"]').textContent)
+                    .stringIncludes('1');
+
+                assert(list.querySelectorAll('li').length).equals(1);
             });
         });
 
         describe('rooms', () => {
             it('returns generated rooms', () => {
-                const result = generators.rooms({
+                const body = parseHtml(generators.rooms({
                     ...itemSettings,
                     ...roomSettingsBase,
                     roomCount : 1,
-                });
+                }));
 
-                assert(result).stringIncludes('<h2>Room</h2>');
-                // TODO make less brittle to HTML changes
-                assert(result).stringIncludes('<h3>Items<span data-info="true"> ( 1 )</span></h3>');
-                assert(/<ul(.+?)>(.+?)<\/ul>/.test(result)).isTrue();
+                const title     = body.querySelector('h2');
+                const subtitles = body.querySelectorAll('h3');
+                const list      = body.querySelector('ul');
+
+                assert(title.textContent).equals('Room');
+                assert(subtitles[0].textContent).stringIncludes('Description');
+                assert(subtitles[1].textContent).stringIncludes('Items');
+                assert(subtitles[1].querySelector('span[data-info="true"]').textContent)
+                    .stringIncludes('1');
+                assert(list.querySelectorAll('li').length).equals(1);
             });
         });
 
