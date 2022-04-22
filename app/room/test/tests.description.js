@@ -13,7 +13,7 @@ import {
     testGetRoomDoorwayDescription    as getRoomDoorwayDescription,
 
     // Public Functions
-    getDoorwayList,
+    getDoorwayDescriptions,
     getKeyDescription,
     getMapDescription,
     getRoomDescription,
@@ -595,12 +595,12 @@ export default ({ assert, describe, it }) => {
 
     // -- Public Functions -----------------------------------------------------
 
-    describe('getDoorwayList()', () => {
+    describe('getDoorwayDescriptions()', () => {
         describe('given no room number', () => {
             it('throws', () => {
                 // @ts-expect-error
-                assert(() => getDoorwayList([]))
-                    .throws('roomNumber is required in getDoorwayList()');
+                assert(() => getDoorwayDescriptions([]))
+                    .throws('roomNumber is required in getDoorwayDescriptions()');
             });
         });
 
@@ -615,8 +615,8 @@ export default ({ assert, describe, it }) => {
                 }];
 
                 // @ts-expect-error
-                assert(() => getDoorwayList(config, 216))
-                    .throws('Invalid roomNumber for door connections in getDoorwayList()');
+                assert(() => getDoorwayDescriptions(config, 216))
+                    .throws('Invalid roomNumber for door connections in getDoorwayDescriptions()');
             });
         });
 
@@ -638,7 +638,7 @@ export default ({ assert, describe, it }) => {
                 },
             ];
 
-            const doorwayList = getDoorwayList(config, 12);
+            const doorwayList = getDoorwayDescriptions(config, 12);
 
             it('includes an html subtitle with the number of doorways in parenthesis', () => {
                 assert(doorwayList).stringIncludes('<h3>Doorways (2)</h3>');
@@ -664,7 +664,7 @@ export default ({ assert, describe, it }) => {
             }];
 
             it('includes "leading out of the dungeon"', () => {
-                assert(getDoorwayList(config, 3)).stringIncludes('leading out of the dungeon');
+                assert(getDoorwayDescriptions(config, 3)).stringIncludes('leading out of the dungeon');
             });
         });
 
@@ -679,7 +679,7 @@ export default ({ assert, describe, it }) => {
                 }];
 
                 it('emphasizes the list item with `<strong>`', () => {
-                    assert(getDoorwayList(config, 2))
+                    assert(getDoorwayDescriptions(config, 2))
                         .stringIncludes(`<strong>East to Room 1 (<em>${type}</em>)</strong>`);
                 });
             });

@@ -7,7 +7,7 @@ import { indicateItemRarity } from '../item/item.js';
 import { list } from '../ui/list.js';
 import { paragraph, span, subtitle, title } from '../ui/typography.js';
 import {
-    getDoorwayList,
+    getDoorwayDescriptions,
     getKeyDescription,
     getMapDescription,
     getRoomDescription,
@@ -166,7 +166,7 @@ function formatRoom(room, doors) {
     let articleHeader = header(title(roomTitle)
         + (dimensions ? span(dimensions) : ''));
 
-    let doorList = doors ? getDoorwayList(doors, roomNumber) : '';
+    let doorList = doors ? getDoorwayDescriptions(doors, roomNumber) : '';
 
     let map   = room.map ? getMapDescription() : '';
     let keys  = room.keys ? getKeyDescription(room.keys) : '';
