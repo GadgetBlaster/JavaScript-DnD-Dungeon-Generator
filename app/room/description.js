@@ -139,20 +139,20 @@ function getContentRarityDetail(rarity) {
  */
 function getDescription(config) {
     let {
-        itemQuantity:  itemQuantity,
-        roomCondition: roomCondition,
-        roomSize:      roomSize,
-        roomType:      roomType = 'room',
+        itemQuantity,
+        roomCondition,
+        roomSize,
+        roomType = 'room', // Require
     } = config;
 
     let typeString = getRoomTypeLabel(roomType);
 
-    if (roomSize && roomSize === 'medium') {
-        roomSize = 'medium sized';
-    }
+    let sizeDescription = roomSize === 'medium'
+        ? 'medium sized'
+        : roomSize;
 
     let empty    = itemQuantity === 'zero' ? 'empty' : '';
-    let desc     = [ roomSize, empty, typeString ].filter(Boolean).join(' ');
+    let desc     = [ sizeDescription, empty, typeString ].filter(Boolean).join(' ');
     let sentence = `You enter ${indefiniteArticle(desc)} ${desc}`;
 
     if (roomCondition && roomCondition !== 'average') {
@@ -174,7 +174,7 @@ function getDescription(config) {
  */
 function getDoorwayDescription({ type, size, locked }) {
     if (locked && !lockable.has(type)) {
-        toss(`invalid locked setting for non-lockable door type "${type}" in getDoorwayDescription()`);
+        toss(`Invalid locked setting for non-lockable door type "${type}" in getDoorwayDescription()`);
     }
 
     let append = appendDoorway.has(type) && 'doorway';
@@ -440,7 +440,7 @@ export const getMapDescription = () => {
  */
 export function getRoomDescription(room, roomDoors) {
     let {
-        settings,
+        settings: config, // TODO rename property to config
         roomNumber,
         size: roomDimensions,
     } = room;
@@ -448,7 +448,7 @@ export function getRoomDescription(room, roomDoors) {
     let {
         roomCount: roomCount,
         roomType,
-    } = settings;
+    } = config;
 
     let number = roomCount > 1 ? ` ${roomNumber}` : '';
     let title  = `Room${number}`;
@@ -469,10 +469,10 @@ export function getRoomDescription(room, roomDoors) {
     }
 
     let description = [
-        getDescription(settings),
-        ...getEnvironmentDescription(settings),
-        getContentDescription(settings),
-        getItemConditionDescription(settings),
+        getDescription(config),
+        ...getEnvironmentDescription(config),
+        getContentDescription(config),
+        getItemConditionDescription(config),
         ...(roomDoors ? [ getRoomDoorwayDescription(roomDoors, roomNumber) ] : []),
     ].filter(Boolean).join('. ')+'.';
 

@@ -29,6 +29,7 @@ import { indicateRarity, rarities } from '../../attribute/rarity.js';
 import { lockable, appendDoorway } from '../door.js';
 import { quantities } from '../../attribute/quantity.js';
 
+/** @typedef {import('../../controller/knobs.js').ItemConfig} ItemConfig */
 /** @typedef {import('../../controller/knobs.js').RoomConfig} RoomConfig */
 /** @typedef {import('../door.js').DoorType} DoorType */
 
@@ -155,29 +156,46 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getDescription()', () => {
-        describe('given a room type', () => {
+        /** @type {RoomConfig} */
+        const roomConfig = {
+            itemQuantity: 'one',
+            itemCondition: 'average',
+            itemRarity: 'random',
+            itemType: 'random',
+            roomCount: 1,
+            roomType: 'room',
+            roomSize: 'medium',
+            roomCondition: 'average',
+            roomFurnitureQuantity: 'none',
+        };
+
+        describe('given a room type of "room"', () => {}); // TODO
+
+        describe('given a room type other than "room"', () => {
             it('returns a description including the room type', () => {
-                assert(getDescription({ roomType: 'library' }))
+                assert(getDescription({ ...roomConfig, roomType: 'library' }))
                     .stringIncludes('library');
             });
         });
 
         describe('given a room size', () => {
             it('returns a description including the room size', () => {
-                assert(getDescription({ roomSize: 'large' }))
+                assert(getDescription({ ...roomConfig, roomSize: 'large' }))
                     .stringIncludes('large room');
             });
         });
 
         describe('given a room size of "medium"', () => {
             it('returns a description including "medium sized room"', () => {
-                assert(getDescription({ roomSize: 'medium' }))
+                assert(getDescription({ ...roomConfig, roomSize: 'medium' }))
                     .stringIncludes('medium sized room');
             });
 
-            describe('given a room type', () => {
-                it(`returns a description including "medium sized" and the room type`, () => {
+            describe('given a room type other than "room"', () => {
+                it('returns a description including "medium sized" and the room type', () => {
+                    /** @type {RoomConfig} */
                     const config = {
+                        ...roomConfig,
                         roomType: 'smithy',
                         roomSize: 'medium',
                     };
@@ -188,17 +206,19 @@ export default ({ assert, describe, it }) => {
             });
         });
 
-        describe('given item "zero"', () => {
-            it('returns a description including "an empty room"', () => {
-                assert(getDescription({ itemQuantity: 'zero' }))
-                    .stringIncludes('an empty room');
+        describe('given an item quantity of "zero"', () => {
+            it('returns a description including "empty room"', () => {
+                assert(getDescription({ ...roomConfig, itemQuantity: 'zero' }))
+                    .stringIncludes('empty room');
             });
 
-            describe('given a room type', () => {
+            describe('given a room type other than "room"', () => {
                 it('returns a description including "empty" and the room type', () => {
+                    /** @type {RoomConfig} */
                     const config = {
-                        roomType    : 'study',
+                        ...roomConfig,
                         itemQuantity: 'zero',
+                        roomType    : 'study',
                     };
 
                     assert(getDescription(config))
@@ -208,7 +228,9 @@ export default ({ assert, describe, it }) => {
 
             describe('given a room size', () => {
                 it('returns a description including the size and "empty room"', () => {
+                    /** @type {RoomConfig} */
                     const config = {
+                        ...roomConfig,
                         itemQuantity: 'zero',
                         roomSize    : 'massive',
                     };
@@ -218,9 +240,11 @@ export default ({ assert, describe, it }) => {
                 });
             });
 
-            describe('given a room type and size', () => {
+            describe('given a room type other than "room" and a room size', () => {
                 it('returns a description including the size, "empty", and the room type', () => {
+                    /** @type {RoomConfig} */
                     const config = {
+                        ...roomConfig,
                         itemQuantity: 'zero',
                         roomSize    : 'large',
                         roomType    : 'treasury',
@@ -235,16 +259,14 @@ export default ({ assert, describe, it }) => {
         describe('given a room condition', () => {
             describe('given a room condition of "average"', () => {
                 it('excludes "condition" in the room description', () => {
-                    assert(getDescription({ roomCondition: 'average' }))
+                    assert(getDescription({ ...roomConfig, roomCondition: 'average' }))
                         .stringExcludes('condition');
                 });
             });
 
             describe('given a room condition other than "average"', () => {
                 it(`returns a description including the condition`, () => {
-                    const settings = { roomCondition: 'busted' };
-
-                    assert(getDescription(settings)).stringIncludes('busted');
+                    assert(getDescription({ ...roomConfig, roomCondition: 'busted' })).stringIncludes('busted');
                 });
             });
         });
@@ -260,7 +282,7 @@ export default ({ assert, describe, it }) => {
         describe('when locked is true for a non-lockable door type', () => {
             it('throws', () => {
                 assert(() => getDoorwayDescription({ ...door, type: 'archway', locked: true }))
-                    .throws(`invalid locked setting for non-lockable door type "archway" in getDoorwayDescription()`);
+                    .throws(`Invalid locked setting for non-lockable door type "archway" in getDoorwayDescription()`);
             });
         });
 
