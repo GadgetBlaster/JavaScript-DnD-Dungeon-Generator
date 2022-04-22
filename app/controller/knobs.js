@@ -55,10 +55,10 @@ import { sizes } from '../attribute/size.js';
 /** @typedef {ItemConfig & RoomConfigBase & DungeonConfigBase} DungeonConfig */
 
 /**
- * @typedef {ItemConfig
- *     & Partial<RoomConfigBase>
- *     & Partial<DungeonConfigBase>
- * } Config */
+ * @typedef {Partial<ItemConfig
+ *     & RoomConfigBase
+ *     & DungeonConfigBase
+ * >} Config */
 
 /** @typedef {keyof ItemConfig} ItemConfigFields */
 /** @typedef {keyof RoomConfigBase} RoomConfigFields */
@@ -72,7 +72,7 @@ import { sizes } from '../attribute/size.js';
  */
 
 /**
- * @typedef {object} KnobSettings
+ * @typedef {object} KnobFieldConfig
  *
  * @prop {string} label
  * @prop {ConfigFields} name
@@ -80,8 +80,8 @@ import { sizes } from '../attribute/size.js';
  * @prop {string} type // TODO
  * @prop {number} [min]
  * @prop {number} [max]
- * @prop {any} [value] // TODO
- * @prop {any[]} [values] // TODO
+ * @prop {number | string} [value]
+ * @prop {string[]} [values]
  * @prop {Set<Page>} [pages]
  */
 
@@ -90,7 +90,7 @@ import { sizes } from '../attribute/size.js';
  *
  * @prop {string} label
  * @prop {Set<Page>} pages
- * @prop {KnobSettings[]} fields
+ * @prop {KnobFieldConfig[]} fields
  */
 
 // -- Config -------------------------------------------------------------------
@@ -119,7 +119,7 @@ const getValues = (values) => {
 };
 
 /** @type {KnobConfig[]} */
-const knobs = [
+export const knobConfig = [
     {
         label : 'Dungeon Settings',
         pages : new Set([ 'dungeon' ]),
@@ -238,12 +238,12 @@ const knobs = [
     },
 ];
 
-export { knobs as testKnobs };
-
 // -- Private Functions --------------------------------------------------------
 
 /**
- * TODO
+ * Returns a knob config with its fields filtered by the given page. Fields will
+ * only be filtered when a field's `pages` property is defined. Otherwise the
+ * field is included on all pages.
  *
  * @param {KnobConfig} knobSet
  * @param {Page} page
@@ -252,6 +252,7 @@ export { knobs as testKnobs };
  * @returns {KnobConfig}
  */
 const getFields = (knobSet, page, config) => {
+    // TODO filter?
     let fields = knobSet.fields.reduce((fieldsArray, knobSettings) => {
         if (knobSettings.pages && !knobSettings.pages.has(page)) {
             return fieldsArray;
@@ -274,18 +275,20 @@ const getFields = (knobSet, page, config) => {
     };
 };
 
+export { getFields as testGetFields };
+
 // -- Public Functions ---------------------------------------------------------
 
-
 /**
- * TODO
+ * Returns an array of knob configs for the given page.
  *
+ * @param {KnobConfig[]} knobs
  * @param {Page} page
  * @param {Config} [config]
  *
  * @returns {KnobConfig[]}
  */
-export const getKnobConfig = (page, config) => {
+export const getKnobConfig = (knobs, page, config) => {
     return knobs.reduce((knobSets, knobSet) => {
         if (!knobSet.pages.has(page)) {
             return knobSets;

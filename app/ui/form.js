@@ -3,7 +3,7 @@
 import { button, infoLabel } from './button.js';
 import { div, fieldset, section } from './block.js';
 import { element } from '../utility/element.js';
-import { getKnobConfig, typeSelect, typeNumber, typeRange } from '../controller/knobs.js';
+import { knobConfig, getKnobConfig, typeSelect, typeNumber, typeRange } from '../controller/knobs.js';
 import { paragraph, small, title } from './typography.js';
 import { select, input, slider, fieldLabel } from './field.js';
 import { toDash, toss } from '../utility/tools.js';
@@ -13,7 +13,7 @@ import { toDash, toss } from '../utility/tools.js';
 /** @typedef {import('../controller/controller.js').Action} Action */
 /** @typedef {import('../controller/knobs.js').Config} Config */
 /** @typedef {import('../controller/knobs.js').KnobConfig} KnobConfig */
-/** @typedef {import('../controller/knobs.js').KnobSettings} KnobSettings */
+/** @typedef {import('../controller/knobs.js').KnobFieldConfig} KnobFieldConfig */
 /** @typedef {import('./nav.js').Page} Page */
 
 // -- Config -------------------------------------------------------------------
@@ -83,7 +83,7 @@ const formatKnobSections = (knobs) => knobs.map((knobSet) => {
  * @private
  * @throws
  *
- * @param {KnobSettings[]} fields
+ * @param {KnobFieldConfig[]} fields
  *
  * @returns {string}
  */
@@ -120,7 +120,7 @@ const getInputElements = (knobContainer) => [ ...knobContainer.querySelectorAll(
  * @private
  * @throws
  *
- * @param {KnobSettings} settings
+ * @param {KnobFieldConfig} settings
  *
  * @returns {string}
  */
@@ -185,18 +185,18 @@ export function getFormData(knobContainer) {
  * @returns {string}
  */
 export function getKnobPanel(page, { config, isExpanded } = {}) {
-    let knobConfig = getKnobConfig(page, config);
-    let knobs = isExpanded
-        ? formatKnobSections(knobConfig)
-        : formatKnobAccordions(knobConfig);
+    let knobs = getKnobConfig(knobConfig, page, config);
+    let knobPanel = isExpanded
+        ? formatKnobSections(knobs)
+        : formatKnobAccordions(knobs);
 
-    let columnCount          = Math.min(knobConfig.length, maxExpandedColumns);
+    let columnCount          = Math.min(knobs.length, maxExpandedColumns);
     let knobContainerAttrs   = isExpanded ? { 'data-grid': columnCount } : {};
     let buttonContainerAttrs = { 'data-flex': 'between', 'data-spacing': 'default' };
 
     let content =
         div(submitButton + expandButton, buttonContainerAttrs) +
-        div(knobs, knobContainerAttrs);
+        div(knobPanel, knobContainerAttrs);
 
     return content;
 }
