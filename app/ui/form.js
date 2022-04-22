@@ -3,7 +3,7 @@
 import { button, infoLabel } from './button.js';
 import { div, fieldset, section } from './block.js';
 import { element } from '../utility/element.js';
-import { knobConfig, getKnobConfig, typeSelect, typeNumber, typeRange } from '../controller/knobs.js';
+import { knobConfig, getKnobConfig } from '../controller/knobs.js';
 import { paragraph, small, title } from './typography.js';
 import { select, input, slider, fieldLabel } from './field.js';
 import { toDash, toss } from '../utility/tools.js';
@@ -135,13 +135,13 @@ function getKnob(settings) {
     } = settings;
 
     switch (type) {
-        case typeSelect:
+        case 'select':
             return select(name, values, value);
 
-        case typeNumber:
+        case 'number':
             return input(name, { type: 'number' , value });
 
-        case typeRange:
+        case 'range':
             return slider(name, { min, max, value });
 
         default:

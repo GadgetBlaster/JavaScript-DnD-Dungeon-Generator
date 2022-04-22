@@ -11,13 +11,11 @@ import {
     getKnobPanel,
 } from '../form.js';
 
-import { typeSelect, typeNumber, typeRange } from '../../controller/knobs.js';
-
 const fakeKnob = {
     label: 'Tools',
     name: 'dungeonComplexity',
     desc: 'How complex should it be?',
-    type: typeRange,
+    type: 'range',
 };
 
 /**
@@ -60,9 +58,9 @@ export default ({ assert, describe, it }) => {
         describe('given an array of fields', () => {
             /** @type {import('../../controller/knobs.js').KnobSettings[]} */
             const fields = [
-                { name: 'roomSize',     label: 'Room Size',     desc: 'Room Size?',     type: typeNumber },
-                { name: 'itemQuantity', label: 'Item Quantity', desc: 'Item Quantity?', type: typeRange  },
-                { name: 'dungeonTraps', label: 'Traps',         desc: 'Traps?',         type: typeSelect, values: [ '1' ] },
+                { name: 'roomSize',     label: 'Room Size',     desc: 'Room Size?',     type: 'number' },
+                { name: 'itemQuantity', label: 'Item Quantity', desc: 'Item Quantity?', type: 'range' },
+                { name: 'dungeonTraps', label: 'Traps',         desc: 'Traps?',         type: 'select', values: [ '1' ] },
             ];
 
             const result = formatKnobAccordions([ { label: 'Shovels', fields } ]);
@@ -133,7 +131,7 @@ export default ({ assert, describe, it }) => {
 
 
         describe('given settings for a single knob', () => {
-            const knob = { name: 'size', label: 'Size', desc: 'Pi', type: typeNumber };
+            const knob = { name: 'size', label: 'Size', desc: 'Pi', type: 'number' };
 
             describe('given a name, label, and type', () => {
                 const result = getFields([ knob ]);
@@ -170,9 +168,9 @@ export default ({ assert, describe, it }) => {
 
         describe('given settings for multiple knobs', () => {
             const result = getFields([
-                { name: 'size',        label: 'Size',        desc: 'Size?',        type: typeNumber                  },
-                { name: 'shape',       label: 'Shape',       desc: 'Shape?',       type: typeRange                   },
-                { name: 'squishiness', label: 'Squishiness', desc: 'Squishiness?', type: typeSelect, values: [ '1' ] },
+                { name: 'size',        label: 'Size',        desc: 'Size?',        type: 'number' },
+                { name: 'shape',       label: 'Shape',       desc: 'Shape?',       type: 'range' },
+                { name: 'squishiness', label: 'Squishiness', desc: 'Squishiness?', type: 'select', values: [ '1' ] },
             ]);
 
             it('should include an html input string for each knob setting', () => {
@@ -193,27 +191,28 @@ export default ({ assert, describe, it }) => {
     describe('getKnob()', () => {
         describe('given an invalid type', () => {
             it('should throw', () => {
+                // @ts-expect-error
                 assert(() => getKnob({ ...fakeKnob, type: 'junk' }))
                     .throws('Invalid knob type');
             });
         });
 
-        describe('given a type of `typeSelect`', () => {
+        describe('given a type of "select"', () => {
             it('should return an html select element string with the given values as options', () => {
-                const knob = getKnob({ ...fakeKnob, type: typeSelect, values: [ 'toast' ] });
+                const knob = getKnob({ ...fakeKnob, type: 'select', values: [ 'toast' ] });
                 assert(/<select(.*?)><option(.+?)value="toast"(.*?)>toast<\/option><\/select>/.test(knob)).isTrue();
             });
         });
 
-        describe('given a type of `typeNumber`', () => {
+        describe('given a type of "number"', () => {
             it('should return an html input element string', () => {
-                assert(getKnob({ ...fakeKnob, type: typeNumber })).isElementTag('input');
+                assert(getKnob({ ...fakeKnob, type: 'number' })).isElementTag('input');
             });
         });
 
-        describe('given a type of `typeRange`', () => {
+        describe('given a type of "range"', () => {
             it('should return an html input element string', () => {
-                assert(getKnob({ ...fakeKnob, type: typeRange })).isElementTag('input');
+                assert(getKnob({ ...fakeKnob, type: 'range' })).isElementTag('input');
             });
         });
     });

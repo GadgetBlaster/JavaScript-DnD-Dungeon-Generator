@@ -77,7 +77,7 @@ import { sizes } from '../attribute/size.js';
  * @prop {string} label
  * @prop {ConfigFields} name
  * @prop {string} desc
- * @prop {string} type // TODO
+ * @prop {"number" | "range" | "select"} type
  * @prop {number} [min]
  * @prop {number} [max]
  * @prop {number | string} [value]
@@ -95,29 +95,6 @@ import { sizes } from '../attribute/size.js';
 
 // -- Config -------------------------------------------------------------------
 
-// TODO Replace with type checking
-export const typeSelect = 'select';
-export const typeNumber = 'number';
-export const typeRange  = 'range';
-
-const descEqualDistribution = 'Random probability: Equally distributed.';
-const descComplexity        = 'Controls dungeon size and room count.';
-const descConnections       = [
-    'Probably that rooms will be connected to adjacent rooms.',
-    'Setting to 0% makes dungeons linear.',
-    'Setting to 100% places doorways between every adjacent room.',
-].join(' ');
-const descFurnitureQuantity = 'How furnished the dungeon‘s rooms are.';
-const descMaps              = 'Number of dungeon maps that can be found.';
-const descTraps             = 'Trap randomization frequency.';
-
-const getValues = (values) => {
-    return [
-        'random',
-        ...values,
-    ];
-};
-
 /** @type {KnobConfig[]} */
 export const knobConfig = [
     {
@@ -127,8 +104,8 @@ export const knobConfig = [
             {
                 label : 'Complexity',
                 name  : 'dungeonComplexity',
-                desc  : descComplexity,
-                type  : typeRange,
+                desc  : 'Controls dungeon size and room count.',
+                type  : 'range',
                 min   : 2,
                 max   : 11,
                 value : 5,
@@ -136,8 +113,10 @@ export const knobConfig = [
             {
                 label : 'Connections',
                 name  : 'dungeonConnections',
-                desc  : descConnections,
-                type  : typeRange,
+                desc  : 'Probably that rooms will be connected to adjacent rooms. '
+                    + 'Setting to 0% makes dungeons linear. '
+                    + 'Setting to 100% places doorways between adjacent rooms.',
+                type  : 'range',
                 min   : 0,
                 max   : 100,
                 value : 12,
@@ -145,15 +124,15 @@ export const knobConfig = [
             {
                 label : 'Maps',
                 name  : 'dungeonMaps',
-                desc  : descMaps,
-                type  : typeNumber,
+                desc  : 'Number of maps to scatter throughout the dungeon.',
+                type  : 'number',
                 value : 2,
             },
             {
                 label : 'Traps',
                 name  : 'dungeonTraps',
-                desc  : descTraps,
-                type  : typeRange,
+                desc  : 'Trap randomization frequency.',
+                type  : 'range',
                 min   : 0,
                 max   : 4,
                 value : 1,
@@ -168,37 +147,37 @@ export const knobConfig = [
                 label : 'Rooms',
                 name  : 'roomCount',
                 desc  : 'Number of rooms to generate',
-                type  : typeNumber,
+                type  : 'number',
                 pages : new Set([ 'rooms' ]),
                 value : 1,
             },
             {
                 label : 'Type',
                 name  : 'roomType',
-                desc  : descEqualDistribution,
-                type  : typeSelect,
-                values: getValues(roomTypes),
+                desc  : 'Random probability: Equally distributed.', // TODO
+                type  : 'select',
+                values: [ 'random', ...roomTypes ],
             },
             {
                 label :'Condition',
                 name  : 'roomCondition',
                 desc  : conditionProbability.description,
-                type  : typeSelect,
-                values: getValues(conditions),
+                type  : 'select',
+                values: [ 'random', ...conditions ],
             },
             {
                 label : 'Size',
                 name  : 'roomSize',
-                desc  : descEqualDistribution,
-                type  : typeSelect,
-                values: getValues(sizes),
+                desc  : 'Random probability: Equally distributed.', // TODO
+                type  : 'select',
+                values: [ 'random', ...sizes ],
             },
             {
                 label : 'Furnishing',
                 name  : 'roomFurnitureQuantity',
-                desc  : descFurnitureQuantity + ' ' + furnitureQuantityProbability.description,
-                type  : typeSelect,
-                values: getValues(furnitureQuantities),
+                desc  : 'How furnished the rooms are. ' + furnitureQuantityProbability.description,
+                type  : 'select',
+                values: [ 'random', ...furnitureQuantities ],
             },
         ],
     },
@@ -210,29 +189,29 @@ export const knobConfig = [
                 label : 'Quantity',
                 name  : 'itemQuantity',
                 desc  : quantityProbability.description,
-                type  : typeSelect,
-                values: getValues(quantities),
+                type  : 'select',
+                values: [ 'random', ...quantities ],
             },
             {
                 label : 'Type',
                 name  : 'itemType',
-                desc  : descEqualDistribution,
-                type  : typeSelect,
-                values: getValues(itemTypes),
+                desc  : 'Random probability: Equally distributed.', // TODO
+                type  : 'select',
+                values: [ 'random', ...itemTypes ],
             },
             {
                 label : 'Condition',
                 name  : 'itemCondition',
                 desc  : conditionProbability.description,
-                type  : typeSelect,
-                values: getValues(conditions),
+                type  : 'select',
+                values: [ 'random', ...conditions ],
             },
             {
                 label : 'Rarity',
                 name  : 'itemRarity',
                 desc  : rarityProbability.description,
-                type  : typeSelect,
-                values: getValues(rarities),
+                type  : 'select',
+                values: [ 'random', ...rarities ],
             },
         ],
     },
