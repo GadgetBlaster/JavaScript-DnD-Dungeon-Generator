@@ -33,7 +33,7 @@ import { roomTypeSizes } from './dimensions.js';
 // -- Types --------------------------------------------------------------------
 
 /**
- * @typedef {Config & {
+ * @typedef {(RoomConfig | DungeonConfig) & {
  *     itemQuantity: Quantity;
  *     roomCondition: Condition;
  *     roomFurnitureQuantity: FurnitureQuantity;

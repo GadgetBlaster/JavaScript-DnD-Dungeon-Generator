@@ -43,6 +43,7 @@ import { toss, isRequired } from '../utility/tools.js';
 
 // -- Config -------------------------------------------------------------------
 
+// TODO rename to `generators`
 export const pages = Object.freeze(/** @type {const} */ ([
     'dungeon',
     'rooms',
