@@ -142,7 +142,7 @@ function getDescription(config) {
         itemQuantity,
         roomCondition,
         roomSize,
-        roomType = 'room', // Require
+        roomType,
     } = config;
 
     let typeString = getRoomTypeLabel(roomType);
