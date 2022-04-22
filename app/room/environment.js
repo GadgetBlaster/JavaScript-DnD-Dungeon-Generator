@@ -8,8 +8,7 @@ import { toss } from '../utility/tools.js';
 
 // -- Types --------------------------------------------------------------------
 
-/** @typedef {import('../controller/knobs.js').DungeonConfig} DungeonConfig */
-/** @typedef {import('../controller/knobs.js').RoomConfig} RoomConfig */
+/** @typedef {import('./generate').GeneratedRoomConfig} GeneratedRoomConfig */
 
 // -- Config -------------------------------------------------------------------
 
@@ -88,7 +87,7 @@ const wall = {
  *
  * @returns {string}
  */
- function getAirDesc() {
+function getAirDesc() {
     if (!rollPercentile(detailChance)) {
         return;
     }
@@ -184,12 +183,12 @@ function getGroundDesc() {
  *
  * @throws
  *
- * @param {RoomConfig | DungeonConfig} config
+ * @param {GeneratedRoomConfig} config
  * @param {string} roomStructure
  *
  * @returns {string}
  */
- function getStructureDesc(config, roomStructure) {
+function getStructureDesc(config, roomStructure) {
     let {
         roomType: typeSetting,
         roomSize: roomSize,
@@ -277,7 +276,7 @@ export {
  *
  * TODO return sentences .filter(Boolean).join('. ')+'.');
  *
- * @param {RoomConfig | DungeonConfig} config
+ * @param {GeneratedRoomConfig} config
  *
  * @returns {string[]}
  */

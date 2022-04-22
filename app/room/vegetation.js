@@ -5,8 +5,7 @@ import { roll, rollPercentile, rollArrayItem } from '../utility/roll.js';
 
 // -- Type Imports -------------------------------------------------------------
 
-/** @typedef {import('../controller/knobs.js').DungeonConfig} DungeonConfig */
-/** @typedef {import('../controller/knobs.js').RoomConfig} RoomConfig */
+/** @typedef {import('./generate.js').GeneratedRoomConfig} GeneratedRoomConfig */
 
 // -- Type Imports -------------------------------------------------------------
 
@@ -95,7 +94,7 @@ export {
  * TODO extract noop to caller
  * TODO hook up room settings
  *
- * @param {DungeonConfig | RoomConfig} config
+ * @param {GeneratedRoomConfig} config
  * @param {object} [options]
  *     @param {number} [options.count = number]
  *

@@ -16,15 +16,16 @@ import { roomTypeSizes } from './dimensions.js';
 /** @typedef {import('../attribute/quantity.js').Quantity} Quantity */
 /** @typedef {import('../attribute/rarity.js').Rarity} Rarity */
 /** @typedef {import('../attribute/size.js').Size} Size */
+/** @typedef {import('../controller/knobs.js').Config} Config */
 /** @typedef {import('../controller/knobs.js').DungeonConfig} DungeonConfig */
 /** @typedef {import('../controller/knobs.js').ItemConfig} ItemConfig */
 /** @typedef {import('../controller/knobs.js').ItemConfigFields} ItemConfigFields */
 /** @typedef {import('../controller/knobs.js').RoomConfig} RoomConfig */
 /** @typedef {import('../controller/knobs.js').RoomConfigFields} RoomConfigFields */
+/** @typedef {import('../dungeon/grid.js').Coordinates} Coordinates */
 /** @typedef {import('../item/furnishing').FurnitureQuantity} FurnitureQuantity */
 /** @typedef {import('../item/generate.js').Item} Item */
 /** @typedef {import('../item/generate.js').ItemSet} ItemSet */
-/** @typedef {import('../dungeon/grid.js').Coordinates} Coordinates */
 /** @typedef {import('./door.js').Door} Door */
 /** @typedef {import('./door.js').DoorKey} DoorKey */
 /** @typedef {import('./room.js').RoomType} RoomType */
@@ -32,9 +33,19 @@ import { roomTypeSizes } from './dimensions.js';
 // -- Types --------------------------------------------------------------------
 
 /**
+ * @typedef {Config & {
+ *     itemQuantity: Quantity;
+ *     roomCondition: Condition;
+ *     roomFurnitureQuantity: FurnitureQuantity;
+ *     roomSize: Size;
+ *     roomType: RoomType;
+ * }} GeneratedRoomConfig
+ */
+
+/**
  * @typedef {object} Room
  *
- * @prop {RoomConfig | DungeonConfig} settings  // TODO name rename `settings` to `config`
+ * @prop {GeneratedRoomConfig} settings  // TODO name rename `settings` to `config`
  * @prop {ItemSet} itemSet
  * @prop {number} roomNumber
  * @prop {boolean} [map]                        // TODO rename to `hasMap`
@@ -42,14 +53,6 @@ import { roomTypeSizes } from './dimensions.js';
  * @prop {number[]} [size]                      // TODO {Dimensions} dimensions
  * @prop {Coordinates[]} [walls]
  * @prop {string[]} [traps]                     // TODO `Trap` type
- */
-
-/**
- * TODO use field list type
- *
- * @typedef {{
- *   [key in RoomConfigFields & ItemConfigFields]: () => string
- * }} RoomRandomizations
  */
 
 // -- Config -------------------------------------------------------------------
@@ -70,8 +73,6 @@ const uniformItemRarityChance = 10;
  * Applies randomization to the given `RoomConfig` or `DungeonConfig`, returning
  * a subset of config's fields.
  *
- * TODO only return modified fields.
- *
  * @private
  *
  * @param {RoomConfig | DungeonConfig} config
@@ -80,65 +81,65 @@ const uniformItemRarityChance = 10;
  *     @param {boolean} [options.isRandomItemConditionUniform]
  *     @param {boolean} [options.isRandomItemRarityUniform]
  *
- * @returns {{
- *     itemCondition?: Condition | "random";
- *     itemQuantity?: Quantity;
- *     itemRarity?: Rarity | "random";
- *     roomCondition?: Condition;
- *     roomFurnitureQuantity?: FurnitureQuantity;
- *     roomSize?: Size;
- *     roomType?: RoomType;
- * }}
+ * @returns {GeneratedRoomConfig}
  */
 function applyRoomRandomization(config, {
     isRandomItemConditionUniform,
     isRandomItemRarityUniform,
 } = {}) {
-    let randomizedRoomConfig = {};
-    let roomType = config.roomType;
-    let itemQuantity = config.itemQuantity;
+    let {
+        itemCondition,
+        itemQuantity,
+        itemRarity,
+        roomCondition,
+        roomFurnitureQuantity,
+        roomSize,
+        roomType,
+    } = config;
+
+    let generatedRoomConfig = {};
 
     // Room config
 
-    if (config.roomCondition === 'random') {
-        randomizedRoomConfig.roomCondition = conditionProbability.roll();
+    if (roomCondition === 'random') {
+        generatedRoomConfig.roomCondition = conditionProbability.roll();
     }
 
-    if (config.roomFurnitureQuantity === 'random') {
-        randomizedRoomConfig.roomFurnitureQuantity = furnitureQuantityProbability.roll();
+    if (roomFurnitureQuantity === 'random') {
+        generatedRoomConfig.roomFurnitureQuantity = furnitureQuantityProbability.roll();
     }
 
     if (roomType === 'random') {
         roomType = rollRoomType(roomTypeProbability.roll());
-        randomizedRoomConfig.roomType = roomType;
+        generatedRoomConfig.roomType = roomType;
     }
 
-    if (config.roomSize === 'random') {
-        randomizedRoomConfig.roomSize = rollRoomSize(roomType);
+    if (roomSize === 'random') {
+        generatedRoomConfig.roomSize = rollRoomSize(roomType);
     }
 
     // Item config
 
-    if (config.itemCondition === 'random' && isRandomItemConditionUniform) {
-        randomizedRoomConfig.itemCondition = conditionProbability.roll();
+    if (itemCondition === 'random' && isRandomItemConditionUniform) {
+        generatedRoomConfig.itemCondition = conditionProbability.roll();
     }
 
-    if (config.itemRarity === 'random' && isRandomItemRarityUniform) {
-        randomizedRoomConfig.itemRarity = rarityProbability.roll();
+    if (itemRarity === 'random' && isRandomItemRarityUniform) {
+        generatedRoomConfig.itemRarity = rarityProbability.roll();
     }
 
-    if (config.itemQuantity === 'random') {
+    if (itemQuantity === 'random') {
         itemQuantity = quantityProbability.roll();
-        randomizedRoomConfig.itemQuantity = itemQuantity;
+        generatedRoomConfig.itemQuantity = itemQuantity;
     }
 
     // TODO replace with max item quantity per room type config
     // move to separate function?
     if (roomType === 'hallway' && itemQuantity === 'numerous') {
-        randomizedRoomConfig.itemQuantity = /** @type {Quantity} */ ('several');
+        generatedRoomConfig.itemQuantity = /** @type {Quantity} */ ('several');
     }
 
-    return randomizedRoomConfig;
+    return { ...config, ...generatedRoomConfig };
 }
 
 /**

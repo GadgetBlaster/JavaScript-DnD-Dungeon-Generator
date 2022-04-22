@@ -5,8 +5,7 @@ import { toss } from '../utility/tools.js';
 
 // -- Types --------------------------------------------------------------------
 
-/** @typedef {import('../controller/knobs.js').DungeonConfig} DungeonConfig */
-/** @typedef {import('../controller/knobs.js').RoomConfig} RoomConfig */
+/** @typedef {import('./generate.js').GeneratedRoomConfig} GeneratedRoomConfig */
 
 /** @typedef {typeof roomFeatures[number]} RoomFeature */
 
@@ -229,7 +228,7 @@ export {
  * TODO inject probability
  * TODO inject count
  *
- * @param {RoomConfig | DungeonConfig} config
+ * @param {GeneratedRoomConfig} config
  *
  * @returns {string[]}
  */

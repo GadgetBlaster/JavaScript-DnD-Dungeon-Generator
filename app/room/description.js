@@ -24,6 +24,7 @@ import { appendRoomTypes } from './room.js';
 /** @typedef {import('./door.js').DoorKey} DoorKey */
 /** @typedef {import('./door.js').DoorType} DoorType */
 /** @typedef {import('./generate').Room} Room */
+/** @typedef {import('./generate').GeneratedRoomConfig} GeneratedRoomConfig */
 /** @typedef {import('./room.js').RoomType} RoomType */
 
 // -- Types --------------------------------------------------------------------
@@ -56,7 +57,7 @@ const mapDescriptions = [
  * @private
  * @throws
  *
- * @param {RoomConfig | DungeonConfig} config
+ * @param {GeneratedRoomConfig} config
  *
  * @returns {string}
  */
@@ -129,11 +130,13 @@ function getContentRarityDetail(rarity) {
 }
 
 /**
- * Get description
+ * Returns a room description for the given config.
+ *
+ * TODO name getRoomDescription()
  *
  * @private
  *
- * @param {RoomConfig | DungeonConfig} config
+ * @param {GeneratedRoomConfig} config
  *
  * @returns {string}
  */
@@ -225,7 +228,7 @@ function getFurnitureDetail(furnitureQuantity) {
  *
  * @private
  *
- * @param {RoomConfig | DungeonConfig} config
+ * @param {GeneratedRoomConfig} config
  *
  * @returns {string|undefined}
  */

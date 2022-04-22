@@ -166,6 +166,8 @@ export function createRangeLookup(minimums, maximum = Number.POSITIVE_INFINITY) 
  * @param {string} message
  *
  * @throws
+ *
+ * @returns {never}
  */
 export const toss = (message) => { throw new TypeError(message); };
 

@@ -85,18 +85,18 @@ export default ({ assert, describe, it }) => {
             roomType: 'armory',
         }).forEach(([ field, value ]) => {
             describe(`given a specific ${field} value of "${value}"`, () => {
-                it('returns undefined for the field', () => {
+                it('returns the value unmodified', () => {
                     const randomizedRoomConfig = applyRoomRandomization({ ...roomConfig, [field]: value });
-                    assert(randomizedRoomConfig[field]).isUndefined();
+                    assert(randomizedRoomConfig[field]).equals(value);
                 });
             });
         });
 
         describe('given an item condition of "random"', () => {
             describe('when `isRandomItemConditionUniform` is falsy', () => {
-                it('returns an undefined item condition', () => {
+                it('returns an item condition of "random"', () => {
                     const randomizedItemConfig = applyRoomRandomization({ ...roomConfig, itemCondition: 'random' });
-                    assert(randomizedItemConfig.itemCondition).isUndefined();
+                    assert(randomizedItemConfig.itemCondition).equals('random');
                 });
             });
 
@@ -106,7 +106,7 @@ export default ({ assert, describe, it }) => {
                         isRandomItemConditionUniform: true,
                     });
 
-                    // @ts-expect-error
+                    // @ts-expect-error assert `itemCondition` is not "random"
                     assert(conditions.includes(randomizedItemConfig.itemCondition)).isTrue();
                 });
             });
@@ -116,7 +116,7 @@ export default ({ assert, describe, it }) => {
             describe('when `isRandomItemRarityUniform` is falsy', () => {
                 it('returns an undefined item rarity', () => {
                     const randomizedItemConfig = applyRoomRandomization({ ...roomConfig, itemRarity: 'random' });
-                    assert(randomizedItemConfig.itemRarity).isUndefined();
+                    assert(randomizedItemConfig.itemRarity).equals('random');
                 });
             });
 
@@ -126,7 +126,7 @@ export default ({ assert, describe, it }) => {
                         isRandomItemRarityUniform: true,
                     });
 
-                    // @ts-expect-error
+                    // @ts-expect-error assert `itemRarity` is not "random"
                     assert(rarities.includes(randomizedItemConfig.itemRarity)).isTrue();
                 });
             });
