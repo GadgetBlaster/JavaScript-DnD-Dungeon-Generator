@@ -187,9 +187,18 @@ export default ({ assert, describe, it }) => {
             });
         });
 
-        describe('given arrays with objects', () => {
+        describe('given arrays with objects that are equivalent', () => {
             it('returns a false `isOk` property', () => {
-                assert(equalsArray([ {} ], [ {} ]).isOk).isFalse();
+                assert(equalsArray(
+                    [ { hats: 4, cats: 'yes please' }, 4, { hi: '!' } ],
+                    [ { hats: 4, cats: 'yes please' }, 4, { hi: '!' } ]
+                ).isOk).isTrue();
+            });
+        });
+
+        describe('given arrays with objects that are not equal', () => {
+            it('returns a false `isOk` property', () => {
+                assert(equalsArray([ {} ], [ { bats: 'bat!' } ]).isOk).isFalse();
             });
         });
 

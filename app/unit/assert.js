@@ -50,8 +50,11 @@ export function equalsArray(value, expected) {
         };
     }
 
-    let msg  = `expected [ ${value.join(', ')} ] to equal [ ${expected.join(', ')} ]`;
-    let isOk = value.filter((a, i) => a === expected[i]).length === value.length;
+    let valueString    = JSON.stringify(value, null, 1);
+    let expectedString = JSON.stringify(expected, null, 1);
+
+    let isOk = JSON.stringify(value) === JSON.stringify(expected);
+    let msg  = `expected array\n\n${valueString}\n\nto equal\n\n${expectedString}`;
 
     return { msg, isOk };
 }
