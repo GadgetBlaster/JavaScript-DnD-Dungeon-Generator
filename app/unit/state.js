@@ -19,7 +19,6 @@ import { getResultMessage } from './output.js';
  * @prop {Assertion} hasAttributes
  * @prop {Assertion} isArray
  * @prop {Assertion} isBoolean
- * @prop {Assertion} isElement
  * @prop {Assertion} isElementTag
  * @prop {Assertion} isFalse
  * @prop {Assertion} isFunction

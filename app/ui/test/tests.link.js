@@ -1,5 +1,6 @@
 // @ts-check
 
+import { parseHtml } from '../../utility/element.js';
 import { link } from '../link.js';
 
 /**
@@ -10,14 +11,15 @@ export default ({ assert, describe, it }) => {
     // -- Public Functions -----------------------------------------------------
 
     describe('link()', () => {
-        it('should return an html anchor element string', () => {
-            assert(link('')).isElementTag('a');
+        const result  = link('Home');
+        const element = parseHtml(result).querySelector('a');
+
+        it('returns an html anchor element string', () => {
+            assert(result).isElementTag('a');
         });
 
-        describe('given a label', () => {
-            it('should contain the label', () => {
-                assert(link('Home')).stringIncludes('Home');
-            });
+        it('contains the given label', () => {
+            assert(element.textContent).equals('Home');
         });
 
         describe('given an href', () => {

@@ -1,5 +1,6 @@
 // @ts-check
 
+import { parseHtml } from '../../utility/element.js';
 import {
     article,
     div,
@@ -21,30 +22,21 @@ export default ({ assert, describe, it }) => {
 
     // -- Public Functions -----------------------------------------------------
 
-    describe('blocks', () => {
-        Object.entries(blocks).forEach(([ name, func ]) => {
-            describe(`#${name}`, () => {
-                describe('when called', () => {
-                    it('should return the correct html element string', () => {
-                        assert(func('')).isElementTag(name);
-                    });
-                });
+    Object.entries(blocks).forEach(([ tag, func ]) => {
+        describe(`${tag}()`, () => {
+            const result  = func('Gandalf', { 'data-action': 'fireball', 'aria-label': 'Watch out!' });
+            const element = parseHtml(result).querySelector(tag);
 
-                describe('given a content string', () => {
-                    let contentResult = func('Gandalf');
+            it('returns an html element string with the correct the tag name', () => {
+                assert(result).isElementTag(tag);
+            });
 
-                    it('should contain the content string', () => {
-                        assert(contentResult).stringIncludes('Gandalf');
-                    });
-                });
+            it('contains the given label', () => {
+                assert(element.textContent).equals('Gandalf');
+            });
 
-                describe('given an `attrs` param', () => {
-                    let contentResult = func('Merlin', { 'data-action': 'fireball' });
-
-                    it('should contain the content string', () => {
-                        assert(contentResult).stringIncludes('data-action="fireball"');
-                    });
-                });
+            it('has the given attributes', () => {
+                assert(element).hasAttributes({ 'data-action': 'fireball', 'aria-label': 'Watch out!' });
             });
         });
     });

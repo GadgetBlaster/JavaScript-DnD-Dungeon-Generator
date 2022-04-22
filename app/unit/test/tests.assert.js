@@ -1,6 +1,10 @@
 // @ts-check
 
 import {
+    // Private Functions
+    testIsElement as isElement,
+
+    // Public Functions
     equals,
     equalsArray,
     equalsObject,
@@ -8,7 +12,6 @@ import {
     hasAttributes,
     isArray,
     isBoolean,
-    isElement,
     isElementTag,
     isFalse,
     isFunction,
@@ -120,6 +123,26 @@ const nonUndefinedTypes = (() => excludingType('undefined'))();
  * @param {import('../state.js').Utility} utility
  */
 export default ({ assert, describe, it }) => {
+
+    // -- Private Functions ----------------------------------------------------
+
+    describe('isElement()', () => {
+        Object.entries(groups.element).forEach(([ key, value ]) => {
+            describe(`given ${key}`, () => {
+                it('returns a true `isOk` property', () => {
+                    assert(isElement(value).isOk).isTrue();
+                });
+            });
+        });
+
+        nonElementTypes.forEach(([ key, value ]) => {
+            describe(`given ${key}`, () => {
+                it('returns a false `isOk` property', () => {
+                    assert(isElement(value).isOk).isFalse();
+                });
+            });
+        });
+    });
 
     // -- Public Functions -----------------------------------------------------
 
@@ -397,24 +420,6 @@ export default ({ assert, describe, it }) => {
             describe(`given ${key}`, () => {
                 it('returns a false `isOk` property', () => {
                     assert(isBoolean(value).isOk).isFalse();
-                });
-            });
-        });
-    });
-
-    describe('isElement()', () => {
-        Object.entries(groups.element).forEach(([ key, value ]) => {
-            describe(`given ${key}`, () => {
-                it('returns a true `isOk` property', () => {
-                    assert(isElement(value).isOk).isTrue();
-                });
-            });
-        });
-
-        nonElementTypes.forEach(([ key, value ]) => {
-            describe(`given ${key}`, () => {
-                it('returns a false `isOk` property', () => {
-                    assert(isElement(value).isOk).isFalse();
                 });
             });
         });

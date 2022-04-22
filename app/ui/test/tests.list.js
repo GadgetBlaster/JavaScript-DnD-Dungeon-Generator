@@ -1,5 +1,6 @@
 // @ts-check
 
+import { parseHtml } from '../../utility/element.js';
 import { list } from '../list.js';
 
 /**
@@ -10,46 +11,49 @@ export default ({ assert, describe, it }) => {
     // -- Public Functions -----------------------------------------------------
 
     describe('list()', () => {
-        describe('given no `items` param', () => {
-            it('should throw', () => {
+        describe('given no items', () => {
+            it('throws', () => {
                 // @ts-expect-error
                 assert(() => list()).throws('Items are required for lists');
             });
         });
 
         describe('given an empty array', () => {
-            it('should throw', () => {
+            it('throws', () => {
                 assert(() => list([])).throws('Items are required for lists');
             });
         });
 
+        it('returns an unordered list html element string', () => {
+            assert(list([ 'Blasted!' ])).equals('<ul><li>Blasted!</li></ul>');
+        });
+
         describe('given a single list item', () => {
-            const results = list([ 'Pompous Wizards' ]);
+            const result = list([ 'Pompous Wizards' ], { 'data-type': 'unknown' });
+            const body   = parseHtml(result);
 
-            it('should return an html unordered list element string', () => {
-                assert(results).stringIncludes('<ul>')
-                    .stringIncludes('</ul>');
+            it('includes a single list item with the given content', () => {
+                const items = body.querySelectorAll('li');
+
+                assert(items.length).equals(1);
+                assert(items[0].textContent).equals('Pompous Wizards');
             });
 
-            it('should include a single html list item element string with the given content', () => {
-                assert(results).stringIncludes('<li>Pompous Wizards</li>');
+            describe('given attributes', () => {
+                it('has the given attributes', () => {
+                    assert(body.querySelector('ul')).hasAttributes({ 'data-type': 'unknown' });
+                });
             });
         });
 
-        describe('given a attributes object', () => {
-            it('should include the attributes on the unordered list html string', () => {
-                assert(list([ 'Gorzo' ], { 'data-type': 'unknown' })).stringIncludes('<ul data-type="unknown">');
-            });
-        });
+        describe('given multiple list items', () => {
+            it('contains each list item', () => {
+                const body  = parseHtml(list([ 'Beavers', 'Gorillas', 'Guardians' ]));
+                const items = body.querySelectorAll('li');
 
-        describe('given multiple list item', () => {
-            const results = list([ 'Beavers', 'Gorillas', 'Guardians' ]);
-
-            it('should include each item as an html list item string', () => {
-                assert(results)
-                    .stringIncludes('<li>Beavers</li>')
-                    .stringIncludes('<li>Gorillas</li>')
-                    .stringIncludes('<li>Guardians</li>');
+                assert(items[0].textContent).equals('Beavers');
+                assert(items[1].textContent).equals('Gorillas');
+                assert(items[2].textContent).equals('Guardians');
             });
         });
     });

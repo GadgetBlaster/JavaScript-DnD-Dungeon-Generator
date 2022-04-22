@@ -15,6 +15,25 @@ import { selfClosingElements } from '../utility/element.js';
  * @prop {boolean} isOk
  */
 
+// -- Private Functions --------------------------------------------------------
+
+/**
+ * @param {any} element
+ *
+ * @returns {Result}
+ */
+function isElement(element) {
+    let msg = `expected "${element}" to be an Element`;
+
+    if (element instanceof Element) {
+        return { msg, isOk: true };
+    }
+
+    return { msg, isOk: false };
+}
+
+export { isElement as testIsElement };
+
 // -- Public Functions ---------------------------------------------------------
 
 /**
@@ -179,21 +198,6 @@ export function isBoolean(value) {
     let msg  = `expected "${value}" to be boolean`;
 
     return { msg, isOk };
-}
-
-/**
- * @param {any} element
- *
- * @returns {Result}
- */
-export function isElement(element) {
-    let msg = `expected "${element}" to be an Element`;
-
-    if (element instanceof Element) {
-        return { msg, isOk: true };
-    }
-
-    return { msg, isOk: false };
 }
 
 /**

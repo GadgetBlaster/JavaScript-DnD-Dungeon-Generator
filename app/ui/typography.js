@@ -41,8 +41,6 @@ export const small = (label, attributes) => element('small', label, attributes);
 /**
  * Returns an HTML span element string.
  *
- * TODO tests
- *
  * @param {string} label
  * @param {Attributes} [attributes]
  *

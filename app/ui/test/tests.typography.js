@@ -1,5 +1,6 @@
 // @ts-check
 
+import { parseHtml } from '../../utility/element.js';
 import {
     em,
     paragraph,
@@ -12,11 +13,6 @@ import {
 
 /** @typedef {import('../../utility/element').Attributes} Attributes */
 
-/**
- * Type
- *
- * @type {{ [key: string]: (label: string, attributes?: Attributes) => string }}
- */
 const type = {
     'em'    : em,
     'h2'    : title,
@@ -34,30 +30,21 @@ export default ({ assert, describe, it }) => {
 
     // -- Public Functions -----------------------------------------------------
 
-    Object.entries(type).forEach(([ name, func ]) => {
-        describe(`${name}()`, () => {
-            describe('when called', () => {
-                let result = func('');
+    Object.entries(type).forEach(([ tag, func ]) => {
+        describe(`${tag}()`, () => {
+            const result  = func('Gandalf', { 'data-action': 'fireball', 'aria-label': 'Watch out!' });
+            const element = parseHtml(result).querySelector(tag);
 
-                it('should return an html element string with the correct the tag name', () => {
-                    assert(result).isElementTag(name);
-                });
+            it('returns an html element string with the correct the tag name', () => {
+                assert(result).isElementTag(tag);
             });
 
-            describe('given a content string', () => {
-                let contentResult = func('Gandalf');
-
-                it('should contain the content string', () => {
-                    assert(contentResult).stringIncludes('Gandalf');
-                });
+            it('contains the given label', () => {
+                assert(element.textContent).equals('Gandalf');
             });
 
-            describe('given an `attributes` param', () => {
-                let contentResult = func('Merlin', { 'data-action': 'fireball' });
-
-                it('should contain the content string', () => {
-                    assert(contentResult).stringIncludes('data-action="fireball"');
-                });
+            it('has the given attributes', () => {
+                assert(element).hasAttributes({ 'data-action': 'fireball', 'aria-label': 'Watch out!' });
             });
         });
     });

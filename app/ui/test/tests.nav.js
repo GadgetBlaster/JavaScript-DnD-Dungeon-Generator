@@ -32,8 +32,8 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getNav()', () => {
-        const nav = getNav('dungeon');
-        const navHtml = parseHtml(getNav('dungeon'));
+        const nav  = getNav('dungeon');
+        const body = parseHtml(getNav('dungeon'));
 
         it('returns a string', () => {
             assert(nav).isString();
@@ -41,13 +41,13 @@ export default ({ assert, describe, it }) => {
 
         it('contains a nav button for each page', () => {
             pages.forEach((page) => {
-                const button = navHtml.querySelector(`button[data-target="${page}"]`);
+                const button = body.querySelector(`button[data-target="${page}"]`);
                 assert(Boolean(button)).isTrue();
             });
         });
 
         it('sets the correct active item', () => {
-            assert(navHtml.querySelector('button[data-target="dungeon"]'))
+            assert(body.querySelector('button[data-target="dungeon"]'))
                 .hasAttributes({ 'data-active': 'true' });
         });
     });
