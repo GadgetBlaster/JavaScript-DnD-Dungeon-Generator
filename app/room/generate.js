@@ -45,7 +45,7 @@ import { roomTypeSizes } from './dimensions.js';
 /**
  * @typedef {object} Room
  *
- * @prop {GeneratedRoomConfig} settings  // TODO name rename `settings` to `config`
+ * @prop {GeneratedRoomConfig} config
  * @prop {ItemSet} itemSet
  * @prop {number} roomNumber
  * @prop {boolean} [map]                        // TODO rename to `hasMap`
@@ -208,10 +208,10 @@ export function generateRooms(config) {
         });
 
         let roomConfig = { ...config, ...randomizedRoomConfig };
-
+        // TODO add room number here
         return {
+            config: roomConfig, // TODO name `config`
             itemSet: generateItems(roomConfig),
-            settings: roomConfig, // TODO name `config`
         };
     });
 }

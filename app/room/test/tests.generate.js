@@ -214,7 +214,7 @@ export default ({ assert, describe, it }) => {
                     assert(rooms.length).equals(2);
 
                     rooms && rooms.forEach((roomConfig) => {
-                        assert(roomConfig.settings).isObject();
+                        assert(roomConfig.config).isObject();
                         assert(roomConfig.itemSet).isObject();
                     });
                 });

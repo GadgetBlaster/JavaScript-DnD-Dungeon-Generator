@@ -188,7 +188,7 @@ function formatRoom(room, doors) {
 }
 
 /**
- * Formats room generation.
+ * Formats a pre-generated room.
  *
  * @private
  *

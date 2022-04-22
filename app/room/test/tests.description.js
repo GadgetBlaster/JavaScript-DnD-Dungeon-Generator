@@ -765,7 +765,7 @@ export default ({ assert, describe, it }) => {
         };
 
         it('returns an object with a title and description', () => {
-            const room = getRoomDescription({ settings: roomConfig });
+            const room = getRoomDescription({ config: roomConfig });
 
             assert(room).isObject();
             room && assert(room.title).equals('Room');
@@ -773,7 +773,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given `roomCount` of `1` and a `roomType` of "room"', () => {
             const room = getRoomDescription({
-                settings: roomConfig,
+                config: roomConfig,
                 roomNumber: 1,
             });
 
@@ -789,7 +789,7 @@ export default ({ assert, describe, it }) => {
         describe('given `roomCount` greater than `1`', () => {
             it('includes the room number in the title', () => {
                 const room = getRoomDescription({
-                    settings: {
+                    config: {
                         ...roomConfig,
                         roomCount: 2,
                     },
@@ -803,7 +803,7 @@ export default ({ assert, describe, it }) => {
         describe('given a `roomType` other than "room"', () => {
             it('returns a capitalized room type', () => {
                 const room = getRoomDescription({
-                    settings: {
+                    config: {
                         ...roomConfig,
                         roomType : 'atrium',
                     },
@@ -817,7 +817,7 @@ export default ({ assert, describe, it }) => {
         describe('given room dimensions', () => {
             it('returns the room dimensions', () => {
                 const room = {
-                    settings: {
+                    config: {
                         ...roomConfig,
                         roomType : 'room',
                     },
@@ -841,7 +841,7 @@ export default ({ assert, describe, it }) => {
             describe('given an item quantity', () => {
                 it('includes a description of the room contents', () => {
                     const room = getRoomDescription({
-                        settings: {
+                        config: {
                             ...roomConfig,
                             itemQuantity: 'one',
                         },
@@ -855,7 +855,7 @@ export default ({ assert, describe, it }) => {
             describe('given an item condition', () => {
                 it('includes a description of the room content\'s condition', () => {
                     const room = getRoomDescription({
-                        settings: {
+                        config: {
                             ...roomConfig,
                             itemQuantity : 'one',
                             itemCondition: 'busted',
@@ -869,7 +869,7 @@ export default ({ assert, describe, it }) => {
             describe('given room doors', () => {
                 it('includes a description of the room\'s doors', () => {
                     const room = {
-                        settings: roomConfig,
+                        config: roomConfig,
                         roomNumber: 1,
                     };
 

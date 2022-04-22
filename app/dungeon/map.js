@@ -231,7 +231,7 @@ function drawRooms(gridDimensions, mapRooms, grid, roomNumber, prevGridRoom) {
     let isFork    = roomNumber === 1 ? false : true;
 
     mapRooms.forEach((roomConfig) => {
-        let { roomType: type } = roomConfig.settings;
+        let { roomType } = roomConfig.config;
 
         let roomDimensions = getRoomDimensions(gridDimensions, roomConfig);
 
@@ -249,7 +249,7 @@ function drawRooms(gridDimensions, mapRooms, grid, roomNumber, prevGridRoom) {
                 return;
             }
 
-            if (type === 'hallway') {
+            if (roomType === 'hallway') {
                 // TODO remind me why the last set of cords is used for halls?
                 ({ x, y } = validCords[validCords.length - 1]);
             } else {
@@ -264,7 +264,7 @@ function drawRooms(gridDimensions, mapRooms, grid, roomNumber, prevGridRoom) {
 
         let gridRoom = {
             rect: { x, y, ...roomDimensions },
-            type,
+            type: roomType,
             roomNumber,
             walls,
         };
@@ -485,14 +485,14 @@ function getDoorType(doorTypeProbability, isSecretProbability) {
  * @private
  *
  * @param {Dimensions} gridDimensions
- * @param {RoomConfig | DungeonConfig} roomConfig
+ * @param {Room} roomConfig
  *
  * @returns {Dimensions}
  */
 function getRoomDimensions(gridDimensions, roomConfig) {
-    // TODO just pass settings
+    // TODO just pass config
     let {
-        settings: {
+        config: {
             roomSize: roomSize,
             roomType: roomType,
         },
@@ -617,8 +617,8 @@ function getExtraDoors(grid, rooms, existingDoors) {
     let doors = [];
 
     rooms.forEach((room) => {
-        let { roomNumber, settings } = room.config;
-        let { dungeonConnections } = settings;
+        let { roomNumber, config } = room.config;
+        let { dungeonConnections } = config;
 
         let chance = Number(dungeonConnections);
 
@@ -766,7 +766,11 @@ export {
  * @param {Dimensions} gridDimensions
  * @param {Room[]} roomConfigs
  *
- * @returns {TODO}
+ * @returns {{
+ *     map: string;
+ *     rooms: RoomConfig[];
+ *     doors: Door[];
+ * }}
  */
 export function generateMap(gridDimensions, roomConfigs) {
     let grid = createBlankGrid(gridDimensions);

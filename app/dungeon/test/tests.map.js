@@ -111,7 +111,7 @@ export default ({ assert, describe, it }) => {
         it('returns an AppliedRoomResults object', () => {
             const grid = createBlankGrid(gridDimensions);
             const room = {
-                settings: {
+                config: {
                     roomType: 'room',
                     roomSize: 'tiny',
                 },
@@ -136,7 +136,7 @@ export default ({ assert, describe, it }) => {
             it('is connected to an edge of the map', () => {
                 const grid = createBlankGrid(gridDimensions);
                 const room = {
-                    settings: {
+                    config: {
                         roomType: 'room',
                         roomSize: 'small',
                     },
@@ -153,7 +153,7 @@ export default ({ assert, describe, it }) => {
             it('returns the room in the skipped param', () => {
                 const grid = createBlankGrid(gridDimensions);
                 const room = {
-                    settings: {
+                    config: {
                         roomType: 'room',
                         roomSize: 'massive',
                     },
@@ -170,7 +170,7 @@ export default ({ assert, describe, it }) => {
                 it('throws', () => {
                     const grid = createBlankGrid(gridDimensions);
                     const room = {
-                        settings: {
+                        config: {
                             roomType: 'room',
                             roomSize: 'tiny',
                         },
@@ -206,7 +206,7 @@ export default ({ assert, describe, it }) => {
 
                     const room = {
                         roomNumber: 2,
-                        settings: {
+                        config: {
                             roomType: 'room',
                             roomSize: 'medium',
                         },
@@ -246,7 +246,7 @@ export default ({ assert, describe, it }) => {
 
                     const hallway = {
                         roomNumber: 2,
-                        settings: {
+                        config: {
                             roomType: 'hallway',
                             roomSize: 'small',
                         },
@@ -578,7 +578,7 @@ export default ({ assert, describe, it }) => {
                     ...rect1,
                     type: 'room',
                     roomNumber: 1,
-                    settings: {
+                    config: {
                         dungeonConnections: connectionChance,
                     },
                 };
@@ -594,7 +594,7 @@ export default ({ assert, describe, it }) => {
                     ...rect2,
                     type: 'room',
                     roomNumber: 2,
-                    settings: {
+                    config: {
                         dungeonConnections: connectionChance,
                     },
                 };
@@ -699,7 +699,7 @@ export default ({ assert, describe, it }) => {
                     ...rect1,
                     type: 'room',
                     roomNumber: 1,
-                    settings: {
+                    config: {
                         dungeonConnections: connectionChance,
                     },
                 };
@@ -715,7 +715,7 @@ export default ({ assert, describe, it }) => {
                     ...rect2,
                     type: 'room',
                     roomNumber: 2,
-                    settings: {
+                    config: {
                         dungeonConnections: connectionChance,
                     },
                 };
@@ -977,7 +977,7 @@ export default ({ assert, describe, it }) => {
         describe('given a room config with a missing room type', () => {
             it('throws', () => {
                 assert(() => getRoomDimensions(gridDimensions, {
-                    settings: { roomSize: 'small' },
+                    config: { roomSize: 'small' },
                 })).throws('roomType is required in getRoomDimensions()');
             });
         });
@@ -985,7 +985,7 @@ export default ({ assert, describe, it }) => {
         describe('given a room config with a missing room size', () => {
             it('throws', () => {
                 assert(() => getRoomDimensions(gridDimensions, {
-                    settings: { roomType: 'library' },
+                    config: { roomType: 'library' },
                 })).throws('roomSize is required in getRoomDimensions()');
             });
         });
@@ -994,7 +994,7 @@ export default ({ assert, describe, it }) => {
             // TODO need to inject randomization for testing
             it('returns a room width and height ', () => {
                 const dimensions = getRoomDimensions(gridDimensions, {
-                    settings: {
+                    config: {
                         roomSize: 'small',
                         roomType: 'hallway',
                     },
@@ -1010,7 +1010,7 @@ export default ({ assert, describe, it }) => {
                 const [ minSize, maxSize ] = dimensionRanges.small;
 
                 const { width, height } = getRoomDimensions(gridDimensions, {
-                    settings: {
+                    config: {
                         roomSize: 'small',
                         roomType: 'room',
                     },
@@ -1029,7 +1029,7 @@ export default ({ assert, describe, it }) => {
                 const miniMapDimensions = { width: gridWidth, height: gridHeight };
 
                 const { width, height } = getRoomDimensions(miniMapDimensions, {
-                    settings: {
+                    config: {
                         roomSize: 'massive',
                         roomType: 'room',
                     },
@@ -1054,7 +1054,7 @@ export default ({ assert, describe, it }) => {
                 height: 2,
                 type: 'room',
                 roomNumber: 1,
-                settings: {
+                config: {
                     roomSize: 'small',
                     roomType: 'room',
                 },

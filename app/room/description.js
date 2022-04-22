@@ -443,7 +443,7 @@ export const getMapDescription = () => {
  */
 export function getRoomDescription(room, roomDoors) {
     let {
-        settings: config, // TODO rename property to config
+        config,
         roomNumber,
         size: roomDimensions,
     } = room;

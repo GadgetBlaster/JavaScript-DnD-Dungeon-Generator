@@ -60,7 +60,7 @@ export {
  *
  * @param {Omit<DungeonConfig, "roomCount">} config
  *
- * @returns {object} // TODO
+ * @returns {Room[]}
  */
 function generateDungeonRooms(config) {
     let {
