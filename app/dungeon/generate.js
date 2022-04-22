@@ -26,7 +26,6 @@ import trapList from '../room/trap.js';
 
 /**
  * @typedef {Room & {
- *     roomNumber: number;
  *     doors: Doors;
  *     items?: Item[];
  *     keys?: DoorKey[];

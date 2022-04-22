@@ -696,7 +696,7 @@ export default ({ assert, describe, it }) => {
         const rectangle = { x: 1, y: 2, width: 3, height: 4 };
 
         /** @type {RoomText} */
-        const text = { roomNumber: 11 };
+        const text = { roomNumber: '11' };
 
         const room     = drawRoom(rectangle, text);
         const roomRect = room.slice(0, room.indexOf('/>') + 2);

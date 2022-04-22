@@ -16,7 +16,7 @@ import {
     testGetDoor              as getDoor,
     testGetDoorCells         as getDoorCells,
     testGetDoorDirection     as getDoorDirection,
-    testGetDoorType          as getDoorType,
+    testGetDoorType          as getDoorType, // TODO
     testGetExtraDoors        as getExtraDoors,
     testGetRoomDimensions    as getRoomDimensions,
     testGetRoomDrawing       as getRoomDrawing,
@@ -34,8 +34,27 @@ import { generateRooms } from '../../room/generate.js';
 import { testTrapLabel as trapLabel } from '../draw.js';
 import { doorTypes } from '../../room/door.js';
 
-/** @typedef {import('../map.js').GridRoom} GridRoom */
+/** @typedef {import('../../attribute/size.js').Size} Size */
+/** @typedef {import('../../room/generate.js').GeneratedRoomConfig} GeneratedRoomConfig */
+/** @typedef {import('../../room/generate.js').Room} Room */
 /** @typedef {import('../../room/room.js').RoomType} RoomType */
+/** @typedef {import('../grid.js').Dimensions} Dimensions */
+/** @typedef {import('../grid.js').Grid} Grid */
+/** @typedef {import('../grid.js').Rectangle} Rectangle */
+/** @typedef {import('../map.js').GridRoom} GridRoom */
+
+/** @type {GeneratedRoomConfig} */
+const generatedRoomConfig = {
+    itemCondition: 'average',
+    itemQuantity: 'zero',
+    itemRarity: 'average',
+    itemType: 'random',
+    roomSize: 'small',
+    roomType: 'room',
+    roomCondition: 'average',
+    roomCount: 1,
+    roomFurnitureQuantity: 'average',
+};
 
 /**
  * @param {import('../../unit/state.js').Utility} utility
@@ -106,25 +125,21 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('drawRooms()', () => {
+        // TODO, missing `isFork` tests
+
         const gridDimensions = { width: 12, height: 12 };
+        const itemSet = { items: [], containers: [] };
 
         it('returns an AppliedRoomResults object', () => {
             const grid = createBlankGrid(gridDimensions);
-            const room = {
-                config: {
-                    roomType: 'room',
-                    roomSize: 'tiny',
-                },
-            };
-
-            const result = drawRooms(gridDimensions, [ room ], grid, 1);
+            const room = { config: generatedRoomConfig, itemSet, roomNumber: 1 };
+            const result = drawRooms(gridDimensions, [ room ], grid);
 
             assert(result).isObject();
             assert(result.doors).isArray();
             assert(result.gridRooms).isArray();
             assert(result.rooms).isArray();
             assert(result.skipped).isArray();
-            assert(result.roomNumber).equals(2);
 
             result.doors     && assert(result.doors.length).equals(1);
             result.gridRooms && assert(result.gridRooms.length).equals(1);
@@ -135,14 +150,8 @@ export default ({ assert, describe, it }) => {
         describe('the first room', () => {
             it('is connected to an edge of the map', () => {
                 const grid = createBlankGrid(gridDimensions);
-                const room = {
-                    config: {
-                        roomType: 'room',
-                        roomSize: 'small',
-                    },
-                };
-
-                const result = drawRooms(gridDimensions, [ room, room ], grid, 1);
+                const room = { config: generatedRoomConfig, itemSet, roomNumber: 1 };
+                const result = drawRooms(gridDimensions, [ room, room ], grid);
                 const firstDoor = result.doors.shift();
 
                 assert(Boolean(firstDoor.connections[outside])).isTrue();
@@ -154,12 +163,14 @@ export default ({ assert, describe, it }) => {
                 const grid = createBlankGrid(gridDimensions);
                 const room = {
                     config: {
-                        roomType: 'room',
-                        roomSize: 'massive',
+                        ...generatedRoomConfig,
+                        roomSize: /** @type {Size} */ ('massive'),
                     },
+                    itemSet,
+                    roomNumber: 1,
                 };
 
-                const result = drawRooms(gridDimensions, [ room, room ], grid, 1);
+                const result = drawRooms(gridDimensions, [ room, room ], grid);
 
                 assert(result.skipped.length).equals(1);
             });
@@ -171,9 +182,11 @@ export default ({ assert, describe, it }) => {
                     const grid = createBlankGrid(gridDimensions);
                     const room = {
                         config: {
-                            roomType: 'room',
-                            roomSize: 'tiny',
+                            ...generatedRoomConfig,
+                            roomSize: /** @type {Size} */ ('tiny'),
                         },
+                        itemSet,
+                        roomNumber: 1,
                     };
 
                     const prevGridRoom = {
@@ -182,7 +195,8 @@ export default ({ assert, describe, it }) => {
                         roomNumber: 1,
                     };
 
-                    assert(() => drawRooms(gridDimensions, [ room ], grid, 1, prevGridRoom))
+                    // @ts-expect-error
+                    assert(() => drawRooms(gridDimensions, [ room ], grid, { prevGridRoom }))
                         .throws('Previous grid room requires wall coordinates in drawRooms()');
                 });
             });
@@ -200,30 +214,32 @@ export default ({ assert, describe, it }) => {
                     const prevGridRoom = {
                         rect: prevRect,
                         roomNumber: 1,
-                        type: 'room',
+                        type: /** @type {RoomType} */ ('room'),
                         walls: getRoomWalls(grid, prevRect, 1),
                     };
 
                     const room = {
+                        config: generatedRoomConfig,
+                        itemSet,
                         roomNumber: 2,
-                        config: {
-                            roomType: 'room',
-                            roomSize: 'medium',
-                        },
                     };
 
-                    const result = drawRooms(gridDimensions, [ room ], grid, 1, prevGridRoom);
-
+                    const result = drawRooms(gridDimensions, [ room ], grid, { prevGridRoom });
                     assert(result.doors).isArray();
 
                     const door = result.doors.pop();
-                    assert(door.type).isString();
+                    assert(door.type).isString(); // TODO doorTypes.includes(door.type)
                     assert(door.connections).isObject();
 
-                    const connection = door.connections[1];
-                    assert(connection).isObject();
-                    assert(connection.direction).isString();
-                    assert(connection.to).equals(1);
+                    const connection1 = door.connections[1];
+                    assert(connection1).isObject();
+                    assert(connection1.direction).isString(); // TODO directions.includes(connection.direction)
+                    assert(connection1.to).equals(2);
+
+                    const connection2 = door.connections[2];
+                    assert(connection2).isObject();
+                    assert(connection2.direction).isString(); // TODO directions.includes(connection.direction)
+                    assert(connection2.to).equals(1);
                 });
             });
 
@@ -240,30 +256,35 @@ export default ({ assert, describe, it }) => {
                     const prevGridRoom = {
                         rect: prevRect,
                         roomNumber: 1,
-                        type: 'room',
-                        walls: getRoomWalls(grid, prevRect, 1)
+                        type: /** @type {RoomType} */ ('room'),
+                        walls: getRoomWalls(grid, prevRect, 1),
                     };
 
                     const hallway = {
-                        roomNumber: 2,
                         config: {
-                            roomType: 'hallway',
-                            roomSize: 'small',
+                            ...generatedRoomConfig,
+                            roomType: /** @type {RoomType} */ ('hallway'),
                         },
+                        itemSet,
+                        roomNumber: 2,
                     };
 
-                    const result = drawRooms(gridDimensions, [ hallway ], grid, 1, prevGridRoom);
-
+                    const result = drawRooms(gridDimensions, [ hallway ], grid, { prevGridRoom });
                     assert(result.doors).isArray();
 
                     const door = result.doors.pop();
                     assert(door.type).isString();
                     assert(door.connections).isObject();
 
-                    const connection = door.connections[1];
-                    assert(connection).isObject();
-                    assert(connection.direction).isString();
-                    assert(connection.to).equals(1);
+                    const connection1 = door.connections[1];
+                    assert(connection1).isObject();
+                    assert(connection1.direction).isString();
+                    assert(connection1.to).equals(2);
+
+                    const connection2 = door.connections[2];
+                    assert(connection2).isObject();
+                    assert(connection2.direction).isString();
+                    assert(connection2.to).equals(1);
                 });
             });
         });
@@ -546,6 +567,48 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getExtraDoors()', () => {
+        /**
+         * Returns a blank grid and an array of mocked rooms.
+         *
+         * @param {Rectangle[]} rects
+         * @param {object} [options]
+         *     @param {number} [options.connectionChance = 0]
+         *     @param {Dimensions} [options.gridDimensions = { width: 10, height: 10 }]
+         *
+         * @returns {{ grid: Grid; rooms: Room[] }}
+         */
+        function getRoomsForTest(rects, {
+            connectionChance = 0,
+            gridDimensions = { width: 10, height: 10 },
+        } = {}) {
+            const grid  = createBlankGrid(gridDimensions);
+
+            const rooms = rects.map((rect, i) => {
+                /** @type {Room} */
+                const room = {
+                    config: {
+                        ...generatedRoomConfig,
+                        dungeonConnections: connectionChance,
+                    },
+                    itemSet: { items: [], containers: [] },
+                    roomNumber: i + 1,
+                };
+
+                const walls = getRoomWalls(grid, rect, room.roomNumber);
+
+                return {
+                    ...room,
+                    walls,
+                    size: [ rect.width, rect.height ],
+                };
+            });
+
+            return {
+                rooms,
+                grid,
+            };
+        }
+
         describe('given two vertically adjacent rooms', () => {
             // w = cellWall
             // c = cellCornerWall
@@ -564,76 +627,29 @@ export default ({ assert, describe, it }) => {
             // 8 . . c w w w w c . .
             // 9 . . . . . . . . . .
 
-            function getRoomsForTest(connectionChance) {
-                const grid  = createBlankGrid({ width: 10, height: 10 });
+            const rect1 = {
+                x: 4,
+                y: 2,
+                width: 3,
+                height: 2,
+            };
 
-                const rect1 = {
-                    x: 4,
-                    y: 2,
-                    width: 3,
-                    height: 2,
-                };
-
-                const room1 = {
-                    ...rect1,
-                    type: 'room',
-                    roomNumber: 1,
-                    config: {
-                        dungeonConnections: connectionChance,
-                    },
-                };
-
-                const rect2 = {
-                    x: 3,
-                    y: 5,
-                    width: 4,
-                    height: 3,
-                };
-
-                const room2 = {
-                    ...rect2,
-                    type: 'room',
-                    roomNumber: 2,
-                    config: {
-                        dungeonConnections: connectionChance,
-                    },
-                };
-
-                const walls1 = getRoomWalls(grid, rect1, room1.roomNumber);
-                const walls2 = getRoomWalls(grid, rect2, room2.roomNumber);
-
-                const rooms = [
-                    {
-                        config: {
-                            ...room1,
-                            walls: walls1,
-                            size: [ room1.width, room1.height ],
-                        },
-                    },
-                    {
-                        config: {
-                            ...room2,
-                            walls: walls2,
-                            size: [ room2.width, room2.height ],
-                        },
-                    },
-                ];
-
-                return {
-                    rooms,
-                    grid,
-                };
-            }
+            const rect2 = {
+                x: 3,
+                y: 5,
+                width: 4,
+                height: 3,
+            };
 
             describe('given a 0% chance of connections', () => {
                 it('returns an empty array', () => {
-                    const { grid, rooms } = getRoomsForTest(0);
+                    const { grid, rooms } = getRoomsForTest([ rect1, rect2 ]);
                     assert(getExtraDoors(grid, rooms, [])).equalsArray([]);
                 });
             });
 
             describe('given a 100% chance of connections', () => {
-                const { grid, rooms } = getRoomsForTest(100);
+                const { grid, rooms } = getRoomsForTest([ rect1, rect2 ], { connectionChance: 100 });
                 const doors = getExtraDoors(grid, rooms, []);
 
                 it('returns a array with a door config', () => {
@@ -658,7 +674,7 @@ export default ({ assert, describe, it }) => {
 
             describe('given an existing connecting between the rooms', () => {
                 it('returns an empty array', () => {
-                    const { grid, rooms } = getRoomsForTest(100);
+                    const { grid, rooms } = getRoomsForTest([ rect1, rect2 ], { connectionChance: 100 })
                     const existingDoors = getExtraDoors(grid, rooms, []);
 
                     assert(grid[4][4]).equals(cellDoor);
@@ -685,76 +701,29 @@ export default ({ assert, describe, it }) => {
             // 8 . . . . c w w w c .
             // 9 . . . . . . . . . .
 
-            function getRoomsForTest(connectionChance) {
-                const grid = createBlankGrid({ width: 10, height: 10 });
+            const rect1 = {
+                x: 2,
+                y: 2,
+                width: 2,
+                height: 2,
+            };
 
-                const rect1 = {
-                    x: 2,
-                    y: 2,
-                    width: 2,
-                    height: 2,
-                };
-
-                const room1 = {
-                    ...rect1,
-                    type: 'room',
-                    roomNumber: 1,
-                    config: {
-                        dungeonConnections: connectionChance,
-                    },
-                };
-
-                const rect2 = {
-                    x: 5,
-                    y: 2,
-                    width: 3,
-                    height: 6,
-                };
-
-                const room2 = {
-                    ...rect2,
-                    type: 'room',
-                    roomNumber: 2,
-                    config: {
-                        dungeonConnections: connectionChance,
-                    },
-                };
-
-                const walls1 = getRoomWalls(grid, rect1, room1.roomNumber);
-                const walls2 = getRoomWalls(grid, rect2, room2.roomNumber);
-
-                const rooms = [
-                    {
-                        config: {
-                            ...room1,
-                            walls: walls1,
-                            size: [ room1.width, room1.height ],
-                        },
-                    },
-                    {
-                        config: {
-                            ...room2,
-                            walls: walls2,
-                            size: [ room2.width, room2.height ],
-                        },
-                    },
-                ];
-
-                return {
-                    rooms,
-                    grid,
-                };
-            }
+            const rect2 = {
+                x: 5,
+                y: 2,
+                width: 3,
+                height: 6,
+            };
 
             describe('given a 0% chance of connections', () => {
                 it('returns an empty array', () => {
-                    const { grid, rooms } = getRoomsForTest(0);
+                    const { grid, rooms } = getRoomsForTest([ rect1, rect2 ]);
                     assert(getExtraDoors(grid, rooms, [])).equalsArray([]);
                 });
             });
 
             describe('given a 100% chance of connections', () => {
-                const { grid, rooms } = getRoomsForTest(100);
+                const { grid, rooms } = getRoomsForTest([ rect1, rect2 ], { connectionChance: 100 });
                 const doors = getExtraDoors(grid, rooms, []);
 
                 it('returns a array with a door config', () => {
@@ -778,7 +747,7 @@ export default ({ assert, describe, it }) => {
 
             describe('given an existing connecting between the rooms', () => {
                 it('returns an empty array', () => {
-                    const { grid, rooms } = getRoomsForTest(100);
+                    const { grid, rooms } = getRoomsForTest([ rect1, rect2 ], { connectionChance: 100 });
                     const existingDoors = getExtraDoors(grid, rooms, []);
 
                     assert(grid[4][2]).equals(cellDoor);
@@ -1097,22 +1066,33 @@ export default ({ assert, describe, it }) => {
 
     describe('generateMap()', () => {
         it('generates a map, rooms, and doors', () => {
-            const { map, rooms, doors } = generateMap({ width: 30, height: 24 }, generateRooms({
-                itemCondition: 'average',
-                itemQuantity : 'one',
-                itemRarity   : 'average',
-                itemType     : 'miscellaneous',
-                roomSize     : 'medium',
-                roomCount    : 34,
-                roomType     : 'room',
-                roomCondition: 'average',
-            }));
+            /** @type {GeneratedRoomConfig} */
+            const roomConfig = {
+                itemCondition        : 'average',
+                itemQuantity         : 'one',
+                itemRarity           : 'average',
+                itemType             : 'miscellaneous',
+                roomCondition        : 'average',
+                roomCount            : 34,
+                roomFurnitureQuantity: 'average',
+                roomSize             : 'medium',
+                roomType             : 'room',
+            };
+
+            const { map, rooms, doors } = generateMap({ width: 30, height: 24 }, generateRooms(roomConfig));
 
             assert(map).isString();
 
             assert(rooms).isArray();
-            rooms && rooms.forEach((room, i) => {
-                assert(room.roomNumber).equals(i + 1);
+
+            let lastRoomNumber = 0;
+
+            rooms && rooms.forEach((room) => {
+                assert(room.config).isObject();
+                assert(room.itemSet).isObject();
+                assert(room.roomNumber > lastRoomNumber).isTrue();
+                assert(room.size).isArray();
+                assert(room.walls).isArray();
             });
 
             assert(doors).isArray();

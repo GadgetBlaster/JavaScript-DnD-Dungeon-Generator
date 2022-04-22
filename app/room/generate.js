@@ -33,7 +33,7 @@ import { roomTypeSizes } from './dimensions.js';
 // -- Types --------------------------------------------------------------------
 
 /**
- * @typedef {(RoomConfig | DungeonConfig) & {
+ * @typedef {(RoomConfig & Partial<DungeonConfig>) & {
  *     itemQuantity: Quantity;
  *     roomCondition: Condition;
  *     roomFurnitureQuantity: FurnitureQuantity;
@@ -50,9 +50,10 @@ import { roomTypeSizes } from './dimensions.js';
  * @prop {number} roomNumber
  * @prop {boolean} [map]                        // TODO rename to `hasMap`
  * @prop {DoorKey[]} [keys]
+ * @prop {string} [rect]
  * @prop {number[]} [size]                      // TODO {Dimensions} dimensions
- * @prop {Coordinates[]} [walls]
  * @prop {string[]} [traps]                     // TODO `Trap` type
+ * @prop {Coordinates[]} [walls]
  */
 
 // -- Config -------------------------------------------------------------------
@@ -184,7 +185,7 @@ export {
  *
  * @param {RoomConfig | DungeonConfig} config
  *
- * @returns {Omit<Room, "roomNumber">[]}
+ * @returns {Room[]}
  */
 export function generateRooms(config) {
     let {
@@ -201,17 +202,18 @@ export function generateRooms(config) {
 
     let count = Math.floor(Number(roomCount));
 
-    return [ ...Array(count) ].map(() => {
+    return [ ...Array(count).keys() ].map((roomNumber) => {
         let randomizedRoomConfig = applyRoomRandomization(config, {
             isRandomItemConditionUniform: rollPercentile(uniformItemConditionChance),
             isRandomItemRarityUniform: rollPercentile(uniformItemRarityChance),
         });
 
         let roomConfig = { ...config, ...randomizedRoomConfig };
-        // TODO add room number here
+
         return {
-            config: roomConfig, // TODO name `config`
+            config: roomConfig,
             itemSet: generateItems(roomConfig),
+            roomNumber: roomNumber + 1,
         };
     });
 }

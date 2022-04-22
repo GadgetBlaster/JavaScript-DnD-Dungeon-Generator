@@ -256,10 +256,5 @@ export function formatName(name) {
  * @returns {string}
  */
 export function formatRooms(rooms) {
-    // TODO roomNumber should already be set
-    rooms.forEach((_, i) => {
-        rooms[i].roomNumber = i + 1;
-    });
-
     return formatRoomGrid(rooms);
 }

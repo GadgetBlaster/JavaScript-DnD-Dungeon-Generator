@@ -33,7 +33,7 @@ export function drawLegend() {
 
     let legend = {
         [scale]       : drawGrid(gridDimensions),
-        'Room'        : drawRoom(gridRectangle, { roomNumber: 1 }),
+        'Room'        : drawRoom(gridRectangle, { roomNumber: '1' }),
         'Trapped Room': drawRoom(gridRectangle, { roomNumber: '' }, { hasTraps: true }),
         'Passageway'  : drawDoor(gridRectangle, { direction, type: 'passageway' }),
         'Archway'     : drawDoor(gridRectangle, { direction, type: 'archway' }),

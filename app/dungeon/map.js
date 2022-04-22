@@ -55,9 +55,6 @@ import { isRequired, toWords } from '../utility/tools.js';
  *
  * @prop {Room[]} skipped
  *     Room configs which have not been applied to the grid.
- *
- * @prop {number} roomNumber
- *     The room's ID.
  */
 
 /**
@@ -216,22 +213,23 @@ function createDoor(rectangle, type, { direction, from, to }, lockedChance = 0) 
  * @param {Dimensions} gridDimensions
  * @param {Room[]} mapRooms
  * @param {Grid} grid
- * @param {number} roomNumber
- * @param {GridRoom} [prevGridRoom]
+ * @param {object} [options]
+ *     @param {GridRoom} [options.prevGridRoom]
+ *     @param {boolean} [options.isFork]
  *
  * @returns {AppliedRoomResults}
  */
-function drawRooms(gridDimensions, mapRooms, grid, roomNumber, prevGridRoom) {
+function drawRooms(gridDimensions, mapRooms, grid, { isFork, prevGridRoom } = {}) {
     /** @type {Room[]} rooms */
     let rooms     = [];
 
     let doors     = [];
     let skipped   = [];
     let gridRooms = [];
-    let isFork    = roomNumber === 1 ? false : true;
 
-    mapRooms.forEach((roomConfig) => {
-        let { roomType } = roomConfig.config;
+    mapRooms.forEach((roomConfig) => { // TODO rename param to `room`
+        let { config, roomNumber } = roomConfig;
+        let { roomType } = config;
 
         let roomDimensions = getRoomDimensions(gridDimensions, roomConfig);
 
@@ -276,16 +274,12 @@ function drawRooms(gridDimensions, mapRooms, grid, roomNumber, prevGridRoom) {
         let roomDrawing = getRoomDrawing(gridRoom, { hasTraps: Boolean(roomConfig.traps) });
 
         rooms.push({
-            rect: roomDrawing, // TODO rename param
-            config: {
-                ...roomConfig,
-                walls,
-                roomNumber,
-                size: [ roomDimensions.width, roomDimensions.height ], // TODO rename to dimensions
-            },
+            ...roomConfig,
+            rect: roomDrawing, // TODO rename param? Or better, move drawing out of this method?
+            roomNumber,
+            size: [ roomDimensions.width, roomDimensions.height ], // TODO rename to dimensions
+            walls,
         });
-
-        roomNumber++;
 
         prevGridRoom = gridRoom;
     });
@@ -296,8 +290,7 @@ function drawRooms(gridDimensions, mapRooms, grid, roomNumber, prevGridRoom) {
         rooms,
         doors: doors.concat(extraDoors),
         gridRooms,
-        skipped, // TODO better name
-        roomNumber,
+        skipped, // TODO better name?
     };
 }
 
@@ -559,8 +552,9 @@ function getRoomWalls(grid, rect, roomNumber) {
                                (w === width && h === height);
 
             let isWall = !isCornerWall && (
-                         w === -wallSize || w === width ||
-                         h === -wallSize || h === height);
+                w === -wallSize || w === width ||
+                h === -wallSize || h === height
+            );
 
             if (isWall) {
                 walls.push({ x: xCord, y: yCord });
@@ -597,8 +591,9 @@ function getRoomDrawing(gridRoom, { hasTraps } = {}) {
 
     let showRoomLabel = type !== 'room' && width >= labelMinRoomWidth && height >= labelMinRoomHeight;
     let roomLabel     = showRoomLabel && toWords(type);
+    let roomText      = { roomNumber: roomNumber.toString(), roomLabel };
 
-    return drawRoom(rect, { roomNumber, roomLabel }, { hasTraps });
+    return drawRoom(rect, roomText, { hasTraps });
 }
 
 /**
@@ -617,7 +612,7 @@ function getExtraDoors(grid, rooms, existingDoors) {
     let doors = [];
 
     rooms.forEach((room) => {
-        let { roomNumber, config } = room.config;
+        let { roomNumber, config } = room;
         let { dungeonConnections } = config;
 
         let chance = Number(dungeonConnections);
@@ -636,7 +631,7 @@ function getExtraDoors(grid, rooms, existingDoors) {
             }
         });
 
-        room.config.walls.forEach(({ x, y }) => {
+        room.walls.forEach(({ x, y }) => {
             let cell = grid[x][y];
 
             if (cell !== cellWall) {
@@ -720,17 +715,16 @@ function getExtraDoors(grid, rooms, existingDoors) {
  * }}
  */
 function getRooms(gridDimensions, roomConfigs, grid) {
-    let { rooms, doors, skipped, roomNumber, gridRooms } = drawRooms(gridDimensions, roomConfigs, grid, 1);
+    let { rooms, doors, skipped, gridRooms } = drawRooms(gridDimensions, roomConfigs, grid);
 
-    let lastRoomNumber = roomNumber;
-    let lastSkipped    = skipped;
+    // TODO Aggregate skipped rooms?
+    let lastSkipped = skipped;
 
     gridRooms.forEach((gridRoom) => {
-        let fork = drawRooms(gridDimensions, lastSkipped, grid, lastRoomNumber, gridRoom);
+        let fork = drawRooms(gridDimensions, lastSkipped, grid, { isFork: true, prevGridRoom: gridRoom });
 
         if (fork.rooms.length && fork.doors.length) {
-            lastRoomNumber = fork.roomNumber;
-            lastSkipped    = fork.skipped;
+            lastSkipped = fork.skipped;
 
             rooms.push(...fork.rooms);
             doors.push(...fork.doors);
@@ -768,7 +762,7 @@ export {
  *
  * @returns {{
  *     map: string;
- *     rooms: RoomConfig[];
+ *     rooms: Room[];
  *     doors: Door[];
  * }}
  */
@@ -787,9 +781,9 @@ export function generateMap(gridDimensions, roomConfigs) {
     let content   = gridLines + roomRects + doorRects;
 
     return {
-        map  : drawMap(gridDimensions, content),
-        rooms: rooms.map(({ config }) => config),
         doors: doors.map(({ rect, ...door }) => door),
+        map  : drawMap(gridDimensions, content),
+        rooms,
     };
 }
 
@@ -800,7 +794,7 @@ export function generateMap(gridDimensions, roomConfigs) {
  *
  * @returns {string}
  */
- export const getGridAsText = (grid) => {
+export const getGridAsText = (grid) => {
     let rows = [];
 
     for (let y = 0; y <= grid[0].length; y++) {
