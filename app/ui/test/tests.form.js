@@ -11,6 +11,9 @@ import {
     getKnobPanel,
 } from '../form.js';
 
+/** @typedef {import('../../controller/knobs.js').KnobFieldConfig} KnobFieldConfig */
+
+/** @type {KnobFieldConfig} */
 const fakeKnob = {
     label: 'Tools',
     name: 'dungeonComplexity',
@@ -56,7 +59,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given an array of fields', () => {
-            /** @type {import('../../controller/knobs.js').KnobSettings[]} */
+            /** @type {KnobFieldConfig[]} */
             const fields = [
                 { name: 'roomSize',     label: 'Room Size',     desc: 'Room Size?',     type: 'number' },
                 { name: 'itemQuantity', label: 'Item Quantity', desc: 'Item Quantity?', type: 'range' },
@@ -190,7 +193,7 @@ export default ({ assert, describe, it }) => {
 
     describe('getKnob()', () => {
         describe('given an invalid type', () => {
-            it('should throw', () => {
+            it('throws', () => {
                 // @ts-expect-error
                 assert(() => getKnob({ ...fakeKnob, type: 'junk' }))
                     .throws('Invalid knob type');
@@ -201,6 +204,13 @@ export default ({ assert, describe, it }) => {
             it('should return an html select element string with the given values as options', () => {
                 const knob = getKnob({ ...fakeKnob, type: 'select', values: [ 'toast' ] });
                 assert(/<select(.*?)><option(.+?)value="toast"(.*?)>toast<\/option><\/select>/.test(knob)).isTrue();
+            });
+
+            describe('given a value that is not a string', () => {
+                it('throws', () => {
+                    assert(() => getKnob({ ...fakeKnob, type: 'junk' }))
+                        .throws('Invalid knob type');
+                });
             });
         });
 

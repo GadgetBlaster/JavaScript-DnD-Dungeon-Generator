@@ -136,6 +136,11 @@ function getKnob(settings) {
 
     switch (type) {
         case 'select':
+            if (typeof value !== 'undefined' && typeof value !== 'string') {
+                toss('Value of select must be of type string in getKnob()');
+                return;
+            }
+
             return select(name, values, value);
 
         case 'number':

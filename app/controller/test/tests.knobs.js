@@ -135,7 +135,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a config object', () => {
-            it('returns the knob set with the values from the config assigned', () => {
+            it('returns the knob config with the values from the config object assigned', () => {
                 const result = getFields(fakeKnobs, 'dungeon', {
                     dungeonComplexity: 8,
                     dungeonMaps: 4,
@@ -151,7 +151,7 @@ export default ({ assert, describe, it }) => {
 
     describe('getKnobConfig()', () => {
         /** @type {KnobConfig[]} */
-        const fakeKnobs = [
+        const fakeKnobConfig = [
             {
                 label : 'Fake Dungeon Knobs',
                 pages : new Set([ 'dungeon' ]),
@@ -191,15 +191,29 @@ export default ({ assert, describe, it }) => {
 
         describe('given a page that contains all knobs', () => {
             it('returns the knob configs unmodified', () => {
-                const result = getKnobConfig(fakeKnobs, 'dungeon');
-                assert(result).equalsArray(fakeKnobs);
+                const result = getKnobConfig(fakeKnobConfig, 'dungeon');
+                assert(result).equalsArray(fakeKnobConfig);
             });
         });
 
         describe('given a page that contains some of the knobs', () => {
             it('returns only the knob configs appropriate to the given page', () => {
-                const result = getKnobConfig(fakeKnobs, 'rooms');
-                assert(result).equalsArray([ fakeKnobs[1] ]);
+                const result = getKnobConfig(fakeKnobConfig, 'rooms');
+                assert(result).equalsArray([ fakeKnobConfig[1] ]);
+            });
+        });
+
+        describe('given a config object', () => {
+            it('returns the knob configs with the values from the config object assigned', () => {
+                const result = getKnobConfig(fakeKnobConfig, 'dungeon', {
+                    dungeonComplexity: 8,
+                    dungeonMaps: 4,
+                    roomType: 'library',
+                });
+
+                assert(result[0].fields.find(({ name }) => name === 'dungeonComplexity').value).equals(8);
+                assert(result[0].fields.find(({ name }) => name === 'dungeonMaps').value).equals(4);
+                assert(result[1].fields.find(({ name }) => name === 'roomType').value).equals('library');
             });
         });
     });
