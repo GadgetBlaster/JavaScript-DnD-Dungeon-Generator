@@ -596,6 +596,30 @@ export default ({ assert, describe, it }) => {
     // -- Public Functions -----------------------------------------------------
 
     describe('getDoorwayList()', () => {
+        describe('given no room number', () => {
+            it('throws', () => {
+                // @ts-expect-error
+                assert(() => getDoorwayList([]))
+                    .throws('roomNumber is required in getDoorwayList()');
+            });
+        });
+
+        describe('given a door config with an invalid connection', () => {
+            it('throws', () => {
+                const config = [{
+                    type: 'archway',
+                    connections: {
+                        12: { direction: 'south', to: 4 },
+                        4 : { direction: 'north', to: 12 },
+                    },
+                }];
+
+                // @ts-expect-error
+                assert(() => getDoorwayList(config, 216))
+                    .throws('Invalid roomNumber for door connections in getDoorwayList()');
+            });
+        });
+
         describe('given two door configs', () => {
             const config = [
                 {

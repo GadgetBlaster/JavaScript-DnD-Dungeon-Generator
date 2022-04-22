@@ -376,11 +376,11 @@ export {
  * @returns {?string}
  */
 export const getDoorwayList = (roomDoors, roomNumber) => {
-    isRequired(roomNumber, '`roomNumber` is required in `getDoorwayList()`'); // TODO add test
+    isRequired(roomNumber, 'roomNumber is required in getDoorwayList()');
 
     let doorList = roomDoors.map(({ type, connections, size, locked }) => {
         if (!connections[roomNumber]) {
-            toss('Invalid roomNumber for door connections in `getDoorwayList()`'); // TODO add test
+            toss('Invalid roomNumber for door connections in getDoorwayList()');
         }
 
         let { direction, to } = connections[roomNumber];

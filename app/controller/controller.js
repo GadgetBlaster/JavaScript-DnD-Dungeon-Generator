@@ -1,6 +1,6 @@
 // @ts-check
 
-import { formatDungeon, formatItems, formatName, formatRoomsPage } from './formatter.js';
+import { formatDungeon, formatItems, formatName, formatRooms } from './formatter.js';
 import { generateDungeon } from '../dungeon/generate.js';
 import { generateItems } from '../item/generate.js';
 import { generateName } from '../name/generate.js';
@@ -98,7 +98,7 @@ function nameGenerator(config) {
  * @returns {string}
  */
 function roomGenerator(config) {
-    return formatRoomsPage(generateRooms(config));
+    return formatRooms(generateRooms(config));
 }
 
 
