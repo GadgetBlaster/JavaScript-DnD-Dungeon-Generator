@@ -100,7 +100,7 @@ function getItemTotal({ containers, items }) {
  *
  * @returns {string}
  */
-function formatItems(itemSet) {
+function formatItemContent(itemSet) {
     // TODO columns
 
     let {
@@ -180,7 +180,7 @@ function formatRoom(room, doors) {
         + paragraph(description)
         + doorList
         + subtitle('Items' + detail(getItemTotal(itemSet)))
-        + formatItems(itemSet)
+        + formatItemContent(itemSet)
         + map
         + keys
         + traps
@@ -216,7 +216,7 @@ export {
  *
  * @param {Dungeon} dungeon
  */
-export function formatDungeonPage(dungeon) {
+export function formatDungeon(dungeon) {
     let { mapSvg, rooms, doors } = dungeon;
 
     return section(mapSvg)
@@ -231,9 +231,9 @@ export function formatDungeonPage(dungeon) {
  *
  * @returns {string}
  */
-export function formatItemsPage(itemSet) {
+export function formatItems(itemSet) {
     let content = header(title('Items' + detail(getItemTotal(itemSet))))
-        + formatItems(itemSet);
+        + formatItemContent(itemSet);
 
     return section(article(content));
 }

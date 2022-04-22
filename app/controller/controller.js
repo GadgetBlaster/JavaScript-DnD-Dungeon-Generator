@@ -1,6 +1,6 @@
 // @ts-check
 
-import { formatDungeonPage, formatItemsPage, formatName, formatRoomsPage } from './formatter.js';
+import { formatDungeon, formatItems, formatName, formatRoomsPage } from './formatter.js';
 import { generateDungeon } from '../dungeon/generate.js';
 import { generateItems } from '../item/generate.js';
 import { generateName } from '../name/generate.js';
@@ -66,7 +66,7 @@ export const pages = Object.freeze(/** @type {const} */ ([
  * @returns {string}
  */
 function dungeonGenerator(config) {
-    return formatDungeonPage(generateDungeon(config));
+    return formatDungeon(generateDungeon(config));
 }
 /**
  * Generates and formats output for the item generation page.
@@ -76,7 +76,7 @@ function dungeonGenerator(config) {
  * @returns {string}
  */
 function itemGenerator(config) {
-    return formatItemsPage(generateItems(config));
+    return formatItems(generateItems(config));
 }
 
 /**
