@@ -32,7 +32,10 @@ import { createBlankGrid, wallSize } from '../grid.js';
 import { dimensionRanges } from '../../room/dimensions.js';
 import { generateRooms } from '../../room/generate.js';
 import { testTrapLabel as trapLabel } from '../draw.js';
-import { doorTypes } from '../../room/door.js';
+import {
+    doorTypes,
+    probability as doorProbability,
+} from '../../room/door.js';
 
 /** @typedef {import('../../attribute/size.js').Size} Size */
 /** @typedef {import('../../room/generate.js').GeneratedRoomConfig} GeneratedRoomConfig */
@@ -563,7 +566,25 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getDoorType()', () => {
-        // TODO
+        it('returns a door type', () => {
+            assert(doorTypes.includes(getDoorType(doorProbability.roll))).isTrue();
+        });
+
+        describe('given a rollSecretDoorType function', () => {
+            describe('when a secret door type is not rolled', () => {
+                it('returns a door type', () => {
+                    const doorType = getDoorType(doorProbability.roll, () => undefined);
+                    assert(doorTypes.includes(doorType)).isTrue();
+                });
+            });
+
+            describe('when a secret door type is rolled', () => {
+                it('returns the secret door type', () => {
+                    const doorType = getDoorType(doorProbability.roll, () => 'concealed');
+                    assert(doorType).equals('concealed');
+                });
+            });
+        });
     });
 
     describe('getExtraDoors()', () => {

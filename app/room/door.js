@@ -22,6 +22,9 @@ import { createProbability } from '../utility/roll.js';
  * @prop {string} type - Door type
  */
 
+/** @typedef {() => DoorType} RollDoorType */
+/** @typedef {() => "concealed" | "secret" | undefined} RollSecretDoorType */
+
 // -- Config -------------------------------------------------------------------
 
 export const doorTypes = Object.freeze(/** @type {const} */ ([
@@ -75,7 +78,7 @@ export const lockable = new Set([
  *
  * @type {Readonly<{
  *   description: string;
- *   roll: () => DoorType;
+ *   roll: RollDoorType;
  * }>}
  */
 export const probability = createProbability(new Map([
@@ -97,7 +100,7 @@ export const probability = createProbability(new Map([
  *
  * @type {Readonly<{
  *   description: string;
- *   roll: () => "concealed" | "secret" | undefined;
+ *   roll: ;
  * }>}
  */
 export const secretProbability = createProbability(new Map([

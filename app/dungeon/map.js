@@ -30,9 +30,10 @@ import { isRequired, toWords } from '../utility/tools.js';
 /** @typedef {import('../controller/knobs.js').DungeonConfig} DungeonConfig */
 /** @typedef {import('../controller/knobs.js').RoomConfig} RoomConfig */
 /** @typedef {import('../room/door.js').DoorType} DoorType */
+/** @typedef {import('../room/door.js').RollDoorType} RollDoorType */
+/** @typedef {import('../room/door.js').RollSecretDoorType} RollSecretDoorType */
 /** @typedef {import('../room/generate.js').Room} Room */
 /** @typedef {import('../room/room.js').RoomType} RoomType */
-/** @typedef {import('../utility/roll.js').Probability} Probability */
 /** @typedef {import('./grid.js').CellValue} CellValue */
 /** @typedef {import('./grid.js').Coordinates} Coordinates */
 /** @typedef {import('./grid.js').Dimensions} Dimensions */
@@ -333,9 +334,9 @@ function getDoor(grid, gridRoom, prevGridRoom, { allowSecret } = {}) {
     /** @type {Rectangle} */
     let doorRectangle = { x, y, width, height };
 
-    let from = gridRoom.roomNumber; // TODO string vs number type
+    let from = gridRoom.roomNumber;
     let to   = prevGridRoom ? prevGridRoom.roomNumber : outside;
-    let type = getDoorType(doorProbability, allowSecret && secretProbability);
+    let type = getDoorType(doorProbability.roll, allowSecret && secretProbability.roll);
 
     return createDoor(doorRectangle, type, { direction, from, to }, lockedChance);
 }
@@ -451,25 +452,23 @@ function getDoorDirection({ x, y }, roomRect) {
 }
 
 /**
- * Returns a door type based on door probability tables
+ * Returns a door type using the provided probability roll functions.
  *
- * TODO unit tests
- *
- * @param {Probability} doorTypeProbability
- * @param {Probability} isSecretProbability
+ * @param {RollDoorType} rollDoorType
+ * @param {RollSecretDoorType} [rollSecretDoorType]
  *
  * @returns {DoorType}
  */
-function getDoorType(doorTypeProbability, isSecretProbability) {
-    if (isSecretProbability) {
-        let secretDoorType = /** @type {DoorType | undefined} */ (isSecretProbability.roll());
+function getDoorType(rollDoorType, rollSecretDoorType) {
+    if (rollSecretDoorType) {
+        let secretDoorType = rollSecretDoorType();
 
         if (secretDoorType) {
             return secretDoorType;
         }
     }
 
-    return /** @type {DoorType} */ (doorTypeProbability.roll());
+    return rollDoorType();
 }
 
 /**
@@ -662,7 +661,7 @@ function getExtraDoors(grid, rooms, existingDoors) {
 
                     /** @type {Direction} */
                     let direction  = adjust === -1 ? 'west' : 'east';
-                    let type       = getDoorType(doorProbability, secretProbability);
+                    let type       = getDoorType(doorProbability.roll, secretProbability.roll);
                     let connection = {
                         direction,
                         from: roomNumber,
@@ -682,7 +681,7 @@ function getExtraDoors(grid, rooms, existingDoors) {
 
                     /** @type {Direction} */
                     let direction  = adjust === -1 ? 'north' : 'south';
-                    let type       = getDoorType(doorProbability, secretProbability);
+                    let type       = getDoorType(doorProbability.roll, secretProbability.roll);
                     let connection = {
                         direction,
                         from: roomNumber,
