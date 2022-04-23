@@ -209,9 +209,8 @@ function createDoor(rectangle, type, { direction, from, to }, lockedChance = 0) 
 }
 
 /**
- * Draws rooms to a map grid and returns the results.
+ * Applies rooms to a map grid and returns the applied results.
  *
- * TODO rename, not a draw method
  * @private
  *
  * @param {Dimensions} gridDimensions
@@ -267,7 +266,7 @@ function applyRooms(gridDimensions, mapRooms, grid, { isFork, prevGridRoom } = {
         }
 
         let rect = { x, y, ...roomDimensions };
-        let walls = getRoomWalls(grid, rect, roomNumber);
+        let walls = applyRoomToGrid(grid, rect, roomNumber);
 
         let gridRoom = {
             rect: { x, y, ...roomDimensions },
@@ -518,7 +517,7 @@ function getRoomDimensions(gridDimensions, roomConfig) {
 }
 
 /**
- * Returns an array of wall coordinates.
+ * Applies a room to the grid and returns an array of wall coordinates.
  *
  * @private
  *
@@ -528,15 +527,14 @@ function getRoomDimensions(gridDimensions, roomConfig) {
  *
  * @returns {Coordinates[]}
  */
-function getRoomWalls(grid, rect, roomNumber) {
-    isRequired(roomNumber, 'roomNumber is required in getRoomWalls()');
+function applyRoomToGrid(grid, rect, roomNumber) {
+    isRequired(roomNumber, 'roomNumber is required in applyRoomToGrid()');
 
     let { x, y, width, height } = rect;
 
+    /** @type {Coordinates[]} */
     let walls = [];
 
-    // TODO refactor out into `applyRoomToGrid()`
-    // TODO refactor out to create room w/ walls separate from applying to grid
     for (let w = -wallSize; w < (width + wallSize); w++) {
         for (let h = -wallSize; h < (height + wallSize); h++) {
             let xCord = x + w;
@@ -741,6 +739,7 @@ function procedurallyApplyRooms(gridDimensions, roomConfigs, grid) {
 
 export {
     applyRooms             as testApplyRooms,
+    applyRoomToGrid        as testApplyRoomToGrid,
     checkForAdjacentDoor   as testCheckForAdjacentDoor,
     createDoor             as testCreateDoor,
     getDoor                as testGetDoor,
@@ -750,7 +749,6 @@ export {
     getExtraDoors          as testGetExtraDoors,
     getRoomDimensions      as testGetRoomDimensions,
     getRoomDrawing         as testGetRoomDrawing,
-    getRoomWalls           as testGetRoomWalls,
     procedurallyApplyRooms as testProcedurallyApplyRooms,
 };
 

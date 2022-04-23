@@ -12,6 +12,7 @@ import {
 
     // Private Functions
     testApplyRooms             as applyRooms,
+    testApplyRoomToGrid        as applyRoomToGrid,
     testCheckForAdjacentDoor   as checkForAdjacentDoor,
     testCreateDoor             as createDoor,
     testGetDoor                as getDoor,
@@ -21,7 +22,6 @@ import {
     testGetExtraDoors          as getExtraDoors,
     testGetRoomDimensions      as getRoomDimensions,
     testGetRoomDrawing         as getRoomDrawing,
-    testGetRoomWalls           as getRoomWalls,
     testProcedurallyApplyRooms as procedurallyApplyRooms,
 
     // Public functions
@@ -219,7 +219,7 @@ export default ({ assert, describe, it }) => {
                         rect: prevRect,
                         roomNumber: 1,
                         type: /** @type {RoomType} */ ('room'),
-                        walls: getRoomWalls(grid, prevRect, 1),
+                        walls: applyRoomToGrid(grid, prevRect, 1),
                     };
 
                     const room = {
@@ -261,7 +261,7 @@ export default ({ assert, describe, it }) => {
                         rect: prevRect,
                         roomNumber: 1,
                         type: /** @type {RoomType} */ ('room'),
-                        walls: getRoomWalls(grid, prevRect, 1),
+                        walls: applyRoomToGrid(grid, prevRect, 1),
                     };
 
                     const hallway = {
@@ -327,7 +327,7 @@ export default ({ assert, describe, it }) => {
                 rect: prevRect,
                 roomNumber: 1,
                 type: /** @type {RoomType} */ ('room'),
-                walls: getRoomWalls(grid, prevRect, 1),
+                walls: applyRoomToGrid(grid, prevRect, 1),
             };
 
             const rect = {
@@ -341,7 +341,7 @@ export default ({ assert, describe, it }) => {
                 rect,
                 roomNumber: 2,
                 type: /** @type {RoomType} */ ('room'),
-                walls: getRoomWalls(grid, rect, 2),
+                walls: applyRoomToGrid(grid, rect, 2),
             };
 
             const door = getDoor(grid, gridRoom, prevGridRoom);
@@ -386,7 +386,7 @@ export default ({ assert, describe, it }) => {
                     const gridRoom = {
                         ...gridRoomConfig,
                         rect,
-                        walls: getRoomWalls(grid, rect, roomNumber),
+                        walls: applyRoomToGrid(grid, rect, roomNumber),
                     };
 
                     const cells = getDoorCells(grid, gridRoom);
@@ -409,7 +409,7 @@ export default ({ assert, describe, it }) => {
                     const gridRoom = {
                         ...gridRoomConfig,
                         rect,
-                        walls: getRoomWalls(grid, rect, roomNumber),
+                        walls: applyRoomToGrid(grid, rect, roomNumber),
                     };
 
                     const cells = getDoorCells(grid, gridRoom);
@@ -432,7 +432,7 @@ export default ({ assert, describe, it }) => {
                     const gridRoom = {
                         ...gridRoomConfig,
                         rect,
-                        walls: getRoomWalls(grid, rect, roomNumber),
+                        walls: applyRoomToGrid(grid, rect, roomNumber),
                     };
 
                     const cells = getDoorCells(grid, gridRoom);
@@ -455,7 +455,7 @@ export default ({ assert, describe, it }) => {
                     const gridRoom = {
                         ...gridRoomConfig,
                         rect,
-                        walls: getRoomWalls(grid, rect, roomNumber),
+                        walls: applyRoomToGrid(grid, rect, roomNumber),
                     };
 
                     const cells = getDoorCells(grid, gridRoom);
@@ -498,7 +498,7 @@ export default ({ assert, describe, it }) => {
                     rect: rect1,
                     roomNumber: 1,
                     type: /** @type {RoomType} */ ('room'),
-                    walls: getRoomWalls(grid, rect1, 1),
+                    walls: applyRoomToGrid(grid, rect1, 1),
                 };
 
                 const rect2 = {
@@ -512,7 +512,7 @@ export default ({ assert, describe, it }) => {
                     rect: rect2,
                     roomNumber: 2,
                     type: /** @type {RoomType} */ ('room'),
-                    walls: getRoomWalls(grid, rect2, 2),
+                    walls: applyRoomToGrid(grid, rect2, 2),
                 };
 
                 const cells = getDoorCells(grid, gridRoom2, gridRoom1);
@@ -616,7 +616,7 @@ export default ({ assert, describe, it }) => {
                     roomNumber: i + 1,
                 };
 
-                const walls = getRoomWalls(grid, rect, room.roomNumber);
+                const walls = applyRoomToGrid(grid, rect, room.roomNumber);
 
                 return {
                     ...room,
@@ -778,14 +778,14 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('getRoomWalls()', () => {
+    describe('applyRoomToGrid()', () => {
         describe('given a room config without a roomNumber', () => {
             it('throws', () => {
                 const grid = createBlankGrid({ width: 8, height: 6 });
 
                 // @ts-expect-error
-                assert(() => getRoomWalls(grid, { x: 1, y:1, width: 1, height: 1 }))
-                    .throws('roomNumber is required in getRoomWalls()');
+                assert(() => applyRoomToGrid(grid, { x: 1, y:1, width: 1, height: 1 }))
+                    .throws('roomNumber is required in applyRoomToGrid()');
             });
         });
 
@@ -832,7 +832,7 @@ export default ({ assert, describe, it }) => {
             ];
 
             describe('when the room type is "room"', () => {
-                const walls = getRoomWalls(grid, rect, 7);
+                const walls = applyRoomToGrid(grid, rect, 7);
 
                 it('returns an array of wall cells', () => {
                     assert(walls).isArray();
@@ -865,7 +865,7 @@ export default ({ assert, describe, it }) => {
             rect,
             type: 'room',
             roomNumber: 7,
-            walls: getRoomWalls(grid, rect, 7),
+            walls: applyRoomToGrid(grid, rect, 7),
         };
 
         describe('when the room type is "room"', () => {
