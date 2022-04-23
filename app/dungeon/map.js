@@ -39,6 +39,7 @@ import { isRequired, toWords } from '../utility/tools.js';
 /** @typedef {import('../room/generate.js').GeneratedRoomConfig} GeneratedRoomConfig */
 /** @typedef {import('../room/generate.js').Room} Room */
 /** @typedef {import('../room/room.js').RoomType} RoomType */
+/** @typedef {import('./draw.js').RoomText} RoomText */
 /** @typedef {import('./grid.js').CellValue} CellValue */
 /** @typedef {import('./grid.js').Coordinates} Coordinates */
 /** @typedef {import('./grid.js').Dimensions} Dimensions */
@@ -48,29 +49,25 @@ import { isRequired, toWords } from '../utility/tools.js';
 // -- Types --------------------------------------------------------------------
 
 /**
+ * @typedef {Room & {
+ *     walls: Coordinates[];
+ *     rectangle: Rectangle;
+ * }} AppliedRoom
+ */
+
+/**
  * @typedef {object} AppliedRoomResults
  *
- * @prop {Room[]} rooms
- *     All rooms which have been generated for the map grid.
- *
  * @prop {Door[]} doors
- *     Doors which are associated to rooms which have been applied to the grid.
- *
- * @prop {GridRoom[]} gridRooms
- *     Room configs which have been applied to the grid.
- *
+ * @prop {AppliedRoom[]} rooms
  * @prop {Room[]} skippedRooms
- *     Room configs which have not been applied to the grid.
  */
 
 /**
  * @typedef {object} Connection
  *
  * @prop {Direction} direction
- *     Direction of the room connection.
- *
  * @prop {number} to
- *     Room number at the associated direction.
  */
 
 /** @typedef {{ [roomNumber: number]: Connection }} Connections */
@@ -88,15 +85,6 @@ import { isRequired, toWords } from '../utility/tools.js';
  */
 
 /** @typedef {{ [roomNumber: number]: Door[] }} Doors */
-
-/**
- * @typedef {object} GridRoom
- *
- * @prop {Rectangle} rect
- * @prop {number} roomNumber
- * @prop {RoomType} type
- * @prop {Coordinates[]} walls
- */
 
 // -- Config -------------------------------------------------------------------
 
@@ -217,13 +205,13 @@ function createDoor(rectangle, type, { direction, from, to }, lockedChance = 0) 
  * @param {Room[]} mapRooms
  * @param {Grid} grid
  * @param {object} [options]
- *     @param {GridRoom} [options.prevGridRoom]
+ *     @param {AppliedRoom} [options.prevRoom]
  *     @param {boolean} [options.isFork]
  *
  * @returns {AppliedRoomResults}
  */
-function applyRooms(gridDimensions, mapRooms, grid, { isFork, prevGridRoom } = {}) {
-    /** @type {Room[]} */
+function applyRooms(gridDimensions, mapRooms, grid, { isFork, prevRoom } = {}) {
+    /** @type {AppliedRoom[]} */
     let rooms = [];
 
     /** @type {Door[]} */
@@ -232,11 +220,8 @@ function applyRooms(gridDimensions, mapRooms, grid, { isFork, prevGridRoom } = {
     /** @type {Room[]} */
     let skippedRooms = [];
 
-    /** @type {GridRoom[]} */
-    let gridRooms = [];
-
     mapRooms.forEach((room) => {
-        let { config, roomNumber, traps } = room;
+        let { config, roomNumber } = room;
         let { roomType } = config;
 
         let roomDimensions = getRoomDimensions(gridDimensions, config);
@@ -245,10 +230,10 @@ function applyRooms(gridDimensions, mapRooms, grid, { isFork, prevGridRoom } = {
         let y;
 
         // TODO break out into private function
-        if (prevGridRoom) {
-            isRequired(prevGridRoom.walls, 'Previous grid room requires wall coordinates in drawRooms()');
+        if (prevRoom) {
+            isRequired(prevRoom.walls, 'Previous grid room requires wall coordinates in drawRooms()');
 
-            let validCords = getValidRoomConnections(grid, roomDimensions, prevGridRoom.rect);
+            let validCords = getValidRoomConnections(grid, roomDimensions, prevRoom.rectangle);
 
             if (!validCords.length) {
                 skippedRooms.push(room);
@@ -265,37 +250,25 @@ function applyRooms(gridDimensions, mapRooms, grid, { isFork, prevGridRoom } = {
             ({ x, y } = getStartingPoint(gridDimensions, roomDimensions));
         }
 
-        let rect = { x, y, ...roomDimensions };
-        let walls = applyRoomToGrid(grid, rect, roomNumber);
+        let rectangle = { x, y, ...roomDimensions };
+        let walls = applyRoomToGrid(grid, rectangle, roomNumber);
 
-        let gridRoom = {
-            rect: { x, y, ...roomDimensions },
-            type: roomType,
-            roomNumber,
+        let appliedRoom = {
+            ...room,
+            rectangle,
             walls,
         };
 
-        gridRooms.push(gridRoom);
+        doors.push(getDoor(grid, appliedRoom, prevRoom, { allowSecret: isFork }));
+        rooms.push(appliedRoom);
 
-        doors.push(getDoor(grid, gridRoom, prevGridRoom, { allowSecret: isFork }));
-
-        let roomDrawing = getRoomDrawing(gridRoom, { hasTraps: Boolean(traps) });
-
-        rooms.push({
-            ...room,
-            rect: roomDrawing, // TODO rename param? Or better, move drawing out of this method?
-            size: [ roomDimensions.width, roomDimensions.height ], // TODO rename to dimensions
-            walls,
-        });
-
-        prevGridRoom = gridRoom;
+        prevRoom = appliedRoom;
     });
 
     let extraDoors = getExtraDoors(grid, rooms, doors);
 
     return {
         doors: doors.concat(extraDoors),
-        gridRooms,
         rooms,
         skippedRooms,
     };
@@ -304,26 +277,32 @@ function applyRooms(gridDimensions, mapRooms, grid, { isFork, prevGridRoom } = {
 /**
  * Returns a door object based on the given grid, room, and previous room.
  *
+ * TODO rename to applyDoor()
+ *
  * @private
  *
  * @param {Grid} grid
- * @param {GridRoom} gridRoom
- * @param {GridRoom} [prevGridRoom]
+ * @param {AppliedRoom} room
+ * @param {AppliedRoom} [prevRoom]
  * @param {object} [options = {}]
  *     @param {boolean} [options.allowSecret]
  *
  * @returns {Door}
  */
-function getDoor(grid, gridRoom, prevGridRoom, { allowSecret } = {}) {
-    let cells     = getDoorCells(grid, gridRoom, prevGridRoom);
-    let useEdge   = prevGridRoom && prevGridRoom.type === 'hallway' && gridRoom.type === 'hallway';
+function getDoor(grid, room, prevRoom, { allowSecret } = {}) {
+    let cells     = getDoorCells(grid, room, prevRoom);
     let max       = Math.min(maxDoorGridUnits, Math.ceil(cells.length / 2));
     let size      = roll(1, max);
     let remainder = cells.length - size;
+
+    let useEdge = prevRoom
+        && prevRoom.config.roomType === 'hallway'
+        && room.config.roomType === 'hallway';
+
     let start     = useEdge ? rollArrayItem([ 0, remainder ]) : roll(0, remainder);
     let doorCells = cells.slice(start, start + size);
     let { x, y }  = doorCells[0];
-    let direction = getDoorDirection({ x, y }, gridRoom.rect);
+    let direction = getDoorDirection({ x, y }, room.rectangle);
 
     let width  = 1;
     let height = 1;
@@ -337,11 +316,10 @@ function getDoor(grid, gridRoom, prevGridRoom, { allowSecret } = {}) {
         }
     });
 
-    /** @type {Rectangle} */
     let doorRectangle = { x, y, width, height };
 
-    let from = gridRoom.roomNumber;
-    let to   = prevGridRoom ? prevGridRoom.roomNumber : outside;
+    let from = room.roomNumber;
+    let to   = prevRoom ? prevRoom.roomNumber : outside;
     let type = getDoorType(doorProbability.roll, allowSecret && secretProbability.roll);
 
     return createDoor(doorRectangle, type, { direction, from, to }, lockedChance);
@@ -353,12 +331,12 @@ function getDoor(grid, gridRoom, prevGridRoom, { allowSecret } = {}) {
  * @private
  *
  * @param {Grid} grid
- * @param {GridRoom} gridRoom
- * @param {GridRoom} [prevGridRoom]
+ * @param {AppliedRoom} room
+ * @param {AppliedRoom} [prevGridRoom]
  *
  * @returns {Coordinates[]}
  */
-function getDoorCells(grid, gridRoom, prevGridRoom) {
+function getDoorCells(grid, room, prevGridRoom) {
     /** @type {Coordinates[]} prevWalls */
     let prevWalls = [];
 
@@ -370,7 +348,7 @@ function getDoorCells(grid, gridRoom, prevGridRoom) {
         let gridWidth  = grid.length - 1;
         let gridHeight = grid[0].length - 1;
 
-        let { x, y, width, height } = gridRoom.rect;
+        let { x, y, width, height } = room.rectangle;
 
         /** @type {Direction[]} doorDirections */
         let doorDirections = [
@@ -406,7 +384,7 @@ function getDoorCells(grid, gridRoom, prevGridRoom) {
         }
     }
 
-    let roomWalls     = gridRoom.walls.map(({ x, y }) => `${x},${y}`);
+    let roomWalls     = room.walls.map(({ x, y }) => `${x},${y}`);
     let prevRoomWalls = prevWalls.map(({ x, y }) => `${x},${y}`);
     let intersection  = roomWalls.filter((value) => prevRoomWalls.includes(value));
 
@@ -522,15 +500,15 @@ function getRoomDimensions(gridDimensions, roomConfig) {
  * @private
  *
  * @param {Grid} grid
- * @param {Rectangle} rect
+ * @param {Rectangle} rectangle
  * @param {number} roomNumber
  *
  * @returns {Coordinates[]}
  */
-function applyRoomToGrid(grid, rect, roomNumber) {
+function applyRoomToGrid(grid, rectangle, roomNumber) {
     isRequired(roomNumber, 'roomNumber is required in applyRoomToGrid()');
 
-    let { x, y, width, height } = rect;
+    let { x, y, width, height } = rectangle;
 
     /** @type {Coordinates[]} */
     let walls = [];
@@ -577,23 +555,24 @@ function applyRoomToGrid(grid, rect, roomNumber) {
 }
 
 /**
- * Returns a room's SVG element strings for the given GridRoom.
+ * Returns a room's text config.
  *
- * @param {GridRoom} gridRoom
- * @param {object} [options]
- *     @param {object} [options.hasTraps]
+ * @param {AppliedRoom} room
  *
- * @returns {string}
+ * @returns {RoomText}
  */
-function getRoomDrawing(gridRoom, { hasTraps } = {}) {
-    let { rect, type, roomNumber } = gridRoom;
-    let { width, height } = rect;
+function getRoomText(room) {
+    let { rectangle, config, roomNumber } = room;
+    let { roomType } = config;
+    let { width, height } = rectangle;
 
-    let showRoomLabel = type !== 'room' && width >= labelMinRoomWidth && height >= labelMinRoomHeight;
-    let roomLabel     = showRoomLabel && toWords(type);
-    let roomText      = { roomNumber: roomNumber.toString(), roomLabel };
+    let showRoomLabel = roomType !== 'room'
+        && width >= labelMinRoomWidth
+        && height >= labelMinRoomHeight;
 
-    return drawRoom(rect, roomText, { hasTraps });
+    let roomLabel = showRoomLabel ? toWords(roomType) : undefined;
+
+    return { roomNumber: roomNumber.toString(), roomLabel };
 }
 
 /**
@@ -603,7 +582,7 @@ function getRoomDrawing(gridRoom, { hasTraps } = {}) {
  * @private
  *
  * @param {Grid} grid
- * @param {Room[]} rooms
+ * @param {AppliedRoom[]} rooms
  * @param {Door[]} existingDoors
  *
  * @returns {Door[]}
@@ -699,40 +678,46 @@ function getExtraDoors(grid, rooms, existingDoors) {
 }
 
 /**
- * Returns an array of rooms and an array of doors.
+ * Procedurally applies rooms to a grid, returning arrays of rooms and doors.
  *
- * TODO rename.
+ * TODO infer gridDimension from grid
  *
  * @private
  *
  * @param {Dimensions} gridDimensions
- * @param {Room[]} roomConfigs // TODO rename to rooms
+ * @param {Room[]} rooms
  * @param {Grid} grid
  *
  * @returns {{
- *     rooms: Room[];
+ *     rooms: AppliedRoom[];
  *     doors: Door[];
  * }}
  */
-function procedurallyApplyRooms(gridDimensions, roomConfigs, grid) {
-    let { rooms, doors, skippedRooms, gridRooms } = applyRooms(gridDimensions, roomConfigs, grid);
+function procedurallyApplyRooms(gridDimensions, rooms, grid) {
+    let {
+        rooms: initialRooms,
+        doors,
+        skippedRooms,
+    } = applyRooms(gridDimensions, rooms, grid);
 
     // TODO Aggregate skipped rooms?
     let lastSkipped = skippedRooms;
 
-    gridRooms.forEach((gridRoom) => {
-        let fork = applyRooms(gridDimensions, lastSkipped, grid, { isFork: true, prevGridRoom: gridRoom });
+    let appliedRooms = [ ...initialRooms ];
+
+    initialRooms.forEach((room) => {
+        let fork = applyRooms(gridDimensions, lastSkipped, grid, { isFork: true, prevRoom: room });
 
         if (fork.rooms.length && fork.doors.length) {
             lastSkipped = fork.skippedRooms;
 
-            rooms.push(...fork.rooms);
+            appliedRooms.push(...fork.rooms);
             doors.push(...fork.doors);
         }
     });
 
     return {
-        rooms,
+        rooms: appliedRooms,
         doors,
     };
 }
@@ -748,7 +733,7 @@ export {
     getDoorType            as testGetDoorType,
     getExtraDoors          as testGetExtraDoors,
     getRoomDimensions      as testGetRoomDimensions,
-    getRoomDrawing         as testGetRoomDrawing,
+    getRoomText            as testGetRoomText,
     procedurallyApplyRooms as testProcedurallyApplyRooms,
 };
 
@@ -762,7 +747,7 @@ export {
  *
  * @returns {{
  *     map: string;
- *     rooms: Room[];
+ *     rooms: AppliedRoom[];
  *     doors: Door[];
  * }}
  */
@@ -775,10 +760,19 @@ export function generateMap(gridDimensions, roomConfigs) {
         console.warn('Not enough rooms generated', roomConfigs.length, rooms.length);
     }
 
-    let roomRects = rooms.map((room) => room.rect).join('');
+    let roomRects = rooms.map((room) => {
+        let { rectangle, traps } = room;
+
+        return drawRoom(rectangle, getRoomText(room), {
+            hasTraps: Boolean(traps && traps.length),
+        });
+    }).join('');
+
     let doorRects = doors.map((door) => drawDoor(door)).join('');
+
     let gridLines = drawGrid(gridDimensions);
-    let content   = gridLines + roomRects + doorRects;
+
+    let content = gridLines + roomRects + doorRects;
 
     return {
         doors,

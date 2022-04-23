@@ -21,7 +21,7 @@ import {
     testGetDoorType            as getDoorType,
     testGetExtraDoors          as getExtraDoors,
     testGetRoomDimensions      as getRoomDimensions,
-    testGetRoomDrawing         as getRoomDrawing,
+    testGetRoomText            as getRoomText,
     testProcedurallyApplyRooms as procedurallyApplyRooms,
 
     // Public functions
@@ -45,7 +45,7 @@ import {
 /** @typedef {import('../grid.js').Dimensions} Dimensions */
 /** @typedef {import('../grid.js').Grid} Grid */
 /** @typedef {import('../grid.js').Rectangle} Rectangle */
-/** @typedef {import('../map.js').GridRoom} GridRoom */
+/** @typedef {import('../map.js').AppliedRoom} AppliedRoom */
 
 /** @type {GeneratedRoomConfig} */
 const generatedRoomConfig = {
@@ -141,12 +141,10 @@ export default ({ assert, describe, it }) => {
 
             assert(result).isObject();
             assert(result.doors).isArray();
-            assert(result.gridRooms).isArray();
             assert(result.rooms).isArray();
             assert(result.skippedRooms).isArray();
 
             result.doors        && assert(result.doors.length).equals(1);
-            result.gridRooms    && assert(result.gridRooms.length).equals(1);
             result.rooms        && assert(result.rooms.length).equals(1);
             result.skippedRooms && assert(result.skippedRooms.length).equals(0);
         });
@@ -193,14 +191,15 @@ export default ({ assert, describe, it }) => {
                         roomNumber: 1,
                     };
 
-                    const prevGridRoom = {
-                        rect: { x: 1, y: 1, width: 1, height: 1 },
-                        type: room,
+                    const prevRoom = {
+                        config: generatedRoomConfig,
+                        itemSet,
+                        rectangle: { x: 1, y: 1, width: 1, height: 1 },
                         roomNumber: 1,
                     };
 
                     // @ts-expect-error
-                    assert(() => applyRooms(gridDimensions, [ room ], grid, { prevGridRoom }))
+                    assert(() => applyRooms(gridDimensions, [ room ], grid, { prevRoom }))
                         .throws('Previous grid room requires wall coordinates in drawRooms()');
                 });
             });
@@ -215,10 +214,11 @@ export default ({ assert, describe, it }) => {
                         height: 3,
                     };
 
-                    const prevGridRoom = {
-                        rect: prevRect,
+                    const prevRoom = {
+                        config: generatedRoomConfig,
+                        itemSet,
+                        rectangle: prevRect,
                         roomNumber: 1,
-                        type: /** @type {RoomType} */ ('room'),
                         walls: applyRoomToGrid(grid, prevRect, 1),
                     };
 
@@ -228,7 +228,7 @@ export default ({ assert, describe, it }) => {
                         roomNumber: 2,
                     };
 
-                    const result = applyRooms(gridDimensions, [ room ], grid, { prevGridRoom });
+                    const result = applyRooms(gridDimensions, [ room ], grid, { prevRoom });
                     assert(result.doors).isArray();
 
                     const door = result.doors.pop();
@@ -257,10 +257,11 @@ export default ({ assert, describe, it }) => {
                         height: 3,
                     };
 
-                    const prevGridRoom = {
-                        rect: prevRect,
+                    const prevRoom = {
+                        config: generatedRoomConfig,
+                        itemSet,
+                        rectangle: prevRect,
                         roomNumber: 1,
-                        type: /** @type {RoomType} */ ('room'),
                         walls: applyRoomToGrid(grid, prevRect, 1),
                     };
 
@@ -273,7 +274,7 @@ export default ({ assert, describe, it }) => {
                         roomNumber: 2,
                     };
 
-                    const result = applyRooms(gridDimensions, [ hallway ], grid, { prevGridRoom });
+                    const result = applyRooms(gridDimensions, [ hallway ], grid, { prevRoom });
                     assert(result.doors).isArray();
 
                     const door = result.doors.pop();
@@ -323,10 +324,11 @@ export default ({ assert, describe, it }) => {
                 height: 2,
             };
 
-            const prevGridRoom = {
-                rect: prevRect,
+            const prevRoom = {
+                config: generatedRoomConfig,
+                itemSet: { items: [], containers: [] },
+                rectangle: prevRect,
                 roomNumber: 1,
-                type: /** @type {RoomType} */ ('room'),
                 walls: applyRoomToGrid(grid, prevRect, 1),
             };
 
@@ -337,14 +339,15 @@ export default ({ assert, describe, it }) => {
                 height: 2,
             };
 
-            const gridRoom = {
-                rect,
+            const room = {
+                config: generatedRoomConfig,
+                itemSet: { items: [], containers: [] },
+                rectangle: rect,
                 roomNumber: 2,
-                type: /** @type {RoomType} */ ('room'),
                 walls: applyRoomToGrid(grid, rect, 2),
             };
 
-            const door = getDoor(grid, gridRoom, prevGridRoom);
+            const door = getDoor(grid, room, prevRoom);
 
             assert(door).isObject();
             assert(door.connections).equalsObject({
@@ -360,36 +363,38 @@ export default ({ assert, describe, it }) => {
 
     describe('getDoorCells()', () => {
         describe('given no previous room', () => {
+            const grid = createBlankGrid({ width: 10, height: 10 });
             const roomNumber = 1;
-            const rectConfig = {
+            const rectangle = {
                 x: 0,
                 y: 0,
                 width: 2,
                 height: 2,
             };
 
-            const gridRoomConfig = {
-                rect: rectConfig,
-                roomNumber,
-                type: /** @type {RoomType} */ ('room'),
+            const appliedRoom = {
+                config: generatedRoomConfig,
+                itemSet: { items: [], containers: [] },
+                rectangle,
+                roomNumber: 1,
+                walls: applyRoomToGrid(grid, rectangle, roomNumber),
             };
 
             describe('when the room is adjacent to the north edge', () => {
                 it('returns connections to the north edge', () => {
-                    const grid = createBlankGrid({ width: 10, height: 10 });
                     const rect = {
-                        ...rectConfig,
+                        ...rectangle,
                         x: 3,
                         y: 1, // y - 1 = north edge
                     };
 
-                    const gridRoom = {
-                        ...gridRoomConfig,
-                        rect,
+                    const room = {
+                        ...appliedRoom,
+                        rectangle: rect,
                         walls: applyRoomToGrid(grid, rect, roomNumber),
                     };
 
-                    const cells = getDoorCells(grid, gridRoom);
+                    const cells = getDoorCells(grid, room);
 
                     assert(cells).isArray();
                     cells && assert(cells.shift()).equalsObject({ x: 3, y: 0 });
@@ -399,20 +404,19 @@ export default ({ assert, describe, it }) => {
 
             describe('when the room is adjacent to the east edge', () => {
                 it('returns connections to the east edge', () => {
-                    const grid = createBlankGrid({ width: 10, height: 10 });
                     const rect = {
-                        ...rectConfig,
+                        ...rectangle,
                         x: 7, // x + room width = east edge
                         y: 3,
                     };
 
-                    const gridRoom = {
-                        ...gridRoomConfig,
-                        rect,
+                    const room = {
+                        ...appliedRoom,
+                        rectangle: rect,
                         walls: applyRoomToGrid(grid, rect, roomNumber),
                     };
 
-                    const cells = getDoorCells(grid, gridRoom);
+                    const cells = getDoorCells(grid, room);
 
                     assert(cells).isArray();
                     cells && assert(cells.shift()).equalsObject({ x: 9, y: 3 });
@@ -422,20 +426,19 @@ export default ({ assert, describe, it }) => {
 
             describe('when the room is adjacent to the south edge', () => {
                 it('returns connections to the south edge', () => {
-                    const grid = createBlankGrid({ width: 10, height: 10 });
                     const rect = {
-                        ...rectConfig,
+                        ...rectangle,
                         x: 2,
                         y: 7, // y + room height = south edge
                     };
 
-                    const gridRoom = {
-                        ...gridRoomConfig,
-                        rect,
+                    const room = {
+                        ...appliedRoom,
+                        rectangle: rect,
                         walls: applyRoomToGrid(grid, rect, roomNumber),
                     };
 
-                    const cells = getDoorCells(grid, gridRoom);
+                    const cells = getDoorCells(grid, room);
 
                     assert(cells).isArray();
                     cells && assert(cells.shift()).equalsObject({ x: 2, y: 9 });
@@ -445,20 +448,19 @@ export default ({ assert, describe, it }) => {
 
             describe('when the room is adjacent to the west edge', () => {
                 it('returns connections to the west edge', () => {
-                    const grid = createBlankGrid({ width: 10, height: 10 });
                     const rect = {
-                        ...rectConfig,
+                        ...rectangle,
                         x: 1, // x - 1 = west edge
                         y: 5,
                     };
 
-                    const gridRoom = {
-                        ...gridRoomConfig,
-                        rect,
+                    const room = {
+                        ...appliedRoom,
+                        rectangle: rect,
                         walls: applyRoomToGrid(grid, rect, roomNumber),
                     };
 
-                    const cells = getDoorCells(grid, gridRoom);
+                    const cells = getDoorCells(grid, room);
 
                     assert(cells).isArray();
                     cells && assert(cells.shift()).equalsObject({ x: 0, y: 5 });
@@ -494,10 +496,11 @@ export default ({ assert, describe, it }) => {
                     height: 2,
                 };
 
-                const gridRoom1 = {
-                    rect: rect1,
+                const room1 = {
+                    config: generatedRoomConfig,
+                    itemSet: { items: [], containers: [] },
+                    rectangle: rect1,
                     roomNumber: 1,
-                    type: /** @type {RoomType} */ ('room'),
                     walls: applyRoomToGrid(grid, rect1, 1),
                 };
 
@@ -508,14 +511,15 @@ export default ({ assert, describe, it }) => {
                     height: 3,
                 };
 
-                const gridRoom2 = {
-                    rect: rect2,
+                const room2 = {
+                    config: generatedRoomConfig,
+                    itemSet: { items: [], containers: [] },
+                    rectangle: rect2,
                     roomNumber: 2,
-                    type: /** @type {RoomType} */ ('room'),
                     walls: applyRoomToGrid(grid, rect2, 2),
                 };
 
-                const cells = getDoorCells(grid, gridRoom2, gridRoom1);
+                const cells = getDoorCells(grid, room2, room1);
 
                 assert(cells).isArray();
                 cells && assert(cells.shift()).equalsObject({ x: 4, y: 4 });
@@ -597,7 +601,7 @@ export default ({ assert, describe, it }) => {
          *     @param {number} [options.connectionChance = 0]
          *     @param {Dimensions} [options.gridDimensions = { width: 10, height: 10 }]
          *
-         * @returns {{ grid: Grid; rooms: Room[] }}
+         * @returns {{ grid: Grid; rooms: AppliedRoom[] }}
          */
         function getRoomsForTest(rects, {
             connectionChance = 0,
@@ -606,23 +610,22 @@ export default ({ assert, describe, it }) => {
             const grid  = createBlankGrid(gridDimensions);
 
             const rooms = rects.map((rect, i) => {
-                /** @type {Room} */
+                let roomNumber = i + 1;
+
+                /** @type {AppliedRoom} */
                 const room = {
                     config: {
                         ...generatedRoomConfig,
                         dungeonConnections: connectionChance,
                     },
                     itemSet: { items: [], containers: [] },
-                    roomNumber: i + 1,
+                    roomNumber,
+                    rectangle: rect,
+                    walls: applyRoomToGrid(grid, rect, roomNumber),
                 };
 
-                const walls = applyRoomToGrid(grid, rect, room.roomNumber);
 
-                return {
-                    ...room,
-                    walls,
-                    size: [ rect.width, rect.height ],
-                };
+                return room;
             });
 
             return {
@@ -856,107 +859,95 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('getRoomDrawing()', () => {
-        const grid = createBlankGrid({ width: 8, height: 6 });
-        const rect = { x: 3, y: 3, width: 3, height: 2 };
+    describe('getRoomText()', () => {
+        const rectangle = { x: 3, y: 3, width: 3, height: 2 };
 
-        /** @type {GridRoom} gridRoom */
-        const gridRoom = {
-            rect,
-            type: 'room',
+        /** @type {AppliedRoom} */
+        const room = {
+            config: generatedRoomConfig,
+            itemSet: { items: [], containers: [] },
+            rectangle,
             roomNumber: 7,
-            walls: applyRoomToGrid(grid, rect, 7),
+            walls: [],
         };
 
-        describe('when the room type is "room"', () => {
-            const drawing = getRoomDrawing(gridRoom);
-
-            it('returns an SVG element rect for the room rect', () => {
-                assert(drawing).isString();
-
-                const rectMatches = drawing.match(/<rect(.+?) \/>/g);
-                assert(rectMatches).isArray();
-                rectMatches && assert(rectMatches.length).equals(1);
-                rectMatches && assert(rectMatches.pop()).isElementTag('rect');
-            });
-
-            it('includes the room number in the room rect', () => {
-                assert(/<text(.+?)>7<\/text>/.test(drawing)).isTrue();
-            });
+        it('returns the room number', () => {
+            assert(getRoomText(room).roomNumber).equals('7');
         });
 
-        describe('when the width and height are at least `labelMinRoomWidth` and `labelMinRoomHeight`', () => {
-            it('the room label is not included with the room rect', () => {
-                const rectWithLabelDimensions = getRoomDrawing({
-                    ...gridRoom,
-                    rect: {
-                        ...gridRoom.rect,
-                        width: labelMinRoomWidth,
-                        height: labelMinRoomHeight,
-                    },
-                });
+        describe('when the room type is "room"', () => {
+            it('the room label is undefined', () => {
+                assert(getRoomText(room).roomLabel).isUndefined();
+            });
 
-                assert(RegExp('<text(.+?)>room</text>').test(rectWithLabelDimensions)).isFalse();
+            describe('when the width and height are at least `labelMinRoomWidth` & `labelMinRoomHeight`', () => {
+                it('the room label is undefined', () => {
+                    const roomTextWithLabelDimensions = getRoomText({
+                        ...room,
+                        rectangle: {
+                            ...room.rectangle,
+                            width: labelMinRoomWidth,
+                            height: labelMinRoomHeight,
+                        },
+                    });
+
+                    assert(roomTextWithLabelDimensions.roomLabel).isUndefined();
+                });
             });
         });
 
         describe('when the room type is not "room"', () => {
-            /** @type {GridRoom} libraryGridRoom */
-            const libraryGridRoom = {
-                ...gridRoom,
-                type: 'library',
+            const libraryRoom = {
+                ...room,
+                config: {
+                    ...room.config,
+                    roomType: /** @type {RoomType} */ ('library'),
+                },
             };
 
             describe('when the room width is less than `labelMinRoomWidth`', () => {
-                it('the room label is not included with the room rect', () => {
-                    const libraryDrawing = getRoomDrawing({
-                        ...libraryGridRoom,
-                        rect: {
-                            ...libraryGridRoom.rect,
+                it('the room label is undefined', () => {
+                    const libraryRoomText = getRoomText({
+                        ...libraryRoom,
+                        rectangle: {
+                            ...libraryRoom.rectangle,
                             width: labelMinRoomWidth - 1,
                             height: labelMinRoomHeight,
                         },
                     });
 
-                    assert(RegExp('<text(.+?)>library</text>').test(libraryDrawing)).isFalse();
+                    assert(libraryRoomText.roomLabel).isUndefined();
                 });
             });
 
             describe('when the room height is less than `labelMinRoomHeight`', () => {
-                it('the room label is not included with the room rect', () => {
-                    const libraryDrawing = getRoomDrawing({
-                        ...libraryGridRoom,
-                        rect: {
-                            ...libraryGridRoom.rect,
+                it('the room label is undefined', () => {
+                    const libraryRoomText = getRoomText({
+                        ...libraryRoom,
+                        rectangle: {
+                            ...libraryRoom.rectangle,
                             width: labelMinRoomWidth,
                             height: labelMinRoomHeight - 1,
                         },
                     });
 
-                    assert(RegExp('<text(.+?)>library</text>').test(libraryDrawing)).isFalse();
+                    assert(libraryRoomText.roomLabel).isUndefined();
                 });
             });
 
             describe('when the room width and height are equal to `labelMinRoomWidth` & `labelMinRoomHeight`', () => {
                 it('the room label is included with the room rect', () => {
-                    const libraryDrawing = getRoomDrawing({
-                        ...libraryGridRoom,
-                        rect: {
-                            ...libraryGridRoom.rect,
+                    const libraryRoomText = getRoomText({
+                        ...libraryRoom,
+                        rectangle: {
+                            ...libraryRoom.rectangle,
                             width: labelMinRoomWidth,
                             height: labelMinRoomHeight,
                         },
                     });
 
-                    assert(RegExp('<text(.+?)>library</text>').test(libraryDrawing)).isTrue();
+                    assert(libraryRoomText.roomLabel).equals('library');
                 });
-            });
-        });
-
-        describe('given a truthy `hasTraps` option', () => {
-            it('includes a `<text>` trap indicator in the room rect', () => {
-                const trappedRoomDrawing = getRoomDrawing(gridRoom, { hasTraps: true });
-                assert(RegExp(`<text(.+?)>${trapLabel}</text>`).test(trappedRoomDrawing)).isTrue();
             });
         });
     });
@@ -1061,7 +1052,10 @@ export default ({ assert, describe, it }) => {
                 rooms && rooms.forEach((roomConfig) => {
                     assert(roomConfig).isObject();
                     roomConfig && assert(roomConfig.config).isObject();
-                    roomConfig && assert(roomConfig.rect).isString();
+                    roomConfig && assert(roomConfig.itemSet).isObject();
+                    roomConfig && assert(roomConfig.rectangle).isObject();
+                    roomConfig && assert(roomConfig.roomNumber).isNumber();
+                    roomConfig && assert(roomConfig.walls).isArray();
                 });
 
                 assert(doors).isArray();
@@ -1106,8 +1100,8 @@ export default ({ assert, describe, it }) => {
             rooms && rooms.forEach((room) => {
                 assert(room.config).isObject();
                 assert(room.itemSet).isObject();
+                assert(room.rectangle).isObject();
                 assert(room.roomNumber > lastRoomNumber).isTrue();
-                assert(room.size).isArray();
                 assert(room.walls).isArray();
             });
 
