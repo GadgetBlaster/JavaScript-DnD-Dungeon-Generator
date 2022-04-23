@@ -11,9 +11,9 @@ import {
     testLabelMinRoomWidth  as labelMinRoomWidth,
 
     // Private Functions
+    testApplyRooms             as applyRooms,
     testCheckForAdjacentDoor   as checkForAdjacentDoor,
     testCreateDoor             as createDoor,
-    testDrawRooms              as drawRooms,
     testGetDoor                as getDoor,
     testGetDoorCells           as getDoorCells,
     testGetDoorDirection       as getDoorDirection,
@@ -128,7 +128,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('drawRooms()', () => {
+    describe('applyRooms()', () => {
         // TODO, missing `isFork` tests
 
         const gridDimensions = { width: 12, height: 12 };
@@ -137,7 +137,7 @@ export default ({ assert, describe, it }) => {
         it('returns an AppliedRoomResults object', () => {
             const grid = createBlankGrid(gridDimensions);
             const room = { config: generatedRoomConfig, itemSet, roomNumber: 1 };
-            const result = drawRooms(gridDimensions, [ room ], grid);
+            const result = applyRooms(gridDimensions, [ room ], grid);
 
             assert(result).isObject();
             assert(result.doors).isArray();
@@ -155,7 +155,7 @@ export default ({ assert, describe, it }) => {
             it('is connected to an edge of the map', () => {
                 const grid = createBlankGrid(gridDimensions);
                 const room = { config: generatedRoomConfig, itemSet, roomNumber: 1 };
-                const result = drawRooms(gridDimensions, [ room, room ], grid);
+                const result = applyRooms(gridDimensions, [ room, room ], grid);
                 const firstDoor = result.doors.shift();
 
                 assert(Boolean(firstDoor.connections[outside])).isTrue();
@@ -174,7 +174,7 @@ export default ({ assert, describe, it }) => {
                     roomNumber: 1,
                 };
 
-                const result = drawRooms(gridDimensions, [ room, room ], grid);
+                const result = applyRooms(gridDimensions, [ room, room ], grid);
 
                 assert(result.skippedRooms.length).equals(1);
             });
@@ -200,7 +200,7 @@ export default ({ assert, describe, it }) => {
                     };
 
                     // @ts-expect-error
-                    assert(() => drawRooms(gridDimensions, [ room ], grid, { prevGridRoom }))
+                    assert(() => applyRooms(gridDimensions, [ room ], grid, { prevGridRoom }))
                         .throws('Previous grid room requires wall coordinates in drawRooms()');
                 });
             });
@@ -228,7 +228,7 @@ export default ({ assert, describe, it }) => {
                         roomNumber: 2,
                     };
 
-                    const result = drawRooms(gridDimensions, [ room ], grid, { prevGridRoom });
+                    const result = applyRooms(gridDimensions, [ room ], grid, { prevGridRoom });
                     assert(result.doors).isArray();
 
                     const door = result.doors.pop();
@@ -273,7 +273,7 @@ export default ({ assert, describe, it }) => {
                         roomNumber: 2,
                     };
 
-                    const result = drawRooms(gridDimensions, [ hallway ], grid, { prevGridRoom });
+                    const result = applyRooms(gridDimensions, [ hallway ], grid, { prevGridRoom });
                     assert(result.doors).isArray();
 
                     const door = result.doors.pop();

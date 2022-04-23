@@ -152,6 +152,8 @@ export {
 
 // -- Private Functions --------------------------------------------------------
 
+// TODO alphabetize funcs
+
 /**
  * Checks if there is an adjacent door to the given cell.
  *
@@ -221,7 +223,7 @@ function createDoor(rectangle, type, { direction, from, to }, lockedChance = 0) 
  *
  * @returns {AppliedRoomResults}
  */
-function drawRooms(gridDimensions, mapRooms, grid, { isFork, prevGridRoom } = {}) {
+function applyRooms(gridDimensions, mapRooms, grid, { isFork, prevGridRoom } = {}) {
     /** @type {Room[]} */
     let rooms = [];
 
@@ -479,6 +481,8 @@ function getDoorType(rollDoorType, rollSecretDoorType) {
 /**
  * Returns randomized room dimensions for the given room type.
  *
+ * TODO rename to rollRoomDimensions
+ *
  * @private
  *
  * @param {Dimensions} gridDimensions
@@ -713,13 +717,13 @@ function getExtraDoors(grid, rooms, existingDoors) {
  * }}
  */
 function procedurallyApplyRooms(gridDimensions, roomConfigs, grid) {
-    let { rooms, doors, skippedRooms, gridRooms } = drawRooms(gridDimensions, roomConfigs, grid);
+    let { rooms, doors, skippedRooms, gridRooms } = applyRooms(gridDimensions, roomConfigs, grid);
 
     // TODO Aggregate skipped rooms?
     let lastSkipped = skippedRooms;
 
     gridRooms.forEach((gridRoom) => {
-        let fork = drawRooms(gridDimensions, lastSkipped, grid, { isFork: true, prevGridRoom: gridRoom });
+        let fork = applyRooms(gridDimensions, lastSkipped, grid, { isFork: true, prevGridRoom: gridRoom });
 
         if (fork.rooms.length && fork.doors.length) {
             lastSkipped = fork.skippedRooms;
@@ -736,9 +740,9 @@ function procedurallyApplyRooms(gridDimensions, roomConfigs, grid) {
 }
 
 export {
+    applyRooms             as testApplyRooms,
     checkForAdjacentDoor   as testCheckForAdjacentDoor,
     createDoor             as testCreateDoor,
-    drawRooms              as testDrawRooms,
     getDoor                as testGetDoor,
     getDoorCells           as testGetDoorCells,
     getDoorDirection       as testGetDoorDirection,
