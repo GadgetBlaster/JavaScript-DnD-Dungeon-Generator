@@ -234,8 +234,8 @@ function drawRooms(gridDimensions, mapRooms, grid, { isFork, prevGridRoom } = {}
     /** @type {GridRoom[]} */
     let gridRooms = [];
 
-    mapRooms.forEach((roomConfig) => { // TODO rename param to `room`
-        let { config, roomNumber } = roomConfig;
+    mapRooms.forEach((room) => {
+        let { config, roomNumber, traps } = room;
         let { roomType } = config;
 
         let roomDimensions = getRoomDimensions(gridDimensions, config);
@@ -250,7 +250,7 @@ function drawRooms(gridDimensions, mapRooms, grid, { isFork, prevGridRoom } = {}
             let validCords = getValidRoomConnections(grid, roomDimensions, prevGridRoom.rect);
 
             if (!validCords.length) {
-                skippedRooms.push(roomConfig);
+                skippedRooms.push(room);
                 return;
             }
 
@@ -278,10 +278,10 @@ function drawRooms(gridDimensions, mapRooms, grid, { isFork, prevGridRoom } = {}
 
         doors.push(getDoor(grid, gridRoom, prevGridRoom, { allowSecret: isFork }));
 
-        let roomDrawing = getRoomDrawing(gridRoom, { hasTraps: Boolean(roomConfig.traps) });
+        let roomDrawing = getRoomDrawing(gridRoom, { hasTraps: Boolean(traps) });
 
         rooms.push({
-            ...roomConfig,
+            ...room,
             rect: roomDrawing, // TODO rename param? Or better, move drawing out of this method?
             roomNumber,
             size: [ roomDimensions.width, roomDimensions.height ], // TODO rename to dimensions
@@ -294,9 +294,9 @@ function drawRooms(gridDimensions, mapRooms, grid, { isFork, prevGridRoom } = {}
     let extraDoors = getExtraDoors(grid, rooms, doors);
 
     return {
-        rooms,
         doors: doors.concat(extraDoors),
         gridRooms,
+        rooms,
         skippedRooms,
     };
 }
