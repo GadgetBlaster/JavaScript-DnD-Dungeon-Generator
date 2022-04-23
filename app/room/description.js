@@ -132,15 +132,13 @@ function getContentRarityDetail(rarity) {
 /**
  * Returns a room description for the given config.
  *
- * TODO name getRoomDescription()
- *
  * @private
  *
  * @param {GeneratedRoomConfig} config
  *
  * @returns {string}
  */
-function getDescription(config) {
+function getDescriptionIntro(config) {
     let {
         itemQuantity,
         roomCondition,
@@ -357,7 +355,7 @@ function getRoomDoorwayDescription(roomDoors, roomNumber) {
 export {
     getContentDescription        as testGetContentDescription,
     getContentRarityDetail       as testGetContentRarityDetail,
-    getDescription               as testGetDescription,
+    getDescriptionIntro          as testGetDescriptionIntro,
     getDoorwayDescription        as testGetDoorwayDescription,
     getFurnitureDetail           as testGetFurnitureDetail,
     getItemConditionDescription  as testGetItemConditionDescription,
@@ -472,7 +470,7 @@ export function getRoomDescription(room, roomDoors) {
     }
 
     let description = [
-        getDescription(config),
+        getDescriptionIntro(config),
         ...getEnvironmentDescription(config),
         getContentDescription(config),
         getItemConditionDescription(config),

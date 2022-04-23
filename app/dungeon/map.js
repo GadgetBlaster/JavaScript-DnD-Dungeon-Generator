@@ -80,6 +80,8 @@ import { isRequired, toWords } from '../utility/tools.js';
 /**
  * @typedef {object} Door
  *
+ * TODO move to Door?
+ *
  * @prop {string} rect
  * @prop {DoorType} type
  * @prop {boolean} locked
