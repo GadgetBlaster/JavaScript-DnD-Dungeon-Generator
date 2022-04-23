@@ -283,7 +283,6 @@ function drawRooms(gridDimensions, mapRooms, grid, { isFork, prevGridRoom } = {}
         rooms.push({
             ...room,
             rect: roomDrawing, // TODO rename param? Or better, move drawing out of this method?
-            roomNumber,
             size: [ roomDimensions.width, roomDimensions.height ], // TODO rename to dimensions
             walls,
         });
