@@ -4,10 +4,14 @@ import { roll } from '../utility/roll.js';
 import { roomTypes } from './room.js';
 import { sizes } from '../attribute/size.js';
 
+// -- Type Imports -------------------------------------------------------------
+
+/** @typedef {import('../attribute/size').Size} Size */
+/** @typedef {import('../dungeon/grid.js').Dimensions} Dimensions */
+/** @typedef {import('./room.js').RoomType} RoomType */
+
 // -- Types --------------------------------------------------------------------
 
-/** @typedef {import('./room.js').RoomType} RoomType */
-/** @typedef {import('../attribute/size').Size} Size */
 
 /** @typedef {[ number, number ]} RoomDimensions */ // TODO use Dimensions type
 
@@ -41,23 +45,23 @@ export const dimensionRanges = {
  * @type {{ [key in RoomType]?: Size[] }}
  */
 const roomSizes = {
-    ballroom : [ 'medium', 'large', 'massive' ],
-    bathhouse: [ 'small', 'medium', 'large', 'massive' ],
-    dining   : [ 'small', 'medium', 'large', 'massive' ],
-    dormitory: [ 'medium', 'large', 'massive' ],
-    greatHall: [ 'large', 'massive' ],
-    pantry   : [ 'tiny', 'small', 'medium' ],
-    parlour  : [ 'tiny', 'small', 'medium' ],
-    study    : [ 'tiny', 'small', 'medium' ],
-    throne   : [ 'medium', 'large', 'massive' ],
-    torture  : [ 'tiny', 'small', 'medium' ],
+    ballroom      : [ 'medium', 'large', 'massive' ],
+    bathhouse     : [ 'small', 'medium', 'large', 'massive' ],
+    dining        : [ 'small', 'medium', 'large', 'massive' ],
+    dormitory     : [ 'medium', 'large', 'massive' ],
+    greatHall     : [ 'large', 'massive' ],
+    pantry        : [ 'tiny', 'small', 'medium' ],
+    parlour       : [ 'tiny', 'small', 'medium' ],
+    study         : [ 'tiny', 'small', 'medium' ],
+    throne        : [ 'medium', 'large', 'massive' ],
+    tortureChamber: [ 'tiny', 'small', 'medium' ],
 };
 
 /**
- * Custom room dimensions
+ * A lookup of custom room dimension functions.
  *
  * @type {{
- *     hallway: (roomSize: string, options?: { isHorizontal?: boolean }) => RoomDimensions
+ *     hallway: (roomSize: string, options?: { isHorizontal?: boolean }) => Dimensions
  * }}
  */
 export const customDimensions = {
@@ -67,11 +71,13 @@ export const customDimensions = {
         let length = roll(Math.max(hallLengthMin, min), max);
         let width  = roll(hallWidthMin, hallWidthMax);
 
-        let roomWidth  = isHorizontal ? length : width;
-        let roomHeight = isHorizontal ? width  : length;
+        let hallWidth  = isHorizontal ? length : width;
+        let hallHeight = isHorizontal ? width  : length;
 
-        // TODO update Dimensions type object.
-        return { roomWidth, roomHeight };
+        return {
+            width: hallWidth,
+            height: hallHeight,
+        };
     },
 };
 

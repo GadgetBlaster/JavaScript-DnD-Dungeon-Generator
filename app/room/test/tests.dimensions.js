@@ -1,12 +1,13 @@
 // @ts-check
 
 import {
-    testHallLengthMin as hallLengthMin,
-    testHallWidthMax  as hallWidthMax,
-    testHallWidthMin  as hallWidthMin,
+    // Config
     customDimensions,
     dimensionRanges,
     roomTypeSizes,
+    testHallLengthMin as hallLengthMin,
+    testHallWidthMax  as hallWidthMax,
+    testHallWidthMin  as hallWidthMin,
 } from '../dimensions.js';
 
 import { roomTypes } from '../room.js';
@@ -16,14 +17,17 @@ import { sizes } from '../../attribute/size.js';
  * @param {import('../../unit/state.js').Utility} utility
  */
 export default ({ assert, describe, it }) => {
-    describe('`dimensionRanges`', () => {
-        it('should have an entry for each size', () => {
+
+    // -- Config ---------------------------------------------------------------
+
+    describe('dimensionRanges', () => {
+        it('has an entry for each size', () => {
             assert(Object.keys(dimensionRanges)).equalsArray(sizes);
         });
 
-        describe('each value in `dimensionRanges`', () => {
+        describe('each value', () => {
             Object.values(dimensionRanges).forEach((dimensions) => {
-                it('should be an array of two numbers', () => {
+                it('is an array of two numbers', () => {
                     assert(dimensions.length).equals(2);
                     assert(dimensions[0]).isNumber();
                     assert(dimensions[1]).isNumber();
@@ -34,91 +38,89 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('`customDimensions`', () => {
+    describe('customDimensions', () => {
         describe('hallway()', () => {
             describe('given a room size of "massive"', () => {
-                describe('given a falsy `isHorizontal` flag', () => {
+                describe('given a falsy isHorizontal flag', () => {
                     const roomDimensions = customDimensions.hallway('massive', { isHorizontal: false });
 
-                    it('should return an object containing `roomWidth` and `roomHeight`', () => {
+                    it('returns a Dimensions object', () => {
                         assert(roomDimensions).isObject();
-                        assert(roomDimensions.roomWidth).isNumber();
-                        assert(roomDimensions.roomHeight).isNumber();
+                        assert(roomDimensions.width).isNumber();
+                        assert(roomDimensions.height).isNumber();
                     });
 
-                    it('should not have a height less than `hallLengthMin`', () => {
-                        assert(roomDimensions.roomHeight >= hallLengthMin).isTrue();
+                    it('has a height greater than or equal to hallLengthMin', () => {
+                        assert(roomDimensions.height >= hallLengthMin).isTrue();
                     });
 
-                    it('should not have a height greater than the room\'s max dimension', () => {
-                        assert(roomDimensions.roomHeight <= dimensionRanges.massive[1]).isTrue();
+                    it('has a height less than or equal to the room\'s max dimension', () => {
+                        assert(roomDimensions.height <= dimensionRanges.massive[1]).isTrue();
                     });
 
-                    it('should not have a width greater than `hallWidthMax`', () => {
-                        assert(roomDimensions.roomWidth <= hallWidthMax).isTrue();
+                    it('has a width less than or equal to hallWidthMax', () => {
+                        assert(roomDimensions.width <= hallWidthMax).isTrue();
                     });
 
-                    it('should not have a width less than `hallWidthMin`', () => {
-                        assert(roomDimensions.roomWidth >= hallWidthMin).isTrue();
+                    it('has a width greater than or equal to hallWidthMin', () => {
+                        assert(roomDimensions.width >= hallWidthMin).isTrue();
                     });
 
-                    it('width should be less than height', () => {
-                        assert(roomDimensions.roomWidth < roomDimensions.roomHeight).isTrue();
+                    it('width is less than height', () => {
+                        assert(roomDimensions.width < roomDimensions.height).isTrue();
                     });
                 });
 
-                describe('given a truthy `isHorizontal` flag', () => {
+                describe('given a truthy isHorizontal flag', () => {
                     const roomDimensions = customDimensions.hallway('massive', { isHorizontal: true  });
 
-                    it('should return an object containing `roomWidth` and `roomHeight`', () => {
+                    it('returns a Dimensions object', () => {
                         assert(roomDimensions).isObject();
-                        assert(roomDimensions.roomWidth).isNumber();
-                        assert(roomDimensions.roomHeight).isNumber();
+                        assert(roomDimensions.width).isNumber();
+                        assert(roomDimensions.height).isNumber();
                     });
 
-                    it('should not have a width less than `hallLengthMin`', () => {
-                        assert(roomDimensions.roomWidth >= hallLengthMin).isTrue();
+                    it('has a width greater than or equal to hallLengthMin', () => {
+                        assert(roomDimensions.width >= hallLengthMin).isTrue();
                     });
 
-                    it('should not have a width greater than the room\'s max dimension', () => {
-                        assert(roomDimensions.roomWidth <= dimensionRanges.massive[1]).isTrue();
+                    it('has a width less than or equal to room\'s max dimension', () => {
+                        assert(roomDimensions.width <= dimensionRanges.massive[1]).isTrue();
                     });
 
-                    it('should not have a height greater than `hallWidthMax`', () => {
-                        assert(roomDimensions.roomHeight <= hallWidthMax).isTrue();
+                    it('has a height less than or equal to hallWidthMax', () => {
+                        assert(roomDimensions.height <= hallWidthMax).isTrue();
                     });
 
-                    it('should not have a height less than `hallWidthMin`', () => {
-                        assert(roomDimensions.roomHeight >= hallWidthMin).isTrue();
+                    it('has a height great than or equal to hallWidthMin', () => {
+                        assert(roomDimensions.height >= hallWidthMin).isTrue();
                     });
 
-                    it('height should be less than width', () => {
-                        assert(roomDimensions.roomHeight < roomDimensions.roomWidth).isTrue();
+                    it('height is less than width', () => {
+                        assert(roomDimensions.height < roomDimensions.width).isTrue();
                     });
                 });
             });
         });
     });
 
-    describe('`roomTypeSizes`', () => {
-        it('should hae an entry for room type', () => {
+    describe('roomTypeSizes', () => {
+        it('has an entry for room type', () => {
             assert(Object.keys(roomTypeSizes)).equalsArray(roomTypes);
         });
 
-        describe('each entry in `roomTypeSizes`', () => {
-            Object.entries(roomTypeSizes).forEach(([ room, allowedSizes ]) => {
-                describe(`entry with key \`${room}\``, () => {
-                    it('should be an array', () => {
-                        assert(allowedSizes).isArray();
+        Object.entries(roomTypeSizes).forEach(([ room, allowedSizes ]) => {
+            describe(`room size "${room}"`, () => {
+                it('is an array', () => {
+                    assert(allowedSizes).isArray();
+                });
+
+                it('contains only valid sizes', () => {
+                    let invalidSizes = allowedSizes.find((roomSize) => {
+                        !sizes.includes(roomSize);
                     });
 
-                    it('should contain only valid sizes', () => {
-                        let invalidSizes = allowedSizes.find((roomSize) => {
-                            !sizes.includes(roomSize);
-                        });
-
-                        assert(invalidSizes).isUndefined();
-                    });
+                    assert(invalidSizes).isUndefined();
                 });
             });
         });

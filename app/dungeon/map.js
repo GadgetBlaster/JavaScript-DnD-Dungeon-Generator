@@ -488,8 +488,7 @@ function getRoomDimensions(gridDimensions, roomConfig) {
     let roomHeight;
 
     if (customDimensions[roomType]) {
-        // TODO should return Dimensions
-        ({ roomWidth, roomHeight } = customDimensions[roomType](roomSize));
+        ({ width: roomWidth, height: roomHeight } = customDimensions[roomType](roomSize));
     } else {
         let [ min, max ] = dimensionRanges[roomSize];
 
