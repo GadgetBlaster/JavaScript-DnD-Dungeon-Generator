@@ -9,6 +9,12 @@ import { generators } from '../controller/controller.js';
 /** @typedef {import('../controller/controller.js').Generator} Generator */
 /** @typedef {import('../controller/controller.js').Sections} Sections */
 
+// -- Config -------------------------------------------------------------------
+
+const disabledGenerators = new Set([ 'names' ]);
+
+export { disabledGenerators as testDisabledGenerators };
+
 // -- Private Functions --------------------------------------------------------
 
 /**
@@ -33,18 +39,21 @@ const getElements = (collection) => [ ...collection ].map((el) =>
  * @returns {Generator}
  */
 export function getActiveNavItem(nav) {
-    return /** @type {Generator} */ (getElements(nav.children).find((btn) => btn.dataset.active).dataset.target);
+    return /** @type {Generator} */ (
+        getElements(nav.children).find((btn) => btn.dataset.active).dataset.target
+    );
 }
 
 /**
- * Returns the main Navigation as an HTML element string.
+ * Returns the main navigation as an HTML element string.
  *
  * @param {Generator} activeGenerator
  *
  * @returns {string}
  */
-export const getNav = (activeGenerator) => generators.map((generator) =>
-    button(capitalize(generator), 'navigate', {
+export const getNav = (activeGenerator) => generators
+    .filter((generator) => !disabledGenerators.has(generator))
+    .map((generator) => button(capitalize(generator), 'navigate', {
         target: generator,
         active: activeGenerator === generator,
     })).join('');

@@ -11,10 +11,11 @@ import { toss, isRequired } from '../utility/tools.js';
 
 // -- Type Imports -------------------------------------------------------------
 
-/** @typedef {import('./knobs.js').ItemConfig} ItemConfig */
-/** @typedef {import('./knobs.js').RoomConfig} RoomConfig */
-/** @typedef {import('./knobs.js').DungeonConfig} DungeonConfig */
 /** @typedef {import('./knobs.js').Config} Config */
+/** @typedef {import('./knobs.js').DungeonConfig} DungeonConfig */
+/** @typedef {import('./knobs.js').ItemConfig} ItemConfig */
+/** @typedef {import('./knobs.js').NameConfig} NameConfig */
+/** @typedef {import('./knobs.js').RoomConfig} RoomConfig */
 
 // -- Types --------------------------------------------------------------------
 
@@ -47,7 +48,7 @@ export const generators = Object.freeze(/** @type {const} */ ([
     'dungeon',
     'rooms',
     'items',
-    // 'names', // Disabled
+    'names',
 ]));
 
 // -- Private Functions --------------------------------------------------------
@@ -78,7 +79,9 @@ function itemGenerator(config) {
 }
 
 /**
- * TODO
+ * Generates and formats output for the name generator.
+ *
+ * Note: Currently disabled.
  *
  * @private
  *
@@ -123,6 +126,9 @@ function getGenerator(generator) {
 
         case 'items':
             return itemGenerator;
+
+        case 'names':
+            return nameGenerator;
 
         default:
             toss(`Invalid generator "${generator}" in getGenerator()`);

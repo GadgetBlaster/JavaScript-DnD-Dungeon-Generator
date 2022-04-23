@@ -3,6 +3,9 @@
 import { parseHtml } from '../../utility/element.js';
 import { generators } from '../../controller/controller.js';
 import {
+    // Config
+    testDisabledGenerators as disabledGenerators,
+
     // Public Functions
     getActiveNavItem,
     getNav,
@@ -39,8 +42,8 @@ export default ({ assert, describe, it }) => {
             assert(nav).isString();
         });
 
-        it('contains a nav button for each generator', () => {
-            generators.forEach((generator) => {
+        it('contains a nav button for each generator that is not disabled', () => {
+            generators.filter((generator) => !disabledGenerators.has(generator)).forEach((generator) => {
                 const button = body.querySelector(`button[data-target="${generator}"]`);
                 assert(Boolean(button)).isTrue();
             });
