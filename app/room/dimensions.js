@@ -25,15 +25,15 @@ const hallWidthMax  = 1;
 /**
  * Dimension ranges
  *
- * @type {{ [key in Size]?: RoomDimensions }}
+ * @type {Readonly<{ [key in Size]: { min: number; max: number } }>}
  */
-export const dimensionRanges = {
-    tiny   : [ 2, 3  ],
-    small  : [ 2, 4  ],
-    medium : [ 2, 5  ],
-    large  : [ 3, 10 ],
-    massive: [ 5, 15 ],
-};
+export const roomDimensionRanges = Object.freeze({
+    tiny   : { min: 2, max: 3  },
+    small  : { min: 2, max: 4  },
+    medium : { min: 2, max: 5  },
+    large  : { min: 3, max: 10 },
+    massive: { min: 5, max: 15 },
+});
 
 /**
  * A lookup of room sizes by room types.
@@ -61,12 +61,12 @@ const roomSizes = {
  * A lookup of custom room dimension functions.
  *
  * @type {{
- *     hallway: (roomSize: string, options?: { isHorizontal?: boolean }) => Dimensions
+ *     hallway: (roomSize: Size, options?: { isHorizontal?: boolean }) => Dimensions
  * }}
  */
 export const customDimensions = {
     hallway: (roomSize, { isHorizontal = roll() } = {}) => {
-        let [ min, max ] = dimensionRanges[roomSize];
+        let { min, max } = roomDimensionRanges[roomSize];
 
         let length = roll(Math.max(hallLengthMin, min), max);
         let width  = roll(hallWidthMin, hallWidthMax);

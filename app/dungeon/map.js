@@ -14,7 +14,11 @@ import {
     drawRoom,
 } from './draw.js';
 
-import { dimensionRanges, customDimensions } from '../room/dimensions.js';
+import {
+    customDimensions,
+    roomDimensionRanges,
+} from '../room/dimensions.js';
+
 import {
     lockable,
     lockedChance,
@@ -490,7 +494,7 @@ function getRoomDimensions(gridDimensions, roomConfig) {
     if (customDimensions[roomType]) {
         ({ width: roomWidth, height: roomHeight } = customDimensions[roomType](roomSize));
     } else {
-        let [ min, max ] = dimensionRanges[roomSize];
+        let { min, max } = roomDimensionRanges[roomSize];
 
         roomWidth  = roll(min, max);
         roomHeight = roll(min, max);

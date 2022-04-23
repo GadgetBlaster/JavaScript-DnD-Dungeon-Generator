@@ -3,7 +3,7 @@
 import {
     // Config
     customDimensions,
-    dimensionRanges,
+    roomDimensionRanges,
     roomTypeSizes,
     testHallLengthMin as hallLengthMin,
     testHallWidthMax  as hallWidthMax,
@@ -20,20 +20,21 @@ export default ({ assert, describe, it }) => {
 
     // -- Config ---------------------------------------------------------------
 
-    describe('dimensionRanges', () => {
+    describe('roomDimensionRanges', () => {
         it('has an entry for each size', () => {
-            assert(Object.keys(dimensionRanges)).equalsArray(sizes);
+            assert(Object.keys(roomDimensionRanges)).equalsArray(sizes);
         });
 
-        describe('each value', () => {
-            Object.values(dimensionRanges).forEach((dimensions) => {
-                it('is an array of two numbers', () => {
-                    assert(dimensions.length).equals(2);
-                    assert(dimensions[0]).isNumber();
-                    assert(dimensions[1]).isNumber();
+        Object.entries(roomDimensionRanges).forEach(([ size, dimensions ]) => {
+            describe(size, () => {
+                it('has min and max number properties', () => {
+                    assert(dimensions.min).isNumber();
+                    assert(dimensions.max).isNumber();
                 });
 
-                // TODO assert min <= max
+                it('min is less than or equal to max', () => {
+                    assert(dimensions.min <= dimensions.max).isTrue();
+                });
             });
         });
     });
@@ -55,7 +56,7 @@ export default ({ assert, describe, it }) => {
                     });
 
                     it('has a height less than or equal to the room\'s max dimension', () => {
-                        assert(roomDimensions.height <= dimensionRanges.massive[1]).isTrue();
+                        assert(roomDimensions.height <= roomDimensionRanges.massive.max).isTrue();
                     });
 
                     it('has a width less than or equal to hallWidthMax', () => {
@@ -85,7 +86,7 @@ export default ({ assert, describe, it }) => {
                     });
 
                     it('has a width less than or equal to room\'s max dimension', () => {
-                        assert(roomDimensions.width <= dimensionRanges.massive[1]).isTrue();
+                        assert(roomDimensions.width <= roomDimensionRanges.massive.max).isTrue();
                     });
 
                     it('has a height less than or equal to hallWidthMax', () => {

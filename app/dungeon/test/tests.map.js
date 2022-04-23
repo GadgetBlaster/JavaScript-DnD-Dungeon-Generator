@@ -29,7 +29,7 @@ import {
 } from '../map.js';
 
 import { createBlankGrid, wallSize } from '../grid.js';
-import { dimensionRanges } from '../../room/dimensions.js';
+import { roomDimensionRanges } from '../../room/dimensions.js';
 import { generateRooms } from '../../room/generate.js';
 import { testTrapLabel as trapLabel } from '../draw.js';
 import {
@@ -995,15 +995,15 @@ export default ({ assert, describe, it }) => {
 
         describe('given a room type which does not require custom dimensions', () => {
             it('returns a room width and height within the range specified for the room size', () => {
-                const [ minSize, maxSize ] = dimensionRanges.small;
+                const { min, max } = roomDimensionRanges.small;
 
                 const { width, height } = getRoomDimensions(gridDimensions, {
                     ...generatedRoomConfig,
                     roomSize: 'small',
                 });
 
-                assert(width >= minSize && width <= maxSize).isTrue();
-                assert(height >= minSize && height <= maxSize).isTrue();
+                assert(width >= min && width <= max).isTrue();
+                assert(height >= min && height <= max).isTrue();
             });
         });
 
