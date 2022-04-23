@@ -22,15 +22,15 @@ const maxPercent = 100;
  * }>}
  */
 export function createProbability(distributionTable) {
-    !(distributionTable instanceof Map) && toss('Probability distribution table must be a Map');
-    !distributionTable.size && toss('Probability distribution table must have values');
+    !(distributionTable instanceof Map) && toss('distributionTable must be a Map in createProbability()');
+    !distributionTable.size && toss('distributionTable Map must have values in createProbability()');
 
     distributionTable.forEach((value, key) => {
-        typeof value !== 'string' && toss(`Probability value "${value}" must be a string`);
-        !Number.isInteger(key) && toss(`Probability key "${key}" must be an integer`);
+        typeof value !== 'string' && toss(`distributionTable value "${value}" must be a string in createProbability()`);
+        !Number.isInteger(key) && toss(`distributionTable key "${key}" must be an integer in createProbability()`);
 
-        key < minPercent && toss(`Probability key "${key}" must be ${minPercent} or greater`);
-        key > maxPercent && toss(`Probability key "${key}" exceeds ${maxPercent}`);
+        key < minPercent && toss(`distributionTable key "${key}" must be ${minPercent} or greater in createProbability()`);
+        key > maxPercent && toss(`distributionTable key "${key}" exceeds ${maxPercent} in createProbability()`);
     });
 
     let sorted = [ ...distributionTable.keys() ].sort((a, b) => a - b);

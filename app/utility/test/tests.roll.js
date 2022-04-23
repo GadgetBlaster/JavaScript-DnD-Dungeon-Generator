@@ -62,14 +62,14 @@ export default ({ assert, describe, it }) => {
             it('throws', () => {
                 // @ts-expect-error
                 assert(() => { createProbability('junk'); })
-                    .throws('Probability distribution table must be a Map');
+                    .throws('distributionTable must be a Map in createProbability()');
             });
         });
 
         describe('given an empty distribution table', () => {
             it('throws', () => {
                 assert(() => { createProbability(new Map([])); })
-                    .throws('Probability distribution table must have values');
+                    .throws('distributionTable Map must have values in createProbability()');
             });
         });
 
@@ -77,7 +77,7 @@ export default ({ assert, describe, it }) => {
             it('throws', () => {
                 // @ts-expect-error
                 assert(() => { createProbability(new Map([[ 'bad', 'panda' ]])); })
-                    .throws('Probability key "bad" must be an integer');
+                    .throws('distributionTable key "bad" must be an integer in createProbability()');
             });
         });
 
@@ -89,7 +89,7 @@ export default ({ assert, describe, it }) => {
                             [ -10,  'backpack' ],
                             [ 50, 'belt pouch' ],
                         ]));
-                    }).throws('Probability key "-10" must be 0 or greater');
+                    }).throws('distributionTable key "-10" must be 0 or greater in createProbability()');
                 });
             });
 
@@ -100,7 +100,7 @@ export default ({ assert, describe, it }) => {
                             [ 1,  'backpack' ],
                             [ 102, 'belt pouch' ],
                         ]));
-                    }).throws('Probability key "102" exceeds 100');
+                    }).throws('distributionTable key "102" exceeds 100 in createProbability()');
                 });
             });
         });
