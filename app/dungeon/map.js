@@ -222,11 +222,16 @@ function createDoor(rectangle, type, { direction, from, to }, lockedChance = 0) 
  * @returns {AppliedRoomResults}
  */
 function drawRooms(gridDimensions, mapRooms, grid, { isFork, prevGridRoom } = {}) {
-    /** @type {Room[]} rooms */
-    let rooms     = [];
+    /** @type {Room[]} */
+    let rooms = [];
 
-    let doors     = [];
-    let skipped   = [];
+    /** @type {Door[]} */
+    let doors = [];
+
+    /** @type {Room[]} */
+    let skipped = [];
+
+    /** @type {GridRoom[]} */
     let gridRooms = [];
 
     mapRooms.forEach((roomConfig) => { // TODO rename param to `room`
@@ -292,7 +297,7 @@ function drawRooms(gridDimensions, mapRooms, grid, { isFork, prevGridRoom } = {}
         rooms,
         doors: doors.concat(extraDoors),
         gridRooms,
-        skipped, // TODO better name?
+        skipped, // TODO better name? skippedRooms
     };
 }
 

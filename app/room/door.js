@@ -116,7 +116,7 @@ export const lockedChance = 25;
 // -- Public Functions ---------------------------------------------------------
 
 /**
- * Returns a Rooms lookup and an array of DoorKeys.
+ * Returns a Door lookup keyed by room number and an array of DoorKeys.
  *
  * TODO move to generate.js
  * TODO rework/rename
@@ -133,7 +133,7 @@ export function getRoomDoors(doors) {
     let roomDoors = {};
 
     /** @type {DoorKey[]} */
-    let roomKeys  = [];
+    let roomKeys = []; // TODO rename to `keys`
 
     doors.forEach((door) => {
         Object.keys(door.connections).forEach((roomNumber) => {
