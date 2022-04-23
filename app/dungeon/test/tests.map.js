@@ -143,12 +143,12 @@ export default ({ assert, describe, it }) => {
             assert(result.doors).isArray();
             assert(result.gridRooms).isArray();
             assert(result.rooms).isArray();
-            assert(result.skipped).isArray();
+            assert(result.skippedRooms).isArray();
 
-            result.doors     && assert(result.doors.length).equals(1);
-            result.gridRooms && assert(result.gridRooms.length).equals(1);
-            result.rooms     && assert(result.rooms.length).equals(1);
-            result.skipped   && assert(result.skipped.length).equals(0);
+            result.doors        && assert(result.doors.length).equals(1);
+            result.gridRooms    && assert(result.gridRooms.length).equals(1);
+            result.rooms        && assert(result.rooms.length).equals(1);
+            result.skippedRooms && assert(result.skippedRooms.length).equals(0);
         });
 
         describe('the first room', () => {
@@ -163,7 +163,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('when a room cannot be placed on the grid', () => {
-            it('returns the room in the skipped param', () => {
+            it('returns the room in the skippedRooms property', () => {
                 const grid = createBlankGrid(gridDimensions);
                 const room = {
                     config: {
@@ -176,7 +176,7 @@ export default ({ assert, describe, it }) => {
 
                 const result = drawRooms(gridDimensions, [ room, room ], grid);
 
-                assert(result.skipped.length).equals(1);
+                assert(result.skippedRooms.length).equals(1);
             });
         });
 

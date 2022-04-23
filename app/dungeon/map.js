@@ -59,7 +59,7 @@ import { isRequired, toWords } from '../utility/tools.js';
  * @prop {GridRoom[]} gridRooms
  *     Room configs which have been applied to the grid.
  *
- * @prop {Room[]} skipped
+ * @prop {Room[]} skippedRooms
  *     Room configs which have not been applied to the grid.
  */
 
@@ -229,7 +229,7 @@ function drawRooms(gridDimensions, mapRooms, grid, { isFork, prevGridRoom } = {}
     let doors = [];
 
     /** @type {Room[]} */
-    let skipped = [];
+    let skippedRooms = [];
 
     /** @type {GridRoom[]} */
     let gridRooms = [];
@@ -250,7 +250,7 @@ function drawRooms(gridDimensions, mapRooms, grid, { isFork, prevGridRoom } = {}
             let validCords = getValidRoomConnections(grid, roomDimensions, prevGridRoom.rect);
 
             if (!validCords.length) {
-                skipped.push(roomConfig);
+                skippedRooms.push(roomConfig);
                 return;
             }
 
@@ -297,7 +297,7 @@ function drawRooms(gridDimensions, mapRooms, grid, { isFork, prevGridRoom } = {}
         rooms,
         doors: doors.concat(extraDoors),
         gridRooms,
-        skipped, // TODO better name? skippedRooms
+        skippedRooms,
     };
 }
 
@@ -713,16 +713,16 @@ function getExtraDoors(grid, rooms, existingDoors) {
  * }}
  */
 function getRooms(gridDimensions, roomConfigs, grid) {
-    let { rooms, doors, skipped, gridRooms } = drawRooms(gridDimensions, roomConfigs, grid);
+    let { rooms, doors, skippedRooms, gridRooms } = drawRooms(gridDimensions, roomConfigs, grid);
 
     // TODO Aggregate skipped rooms?
-    let lastSkipped = skipped;
+    let lastSkipped = skippedRooms;
 
     gridRooms.forEach((gridRoom) => {
         let fork = drawRooms(gridDimensions, lastSkipped, grid, { isFork: true, prevGridRoom: gridRoom });
 
         if (fork.rooms.length && fork.doors.length) {
-            lastSkipped = fork.skipped;
+            lastSkipped = fork.skippedRooms;
 
             rooms.push(...fork.rooms);
             doors.push(...fork.doors);
