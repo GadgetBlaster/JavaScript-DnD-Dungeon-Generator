@@ -531,7 +531,7 @@ function getRoomWalls(grid, rect, roomNumber) {
 
     let walls = [];
 
-    // TODO refactor out into `addRoomToGrid()`
+    // TODO refactor out into `applyRoomToGrid()`
     // TODO refactor out to create room w/ walls separate from applying to grid
     for (let w = -wallSize; w < (width + wallSize); w++) {
         for (let h = -wallSize; h < (height + wallSize); h++) {
@@ -540,6 +540,7 @@ function getRoomWalls(grid, rect, roomNumber) {
 
             if (!grid[xCord] || !grid[xCord][yCord]) {
                 // TODO throw?
+                console.error('Hey there, looks like you tried to iterate into oblivion');
                 continue;
             }
 
