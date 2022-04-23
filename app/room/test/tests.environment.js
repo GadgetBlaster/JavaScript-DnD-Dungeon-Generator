@@ -12,7 +12,7 @@ import {
     structure,
 } from '../environment.js';
 
-import { getRoomTypeLabel } from '../description.js';
+import { getRoomLabel } from '../description.js';
 
 /**
  * @param {import('../../unit/state.js').Utility} utility
@@ -48,7 +48,7 @@ export default ({ assert, describe, it }) => {
                 });
 
                 it('should include the room type label', () => {
-                    assert(desc).stringIncludes(getRoomTypeLabel('bedroom'));
+                    assert(desc).stringIncludes(getRoomLabel('bedroom'));
                 });
             });
         });

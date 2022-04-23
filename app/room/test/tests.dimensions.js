@@ -8,10 +8,14 @@ import {
     testHallLengthMin as hallLengthMin,
     testHallWidthMax  as hallWidthMax,
     testHallWidthMin  as hallWidthMin,
+    testRoomSizes     as roomSizes,
 } from '../dimensions.js';
 
 import { roomTypes } from '../room.js';
 import { sizes } from '../../attribute/size.js';
+
+/** @typedef {import('../../attribute/size.js').Size} Size */
+/** @typedef {import('../room.js').RoomType} RoomType */
 
 /**
  * @param {import('../../unit/state.js').Utility} utility
@@ -27,6 +31,10 @@ export default ({ assert, describe, it }) => {
 
         Object.entries(roomDimensionRanges).forEach(([ size, dimensions ]) => {
             describe(size, () => {
+                it('is keyed by a size', () => {
+                    assert(size).isInArray(sizes);
+                });
+
                 it('has min and max number properties', () => {
                     assert(dimensions.min).isNumber();
                     assert(dimensions.max).isNumber();
@@ -38,6 +46,21 @@ export default ({ assert, describe, it }) => {
             });
         });
     });
+
+    describe('roomSizes', () => {
+        Object.entries(roomSizes).forEach(([ roomType, allowedSizes ]) => {
+            describe(roomType, () => {
+                it('is keyed by a room type', () => {
+                    assert(roomType).isInArray(roomTypes);
+                });
+
+                it('contains an array of sizes', () => {
+                    assert(allowedSizes.find((size) => !sizes.includes(size))).isUndefined();
+                });
+            });
+        });
+    });
+
 
     describe('customDimensions', () => {
         describe('hallway()', () => {
@@ -117,10 +140,7 @@ export default ({ assert, describe, it }) => {
                 });
 
                 it('contains only valid sizes', () => {
-                    let invalidSizes = allowedSizes.find((roomSize) => {
-                        !sizes.includes(roomSize);
-                    });
-
+                    const invalidSizes = allowedSizes.find((roomSize) => !sizes.includes(roomSize));
                     assert(invalidSizes).isUndefined();
                 });
             });

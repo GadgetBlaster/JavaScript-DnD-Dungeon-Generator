@@ -22,6 +22,7 @@ import { getResultMessage } from './output.js';
  * @prop {Assertion} isElementTag
  * @prop {Assertion} isFalse
  * @prop {Assertion} isFunction
+ * @prop {Assertion} isInArray
  * @prop {Assertion} isNull
  * @prop {Assertion} isNumber
  * @prop {Assertion} isObject

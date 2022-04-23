@@ -253,6 +253,25 @@ export function isFunction(value) {
 }
 
 /**
+* @param {any} value
+* @param {any[]} array
+*
+* @returns {Result}
+*/
+export function isInArray(value, array) {
+    let checkType = isArray(array);
+
+    if (!checkType.isOk) {
+        return checkType;
+    }
+
+    let isOk = array.includes(value);
+    let msg  = `expected "${value}" to be included in ${JSON.stringify(array)}`;
+
+    return { msg, isOk };
+}
+
+/**
  * @param {any} value
  *
  * @returns {Result}

@@ -73,7 +73,7 @@ export default ({ assert, describe, it }) => {
                 assert(requiredRoomFurniture.smithy).isArray();
 
                 requiredRoomFurniture.smithy.forEach(({ name }) => {
-                    assert(furniture.includes(name)).isTrue();
+                    assert(name).isInArray(furniture);
                 });
             });
         });
@@ -85,7 +85,7 @@ export default ({ assert, describe, it }) => {
 
                 generateFurnishings('room', 'furnished')
                     .forEach(({ name }) => {
-                        assert(validFurniture.includes(name)).isTrue();
+                        assert(name).isInArray(validFurniture);
                     });
             });
         });
@@ -122,10 +122,10 @@ export default ({ assert, describe, it }) => {
             // * @prop {string[]} [variants] - Array of variations
 
             assert(item.name).isString();
-            assert(conditions.includes(item.condition)).equals(true);
-            assert(rarities.includes(item.rarity)).equals(true);
-            assert(sizes.includes(item.size)).equals(true);
-            assert(itemTypes.includes(item.type)).equals(true);
+            assert(item.condition).isInArray(conditions);
+            assert(item.rarity).isInArray(rarities);
+            assert(item.size).isInArray(sizes);
+            assert(item.type).isInArray(itemTypes);
             assert(item.count).equals(1);
         });
 

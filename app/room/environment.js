@@ -1,7 +1,7 @@
 // @ts-check
 
 import { getRoomFeatures } from './feature.js';
-import { getRoomTypeLabel } from './description.js';
+import { getRoomLabel } from './description.js';
 import { getRoomVegetationDescription } from './vegetation.js';
 import { roll, rollArrayItem, rollPercentile } from '../utility/roll.js';
 import { toss } from '../utility/tools.js';
@@ -194,7 +194,7 @@ function getStructureDesc(config, roomStructure) {
         roomSize: roomSize,
     } = config;
 
-    let type = getRoomTypeLabel(typeSetting);
+    let type = getRoomLabel(typeSetting);
 
     switch (roomStructure) {
         case structure.cave: {

@@ -62,15 +62,13 @@ export default ({ assert, describe, it }) => {
 
                     assert(randomizedRoomConfig).isObject();
 
-                    // @ts-expect-error assert `itemCondition` is not "random"
-                    assert(conditions.includes(randomizedRoomConfig.itemCondition)).isTrue();
-                    // @ts-expect-error assert `itemRarity` is not "random"
-                    assert(rarities.includes(randomizedRoomConfig.itemRarity)).isTrue();
-                    assert(quantities.includes(randomizedRoomConfig.itemQuantity)).isTrue();
-                    assert(conditions.includes(randomizedRoomConfig.roomCondition)).isTrue();
-                    assert(furnitureQuantities.includes(randomizedRoomConfig.roomFurnitureQuantity)).isTrue();
-                    assert(roomTypes.includes(randomizedRoomConfig.roomType)).isTrue();
-                    assert(sizes.includes(randomizedRoomConfig.roomSize)).isTrue();
+                    assert(randomizedRoomConfig.itemCondition).isInArray(conditions);
+                    assert(randomizedRoomConfig.itemRarity).isInArray(rarities);
+                    assert(randomizedRoomConfig.itemQuantity).isInArray(quantities);
+                    assert(randomizedRoomConfig.roomCondition).isInArray(conditions);
+                    assert(randomizedRoomConfig.roomFurnitureQuantity).isInArray(furnitureQuantities);
+                    assert(randomizedRoomConfig.roomType).isInArray(roomTypes);
+                    assert(randomizedRoomConfig.roomSize).isInArray(sizes);
                 });
             });
         });
@@ -106,8 +104,7 @@ export default ({ assert, describe, it }) => {
                         isRandomItemConditionUniform: true,
                     });
 
-                    // @ts-expect-error assert `itemCondition` is not "random"
-                    assert(conditions.includes(randomizedItemConfig.itemCondition)).isTrue();
+                    assert(randomizedItemConfig.itemCondition).isInArray(conditions);
                 });
             });
         });
@@ -126,8 +123,7 @@ export default ({ assert, describe, it }) => {
                         isRandomItemRarityUniform: true,
                     });
 
-                    // @ts-expect-error assert `itemRarity` is not "random"
-                    assert(rarities.includes(randomizedItemConfig.itemRarity)).isTrue();
+                    assert(randomizedItemConfig.itemRarity).isInArray(rarities);
                 });
             });
         });
@@ -149,7 +145,7 @@ export default ({ assert, describe, it }) => {
         roomTypes.forEach((roomType) => {
             describe(`give a room type of "${roomType}"`, () => {
                 it('returns a size appropriate for the room type', () => {
-                    assert(roomTypeSizes[roomType].includes(rollRoomSize(roomType))).isTrue();
+                    assert(rollRoomSize(roomType)).isInArray(roomTypeSizes[roomType]);
                 });
             });
         });
@@ -164,7 +160,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given a room type of "random"', () => {
             it('returns a random room type', () => {
-                assert(roomTypes.includes(rollRoomType('random'))).isTrue();
+                assert(rollRoomType('random')).isInArray(roomTypes);
             });
         });
     });

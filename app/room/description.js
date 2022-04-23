@@ -77,7 +77,7 @@ function getContentDescription(config) {
 
     let furniture = getFurnitureDetail(roomFurnitureQuantity);
     let rarity    = getContentRarityDetail(itemRarity);
-    let type      = getRoomTypeLabel(roomType).toLowerCase();
+    let type      = getRoomLabel(roomType).toLowerCase();
 
     let furnitureText;
 
@@ -148,7 +148,7 @@ function getDescription(config) {
         roomType,
     } = config;
 
-    let typeString = getRoomTypeLabel(roomType);
+    let typeString = getRoomLabel(roomType);
 
     let sizeDescription = roomSize === 'medium'
         ? 'medium sized'
@@ -459,7 +459,7 @@ export function getRoomDescription(room, roomDoors) {
 
     if (roomType !== 'room') {
         // TODO can be random?
-        type = capitalize(getRoomTypeLabel(roomType));
+        type = capitalize(getRoomLabel(roomType));
     }
 
     let dimensions;
@@ -494,7 +494,7 @@ export function getRoomDescription(room, roomDoors) {
  *
  * @returns {string}
  */
-export function getRoomTypeLabel(type) {
+export function getRoomLabel(type) {
     let customLabel = customRoomLabels[type];
 
     if (customLabel) {

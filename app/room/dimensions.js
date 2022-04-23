@@ -28,11 +28,11 @@ const hallWidthMax  = 1;
  * @type {Readonly<{ [key in Size]: { min: number; max: number } }>}
  */
 export const roomDimensionRanges = Object.freeze({
-    tiny   : { min: 2, max: 3  },
-    small  : { min: 2, max: 4  },
-    medium : { min: 2, max: 5  },
-    large  : { min: 3, max: 10 },
-    massive: { min: 5, max: 15 },
+    tiny    : { min: 2, max: 3  },
+    small   : { min: 2, max: 4  },
+    medium  : { min: 2, max: 5  },
+    large   : { min: 3, max: 10 },
+    massive : { min: 5, max: 15 },
 });
 
 /**
@@ -44,18 +44,18 @@ export const roomDimensionRanges = Object.freeze({
  *
  * @type {{ [key in RoomType]?: Size[] }}
  */
-const roomSizes = {
-    ballroom      : [ 'medium', 'large', 'massive' ],
-    bathhouse     : [ 'small', 'medium', 'large', 'massive' ],
-    dining        : [ 'small', 'medium', 'large', 'massive' ],
-    dormitory     : [ 'medium', 'large', 'massive' ],
-    greatHall     : [ 'large', 'massive' ],
-    pantry        : [ 'tiny', 'small', 'medium' ],
-    parlour       : [ 'tiny', 'small', 'medium' ],
-    study         : [ 'tiny', 'small', 'medium' ],
-    throne        : [ 'medium', 'large', 'massive' ],
-    tortureChamber: [ 'tiny', 'small', 'medium' ],
-};
+const roomSizes = Object.freeze({
+    ballroom  : [ 'medium', 'large', 'massive' ],
+    bathhouse : [ 'small', 'medium', 'large', 'massive' ],
+    dining    : [ 'small', 'medium', 'large', 'massive' ],
+    dormitory : [ 'medium', 'large', 'massive' ],
+    greatHall : [ 'large', 'massive' ],
+    pantry    : [ 'tiny', 'small', 'medium' ],
+    parlour   : [ 'tiny', 'small', 'medium' ],
+    study     : [ 'tiny', 'small', 'medium' ],
+    throne    : [ 'medium', 'large', 'massive' ],
+    torture   : [ 'tiny', 'small', 'medium' ],
+});
 
 /**
  * A lookup of custom room dimension functions.
@@ -99,6 +99,7 @@ export const roomTypeSizes = roomTypes.reduce((obj, roomType) => {
 
 export {
     hallLengthMin as testHallLengthMin,
-    hallWidthMin  as testHallWidthMin,
     hallWidthMax  as testHallWidthMax,
+    hallWidthMin  as testHallWidthMin,
+    roomSizes     as testRoomSizes,
 };

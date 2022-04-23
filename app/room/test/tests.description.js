@@ -17,7 +17,7 @@ import {
     getKeyDescription,
     getMapDescription,
     getRoomDescription,
-    getRoomTypeLabel,
+    getRoomLabel,
 } from '../description.js';
 
 import { appendRoomTypes } from '../room.js';
@@ -888,32 +888,32 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('getRoomTypeLabel()', () => {
+    describe('getRoomLabel()', () => {
         it('returns a string', () => {
-            assert(getRoomTypeLabel('armory')).isString();
+            assert(getRoomLabel('armory')).isString();
         });
 
         describe('given a camel cased room type', () => {
             it('returns lowercase formatted words', () => {
-                assert(getRoomTypeLabel('greatHall')).equals('great hall');
+                assert(getRoomLabel('greatHall')).equals('great hall');
             });
         });
 
         describe('given a room type not included in `appendRoomTypes`', () => {
             it('excludes the word "room"', () => {
-                assert(getRoomTypeLabel('atrium')).stringExcludes('room');
+                assert(getRoomLabel('atrium')).stringExcludes('room');
             });
         });
 
         describe('given a room type included in `appendRoomTypes`', () => {
             it('includes the word " room"', () => {
-                assert(getRoomTypeLabel([ ...appendRoomTypes ].pop())).stringIncludes(' room');
+                assert(getRoomLabel([ ...appendRoomTypes ].pop())).stringIncludes(' room');
             });
         });
 
         describe('given a room with a custom room label', () => {
             it('returns the custom label', () => {
-                assert(getRoomTypeLabel('torture')).stringIncludes('torture chamber');
+                assert(getRoomLabel('torture')).stringIncludes('torture chamber');
             });
         });
     });

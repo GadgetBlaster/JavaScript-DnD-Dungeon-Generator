@@ -53,8 +53,7 @@ export default ({ assert, describe, it }) => {
             ]));
 
             it('returns one of the values from the distribution table', () => {
-                const result = probability.roll();
-                assert([ 'potion of healing', 'potion of love' ].includes(result)).isTrue();
+                assert(probability.roll()).isInArray([ 'potion of healing', 'potion of love' ]);
             });
         });
 
@@ -147,8 +146,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given a `min` and a `max`', () => {
             it('returns an integer between `min` and `max`, inclusive', () => {
-                const result = roll(1, 3);
-                assert([1, 2, 3].includes(result)).isTrue();
+                assert(roll(1, 3)).isInArray([1, 2, 3]);
             });
         });
     });
@@ -163,9 +161,7 @@ export default ({ assert, describe, it }) => {
         describe('given an array with multiple items', () => {
             it('returns one of the item', () => {
                 const options = [ 'cats', 'turtles', 'chickens' ];
-                const result  = rollArrayItem(options);
-
-                assert((options.includes(result))).isTrue();
+                assert(rollArrayItem(options)).isInArray(options);
             });
         });
 

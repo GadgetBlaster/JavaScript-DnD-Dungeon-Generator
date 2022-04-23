@@ -2,12 +2,13 @@
 
 import {
     // Config
+    directions,
     outside,
     testCellCornerWall     as cellCornerWall,
     testCellDoor           as cellDoor,
     testCellWall           as cellWall,
-    testLabelMinRoomWidth  as labelMinRoomWidth,
     testLabelMinRoomHeight as labelMinRoomHeight,
+    testLabelMinRoomWidth  as labelMinRoomWidth,
 
     // Private Functions
     testCheckForAdjacentDoor as checkForAdjacentDoor,
@@ -231,17 +232,17 @@ export default ({ assert, describe, it }) => {
                     assert(result.doors).isArray();
 
                     const door = result.doors.pop();
-                    assert(door.type).isString(); // TODO doorTypes.includes(door.type)
+                    assert(door.type).isInArray(doorTypes);
                     assert(door.connections).isObject();
 
                     const connection1 = door.connections[1];
                     assert(connection1).isObject();
-                    assert(connection1.direction).isString(); // TODO directions.includes(connection.direction)
+                    assert(connection1.direction).isInArray(directions);
                     assert(connection1.to).equals(2);
 
                     const connection2 = door.connections[2];
                     assert(connection2).isObject();
-                    assert(connection2.direction).isString(); // TODO directions.includes(connection.direction)
+                    assert(connection2.direction).isInArray(directions);
                     assert(connection2.to).equals(1);
                 });
             });
@@ -567,21 +568,21 @@ export default ({ assert, describe, it }) => {
 
     describe('getDoorType()', () => {
         it('returns a door type', () => {
-            assert(doorTypes.includes(getDoorType(doorProbability.roll))).isTrue();
+            assert(getDoorType(doorProbability.roll)).isInArray(doorTypes);
         });
 
         describe('given a rollSecretDoorType function', () => {
             describe('when a secret door type is not rolled', () => {
                 it('returns a door type', () => {
-                    const doorType = getDoorType(doorProbability.roll, () => undefined);
-                    assert(doorTypes.includes(doorType)).isTrue();
+                    assert(getDoorType(doorProbability.roll, () => undefined))
+                        .isInArray(doorTypes);
                 });
             });
 
             describe('when a secret door type is rolled', () => {
                 it('returns the secret door type', () => {
-                    const doorType = getDoorType(doorProbability.roll, () => 'concealed');
-                    assert(doorType).equals('concealed');
+                    assert(getDoorType(doorProbability.roll, () => 'concealed'))
+                        .equals('concealed');
                 });
             });
         });
@@ -680,7 +681,7 @@ export default ({ assert, describe, it }) => {
                     const door = doors && doors.pop();
 
                     door && assert(door.rect).isString(); // Assert door els
-                    door && assert(doorTypes.includes(door.type)).isTrue();
+                    door && assert(door.type).isInArray(doorTypes);
                     door && assert(door.locked).isBoolean();
                     door && assert(door.connections).equalsObject({
                         1: { direction: 'south', to: 2 },
@@ -753,7 +754,7 @@ export default ({ assert, describe, it }) => {
 
                     const door = doors && doors.pop();
                     door && assert(door.rect).isString(); // Assert door els
-                    door && assert(doorTypes.includes(door.type)).isTrue();
+                    door && assert(door.type).isInArray(doorTypes);
                     door && assert(door.locked).isBoolean();
                     door && assert(door.connections).equalsObject({
                         1: { direction: 'east', to: 2 },
@@ -1071,7 +1072,7 @@ export default ({ assert, describe, it }) => {
                     doorConfig && assert(doorConfig.connections).isObject();
                     doorConfig && assert(doorConfig.locked).isBoolean();
                     doorConfig && assert(doorConfig.rect).isString();
-                    doorConfig && assert(doorTypes.includes(doorConfig.type)).isTrue();
+                    doorConfig && assert(doorConfig.type).isInArray(doorTypes);
                 });
             });
         });
@@ -1112,7 +1113,7 @@ export default ({ assert, describe, it }) => {
 
             assert(doors).isArray();
             doors && doors.forEach((door) => {
-                assert(doorTypes.includes(door.type)).isTrue();
+                assert(door.type).isInArray(doorTypes);
             });
         });
     });

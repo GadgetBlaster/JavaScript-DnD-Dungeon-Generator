@@ -37,7 +37,7 @@ export default ({ assert, describe, it }) => {
                     assert(knobs.label).isString();
 
                     knobs.pages.forEach((page) => {
-                        assert(pages.includes(page)).isTrue();
+                        assert(page).isInArray(pages);
                     });
                 });
 
@@ -59,7 +59,7 @@ export default ({ assert, describe, it }) => {
                             fieldConfig.values && assert(fieldConfig.values).isArray();
 
                             if (fieldConfig.pages) {
-                                fieldConfig.pages.forEach((page) => assert(pages.includes(page)).isTrue());
+                                fieldConfig.pages.forEach((page) => assert(page).isInArray(pages));
                             }
                         });
                     });

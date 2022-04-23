@@ -15,6 +15,7 @@ import {
     isElementTag,
     isFalse,
     isFunction,
+    isInArray,
     isNull,
     isNumber,
     isObject,
@@ -37,6 +38,7 @@ const assertions = [
     isElementTag,
     isFalse,
     isFunction,
+    isInArray,
     isNull,
     isNumber,
     isObject,
@@ -541,6 +543,30 @@ export default ({ assert, describe, it }) => {
                 it('returns a false `isOk` property', () => {
                     assert(isFunction(value).isOk).isFalse();
                 });
+            });
+        });
+    });
+
+    describe('isInArray()', () => {
+        describe('given an invalid array', () => {
+            it('returns a false `isOk` property', () => {
+                // @ts-expect-error
+                assert(isInArray(1, 2).isOk).isFalse();
+            });
+        });
+
+        describe('given a value that is not in the given array', () => {
+            it('returns a false `isOk` property and includes the array in the message', () => {
+                const result = isInArray(13, [ 22, 23 ]);
+
+                assert(result.isOk).isFalse();
+                assert(result.msg).stringIncludes('[22,23]');
+            });
+        });
+
+        describe('given a value is in the given array', () => {
+            it('returns a true `isOk` property', () => {
+                assert(isInArray(216, [ 1, 2, 3, 216, 12 ]).isOk).isTrue();
             });
         });
     });
