@@ -11,7 +11,7 @@ import {
     getKnobConfig,
 } from '../knobs.js';
 
-import { pages } from '../controller.js';
+import { generators } from '../controller.js';
 
 /** @typedef {import('../knobs.js').KnobConfig} KnobConfig */
 
@@ -33,11 +33,11 @@ export default ({ assert, describe, it }) => {
                     assert(knobs).isObject();
                 });
 
-                it('has label and pages properties', () => {
+                it('has label and generators properties', () => {
                     assert(knobs.label).isString();
 
-                    knobs.pages.forEach((page) => {
-                        assert(page).isInArray(pages);
+                    knobs.generators.forEach((generator) => {
+                        assert(generator).isInArray(generators);
                     });
                 });
 
@@ -58,8 +58,9 @@ export default ({ assert, describe, it }) => {
                             fieldConfig.value && assert(typeof fieldConfig.value === 'number' || typeof fieldConfig.value === 'string').isTrue();
                             fieldConfig.values && assert(fieldConfig.values).isArray();
 
-                            if (fieldConfig.pages) {
-                                fieldConfig.pages.forEach((page) => assert(page).isInArray(pages));
+                            if (fieldConfig.generators) {
+                                fieldConfig.generators.forEach((generator) =>
+                                    assert(generator).isInArray(generators));
                             }
                         });
                     });
@@ -74,7 +75,7 @@ export default ({ assert, describe, it }) => {
         /** @type {KnobConfig} */
         const fakeKnobs = {
             label: 'Fake Dungeon Knobs',
-            pages : new Set([ 'dungeon' ]),
+            generators : new Set([ 'dungeon' ]),
             fields: [
                 {
                     label : 'Complexity',
@@ -95,14 +96,14 @@ export default ({ assert, describe, it }) => {
             ],
         };
 
-        describe('when none of the fields in the knob config have a pages property', () => {
+        describe('when none of the fields in the knob config have a generators property', () => {
             it('returns the knob config unmodified', () => {
                 const result = getFields(fakeKnobs, 'dungeon');
                 assert(result).equalsObject(fakeKnobs);
             });
         });
 
-        describe('when a field in the knob config has a pages property', () => {
+        describe('when a field in the knob config has a generators property', () => {
             /** @type {KnobConfig} */
             const fakeKnobsCopy = {
                 ...fakeKnobs,
@@ -113,20 +114,20 @@ export default ({ assert, describe, it }) => {
                         name  : 'roomCount',
                         desc  : 'Number of rooms to generate',
                         type  : 'number',
-                        pages : new Set([ 'rooms' ]),
+                        generators : new Set([ 'rooms' ]),
                         value : 1,
                     },
                 ],
             };
 
-            describe('when the current page is not included in the pages property', () => {
+            describe('when the current generator is not included in the generators property', () => {
                 it('returns the knob config with the field excluded', () => {
                     const result = getFields(fakeKnobsCopy, 'dungeon');
                     assert(result).equalsObject(fakeKnobs);
                 });
             });
 
-            describe('when the current page is included in the pages property', () => {
+            describe('when the current generator is included in the generators property', () => {
                 it('returns the knob config unmodified', () => {
                     const result = getFields(fakeKnobsCopy, 'rooms');
                     assert(result).equalsObject(fakeKnobsCopy);
@@ -154,7 +155,7 @@ export default ({ assert, describe, it }) => {
         const fakeKnobConfig = [
             {
                 label : 'Fake Dungeon Knobs',
-                pages : new Set([ 'dungeon' ]),
+                generators : new Set([ 'dungeon' ]),
                 fields: [
                     {
                         label : 'Complexity',
@@ -176,7 +177,7 @@ export default ({ assert, describe, it }) => {
             },
             {
                 label : 'Fake Room Settings',
-                pages : new Set([ 'dungeon', 'rooms' ]),
+                generators : new Set([ 'dungeon', 'rooms' ]),
                 fields: [
                     {
                         label : 'Type',
@@ -189,15 +190,15 @@ export default ({ assert, describe, it }) => {
             },
         ];
 
-        describe('given a page that contains all knobs', () => {
+        describe('given a generator that contains all knobs', () => {
             it('returns the knob configs unmodified', () => {
                 const result = getKnobConfig(fakeKnobConfig, 'dungeon');
                 assert(result).equalsArray(fakeKnobConfig);
             });
         });
 
-        describe('given a page that contains some of the knobs', () => {
-            it('returns only the knob configs appropriate to the given page', () => {
+        describe('given a generator that contains some of the knobs', () => {
+            it('returns only the knob configs appropriate to the given generator', () => {
                 const result = getKnobConfig(fakeKnobConfig, 'rooms');
                 assert(result).equalsArray([ fakeKnobConfig[1] ]);
             });

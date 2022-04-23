@@ -21,6 +21,8 @@ const fakeKnob = {
     type: 'range',
 };
 
+// TODO test with parseHTML
+
 /**
  * @param {import('../../unit/state.js').Utility} utility
  */
@@ -282,8 +284,8 @@ export default ({ assert, describe, it }) => {
             assert(knobs.match(/<fieldset(.*?)>(.*?)<\/fieldset>/g).length).equals(3);
         });
 
-        describe('give the `items` page', () => {
-            it('should return the field sets for the `items` page', () => {
+        describe('given a generator of "items"', () => {
+            it('returns the field sets for the items generator', () => {
                 let itemKnobs = getKnobPanel('items');
                 assert(itemKnobs.match(/<fieldset(.*?)>(.*?)<\/fieldset>/g).length).equals(1);
             });

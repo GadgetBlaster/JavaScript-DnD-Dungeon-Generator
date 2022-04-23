@@ -2,11 +2,11 @@
 
 import { button } from './button.js';
 import { capitalize } from '../utility/tools.js';
-import { pages } from '../controller/controller.js';
+import { generators } from '../controller/controller.js';
 
 // -- Types --------------------------------------------------------------------
 
-/** @typedef {import('../controller/controller.js').Page} Page */
+/** @typedef {import('../controller/controller.js').Generator} Generator */
 /** @typedef {import('../controller/controller.js').Sections} Sections */
 
 // -- Private Functions --------------------------------------------------------
@@ -30,34 +30,34 @@ const getElements = (collection) => [ ...collection ].map((el) =>
  *
  * @param {HTMLElement} nav
  *
- * @returns {Page}
+ * @returns {Generator}
  */
 export function getActiveNavItem(nav) {
-    return /** @type {Page} */ (getElements(nav.children).find((btn) => btn.dataset.active).dataset.target);
+    return /** @type {Generator} */ (getElements(nav.children).find((btn) => btn.dataset.active).dataset.target);
 }
 
 /**
  * Returns the main Navigation as an HTML element string.
  *
- * @param {Page} activePage
+ * @param {Generator} activeGenerator
  *
  * @returns {string}
  */
-export const getNav = (activePage) => pages.map((page) =>
-    button(capitalize(page), 'navigate', {
-        target: page,
-        active: activePage === page,
+export const getNav = (activeGenerator) => generators.map((generator) =>
+    button(capitalize(generator), 'navigate', {
+        target: generator,
+        active: activeGenerator === generator,
     })).join('');
 
 /**
  * Sets the active navigation target.
  *
  * @param {HTMLElement} nav
- * @param {Page} page
+ * @param {Generator} generator
  */
-export function setActiveNavItem(nav, page) {
+export function setActiveNavItem(nav, generator) {
     getElements(nav.children).forEach((btn) => {
-        if (btn.dataset.target === page) {
+        if (btn.dataset.target === generator) {
             btn.dataset.active = 'true';
             return;
         }

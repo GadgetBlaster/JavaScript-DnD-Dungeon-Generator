@@ -212,7 +212,7 @@ export {
 // -- Public Functions ---------------------------------------------------------
 
 /**
- * Formats output for the dungeon generation page.
+ * Formats output from the dungeon generator.
  *
  * @param {Dungeon} dungeon
  */
@@ -225,7 +225,7 @@ export function formatDungeon(dungeon) {
 }
 
 /**
- * Formats output for the item generation page.
+ * Formats output from the item generator.
  *
  * @param {ItemSet} itemSet
  *
@@ -249,7 +249,7 @@ export function formatName(name) {
 }
 
 /**
- * Formats output for the room generation page.
+ * Formats output from the room generator.
  *
  * @param {Room[]} rooms
  *

@@ -5,13 +5,13 @@ import { getNav } from '../../ui/nav.js';
 import { parseHtml } from '../../utility/element.js';
 import {
     // Config
-    pages,
+    generators,
     testGetGenerator as getGenerator,
 
     // Private Functions
     testGetDataset       as getDataset,
     testGetTrigger       as getTrigger,
-    testOnGenerate       as onGenerate,
+    testOnGenerate       as onGenerate, // TODO
     testOnNavigate       as onNavigate,
     testToggleAccordion  as toggleAccordion,
     testToggleVisibility as toggleVisibility,
@@ -21,6 +21,7 @@ import {
     getTriggers,
 } from '../controller.js';
 
+/** @typedef {import('../controller.js').Triggers} Triggers */
 /** @typedef {import('../controller.js').Trigger} Trigger */
 
 /**
@@ -69,32 +70,33 @@ export default ({ assert, describe, it }) => {
     describe('getGenerator()', () => {
         /** @type {ItemConfig} itemSettings */
         const itemSettings = {
-            itemCondition: 'average',
-            itemQuantity : 'one',
-            itemRarity   : 'legendary',
-            itemType     : 'random',
+            itemCondition : 'average',
+            itemQuantity  : 'one',
+            itemRarity    : 'legendary',
+            itemType      : 'random',
         };
 
         /** @type {RoomConfig} */
         const roomSettingsBase = {
             ...itemSettings,
-            roomCondition        : 'average',
-            roomFurnitureQuantity: 'none',
-            roomSize             : 'small',
-            roomType             : 'room',
+            roomCondition         : 'average',
+            roomCount             : 1,
+            roomFurnitureQuantity : 'none',
+            roomSize              : 'small',
+            roomType              : 'room',
         };
 
-        it('returns a function for each page', () => {
-            pages.forEach((page) => {
-                assert(getGenerator(page)).isFunction();
+        it('returns a function for each generator', () => {
+            generators.forEach((generator) => {
+                assert(getGenerator(generator)).isFunction();
             });
         });
 
-        describe('given an invalid page', () => {
+        describe('given an invalid generator', () => {
             it('throws', () => {
                 // @ts-expect-error
                 assert(() => getGenerator('poop'))
-                    .throws('Invalid active page "poop" in getGenerator()');
+                    .throws('Invalid generator "poop" in getGenerator()');
             });
         });
 
@@ -166,27 +168,23 @@ export default ({ assert, describe, it }) => {
         describe('given an action that exists on the given triggers', () => {
             it('returns the action', () => {
                 const triggers = {
-                    accordion: () => 'accordion',
-                    generate : () => 'generate',
-                    navigate : () => 'navigate',
-                    toggle   : () => 'toggle',
+                    accordion: () => 'accordion action',
+                    expand   : () => 'expand action',
+                    generate : () => 'generate action',
+                    navigate : () => 'navigate action',
+                    toggle   : () => 'toggle action',
                 };
 
-                const accordion = getTrigger(triggers, 'accordion');
-                const generate  = getTrigger(triggers, 'generate');
-                const navigate  = getTrigger(triggers, 'navigate');
-                const toggle    = getTrigger(triggers, 'toggle');
-
-                assert(accordion()).equals('accordion');
-                assert(generate()).equals('generate');
-                assert(navigate()).equals('navigate');
-                assert(toggle()).equals('toggle');
+                Object.entries(([ action, expectation ]) => {
+                    const trigger = getTrigger(triggers, action);
+                    assert(trigger()).equals(expectation);
+                });
             });
         });
     });
 
     describe('onNavigate()', () => {
-        describe('given an event with the target page of "rooms"', () => {
+        describe('given an event with the target generator of "rooms"', () => {
             it('updates the content, knobs, and nav elements', () => {
                 const bodyEl    = document.createElement('div');
                 const contentEl = document.createElement('div');

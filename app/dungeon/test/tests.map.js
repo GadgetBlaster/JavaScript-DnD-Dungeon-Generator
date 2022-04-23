@@ -1130,8 +1130,8 @@ export default ({ assert, describe, it }) => {
                 grid[4][1] = cellCornerWall;
 
                 grid[1][2] = cellWall;
-                grid[2][2] = '1';
-                grid[3][2] = '1';
+                grid[2][2] = 1;
+                grid[3][2] = 1;
                 grid[4][2] = cellWall;
 
                 grid[1][3] = cellCornerWall;

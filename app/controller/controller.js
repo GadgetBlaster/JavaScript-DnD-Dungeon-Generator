@@ -18,9 +18,9 @@ import { toss, isRequired } from '../utility/tools.js';
 
 // -- Types --------------------------------------------------------------------
 
-/** @typedef {typeof pages[number]} Page */
 /** @typedef {(Event) => void} Trigger */
 /** @typedef {{ [key in Action]: Trigger }} Triggers */
+/** @typedef {typeof generators[number]} Generator */
 
 /**
  * @typedef {object} Sections
@@ -43,8 +43,7 @@ import { toss, isRequired } from '../utility/tools.js';
 
 // -- Config -------------------------------------------------------------------
 
-// TODO rename to `generators`
-export const pages = Object.freeze(/** @type {const} */ ([
+export const generators = Object.freeze(/** @type {const} */ ([
     'dungeon',
     'rooms',
     'items',
@@ -54,7 +53,7 @@ export const pages = Object.freeze(/** @type {const} */ ([
 // -- Private Functions --------------------------------------------------------
 
 /**
- * Generates and formats output for the dungeon generation page.
+ * Generates and formats output for the dungeon generator.
  *
  * @private
  *
@@ -66,7 +65,7 @@ function dungeonGenerator(config) {
     return formatDungeon(generateDungeon(config));
 }
 /**
- * Generates and formats output for the item generation page.
+ * Generates and formats output for the item generator.
  *
  * @private
  *
@@ -92,7 +91,7 @@ function nameGenerator(config) {
 }
 
 /**
- * Generates and formats output for the room generation page.
+ * Generates and formats output for the room generator.
  *
  * @private
  *
@@ -110,12 +109,12 @@ function roomGenerator(config) {
  * @private
  * @throws
  *
- * @param {Page} page
+ * @param {Generator} generator
  *
  * @returns {(Config) => string}
  */
-function getGenerator(page) {
-    switch (page) {
+function getGenerator(generator) {
+    switch (generator) {
         case 'dungeon':
             return dungeonGenerator;
 
@@ -126,7 +125,7 @@ function getGenerator(page) {
             return itemGenerator;
 
         default:
-            toss(`Invalid active page "${page}" in getGenerator()`);
+            toss(`Invalid generator "${generator}" in getGenerator()`);
     }
 }
 
@@ -178,9 +177,9 @@ const isSidebarExpanded = (body) => body.dataset.layout === 'expanded-sidebar';
  * @param {Pick<Sections, "body" | "content" | "knobs" | "nav">} sections
  */
 function onGenerate({ body, content, knobs, nav }) {
-    let config    = getFormData(knobs);
-    let page      = getActiveNavItem(nav);
-    let generator = getGenerator(page);
+    let config          = getFormData(knobs);
+    let activeGenerator = getActiveNavItem(nav);
+    let generator       = getGenerator(activeGenerator);
 
     content.innerHTML = generator(config);
 
@@ -199,13 +198,14 @@ function onGenerate({ body, content, knobs, nav }) {
  * @param {Event} e
  */
 function onNavigate({ body, content, knobs, nav }, homeContent, e) {
-    let { target: page } = getDataset(e.target);
+    let { target } = getDataset(e.target);
+    let generator = /** @type {Generator} */ (target);
 
-    setActiveNavItem(nav, /** @type {Page} */ (page));
+    setActiveNavItem(nav, generator);
 
     let isExpanded = isSidebarExpanded(body);
 
-    knobs.innerHTML   = getKnobPanel(/** @type {Page} */ (page), { isExpanded });
+    knobs.innerHTML   = getKnobPanel(generator, { isExpanded });
     content.innerHTML = homeContent;
 }
 
@@ -255,10 +255,10 @@ function toggleExpand({ body, knobs, nav }) {
         ? 'default'
         : 'expanded-sidebar';
 
-    let page = getActiveNavItem(nav);
+    let generator = getActiveNavItem(nav);
     let isExpanded = isSidebarExpanded(body);
 
-    knobs.innerHTML = getKnobPanel(page, {
+    knobs.innerHTML = getKnobPanel(generator, {
         config: getFormData(knobs),
         isExpanded,
     });

@@ -1,7 +1,7 @@
 // @ts-check
 
 import { parseHtml } from '../../utility/element.js';
-import { pages } from '../../controller/controller.js';
+import { generators } from '../../controller/controller.js';
 import {
     // Public Functions
     getActiveNavItem,
@@ -39,9 +39,9 @@ export default ({ assert, describe, it }) => {
             assert(nav).isString();
         });
 
-        it('contains a nav button for each page', () => {
-            pages.forEach((page) => {
-                const button = body.querySelector(`button[data-target="${page}"]`);
+        it('contains a nav button for each generator', () => {
+            generators.forEach((generator) => {
+                const button = body.querySelector(`button[data-target="${generator}"]`);
                 assert(Boolean(button)).isTrue();
             });
         });
@@ -61,7 +61,7 @@ export default ({ assert, describe, it }) => {
                 <button data-target="items">Nog</button>
             `;
 
-            describe('given a page which is already the active page', () => {
+            describe('given a generator which is already active', () => {
                 setActiveNavItem(nav, 'dungeon');
 
                 it('remains the active element', () => {
@@ -75,7 +75,7 @@ export default ({ assert, describe, it }) => {
                 });
             });
 
-            describe('given a page that is not the active page]', () => {
+            describe('given a generator that is not the active generator', () => {
                 setActiveNavItem(nav, 'items');
 
                 it('sets the target element as the active element', () => {

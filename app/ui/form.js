@@ -11,10 +11,10 @@ import { toDash, toss } from '../utility/tools.js';
 // -- Type Imports -------------------------------------------------------------
 
 /** @typedef {import('../controller/controller.js').Action} Action */
+/** @typedef {import('../controller/controller.js').Generator} Generator */
 /** @typedef {import('../controller/knobs.js').Config} Config */
 /** @typedef {import('../controller/knobs.js').KnobConfig} KnobConfig */
 /** @typedef {import('../controller/knobs.js').KnobFieldConfig} KnobFieldConfig */
-/** @typedef {import('./nav.js').Page} Page */
 
 // -- Config -------------------------------------------------------------------
 
@@ -180,17 +180,17 @@ export function getFormData(knobContainer) {
 }
 
 /**
- * Update form knobs when changing pages.
+ * Update form knobs when changing generators.
  *
- * @param {Page} page
+ * @param {Generator} generator
  * @param {object} [options]
  *     @param {Config} [options.config]
  *     @param {boolean} [options.isExpanded]
  *
  * @returns {string}
  */
-export function getKnobPanel(page, { config, isExpanded } = {}) {
-    let knobs = getKnobConfig(knobConfig, page, config);
+export function getKnobPanel(generator, { config, isExpanded } = {}) {
+    let knobs = getKnobConfig(knobConfig, generator, config);
     let knobPanel = isExpanded
         ? formatKnobSections(knobs)
         : formatKnobAccordions(knobs);
