@@ -40,6 +40,9 @@ import {
 /** @typedef {import('../../utility/shape.js').Circle} Circle */
 /** @typedef {import('../draw.js').RoomText} RoomText */
 /** @typedef {import('../map.js').Rectangle} Rectangle */
+/** @typedef {import('../map.js').Door} Door */
+
+// TODO update tests to use `parseSvg()`
 
 /**
  * @param {import('../../unit/state.js').Utility} utility
@@ -267,15 +270,16 @@ export default ({ assert, describe, it }) => {
     // -- Public Functions -----------------------------------------------------
 
     describe('drawDoor()', () => {
-        /** @type {Rectangle} rectangle */
-        const rectangle = { x: 10, y: 20, width: 1, height: 1 };
-        const doorArgs  = {
+        /** @type {Door} */
+        const doorConfig = {
+            connections: {},
             direction: 'south',
             locked: false,
+            rectangle: { x: 10, y: 20, width: 1, height: 1 },
             type: 'passageway',
         };
 
-        const door     = drawDoor(rectangle, doorArgs);
+        const door     = drawDoor(doorConfig);
         const doorRect = door.slice(0, door.indexOf('/>') + 2);
 
         it('returns a string starting with a `<rect />` element string', () => {
@@ -283,7 +287,7 @@ export default ({ assert, describe, it }) => {
         });
 
         it('the `<rect />` has the correct `x` and `y` attributes', () => {
-            const { x, y } = rectangle;
+            const { x, y } = doorConfig.rectangle;
 
             assert(doorRect)
                 .stringIncludes(`x="${x * pxCell}"`)
@@ -291,26 +295,32 @@ export default ({ assert, describe, it }) => {
         });
 
         it('the `<rect />` has the correct `width` and `height` attributes', () => {
-            const { width, height } = rectangle;
+            const { width, height } = doorConfig.rectangle;
 
             assert(doorRect)
                 .stringIncludes(`width="${width * pxCell}"`)
                 .stringIncludes(`height="${height * pxCell}"`);
         });
 
-        /** @type {Rectangle} northSouthDoorRect */
-        const northSouthDoorRect = { x: 10, y: 20, width: 2, height: 1 };
-        const northSouthDoorArgs = { ...doorArgs, direction: 'north' };
+        /** @type {Door} */
+        const northSouthDoor = {
+            ...doorConfig,
+            rectangle: { x: 10, y: 20, width: 2, height: 1 },
+            direction: 'north',
+        };
 
-        /** @type {Rectangle} eastWestDoorRect */
-        const eastWestDoorRect = { x: 10, y: 20, width: 1, height: 2 };
-        const eastWestDoorArgs = { ...doorArgs, direction: 'east' };
+        /** @type {Door} */
+        const eastWestDoor = {
+            ...doorConfig,
+            rectangle: { x: 10, y: 20, width: 1, height: 2 },
+            direction: 'east',
+        };
 
         describe('door orientations', () => {
             describe('door wall lines', () => {
                 describe('when the door direction is north or south', () => {
                     it('includes two horizontal wall lines with correct coordinate attributes', () => {
-                        const { x, y, width, height } = northSouthDoorRect;
+                        const { x, y, width, height } = northSouthDoor.rectangle;
 
                         const line1x = x * pxCell;
                         const line2x = (x + width) * pxCell;
@@ -318,7 +328,7 @@ export default ({ assert, describe, it }) => {
                         const y1 = y * pxCell;
                         const y2 = (y + height) * pxCell;
 
-                        const doorLines = drawDoor(northSouthDoorRect, northSouthDoorArgs)
+                        const doorLines = drawDoor(northSouthDoor)
                             .match(/<line(.+?) \/>/g);
 
                         assert(doorLines).isArray();
@@ -339,7 +349,7 @@ export default ({ assert, describe, it }) => {
 
                 describe('when the door direction is east or west', () => {
                     it('includes two horizontal wall lines with correct coordinate attributes', () => {
-                        const { x, y, width, height } = eastWestDoorRect;
+                        const { x, y, width, height } = eastWestDoor.rectangle;
 
                         const x1 = x * pxCell;
                         const x2 = (x + width) * pxCell;
@@ -347,7 +357,7 @@ export default ({ assert, describe, it }) => {
                         const line1y = y * pxCell;
                         const line2y = (y + height) * pxCell;
 
-                        const doorLines = drawDoor(eastWestDoorRect, eastWestDoorArgs)
+                        const doorLines = drawDoor(eastWestDoor)
                             .match(/<line(.+?) \/>/g);
 
                         assert(doorLines).isArray();
@@ -370,8 +380,8 @@ export default ({ assert, describe, it }) => {
             describe('when the door type is lockable', () => {
                 describe('when the door is locked', () => {
                     it('sets the door rectangle fill to `colorLockedFill`', () => {
-                        const lockedDoor = drawDoor(rectangle, {
-                            ...doorArgs,
+                        const lockedDoor = drawDoor({
+                            ...doorConfig,
                             locked: true,
                             type: 'wooden',
                         });
@@ -381,9 +391,9 @@ export default ({ assert, describe, it }) => {
                 });
 
                 describe('when the door direction is north or south', () => {
-                    const { x, y, width, height } = northSouthDoorRect;
-                    const lockableDoor = drawDoor(northSouthDoorRect, {
-                        ...northSouthDoorArgs,
+                    const { x, y, width, height } = northSouthDoor.rectangle;
+                    const lockableDoor = drawDoor({
+                        ...northSouthDoor,
                         type: 'wooden',
                     });
 
@@ -428,9 +438,9 @@ export default ({ assert, describe, it }) => {
                 });
 
                 describe('when the door direction is east or west', () => {
-                    const { x, y, width, height } = eastWestDoorRect;
-                    const lockableDoor = drawDoor(eastWestDoorRect, {
-                        ...eastWestDoorArgs,
+                    const { x, y, width, height } = eastWestDoor.rectangle;
+                    const lockableDoor = drawDoor({
+                        ...eastWestDoor,
                         type: 'wooden',
                     });
 
@@ -478,9 +488,9 @@ export default ({ assert, describe, it }) => {
             describe('when the door is an archway', () => {
                 describe('when the door direction is north or south', () => {
                     it('draws two vertically centered pillars on the left and right of the cell', () => {
-                        const { x, y, width, height } = northSouthDoorRect;
-                        const archwayDoor = drawDoor(northSouthDoorRect, {
-                            ...northSouthDoorArgs,
+                        const { x, y, width, height } = northSouthDoor.rectangle;
+                        const archwayDoor = drawDoor({
+                            ...northSouthDoor,
                             type: 'archway',
                         });
 
@@ -504,9 +514,9 @@ export default ({ assert, describe, it }) => {
 
                 describe('when the door direction is east or west', () => {
                     it('draws two horizontally centered pillars at the top and bottom of the cell', () => {
-                        const { x, y, width, height } = eastWestDoorRect;
-                        const archwayDoor = drawDoor(eastWestDoorRect, {
-                            ...eastWestDoorArgs,
+                        const { x, y, width, height } = eastWestDoor.rectangle;
+                        const archwayDoor = drawDoor({
+                            ...eastWestDoor,
                             type: 'archway',
                         });
 
@@ -532,9 +542,9 @@ export default ({ assert, describe, it }) => {
             describe('when the door is a hole', () => {
                 describe('when the door direction is north or south', () => {
                     it('draws a circle with a radius of `radiusHole` centered horizontally', () => {
-                        const { x, y, width, height } = northSouthDoorRect;
-                        const archwayDoor = drawDoor(northSouthDoorRect, {
-                            ...northSouthDoorArgs,
+                        const { x, y, width, height } = northSouthDoor.rectangle;
+                        const archwayDoor = drawDoor({
+                            ...northSouthDoor,
                             type: 'hole',
                         });
 
@@ -555,9 +565,9 @@ export default ({ assert, describe, it }) => {
 
                 describe('when the door direction is east or west', () => {
                     it('draws a circle centered vertically', () => {
-                        const { x, y, width, height } = eastWestDoorRect;
-                        const archwayDoor = drawDoor(eastWestDoorRect, {
-                            ...eastWestDoorArgs,
+                        const { x, y, width, height } = eastWestDoor.rectangle;
+                        const archwayDoor = drawDoor({
+                            ...eastWestDoor,
                             type: 'hole',
                         });
 
@@ -578,7 +588,7 @@ export default ({ assert, describe, it }) => {
             });
 
             describe('when the door is a secret door', () => {
-                const secretDoor = drawDoor(rectangle, { ...doorArgs, type: 'secret' });
+                const secretDoor = drawDoor({ ...doorConfig, type: 'secret' });
                 const secretDoorRect = secretDoor.slice(0, secretDoor.indexOf('/>') + 2);
 
                 it('has a transparent fill and stroke', () => {
@@ -601,7 +611,7 @@ export default ({ assert, describe, it }) => {
             });
 
             describe('when the door is a concealed door', () => {
-                const concealedDoor = drawDoor(rectangle, { ...doorArgs, type: 'concealed' });
+                const concealedDoor = drawDoor({ ...doorConfig, type: 'concealed' });
                 const concealedDoorRect = concealedDoor.slice(0, concealedDoor.indexOf('/>') + 2);
 
                 it('has a transparent fill and stroke', () => {

@@ -80,10 +80,9 @@ import { isRequired, toWords } from '../utility/tools.js';
 /**
  * @typedef {object} Door
  *
- * TODO move to Door?
- *
- * @prop {string} rect
+ * @prop {Rectangle} rectangle
  * @prop {DoorType} type
+ * @prop {Direction} direction
  * @prop {boolean} locked
  * @prop {Connections} connections
  */
@@ -196,8 +195,9 @@ function createDoor(rectangle, type, { direction, from, to }, lockedChance = 0) 
     let locked = lockable.has(type) && rollPercentile(lockedChance);
 
     return {
-        rect: drawDoor(rectangle, { direction, type, locked }),
+        rectangle,
         type,
+        direction,
         locked,
         connections: {
             [from]: { direction, to },
@@ -704,7 +704,7 @@ function getExtraDoors(grid, rooms, existingDoors) {
  * @private
  *
  * @param {Dimensions} gridDimensions
- * @param {Room[]} roomConfigs
+ * @param {Room[]} roomConfigs // TODO rename to rooms
  * @param {Grid} grid
  *
  * @returns {{
@@ -774,13 +774,13 @@ export function generateMap(gridDimensions, roomConfigs) {
     }
 
     let roomRects = rooms.map((room) => room.rect).join('');
-    let doorRects = doors.map(({ rect }) => rect).join('');
+    let doorRects = doors.map((door) => drawDoor(door)).join('');
     let gridLines = drawGrid(gridDimensions);
     let content   = gridLines + roomRects + doorRects;
 
     return {
-        doors: doors.map(({ rect, ...door }) => door),
-        map  : drawMap(gridDimensions, content),
+        doors,
+        map: drawMap(gridDimensions, content),
         rooms,
     };
 }

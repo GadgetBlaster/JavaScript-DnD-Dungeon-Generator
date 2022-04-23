@@ -13,6 +13,7 @@ import { lockable } from '../room/door.js';
 /** @typedef {import('./grid').Dimensions} Dimensions */
 /** @typedef {import('./grid').Rectangle} Rectangle */
 /** @typedef {import('./map').Direction} Direction */
+/** @typedef {import('./map').Door} Door */
 
 // -- Types -------------------------------------------------------------
 
@@ -225,18 +226,21 @@ export {
 // -- Public Functions ---------------------------------------------------------
 
 /**
- * Returns a door SVG element strings for the given door type and dimensions.
+ * Returns a door SVG element strings for the given door.
  *
- * @param {Rectangle} rectangle
- * @param {object} args
- *     @param {Direction} args.direction
- *     @param {DoorType} args.type
- *     @param {boolean} [args.locked] // TODO move to options param
+ * @param {Door} door
  *
  * @returns {string}
  */
-export function drawDoor(rectangle, { direction, type, locked }) {
+export function drawDoor(door) {
     // TODO doors should only ever be 1 wide or 1 tall depending on direction
+
+    let {
+        rectangle,
+        type,
+        direction,
+        locked,
+    } = door;
 
     let rectAttributes = getRectAttrs(rectangle);
     let isSecret  = type === 'secret' || type === 'concealed';

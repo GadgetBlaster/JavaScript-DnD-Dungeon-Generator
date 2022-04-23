@@ -118,7 +118,7 @@ export default ({ assert, describe, it }) => {
             });
 
             assert(door).isObject();
-            assert(door.rect).isString();
+            assert(door.rectangle).isObject();
             assert(door.type).equals('stone');
             assert(door.locked).isBoolean();
             assert(door.connections).equalsObject({
@@ -351,10 +351,10 @@ export default ({ assert, describe, it }) => {
                 1: { direction: 'south', to: 2 },
                 2: { direction: 'north', to: 1 },
             });
-
             assert(door.locked).isBoolean();
-            assert(door.rect).isString();
-            assert(door.type).isString();
+            assert(door.rectangle).isObject();
+            assert(door.type).isInArray(doorTypes);
+            assert(door.direction).equals('north');
         });
     });
 
@@ -679,8 +679,7 @@ export default ({ assert, describe, it }) => {
                     doors && assert(doors.length).equals(1);
 
                     const door = doors && doors.pop();
-
-                    door && assert(door.rect).isString(); // Assert door els
+                    door && assert(door.rectangle).isObject();
                     door && assert(door.type).isInArray(doorTypes);
                     door && assert(door.locked).isBoolean();
                     door && assert(door.connections).equalsObject({
@@ -753,7 +752,7 @@ export default ({ assert, describe, it }) => {
                     doors && assert(doors.length).equals(1);
 
                     const door = doors && doors.pop();
-                    door && assert(door.rect).isString(); // Assert door els
+                    door && assert(door.rectangle).isObject();
                     door && assert(door.type).isInArray(doorTypes);
                     door && assert(door.locked).isBoolean();
                     door && assert(door.connections).equalsObject({
@@ -1032,29 +1031,30 @@ export default ({ assert, describe, it }) => {
             const gridHeight = 24;
 
             const grid = createBlankGrid({ width: gridWidth, height: gridHeight });
+
+            /** @type {Room} */
             const room = {
-                x: 1,
-                y: 1,
-                width: 3,
-                height: 2,
-                type: 'room',
-                roomNumber: 1,
                 config: {
+                    ...generatedRoomConfig,
                     roomSize: 'small',
                     roomType: 'room',
                 },
+                itemSet: { items: [], containers: [] },
+                roomNumber: 1,
             };
 
             it('returns an object containing rooms and doors', () => {
-                const { rooms, doors } = getRooms({
-                    width: gridWidth,
-                    height: gridHeight,
-                }, [
-                    { ...room },
-                    { ...room, x: 5, y: 1, roomNumber: 2 },
-                    { ...room, x: 1, y: 4, roomNumber: 3 },
-                ],
-                grid);
+                const { rooms, doors } = getRooms(
+                    {
+                        width: gridWidth,
+                        height: gridHeight,
+                    }, [
+                        { ...room },
+                        { ...room, roomNumber: 2 },
+                        { ...room, roomNumber: 3 },
+                    ],
+                    grid
+                );
 
                 assert(rooms).isArray();
                 rooms && assert(rooms.length).equals(3);
@@ -1070,8 +1070,9 @@ export default ({ assert, describe, it }) => {
                 doors && doors.forEach((doorConfig) => {
                     assert(doorConfig).isObject();
                     doorConfig && assert(doorConfig.connections).isObject();
+                    doorConfig && assert(doorConfig.direction).isInArray(directions);
                     doorConfig && assert(doorConfig.locked).isBoolean();
-                    doorConfig && assert(doorConfig.rect).isString();
+                    doorConfig && assert(doorConfig.rectangle).isObject();
                     doorConfig && assert(doorConfig.type).isInArray(doorTypes);
                 });
             });
@@ -1098,7 +1099,6 @@ export default ({ assert, describe, it }) => {
             const { map, rooms, doors } = generateMap({ width: 30, height: 24 }, generateRooms(roomConfig));
 
             assert(map).isString();
-
             assert(rooms).isArray();
 
             let lastRoomNumber = 0;
