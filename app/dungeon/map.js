@@ -712,7 +712,7 @@ function getExtraDoors(grid, rooms, existingDoors) {
  *     doors: Door[];
  * }}
  */
-function getRooms(gridDimensions, roomConfigs, grid) {
+function procedurallyApplyRooms(gridDimensions, roomConfigs, grid) {
     let { rooms, doors, skippedRooms, gridRooms } = drawRooms(gridDimensions, roomConfigs, grid);
 
     // TODO Aggregate skipped rooms?
@@ -736,18 +736,18 @@ function getRooms(gridDimensions, roomConfigs, grid) {
 }
 
 export {
-    checkForAdjacentDoor as testCheckForAdjacentDoor,
-    createDoor           as testCreateDoor,
-    drawRooms            as testDrawRooms,
-    getDoor              as testGetDoor,
-    getDoorCells         as testGetDoorCells,
-    getDoorDirection     as testGetDoorDirection,
-    getDoorType          as testGetDoorType,
-    getExtraDoors        as testGetExtraDoors,
-    getRoomDimensions    as testGetRoomDimensions,
-    getRoomDrawing       as testGetRoomDrawing,
-    getRooms             as testGetRooms,
-    getRoomWalls         as testGetRoomWalls,
+    checkForAdjacentDoor   as testCheckForAdjacentDoor,
+    createDoor             as testCreateDoor,
+    drawRooms              as testDrawRooms,
+    getDoor                as testGetDoor,
+    getDoorCells           as testGetDoorCells,
+    getDoorDirection       as testGetDoorDirection,
+    getDoorType            as testGetDoorType,
+    getExtraDoors          as testGetExtraDoors,
+    getRoomDimensions      as testGetRoomDimensions,
+    getRoomDrawing         as testGetRoomDrawing,
+    getRoomWalls           as testGetRoomWalls,
+    procedurallyApplyRooms as testProcedurallyApplyRooms,
 };
 
 // -- Public Functions ---------------------------------------------------------
@@ -767,7 +767,7 @@ export {
 export function generateMap(gridDimensions, roomConfigs) {
     let grid = createBlankGrid(gridDimensions);
 
-    let { rooms, doors } = getRooms(gridDimensions, roomConfigs, grid);
+    let { rooms, doors } = procedurallyApplyRooms(gridDimensions, roomConfigs, grid);
 
     if (roomConfigs.length <= rooms.length) {
         console.warn('Not enough rooms generated', roomConfigs.length, rooms.length);

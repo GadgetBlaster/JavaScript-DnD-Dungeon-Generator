@@ -11,18 +11,18 @@ import {
     testLabelMinRoomWidth  as labelMinRoomWidth,
 
     // Private Functions
-    testCheckForAdjacentDoor as checkForAdjacentDoor,
-    testCreateDoor           as createDoor,
-    testDrawRooms            as drawRooms,
-    testGetDoor              as getDoor,
-    testGetDoorCells         as getDoorCells,
-    testGetDoorDirection     as getDoorDirection,
-    testGetDoorType          as getDoorType,
-    testGetExtraDoors        as getExtraDoors,
-    testGetRoomDimensions    as getRoomDimensions,
-    testGetRoomDrawing       as getRoomDrawing,
-    testGetRooms             as getRooms,
-    testGetRoomWalls         as getRoomWalls,
+    testCheckForAdjacentDoor   as checkForAdjacentDoor,
+    testCreateDoor             as createDoor,
+    testDrawRooms              as drawRooms,
+    testGetDoor                as getDoor,
+    testGetDoorCells           as getDoorCells,
+    testGetDoorDirection       as getDoorDirection,
+    testGetDoorType            as getDoorType,
+    testGetExtraDoors          as getExtraDoors,
+    testGetRoomDimensions      as getRoomDimensions,
+    testGetRoomDrawing         as getRoomDrawing,
+    testGetRoomWalls           as getRoomWalls,
+    testProcedurallyApplyRooms as procedurallyApplyRooms,
 
     // Public functions
     generateMap,
@@ -1025,8 +1025,8 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('getRooms()', () => {
-        describe('given three rooms configs', () => {
+    describe('procedurallyApplyRooms()', () => {
+        describe('given three room configs', () => {
             const gridWidth  = 20;
             const gridHeight = 24;
 
@@ -1044,7 +1044,7 @@ export default ({ assert, describe, it }) => {
             };
 
             it('returns an object containing rooms and doors', () => {
-                const { rooms, doors } = getRooms(
+                const { rooms, doors } = procedurallyApplyRooms(
                     {
                         width: gridWidth,
                         height: gridHeight,
