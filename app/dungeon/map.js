@@ -32,6 +32,7 @@ import { isRequired, toWords } from '../utility/tools.js';
 /** @typedef {import('../room/door.js').DoorType} DoorType */
 /** @typedef {import('../room/door.js').RollDoorType} RollDoorType */
 /** @typedef {import('../room/door.js').RollSecretDoorType} RollSecretDoorType */
+/** @typedef {import('../room/generate.js').GeneratedRoomConfig} GeneratedRoomConfig */
 /** @typedef {import('../room/generate.js').Room} Room */
 /** @typedef {import('../room/room.js').RoomType} RoomType */
 /** @typedef {import('./grid.js').CellValue} CellValue */
@@ -90,12 +91,6 @@ import { isRequired, toWords } from '../utility/tools.js';
  * @prop {number} roomNumber
  * @prop {RoomType} type
  * @prop {Coordinates[]} walls
- */
-
-/**
- * @typedef {object} MapConfig
- *
- * TODO
  */
 
 // -- Config -------------------------------------------------------------------
@@ -232,7 +227,7 @@ function drawRooms(gridDimensions, mapRooms, grid, { isFork, prevGridRoom } = {}
         let { config, roomNumber } = roomConfig;
         let { roomType } = config;
 
-        let roomDimensions = getRoomDimensions(gridDimensions, roomConfig);
+        let roomDimensions = getRoomDimensions(gridDimensions, config);
 
         let x;
         let y;
@@ -477,18 +472,12 @@ function getDoorType(rollDoorType, rollSecretDoorType) {
  * @private
  *
  * @param {Dimensions} gridDimensions
- * @param {Room} roomConfig
+ * @param {GeneratedRoomConfig} roomConfig
  *
  * @returns {Dimensions}
  */
 function getRoomDimensions(gridDimensions, roomConfig) {
-    // TODO just pass config
-    let {
-        config: {
-            roomSize: roomSize,
-            roomType: roomType,
-        },
-    } = roomConfig;
+    let { roomSize, roomType } = roomConfig;
 
     isRequired(roomSize, 'roomSize is required in getRoomDimensions()');
     isRequired(roomType, 'roomType is required in getRoomDimensions()');
@@ -499,7 +488,7 @@ function getRoomDimensions(gridDimensions, roomConfig) {
     let roomHeight;
 
     if (customDimensions[roomType]) {
-        // TODO should return an array?
+        // TODO should return Dimensions
         ({ roomWidth, roomHeight } = customDimensions[roomType](roomSize));
     } else {
         let [ min, max ] = dimensionRanges[roomSize];

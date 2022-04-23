@@ -16,7 +16,7 @@ import {
     testGetDoor              as getDoor,
     testGetDoorCells         as getDoorCells,
     testGetDoorDirection     as getDoorDirection,
-    testGetDoorType          as getDoorType, // TODO
+    testGetDoorType          as getDoorType,
     testGetExtraDoors        as getExtraDoors,
     testGetRoomDimensions    as getRoomDimensions,
     testGetRoomDrawing       as getRoomDrawing,
@@ -966,17 +966,17 @@ export default ({ assert, describe, it }) => {
 
         describe('given a room config with a missing room type', () => {
             it('throws', () => {
-                assert(() => getRoomDimensions(gridDimensions, {
-                    config: { roomSize: 'small' },
-                })).throws('roomType is required in getRoomDimensions()');
+                // @ts-expect-error
+                assert(() => getRoomDimensions(gridDimensions, { roomSize: 'small' }))
+                    .throws('roomType is required in getRoomDimensions()');
             });
         });
 
         describe('given a room config with a missing room size', () => {
             it('throws', () => {
-                assert(() => getRoomDimensions(gridDimensions, {
-                    config: { roomType: 'library' },
-                })).throws('roomSize is required in getRoomDimensions()');
+                // @ts-expect-error
+                assert(() => getRoomDimensions(gridDimensions, { roomType: 'library' }))
+                    .throws('roomSize is required in getRoomDimensions()');
             });
         });
 
@@ -984,10 +984,8 @@ export default ({ assert, describe, it }) => {
             // TODO need to inject randomization for testing
             it('returns a room width and height ', () => {
                 const dimensions = getRoomDimensions(gridDimensions, {
-                    config: {
-                        roomSize: 'small',
-                        roomType: 'hallway',
-                    },
+                    ...generatedRoomConfig,
+                    roomType: 'hallway',
                 });
 
                 assert(dimensions.width).isNumber();
@@ -1000,10 +998,8 @@ export default ({ assert, describe, it }) => {
                 const [ minSize, maxSize ] = dimensionRanges.small;
 
                 const { width, height } = getRoomDimensions(gridDimensions, {
-                    config: {
-                        roomSize: 'small',
-                        roomType: 'room',
-                    },
+                    ...generatedRoomConfig,
+                    roomSize: 'small',
                 });
 
                 assert(width >= minSize && width <= maxSize).isTrue();
@@ -1019,10 +1015,8 @@ export default ({ assert, describe, it }) => {
                 const miniMapDimensions = { width: gridWidth, height: gridHeight };
 
                 const { width, height } = getRoomDimensions(miniMapDimensions, {
-                    config: {
-                        roomSize: 'massive',
-                        roomType: 'room',
-                    },
+                    ...generatedRoomConfig,
+                    roomSize: 'massive',
                 });
 
                 assert(width <= (gridWidth - (wallSize * 2))).isTrue();
