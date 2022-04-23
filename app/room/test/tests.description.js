@@ -890,7 +890,7 @@ export default ({ assert, describe, it }) => {
 
     describe('getRoomTypeLabel()', () => {
         it('returns a string', () => {
-            assert('armory').isString();
+            assert(getRoomTypeLabel('armory')).isString();
         });
 
         describe('given a camel cased room type', () => {
@@ -908,6 +908,12 @@ export default ({ assert, describe, it }) => {
         describe('given a room type included in `appendRoomTypes`', () => {
             it('includes the word " room"', () => {
                 assert(getRoomTypeLabel([ ...appendRoomTypes ].pop())).stringIncludes(' room');
+            });
+        });
+
+        describe('given a room with a custom room label', () => {
+            it('returns the custom label', () => {
+                assert(getRoomTypeLabel('torture')).stringIncludes('torture chamber');
             });
         });
     });

@@ -2,10 +2,6 @@
 
 import { createProbability } from '../utility/roll.js';
 
-// -- Type Imports -------------------------------------------------------------
-
-/** @typedef {import('../utility/roll.js').Probability} Probability */
-
 // -- Types --------------------------------------------------------------------
 
 /** @typedef {typeof roomTypes[number]} RoomType */
@@ -35,7 +31,7 @@ export const roomTypes = Object.freeze(/** @type {const} */ ([
     'storage',
     'study',
     'throne',
-    'tortureChamber',
+    'torture',
     'treasury',
 ]));
 
@@ -53,7 +49,17 @@ export const appendRoomTypes = new Set([
 ]);
 
 /**
- * Generic room type probability.
+ * Set of room types that should have the word "room" appended to their
+ * descriptions.
+ *
+ * @type {{ [key in RoomType]?: string }}
+ */
+export const customRoomLabels = Object.freeze({
+    torture: 'torture chamber',
+});
+
+/**
+ * Generic room type distribution.
  *
  * @type {{
  *   description: string;

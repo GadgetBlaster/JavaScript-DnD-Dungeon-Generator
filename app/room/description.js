@@ -9,7 +9,7 @@ import { indicateRarity } from '../attribute/rarity.js';
 import { list } from '../ui/list.js';
 import { rollArrayItem } from '../utility/roll.js';
 import { appendDoorway, lockable } from './door.js';
-import { appendRoomTypes } from './room.js';
+import { appendRoomTypes, customRoomLabels } from './room.js';
 
 // -- Type Imports -------------------------------------------------------------
 
@@ -494,4 +494,12 @@ export function getRoomDescription(room, roomDoors) {
  *
  * @returns {string}
  */
-export const getRoomTypeLabel = (type) => toWords(type) + (appendRoomTypes.has(type) ? ' room' : '');
+export function getRoomTypeLabel(type) {
+    let customLabel = customRoomLabels[type];
+
+    if (customLabel) {
+        return customRoomLabels[type];
+    }
+
+    return toWords(type) + (appendRoomTypes.has(type) ? ' room' : '');
+}
