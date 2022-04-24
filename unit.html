@@ -2,13 +2,19 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>D&D Dungeon Generator: Unit Tests</title>
-        <link href="https://fonts.googleapis.com/css?family=Pompiere|Varela&display=swap" rel="stylesheet">
+        <title>D&D Generator: Unit Tests</title>
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tapestry&family=Varela&display=swap">
+
         <link rel="stylesheet" href="./style.css">
+
         <style>
             [data-ok="ok"] { color: #14c80f; }
             [data-ok="fail"] { color: #db0f0f; }
 
+            /* TODO el/attr styles */
             .dot {
                 width: 6px;
                 height: 6px;
@@ -25,19 +31,24 @@
                 font-size: 15px;
                 font-family: monospace;
             }
+
+            body > main[data-loaded] {
+                align-items: start;
+                justify-content: start;
+            }
         </style>
     </head>
     <body>
 
-        <header>
-            <a href="./">D&D Dungeon Generator: Unit Tests</a>
-            <nav id="nav"></nav>
+        <header data-flex="justify-between items-center">
+            <h1><a href="/" data-action="navigate" data-target="dungeon">D&D Generator: Unit Tests</a></h1>
+            <nav id="nav" data-spacing="small"></nav>
         </header>
 
-        <main>
-            <section id="content">
-                <h1>Mumbling incantations</h1>
-            </section>
+        <main id="content">
+            <p data-align="center" data-spacing="default">
+                Mumbling incantations...
+            </p>
         </main>
 
         <script src="./app/unit.js" type="module"></script>

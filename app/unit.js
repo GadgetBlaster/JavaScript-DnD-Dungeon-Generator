@@ -31,9 +31,12 @@ const scope = urlParams.get('scope');
  */
 const verbose = Boolean(urlParams.get('verbose'));
 
-// -- Initialization -----------------------------------------------------------
+// -- Render -------------------------------------------------------------------
 
-navContainer.innerHTML     = getTestNav({ scope, verbose });
+navContainer.innerHTML = getTestNav({ scope, verbose });
+
+contentContainer.dataset.loaded = 'true';
+
 contentContainer.innerHTML = getOutput(suite, unitState(), {
     scope,
     verbose,

@@ -3,7 +3,7 @@
 import { div } from '../ui/block.js';
 import { element } from '../utility/element.js';
 import { link } from '../ui/link.js';
-import { paragraph } from '../ui/typography.js';
+import { paragraph, span, title } from '../ui/typography.js';
 import { pluralize } from '../utility/tools.js';
 import run from './run.js';
 
@@ -111,7 +111,7 @@ function getResults(summary, options = {}) {
         let messages = [];
 
         if (failures) {
-            messages.push(`Encountered ${failures} ${pluralize(failures, 'ogre')}!`)
+            messages.push(`Encountered ${failures} ${pluralize(failures, 'ogre')}!`);
         }
 
         if (errors.length) {
@@ -136,9 +136,8 @@ function getResults(summary, options = {}) {
 
     let log = getLog(results, { verbose });
 
-    return element('h1', 'Mumbling incantations')
-        + paragraph(scope || 'All Tests')
-        + div(dots)
+    return title(scope || 'All Tests')
+        + div(dots, { 'data-spacing': 'y-medium' })
         + paragraph(getSummary(summary))
         + (log ? element('ul', log) : '');
 }
@@ -179,10 +178,10 @@ function getSummary(summary) {
     let content = `${checkedForText} ${assertionsText}. `;
 
     if (issuesText) {
-        return content + element('span', `${issuesText} 😕`, { class: 'fail' });
+        return content + span(`${issuesText} 😕`, { class: 'fail' });
     }
 
-    return content + element('span', '0 Encounters, nice job 👏', { class: 'ok' });
+    return content + span('0 Encounters, nice job 👏', { class: 'ok' });
 }
 
 /**
@@ -334,15 +333,10 @@ export function getSummaryLink(summary) {
     } = getSummaryParts(summary);
 
     if (issuesText) {
-        let assertionContent = element('p', `${checkedForText} ${assertionsText}`);
-        let encounterContent = element('p', link(issuesText, unitUrl, {
-            'data-error': true,
-        }));
-
-        return assertionContent + encounterContent;
+        return `${checkedForText} ${assertionsText}... ${link(issuesText, unitUrl, { 'data-error': true })}!`;
     }
 
-    return paragraph(`${checkedForText} ${link(assertionsText, unitUrl)}`);
+    return `${checkedForText} ${link(assertionsText, unitUrl)}`;
 }
 
 /**
@@ -354,7 +348,7 @@ export function getSummaryLink(summary) {
  *
  * @returns {string}
  */
- export const getTestNav = ({ scope, verbose }) => [
+export const getTestNav = ({ scope, verbose }) => [
     link('All', unitUrl + makeParams({ scope: null, verbose }), !scope ? { 'data-active': true } : null),
     link('Tests', unitUrl + makeParams({ scope: 'list', verbose }), scope === 'list' ? { 'data-active': true } : null),
     element('span', '', { role: 'presentation', 'data-separator': true }),

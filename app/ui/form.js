@@ -197,7 +197,7 @@ export function getKnobPanel(generator, { config, isExpanded } = {}) {
 
     let columnCount          = Math.min(knobs.length, maxExpandedColumns);
     let knobContainerAttrs   = isExpanded ? { 'data-grid': columnCount } : {};
-    let buttonContainerAttrs = { 'data-flex': 'between', 'data-spacing': 'default' };
+    let buttonContainerAttrs = { 'data-flex': 'justify-between', 'data-spacing': 'default' };
 
     let content =
         div(submitButton + expandButton, buttonContainerAttrs) +

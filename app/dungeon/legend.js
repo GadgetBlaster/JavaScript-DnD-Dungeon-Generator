@@ -2,7 +2,7 @@
 
 import { cellFeet } from './grid.js';
 import { drawMap, drawRoom, drawDoor, drawGrid } from './draw.js';
-import { small } from '../ui/typography.js';
+import { span } from '../ui/typography.js';
 import { list } from '../ui/list.js';
 
 // -- Types --------------------------------------------------------------------
@@ -16,6 +16,8 @@ import { list } from '../ui/list.js';
 
 /**
  * Returns an unordered list of labeled map features.
+ *
+ * TODO draw legend on its own grid and toggle show/hide.
  *
  * @returns {string}
  */
@@ -48,6 +50,6 @@ export function drawLegend() {
     };
 
     return list(Object.keys(legend).map((key) => {
-        return drawMap(gridDimensions, legend[key]) + small(key);
-    }), { 'data-grid': true });
+        return drawMap(gridDimensions, legend[key]) + span(key);
+    }), { 'data-flex': true });
 }

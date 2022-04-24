@@ -12,100 +12,22 @@
     </head>
     <body data-layout="default">
 
-        <header data-no-print>
-            <a href="/" data-action="navigate" data-target="dungeon">D&D Generator</a>
-            <nav id="nav"></nav>
+        <header data-no-print data-flex="justify-between items-center">
+            <h1><a href="/" data-action="navigate" data-target="dungeon">D&D Generator</a></h1>
+            <nav id="nav" data-spacing="small"></nav>
         </header>
 
         <main id="content">
-            <section>
-                <h1>D&D Generator</h1>
-
-                <p>
-                    Ahoy dungeon masters and adventurers.
-                </p>
-
-                <p>
-                    Quickly generate Dungeons & Dragons dungeons, rooms,
-                    and items with this dungeon generator.
-                </p>
-
-                <p>Instructions:</p>
-
-                <ul>
-                    <li>
-                        Choose a generation mode in the upper right.
-                    </li>
-                    <li>
-                        Modify the knobs and twiddlers on the left to configure
-                        your dungeon, rooms, or item list, then click the
-                        Generate button for instant satisfaction.
-                    </li>
-                    <li>
-                        Play D&D!
-                    </li>
-                </ul>
-
-                <p>
-                    Generated contents are print ready. Some dungeon sizes
-                    may need to be scaled down to fit on an 8 ½ by 11 sheet
-                    of printer paper.
-                </p>
-
-                <hr>
-
-                <p>
-                    This dungeon generator is a work in progress. Find an
-                    issue? Have a feature request? Let me know in the
-                    <a href="#todo" target="_blank">comments section</a>
-                    and I'll see what I can do.
-                </p>
-
-                <p>
-                    Know some JavaScript and want to contribute? Open a
-                    pull request on
-                    <a href="https://github.com/GadgetBlaster/JS-Dungeon-Generator" target="_blank">GitHub</a>
-                    and I'll publish changes here for everyone to use.
-                </p>
-
-                <hr>
-
-                <footer>
-                    <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/InteractiveResource" property="dct:title" rel="dct:type">D&D Dungeon Generator</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="http://apps.mysticwaffle.com/dnd-dungeon-generator/" property="cc:attributionName" rel="cc:attributionURL">Mystic Waffle</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">Creative Commons Attribution-NonCommercial 4.0 International License</a>.
-                </footer>
-
-            </section>
+            <p data-align="center" data-spacing>
+                Mumbling incantations...
+            </p>
         </main>
 
         <aside data-no-print>
-            <form id="knobs">
-                <div data-align="center" data-spacing="default">Mumbling incantations...</div>
-            </form>
-            <footer id="footer">
-                <p>
-                    D&D Generator by
-                    <br>
-                    <a href="https://www.mysticwaffle.com/" target="_blank">
-                        Mystic Waffle
-                    </a>
-                </p>
-                <p>
-                    <small>
-                        <a href="#todo" target="_blank">
-                            Comments
-                        </a>
-                        &nbsp;&bull;&nbsp;
-                        <a href="https://github.com/GadgetBlaster/JavaScript-DnD-Dungeon-Generator" target="_blank">
-                            GitHub
-                        </a>
-                        <br>
-                        <a href="https://www.mysticwaffle.com/privacy-policy" target="_blank">
-                            Privacy Policy
-                        </a>
-                    </small>
-                </p>
-            </footer>
+            <form id="knobs"></form>
         </aside>
+
+        <footer data-no-print data-flex="justify-between" id="footer"></footer>
 
         <script src="./app/app.js" type="module"></script>
         <script async src="/analytics.js"></script>

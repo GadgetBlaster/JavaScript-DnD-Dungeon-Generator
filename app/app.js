@@ -13,8 +13,8 @@ import {
     routes,
 } from './controller/controller.js';
 
-import { getKnobPanel } from './ui/form.js';
-import { getNav, setActiveNavItem } from './ui/nav.js';
+import { getFooter } from './ui/footer.js';
+import { getNav } from './ui/nav.js';
 
 // -- Type Imports -------------------------------------------------------------
 
@@ -42,15 +42,12 @@ const sections = {
 
 const initialPath = window.location.pathname;
 
-const homeContent   = sections.content.innerHTML;
-const footerContent = sections.footer.innerHTML;
-
 // -- Initialization -----------------------------------------------------------
 
-const triggers        = getTriggers(sections, homeContent, updatePath);
+const triggers        = getTriggers(sections, updatePath);
 const activeGenerator = getActiveGenerator(initialPath);
 const testSummary     = getSummaryLink(run(unitState(), suite));
-const render          = getRender(sections, homeContent);
+const render          = getRender(sections);
 
 attachClickDelegate(sections.body, triggers);
 
@@ -75,6 +72,6 @@ window.addEventListener('popstate', (event) => {
 // -- Initial Render -----------------------------------------------------------
 
 sections.nav.innerHTML    = getNav(activeGenerator);
-sections.footer.innerHTML = testSummary + footerContent;
+sections.footer.innerHTML = getFooter(testSummary);
 
 render(activeGenerator);

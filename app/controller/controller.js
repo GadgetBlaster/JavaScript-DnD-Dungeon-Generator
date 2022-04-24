@@ -215,11 +215,10 @@ function onGenerate({ body, content, knobs, nav }) {
  * @private
  *
  * @param {Pick<Sections, "body" | "content" | "knobs" | "nav">} sections
- * @param {string} homeContent
  * @param {Event} e
  * @param {(string) => void} [updatePath = () => {}]
  */
-function onNavigate({ body, content, knobs, nav }, homeContent, e, updatePath = () => {}) {
+function onNavigate({ body, content, knobs, nav }, e, updatePath = () => {}) {
     let { target } = getDataset(e.target);
     let generator = /** @type {Generator} */ (target);
 
@@ -231,7 +230,7 @@ function onNavigate({ body, content, knobs, nav }, homeContent, e, updatePath = 
     updatePath(route);
 
     // Render it
-    renderApp({ body, content, knobs, nav }, homeContent, generator);
+    renderApp({ body, content, knobs, nav }, generator);
 }
 
 /**
@@ -318,10 +317,9 @@ function toggleVisibility(container, e) {
  * @private
  *
  * @param {Pick<Sections, "body" | "content" | "knobs" | "nav">} sections
- * @param {string} homeContent
  * @param {Generator | 404} page
  */
-function renderApp({ body, content, knobs, nav }, homeContent, page) {
+function renderApp({ body, content, knobs, nav }, page) {
     if (page === 404) {
         content.innerHTML = '404: These are not the mischievous kobolds you are looking for.';
         return;
@@ -332,7 +330,7 @@ function renderApp({ body, content, knobs, nav }, homeContent, page) {
     let isExpanded = isSidebarExpanded(body);
 
     knobs.innerHTML   = getKnobPanel(page, { isExpanded });
-    content.innerHTML = homeContent;
+    content.innerHTML = 'Ready!';
 }
 
 export {
@@ -386,29 +384,27 @@ export function getActiveGenerator(route) {
  * Returns the app's render function.
  *
  * @param {Pick<Sections, "body" | "content" | "knobs" | "nav">} sections
- * @param {string} homeContent
  *
  * @returns {(generator: Page) => void}
  */
-export const getRender = (sections, homeContent) => (generator) => renderApp(sections, homeContent, generator);
+export const getRender = (sections) => (generator) => renderApp(sections, generator);
 
 /**
  * Returns an object of action triggers.
  *
  * @param {Pick<Sections, "body" | "content" | "knobs" | "nav">} sections
- * @param {string} homeContent
  * @param {(string) => void} updatePath
  *
- * @returns {Triggers & }
+ * @returns {Triggers}
  */
-export function getTriggers(sections, homeContent, updatePath) {
+export function getTriggers(sections, updatePath) {
     let { body, knobs, nav } = sections;
 
     return {
         accordion: (e) => toggleAccordion(body, e),
         expand   : ( ) => toggleExpand({ body, knobs, nav }),
         generate : ( ) => onGenerate(sections),
-        navigate : (e) => onNavigate(sections, homeContent, e, updatePath),
+        navigate : (e) => onNavigate(sections, e, updatePath),
         toggle   : (e) => toggleVisibility(body, e),
     };
 }

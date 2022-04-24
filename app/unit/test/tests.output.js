@@ -498,7 +498,7 @@ export default ({ assert, describe, it }) => {
         };
 
         it('returns test results', () => {
-            assert(getOutput(suite, state)).stringIncludes('Mumbling incantations');
+            assert(getOutput(suite, state)).stringIncludes('Checked for 1 mischievous kobold.');
         });
 
         describe('given a `scope` option of `list`', () => {
