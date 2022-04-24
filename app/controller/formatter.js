@@ -39,61 +39,7 @@ const maxRoomColumns = 3;
  *
  * @returns {string}
  */
-const detail = (content) => span(` (${content})`, { 'data-info': true });
-
-/**
- * Get item description
- *
- * TODO uniformity formatting?
- *
- * @param {Item} item
- *
- * @returns {string}
- */
-function getItemDescription(item) {
-    let {
-        condition,
-        count,
-        name,
-        rarity,
-    } = item;
-
-    let indicateRare = indicateItemRarity.has(rarity);
-
-    let notes = [];
-
-    if (count > 1) {
-        notes.push(count);
-    }
-
-    if (indicateRare) {
-        notes.push(rarity);
-    }
-
-    if (condition !== 'average') {
-        notes.push(`${condition} condition`);
-    }
-
-    let noteText = notes.join(', ');
-
-    return name + (noteText ? detail(noteText) : '');
-}
-
-/**
- * Returns an item set's total item count as a string.
- *
- * @private
- *
- * @param {ItemSet} itemSet
- *
- * @returns {string}
- */
-function getItemTotal({ containers, items }) {
-    let itemCount = items.reduce((tally, { count }) => tally + count, 0);
-    let containerItemCount = containers.reduce((tally, { count }) => tally + count, 0);
-
-    return (itemCount + containerItemCount).toString();
-}
+const formatDetail = (content) => span(` (${content})`, { 'data-info': true });
 
 /**
  * Formats output for the item display.
@@ -145,7 +91,7 @@ function formatItemContent(itemSet) {
 }
 
 /**
- * Formats room generation.
+ * Formats room display.
  *
  * @private
  *
@@ -175,7 +121,7 @@ function formatRoom(room, doors) {
     let map   = room.map ? getMapDescription() : '';
     let keys  = room.keys ? getKeyDescription(room.keys) : '';
     let traps = room.traps
-        ? subtitle('Traps' + detail(room.traps.length.toString())) + list(room.traps)
+        ? subtitle('Traps' + formatDetail(room.traps.length.toString())) + list(room.traps)
         : '';
 
     return article(articleHeader
@@ -183,7 +129,7 @@ function formatRoom(room, doors) {
         + subtitle('Description')
         + paragraph(description)
         + doorList
-        + subtitle('Items' + detail(getItemTotal(itemSet)))
+        + subtitle('Items' + formatDetail(getItemTotal(itemSet)))
         + formatItemContent(itemSet)
         + map
         + keys
@@ -192,7 +138,7 @@ function formatRoom(room, doors) {
 }
 
 /**
- * Formats a pre-generated room.
+ * Formats display for an array of rooms.
  *
  * @private
  *
@@ -210,9 +156,68 @@ function formatRoomGrid(rooms, doors = {}) {
     return section(formattedRooms, { 'data-grid': columns });
 }
 
+
+/**
+ * Get item description
+ *
+ * TODO uniformity formatting?
+ *
+ * @param {Item} item
+ *
+ * @returns {string}
+ */
+function getItemDescription(item) {
+    let {
+        condition,
+        count,
+        name,
+        rarity,
+    } = item;
+
+    let indicateRare = indicateItemRarity.has(rarity);
+
+    let notes = [];
+
+    if (count > 1) {
+        notes.push(count);
+    }
+
+    if (indicateRare) {
+        notes.push(rarity);
+    }
+
+    if (condition !== 'average') {
+        notes.push(`${condition} condition`);
+    }
+
+    let noteText = notes.join(', ');
+
+    return name + (noteText ? formatDetail(noteText) : '');
+}
+
+/**
+ * Returns an item set's total item count as a string.
+ *
+ * @private
+ *
+ * @param {ItemSet} itemSet
+ *
+ * @returns {string}
+ */
+function getItemTotal({ containers, items }) {
+    let itemCount = items.reduce((tally, { count }) => tally + count, 0);
+    let containerItemCount = containers.reduce((tally, { count }) => tally + count, 0);
+
+    return (itemCount + containerItemCount).toString();
+}
+
 export {
-    detail as testDetail,
+    formatDetail       as testFormatDetail,
+    formatItemContent  as testFormatItemContent,
+    formatRoom         as testFormatRoom,
+    formatRoomGrid     as testFormatRoomGrid,
     getItemDescription as testGetItemDescription,
+    getItemTotal       as testGetItemTotal,
 };
 
 // -- Public Functions ---------------------------------------------------------
@@ -253,7 +258,7 @@ export function formatError(errorTitle, message) {
  * @returns {string}
  */
 export function formatItems(itemSet) {
-    let content = header(title('Items' + detail(getItemTotal(itemSet))))
+    let content = header(title('Items' + formatDetail(getItemTotal(itemSet))))
         + formatItemContent(itemSet);
 
     return section(article(content));

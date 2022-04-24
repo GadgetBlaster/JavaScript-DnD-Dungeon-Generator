@@ -2,8 +2,19 @@
 
 import {
     // Private Functions
-    testDetail as detail,
-    testGetItemDescription as getItemDescription,
+    testFormatDetail        as formatDetail,
+    testFormatItemContent   as formatItemContent,
+    testFormatRoom          as formatRoom,
+    testFormatRoomGrid      as formatRoomGrid,
+    testGetItemDescription  as getItemDescription,
+    testGetItemTotal        as getItemTotal,
+
+    // Public Functions
+    formatDungeon,
+    formatError,
+    formatItems,
+    formatName,
+    formatRooms,
 } from '../formatter.js';
 
 import { parseHtml } from '../../utility/element.js';
@@ -16,6 +27,23 @@ import { parseHtml } from '../../utility/element.js';
 export default ({ assert, describe, it }) => {
 
     // -- Private Functions ----------------------------------------------------
+
+    describe('formatDetail()', () => {
+        // TODO
+    });
+
+
+    describe('formatItemContent()', () => {
+        // TODO
+    });
+
+    describe('formatRoom()', () => {
+        // TODO
+    });
+
+    describe('formatRoomGrid()', () => {
+        // TODO
+    });
 
     describe('getItemDescription()', () => {
         /** @type {Item} item */
@@ -40,5 +68,31 @@ export default ({ assert, describe, it }) => {
                 assert(desc.textContent).equals('Goblin juice (12)');
             });
         });
+    });
+
+    describe('getItemTotal()', () => {
+        // TODO
+    });
+
+    // -- Public Functions -----------------------------------------------------
+
+    describe('formatDungeon()', () => {
+        // TODO
+    });
+
+    describe('formatError()', () => {
+        // TODO
+    });
+
+    describe('formatItems()', () => {
+        // TODO
+    });
+
+    describe('formatName()', () => {
+        // TODO
+    });
+
+    describe('formatRooms()', () => {
+        // TODO
     });
 };
