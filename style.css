@@ -3,7 +3,7 @@
 
 :root {
     --font-default: 'Varela', monospace;
-    --font-logo: 'Pompiere', monospace;
+    --font-logo: 'Tapestry', monospace;
 
     --font-size-title: 22px;
     --font-size-subtitle: 18px;
@@ -147,6 +147,7 @@ header > a {
     font-family: var(--font-logo);
     padding: 10px 20px;
     margin: 0;
+    font-variant: small-caps;
 }
 
 header > a:hover {

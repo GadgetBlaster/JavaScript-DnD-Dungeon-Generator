@@ -376,7 +376,7 @@ export function attachClickDelegate(docBody, triggers) {
  *
  * @param {string} route
  *
- * @returns {Generator | 404}
+ * @returns {Page}
  */
 export function getActiveGenerator(route) {
     return routes[route] || 404;
