@@ -16,18 +16,23 @@ import {
     testOnNavigate       as onNavigate,
     testRenderApp        as renderApp,
     testToggleAccordion  as toggleAccordion,
+    testToggleExpand     as toggleExpand,
     testToggleVisibility as toggleVisibility,
 
     // Public Functions
     attachClickDelegate,
+    getActiveGenerator,
     getTriggers,
 } from '../controller.js';
 
-/** @typedef {import('../controller.js').Triggers} Triggers */
+/** @typedef {import('../controller.js').Sections} Sections */
 /** @typedef {import('../controller.js').Trigger} Trigger */
+/** @typedef {import('../controller.js').Triggers} Triggers */
+/** @typedef {import('../knobs.js').ItemConfig} ItemConfig */
+/** @typedef {import('../knobs.js').RoomConfig} RoomConfig */
 
 /**
- * Mocked event with target.
+ * Returns a mocked event with click target.
  *
  * @param {HTMLElement} targetEl
  *
@@ -38,11 +43,33 @@ const getMockClickEvent = (targetEl) => ({
     target: targetEl,
 });
 
-/** @typedef {import('../knobs.js').ItemConfig} ItemConfig */
-/** @typedef {import('../knobs.js').RoomConfig} RoomConfig */
-
 const knobHTML = getKnobPanel('items');
 const navHTML  = getNav('items');
+
+/**
+ * Returns a mock sections object.
+ *
+ * @returns {Sections} */
+function getMockSections() {
+    const body    = document.createElement('div');
+    const content = document.createElement('div');
+    const footer  = document.createElement('footer');
+    const knobs   = document.createElement('form');
+    const nav     = document.createElement('nav');
+
+    body.dataset.layout = 'default';
+
+    knobs.innerHTML = knobHTML;
+    nav.innerHTML   = navHTML;
+
+    return {
+        body,
+        content,
+        footer,
+        knobs,
+        nav,
+    };
+}
 
 /**
  * @param {import('../../unit/state.js').Utility} utility
@@ -206,26 +233,15 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('onGenerate()', () => {
-        const bodyEl    = document.createElement('div');
-        const contentEl = document.createElement('div');
-        const knobsEl   = document.createElement('form');
-        const navEl     = document.createElement('nav');
-
-        knobsEl.innerHTML = knobHTML;
-
-        const sections = {
-            body   : bodyEl,
-            content: contentEl,
-            knobs  : knobsEl,
-            nav    : navEl,
-        };
+        const sections = getMockSections();
+        const { body, content } = sections;
 
         it('generates content for the current route', () => {
             onGenerate(sections, () => '/items');
 
-            const title = contentEl.querySelector('h2');
+            const title = content.querySelector('h2');
 
-            assert(Boolean(contentEl.querySelector('article'))).isTrue();
+            assert(Boolean(content.querySelector('article'))).isTrue();
             assert(Boolean(title)).isTrue();
             title && assert(title.textContent).stringIncludes('Items');
         });
@@ -234,10 +250,20 @@ export default ({ assert, describe, it }) => {
             it('renders an error page', () => {
                 onGenerate(sections, () => '/nothing-to-see-here');
 
-                const title = contentEl.querySelector('h2');
+                const title = content.querySelector('h2');
 
                 assert(Boolean(title)).isTrue();
                 title && assert(title.textContent).equals('Oh no!');
+            });
+        });
+
+        describe('when the sidebar is expanded', () => {
+            it('closes the sidebar', () => {
+                body.dataset.layout = 'sidebar-expanded';
+
+                onGenerate(sections, () => '/items');
+
+                assert(body).hasAttributes({ 'data-layout': 'default' });
             });
         });
     });
@@ -245,25 +271,14 @@ export default ({ assert, describe, it }) => {
     describe('onNavigate()', () => {
         describe('given an event with the target generator of "rooms"', () => {
             it('updates the content, knobs, and nav elements and calls updatePath() with the new route', () => {
-                const bodyEl    = document.createElement('div');
-                const contentEl = document.createElement('div');
-                const knobsEl   = document.createElement('form');
-
-                const navEl = document.createElement('nav');
-                navEl.innerHTML = navHTML;
+                const sections = getMockSections();
+                const { content, knobs, nav } = sections;
 
                 /** @type {HTMLElement} */
-                const dungeonButton = navEl.querySelector('[data-target="dungeon"]');
+                const dungeonButton = nav.querySelector('[data-target="dungeon"]');
 
                 /** @type {HTMLElement} */
-                const roomsButton = navEl.querySelector('[data-target="rooms"]');
-
-                const sections = {
-                    body   : bodyEl,
-                    content: contentEl,
-                    knobs  : knobsEl,
-                    nav    : navEl,
-                };
+                const roomsButton = nav.querySelector('[data-target="rooms"]');
 
                 let updatePathValue;
 
@@ -272,8 +287,8 @@ export default ({ assert, describe, it }) => {
                 });
 
                 // Sections
-                assert(contentEl.innerHTML).stringIncludes('Ready');
-                assert(knobsEl.innerHTML).stringIncludes('Generate');
+                assert(content.innerHTML).stringIncludes('Ready');
+                assert(knobs.innerHTML).stringIncludes('Generate');
 
                 // Nav
                 assert(roomsButton.dataset.active).equals('true');
@@ -286,41 +301,71 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('renderApp()', () => {
-        const bodyEl    = document.createElement('div');
-        const contentEl = document.createElement('div');
-        const knobsEl   = document.createElement('form');
-
-        const navEl = document.createElement('nav');
-        navEl.innerHTML = navHTML;
-
-        const sections = {
-            body   : bodyEl,
-            content: contentEl,
-            knobs  : knobsEl,
-            nav    : navEl,
-        };
+        const sections = getMockSections();
+        const { body, content, knobs, nav } = sections;
 
         it('updates the content, knobs, and nav elements', () => {
             /** @type {HTMLElement} */
-            const dungeonButton = navEl.querySelector('[data-target="dungeon"]');
+            const dungeonButton = nav.querySelector('[data-target="dungeon"]');
 
             renderApp(sections, 'dungeon');
 
-            assert(contentEl.innerHTML).stringIncludes('Ready');
-            assert(knobsEl.innerHTML).stringIncludes('Generate');
+            assert(content.innerHTML).stringIncludes('Ready!');
+            assert(knobs.innerHTML).stringIncludes('Generate');
             assert(dungeonButton.dataset.active).equals('true');
         });
 
-        describe('when the route 404s', () => {
-            it('updates the content', () => {
+        describe('when the layout is full', () => {
+            it('updates the layout to "default"', () => {
+                const bodyEl = document.createElement('div');
+                bodyEl.dataset.layout = 'full';
+
+                renderApp({ ...sections, body: bodyEl }, 'items');
+
+                assert(bodyEl).hasAttributes({ 'data-layout': 'default' });
+            });
+        });
+
+        describe('when the sidebar is expanded', () => {
+            it('persists the expanded sidebar', () => {
+                const bodyEl = document.createElement('div');
+                bodyEl.dataset.layout = 'sidebar-expanded';
+
+                renderApp({ ...sections, body: bodyEl }, 'items');
+
+                assert(bodyEl).hasAttributes({ 'data-layout': 'sidebar-expanded' });
+                assert(Boolean(knobs.querySelector('div[data-grid="1"]'))).isTrue();
+            });
+        });
+
+        describe('when the page is 404', () => {
+            it('renders a 404 message in a full layout', () => {
                 renderApp(sections, 404);
-                assert(contentEl.innerHTML).stringIncludes('404');
+                assert(body).hasAttributes({ 'data-layout': 'full' });
+                assert(content.querySelector('h2').textContent).stringIncludes('404');
+            });
+        });
+
+        describe('when the page is "error"', () => {
+            it('renders an error message in a full layout', () => {
+                renderApp(sections, 'error');
+                assert(body).hasAttributes({ 'data-layout': 'full' });
+                assert(content.querySelector('h2').textContent).stringIncludes('Oh no!');
+            });
+        });
+
+        describe('when the page is undefined', () => {
+            it('renders an error message in a full layout', () => {
+                // @ts-expect-error
+                renderApp(sections);
+                assert(body).hasAttributes({ 'data-layout': 'full' });
+                assert(content.querySelector('h2').textContent).stringIncludes('Oh no!');
             });
         });
     });
 
     describe('toggleAccordion()', () => {
-        describe('when there are 3 accordion sections', () => {
+        describe('with 3 accordion sections', () => {
             const count       = 3;
             const containerEl = document.createElement('div');
 
@@ -407,6 +452,46 @@ export default ({ assert, describe, it }) => {
                     assert(() => toggleAccordion(containerEl, getMockClickEvent(button)))
                         .throws('Invalid accordion section target "nope"');
                 });
+            });
+        });
+    });
+
+    describe('toggleExpand()', () => {
+        const sections = getMockSections();
+        const { body, content, knobs } = sections;
+
+        describe('when the sidebar is not expanded', () => {
+            it('expands the sidebar', () => {
+                assert(body).hasAttributes({ 'data-layout': 'default' });
+                assert(Boolean(knobs.querySelector('div[data-grid]'))).isFalse();
+
+                toggleExpand(sections, () => '/items');
+
+                assert(body).hasAttributes({ 'data-layout': 'sidebar-expanded' });
+                assert(Boolean(knobs.querySelector('div[data-grid]'))).isTrue();
+            });
+        });
+
+        describe('when the sidebar is expanded', () => {
+            it('collapses the sidebar', () => {
+                assert(body).hasAttributes({ 'data-layout': 'sidebar-expanded' });
+                assert(Boolean(knobs.querySelector('div[data-grid]'))).isTrue();
+
+                toggleExpand(sections, () => '/items');
+
+                assert(body).hasAttributes({ 'data-layout': 'default' });
+                assert(Boolean(knobs.querySelector('div[data-grid]'))).isFalse();
+            });
+        });
+
+        describe('when the active page is not a generator', () => {
+            it('renders an error page', () => {
+                toggleExpand(sections, () => '/nothing-to-see-here');
+
+                const title = content.querySelector('h2');
+
+                assert(Boolean(title)).isTrue();
+                title && assert(title.textContent).equals('Oh no!');
             });
         });
     });
@@ -519,22 +604,32 @@ export default ({ assert, describe, it }) => {
         });
     });
 
+    describe('getActiveGenerator()', () => {
+        it('returns the active generated based on the route', () => {
+            assert(getActiveGenerator('/rooms')).equals('rooms');
+        });
+
+        describe('given an invalid route', () => {
+            it('returns undefined', () => {
+                assert(getActiveGenerator('/cowboys')).isUndefined();
+            });
+        });
+    });
+
     describe('getTriggers()', () => {
-        const bodyEl    = document.createElement('div');
-        const contentEl = document.createElement('div');
-        const knobsEl   = document.createElement('form');
-        const navEl     = document.createElement('nav');
+        const sections = getMockSections();
+        const { body, content, knobs, nav } = sections;
 
-        contentEl.innerHTML = 'Fake homepage content';
-        knobsEl.innerHTML   = knobHTML;
-        navEl.innerHTML     = navHTML;
+        body.appendChild(nav);
+        body.appendChild(knobs);
+        body.appendChild(content);
 
-        bodyEl.appendChild(navEl);
-        bodyEl.appendChild(knobsEl);
-        bodyEl.appendChild(contentEl);
+        let updatePathValue;
 
-        const sections = { body: bodyEl, content: contentEl, knobs: knobsEl, nav: navEl };
-        const triggers = getTriggers(sections, () => {}); // TODO test updatePath param
+        const updatePath = (path) => { updatePathValue = path; };
+        const getPathname = () => '/items';
+
+        const triggers = getTriggers(sections, updatePath, getPathname); // TODO test updatePath param
 
         it('returns an object containing all application triggers', () => {
             assert(triggers.accordion).isFunction();
@@ -546,10 +641,10 @@ export default ({ assert, describe, it }) => {
         describe('accordion', () => {
             it('toggles an accordion', () => {
                 /** @type {HTMLElement} */
-                const accordionButtonEl = knobsEl.querySelector('[data-target="fieldset-item-settings"]');
+                const accordionButtonEl = knobs.querySelector('[data-target="fieldset-item-settings"]');
 
                 /** @type {HTMLElement} */
-                const fieldsetEl = knobsEl.querySelector('[data-id="fieldset-item-settings"]');
+                const fieldsetEl = knobs.querySelector('[data-id="fieldset-item-settings"]');
                 const wasCollapsed = fieldsetEl.dataset.collapsed === 'true';
 
                 triggers.accordion(getMockClickEvent(accordionButtonEl));
@@ -558,37 +653,52 @@ export default ({ assert, describe, it }) => {
             });
         });
 
+        describe('expand', () => {
+            // TODO
+        });
+
         describe('generate', () => {
-            // TODO flaky test, items can be zero
-            // it('updates the content', () => {
-            //     /** @type {HTMLElement} */
-            //     const generateButtonEl = knobsEl.querySelector('[data-action="generate"]');
+            it('updates the content for the current route', () => {
+                /** @type {HTMLElement} */
+                const generateButtonEl = knobs.querySelector('[data-action="generate"]');
 
-            //     triggers.generate(getMockClickEvent(generateButtonEl));
+                triggers.generate(getMockClickEvent(generateButtonEl));
 
-            //     assert(/<h3>Items \([0-9]+\)<\/h3>/.test(contentEl.innerHTML)).isTrue();
-            //     assert(/<ul(.+?)>(.+?)<\/ul>/.test(contentEl.innerHTML)).isTrue();
-            // });
+                const title = content.querySelector('h2');
+
+                assert(Boolean(content.querySelector('article'))).isTrue();
+                assert(Boolean(title)).isTrue();
+                title && assert(title.textContent).stringIncludes('Items');
+            });
         });
 
         describe('navigate', () => {
             it('updates the content', () => {
                 /** @type {HTMLElement} */
-                const roomsButtonEl = navEl.querySelector('[data-action="navigate"][data-target="rooms"]');
+                const roomsButtonEl = nav.querySelector('[data-action="navigate"][data-target="rooms"]');
 
                 triggers.navigate(getMockClickEvent(roomsButtonEl));
 
-                assert(contentEl.innerHTML).equals('Ready!'); // TODO
+                assert(content.innerHTML).equals('Ready!');
+            });
+
+            it('calls updatePath() with the new pathname', () => {
+                /** @type {HTMLElement} */
+                const roomsButtonEl = nav.querySelector('[data-action="navigate"][data-target="rooms"]');
+
+                triggers.navigate(getMockClickEvent(roomsButtonEl));
+
+                assert(updatePathValue).equals('/rooms');
             });
         });
 
         describe('toggle', () => {
             it('updates the target\'s visibility', () => {
                 /** @type {HTMLElement} */
-                const toggleButtonEl = knobsEl.querySelector('[data-action="toggle"][data-target="info-itemQuantity"]');
+                const toggleButtonEl = knobs.querySelector('[data-action="toggle"][data-target="info-itemQuantity"]');
 
                 /** @type {HTMLElement} */
-                const infoEl = knobsEl.querySelector('[data-id="info-itemQuantity"]');
+                const infoEl = knobs.querySelector('[data-id="info-itemQuantity"]');
 
                 assert(infoEl.hidden).isTrue();
 

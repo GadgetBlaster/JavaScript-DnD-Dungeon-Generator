@@ -214,7 +214,7 @@ function getTrigger(triggers, action) {
  *
  * @returns {boolean}
  */
-const isSidebarExpanded = (body) => body.dataset.layout === 'expanded-sidebar';
+const isSidebarExpanded = (body) => body.dataset.layout === 'sidebar-expanded';
 
 /**
  * Generator event handler.
@@ -222,26 +222,26 @@ const isSidebarExpanded = (body) => body.dataset.layout === 'expanded-sidebar';
  * @private
  * @throws
  *
- * @param {Pick<Sections, "body" | "content" | "knobs" | "nav">} sections
+ * @param {Sections} sections
  * @param {() => string} getPathname
  */
 function onGenerate(sections, getPathname) {
     let { body, content, knobs } = sections;
 
-    let config          = getFormData(knobs);
-    let activeGenerator = getActiveGenerator(getPathname());
+    let config    = getFormData(knobs);
+    let generator = getActiveGenerator(getPathname());
 
-    if (!activeGenerator) {
+    if (!generator) {
         renderApp(sections, 'error');
         return;
     }
 
-    let generate = getGenerator(activeGenerator);
+    let generate = getGenerator(generator);
 
     content.innerHTML = generate(config);
 
     if (isSidebarExpanded(body)) {
-        toggleExpand({ body, knobs }, getPathname);
+        toggleExpand(sections, getPathname);
     }
 }
 
@@ -250,11 +250,11 @@ function onGenerate(sections, getPathname) {
  *
  * @private
  *
- * @param {Pick<Sections, "body" | "content" | "knobs" | "nav">} sections
+ * @param {Sections} sections
  * @param {Event} e
  * @param {(string) => void} updatePath
  */
-function onNavigate({ body, content, knobs, nav }, e, updatePath) {
+function onNavigate(sections, e, updatePath) {
     let { target } = getDataset(e.target);
     let generator = /** @type {Generator} */ (target);
 
@@ -265,7 +265,36 @@ function onNavigate({ body, content, knobs, nav }, e, updatePath) {
     updatePath(route);
 
     // Render it
-    renderApp({ body, content, knobs, nav }, generator);
+    renderApp(sections, generator);
+}
+
+/**
+ * Renders the given generator.
+ *
+ * @private
+ *
+ * @param {Sections} sections
+ * @param {Page} page
+ */
+function renderApp({ body, content, knobs, nav }, page) {
+    if (!page || page == 404 || page == 'error') {
+        let { title, message } = getErrorMessage(page);
+
+        body.dataset.layout = 'full';
+        content.innerHTML = formatError(title, message);
+        return;
+    }
+
+    if (body.dataset.layout === 'full') {
+        body.dataset.layout = 'default';
+    }
+
+    setActiveNavItem(nav, page);
+
+    let isExpanded = isSidebarExpanded(body);
+
+    knobs.innerHTML   = getKnobPanel(page, { isExpanded });
+    content.innerHTML = 'Ready!';
 }
 
 /**
@@ -307,15 +336,23 @@ function toggleAccordion(container, e) {
  *
  * @private
  *
- * @param {Pick<Sections, "body" | "knobs">} sections
+ * @param {Sections} sections
  * @param {() => string} getPathname
  */
-function toggleExpand({ body, knobs }, getPathname) {
-    body.dataset.layout = body.dataset.layout === 'expanded-sidebar'
+function toggleExpand(sections, getPathname) {
+    let { body, knobs } = sections;
+
+    body.dataset.layout = body.dataset.layout === 'sidebar-expanded'
         ? 'default'
-        : 'expanded-sidebar';
+        : 'sidebar-expanded';
 
     let generator = getActiveGenerator(getPathname());
+
+    if (!generator) {
+        renderApp(sections, 'error');
+        return;
+    }
+
     let isExpanded = isSidebarExpanded(body);
 
     knobs.innerHTML = getKnobPanel(generator, {
@@ -347,35 +384,6 @@ function toggleVisibility(container, e) {
     targetEl.hidden = !targetEl.hidden;
 }
 
-/**
- * Renders the given generator.
- *
- * TODO tests
- *
- * @private
- *
- * @param {Pick<Sections, "body" | "content" | "knobs" | "nav">} sections
- * @param {Page} page
- */
-function renderApp({ body, content, knobs, nav }, page) {
-    if (!page || page == 404 || page == 'error') {
-        let { title, message } = getErrorMessage(page);
-
-        body.dataset.layout = 'full';
-        content.innerHTML = formatError(title, message);
-        return;
-    }
-
-    body.dataset.layout = 'default';
-
-    setActiveNavItem(nav, page);
-
-    let isExpanded = isSidebarExpanded(body);
-
-    knobs.innerHTML   = getKnobPanel(page, { isExpanded });
-    content.innerHTML = 'Ready!';
-}
-
 export {
     getDataset       as testGetDataset,
     getErrorMessage  as testGetErrorMessage,
@@ -385,6 +393,7 @@ export {
     onNavigate       as testOnNavigate,
     renderApp        as testRenderApp,
     toggleAccordion  as testToggleAccordion,
+    toggleExpand     as testToggleExpand,
     toggleVisibility as testToggleVisibility,
 };
 
@@ -415,8 +424,6 @@ export function attachClickDelegate(docBody, triggers) {
 /**
  * Returns the active generator based on the route, or undefined.
  *
- * TODO tests
- *
  * @param {string} route
  *
  * @returns {Generator | undefined}
@@ -428,7 +435,7 @@ export function getActiveGenerator(route) {
 /**
  * Returns the app's render function.
  *
- * @param {Pick<Sections, "body" | "content" | "knobs" | "nav">} sections
+ * @param {Sections} sections
  *
  * @returns {(generator: Page) => void}
  */
@@ -437,18 +444,18 @@ export const getRender = (sections) => (generator) => renderApp(sections, genera
 /**
  * Returns an object of action triggers.
  *
- * @param {Pick<Sections, "body" | "content" | "knobs" | "nav">} sections
- * @param {(string) => void} updatePath
+ * @param {Sections} sections
+ * @param {(path: Path) => void} updatePath
  * @param {() => string} getPathname
  *
  * @returns {Triggers}
  */
 export function getTriggers(sections, updatePath, getPathname) {
-    let { body, knobs } = sections;
+    let { body } = sections;
 
     return {
         accordion: (e) => toggleAccordion(body, e),
-        expand   : ( ) => toggleExpand({ body, knobs }, getPathname),
+        expand   : ( ) => toggleExpand(sections, getPathname),
         generate : ( ) => onGenerate(sections, getPathname),
         navigate : (e) => onNavigate(sections, e, updatePath),
         toggle   : (e) => toggleVisibility(body, e),

@@ -106,7 +106,7 @@ body > main {
     padding: var(--spacing-default);
 }
 
-body[data-layout="expanded-sidebar"] > aside {
+body[data-layout="sidebar-expanded"] > aside {
     grid-area: left / main;
     width: 100%;
 }
@@ -115,7 +115,7 @@ body[data-layout="full"] > aside {
     display: none;
 }
 
-body[data-layout="expanded-sidebar"] > main {
+body[data-layout="sidebar-expanded"] > main {
     display: none;
 }
 
@@ -283,7 +283,7 @@ button[data-action="expand"] span {
     pointer-events: none;
 }
 
-[data-layout="expanded-sidebar"] button[data-action="expand"] span {
+[data-layout="sidebar-expanded"] button[data-action="expand"] span {
     transform: rotate(0);
 }
 
