@@ -19,8 +19,9 @@ import { toss, isRequired } from '../utility/tools.js';
 
 // -- Types --------------------------------------------------------------------
 
-/** @typedef {(Event) => void} Trigger */
+/** @typedef {(Event) => void} Trigger */ // Rename to AppEvent?
 /** @typedef {{ [key in Action]: Trigger }} Triggers */
+/** @typedef {keyof routes} Path */
 /** @typedef {typeof generators[number]} Generator */
 
 /**
@@ -50,6 +51,18 @@ export const generators = Object.freeze(/** @type {const} */ ([
     'items',
     'names',
 ]));
+
+export const routes = Object.freeze(/** @type {const} */ ({
+    '/'      : 'dungeon',
+    '/items' : 'items',
+    '/names' : 'names',
+    '/rooms' : 'rooms',
+}));
+
+const routeLookup = Object.freeze(Object.entries(routes).reduce((lookup, [ route, generator ]) => {
+    lookup[generator] = route;
+    return lookup;
+}, {}));
 
 // -- Private Functions --------------------------------------------------------
 
@@ -202,17 +215,24 @@ function onGenerate({ body, content, knobs, nav }) {
  * @param {Pick<Sections, "body" | "content" | "knobs" | "nav">} sections
  * @param {string} homeContent
  * @param {Event} e
+ * @param {(string) => void} [updatePath = () => {}]
  */
-function onNavigate({ body, content, knobs, nav }, homeContent, e) {
+function onNavigate({ body, content, knobs, nav }, homeContent, e, updatePath = () => {}) {
     let { target } = getDataset(e.target);
     let generator = /** @type {Generator} */ (target);
 
+    // TODO tests
+    let route = routeLookup[generator];
+    isRequired(route, `Invalid target "${generator}" in onNavigate()`);
+
+    // Update Nav
     setActiveNavItem(nav, generator);
 
-    let isExpanded = isSidebarExpanded(body);
+    // Update URL
+    updatePath(route);
 
-    knobs.innerHTML   = getKnobPanel(generator, { isExpanded });
-    content.innerHTML = homeContent;
+    // Render it
+    renderApp({ body, content, knobs }, homeContent, generator);
 }
 
 /**
@@ -293,6 +313,22 @@ function toggleVisibility(container, e) {
     targetEl.hidden = !targetEl.hidden;
 }
 
+/**
+ * Renders the given generator.
+ *
+ * @private
+ *
+ * @param {Pick<Sections, "body" | "content" | "knobs">} sections
+ * @param {string} homeContent
+ * @param {Generator} generator
+ */
+function renderApp({ body, content, knobs }, homeContent, generator) {
+    let isExpanded = isSidebarExpanded(body);
+
+    knobs.innerHTML   = getKnobPanel(generator, { isExpanded });
+    content.innerHTML = homeContent;
+}
+
 export {
     getDataset       as testGetDataset,
     getGenerator     as testGetGenerator,
@@ -328,21 +364,36 @@ export function attachClickDelegate(docBody, triggers) {
 }
 
 /**
+ * Returns the active generator based on the route, or 404.
+ *
+ * TODO tests
+ *
+ * @param {string} route
+ *
+ * @returns {Generator | 404}
+ */
+export function getActiveGenerator(route) {
+    return routes[route] || 404;
+}
+
+/**
  * Returns an object of action triggers.
  *
  * @param {Pick<Sections, "body" | "content" | "knobs" | "nav">} sections
  * @param {string} homeContent
+ * @param {(string) => void} updatePath
  *
- * @returns {Triggers}
+ * @returns {Triggers & { render: (generator) => void}}
  */
-export function getTriggers(sections, homeContent) {
+export function getTriggers(sections, homeContent, updatePath) {
     let { body, knobs, nav } = sections;
 
     return {
         accordion: (e) => toggleAccordion(body, e),
         expand   : ( ) => toggleExpand({ body, knobs, nav }),
         generate : ( ) => onGenerate(sections),
-        navigate : (e) => onNavigate(sections, homeContent, e),
+        navigate : (e) => onNavigate(sections, homeContent, e, updatePath),
+        render   : (g) => renderApp(sections, homeContent, g),
         toggle   : (e) => toggleVisibility(body, e),
     };
 }
