@@ -66,10 +66,7 @@ const routeLookup = Object.freeze(Object.entries(routes).reduce((lookup, [ route
     return lookup;
 }, {}));
 
-/** @type {Set<Extract<Page, "error" | 404>>} */
-const errorPages = new Set([ 'error', 404 ]);
-
-// -- Private Functions --------------------------------------------------------
+// -- Private Generator Functions ----------------------------------------------
 
 /**
  * Generates and formats output for the dungeon generator.
@@ -124,6 +121,8 @@ function roomGenerator(config) {
     return formatRooms(generateRooms(config));
 }
 
+// -- Private Functions --------------------------------------------------------
+
 /**
  * Returns a generator function.
  *
@@ -165,9 +164,11 @@ function getGenerator(generator) {
 const getDataset = (target) => target instanceof HTMLElement ? target.dataset : {};
 
 /**
- * TODO tests
+ * Returns an error object containing title & message strings.
  *
- * @param {Page} page
+ * @private
+ *
+ * @param {Page} [page]
  *
  * @returns {{ title: string; message: string }}
  */
@@ -377,6 +378,7 @@ function renderApp({ body, content, knobs, nav }, page) {
 
 export {
     getDataset       as testGetDataset,
+    getErrorMessage  as testGetErrorMessage,
     getGenerator     as testGetGenerator,
     getTrigger       as testGetTrigger,
     onGenerate       as testOnGenerate,

@@ -10,6 +10,7 @@ import {
 
     // Private Functions
     testGetDataset       as getDataset,
+    testGetErrorMessage  as getErrorMessage,
     testGetTrigger       as getTrigger,
     testOnGenerate       as onGenerate,
     testOnNavigate       as onNavigate,
@@ -49,24 +50,6 @@ const navHTML  = getNav('items');
 export default ({ assert, describe, it }) => {
 
     // -- Private Functions ----------------------------------------------------
-
-    describe('getDataset()', () => {
-        describe('given an HTML element target', () => {
-            it('returns the element\'s data attributes', () => {
-                const divEl = document.createElement('div');
-
-                divEl.dataset.type = 'blackKnight';
-
-                assert(getDataset(divEl)).equalsObject({ type: 'blackKnight' });
-            });
-        });
-
-        describe('given a target that is not an HTML element', () => {
-            it('returns an empty object', () => {
-                assert(getDataset(null)).equalsObject({});
-            });
-        });
-    });
 
     describe('getGenerator()', () => {
         /** @type {ItemConfig} itemSettings */
@@ -158,6 +141,44 @@ export default ({ assert, describe, it }) => {
         });
     });
 
+    describe('getDataset()', () => {
+        describe('given an HTML element target', () => {
+            it('returns the element\'s data attributes', () => {
+                const divEl = document.createElement('div');
+
+                divEl.dataset.type = 'blackKnight';
+
+                assert(getDataset(divEl)).equalsObject({ type: 'blackKnight' });
+            });
+        });
+
+        describe('given a target that is not an HTML element', () => {
+            it('returns an empty object', () => {
+                assert(getDataset(null)).equalsObject({});
+            });
+        });
+    });
+
+    describe('getErrorMessage()', () => {
+        it('returns an error object', () => {
+            const error = getErrorMessage();
+
+            assert(error).isObject();
+            error && assert(error.title).isString();
+            error && assert(error.message).isString();
+        });
+
+        describe('given a 4004 page', () => {
+            it('returns a 404 error', () => {
+                const error = getErrorMessage(404);
+
+                assert(error).isObject();
+                error && assert(error.title).stringIncludes('404');
+                error && assert(error.message).isString();
+            });
+        });
+    });
+
     describe('getTrigger()', () => {
         describe('given an action that does not exist on the given triggers', () => {
             it('throws', () => {
@@ -185,25 +206,40 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('onGenerate()', () => {
-        // TODO flaky test, items can be zero
-        // it('generates content', () => {
-        //     const contentEl = document.createElement('div');
+        const bodyEl    = document.createElement('div');
+        const contentEl = document.createElement('div');
+        const knobsEl   = document.createElement('form');
+        const navEl     = document.createElement('nav');
 
-        //     const knobsEl = document.createElement('form');
-        //     knobsEl.innerHTML = knobHTML;
+        knobsEl.innerHTML = knobHTML;
 
-        //     const navEl = document.createElement('nav');
-        //     navEl.innerHTML = navHTML;
+        const sections = {
+            body   : bodyEl,
+            content: contentEl,
+            knobs  : knobsEl,
+            nav    : navEl,
+        };
 
-        //     onGenerate({
-        //         content: contentEl,
-        //         knobs  : knobsEl,
-        //         nav    : navEl,
-        //     });
+        it('generates content for the current route', () => {
+            onGenerate(sections, () => '/items');
 
-        //     assert(/<h3>Items \([0-9]+\)<\/h3>/.test(contentEl.innerHTML)).isTrue();
-        //     assert(/<ul(.+?)>(.+?)<\/ul>/.test(contentEl.innerHTML)).isTrue();
-        // });
+            const title = contentEl.querySelector('h2');
+
+            assert(Boolean(contentEl.querySelector('article'))).isTrue();
+            assert(Boolean(title)).isTrue();
+            title && assert(title.textContent).stringIncludes('Items');
+        });
+
+        describe('when the active page is not a generator', () => {
+            it('renders an error page', () => {
+                onGenerate(sections, () => '/nothing-to-see-here');
+
+                const title = contentEl.querySelector('h2');
+
+                assert(Boolean(title)).isTrue();
+                title && assert(title.textContent).equals('Oh no!');
+            });
+        });
     });
 
     describe('onNavigate()', () => {
