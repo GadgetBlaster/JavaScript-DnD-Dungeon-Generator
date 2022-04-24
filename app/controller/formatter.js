@@ -26,6 +26,10 @@ import {
 /** @typedef {import('../item/generate.js').ItemSet} ItemSet */
 /** @typedef {import('../room/generate.js').Room} Room */
 
+// -- Const --------------------------------------------------------------------
+
+const maxRoomColumns = 3;
+
 // -- Private Functions --------------------------------------------------------
 
 /**
@@ -201,7 +205,9 @@ function formatRoomGrid(rooms, doors = {}) {
     let formattedRooms = rooms.map((room) =>
         formatRoom(room, doors[room.roomNumber])).join('');
 
-    return section(formattedRooms, { 'data-grid': 3 });
+    let columns = Math.min(maxRoomColumns, rooms.length); // TODO tests
+
+    return section(formattedRooms, { 'data-grid': columns });
 }
 
 export {
