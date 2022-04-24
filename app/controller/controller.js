@@ -180,6 +180,7 @@ function getErrorMessage(page) {
         };
     }
 
+    // TODO try/catch for errors on generate and render this page on error
     // TODO log errors?
     return {
         title: 'Oh no!',
@@ -385,16 +386,17 @@ function toggleVisibility(container, e) {
 }
 
 export {
-    getDataset       as testGetDataset,
-    getErrorMessage  as testGetErrorMessage,
-    getGenerator     as testGetGenerator,
-    getTrigger       as testGetTrigger,
-    onGenerate       as testOnGenerate,
-    onNavigate       as testOnNavigate,
-    renderApp        as testRenderApp,
-    toggleAccordion  as testToggleAccordion,
-    toggleExpand     as testToggleExpand,
-    toggleVisibility as testToggleVisibility,
+    getDataset        as testGetDataset,
+    getErrorMessage   as testGetErrorMessage,
+    getGenerator      as testGetGenerator,
+    getTrigger        as testGetTrigger,
+    isSidebarExpanded as testIsSidebarExpanded,
+    onGenerate        as testOnGenerate,
+    onNavigate        as testOnNavigate,
+    renderApp         as testRenderApp,
+    toggleAccordion   as testToggleAccordion,
+    toggleExpand      as testToggleExpand,
+    toggleVisibility  as testToggleVisibility,
 };
 
 // -- Public Functions ---------------------------------------------------------
@@ -437,7 +439,7 @@ export function getActiveGenerator(route) {
  *
  * @param {Sections} sections
  *
- * @returns {(generator: Page) => void}
+ * @returns {(page: Page) => void}
  */
 export const getRender = (sections) => (generator) => renderApp(sections, generator);
 

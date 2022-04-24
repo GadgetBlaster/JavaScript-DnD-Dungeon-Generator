@@ -9,19 +9,21 @@ import {
     testGetGenerator as getGenerator,
 
     // Private Functions
-    testGetDataset       as getDataset,
-    testGetErrorMessage  as getErrorMessage,
-    testGetTrigger       as getTrigger,
-    testOnGenerate       as onGenerate,
-    testOnNavigate       as onNavigate,
-    testRenderApp        as renderApp,
-    testToggleAccordion  as toggleAccordion,
-    testToggleExpand     as toggleExpand,
-    testToggleVisibility as toggleVisibility,
+    testGetDataset        as getDataset,
+    testGetErrorMessage   as getErrorMessage,
+    testGetTrigger        as getTrigger,
+    testIsSidebarExpanded as isSidebarExpanded,
+    testOnGenerate        as onGenerate,
+    testOnNavigate        as onNavigate,
+    testRenderApp         as renderApp,
+    testToggleAccordion   as toggleAccordion,
+    testToggleExpand      as toggleExpand,
+    testToggleVisibility  as toggleVisibility,
 
     // Public Functions
     attachClickDelegate,
     getActiveGenerator,
+    getRender,
     getTriggers,
 } from '../controller.js';
 
@@ -114,17 +116,18 @@ export default ({ assert, describe, it }) => {
         describe('dungeon generator', () => {
             it('returns a generated dungeon', () => {
                 const dungeonGen = getGenerator('dungeon');
-                const result     = dungeonGen({
+                const body       = parseHtml(dungeonGen({
                     ...itemSettings,
                     ...roomSettingsBase,
                     dungeonComplexity : 2,
                     dungeonConnections: 0,
                     dungeonMaps       : 0,
                     dungeonTraps      : 0,
-                });
+                }));
 
-                // TODO
-                assert(/<svg(.+?)>(.+?)<\/svg>/.test(result)).isTrue();
+                assert(Boolean(body.querySelector('svg'))).isTrue();
+                assert(body.querySelector('article').querySelector('h2').textContent)
+                    .stringIncludes('Room 1');
             });
         });
 
@@ -228,6 +231,24 @@ export default ({ assert, describe, it }) => {
                     const trigger = getTrigger(triggers, action);
                     assert(trigger()).equals(expectation);
                 });
+            });
+        });
+    });
+
+    describe('isSidebarExpanded()', () => {
+        const body = document.createElement('div');
+
+        describe('when the sidebar is not expanded()', () => {
+            it('returns true', () => {
+                body.dataset.layout = 'default';
+                assert(isSidebarExpanded(body)).isFalse();
+            });
+        });
+
+        describe('when the sidebar is expanded()', () => {
+            it('returns true', () => {
+                body.dataset.layout = 'sidebar-expanded';
+                assert(isSidebarExpanded(body)).isTrue();
             });
         });
     });
@@ -616,6 +637,20 @@ export default ({ assert, describe, it }) => {
         });
     });
 
+    describe('getRender()', () => {
+        const sections = getMockSections();
+        const { content, knobs } = sections;
+
+        it('returns a render function bound to the given sections', () => {
+            const render = getRender(sections);
+
+            render('items');
+
+            assert(content.textContent).equals('Ready!');
+            assert(Boolean(knobs.querySelector('button[data-action="generate"]'))).isTrue();
+        });
+    });
+
     describe('getTriggers()', () => {
         const sections = getMockSections();
         const { body, content, knobs, nav } = sections;
@@ -629,7 +664,7 @@ export default ({ assert, describe, it }) => {
         const updatePath = (path) => { updatePathValue = path; };
         const getPathname = () => '/items';
 
-        const triggers = getTriggers(sections, updatePath, getPathname); // TODO test updatePath param
+        const triggers = getTriggers(sections, updatePath, getPathname);
 
         it('returns an object containing all application triggers', () => {
             assert(triggers.accordion).isFunction();
@@ -654,7 +689,13 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('expand', () => {
-            // TODO
+            it('toggles the layout state', () => {
+                assert(body).hasAttributes({ 'data-layout': 'default' });
+
+                triggers.expand();
+
+                assert(body).hasAttributes({ 'data-layout': 'sidebar-expanded' });
+            });
         });
 
         describe('generate', () => {
