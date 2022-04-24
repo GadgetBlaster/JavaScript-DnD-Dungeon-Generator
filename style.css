@@ -111,6 +111,10 @@ body[data-layout="expanded-sidebar"] > aside {
     width: 100%;
 }
 
+body[data-layout="full"] > aside {
+    display: none;
+}
+
 body[data-layout="expanded-sidebar"] > main {
     display: none;
 }

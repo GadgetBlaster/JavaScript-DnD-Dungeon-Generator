@@ -359,9 +359,13 @@ function toggleVisibility(container, e) {
 function renderApp({ body, content, knobs, nav }, page) {
     if (!page || page == 404 || page == 'error') {
         let { title, message } = getErrorMessage(page);
+
+        body.dataset.layout = 'full';
         content.innerHTML = formatError(title, message);
         return;
     }
+
+    body.dataset.layout = 'default';
 
     setActiveNavItem(nav, page);
 
