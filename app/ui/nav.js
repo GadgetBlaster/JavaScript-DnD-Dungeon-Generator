@@ -47,7 +47,7 @@ export function getActiveNavItem(nav) {
 /**
  * Returns the main navigation as an HTML element string.
  *
- * @param {Generator} activeGenerator
+ * @param {Generator | 404} activeGenerator
  *
  * @returns {string}
  */

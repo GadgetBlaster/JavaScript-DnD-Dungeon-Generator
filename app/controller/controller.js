@@ -43,6 +43,8 @@ import { toss, isRequired } from '../utility/tools.js';
  * } Action
  */
 
+/** @typedef {Generator | 404} Page */
+
 // -- Config -------------------------------------------------------------------
 
 export const generators = Object.freeze(/** @type {const} */ ([
@@ -225,14 +227,11 @@ function onNavigate({ body, content, knobs, nav }, homeContent, e, updatePath = 
     let route = routeLookup[generator];
     isRequired(route, `Invalid target "${generator}" in onNavigate()`);
 
-    // Update Nav
-    setActiveNavItem(nav, generator);
-
     // Update URL
     updatePath(route);
 
     // Render it
-    renderApp({ body, content, knobs }, homeContent, generator);
+    renderApp({ body, content, knobs, nav }, homeContent, generator);
 }
 
 /**
@@ -318,14 +317,21 @@ function toggleVisibility(container, e) {
  *
  * @private
  *
- * @param {Pick<Sections, "body" | "content" | "knobs">} sections
+ * @param {Pick<Sections, "body" | "content" | "knobs" | "nav">} sections
  * @param {string} homeContent
- * @param {Generator} generator
+ * @param {Generator | 404} page
  */
-function renderApp({ body, content, knobs }, homeContent, generator) {
+function renderApp({ body, content, knobs, nav }, homeContent, page) {
+    if (page === 404) {
+        content.innerHTML = '404: These are not the mischievous kobolds you are looking for.';
+        return;
+    }
+
+    setActiveNavItem(nav, page);
+
     let isExpanded = isSidebarExpanded(body);
 
-    knobs.innerHTML   = getKnobPanel(generator, { isExpanded });
+    knobs.innerHTML   = getKnobPanel(page, { isExpanded });
     content.innerHTML = homeContent;
 }
 
@@ -377,13 +383,23 @@ export function getActiveGenerator(route) {
 }
 
 /**
+ * Returns the app's render function.
+ *
+ * @param {Pick<Sections, "body" | "content" | "knobs" | "nav">} sections
+ * @param {string} homeContent
+ *
+ * @returns {(generator: Page) => void}
+ */
+export const getRender = (sections, homeContent) => (generator) => renderApp(sections, homeContent, generator);
+
+/**
  * Returns an object of action triggers.
  *
  * @param {Pick<Sections, "body" | "content" | "knobs" | "nav">} sections
  * @param {string} homeContent
  * @param {(string) => void} updatePath
  *
- * @returns {Triggers & { render: (generator) => void}}
+ * @returns {Triggers & }
  */
 export function getTriggers(sections, homeContent, updatePath) {
     let { body, knobs, nav } = sections;
@@ -393,7 +409,6 @@ export function getTriggers(sections, homeContent, updatePath) {
         expand   : ( ) => toggleExpand({ body, knobs, nav }),
         generate : ( ) => onGenerate(sections),
         navigate : (e) => onNavigate(sections, homeContent, e, updatePath),
-        render   : (g) => renderApp(sections, homeContent, g),
         toggle   : (e) => toggleVisibility(body, e),
     };
 }

@@ -8,6 +8,7 @@ import suite from './unit/suite.js';
 import {
     attachClickDelegate,
     getActiveGenerator,
+    getRender,
     getTriggers,
     routes,
 } from './controller/controller.js';
@@ -49,6 +50,7 @@ const footerContent = sections.footer.innerHTML;
 const triggers        = getTriggers(sections, homeContent, updatePath);
 const activeGenerator = getActiveGenerator(initialPath);
 const testSummary     = getSummaryLink(run(unitState(), suite));
+const render          = getRender(sections, homeContent);
 
 attachClickDelegate(sections.body, triggers);
 
@@ -67,20 +69,12 @@ function updatePath(path) {
 }
 
 window.addEventListener('popstate', (event) => {
-    event.state.path && triggers.render(routes[event.state.path]);
+    event.state && event.state.path && render(routes[event.state.path]);
 });
 
 // -- Initial Render -----------------------------------------------------------
 
-// TODO move to render content function
+sections.nav.innerHTML    = getNav(activeGenerator);
+sections.footer.innerHTML = testSummary + footerContent;
 
-if (activeGenerator === 404) {
-    sections.content.innerHTML = '404';
-} else {
-
-    sections.nav.innerHTML    = getNav(activeGenerator);
-    sections.knobs.innerHTML  = getKnobPanel(activeGenerator);
-    sections.footer.innerHTML = testSummary + footerContent;
-
-    setActiveNavItem(sections.nav, activeGenerator);
-}
+render(activeGenerator);
