@@ -43,7 +43,7 @@ import { toss, isRequired } from '../utility/tools.js';
  * } Action
  */
 
-/** @typedef {Generator | 404 | 'error'} Page */
+/** @typedef {Generator | "error" | 404} Page */
 
 // -- Config -------------------------------------------------------------------
 
@@ -65,6 +65,9 @@ const routeLookup = Object.freeze(Object.entries(routes).reduce((lookup, [ route
     lookup[generator] = route;
     return lookup;
 }, {}));
+
+/** @type {Set<Extract<Page, "error" | 404>>} */
+const errorPages = new Set([ 'error', 404 ]);
 
 // -- Private Functions --------------------------------------------------------
 
@@ -160,6 +163,29 @@ function getGenerator(generator) {
  * @returns {{ [attribute: string]: string }}
  */
 const getDataset = (target) => target instanceof HTMLElement ? target.dataset : {};
+
+/**
+ * TODO tests
+ *
+ * @param {Page} page
+ *
+ * @returns {{ title: string; message: string }}
+ */
+function getErrorMessage(page) {
+    if (page === 404) {
+        return {
+            title: '404',
+            message: 'These are not the mischievous kobolds you are looking for.',
+        };
+    }
+
+    // TODO log errors?
+    return {
+        title: 'Oh no!',
+        message: 'Goblins have infiltrated the castle and hacked into the JavaScript!'
+            + '<br />I need to fix this...',
+    };
+}
 
 /**
  * Returns a trigger function for the given action.
@@ -323,23 +349,17 @@ function toggleVisibility(container, e) {
 /**
  * Renders the given generator.
  *
+ * TODO tests
+ *
  * @private
  *
  * @param {Pick<Sections, "body" | "content" | "knobs" | "nav">} sections
  * @param {Page} page
  */
 function renderApp({ body, content, knobs, nav }, page) {
-    // TODO tests
-    if (!page || page === 'error') {
-        let message = 'Goblins have infiltrated the castle and hacked into the JavaScript!'
-            + '<br />I need to fix this...';
-
-        content.innerHTML = formatError('Oh no!', message);
-        return;
-    }
-
-    if (page === 404) {
-        content.innerHTML = formatError('404', 'These are not the mischievous kobolds you are looking for.');
+    if (!page || page == 404 || page == 'error') {
+        let { title, message } = getErrorMessage(page);
+        content.innerHTML = formatError(title, message);
         return;
     }
 
