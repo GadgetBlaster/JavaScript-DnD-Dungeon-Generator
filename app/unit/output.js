@@ -1,10 +1,10 @@
 // @ts-check
 
+import { capitalizeWords, pluralize } from '../utility/tools.js';
 import { div } from '../ui/block.js';
 import { element } from '../utility/element.js';
 import { link } from '../ui/link.js';
 import { paragraph, span, title } from '../ui/typography.js';
-import { pluralize } from '../utility/tools.js';
 import run from './run.js';
 
 // -- Types Imports ------------------------------------------------------------
@@ -336,7 +336,7 @@ export function getSummaryLink(summary) {
         return `${checkedForText} ${assertionsText}... ${link(issuesText, unitUrl, { 'data-error': true })}!`;
     }
 
-    return `${checkedForText} ${link(assertionsText, unitUrl)}`;
+    return `${checkedForText} ${link(capitalizeWords(assertionsText), unitUrl)}`;
 }
 
 /**

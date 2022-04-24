@@ -2,18 +2,19 @@
 
 import {
     capitalize,
+    capitalizeWords,
     chunk,
     createRangeLookup,
     indefiniteArticle,
     isEven,
     isOdd,
     isRequired,
-    listSentence,
     pluralize,
+    sentenceList,
     toDash,
     toss,
     toWords,
- } from '../tools.js';
+} from '../tools.js';
 
 /**
  * @param {import('../../unit/state.js').Utility} utility
@@ -32,6 +33,21 @@ export default ({ assert, describe, it }) => {
         });
     });
 
+    describe('capitalizeWords()', () => {
+        describe('given a string with a single word', () => {
+            it('capitalizes the first letter of the word', () => {
+                assert(capitalizeWords('bat')).equals('Bat');
+            });
+        });
+
+        describe('given a string with multiple words', () => {
+            it('capitalizes the first letter of each word', () => {
+                assert(capitalizeWords('lazy giraffes casting spells'))
+                    .equals('Lazy Giraffes Casting Spells');
+            });
+        });
+    });
+
     describe('indefiniteArticle()', () => {
         describe('given a word that does not start with a vowel', () => {
             it('returns "a"', () => {
@@ -44,41 +60,6 @@ export default ({ assert, describe, it }) => {
                 it('returns "an"', () => {
                     assert(indefiniteArticle(word)).equals('an');
                 });
-            });
-        });
-    });
-
-    describe('listSentence()', () => {
-        describe('given no items', () => {
-            it('returns undefined', () => {
-                assert(listSentence([])).isUndefined();
-            });
-        });
-
-        describe('given an array of one strings', () => {
-            it('returns the string', () => {
-                assert(listSentence([ 'primus' ])).equals('primus');
-            });
-        });
-
-        describe('given an array of two strings', () => {
-            it('returns the strings joined by "and"', () => {
-                assert(listSentence([ 'hummingbirds', 'jellyfish' ]))
-                    .equals('hummingbirds and jellyfish');
-            });
-        });
-
-        describe('given an array of three strings', () => {
-            it('returns the strings joined by commas with "and" between the last two', () => {
-                assert(listSentence([ 'hammers', 'polar bears', 'walruses' ]))
-                    .equals('hammers, polar bears, and walruses');
-            });
-        });
-
-        describe('given an array of four strings', () => {
-            it('returns the strings joined by commas with "and" between the last two', () => {
-                assert(listSentence([ 'one', 'two', 'three', 'four' ]))
-                    .equals('one, two, three, and four');
             });
         });
     });
@@ -111,6 +92,41 @@ export default ({ assert, describe, it }) => {
         describe('given a count of 2 and a suffix of `es`', () => {
             it('pluralizes the string', () => {
                 assert(pluralize(2, 'walrus', 'es')).equals('walruses');
+            });
+        });
+    });
+
+    describe('sentenceList()', () => {
+        describe('given no items', () => {
+            it('returns undefined', () => {
+                assert(sentenceList([])).isUndefined();
+            });
+        });
+
+        describe('given an array of one strings', () => {
+            it('returns the string', () => {
+                assert(sentenceList([ 'primus' ])).equals('primus');
+            });
+        });
+
+        describe('given an array of two strings', () => {
+            it('returns the strings joined by "and"', () => {
+                assert(sentenceList([ 'hummingbirds', 'jellyfish' ]))
+                    .equals('hummingbirds and jellyfish');
+            });
+        });
+
+        describe('given an array of three strings', () => {
+            it('returns the strings joined by commas with "and" between the last two', () => {
+                assert(sentenceList([ 'hammers', 'polar bears', 'walruses' ]))
+                    .equals('hammers, polar bears, and walruses');
+            });
+        });
+
+        describe('given an array of four strings', () => {
+            it('returns the strings joined by commas with "and" between the last two', () => {
+                assert(sentenceList([ 'one', 'two', 'three', 'four' ]))
+                    .equals('one, two, three, and four');
             });
         });
     });

@@ -1,6 +1,6 @@
 // @ts-check
 
-import { capitalize, listSentence, toss } from '../utility/tools.js';
+import { capitalize, sentenceList, toss } from '../utility/tools.js';
 import { roll, rollPercentile, rollArrayItem } from '../utility/roll.js';
 
 // -- Type Imports -------------------------------------------------------------
@@ -117,5 +117,5 @@ export function getRoomVegetationDescription(config, { count = roll(1, maxVegeta
 
     let roomVegetation = [ ...types ].map((type) => getDescription(type));
 
-    return capitalize(listSentence(roomVegetation));
+    return capitalize(sentenceList(roomVegetation));
 }

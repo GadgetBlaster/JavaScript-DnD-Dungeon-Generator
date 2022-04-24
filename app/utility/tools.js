@@ -7,7 +7,7 @@
 // -- Typography ---------------------------------------------------------------
 
 /**
- * Capitalize string
+ * Capitalizes a string.
  *
  * @param {string} text
  *
@@ -16,7 +16,16 @@
 export const capitalize = (text) => text.charAt(0).toUpperCase() + text.slice(1);
 
 /**
- * Indefinite article
+ * Capitalizes each word in a string.
+ *
+ * @param {string} words
+ *
+ * @returns {string}
+ */
+export const capitalizeWords = (words) => words.split(' ').map((word) => capitalize(word)).join(' ');
+
+/**
+ * Returns the correct indefinite article for the given word.
  *
  * @param {string} word
  *
@@ -31,13 +40,27 @@ export function indefiniteArticle(word) {
 }
 
 /**
- * List sentence
+ * Pluralize
+ *
+ * @param {number} count
+ * @param {string} string
+ * @param {string} [suffix = 's']
+ *
+ * @returns {string}
+ */
+export function pluralize(count, string, suffix = 's') {
+    return `${string}${count !== 1 ? suffix : ''}`;
+}
+
+/**
+ * Returns a comma separated list, joining the last two words with "and", for
+ * use in a sentence.
  *
  * @param {string[]} parts
  *
  * @returns {string}
  */
-export function listSentence(parts) {
+export function sentenceList(parts) {
     if (parts.length === 0) {
         return;
     }
@@ -51,19 +74,6 @@ export function listSentence(parts) {
     let comma = parts.length > 1 ? ',' : '';
 
     return `${parts.join(', ')}${comma} and ${last}`;
-}
-
-/**
- * Pluralize
- *
- * @param {number} count
- * @param {string} string
- * @param {string} [suffix = 's']
- *
- * @returns {string}
- */
-export function pluralize(count, string, suffix = 's') {
-    return `${string}${count !== 1 ? suffix : ''}`;
 }
 
 /**
@@ -129,7 +139,8 @@ export const chunk = (array, size) => array.reduce((newArray, item, index) => {
 // -- Object -------------------------------------------------------------------
 
 /**
- * Returns an object containing of `NumberRange`s for each provided key.
+ * Returns an object containing min & max number ranges for each provided key
+ * & min value pair.
  *
  * @param {{ [key: string]: number }} minimums
  *     An object of minimums values.
