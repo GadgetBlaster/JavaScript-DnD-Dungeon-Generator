@@ -409,6 +409,14 @@ h3:first-child {
     margin-top: 0;
 }
 
+h2[data-title="page"] {
+    font-family: var(--font-logo);
+    font-size: 60px;
+    line-height: 1em;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+}
+
 p {
     line-height: var(--leading-loose);
     margin: var(--spacing-medium) 0;
@@ -519,6 +527,10 @@ ul[data-flex] li span {
 
 [data-spacing*="y-medium"] {
     margin-top: var(--spacing-medium);
+    margin-bottom: var(--spacing-medium);
+}
+
+[data-spacing*="b-medium"] {
     margin-bottom: var(--spacing-medium);
 }
 

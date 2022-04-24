@@ -11,8 +11,9 @@ import {
     // Private Functions
     testGetDataset       as getDataset,
     testGetTrigger       as getTrigger,
-    testOnGenerate       as onGenerate, // TODO
+    testOnGenerate       as onGenerate,
     testOnNavigate       as onNavigate,
+    testRenderApp        as renderApp,
     testToggleAccordion  as toggleAccordion,
     testToggleVisibility as toggleVisibility,
 
@@ -183,39 +184,6 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('onNavigate()', () => {
-        describe('given an event with the target generator of "rooms"', () => {
-            it('updates the content, knobs, and nav elements', () => {
-                const bodyEl    = document.createElement('div');
-                const contentEl = document.createElement('div');
-                const knobsEl   = document.createElement('form');
-
-                const navEl = document.createElement('nav');
-                navEl.innerHTML = navHTML;
-
-                /** @type {HTMLElement} */
-                const dungeonButton = navEl.querySelector('[data-target="dungeon"]');
-
-                /** @type {HTMLElement} */
-                const roomsButton = navEl.querySelector('[data-target="rooms"]');
-
-                const sections = {
-                    body   : bodyEl,
-                    content: contentEl,
-                    knobs  : knobsEl,
-                    nav    : navEl,
-                };
-
-                onNavigate(sections, getMockClickEvent(roomsButton));
-
-                // assert(contentEl.innerHTML).equals('Fake home content'); // TODO
-                assert(knobsEl.innerHTML).stringIncludes('Generate');
-                assert(roomsButton.dataset.active).equals('true');
-                assert(dungeonButton.dataset.active).isUndefined();
-            });
-        });
-    });
-
     describe('onGenerate()', () => {
         // TODO flaky test, items can be zero
         // it('generates content', () => {
@@ -236,6 +204,83 @@ export default ({ assert, describe, it }) => {
         //     assert(/<h3>Items \([0-9]+\)<\/h3>/.test(contentEl.innerHTML)).isTrue();
         //     assert(/<ul(.+?)>(.+?)<\/ul>/.test(contentEl.innerHTML)).isTrue();
         // });
+    });
+
+    describe('onNavigate()', () => {
+        describe('given an event with the target generator of "rooms"', () => {
+            it('updates the content, knobs, and nav elements and calls updatePath() with the new route', () => {
+                const bodyEl    = document.createElement('div');
+                const contentEl = document.createElement('div');
+                const knobsEl   = document.createElement('form');
+
+                const navEl = document.createElement('nav');
+                navEl.innerHTML = navHTML;
+
+                /** @type {HTMLElement} */
+                const dungeonButton = navEl.querySelector('[data-target="dungeon"]');
+
+                /** @type {HTMLElement} */
+                const roomsButton = navEl.querySelector('[data-target="rooms"]');
+
+                const sections = {
+                    body   : bodyEl,
+                    content: contentEl,
+                    knobs  : knobsEl,
+                    nav    : navEl,
+                };
+
+                let updatePathValue;
+
+                onNavigate(sections, getMockClickEvent(roomsButton), (route) => {
+                    updatePathValue = route;
+                });
+
+                // Sections
+                assert(contentEl.innerHTML).stringIncludes('Ready');
+                assert(knobsEl.innerHTML).stringIncludes('Generate');
+
+                // Nav
+                assert(roomsButton.dataset.active).equals('true');
+                assert(dungeonButton.dataset.active).isUndefined();
+
+                // Router
+                assert(updatePathValue).equals('/rooms');
+            });
+        });
+    });
+
+    describe('renderApp()', () => {
+        const bodyEl    = document.createElement('div');
+        const contentEl = document.createElement('div');
+        const knobsEl   = document.createElement('form');
+
+        const navEl = document.createElement('nav');
+        navEl.innerHTML = navHTML;
+
+        const sections = {
+            body   : bodyEl,
+            content: contentEl,
+            knobs  : knobsEl,
+            nav    : navEl,
+        };
+
+        it('updates the content, knobs, and nav elements', () => {
+            /** @type {HTMLElement} */
+            const dungeonButton = navEl.querySelector('[data-target="dungeon"]');
+
+            renderApp(sections, 'dungeon');
+
+            assert(contentEl.innerHTML).stringIncludes('Ready');
+            assert(knobsEl.innerHTML).stringIncludes('Generate');
+            assert(dungeonButton.dataset.active).equals('true');
+        });
+
+        describe('when the route 404s', () => {
+            it('updates the content', () => {
+                renderApp(sections, 404);
+                assert(contentEl.innerHTML).stringIncludes('404');
+            });
+        });
     });
 
     describe('toggleAccordion()', () => {

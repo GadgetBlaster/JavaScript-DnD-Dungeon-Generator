@@ -40,18 +40,25 @@ const sections = {
     nav    : document.getElementById('nav'),
 };
 
-const initialPath = window.location.pathname;
-
 // -- Initialization -----------------------------------------------------------
 
-const triggers        = getTriggers(sections, updatePath);
-const activeGenerator = getActiveGenerator(initialPath);
+const triggers        = getTriggers(sections, updatePath, getPathname);
+const activeGenerator = getActiveGenerator(getPathname());
 const testSummary     = getSummaryLink(run(unitState(), suite));
 const render          = getRender(sections);
 
 attachClickDelegate(sections.body, triggers);
 
 // -- Router -------------------------------------------------------------------
+
+/**
+ * Returns the current route
+ *
+ * @returns {string}
+ */
+function getPathname() {
+    return window.location.pathname;
+}
 
 /**
  * Updates the app's URL path.
@@ -74,4 +81,4 @@ window.addEventListener('popstate', (event) => {
 sections.nav.innerHTML    = getNav(activeGenerator);
 sections.footer.innerHTML = getFooter(testSummary);
 
-render(activeGenerator);
+render(activeGenerator || 404);

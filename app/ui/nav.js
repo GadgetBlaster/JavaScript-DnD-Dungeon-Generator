@@ -32,22 +32,9 @@ const getElements = (collection) => [ ...collection ].map((el) =>
 // -- Public Functions ---------------------------------------------------------
 
 /**
- * Gets the active navigation target.
- *
- * @param {HTMLElement} nav
- *
- * @returns {Generator}
- */
-export function getActiveNavItem(nav) {
-    return /** @type {Generator} */ (
-        getElements(nav.children).find((btn) => btn.dataset.active).dataset.target
-    );
-}
-
-/**
  * Returns the main navigation as an HTML element string.
  *
- * @param {Generator | 404} activeGenerator
+ * @param {Generator} [activeGenerator]
  *
  * @returns {string}
  */

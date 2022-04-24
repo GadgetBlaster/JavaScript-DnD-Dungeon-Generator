@@ -7,7 +7,7 @@ import {
     testDisabledGenerators as disabledGenerators,
 
     // Public Functions
-    getActiveNavItem,
+    // getActiveNavItem,
     getNav,
     setActiveNavItem,
 } from '../nav.js';
@@ -19,20 +19,20 @@ export default ({ assert, describe, it }) => {
 
     // -- Public Functions -----------------------------------------------------
 
-    describe('getActiveNavItem()', () => {
-        describe('given a container with three nav buttons', () => {
-            const container = document.createElement('div');
-            container.innerHTML = `
-                <button data-target="grog" data-active="true">Grog</button>
-                <button data-target="nog">Nog</button>
-                <button data-target="frog">Frog</button>
-            `;
+    // describe('getActiveNavItem()', () => {
+    //     describe('given a container with three nav buttons', () => {
+    //         const container = document.createElement('div');
+    //         container.innerHTML = `
+    //             <button data-target="grog" data-active="true">Grog</button>
+    //             <button data-target="nog">Nog</button>
+    //             <button data-target="frog">Frog</button>
+    //         `;
 
-            it('should return the `data-target` value of the active element', () => {
-                assert(getActiveNavItem(container)).equals('grog');
-            });
-        });
-    });
+    //         it('should return the `data-target` value of the active element', () => {
+    //             assert(getActiveNavItem(container)).equals('grog');
+    //         });
+    //     });
+    // });
 
     describe('getNav()', () => {
         const nav  = getNav('dungeon');

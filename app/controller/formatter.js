@@ -231,6 +231,21 @@ export function formatDungeon(dungeon) {
 }
 
 /**
+ * Formats output for an error page.
+ *
+ * TODO tests
+ *
+ * @param {string} errorTitle
+ * @param {string} message
+ *
+ * @returns {string}
+ */
+export function formatError(errorTitle, message) {
+    return title(errorTitle, { 'data-title': 'page', 'data-spacing': 'b-medium' })
+        + title(message, { 'data-align': 'center' });
+}
+
+/**
  * Formats output from the item generator.
  *
  * @param {ItemSet} itemSet

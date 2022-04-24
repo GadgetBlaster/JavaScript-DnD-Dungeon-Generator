@@ -1,12 +1,12 @@
 // @ts-check
 
-import { formatDungeon, formatItems, formatName, formatRooms } from './formatter.js';
+import { formatDungeon, formatError, formatItems, formatName, formatRooms } from './formatter.js';
 import { generateDungeon } from '../dungeon/generate.js';
 import { generateItems } from '../item/generate.js';
 import { generateName } from '../name/generate.js';
 import { generateRooms } from '../room/generate.js';
-import { getActiveNavItem, setActiveNavItem } from '../ui/nav.js';
 import { getFormData, getKnobPanel } from '../ui/form.js';
+import { setActiveNavItem } from '../ui/nav.js';
 import { toss, isRequired } from '../utility/tools.js';
 
 // -- Type Imports -------------------------------------------------------------
@@ -43,7 +43,7 @@ import { toss, isRequired } from '../utility/tools.js';
  * } Action
  */
 
-/** @typedef {Generator | 404} Page */
+/** @typedef {Generator | 404 | 'error'} Page */
 
 // -- Config -------------------------------------------------------------------
 
@@ -196,16 +196,25 @@ const isSidebarExpanded = (body) => body.dataset.layout === 'expanded-sidebar';
  * @throws
  *
  * @param {Pick<Sections, "body" | "content" | "knobs" | "nav">} sections
+ * @param {() => string} getPathname
  */
-function onGenerate({ body, content, knobs, nav }) {
-    let config          = getFormData(knobs);
-    let activeGenerator = getActiveNavItem(nav);
-    let generator       = getGenerator(activeGenerator);
+function onGenerate(sections, getPathname) {
+    let { body, content, knobs } = sections;
 
-    content.innerHTML = generator(config);
+    let config          = getFormData(knobs);
+    let activeGenerator = getActiveGenerator(getPathname());
+
+    if (!activeGenerator) {
+        renderApp(sections, 'error');
+        return;
+    }
+
+    let generate = getGenerator(activeGenerator);
+
+    content.innerHTML = generate(config);
 
     if (isSidebarExpanded(body)) {
-        toggleExpand({ body, knobs, nav });
+        toggleExpand({ body, knobs }, getPathname);
     }
 }
 
@@ -216,13 +225,12 @@ function onGenerate({ body, content, knobs, nav }) {
  *
  * @param {Pick<Sections, "body" | "content" | "knobs" | "nav">} sections
  * @param {Event} e
- * @param {(string) => void} [updatePath = () => {}]
+ * @param {(string) => void} updatePath
  */
-function onNavigate({ body, content, knobs, nav }, e, updatePath = () => {}) {
+function onNavigate({ body, content, knobs, nav }, e, updatePath) {
     let { target } = getDataset(e.target);
     let generator = /** @type {Generator} */ (target);
 
-    // TODO tests
     let route = routeLookup[generator];
     isRequired(route, `Invalid target "${generator}" in onNavigate()`);
 
@@ -272,14 +280,15 @@ function toggleAccordion(container, e) {
  *
  * @private
  *
- * @param {Pick<Sections, "body" | "knobs" | "nav">} sections
+ * @param {Pick<Sections, "body" | "knobs">} sections
+ * @param {() => string} getPathname
  */
-function toggleExpand({ body, knobs, nav }) {
+function toggleExpand({ body, knobs }, getPathname) {
     body.dataset.layout = body.dataset.layout === 'expanded-sidebar'
         ? 'default'
         : 'expanded-sidebar';
 
-    let generator = getActiveNavItem(nav);
+    let generator = getActiveGenerator(getPathname());
     let isExpanded = isSidebarExpanded(body);
 
     knobs.innerHTML = getKnobPanel(generator, {
@@ -317,11 +326,20 @@ function toggleVisibility(container, e) {
  * @private
  *
  * @param {Pick<Sections, "body" | "content" | "knobs" | "nav">} sections
- * @param {Generator | 404} page
+ * @param {Page} page
  */
 function renderApp({ body, content, knobs, nav }, page) {
+    // TODO tests
+    if (!page || page === 'error') {
+        let message = 'Goblins have infiltrated the castle and hacked into the JavaScript!'
+            + '<br />I need to fix this...';
+
+        content.innerHTML = formatError('Oh no!', message);
+        return;
+    }
+
     if (page === 404) {
-        content.innerHTML = '404: These are not the mischievous kobolds you are looking for.';
+        content.innerHTML = formatError('404', 'These are not the mischievous kobolds you are looking for.');
         return;
     }
 
@@ -339,6 +357,7 @@ export {
     getTrigger       as testGetTrigger,
     onGenerate       as testOnGenerate,
     onNavigate       as testOnNavigate,
+    renderApp        as testRenderApp,
     toggleAccordion  as testToggleAccordion,
     toggleVisibility as testToggleVisibility,
 };
@@ -368,16 +387,16 @@ export function attachClickDelegate(docBody, triggers) {
 }
 
 /**
- * Returns the active generator based on the route, or 404.
+ * Returns the active generator based on the route, or undefined.
  *
  * TODO tests
  *
  * @param {string} route
  *
- * @returns {Page}
+ * @returns {Generator | undefined}
  */
 export function getActiveGenerator(route) {
-    return routes[route] || 404;
+    return routes[route];
 }
 
 /**
@@ -394,16 +413,17 @@ export const getRender = (sections) => (generator) => renderApp(sections, genera
  *
  * @param {Pick<Sections, "body" | "content" | "knobs" | "nav">} sections
  * @param {(string) => void} updatePath
+ * @param {() => string} getPathname
  *
  * @returns {Triggers}
  */
-export function getTriggers(sections, updatePath) {
-    let { body, knobs, nav } = sections;
+export function getTriggers(sections, updatePath, getPathname) {
+    let { body, knobs } = sections;
 
     return {
         accordion: (e) => toggleAccordion(body, e),
-        expand   : ( ) => toggleExpand({ body, knobs, nav }),
-        generate : ( ) => onGenerate(sections),
+        expand   : ( ) => toggleExpand({ body, knobs }, getPathname),
+        generate : ( ) => onGenerate(sections, getPathname),
         navigate : (e) => onNavigate(sections, e, updatePath),
         toggle   : (e) => toggleVisibility(body, e),
     };
