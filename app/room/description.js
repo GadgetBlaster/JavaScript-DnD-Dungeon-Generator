@@ -3,12 +3,12 @@
 import { capitalize, indefiniteArticle, isRequired, toss, toWords } from '../utility/tools.js';
 import { cellFeet } from '../dungeon/grid.js';
 import { outside } from '../dungeon/map.js';
-import { em, strong, subtitle } from '../ui/typography.js';
+import { strong, subtitle } from '../ui/typography.js';
 import { getEnvironmentDescription } from './environment.js';
 import { indicateRarity } from '../attribute/rarity.js';
 import { list } from '../ui/list.js';
 import { rollArrayItem } from '../utility/roll.js';
-import { appendDoorway, lockable } from './door.js';
+import { appendDoorway, appendPassage, lockable } from './door.js';
 import { appendRoomTypes, customRoomLabels } from './room.js';
 
 // -- Type Imports -------------------------------------------------------------
@@ -169,7 +169,7 @@ function getDescriptionIntro(config) {
  * @private
  * @throws
  *
- * @param {Pick<Door, "type" | "size" | "locked">} door
+ * @param {Door} door
  *
  * @returns {string}
  */
@@ -178,8 +178,15 @@ function getDoorwayDescription({ type, size, locked }) {
         toss(`Invalid locked setting for non-lockable door type "${type}" in getDoorwayDescription()`);
     }
 
-    let append = appendDoorway.has(type) && 'doorway';
+    let append;
 
+    if (appendDoorway.has(type)) {
+        append = 'doorway';
+    } else if (appendPassage.has(type)) {
+        append = 'passage';
+    }
+
+    // TODO busted
     let sizeDesc;
 
     if (size === 2) {
@@ -374,27 +381,27 @@ export {
  * @param {Door[]} roomDoors
  * @param {number} roomNumber
  *
- * @returns {?string}
+ * @returns {string[]}
  */
-export const getDoorwayDescriptions = (roomDoors, roomNumber) => {
-    isRequired(roomNumber, 'roomNumber is required in getDoorwayDescriptions()');
+export const getDoorwayDescriptionList = (roomDoors, roomNumber) => {
+    isRequired(roomNumber, 'roomNumber is required in getDoorwayDescriptionList()');
 
-    let doorList = roomDoors.map(({ type, connections, size, locked }) => {
+    // TODO sort by cardinal directions
+    let doors = roomDoors.map(({ type, connections, size, locked }) => {
         if (!connections[roomNumber]) {
-            toss('Invalid roomNumber for door connections in getDoorwayDescriptions()');
+            toss('Invalid roomNumber for door connections in getDoorwayDescriptionList()');
         }
 
         let { direction, to } = connections[roomNumber];
 
-        let desc    = getDoorwayDescription({ type, size, locked });
-        let connect = to === outside ? 'leading out of the dungeon' : `to Room ${to}`;
-        let text    = `${capitalize(direction)} ${connect} (${em(desc)})`;
-        let secret  = type === 'concealed' || type === 'secret';
+        let desc    = getDoorwayDescription({ type, size, locked }); // TODO size is busted
+        let connect = to === outside ? 'leading out of the dungeon' : `to room ${to}`;
+        let text    = `${capitalize(direction)}: ${capitalize(desc)} ${connect}`;
 
-        return secret ? strong(text) : text;
+        return text;
     });
 
-    return subtitle(`Doorways (${roomDoors.length})`) + list(doorList);
+    return doors;
 };
 
 /**

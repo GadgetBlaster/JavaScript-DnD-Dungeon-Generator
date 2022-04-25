@@ -13,7 +13,7 @@ import {
     testGetRoomDoorwayDescription    as getRoomDoorwayDescription,
 
     // Public Functions
-    getDoorwayDescriptions,
+    getDoorwayDescriptionList,
     getKeyDescription,
     getMapDescription,
     getRoomDescription,
@@ -21,16 +21,18 @@ import {
 } from '../description.js';
 
 import { appendRoomTypes } from '../room.js';
+import { capitalize } from '../../utility/tools.js';
 import { cellFeet } from '../../dungeon/grid.js';
-import { outside } from '../../dungeon/map.js';
 import { conditions } from '../../attribute/condition.js';
 import { furnitureQuantities } from '../../item/furnishing.js';
 import { indicateRarity, rarities } from '../../attribute/rarity.js';
 import { lockable, appendDoorway } from '../door.js';
+import { outside } from '../../dungeon/map.js';
 import { quantities } from '../../attribute/quantity.js';
 
 /** @typedef {import('../../controller/knobs.js').ItemConfig} ItemConfig */
 /** @typedef {import('../../dungeon/map').Direction} Direction */
+/** @typedef {import('../../dungeon/map').Door} Door */
 /** @typedef {import('../door.js').DoorType} DoorType */
 /** @typedef {import('../generate').GeneratedRoomConfig} GeneratedRoomConfig */
 
@@ -584,7 +586,7 @@ export default ({ assert, describe, it }) => {
                 },
             ];
 
-            it('separates each description with a comma and the last with `and`', () => {
+            it('separates each description with a comma and the last item with "and"', () => {
                 assert(getRoomDoorwayDescription(config, 1))
                     .stringIncludes(' archway leads south,')
                     .stringIncludes(' passageway leads north,')
@@ -604,92 +606,92 @@ export default ({ assert, describe, it }) => {
 
     // -- Public Functions -----------------------------------------------------
 
-    describe('getDoorwayDescriptions()', () => {
+    describe('getDoorwayDescriptionList()', () => {
+        /** @type {Door} */
+        const door = {
+            connections: {
+                12: { direction: 'south', to: 4 },
+                4 : { direction: 'north', to: 12 },
+            },
+            direction: 'south',
+            locked: false,
+            rectangle: { x: 1, y: 2, width: 3, height: 4 },
+            type: 'archway',
+        };
+
         describe('given no room number', () => {
             it('throws', () => {
                 // @ts-expect-error
-                assert(() => getDoorwayDescriptions([]))
-                    .throws('roomNumber is required in getDoorwayDescriptions()');
+                assert(() => getDoorwayDescriptionList([]))
+                    .throws('roomNumber is required in getDoorwayDescriptionList()');
             });
         });
 
         describe('given a door config with an invalid connection', () => {
             it('throws', () => {
-                const config = [{
-                    type: 'archway',
-                    connections: {
-                        12: { direction: 'south', to: 4 },
-                        4 : { direction: 'north', to: 12 },
-                    },
-                }];
-
-                // @ts-expect-error
-                assert(() => getDoorwayDescriptions(config, 216))
-                    .throws('Invalid roomNumber for door connections in getDoorwayDescriptions()');
+                assert(() => getDoorwayDescriptionList([ door ], 216))
+                    .throws('Invalid roomNumber for door connections in getDoorwayDescriptionList()');
             });
         });
 
         describe('given two door configs', () => {
-            const config = [
+            /** @type {Door[]} */
+            const doors = [
+                door,
                 {
-                    type: 'archway',
-                    connections: {
-                        12: { direction: 'south', to: 4 },
-                        4 : { direction: 'north', to: 12 },
-                    },
-                },
-                {
-                    type: 'passageway',
+                    ...door,
+                    direction: 'north',
                     connections: {
                         12: { direction: 'north', to: 3 },
-                        3: { direction: 'south', to: 12 },
+                        3 : { direction: 'south', to: 12 },
                     },
                 },
             ];
 
-            const doorwayList = getDoorwayDescriptions(config, 12);
+            const doorwayList = getDoorwayDescriptionList(doors, 12);
 
-            it('includes an html subtitle with the number of doorways in parenthesis', () => {
-                assert(doorwayList).stringIncludes('<h3>Doorways (2)</h3>');
-            });
-
-            it('includes an html list', () => {
-                assert(doorwayList).stringIncludes('<ul><li>').stringIncludes('</li></ul>');
-            });
-
-            it('includes an html list item for each doorway', () => {
-                assert(doorwayList)
-                    .stringIncludes('<li>South to Room 4 (<em>archway</em>)</li>')
-                    .stringIncludes('<li>North to Room 3 (<em>passageway</em>)</li>');
+            it('returns a list of doorway descriptions for each door', () => {
+                assert(doorwayList).isArray();
+                doorwayList && assert(doorwayList.length).equals(2);
+                doorwayList && doorwayList.forEach((desc, i) => {
+                    assert(desc).stringIncludes(capitalize(doors[i].connections[12].direction));
+                });
             });
         });
 
         describe('given a door that connects to the outside', () => {
-            const config = [{
-                type: 'archway',
+            /** @type {Door[]} */
+            const doors = [{
+                ...door,
                 connections: {
                     3: { direction: 'south', to: outside },
                 },
             }];
 
             it('includes "leading out of the dungeon"', () => {
-                assert(getDoorwayDescriptions(config, 3)).stringIncludes('leading out of the dungeon');
+                assert(getDoorwayDescriptionList(doors, 3).pop())
+                    .stringIncludes('leading out of the dungeon');
             });
         });
 
-        describe('given a secret or concealed door', () => {
-            [ 'concealed', 'secret' ].forEach((type) => {
-                const config = [{
-                    type,
+        /** @type {DoorType[]} */
+        const secretDors = [ 'concealed', 'secret' ];
+
+        secretDors.forEach((type) => {
+            describe(`given a ${type} door`, () => {
+                /** @type {Door[]} */
+                const doors = [{
+                    ...door,
                     connections: {
                         2: { direction: 'east', to: 1 },
                         1: { direction: 'west', to: 2 },
                     },
+                    type,
                 }];
 
-                it('emphasizes the list item with `<strong>`', () => {
-                    assert(getDoorwayDescriptions(config, 2))
-                        .stringIncludes(`<strong>East to Room 1 (<em>${type}</em>)</strong>`);
+                it(`includes ${type} passage in the description`, () => {
+                    assert(getDoorwayDescriptionList(doors, 2).pop())
+                        .stringIncludes(`${capitalize(type)} passage`);
                 });
             });
         });
@@ -697,6 +699,7 @@ export default ({ assert, describe, it }) => {
 
     describe('getKeyDescription()', () => {
         describe('given am array with two key configs', () => {
+            // TODO types
             const keys = [
                 {
                     type: 'Any',
@@ -745,12 +748,6 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getRoomDescription()', () => {
-        const roomConfig = {
-            roomCount   : 1,
-            roomType    : 'room',
-            itemQuantity: 'zero',
-        };
-
         it('returns an object with a title and description', () => {
             const room = getRoomDescription({
                 config,
@@ -871,13 +868,14 @@ export default ({ assert, describe, it }) => {
                         roomNumber: 1,
                     };
 
+                    /** @type {Door[]} */
                     const roomDoors = [{
                         connections: {
-                            1: { direction: /** @type {Direction} */ ('south'), to: outside },
+                            1: { direction: 'south', to: outside },
                         },
+                        direction: 'south',
                         locked: false,
-                        rect: '<rect></rect>',
-                        size: 1,
+                        rectangle: { x: 1, y: 1, width: 1, height: 2 },
                         type: /** @type {DoorType} */ ('passageway'),
                     }];
 

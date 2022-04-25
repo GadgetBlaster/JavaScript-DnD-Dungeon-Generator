@@ -7,7 +7,7 @@ import { indicateItemRarity } from '../item/item.js';
 import { list } from '../ui/list.js';
 import { paragraph, span, subtitle, title } from '../ui/typography.js';
 import {
-    getDoorwayDescriptions,
+    getDoorwayDescriptionList,
     getKeyDescription,
     getMapDescription,
     getRoomDescription,
@@ -78,11 +78,11 @@ function formatItemContent(itemSet) {
     let description = '';
 
     if (conditionUniformity) {
-        description += paragraph(`Item Condition: ${capitalize(conditionUniformity)}`);
+        description += paragraph(`Item condition: ${capitalize(conditionUniformity)}`);
     }
 
     if (rarityUniformity) {
-        description += paragraph(`Item Rarity: ${capitalize(rarityUniformity)}`);
+        description += paragraph(`Item rarity: ${capitalize(rarityUniformity)}`);
     }
 
     return description
@@ -116,7 +116,12 @@ function formatRoom(room, doors) {
     let articleHeader = header(title(roomTitle)
         + (dimensions ? span(dimensions) : ''));
 
-    let doorList = doors ? getDoorwayDescriptions(doors, roomNumber) : '';
+    let doorwayDescriptions = '';
+
+    if (doors) {
+        doorwayDescriptions = subtitle('Doorways' + formatDetail(doors.length.toString()))
+            + list(getDoorwayDescriptionList(doors, roomNumber));
+    }
 
     let map   = room.map ? getMapDescription() : '';
     let keys  = room.keys ? getKeyDescription(room.keys) : '';
@@ -128,8 +133,8 @@ function formatRoom(room, doors) {
         + (type ? paragraph(`Type: ${type}`) : '')
         + subtitle('Description')
         + paragraph(description)
-        + doorList
-        + subtitle('Items' + formatDetail(getItemTotal(itemSet)))
+        + doorwayDescriptions
+        + subtitle('Items' + formatDetail(getItemTotal(itemSet).toString()))
         + formatItemContent(itemSet)
         + map
         + keys
@@ -202,13 +207,13 @@ function getItemDescription(item) {
  *
  * @param {ItemSet} itemSet
  *
- * @returns {string}
+ * @returns {number}
  */
 function getItemTotal({ containers, items }) {
     let itemCount = items.reduce((tally, { count }) => tally + count, 0);
     let containerItemCount = containers.reduce((tally, { count }) => tally + count, 0);
 
-    return (itemCount + containerItemCount).toString();
+    return (itemCount + containerItemCount);
 }
 
 export {
@@ -258,7 +263,7 @@ export function formatError(errorTitle, message) {
  * @returns {string}
  */
 export function formatItems(itemSet) {
-    let content = header(title('Items' + formatDetail(getItemTotal(itemSet))))
+    let content = header(title('Items' + formatDetail(getItemTotal(itemSet).toString())))
         + formatItemContent(itemSet);
 
     return section(article(content));

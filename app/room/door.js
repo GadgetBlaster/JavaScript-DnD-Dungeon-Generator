@@ -44,8 +44,7 @@ export const doorTypes = Object.freeze(/** @type {const} */ ([
 ]));
 
 /**
- * Set of doorway types that should have "doorway" appended to their
- * description.
+ * Set of door types that should have "doorway" appended to their descriptions.
  *
  * @type {Set<DoorType>}
  */
@@ -56,6 +55,16 @@ export const appendDoorway = new Set([
     'steel',
     'stone',
     'wooden',
+]);
+
+/**
+ * Set of door types that should have "passage" appended to their descriptions.
+ *
+ * @type {Set<DoorType>}
+ */
+export const appendPassage = new Set([
+    'concealed',
+    'secret',
 ]);
 
 /**
@@ -100,7 +109,7 @@ export const probability = createProbability(new Map([
  *
  * @type {Readonly<{
  *   description: string;
- *   roll: ;
+ *   roll: () => "concealed" | "secret" | undefined;
  * }>}
  */
 export const secretProbability = createProbability(new Map([

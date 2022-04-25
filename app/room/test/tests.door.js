@@ -1,18 +1,40 @@
 // @ts-check
 
 import {
+    // Config
     appendDoorway,
+    appendPassage,
     doorTypes,
-    getRoomDoors,
     lockable,
     probability,
+    secretProbability,
+
+    // Private Functions
+    getRoomDoors,
 } from '../door.js';
 
 /**
  * @param {import('../../unit/state.js').Utility} utility
  */
 export default ({ assert, describe, it }) => {
-    describe('`doorTypes`', () => {
+
+    // -- Config ---------------------------------------------------------------
+
+    describe('appendDoorway', () => {
+        it('should be a set of door types', () => {
+            const invalidDoor = [ ...appendDoorway ].find((door) => !doorTypes.includes(door));
+            assert(invalidDoor).isUndefined();
+        });
+    });
+
+    describe('appendPassage', () => {
+        it('should be a set of door types', () => {
+            const invalidDoor = [ ...appendPassage ].find((door) => !doorTypes.includes(door));
+            assert(invalidDoor).isUndefined();
+        });
+    });
+
+    describe('doorTypes', () => {
         it('should be an array of strings', () => {
             assert(doorTypes).isArray();
 
@@ -21,33 +43,36 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('`appendDoorway`', () => {
-        it('should be a set of door types', () => {
-            const invalidDoor = [ ...appendDoorway ].find((door) => !doorTypes.includes(door));
-            assert(invalidDoor).isUndefined();
-        });
-    });
-
-    describe('`lockable`', () => {
+    describe('lockable', () => {
         it('should be a set of door types', () => {
             const invalidDoor = [ ...lockable ].find((door) => !doorTypes.includes(door));
             assert(invalidDoor).isUndefined();
         });
     });
 
-    describe('`probability`', () => {
+    describe('probability', () => {
         it('should be a probability object', () => {
             assert(probability.description).isString();
             assert(probability.roll).isFunction();
         });
     });
 
-    describe('`secretProbability`', () => {
+
+    describe('probability', () => {
         it('should be a probability object', () => {
             assert(probability.description).isString();
             assert(probability.roll).isFunction();
         });
     });
+
+    describe('secretProbability', () => {
+        it('should be a probability object', () => {
+            assert(secretProbability.description).isString();
+            assert(secretProbability.roll).isFunction();
+        });
+    });
+
+    // -- Config ---------------------------------------------------------------
 
     describe('getRoomDoors()', () => {
         describe('given an array with a single room door', () => {
