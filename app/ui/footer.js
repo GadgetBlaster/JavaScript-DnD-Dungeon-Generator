@@ -11,8 +11,6 @@ const repoUrl         = 'https://github.com/GadgetBlaster/JavaScript-DnD-Dungeon
 /**
  * Renders the application footer.
  *
- * TODO tests
- *
  * @param {string} testSummary
  *
  * @returns {string}

@@ -4,7 +4,9 @@ import { capitalizeWords, pluralize } from '../utility/tools.js';
 import { div } from '../ui/block.js';
 import { element } from '../utility/element.js';
 import { link } from '../ui/link.js';
+import { list } from '../ui/list.js';
 import { paragraph, span, title } from '../ui/typography.js';
+
 import run from './run.js';
 
 // -- Types Imports ------------------------------------------------------------
@@ -143,7 +145,7 @@ function getResults(summary, options = {}) {
 }
 
 /**
- * Returns the unit test suite list as an HTML string.
+ * Returns an array of HTML anchor element strings for each unit test scope.
  *
  * @private
  *
@@ -151,12 +153,12 @@ function getResults(summary, options = {}) {
  * @param {object} [options]
  *     @param {boolean} [options.verbose]
  *
- * @returns {string}
+ * @returns {string[]}
  */
 function getSuiteList(scopes, { verbose } = {}) {
     return scopes.map((scope) => {
-        return element('li', link(scope, makeParams({ scope, verbose })));
-    }).join('');
+        return link(scope, makeParams({ scope, verbose }));
+    });
 }
 
 /**
@@ -237,9 +239,8 @@ function getSummaryParts(summary) {
  * @returns {string}
  */
 function getTestList(suite, { verbose } = {}) {
-    let list = getSuiteList(Object.keys(suite), { verbose });
-
-    return element('h1', 'Spell book') + element('ul', list);
+    return title('Spell book')
+        + list(getSuiteList(Object.keys(suite), { verbose }));
 }
 
 /**

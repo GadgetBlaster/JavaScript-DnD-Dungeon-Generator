@@ -17,6 +17,7 @@ import knobs from '../controller/test/tests.knobs.js';
 import block      from '../ui/test/tests.block.js';
 import button     from '../ui/test/tests.button.js';
 import field      from '../ui/test/tests.field.js';
+import footer     from '../ui/test/tests.footer.js';
 import form       from '../ui/test/tests.form.js';
 import link       from '../ui/test/tests.link.js';
 import list       from '../ui/test/tests.list.js';
@@ -60,6 +61,7 @@ export default {
     '/app/ui/test/tests.block.js'     : block,
     '/app/ui/test/tests.button.js'    : button,
     '/app/ui/test/tests.field.js'     : field,
+    '/app/ui/test/tests.footer.js'    : footer,
     '/app/ui/test/tests.form.js'      : form,
     '/app/ui/test/tests.link.js'      : link,
     '/app/ui/test/tests.list.js'      : list,

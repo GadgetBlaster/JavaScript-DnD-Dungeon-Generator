@@ -247,27 +247,26 @@ export default ({ assert, describe, it }) => {
     describe('getSuiteList()', () => {
         describe('given an array of scopes', () => {
             const scopes = [ '/scope/one', '/scope/two' ];
-            const doc    = parseHtml(getSuiteList(scopes));
+            const links  = getSuiteList(scopes);
 
-            it('returns an html list with an list item for each scope', () => {
-                const items = doc.querySelectorAll('li');
-                assert(items.length).equals(scopes.length);
+            it('returns an array with an item for each scope', () => {
+                assert(links.length).equals(scopes.length);
             });
 
-            it('returns an html link for each scope with `?scope=scope` as the link\'s `href`', () => {
-                scopes.forEach((scope) => {
-                    assert(Boolean(doc.querySelector(`a[href="?scope=${scope}"]`))).isTrue();
+            it('returns an html link for each scope with "?scope=scope" as the link\'s href', () => {
+                links.forEach((link, i) => {
+                    assert(link).stringIncludes(`href="?scope=${scopes[i]}"`);
                 });
             });
         });
 
         describe('given the `verbose` option', () => {
             const scopes = [ '/scope/one', '/scope/two' ];
-            const doc    = parseHtml(getSuiteList(scopes, { verbose: true }));
+            const links  = getSuiteList(scopes, { verbose: true });
 
-            it('returns an html link with `&verbose=true` on each link', () => {
-                doc.querySelectorAll('a').forEach((link) => {
-                    assert(link.getAttribute('href')).stringIncludes('&verbose=true');
+            it('returns an html link with "&verbose=true" on each link', () => {
+                links.forEach((link) => {
+                    assert(link).stringIncludes('&verbose=true');
                 });
             });
         });
