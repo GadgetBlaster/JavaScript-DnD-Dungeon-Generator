@@ -1,7 +1,5 @@
 // @ts-check
 
-// TODO add unit tests
-
 import { conditions, probability as conditionProbability } from '../attribute/condition.js';
 import { furnitureQuantities, probability as furnitureQuantityProbability } from '../item/furnishing.js';
 import { itemTypes } from '../item/item.js';
@@ -229,32 +227,31 @@ export const knobConfig = [
  * will only be filtered when a field's `generator` property is defined.
  * Otherwise the field is included in all generators.
  *
- * @param {KnobConfig} knobSet
+ * @param {KnobConfig} knobs
  * @param {Generator} generator
  * @param {Config} [config]
  *
  * @returns {KnobConfig}
  */
-const getFields = (knobSet, generator, config) => {
-    // TODO filter?
-    let fields = knobSet.fields.reduce((fieldsArray, knobSettings) => {
-        if (knobSettings.generators && !knobSettings.generators.has(generator)) {
+const getFields = (knobs, generator, config) => {
+    let fields = knobs.fields.reduce((fieldsArray, knobFieldConfig) => {
+        if (knobFieldConfig.generators && !knobFieldConfig.generators.has(generator)) {
             return fieldsArray;
         }
 
-        let settings = { ...knobSettings };
+        let fieldConfig = { ...knobFieldConfig };
 
-        if (config && config[settings.name]) {
-            settings.value = config[settings.name];
+        if (config && config[fieldConfig.name]) {
+            fieldConfig.value = config[fieldConfig.name];
         }
 
-        fieldsArray.push(settings);
+        fieldsArray.push(fieldConfig);
 
         return fieldsArray;
     }, []);
 
     return {
-        ...knobSet,
+        ...knobs,
         fields,
     };
 };
