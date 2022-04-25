@@ -187,7 +187,7 @@ function createDoor(rectangle, type, { direction, from, to }, lockedChance = 0) 
     return {
         rectangle,
         type,
-        direction, // TODO can remove in favor of connections?
+        direction,
         locked,
         connections: {
             [from]: { direction, to },

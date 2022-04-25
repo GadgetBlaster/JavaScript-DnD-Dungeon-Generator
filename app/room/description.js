@@ -173,7 +173,7 @@ function getDescriptionIntro(config) {
  *
  * @returns {string}
  */
-function getDoorwayDescription({ type, size, locked }) {
+function getDoorwayDescription({ direction, locked, rectangle, type }) {
     if (locked && !lockable.has(type)) {
         toss(`Invalid locked setting for non-lockable door type "${type}" in getDoorwayDescription()`);
     }
@@ -186,11 +186,13 @@ function getDoorwayDescription({ type, size, locked }) {
         append = 'passage';
     }
 
-    // TODO busted
     let sizeDesc;
+    let size = direction == 'east' || direction == 'west'
+        ? rectangle.height
+        : rectangle.width;
 
     if (size === 2) {
-        sizeDesc = append ? 'double wide' : 'wide';
+        sizeDesc = append === 'doorway' ? 'double wide' : 'wide';
     } else if (size === 3) {
         sizeDesc = 'large';
     } else if (size > 3) {
@@ -323,7 +325,9 @@ function getRoomDimensionsDescription({ width, height }) {
 function getRoomDoorwayDescription(roomDoors, roomNumber) {
     isRequired(roomNumber, 'roomNumber is required in getRoomDoorwayDescription()');
 
-    let descParts = roomDoors.map(({ type, connections, size, locked }) => {
+    let descParts = roomDoors.map((door) => {
+        let { type, connections } = door;
+
         if (type === 'concealed' || type === 'secret') {
             return;
         }
@@ -334,7 +338,7 @@ function getRoomDoorwayDescription(roomDoors, roomNumber) {
 
         let { direction, to } = connections[roomNumber];
 
-        let desc = getDoorwayDescription({ type, size, locked });
+        let desc = getDoorwayDescription(door);
         let out  = to === outside ? ' out of the dungeon' : '';
 
         if (roomDoors.length === 1) {
@@ -386,15 +390,17 @@ export {
 export const getDoorwayDescriptionList = (roomDoors, roomNumber) => {
     isRequired(roomNumber, 'roomNumber is required in getDoorwayDescriptionList()');
 
-    // TODO sort by cardinal directions
-    let doors = roomDoors.map(({ type, connections, size, locked }) => {
+    // TODO sort by cardinal directions, N, E, S, W
+    let doors = roomDoors.map((door) => {
+        let { connections} = door;
+
         if (!connections[roomNumber]) {
             toss('Invalid roomNumber for door connections in getDoorwayDescriptionList()');
         }
 
         let { direction, to } = connections[roomNumber];
 
-        let desc    = getDoorwayDescription({ type, size, locked }); // TODO size is busted
+        let desc    = getDoorwayDescription(door);
         let connect = to === outside ? 'leading out of the dungeon' : `to room ${to}`;
         let text    = `${capitalize(direction)}: ${capitalize(desc)} ${connect}`;
 

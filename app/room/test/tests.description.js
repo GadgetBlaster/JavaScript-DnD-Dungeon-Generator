@@ -262,15 +262,23 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getDoorwayDescription()', () => {
+        /** @type {Door} */
         const door = {
-            size: 1,
-            type: /** @type {DoorType} */ ('iron'),
+            connections: {
+                1: { direction: 'north', to: 2 },
+                2: { direction: 'south', to: 1 },
+            },
+            direction: 'north',
             locked: false,
+            rectangle: { x: 1, y: 1, width: 1, height: 1 },
+            type: 'archway',
         };
+
+        const appendDoorwayType = [ ...appendDoorway ].pop();
 
         describe('when locked is true for a non-lockable door type', () => {
             it('throws', () => {
-                assert(() => getDoorwayDescription({ ...door, type: 'archway', locked: true }))
+                assert(() => getDoorwayDescription({ ...door, locked: true }))
                     .throws(`Invalid locked setting for non-lockable door type "archway" in getDoorwayDescription()`);
             });
         });
@@ -284,61 +292,140 @@ export default ({ assert, describe, it }) => {
             });
         });
 
-        describe('given a size of 2', () => {
-            it('contains the string "wide"', () => {
-                assert(getDoorwayDescription({ ...door, size: 2 }))
-                    .stringIncludes('wide');
+        /** @type {Direction[]} */
+        const verticalDirections = [ 'north', 'south' ];
+
+        /** @type {Direction[]} */
+        const horizontalDirections = [ 'east', 'west' ];
+
+        verticalDirections.forEach((direction) => {
+            const verticalDoor = {
+                ...door,
+                direction,
+                rectangle: {
+                    ...door.rectangle,
+                    width: 2,
+                },
+            };
+
+            describe(`given a direction of ${direction} and a width of 2`, () => {
+                it('contains the string "wide"', () => {
+                    console.log(getDoorwayDescription(verticalDoor));
+                    assert(getDoorwayDescription(verticalDoor)).stringIncludes('wide');
+                });
+
+                describe('when the door type should have "doorway" appended', () => {
+                    it('contains the string "double wide"', () => {
+                        assert(getDoorwayDescription({
+                            ...verticalDoor,
+                            type: appendDoorwayType,
+                        })).stringIncludes('double wide');
+                    });
+                });
+            });
+
+            describe('given a width of 3', () => {
+                it('contains a the string "large"', () => {
+                    assert(getDoorwayDescription({
+                        ...verticalDoor,
+                        rectangle: {
+                            ...door.rectangle,
+                            width: 3,
+                        },
+                    })).stringIncludes('large');
+                });
+            });
+
+            describe('given a width larger than 3', () => {
+                it('contains a the string "massive"', () => {
+                    assert(getDoorwayDescription({
+                        ...verticalDoor,
+                        rectangle: {
+                            ...door.rectangle,
+                            width: 4,
+                        },
+                    })).stringIncludes('massive');
+                });
             });
         });
 
-        describe('given a size of 3', () => {
-            it('contains a the string "large"', () => {
-                assert(getDoorwayDescription({ ...door, size: 3 }))
-                    .stringIncludes('large');
+        horizontalDirections.forEach((direction) => {
+            const horizontalDoor = {
+                ...door,
+                direction,
+                rectangle: {
+                    ...door.rectangle,
+                    height: 2,
+                },
+            };
+
+            describe(`given a direction of ${direction} and a height of 2`, () => {
+                it('contains the string "wide"', () => {
+                    assert(getDoorwayDescription(horizontalDoor)).stringIncludes('wide');
+                });
+
+                describe('when the door type should have "doorway" appended', () => {
+                    it('contains the string "double wide"', () => {
+                        assert(getDoorwayDescription({
+                            ...horizontalDoor,
+                            type: appendDoorwayType,
+                        })).stringIncludes('double wide');
+                    });
+                });
+            });
+
+
+            describe('given a height of 3', () => {
+                it('contains a the string "large"', () => {
+                    assert(getDoorwayDescription({
+                        ...horizontalDoor,
+                        rectangle: {
+                            ...door.rectangle,
+                            height: 3,
+                        },
+                    })).stringIncludes('large');
+                });
+            });
+
+            describe('given a height larger than 3', () => {
+                it('contains a the string "massive"', () => {
+                    assert(getDoorwayDescription({
+                        ...horizontalDoor,
+                        rectangle: {
+                            ...door.rectangle,
+                            height: 4,
+                        },
+                    })).stringIncludes('massive');
+                });
             });
         });
 
-        describe('given a size larger than 3', () => {
-            it('contains a the string "massive"', () => {
-                assert(getDoorwayDescription({ ...door, size: 12 }))
-                    .stringIncludes('massive');
-            });
-        });
-
-        describe('given a door type included in `appendDoorway`', () => {
-            let appendDoorwayType = [ ...appendDoorway ].pop();
-
+        describe('given a door type included in appendDoorway', () => {
             it('contains the string "doorway"', () => {
                 assert(getDoorwayDescription({
                     ...door,
                     type: appendDoorwayType,
                 })).stringIncludes('doorway');
             });
-
-            describe('given a size of 2', () => {
-                it('contains the string `double wide`', () => {
-                    assert(getDoorwayDescription({
-                        ...door,
-                        type: appendDoorwayType,
-                        size: 2,
-                    })).stringIncludes('double wide');
-                });
-            });
         });
 
-        describe('given an object with a truthy `locked` property', () => {
-            it('contains the string "locked"', () => {
-                assert(getDoorwayDescription({ ...door, locked: true }))
-                    .stringIncludes('locked');
-            });
-        });
-
-        describe('given an object with a falsy `locked` property', () => {
+        describe('given an unlocked door', () => {
             it('excludes the string "locked"', () => {
-                assert(getDoorwayDescription({ ...door, locked: false }))
+                assert(getDoorwayDescription(door))
                     .stringExcludes('locked');
             });
         });
+
+        describe('given a locked door', () => {
+            it('contains the string "locked"', () => {
+                assert(getDoorwayDescription({
+                    ...door,
+                    locked: true,
+                    type: [ ...lockable ].pop(),
+                })).stringIncludes('locked');
+            });
+        });
+
     });
 
     describe('getFurnitureDetail()', () => {
@@ -428,13 +515,15 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getRoomDoorwayDescription()', () => {
+        /** @type {Door} */
         const door = {
             connections: {
                 1: { direction: 'south', to: 2 },
                 2: { direction: 'north', to: 1 },
             },
+            direction: 'south',
             locked: false,
-            size: 1,
+            rectangle: { x: 1, y: 1, width: 1, height: 1 },
             type: 'passageway',
         };
 
@@ -492,7 +581,8 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a door object connected to the outside on the south wall', () => {
-            const config = [{
+            /** @type {Door[]} */
+            const doors = [{
                 ...door,
                 connections: {
                     4: { direction: 'south', to: outside },
@@ -501,34 +591,33 @@ export default ({ assert, describe, it }) => {
             }];
 
             it('includes a description of the door to the outside', () => {
-                assert(getRoomDoorwayDescription(config, 4))
+                assert(getRoomDoorwayDescription(doors, 4))
                     .stringIncludes('leads south out of the dungeon');
             });
         });
 
         describe('given two door configs', () => {
-            const config = [
+            /** @type {Door[]} */
+            const doors = [
                 {
+                    ...door,
                     connections: {
                         1: { direction: 'south', to: 2 },
                         2: { direction: 'north', to: 1 },
                     },
-                    locked: false,
-                    size: 1,
                     type: 'archway',
                 },
                 {
+                    ...door,
                     connections: {
                         1: { direction: 'east', to: 3 },
                         3: { direction: 'west', to: 1 },
                     },
-                    locked: false,
-                    size: 1,
                     type: 'passageway',
                 },
             ];
 
-            const desc = getRoomDoorwayDescription(config, 1);
+            const desc = getRoomDoorwayDescription(doors, 1);
 
             it('joins the descriptions with "and" and contain no commas', () => {
                 assert(desc)
@@ -556,41 +645,37 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given three doors configs', () => {
-            const config = [
+            /** @type {Door[]} */
+            const doors = [
                 {
+                    ...door,
                     connections: {
                         1: { direction: 'south', to: 2 },
                         2: { direction: 'north', to: 1 },
                     },
-                    locked: false,
-                    size: 1,
                     type: 'archway',
                 },
                 {
+                    ...door,
                     connections: {
                         1: { direction: 'north', to: 3 },
                         3: { direction: 'south', to: 1 },
                     },
-                    locked: false,
                     type: 'passageway',
-                    size: 1,
                 },
                 {
+                    ...door,
                     connections: {
                         1: { direction: 'east', to: 4 },
                         4: { direction: 'west', to: 1 },
                     },
-                    locked: false,
                     type: 'hole',
-                    size: 1,
                 },
             ];
 
             it('separates each description with a comma and the last item with "and"', () => {
-                assert(getRoomDoorwayDescription(config, 1))
-                    .stringIncludes(' archway leads south,')
-                    .stringIncludes(' passageway leads north,')
-                    .stringIncludes(', and a hole leads east');
+                assert(getRoomDoorwayDescription(doors, 1))
+                    .equals('An archway leads south, a passageway leads north, and a hole leads east');
             });
         });
     });
@@ -615,7 +700,7 @@ export default ({ assert, describe, it }) => {
             },
             direction: 'south',
             locked: false,
-            rectangle: { x: 1, y: 2, width: 3, height: 4 },
+            rectangle: { x: 1, y: 2, width: 1, height: 1 },
             type: 'archway',
         };
 
