@@ -7,7 +7,6 @@ import {
     testDisabledGenerators as disabledGenerators,
 
     // Public Functions
-    // getActiveNavItem,
     getNav,
     setActiveNavItem,
 } from '../nav.js';
@@ -19,21 +18,6 @@ export default ({ assert, describe, it }) => {
 
     // -- Public Functions -----------------------------------------------------
 
-    // describe('getActiveNavItem()', () => {
-    //     describe('given a container with three nav buttons', () => {
-    //         const container = document.createElement('div');
-    //         container.innerHTML = `
-    //             <button data-target="grog" data-active="true">Grog</button>
-    //             <button data-target="nog">Nog</button>
-    //             <button data-target="frog">Frog</button>
-    //         `;
-
-    //         it('should return the `data-target` value of the active element', () => {
-    //             assert(getActiveNavItem(container)).equals('grog');
-    //         });
-    //     });
-    // });
-
     describe('getNav()', () => {
         const nav  = getNav('dungeon');
         const body = parseHtml(getNav('dungeon'));
@@ -42,15 +26,15 @@ export default ({ assert, describe, it }) => {
             assert(nav).isString();
         });
 
-        it('contains a nav button for each generator that is not disabled', () => {
+        it('contains a nav link for each generator that is not disabled', () => {
             generators.filter((generator) => !disabledGenerators.has(generator)).forEach((generator) => {
-                const button = body.querySelector(`button[data-target="${generator}"]`);
+                const button = body.querySelector(`a[data-target="${generator}"]`);
                 assert(Boolean(button)).isTrue();
             });
         });
 
         it('sets the correct active item', () => {
-            assert(body.querySelector('button[data-target="dungeon"]'))
+            assert(body.querySelector('a[data-target="dungeon"]'))
                 .hasAttributes({ 'data-active': 'true' });
         });
     });

@@ -131,7 +131,7 @@ body > footer {
     bottom: 0;
     background: var(--bg-footer);
     transform: translate3d(0, 100%, 0);
-    animation-delay: 3s;
+    animation-delay: 2500ms;
     animation-duration: var(--transition-slow);
     animation-fill-mode: forwards;
     animation-name: slideUp;

@@ -308,7 +308,7 @@ export default ({ assert, describe, it }) => {
                 });
 
                 // Sections
-                assert(content.innerHTML).stringIncludes('Ready');
+                assert(content.innerHTML).stringIncludes('Generate Room');
                 assert(knobs.innerHTML).stringIncludes('Generate');
 
                 // Nav
@@ -331,7 +331,7 @@ export default ({ assert, describe, it }) => {
 
             renderApp(sections, 'dungeon');
 
-            assert(content.innerHTML).stringIncludes('Ready!');
+            assert(content.innerHTML).stringIncludes('Generate Dungeon');
             assert(knobs.innerHTML).stringIncludes('Generate');
             assert(dungeonButton.dataset.active).equals('true');
         });
@@ -646,7 +646,7 @@ export default ({ assert, describe, it }) => {
 
             render('items');
 
-            assert(content.textContent).equals('Ready!');
+            assert(content.textContent).equals('Generate Items');
             assert(Boolean(knobs.querySelector('button[data-action="generate"]'))).isTrue();
         });
     });
@@ -714,13 +714,15 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('navigate', () => {
-            it('updates the content', () => {
+            it('updates the content to the generator\'s ready state', () => {
                 /** @type {HTMLElement} */
                 const roomsButtonEl = nav.querySelector('[data-action="navigate"][data-target="rooms"]');
 
+                assert(content.innerHTML).stringIncludes('Items');
+
                 triggers.navigate(getMockClickEvent(roomsButtonEl));
 
-                assert(content.innerHTML).equals('Ready!');
+                assert(content.innerHTML).stringIncludes('Generate Rooms');
             });
 
             it('calls updatePath() with the new pathname', () => {
