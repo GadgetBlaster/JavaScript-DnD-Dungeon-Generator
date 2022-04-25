@@ -1,6 +1,14 @@
 // @ts-check
 
-import { formatDungeon, formatError, formatItems, formatName, formatRooms } from './formatter.js';
+import {
+    formatDungeon,
+    formatError,
+    formatItems,
+    formatName,
+    formatReadyState,
+    formatRooms,
+} from './formatter.js';
+import { dungeonIcon, itemsIcon, roomsIcon } from '../ui/icon.js';
 import { generateDungeon } from '../dungeon/generate.js';
 import { generateItems } from '../item/generate.js';
 import { generateName } from '../name/generate.js';
@@ -124,6 +132,17 @@ function roomGenerator(config) {
 // -- Private Functions --------------------------------------------------------
 
 /**
+ * Get element dataset.
+ *
+ * @private
+ *
+ * @param {EventTarget} target
+ *
+ * @returns {{ [attribute: string]: string }}
+ */
+const getDataset = (target) => target instanceof HTMLElement ? target.dataset : {};
+
+/**
  * Returns a generator function.
  *
  * @private
@@ -151,17 +170,6 @@ function getGenerator(generator) {
             toss(`Invalid generator "${generator}" in getGenerator()`);
     }
 }
-
-/**
- * Get element dataset.
- *
- * @private
- *
- * @param {EventTarget} target
- *
- * @returns {{ [attribute: string]: string }}
- */
-const getDataset = (target) => target instanceof HTMLElement ? target.dataset : {};
 
 /**
  * Returns an error object containing title & message strings.
@@ -204,6 +212,35 @@ function getTrigger(triggers, action) {
     isRequired(triggers[action], `Invalid action "${action}" passed to getTrigger()`);
 
     return triggers[action];
+}
+
+/**
+ * Returns title and icon for the given generator's ready state.
+ *
+ * @private
+ * @throws
+ *
+ * @param {Generator} generator
+ *
+ * @returns {{ title: string; icon: string }}
+ */
+function getReadyState(generator) {
+    switch (generator) {
+        case 'dungeon':
+            return { title: 'Generate Dungeon', icon: dungeonIcon };
+
+        case 'rooms':
+            return { title: 'Generate Rooms', icon: roomsIcon };
+
+        case 'items':
+            return { title: 'Generate Items', icon: itemsIcon };
+
+        case 'names':
+            return { title: 'Generate Names', icon: dungeonIcon }; // TODO missing name icon
+
+        default:
+            toss(`Invalid generator "${generator}" in getReadyState()`);
+    }
 }
 
 /**
@@ -293,9 +330,10 @@ function renderApp({ body, content, knobs, nav }, page) {
     setActiveNavItem(nav, page);
 
     let isExpanded = isSidebarExpanded(body);
+    let { title, icon } = getReadyState(page);
 
     knobs.innerHTML   = getKnobPanel(page, { isExpanded });
-    content.innerHTML = 'Ready!';
+    content.innerHTML = formatReadyState(title, icon);
 }
 
 /**

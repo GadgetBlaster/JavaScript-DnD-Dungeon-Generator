@@ -1,8 +1,9 @@
 // @ts-check
 
-import { article, header, section } from '../ui/block.js';
-import { drawLegend } from '../dungeon/legend.js';
+import { article, div, header, section } from '../ui/block.js';
+import { element } from '../utility/element.js';
 import { capitalize, isRequired } from '../utility/tools.js';
+import { drawLegend } from '../dungeon/legend.js';
 import { indicateItemRarity } from '../item/item.js';
 import { list } from '../ui/list.js';
 import { paragraph, span, subtitle, title } from '../ui/typography.js';
@@ -277,6 +278,26 @@ export function formatItems(itemSet) {
  */
 export function formatName(name) {
     return section(article(title(name)));
+}
+
+/**
+ * Formats ready UI.
+ *
+ * @private
+ *
+ * @param {string} message
+ * @param {string} icon
+ *
+ * @returns {string}
+ */
+export function formatReadyState(message, icon) {
+    let content = div(icon, { 'data-spacing': 'b' }) + span(message);
+
+    return element('button', content, {
+        'data-action': 'generate',
+        'data-ready': true,
+        'type': 'button',
+    });
 }
 
 /**

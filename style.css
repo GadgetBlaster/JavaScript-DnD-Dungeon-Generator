@@ -21,6 +21,8 @@
     --border-radius: 3px;
 
     --transition-duration: 500ms;
+    --transition-slow: 1s;
+    --transition-super-slow: 3s;
 
     --color-action-1: #BF0252;
     --color-action-2: #F2065F;
@@ -47,6 +49,7 @@
     --bg: var(--color-gray-40);
 
     --spacing-default: 20px;
+    --spacing-large: 40px;
     --spacing-medium: 10px;
     --spacing-small: 5px;
 
@@ -129,7 +132,7 @@ body > footer {
     background: var(--bg-footer);
     transform: translate3d(0, 100%, 0);
     animation-delay: 2s;
-    animation-duration: 1s;
+    animation-duration: var(--transition-slow);
     animation-fill-mode: forwards;
     animation-name: slideUp;
 }
@@ -294,7 +297,36 @@ button[data-action="expand"] span {
     transform: rotate(0);
 }
 
-/* Form */
+button[data-ready] {
+    flex-direction: column;
+    flex-grow: 0;
+    max-width: 360px;
+    max-height: 360px;
+    padding: var(--spacing-large);
+    background: var(--color-gray-35);
+    border: 1px solid var(--color-gray-20);
+    border-radius: var(--spacing-default);
+    opacity: 0;
+    animation-delay: 500ms;
+    animation-duration: var(--transition-super-slow);
+    animation-fill-mode: forwards;
+    animation-name: fadeIn;
+}
+
+button[data-ready]:hover {
+    background: var(--color-gray-40);
+}
+
+button[data-ready] span {
+    text-shadow: 0 0 10px var(--color-white);
+    font-size: var(--font-size-title);
+}
+
+button[data-ready] svg {
+    pointer-events: none;
+}
+
+/* Forms */
 
 form {
     display: flex;
@@ -532,6 +564,10 @@ ul[data-flex] li span {
     margin-bottom: var(--spacing-default);
 }
 
+[data-spacing="b"] {
+    margin-bottom: var(--spacing-default);
+}
+
 [data-spacing="medium"] {
     margin: var(--spacing-medium);
 }
@@ -560,6 +596,16 @@ ul[data-flex] li span {
 }
 
 /* Animations */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
 
 @keyframes slideIn {
     from {
