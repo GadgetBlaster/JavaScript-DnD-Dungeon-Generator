@@ -20,7 +20,7 @@
 
     --border-radius: 3px;
 
-    --transitionDuration: 500ms;
+    --transition-duration: 500ms;
 
     --color-action-1: #BF0252;
     --color-action-2: #F2065F;
@@ -95,6 +95,8 @@ body > aside {
     width: var(--sidebar-width);
     color: var(--color-white);
     background: var(--bg-sidebar);
+    animation-duration: var(--transition-duration);
+    animation-name: slideIn;
 }
 
 body > main {
@@ -125,6 +127,11 @@ body > footer {
     position: fixed;
     bottom: 0;
     background: var(--bg-footer);
+    transform: translate3d(0, 100%, 0);
+    animation-delay: 2s;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+    animation-name: slideUp;
 }
 
 body > footer > small {
@@ -233,7 +240,7 @@ header nav a {
     align-items: center;
     justify-content: center;
     padding: 0;
-    transition: background var(--transitionDuration);
+    transition: background var(--transition-duration);
 }
 
 button:hover,
@@ -549,5 +556,27 @@ ul[data-flex] li span {
 @media print {
     [data-no-print] {
         display: none;
+    }
+}
+
+/* Animations */
+
+@keyframes slideIn {
+    from {
+        transform: translate3d(-100%, 0, 0);
+    }
+
+    to {
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+@keyframes slideUp {
+    from {
+      transform: translate3d(0, 100%, 0);
+    }
+
+    to {
+        transform: translate3d(0, 0, 0);
     }
 }

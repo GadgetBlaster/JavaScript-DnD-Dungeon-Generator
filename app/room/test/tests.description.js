@@ -310,7 +310,6 @@ export default ({ assert, describe, it }) => {
 
             describe(`given a direction of ${direction} and a width of 2`, () => {
                 it('contains the string "wide"', () => {
-                    console.log(getDoorwayDescription(verticalDoor));
                     assert(getDoorwayDescription(verticalDoor)).stringIncludes('wide');
                 });
 
