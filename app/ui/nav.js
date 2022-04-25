@@ -1,8 +1,8 @@
 // @ts-check
 
-import { button } from './button.js';
 import { capitalize } from '../utility/tools.js';
-import { generators } from '../controller/controller.js';
+import { generators, routeLookup } from '../controller/controller.js';
+import { link } from './link.js';
 
 // -- Types --------------------------------------------------------------------
 
@@ -40,9 +40,11 @@ const getElements = (collection) => [ ...collection ].map((el) =>
  */
 export const getNav = (activeGenerator) => generators
     .filter((generator) => !disabledGenerators.has(generator))
-    .map((generator) => button(capitalize(generator), 'navigate', {
-        target: generator,
-        active: activeGenerator === generator,
+    .map((generator, i) => link(capitalize(generator), routeLookup[generator] || '/', {
+        'data-action': 'navigate',
+        'data-active': activeGenerator === generator,
+        'data-target': generator,
+        'data-delay': i + 2,
     })).join('');
 
 /**

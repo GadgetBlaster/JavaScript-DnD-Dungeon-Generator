@@ -69,7 +69,7 @@ export const routes = Object.freeze(/** @type {const} */ ({
     '/rooms' : 'rooms',
 }));
 
-const routeLookup = Object.freeze(Object.entries(routes).reduce((lookup, [ route, generator ]) => {
+export const routeLookup = Object.freeze(Object.entries(routes).reduce((lookup, [ route, generator ]) => {
     lookup[generator] = route;
     return lookup;
 }, {}));

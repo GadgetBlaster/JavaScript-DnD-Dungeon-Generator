@@ -131,7 +131,7 @@ body > footer {
     bottom: 0;
     background: var(--bg-footer);
     transform: translate3d(0, 100%, 0);
-    animation-delay: 2s;
+    animation-delay: 3s;
     animation-duration: var(--transition-slow);
     animation-fill-mode: forwards;
     animation-name: slideUp;
@@ -252,6 +252,13 @@ header nav a[data-active],
 header nav a:hover {
     background: var(--color-action-2);
     text-decoration: none;
+}
+
+header nav a {
+    opacity: 0;
+    animation-duration: var(--transition-super-slow);
+    animation-fill-mode: forwards;
+    animation-name: fadeIn;
 }
 
 button[data-size="small"],
@@ -596,6 +603,13 @@ ul[data-flex] li span {
 }
 
 /* Animations */
+
+[data-delay="1"] { animation-delay: 1s; }
+[data-delay="2"] { animation-delay: 2s; }
+[data-delay="3"] { animation-delay: 3s; }
+[data-delay="4"] { animation-delay: 4s; }
+[data-delay="5"] { animation-delay: 5s; }
+[data-delay="6"] { animation-delay: 6s; }
 
 @keyframes fadeIn {
     from {
