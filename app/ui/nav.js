@@ -44,7 +44,7 @@ export const getNav = (activeGenerator) => generators
         'data-action': 'navigate',
         'data-active': activeGenerator === generator,
         'data-target': generator,
-        'data-delay': i + 2,
+        'style'      : `animation-delay: ${2000 + (500 * i)}ms;`,
     })).join('');
 
 /**
