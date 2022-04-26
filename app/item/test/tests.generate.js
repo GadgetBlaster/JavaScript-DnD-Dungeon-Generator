@@ -290,7 +290,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a quantity of `quantity.few`', () => {
-            it('should return a value between `quantityMinimum.numerous` and `quantityMinimum.some` ', () => {
+            it('should return a value between `quantityMinimum.few` and `quantityMinimum.some` ', () => {
                 const count     = getItemCount('few');
                 const isInRange = count >= quantityMinimum.few && count < quantityMinimum.some;
 

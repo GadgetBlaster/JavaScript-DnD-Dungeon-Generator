@@ -10,9 +10,14 @@ import roll    from '../utility/test/tests.roll.js';
 import shape   from '../utility/test/tests.shape.js';
 import tools   from '../utility/test/tests.tools.js';
 
+import condition from '../attribute/test/tests.condition.js';
+import quantity  from '../attribute/test/tests.quantity.js';
+// import rarity    from '../attribute/test/tests.rarity.js';
+// import size      from '../attribute/test/tests.size.js';
+
 import controller from '../controller/test/tests.controller.js';
-import formatter from '../controller/test/tests.formatter.js';
-import knobs from '../controller/test/tests.knobs.js';
+import formatter  from '../controller/test/tests.formatter.js';
+import knobs      from '../controller/test/tests.knobs.js';
 
 import block      from '../ui/test/tests.block.js';
 import button     from '../ui/test/tests.button.js';
@@ -53,6 +58,11 @@ export default {
     '/app/utility/test/tests.roll.js'   : roll,
     '/app/utility/test/tests.shape.js'  : shape,
     '/app/utility/test/tests.tools.js'  : tools,
+
+    '/app/attribute/test/tests.condition.js': condition,
+    '/app/attribute/test/tests.quantity.js' : quantity,
+    // '/app/attribute/test/tests.rarity.js'   : rarity,
+    // '/app/attribute/test/tests.size.js'     : size,
 
     '/app/controller/test/tests.controller.js': controller,
     '/app/controller/test/tests.formatter.js': formatter,

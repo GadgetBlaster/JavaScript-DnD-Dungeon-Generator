@@ -1,6 +1,7 @@
 // @ts-check
 
 import {
+    // Public Functions
     createProbability,
     roll,
     rollArrayItem,
@@ -81,7 +82,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a distribution table with an out of bounds probability', () => {
-            describe('given a map key less than `1`', () => {
+            describe('given a map key less than 1', () => {
                 it('throws', () => {
                     assert(() => {
                         createProbability(new Map([
