@@ -304,9 +304,22 @@ export function isObject(value) {
     let isOk = Boolean(value)
         && typeof value === 'object'
         && !Array.isArray(value)
-        && !(value instanceof Element);
+        && !(value instanceof Element)
+        && !(value instanceof Set);
 
     let msg  = `expected "${value}" to be an object`;
+
+    return { msg, isOk };
+}
+
+/**
+ * @param {any} value
+ *
+ * @returns {Result}
+ */
+export function isSet(value) {
+    let isOk = value instanceof Set;
+    let msg  = `expected "${value}" to be a Set`;
 
     return { msg, isOk };
 }

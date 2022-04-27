@@ -63,7 +63,6 @@ export const quantityMaximum = 100;
 
 const range = [ ...Object.values(quantityMinimum), quantityMaximum ];
 
-
 // TODO: WIP to replace getRange()
 export const quantityRanges = Object.entries({
     zero    : 0,
@@ -82,8 +81,6 @@ export const quantityRanges = Object.entries({
 
     return ranges;
 }, {});
-
-console.log(quantityRanges);
 
 // -- Public Functions ---------------------------------------------------------
 

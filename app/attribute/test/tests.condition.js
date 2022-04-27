@@ -15,6 +15,8 @@ export default ({ assert, describe, it }) => {
 
     describe('conditions', () => {
         it('is an array of strings', () => {
+            assert(conditions).isArray();
+
             conditions.forEach((condition) => {
                 assert(condition).isString();
             });

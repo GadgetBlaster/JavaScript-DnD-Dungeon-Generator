@@ -19,6 +19,7 @@ import {
     isNull,
     isNumber,
     isObject,
+    isSet,
     isString,
     isTrue,
     isUndefined,
@@ -42,6 +43,7 @@ const assertions = [
     isNull,
     isNumber,
     isObject,
+    isSet,
     isString,
     isTrue,
     isUndefined,
@@ -85,6 +87,9 @@ const groups = {
         'an empty object': {},
         'an object'      : { hi: 'hi' },
     },
+    set: {
+        'a set': new Set(),
+    },
     string: {
         'a numeric string': '42',
         'a string'        : 'string',
@@ -111,6 +116,7 @@ const excludingType = (type) => {
     return Object.values(remaining).flatMap((group) => Object.entries(group));
 };
 
+// TODO why the IIFEs?
 const nonArrayTypes     = (() => excludingType('array'))();
 const nonBooleanTypes   = (() => excludingType('boolean'))();
 const nonElementTypes   = (() => excludingType('element'))();
@@ -118,6 +124,7 @@ const nonFunctionTypes  = (() => excludingType('function'))();
 const nonNullTypes      = (() => excludingType('null'))();
 const nonNumberTypes    = (() => excludingType('number'))();
 const nonObjectTypes    = (() => excludingType('object'))();
+const nonSetTypes       = (() => excludingType('set'))();
 const nonStringTypes    = (() => excludingType('string'))();
 const nonUndefinedTypes = (() => excludingType('undefined'))();
 
@@ -626,6 +633,24 @@ export default ({ assert, describe, it }) => {
             describe(`given ${key}`, () => {
                 it('returns a false `isOk` property', () => {
                     assert(isObject(value).isOk).isFalse();
+                });
+            });
+        });
+    });
+
+    describe('isSet()', () => {
+        Object.entries(groups.set).forEach(([ key, value ]) => {
+            describe(`given ${key}`, () => {
+                it('returns a true `isOk` property', () => {
+                    assert(isSet(value).isOk).isTrue();
+                });
+            });
+        });
+
+        nonSetTypes.forEach(([ key, value ]) => {
+            describe(`given ${key}`, () => {
+                it('returns a false `isOk` property', () => {
+                    assert(isSet(value).isOk).isFalse();
                 });
             });
         });

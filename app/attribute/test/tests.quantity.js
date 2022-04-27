@@ -20,6 +20,8 @@ export default ({ assert, describe, it }) => {
 
     describe('quantities', () => {
         it('is an array of strings', () => {
+            assert(quantities).isArray();
+
             quantities.forEach((quantity) => {
                 assert(quantity).isString();
             });

@@ -26,6 +26,7 @@ import { getResultMessage } from './output.js';
  * @prop {Assertion} isNull
  * @prop {Assertion} isNumber
  * @prop {Assertion} isObject
+ * @prop {Assertion} isSet
  * @prop {Assertion} isString
  * @prop {Assertion} isTrue
  * @prop {Assertion} isUndefined

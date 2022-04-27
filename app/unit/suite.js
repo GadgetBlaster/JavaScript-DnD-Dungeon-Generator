@@ -12,8 +12,8 @@ import tools   from '../utility/test/tests.tools.js';
 
 import condition from '../attribute/test/tests.condition.js';
 import quantity  from '../attribute/test/tests.quantity.js';
-// import rarity    from '../attribute/test/tests.rarity.js';
-// import size      from '../attribute/test/tests.size.js';
+import rarity    from '../attribute/test/tests.rarity.js';
+import size      from '../attribute/test/tests.size.js';
 
 import controller from '../controller/test/tests.controller.js';
 import formatter  from '../controller/test/tests.formatter.js';
@@ -61,8 +61,8 @@ export default {
 
     '/app/attribute/test/tests.condition.js': condition,
     '/app/attribute/test/tests.quantity.js' : quantity,
-    // '/app/attribute/test/tests.rarity.js'   : rarity,
-    // '/app/attribute/test/tests.size.js'     : size,
+    '/app/attribute/test/tests.rarity.js'   : rarity,
+    '/app/attribute/test/tests.size.js'     : size,
 
     '/app/controller/test/tests.controller.js': controller,
     '/app/controller/test/tests.formatter.js': formatter,
