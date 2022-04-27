@@ -9,6 +9,7 @@ import { sizes } from '../attribute/size.js';
 /** @typedef {import('../attribute/size').Size} Size */
 /** @typedef {import('../dungeon/grid.js').Dimensions} Dimensions */
 /** @typedef {import('./room.js').RoomType} RoomType */
+/** @typedef {import('../utility/tools.js').Range} Range */
 
 // -- Types --------------------------------------------------------------------
 
@@ -25,7 +26,7 @@ const hallWidthMax  = 1;
 /**
  * Dimension ranges
  *
- * @type {Readonly<{ [key in Size]: { min: number; max: number } }>}
+ * @type {Readonly<{ [key in Size]: Range }>}
  */
 export const roomDimensionRanges = Object.freeze({
     tiny    : { min: 2, max: 3  },

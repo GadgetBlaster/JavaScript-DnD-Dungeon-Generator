@@ -2,7 +2,7 @@
 
 // -- Types --------------------------------------------------------------------
 
-/** @typedef {{ min: number; max: number }} NumberRange */
+/** @typedef {{ min: number; max: number }} Range */
 
 // -- Typography ---------------------------------------------------------------
 
@@ -148,7 +148,7 @@ export const chunk = (array, size) => array.reduce((newArray, item, index) => {
  * @param {number} [maximum = Number.POSITIVE_INFINITY]
  *     Maximum value for the largest quantity
  *
- * @returns {{ [key: string]: NumberRange }}
+ * @returns {{ [key: string]: Range }}
  */
 export function createRangeLookup(minimums, maximum = Number.POSITIVE_INFINITY) {
     let entries = Object.entries(minimums || {});

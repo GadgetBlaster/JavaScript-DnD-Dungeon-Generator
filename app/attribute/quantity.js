@@ -5,7 +5,7 @@ import { createRangeLookup } from '../utility/tools.js';
 
 // -- Type Imports -------------------------------------------------------------
 
-/** @typedef {import('../utility/tools.js').NumberRange} NumberRange */
+/** @typedef {import('../utility/tools.js').Range} Range */
 
 // -- Types --------------------------------------------------------------------
 
@@ -44,17 +44,19 @@ export const probability = createProbability(new Map([
 ]));
 
 /**
- * Minimum count of items for each quantity.
+ * A lookup of range counts for each quantity.
  */
-export const quantityRanges = /** @type {{ [quantity in Quantity]: NumberRange }} */ (
-    createRangeLookup({
-        zero    : 0,
-        one     : 1,
-        couple  : 2,
-        few     : 3,
-        some    : 5,
-        several : 8,
-        many    : 14,
-        numerous: 25,
-    }, 100)
+export const quantityRanges = Object.freeze(
+    /** @type {{ [quantity in Quantity]: Range }} */ (
+        createRangeLookup({
+            zero    : 0,
+            one     : 1,
+            couple  : 2,
+            few     : 3,
+            some    : 5,
+            several : 8,
+            many    : 14,
+            numerous: 25,
+        }, 100)
+    )
 );
