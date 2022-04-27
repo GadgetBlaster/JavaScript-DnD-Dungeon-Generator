@@ -189,6 +189,7 @@ export const knobConfig = [
         generators : new Set([ 'dungeon', 'rooms', 'items' ]),
         fields     : [
             {
+                // TODO Exclude quantity zero in item generator page
                 label  : 'Quantity',
                 name   : 'itemQuantity',
                 desc   : quantityProbability.description,

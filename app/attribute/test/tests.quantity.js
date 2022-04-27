@@ -4,11 +4,7 @@ import {
     // Config
     quantities,
     probability,
-    quantityMinimum,
-    quantityMaximum,
-
-    // Public Functions
-    getRange,
+    quantityRanges,
 } from '../quantity.js';
 
 /**
@@ -36,41 +32,14 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('quantityMinimum', () => {
-        it('is an object of numbers with an entry for eah quantity', () => {
-            assert(quantityMinimum).isObject();
-            assert(Object.keys(quantityMinimum)).equalsArray(quantities);
-            Object.values(quantityMinimum).forEach((min) => {
+    describe('quantityRanges', () => {
+        it('is an object of ranges with a key for each quantity', () => {
+            assert(quantityRanges).isObject();
+
+            assert(Object.keys(quantityRanges)).equalsArray(quantities);
+            Object.values(quantityRanges).forEach(({ min, max }) => {
                 assert(min).isNumber();
-            });
-        });
-    });
-
-    // -- Public Functions -----------------------------------------------------
-
-    describe('getRange()', () => {
-        describe('given an invalid quantity', () => {
-            it('throws', () => {
-                // @ts-expect-error
-                assert(() => getRange('no bueno'))
-                    .throws('Invalid quantity "no bueno" in getRange()');
-            });
-        });
-
-        let minimums = Object.values(quantityMinimum);
-        minimums.shift();
-
-        let maximums = [ ...minimums, quantityMaximum ].map((max) => max - 1);
-
-        quantities.forEach((quantity, i) => {
-            describe(`given "${quantity}"`, () => {
-                it('returns a range object', () => {
-                    const range = getRange(quantity);
-
-                    assert(range).isObject();
-                    range && assert(range.min).equals(quantityMinimum[quantity]);
-                    range && assert(range.max).equals(maximums[i]);
-                });
+                assert(max).isNumber();
             });
         });
     });

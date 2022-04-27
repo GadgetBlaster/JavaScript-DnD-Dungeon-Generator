@@ -12,7 +12,7 @@ import {
     generateItems,
 } from '../generate.js';
 
-import { quantityMinimum, quantityMaximum } from '../../attribute/quantity.js';
+import { quantityRanges } from '../../attribute/quantity.js';
 import {
     anyRoomFurniture,
     furnishingByRoomType,
@@ -277,31 +277,41 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getItemCount()', () => {
-        describe('given a quantity of `quantity.zero`', () => {
-            it('should return 0', () => {
+        describe('given an invalid quantity', () => {
+            it('throws', () => {
+                // @ts-expect-error
+                assert(() => getItemCount('billion'))
+                    .throws('Invalid quantity "${itemQuantity}" in getItemCount()');
+            });
+        });
+
+        describe('given a quantity of "zero"', () => {
+            it('returns 0', () => {
                 assert(getItemCount('zero')).equals(0);
             });
         });
 
-        describe('given a quantity of `quantity.one`', () => {
-            it('should return 1', () => {
+        describe('given a quantity of "one"', () => {
+            it('returns 1', () => {
                 assert(getItemCount('one')).equals(1);
             });
         });
 
-        describe('given a quantity of `quantity.few`', () => {
-            it('should return a value between `quantityMinimum.few` and `quantityMinimum.some` ', () => {
-                const count     = getItemCount('few');
-                const isInRange = count >= quantityMinimum.few && count < quantityMinimum.some;
+        describe('given a quantity of "few"', () => {
+            it('returns a value in the range of "few"', () => {
+                const count        = getItemCount('few');
+                const { min, max } = quantityRanges.few;
+                const isInRange    = count >= min && count <= max;
 
                 assert(isInRange).isTrue();
             });
         });
 
-        describe('given a quantity of `quantity.numerous`', () => {
-            it('should return a value between `quantityMinimum.numerous` and `quantityMaximum` ', () => {
-                const count     = getItemCount('numerous');
-                const isInRange = count >= quantityMinimum.numerous && count < quantityMaximum;
+        describe('given a quantity of "numerous"', () => {
+            it('returns a value in the range of "numerous"', () => {
+                const count        = getItemCount('numerous');
+                const { min, max } = quantityRanges.numerous;
+                const isInRange    = count >= min && count <= max;
 
                 assert(isInRange).isTrue();
             });

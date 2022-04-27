@@ -21,7 +21,7 @@ import { probability as conditionProbability } from '../attribute/condition.js';
 import { probability as rarityProbability } from '../attribute/rarity.js';
 import { isRequired, toss } from '../utility/tools.js';
 import { roll, rollArrayItem } from '../utility/roll.js';
-import { getRange, probability as quantityProbability } from '../attribute/quantity.js';
+import { quantityRanges, probability as quantityProbability } from '../attribute/quantity.js';
 
 // -- Type Imports -------------------------------------------------------------
 
@@ -281,7 +281,13 @@ const getFurnishingObjects = (furnishings) => Object.values(furnishings.reduce((
  * @returns {number}
  */
 function getItemCount(itemQuantity) {
-    let { min, max } = getRange(itemQuantity);
+    let range = quantityRanges[itemQuantity];
+
+    if (!range) {
+        toss('Invalid quantity "${itemQuantity}" in getItemCount()');
+    }
+
+    let { min, max } = range;
 
     return roll(min, max);
 }
