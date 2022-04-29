@@ -63,8 +63,8 @@ const groups = {
         'an empty array': [],
     },
     boolean: {
-        '`false`': false,
-        '`true`' : true,
+        'false': false,
+        'true' : true,
     },
     element: {
         'an element': document.createElement('p'),
@@ -73,15 +73,15 @@ const groups = {
         'a function': equals, // Any function will do
     },
     null: {
-        '`null`': null,
+        'null': null,
     },
     number: {
-        'a float'         : 3.14159,
-        'infinity'        : Infinity,
-        'the integer `-1`': -1,
-        'the integer `0`' : 0,
-        'the integer `1`' : 1,
-        'the integer `2`' : 2,
+        'a float'       : 3.14159,
+        'infinity'      : Infinity,
+        'the integer -1': -1,
+        'the integer 0' : 0,
+        'the integer 1' : 1,
+        'the integer 2' : 2,
     },
     object: {
         'an empty object': {},
@@ -96,12 +96,13 @@ const groups = {
         'an empty string' : '',
     },
     undefined: {
-        '`undefined`': undefined,
+        'undefined': undefined,
     },
 };
 
 /**
- * Excluding type
+ * Returns an array of entries with the given type omitted. The first item
+ * in each entry is a description of the value, the second item is the value.
  *
  * @param {string} type
  *
@@ -116,17 +117,16 @@ const excludingType = (type) => {
     return Object.values(remaining).flatMap((group) => Object.entries(group));
 };
 
-// TODO why the IIFEs?
-const nonArrayTypes     = (() => excludingType('array'))();
-const nonBooleanTypes   = (() => excludingType('boolean'))();
-const nonElementTypes   = (() => excludingType('element'))();
-const nonFunctionTypes  = (() => excludingType('function'))();
-const nonNullTypes      = (() => excludingType('null'))();
-const nonNumberTypes    = (() => excludingType('number'))();
-const nonObjectTypes    = (() => excludingType('object'))();
-const nonSetTypes       = (() => excludingType('set'))();
-const nonStringTypes    = (() => excludingType('string'))();
-const nonUndefinedTypes = (() => excludingType('undefined'))();
+const nonArrayTypes     = excludingType('array');
+const nonBooleanTypes   = excludingType('boolean');
+const nonElementTypes   = excludingType('element');
+const nonFunctionTypes  = excludingType('function');
+const nonNullTypes      = excludingType('null');
+const nonNumberTypes    = excludingType('number');
+const nonObjectTypes    = excludingType('object');
+const nonSetTypes       = excludingType('set');
+const nonStringTypes    = excludingType('string');
+const nonUndefinedTypes = excludingType('undefined');
 
 /**
  * @param {import('../state.js').Utility} utility
