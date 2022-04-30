@@ -7,6 +7,10 @@ import {
     slider,
 } from '../field.js';
 
+import { parseHtml } from '../../utility/element.js';
+
+// TODO complete parseHtml() test updates
+
 /**
  * @param {import('../../unit/state.js').Utility} utility
  */
@@ -15,13 +19,17 @@ export default ({ assert, describe, it }) => {
     // -- Public Functions -----------------------------------------------------
 
     describe('fieldLabel()', () => {
-        describe('given a `label`', () => {
-            it('should return an html button element string', () => {
-                assert(fieldLabel('Widget')).isElementTag('label');
-            });
+        it('should return an html button element string', () => {
+            assert(fieldLabel('Widget')).isElementTag('label');
+        });
 
-            it('should contain the provided `label` content', () => {
-                assert(fieldLabel('Widget')).stringIncludes('Widget');
+        it('contains the provided label', () => {
+            assert(fieldLabel('Widget')).stringIncludes('Widget');
+        });
+
+        describe('given attributes', () => {
+            it('includes the attributes on the element', () => {
+                assert(fieldLabel('Widget', { for: 'house' })).stringIncludes('for="house"');
             });
         });
     });
@@ -43,8 +51,8 @@ export default ({ assert, describe, it }) => {
             });
         });
 
-        describe('given a `type`', () => {
-            it('should contain a `type` attribute with the given type', () => {
+        describe('given a type', () => {
+            it('contains a type attribute with the given type', () => {
                 assert(input('widget', { type: 'number' })).stringIncludes('type="number"');
             });
         });
@@ -80,8 +88,15 @@ export default ({ assert, describe, it }) => {
             assert(selectHTML).stringIncludes('name="widget"');
         });
 
+        describe('given no values', () => {
+            it('throws', () => {
+                // @ts-expect-error
+                assert(() => select('widget')).throws('Select fields require option values');
+            });
+        });
+
         describe('given an empty array of value options', () => {
-            it('should throw', () => {
+            it('throws', () => {
                 assert(() => select('widget', [])).throws('Select fields require option values');
             });
         });
@@ -97,6 +112,13 @@ export default ({ assert, describe, it }) => {
 
                 assert(result).equals(expect);
             });
+
+            describe('given a selectedValue', () => {
+                it('marks the correct option as selected', () => {
+                    let result = select('widget', [ 'a', 'two', 'pi' ], 'two');
+                    assert(result).stringIncludes('<option selected="true" value="two">two</option>');
+                });
+            });
         });
 
         describe('given a camelCase option', () => {
@@ -109,22 +131,37 @@ export default ({ assert, describe, it }) => {
                 assert(result).equals(expect);
             });
         });
+
+        describe('given attributes', () => {
+            it('includes the attributes on the element', () => {
+                assert(select('widget', [ 'one' ], null, { for: 'house' })).stringIncludes('for="house"');
+            });
+        });
     });
 
     describe('slider()', () => {
-        describe('given a `name`', () => {
-            it('should return a string', () => {
-                assert(slider('widget')).isString();
-            });
+        const result  = slider('widget');
+        const body    = parseHtml(result);
+        const inputEl = body.querySelector('input');
 
-            it('should return an HTML input element string with the given `name` and default attributes', () => {
-                assert(slider('widget')).equals('<input name="widget" type="range" min="1" max="100" />');
+        it('returns a string', () => {
+            assert(slider('widget')).isString();
+        });
+
+        it('returns an html input element string with the given name and default attributes', () => {
+            assert(Boolean(inputEl)).isTrue();
+            input && assert(inputEl).hasAttributes({
+                max : '100',
+                min : '1',
+                name: 'widget',
+                type: 'range',
             });
         });
 
-        describe('given a `value`', () => {
-            it('should include a `value` attribute with the given value', () => {
-                assert(slider('widget', { value: 15 })).stringIncludes('value="15"');
+        describe('given a value', () => {
+            it('contains a value attribute with the given value', () => {
+                const inputWithValue = parseHtml(slider('widget', { value: 15 }));
+                assert(inputWithValue.querySelector('input')).hasAttributes({ value : '15' });
             });
         });
 

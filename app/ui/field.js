@@ -16,11 +16,11 @@ import { toWords, toss } from '../utility/tools.js';
  *
  * @param {string} value
  * @param {string} label
- * @param {Attributes} [attributes]
+ * @param {Attributes} [attributes = {}]
  *
  * @returns {string}
  */
-const option = (value, label, attributes = {}) => element('option', label, { value, ...attributes });
+const option = (value, label, attributes = {}) => element('option', label, { ...attributes, value });
 
 // -- Public Functions ---------------------------------------------------------
 
@@ -28,10 +28,11 @@ const option = (value, label, attributes = {}) => element('option', label, { val
  * Returns an HTML field label element string.
  *
  * @param {string} label
+ * @param {Attributes} [attributes = {}]
  *
  * @returns {string}
  */
-export const fieldLabel = (label) => element('label', label);
+export const fieldLabel = (label, attributes = {}) => element('label', label, attributes);
 
 /**
  * Returns an HTML input element string.
@@ -50,7 +51,7 @@ export function input(name, attributes = {}) {
         attributes[key] === undefined && delete attributes[key];
     });
 
-    return element('input', null, { name, type: 'text', ...attributes });
+    return element('input', null, { type: 'text', ...attributes, name });
 }
 
 /**
@@ -59,18 +60,19 @@ export function input(name, attributes = {}) {
  * @param {string} name
  * @param {string[]} values
  * @param {string} [selectedValue]
+ * @param {Attributes} [attributes = {}]
  *
  * @returns {string}
  */
-export function select(name, values, selectedValue) {
-    !values.length && toss('Select fields require option values');
+export function select(name, values, selectedValue, attributes = {}) {
+    (!values || !values.length) && toss('Select fields require option values');
 
     let options = values.map((value) => {
         let attrs = value === selectedValue ? { selected: true } : {};
         return option(value, toWords(value), attrs);
     }).join('');
 
-    return element('select', options, { name });
+    return element('select', options, { ...attributes, name });
 }
 
 /**
