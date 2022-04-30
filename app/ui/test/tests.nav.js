@@ -20,7 +20,7 @@ export default ({ assert, describe, it }) => {
 
     describe('getNav()', () => {
         const nav  = getNav('dungeon');
-        const body = parseHtml(getNav('dungeon'));
+        const body = parseHtml(nav);
 
         it('returns a string', () => {
             assert(nav).isString();
