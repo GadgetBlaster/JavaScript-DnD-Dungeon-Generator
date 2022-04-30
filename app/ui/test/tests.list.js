@@ -25,6 +25,7 @@ export default ({ assert, describe, it }) => {
         });
 
         it('returns an unordered list html element string', () => {
+            // TODO parseHtml()
             assert(list([ 'Blasted!' ])).equals('<ul><li>Blasted!</li></ul>');
         });
 
