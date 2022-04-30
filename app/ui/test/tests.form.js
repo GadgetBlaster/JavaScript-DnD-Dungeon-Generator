@@ -11,6 +11,8 @@ import {
     getKnobPanel,
 } from '../form.js';
 
+import { parseHtml } from '../../utility/element.js';
+
 /** @typedef {import('../../controller/knobs.js').KnobFieldConfig} KnobFieldConfig */
 
 /** @type {KnobFieldConfig} */
@@ -20,8 +22,6 @@ const fakeKnob = {
     desc: 'How complex should it be?',
     type: 'range',
 };
-
-// TODO test with parseHTML
 
 /**
  * @param {import('../../unit/state.js').Utility} utility
@@ -38,74 +38,88 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a knob config', () => {
-            const result = formatKnobAccordions([ { label: 'Shovels', fields: [] } ]);
+            const result = formatKnobAccordions([ {
+                fields: [],
+                generators : new Set([ 'items' ]),
+                label : 'Shovels And Spades',
+            } ]);
 
-            it('returns an html fieldset element string', () => {
-                assert(/<fieldset(.*?)>(.*?)<\/fieldset>/.test(result)).isTrue();
+            const body     = parseHtml(result);
+            const fieldset = body.querySelector('fieldset');
+
+            it('returns a fieldset element', () => {
+                assert(Boolean(fieldset)).isTrue();
             });
 
-            it('contains the correct data-id', () => {
-                assert(result).stringIncludes('data-id="fieldset-shovels"');
+            it('has the correct data-id', () => {
+                assert(fieldset).hasAttributes({ 'data-id': 'fieldset-shovels-and-spades' });
             });
 
-            it('includes an html accordion button', () => {
-                const snapshot = '<button data-action="accordion" data-size="small" data-target="fieldset-shovels" ' +
-                    'type="button">Shovels</button>';
-
-                assert(result).stringIncludes(snapshot);
+            it('contains an accordion button associated to the fieldset', () => {
+                assert(fieldset.querySelector('button[data-action="accordion"]'))
+                    .hasAttributes({
+                        'data-target': 'fieldset-shovels-and-spades',
+                    });
             });
 
             it('does not collapse the first section', () => {
-                assert(result).stringIncludes('data-collapsed="false"');
+                assert(fieldset).hasAttributes({ 'data-collapsed': 'false' });
             });
         });
 
         describe('given an array of fields', () => {
             /** @type {KnobFieldConfig[]} */
             const fields = [
-                { name: 'roomSize',     label: 'Room Size',     desc: 'Room Size?',     type: 'number' },
-                { name: 'itemQuantity', label: 'Item Quantity', desc: 'Item Quantity?', type: 'range' },
-                { name: 'dungeonTraps', label: 'Traps',         desc: 'Traps?',         type: 'select', values: [ '1' ] },
+                { name: 'roomSize',     label: 'Room Size',     desc: 'test',  type: 'number'                  },
+                { name: 'itemQuantity', label: 'Item Quantity', desc: 'test2', type: 'range'                   },
+                { name: 'dungeonTraps', label: 'Traps',         desc: 'test3', type: 'select', values: [ '1' ] },
             ];
 
-            const result = formatKnobAccordions([ { label: 'Shovels', fields } ]);
+            const body = parseHtml(formatKnobAccordions([ {
+                fields,
+                generators : new Set([ 'items' ]),
+                label: 'Shovels',
+            } ]));
 
-            it('includes an HTML input string and label for each knob setting', () => {
-                assert(result)
-                    .stringIncludes('Room Size')
-                    .stringIncludes('<input name="roomSize" type="number" />')
-                    .stringIncludes('Item Quantity')
-                    .stringIncludes('<input name="itemQuantity" type="range" />')
-                    .stringIncludes('Traps')
-                    .stringIncludes('<select name="dungeonTraps"><option value="1">1</option></select>');
+            it('contains input and label elements for each knob', () => {
+                fields.forEach(({ name, label }) => {
+                    /** @type {HTMLElement} */
+                    const knob = body.querySelector(`[name="${name}"]`);
+
+                    assert(Boolean(knob)).isTrue();
+                    knob && assert(body.querySelector(`label[for="${knob.id}"]`).textContent)
+                        .stringIncludes(label);
+                });
             });
         });
 
         describe('given multiple knob configs', () => {
-            it('should collapsed all sections except the first', () => {
-                const result = formatKnobAccordions([
-                    { label: 'Shovels', fields: [] },
-                    { label: 'Gardening Tools', fields: [] },
-                    { label: 'Weed Whackers', fields: [] },
-                ]);
+            it('collapses all sections except the first', () => {
+                const body = parseHtml(formatKnobAccordions([
+                    { label: 'Shovels',         fields: [], generators: new Set() },
+                    { label: 'Gardening Tools', fields: [], generators: new Set() },
+                    { label: 'Weed Whackers',   fields: [], generators: new Set() },
+                ]));
 
-                assert(result)
-                    .stringIncludes('<fieldset data-collapsed="false" data-id="fieldset-shovels">')
-                    .stringIncludes('<fieldset data-collapsed="true" data-id="fieldset-gardening-tools">')
-                    .stringIncludes('<fieldset data-collapsed="true" data-id="fieldset-weed-whackers">');
+                const fieldsets = body.querySelectorAll('fieldset');
+
+                assert(fieldsets.length).equals(3);
+                assert(fieldsets[0]).hasAttributes({ 'data-collapsed': 'false', 'data-id': 'fieldset-shovels' });
+                assert(fieldsets[1]).hasAttributes({ 'data-collapsed': 'true', 'data-id': 'fieldset-gardening-tools' });
+                assert(fieldsets[2]).hasAttributes({ 'data-collapsed': 'true', 'data-id': 'fieldset-weed-whackers' });
             });
         });
     });
 
     describe('getFields()', () => {
         describe('given an empty array', () => {
-            it('should return an empty string', () => {
+            it('returns an empty string', () => {
                 assert(getFields([])).equals('');
             });
         });
 
         describe('given a knob with no name', () => {
-            it('should throw', () => {
+            it('throws', () => {
                 const knob = { ...fakeKnob };
                 delete knob.name;
 
@@ -115,7 +129,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a knob with no label', () => {
-            it('should throw', () => {
+            it('throws', () => {
                 const knob = { ...fakeKnob };
                 delete knob.label;
 
@@ -125,7 +139,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a knob with no description', () => {
-            it('should throw', () => {
+            it('throws', () => {
                 const knob = { ...fakeKnob };
                 delete knob.desc;
 
@@ -134,61 +148,67 @@ export default ({ assert, describe, it }) => {
             });
         });
 
+        describe('given a config for a single knob', () => {
+            /** @type {KnobFieldConfig} */
+            const knobConfig = { name: 'dungeonComplexity', label: 'Complexity', desc: 'Pi', type: 'range' };
 
-        describe('given settings for a single knob', () => {
-            const knob = { name: 'size', label: 'Size', desc: 'Pi', type: 'number' };
+            const result = getFields([ knobConfig ]);
+            const body   = parseHtml(result);
+            const input  = body.querySelector('input');
 
-            describe('given a name, label, and type', () => {
-                const result = getFields([ knob ]);
+            it('contains an input element with the correct name', () => {
+                assert(Boolean(input)).isTrue();
+                input && assert(input).hasAttributes({ name: 'dungeonComplexity' });
+            });
 
-                it('should return a string', () => {
-                    assert(result).isString();
-                });
+            it('contains a html label element associated to an input', () => {
+                const label = body.querySelector('label');
 
-                it('should include an html input string', () => {
-                    assert(result).stringIncludes('<input name="size" type="number" />');
-                });
+                assert(Boolean(label)).isTrue();
+                label && assert(label.textContent).stringIncludes('Complexity'); // TODO equals
+                label && input && assert(label).hasAttributes({ for: input.id });
+            });
 
-                it('should include an html label string', () => {
-                    assert(/<label>Size(.*?)<\/label>/.test(result)).isTrue();
+            it('contains an info button element with the correct target', () => {
+                const button = body.querySelector('button');
+
+                assert(Boolean(button)).isTrue();
+                button && assert(button.textContent).equals('?');
+                button && assert(button).hasAttributes({
+                    'data-action': 'toggle',
+                    'data-target': 'info-dungeonComplexity',
                 });
             });
 
-            describe('given a description', () => {
-                const result = getFields([ { ...knob, desc: 'Toad\'s tenacity'} ]);
+            it('contains a hidden info paragraph element', () => {
+                const info = body.querySelector('p');
 
-                it('should include an html info button string', () => {
-                    const snapshot = '<button data-action="toggle" data-size="auto" data-target="info-size" ' +
-                        'data-info="true" type="button">?</button>';
-
-                    assert(result).stringIncludes(snapshot);
-                });
-
-                it('should include an hidden html info paragraph string', () => {
-                    const snapshot = '<p hidden="true" data-id="info-size"><small>Toad\'s tenacity</small></p>';
-                    assert(result).stringIncludes(snapshot);
+                assert(Boolean(info)).isTrue();
+                assert(info.textContent).equals('Pi');
+                info && assert(info).hasAttributes({
+                    'data-id': 'info-dungeonComplexity',
+                    'hidden' : 'true',
                 });
             });
         });
 
         describe('given settings for multiple knobs', () => {
-            const result = getFields([
-                { name: 'size',        label: 'Size',        desc: 'Size?',        type: 'number' },
-                { name: 'shape',       label: 'Shape',       desc: 'Shape?',       type: 'range' },
-                { name: 'squishiness', label: 'Squishiness', desc: 'Squishiness?', type: 'select', values: [ '1' ] },
-            ]);
+            const body = parseHtml(getFields([
+                /** @type {KnobFieldConfig} */ ({ name: 'itemQuantity', label: 'Size',        desc: 'Size?',        type: 'number'                  }),
+                /** @type {KnobFieldConfig} */ ({ name: 'itemRarity',   label: 'Shape',       desc: 'Shape?',       type: 'range'                   }),
+                /** @type {KnobFieldConfig} */ ({ name: 'itemType',     label: 'Squishiness', desc: 'Squishiness?', type: 'select', values: [ '1' ] }),
+            ]));
 
-            it('should include an html input string for each knob setting', () => {
-                assert(result)
-                    .stringIncludes('<input name="size" type="number" />')
-                    .stringIncludes('<input name="shape" type="range" />')
-                    .stringIncludes('<select name="squishiness"><option value="1">1</option></select>');
+            it('contains an input for each knob setting', () => {
+                assert(Boolean(body.querySelector(`input[name="itemQuantity"]`))).isTrue();
+                assert(Boolean(body.querySelector(`input[name="itemRarity"]`))).isTrue();
+                assert(Boolean(body.querySelector(`select[name="itemType"]`))).isTrue();
             });
 
-            it('should include an HTML label string for each knob setting', () => {
-                assert(/<label>Size(.*?)<\/label>/.test(result)).isTrue();
-                assert(/<label>Shape(.*?)<\/label>/.test(result)).isTrue();
-                assert(/<label>Squishiness(.*?)<\/label>/.test(result)).isTrue();
+            it('contains a label element for each knob', () => {
+                assert(Boolean(body.querySelector(`label[for="knob-itemtype"]`))).isTrue();
+                assert(Boolean(body.querySelector(`label[for="knob-itemrarity"]`))).isTrue();
+                assert(Boolean(body.querySelector(`label[for="knob-itemtype"]`))).isTrue();
             });
         });
     });
@@ -203,13 +223,32 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a type of "select"', () => {
-            it('should return an html select element string with the given values as options', () => {
-                const knob = getKnob({ ...fakeKnob, type: 'select', values: [ 'toast' ] });
-                assert(/<select(.*?)><option(.+?)value="toast"(.*?)>toast<\/option><\/select>/.test(knob)).isTrue();
+            const result = getKnob({ ...fakeKnob, type: 'select', values: [ 'toast', 'coffee' ] }, 'knob-dungeon-complexity');
+            const body   = parseHtml(result);
+
+            it('contains a select element', () => {
+                assert(Boolean(body.querySelector('select'))).isTrue();
+            });
+
+            it('has the provided name and id', () => {
+                assert(body.querySelector('select[name="dungeonComplexity"]')).hasAttributes({
+                    id: 'knob-dungeon-complexity',
+                });
+            });
+
+            it('contains an option for each of the given values', () => {
+                const options = body.querySelectorAll('option');
+
+                assert(options.length).equals(2);
+                assert(options[0].textContent).equals('toast');
+                assert(options[0]).hasAttributes({ 'value': 'toast' });
+                assert(options[1].textContent).equals('coffee');
+                assert(options[1]).hasAttributes({ 'value': 'coffee' });
             });
 
             describe('given a value that is not a string', () => {
                 it('throws', () => {
+                    // @ts-expect-error
                     assert(() => getKnob({ ...fakeKnob, type: 'junk' }))
                         .throws('Invalid knob type');
                 });
@@ -217,14 +256,32 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a type of "number"', () => {
-            it('should return an html input element string', () => {
-                assert(getKnob({ ...fakeKnob, type: 'number' })).isElementTag('input');
+            const result = getKnob({ ...fakeKnob, type: 'number' }, 'knob-dungeon-babble');
+            const body   = parseHtml(result);
+
+            it('returns an html input element string', () => {
+                assert(result).isElementTag('input');
+            });
+
+            it('has the provided name and id', () => {
+                assert(body.querySelector('input[name="dungeonComplexity"]')).hasAttributes({
+                    id: 'knob-dungeon-babble',
+                });
             });
         });
 
         describe('given a type of "range"', () => {
-            it('should return an html input element string', () => {
-                assert(getKnob({ ...fakeKnob, type: 'range' })).isElementTag('input');
+            const result = getKnob({ ...fakeKnob, type: 'number' }, 'knob-dungeon-slider');
+            const body   = parseHtml(result);
+
+            it('returns an html input element string', () => {
+                assert(result).isElementTag('input');
+            });
+
+            it('has the provided name and id', () => {
+                assert(body.querySelector('input[name="dungeonComplexity"]')).hasAttributes({
+                    id: 'knob-dungeon-slider',
+                });
             });
         });
     });
@@ -248,46 +305,51 @@ export default ({ assert, describe, it }) => {
                 container.appendChild(knob);
             };
 
-            addKnob('input', 'gopher', 'ralph');
-            addKnob('select', 'lion', 'bob');
-            addKnob('input', 'hats', 12);
+            addKnob('input', 'dungeonComplexity', 'ralph');
+            addKnob('select', 'itemType', 'bob');
+            addKnob('input', 'roomCount', 12);
 
             const results = getFormData(container);
 
-            it('should return an object', () => {
+            it('returns an object', () => {
                 assert(results).isObject();
             });
 
-            it('should return an object of knob values keyed by knob name', () => {
-                assert(results.gopher).equals('ralph');
-                assert(results.lion).equals('bob');
-                assert(results.hats).equals('12');
+            it('returns an object of knob values keyed by knob name', () => {
+                assert(results.dungeonComplexity).equals('ralph');
+                assert(results.itemType).equals('bob');
+                assert(results.roomCount).equals('12');
             });
         });
     });
 
     // TODO tests for `config` & `isExpanded` options
     describe('getKnobPanel()', () => {
-        let knobs = getKnobPanel('dungeon');
+        let result = getKnobPanel('dungeon');
+        let body   = parseHtml(result);
 
-        it('should return a string', () => {
-            assert(knobs).isString();
+        it('returns a string', () => {
+            assert(result).isString();
         });
 
-        it('should include a submit button', () => {
-            assert(knobs).stringIncludes(
-                `<button data-action="generate" data-size="large" type="submit">Generate</button>`
-            );
+        it('contains a submit button', () => {
+            const button = body.querySelector('button[type="submit"]');
+
+            assert(Boolean(button)).isTrue();
+            button && assert(button.textContent).equals('Generate');
+            button && assert(button).hasAttributes({
+                'data-action': 'generate',
+            });
         });
 
-        it('should include three fieldsets for the `dungeon` panel', () => {
-            assert(knobs.match(/<fieldset(.*?)>(.*?)<\/fieldset>/g).length).equals(3);
+        it('contains three fieldsets for the dungeon panel', () => {
+            assert(body.querySelectorAll('fieldset').length).equals(3);
         });
 
         describe('given a generator of "items"', () => {
-            it('returns the field sets for the items generator', () => {
-                let itemKnobs = getKnobPanel('items');
-                assert(itemKnobs.match(/<fieldset(.*?)>(.*?)<\/fieldset>/g).length).equals(1);
+            it('contains one fieldset for the items generator', () => {
+                const fieldsets = parseHtml(getKnobPanel('items')).querySelectorAll('fieldset');
+                assert(fieldsets.length).equals(1);
             });
         });
     });

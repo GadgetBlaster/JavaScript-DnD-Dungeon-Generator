@@ -94,11 +94,14 @@ const getFields = (fields) => fields.map((settings) => {
     !label && toss('Missing required knob label');
     !desc  && toss('Missing required knob description');
 
-    let knob       = getKnob(settings);
-    let descId     = desc && `info-${name}`;
+    let descId = `info-${name}`; // TODO toDash
+    let knobId = getKnobId(name);
+
+    let knob       = getKnob(settings, knobId);
     let descButton = button(infoLabel, 'toggle', { target: descId, size: 'auto' });
+    // TODO make into pop-up
     let descText   = paragraph(small(desc), { hidden: true, 'data-id': descId });
-    let knobLabel  = fieldLabel(label + descButton);
+    let knobLabel  = fieldLabel(label + descButton, { for: knobId });
 
     return div(knobLabel + descText + knob);
 }).join('');
@@ -121,10 +124,11 @@ const getInputElements = (knobContainer) => [ ...knobContainer.querySelectorAll(
  * @throws
  *
  * @param {KnobFieldConfig} settings
+ * @param {string} id
  *
  * @returns {string}
  */
-function getKnob(settings) {
+function getKnob(settings, id) {
     let {
         name,
         type,
@@ -141,23 +145,33 @@ function getKnob(settings) {
                 return;
             }
 
-            return select(name, values, value);
+            return select(name, values, value, { id });
 
         case 'number':
-            return input(name, { type: 'number' , value });
+            return input(name, { type: 'number' , value, id });
 
         case 'range':
-            return slider(name, { min, max, value });
+            return slider(name, { min, max, value, id });
 
         default:
             toss('Invalid knob type');
     }
 }
 
+/**
+ * Returns a knob's id attribute value.
+ *
+ * @param {string} name
+ *
+ * @returns {string}
+ */
+const getKnobId = (name) => `knob-${toDash(name)}`;
+
 export {
     formatKnobAccordions as testFormatKnobAccordions,
     getFields            as testGetFields,
     getKnob              as testGetKnob,
+    getKnobId            as testGetKnobId,
 };
 
 // -- Public Functions ---------------------------------------------------------
