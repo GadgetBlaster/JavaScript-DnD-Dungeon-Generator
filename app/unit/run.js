@@ -1,5 +1,7 @@
 // @ts-check
 
+import { getErrorMessage } from './output.js';
+
 // -- Type Imports -------------------------------------------------------------
 
 /** @typedef {import('./state.js').Utility} Utility */
@@ -52,9 +54,7 @@ export default function ({ getSummary, onError, runUnits }, suite, scope) {
         try {
             runUnits(path, tests);
         } catch (error) {
-            // TODO getErrorMessage(error)
-            let msg = typeof error === 'object' ? error.stack.toString() : error;
-            onError(msg);
+            onError(getErrorMessage(error));
         }
     });
 

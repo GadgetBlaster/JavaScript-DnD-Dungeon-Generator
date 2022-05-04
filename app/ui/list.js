@@ -21,9 +21,7 @@ import { toss } from '../utility/tools.js';
  * @returns {string}
  */
 export function list(items, attributes) {
-    if (!items || !items.length) {
-        toss('Items are required for lists');
-    }
+    (!items || !items.length) && toss('Items are required for lists');
 
     let content = items.map((item) => element('li', item)).join('');
 

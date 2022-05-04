@@ -543,6 +543,7 @@ export default ({ assert, describe, it }) => {
                     assert(hasFirstAssertion).isFalse();
                 });
             });
+
             describe('the second result `msg`', () => {
                 it('includes the second description', () => {
                     let hasFirstAssertion = results[1].msg.includes('the universe and everything');
@@ -555,23 +556,61 @@ export default ({ assert, describe, it }) => {
                 });
             });
         });
+
+        describe('when an error is thrown inside of a `describe()` callback', () => {
+            it('increments the errors count and adds the error the results array', () => {
+                const { runUnits, getSummary } = unitState();
+
+                runUnits('/fake/suite', (utility) => {
+                    utility.describe('throws in `describe()`', () => {
+                        throw new TypeError('catch me if you can');
+                    });
+                });
+
+                const { results, errors } = getSummary();
+
+                assert(errors).equals(1);
+                assert(results.pop().msg).stringIncludes('catch me if you can');
+            });
+        });
     });
 
     describe('it()', () => {
-        const { runUnits, getSummary } = unitState();
+        describe('when the `it()` function is called', () => {
+            const { runUnits, getSummary } = unitState();
 
-        runUnits('/fake/suite', (utility) => {
-            utility.describe('what snow is like', () => {
-                utility.it('should be wet like', () => {
-                    utility.assert().equals();
+            runUnits('/fake/suite', (utility) => {
+                utility.describe('what snow is like', () => {
+                    utility.it('should be wet like', () => {
+                        utility.assert().equals();
+                    });
                 });
+            });
+
+            const { results } = getSummary();
+
+            it('adds the assertion to the `msg` in `results`', () => {
+                assert(results.pop().msg).stringIncludes('should be wet like');
             });
         });
 
-        const { results } = getSummary();
+        describe('when an error is thrown inside of an `it()` callback', () => {
+            it('increments the errors count and adds the error the results array', () => {
+                const { runUnits, getSummary } = unitState();
 
-        it('adds the assertion to the `msg` in `results`', () => {
-            assert(results.pop().msg).stringIncludes('should be wet like');
+                runUnits('/fake/suite', (utility) => {
+                    utility.describe('describe scope', () => {
+                        utility.it('throws in `it()`', () => {
+                            throw new TypeError('muffin error');
+                        });
+                    });
+                });
+
+                const { results, errors } = getSummary();
+
+                assert(errors).equals(1);
+                assert(results.pop().msg).stringIncludes('muffin error');
+            });
         });
     });
 };

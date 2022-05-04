@@ -51,7 +51,7 @@ import { getErrorMessage, getResultMessage } from './output.js';
  *
  * @prop {() => Summary} getSummary
  * @prop {(error: string) => void} onError
- * @prop {(path: string, tests: Function) => void} runUnits
+ * @prop {(path: string, tests: (utility: Utility) => void) => void} runUnits
  */
 
 /**
@@ -67,8 +67,8 @@ import { getErrorMessage, getResultMessage } from './output.js';
  * @typedef {object} Utility
  *
  * @prop {(value: any) => Assertions} assert
- * @prop {Function} describe
- * @prop {Function} it
+ * @prop {(msg: string, callback: () => void) => void} describe
+ * @prop {(msg: string, callback: () => void) => void} it
  */
 
 // -- Config -------------------------------------------------------------------
@@ -147,13 +147,13 @@ export function unitState() {
      * Describe
      *
      * @param {string} msg
-     * @param {Function} callback
+     * @param {() => void} callback
      */
     const describe = (msg, callback) => {
         checkScope(scope.describe, [ scope.suite, scope.describe ]);
 
         current.push({ scope: scope.describe, msg });
-        callback();
+        runCallback(callback);
         current.pop();
     };
 
@@ -161,13 +161,13 @@ export function unitState() {
      * It
      *
      * @param {string} msg
-     * @param {Function} callback
+     * @param {() => void} callback
      */
     const it = (msg, callback) => {
         checkScope(scope.it, [ scope.describe ]);
 
         current.push({ scope: scope.it, msg });
-        callback();
+        runCallback(callback);
         current.pop();
     };
 
@@ -176,7 +176,7 @@ export function unitState() {
      *
      * @param {*} actual
      * @param {*} expected
-     * @param {Function} assertion
+     * @param {(actual: any, expected: any) => Result} assertion
      *
      * @returns {{ [key: string]: Assertion }}
      */
@@ -231,10 +231,24 @@ export function unitState() {
     };
 
     /**
+     * Runs a callback function, it() or describe(), inside a try/catch block,
+     * adding any errors to the results output.
+     *
+     * @param {() => void} callback
+     */
+    const runCallback = (callback) => {
+        try {
+            callback();
+        } catch (error) {
+            onError(getErrorMessage(error));
+        }
+    };
+
+    /**
      * Run units
      *
      * @param {string} path
-     * @param {function} tests
+     * @param {(utility: Utility) => void} tests
      */
     const runUnits = (path, tests) => {
         current.push({ scope: scope.suite, msg: path });

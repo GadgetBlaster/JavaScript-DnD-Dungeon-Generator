@@ -174,7 +174,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('given a test function that throws an error string`', () => {
+    describe('given a test function that throws an error string', () => {
         let onErrorResult;
 
         const onError  = (error) => { onErrorResult = error; };
