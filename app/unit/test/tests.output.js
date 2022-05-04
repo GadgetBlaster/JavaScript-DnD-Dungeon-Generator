@@ -102,7 +102,7 @@ export default ({ assert, describe, it }) => {
         describe('given one passing result', () => {
             let summary = {
                 assertions: 1,
-                errors    : [],
+                errors    : 0,
                 failures  : 0,
                 results   : [ { isOk: true, msg: 'fake success result' } ],
             };
@@ -161,7 +161,7 @@ export default ({ assert, describe, it }) => {
         describe('given multiple results', () => {
             let summary = {
                 assertions: 2,
-                errors    : [],
+                errors    : 0,
                 failures  : 0,
                 results   : [
                     { isOk: true, msg: 'fake success result'    },
@@ -186,7 +186,7 @@ export default ({ assert, describe, it }) => {
         describe('given a failing result', () => {
             let summary = {
                 assertions: 1,
-                errors    : [],
+                errors    : 0,
                 failures  : 1,
                 results   : [ { isOk: false, msg: 'fake failure' } ],
             };
@@ -216,7 +216,7 @@ export default ({ assert, describe, it }) => {
         describe('given a result containing an error', () => {
             let summary = {
                 assertions: 1,
-                errors    : [ { isOk: false, msg: 'this is fine' } ],
+                errors    : 1,
                 failures  : 0,
                 results   : [ { isOk: false, msg: 'fake error' } ],
             };
@@ -275,7 +275,7 @@ export default ({ assert, describe, it }) => {
     describe('getSummary()', () => {
         const defaultSummary = {
             assertions: 0,
-            errors    : [],
+            errors    : 0,
             failures  : 0,
             results   : [],
         };
@@ -293,7 +293,7 @@ export default ({ assert, describe, it }) => {
             it('returns a span with the "fail" class', () => {
                 const summaryDoc = parseHtml(getSummary({
                     ...defaultSummary,
-                    errors: [ { isOk: false, msg: 'Bad dates' } ],
+                    errors: 1,
                 }));
 
                 assert(Boolean(summaryDoc.querySelector('span[class="fail"]'))).isTrue();
@@ -311,7 +311,7 @@ export default ({ assert, describe, it }) => {
     describe('getSummaryParts()', () => {
         const defaultSummary = {
             assertions: 0,
-            errors    : [],
+            errors    : 0,
             failures  : 0,
             results   : [],
         };
@@ -409,11 +409,7 @@ export default ({ assert, describe, it }) => {
             it('returns an object with an `issuesText` string property', () => {
                 const result = getSummaryParts({
                     ...defaultSummary,
-                    errors: [
-                        { isOk: false, msg: 'boots'    },
-                        { isOk: false, msg: 'towers'   },
-                        { isOk: false, msg: 'jalapeño' },
-                    ],
+                    errors: 3,
                 });
 
                 assert(result.issuesText).isString();
@@ -424,7 +420,7 @@ export default ({ assert, describe, it }) => {
                     it('includes "1 dragon"', () => {
                         assert(getSummaryParts({
                             ...defaultSummary,
-                            errors: [ { isOk: false, msg: 'lobster' } ],
+                            errors: 1,
                         }).issuesText)
                             .stringIncludes('1 dragon')
                             .stringExcludes('dragons');
@@ -435,10 +431,7 @@ export default ({ assert, describe, it }) => {
                     it('includes "2 dragons"', () => {
                         assert(getSummaryParts({
                             ...defaultSummary,
-                            errors: [
-                                { isOk: false, msg: 'broken' },
-                                { isOk: false, msg: 'buggy'  },
-                            ],
+                            errors: 2,
                         }).issuesText).stringIncludes('2 dragons');
                     });
                 });
@@ -448,10 +441,7 @@ export default ({ assert, describe, it }) => {
         describe('given two errors and two failures', () => {
             const result = getSummaryParts({
                 ...defaultSummary,
-                errors: [
-                    { isOk: false, msg: 'broken' },
-                    { isOk: false, msg: 'buggy'  },
-                ],
+                errors: 2,
                 failures: 2,
             }).issuesText;
 
@@ -574,7 +564,7 @@ export default ({ assert, describe, it }) => {
     describe('getSummaryLink()', () => {
         const defaultSummary = {
             assertions: 0,
-            errors    : [],
+            errors    : 0,
             failures  : 0,
             results   : [],
         };
@@ -592,7 +582,7 @@ export default ({ assert, describe, it }) => {
             it('include a link with a `data-error` attribute', () => {
                 const doc = parseHtml(getSummaryLink({
                     ...defaultSummary,
-                    errors: [ { isOk: false, msg: 'Bad dates' } ],
+                    errors: 1,
                 }));
 
                 assert(Boolean(doc.querySelector('a[data-error="true"]'))).isTrue();

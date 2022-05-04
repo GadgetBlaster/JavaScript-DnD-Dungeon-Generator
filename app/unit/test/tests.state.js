@@ -68,11 +68,11 @@ export default ({ assert, describe, it }) => {
 
         onError('Some unfortunate error');
 
-        const { errors } = getSummary();
+        const { results } = getSummary();
 
-        const entry = errors.pop();
+        const entry = results.pop();
 
-        it('adds a `Result` entry to the `errors` array', () => {
+        it('adds a `Result` entry to the `results` array', () => {
             assert(entry).isObject();
             assert(entry.isOk).isBoolean();
             assert(entry.msg).isString();
@@ -148,16 +148,16 @@ export default ({ assert, describe, it }) => {
                 assert(summary.assertions).isNumber();
             });
 
+            it('returns an object with a numeric `errors` property', () => {
+                assert(summary.errors).isNumber();
+            });
+
             it('returns an object with a numeric `failures` property', () => {
                 assert(summary.failures).isNumber();
             });
 
             it('returns an object with a `results` array property', () => {
                 assert(summary.results).isArray();
-            });
-
-            it('returns an object with an `errors` array property', () => {
-                assert(summary.errors).isArray();
             });
         });
 
@@ -195,7 +195,7 @@ export default ({ assert, describe, it }) => {
             });
 
             it('summary `errors` should contain 1 error', () => {
-                assert(summary.errors.length).equals(1);
+                assert(summary.errors).equals(1);
             });
         });
 
@@ -344,31 +344,31 @@ export default ({ assert, describe, it }) => {
                 onError('Bad goblin!');
                 onError('Critical fail');
 
-                const { errors } = getSummary();
+                const { errors, results } = getSummary();
 
                 describe('summary `errors`', () => {
-                    it('has 2 entries', () => {
-                        assert(errors.length).equals(2);
+                    it('has a count of 2 errors', () => {
+                        assert(errors).equals(2);
                     });
                 });
 
-                describe('the first error in the summary', () => {
+                describe('the first result in the summary', () => {
                     it('has a false `isOk` property', () => {
-                        assert(errors[0].isOk).isFalse();
+                        assert(results[0].isOk).isFalse();
                     });
 
                     it('has the error string as its `msg` property', () => {
-                        assert(errors[0].msg).equals('Bad goblin!');
+                        assert(results[0].msg).equals('Bad goblin!');
                     });
                 });
 
-                describe('the second error in the summary', () => {
+                describe('the second results in the summary', () => {
                     it('has a false `isOk` property', () => {
-                        assert(errors[1].isOk).isFalse();
+                        assert(results[1].isOk).isFalse();
                     });
 
                     it('has the error string as its `msg` property', () => {
-                        assert(errors[1].msg).equals('Critical fail');
+                        assert(results[1].msg).equals('Critical fail');
                     });
                 });
             });

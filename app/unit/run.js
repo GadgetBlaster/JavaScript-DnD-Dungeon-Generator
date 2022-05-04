@@ -46,11 +46,13 @@ export default function ({ getSummary, onError, runUnits }, suite, scope) {
     entries.forEach(([ path, tests ]) => {
         if (typeof tests !== 'function') {
             onError(`Invalid test function: ${path}`);
+            return;
         }
 
         try {
             runUnits(path, tests);
         } catch (error) {
+            // TODO getErrorMessage(error)
             let msg = typeof error === 'object' ? error.stack.toString() : error;
             onError(msg);
         }

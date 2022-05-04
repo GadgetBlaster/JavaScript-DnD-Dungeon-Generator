@@ -108,16 +108,15 @@ function getResults(summary, options = {}) {
         verbose,
     } = options;
 
-
-    if (onError && (failures || errors.length)) {
+    if (onError && (failures || errors)) {
         let messages = [];
 
         if (failures) {
             messages.push(`Encountered ${failures} ${pluralize(failures, 'ogre')}!`);
         }
 
-        if (errors.length) {
-            messages.push(`Encountered ${errors.length} ${pluralize(errors.length, 'dragon')}!`);
+        if (errors) {
+            messages.push(`Encountered ${errors} ${pluralize(errors, 'dragon')}!`);
         }
 
         let logEntries = results.filter(({ isOk }) => !isOk).map(({ msg }) => msg).join('');
@@ -125,7 +124,7 @@ function getResults(summary, options = {}) {
         onError(...messages, logEntries);
     }
 
-    if (onSuccess && !failures && !errors.length) {
+    if (onSuccess && !failures && !errors) {
         onSuccess('Zero mischievous kobolds found 👏');
     }
 
@@ -141,7 +140,7 @@ function getResults(summary, options = {}) {
     return title(scope || 'All Tests')
         + div(dots, { 'data-spacing': 'y-medium' })
         + paragraph(getSummary(summary))
-        + (log ? element('ul', log) : '');
+        + (log ? element('ul', log) : ''); // TODO use list()
 }
 
 /**
@@ -205,15 +204,15 @@ function getSummaryParts(summary) {
     let checkedForText = `Checked for ${assertions}`;
     let assertionsText = `mischievous ${pluralize(assertions, 'kobold')}`;
 
-    if (failures || errors.length) {
+    if (failures || errors) {
         let failureText = ` ${failures} ${pluralize(failures, 'ogre')}`;
-        let errorText   = ` ${errors.length} ${pluralize(errors.length, 'dragon')}`;
+        let errorText   = ` ${errors} ${pluralize(errors, 'dragon')}`;
 
         let issuesText = 'Encountered';
         issuesText += failures ? failureText : '';
-        issuesText += failures && errors.length ? ' and' : '';
-        issuesText += errors.length ? errorText : '';
-        issuesText += errors.length ? '!' : '';
+        issuesText += failures && errors ? ' and' : '';
+        issuesText += errors ? errorText : '';
+        issuesText += errors ? '!' : '';
 
         return {
             assertionsText,
@@ -301,12 +300,20 @@ export function getOutput(suite, state, options = {}) {
         return getTestList(suite, options);
     }
 
-    let list = Object.keys(suite);
+    let list = Object.keys(suite); // TODO fix name
     let testScope = list.includes(scope) ? scope : undefined;
     let summary = run(state, suite, testScope);
 
     return getResults(summary, options);
 }
+
+/**
+ * Returns an error message
+ *
+ * @param {any} error
+ * @returns {string}
+ */
+export const getErrorMessage = (error) => typeof error === 'object' ? error.stack.toString() : error;
 
 /**
  * Returns an assertion result's message string.

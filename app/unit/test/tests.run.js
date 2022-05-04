@@ -6,9 +6,9 @@ const noop = () => {};
 
 const mockSummary = {
     assertions: 0,
+    errors    : 0,
     failures  : 0,
     results   : [],
-    errors    : [],
 };
 
 const mockUnit = {

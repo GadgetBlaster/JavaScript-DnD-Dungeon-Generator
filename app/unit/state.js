@@ -1,7 +1,7 @@
 // @ts-check
 
 import * as assertFunctions from './assert.js';
-import { getResultMessage } from './output.js';
+import { getErrorMessage, getResultMessage } from './output.js';
 
 // -- Types --------------------------------------------------------------------
 
@@ -58,9 +58,9 @@ import { getResultMessage } from './output.js';
  * @typedef {object} Summary
  *
  * @prop {number} assertions
+ * @prop {number} errors
  * @prop {number} failures
  * @prop {Result[]} results
- * @prop {Result[]} errors
  */
 
 /**
@@ -108,9 +108,9 @@ export function unitState() {
     /**
      * Errors
      *
-     * @type {Result[]}
+     * @type {number}
      */
-    let errors = [];
+    let errors = 0;
 
     /**
      * Failures
@@ -250,7 +250,7 @@ export function unitState() {
     const getSummary = () => {
         return {
             assertions,
-            errors: [ ...errors ],
+            errors,
             failures,
             results: [ ...results ],
         };
@@ -259,13 +259,11 @@ export function unitState() {
     /**
      * Get summary
      *
-     * @param {string} error
+     * @param {string} msg
      */
-    const onError = (error) => {
-        let result = { isOk: false, msg: error };
-
-        results.push(result);
-        errors.push(result);
+    const onError = (msg) => {
+        errors++;
+        results.push({ isOk: false, msg });
     };
 
     return {
