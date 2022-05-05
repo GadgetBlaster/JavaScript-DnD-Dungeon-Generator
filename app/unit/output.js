@@ -129,10 +129,7 @@ function getResults(summary, options = {}) {
     }
 
     let dots = results.map(({ isOk  }) => {
-        return element('span', '', {
-            'data-ok': isOk ? 'ok' : 'fail',
-            class: 'dot',
-        });
+        return span('', { 'data-dot': isOk ? 'ok' : 'fail' });
     }).join('');
 
     let log = getLog(results, { verbose });

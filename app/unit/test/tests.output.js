@@ -110,7 +110,9 @@ export default ({ assert, describe, it }) => {
             let result = getResults(summary);
 
             it('returns one passing dot', () => {
-                const dots = parseHtml(getResults(summary)).querySelectorAll('span[data-ok="ok"]');
+                const body = parseHtml(getResults(summary));
+                const dots = body.querySelectorAll('[data-dot="ok"]');
+
                 assert(dots.length).equals(1);
             });
 
@@ -170,7 +172,9 @@ export default ({ assert, describe, it }) => {
             };
 
             it('includes two passing dots', () => {
-                const dots = parseHtml(getResults(summary)).querySelectorAll('span[data-ok="ok"]');
+                const body = parseHtml(getResults(summary));
+                const dots = body.querySelectorAll('[data-dot="ok"]');
+
                 assert(dots.length).equals(2);
             });
 
@@ -194,7 +198,9 @@ export default ({ assert, describe, it }) => {
             let result = getResults(summary);
 
             it('includes one failing dot', () => {
-                const dots = parseHtml(getResults(summary)).querySelectorAll('span[data-ok="fail"]');
+                const body = parseHtml(getResults(summary));
+                const dots = body.querySelectorAll('[data-dot="fail"]');
+
                 assert(dots.length).equals(1);
             });
 
@@ -224,7 +230,9 @@ export default ({ assert, describe, it }) => {
             let result = getResults(summary);
 
             it('includes one failing dot', () => {
-                const dots = parseHtml(getResults(summary)).querySelectorAll('span[data-ok="fail"]');
+                const body = parseHtml(getResults(summary));
+                const dots = body.querySelectorAll('[data-dot="fail"]');
+
                 assert(dots.length).equals(1);
             });
 
@@ -478,7 +486,7 @@ export default ({ assert, describe, it }) => {
         const state = {
             getSummary: () => ({
                 assertions: 1,
-                errors    : [],
+                errors    : 0,
                 failures  : 0,
                 results   : [ { isOk: true, msg: 'fake test result' } ],
             }),

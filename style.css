@@ -25,7 +25,10 @@
 
     --color-action-1: #BF0252;
     --color-action-2: #F2065F;
+
     --color-error: #FF0000;
+
+    --color-success: #14c80f;
 
     --color-gray-10: #F2F2F2;
     --color-gray-12: #a3a3a3;
@@ -506,6 +509,19 @@ ul[data-flex] li span {
     font-size: var(--font-size-small);
     margin-left: var(--spacing-medium);
 }
+
+/* Unit */
+
+[data-dot] {
+    width: 6px;
+    height: 6px;
+    border-radius: 6px;
+    display: inline-block;
+    margin: 0 2px;
+}
+
+[data-dot="ok"] { background: var(--color-success); }
+[data-dot="fail"] { background: var(--color-error); }
 
 /* Alignment */
 
