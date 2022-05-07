@@ -19,11 +19,10 @@ export default ({ assert, describe, it }) => {
     // -- Public Functions -----------------------------------------------------
 
     describe('getNav()', () => {
-        const nav  = getNav('dungeon');
-        const body = parseHtml(nav);
+        const body = parseHtml(getNav('dungeon'));
 
-        it('returns a string', () => {
-            assert(nav).isString();
+        it('returns valid HTML', () => {
+            assert(Boolean(body)).isTrue();
         });
 
         it('contains a nav link for each generator that is not disabled', () => {

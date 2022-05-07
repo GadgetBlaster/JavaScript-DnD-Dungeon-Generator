@@ -11,11 +11,10 @@ export default ({ assert, describe, it }) => {
     // -- Public Functions -----------------------------------------------------
 
     describe('link()', () => {
-        const result  = link('Home');
-        const element = parseHtml(result).querySelector('a');
+        const element = parseHtml(link('Home')).querySelector('a');
 
-        it('returns an html anchor element string', () => {
-            assert(result).isElementTag('a');
+        it('contains an HTML anchor element', () => {
+            assert(Boolean(element)).isTrue();
         });
 
         it('contains the given label', () => {

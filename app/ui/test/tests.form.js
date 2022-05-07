@@ -44,10 +44,9 @@ export default ({ assert, describe, it }) => {
                 label : 'Shovels And Spades',
             } ]);
 
-            const body     = parseHtml(result);
-            const fieldset = body.querySelector('fieldset');
+            const fieldset = parseHtml(result).querySelector('fieldset');
 
-            it('returns a fieldset element', () => {
+            it('contains an HTML fieldset element', () => {
                 assert(Boolean(fieldset)).isTrue();
             });
 
@@ -152,8 +151,7 @@ export default ({ assert, describe, it }) => {
             /** @type {KnobFieldConfig} */
             const knobConfig = { name: 'dungeonComplexity', label: 'Complexity', desc: 'Pi', type: 'range' };
 
-            const result = getFields([ knobConfig ]);
-            const body   = parseHtml(result);
+            const body   = parseHtml(getFields([ knobConfig ]));
             const input  = body.querySelector('input');
 
             it('contains an input element with the correct name', () => {
@@ -223,10 +221,13 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a type of "select"', () => {
-            const result = getKnob({ ...fakeKnob, type: 'select', values: [ 'toast', 'coffee' ] }, 'knob-dungeon-complexity');
-            const body   = parseHtml(result);
+            const body = parseHtml(getKnob({
+                ...fakeKnob,
+                type: 'select',
+                values: [ 'toast', 'coffee' ],
+            }, 'knob-dungeon-complexity'));
 
-            it('contains a select element', () => {
+            it('contains an HTML select element', () => {
                 assert(Boolean(body.querySelector('select'))).isTrue();
             });
 
@@ -256,11 +257,13 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a type of "number"', () => {
-            const result = getKnob({ ...fakeKnob, type: 'number' }, 'knob-dungeon-babble');
-            const body   = parseHtml(result);
+            const body = parseHtml(getKnob({
+                ...fakeKnob,
+                type: 'number',
+            }, 'knob-dungeon-babble'));
 
-            it('returns an html input element string', () => {
-                assert(result).isElementTag('input');
+            it('contains an HTML input element', () => {
+                assert(Boolean(body.querySelector('input'))).isTrue();
             });
 
             it('has the provided name and id', () => {
@@ -271,11 +274,13 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a type of "range"', () => {
-            const result = getKnob({ ...fakeKnob, type: 'number' }, 'knob-dungeon-slider');
-            const body   = parseHtml(result);
+            const body = parseHtml(getKnob({
+                ...fakeKnob,
+                type: 'number',
+            }, 'knob-dungeon-slider'));
 
-            it('returns an html input element string', () => {
-                assert(result).isElementTag('input');
+            it('contains an HTML input element', () => {
+                assert(Boolean(body.querySelector('input'))).isTrue();
             });
 
             it('has the provided name and id', () => {
@@ -325,11 +330,10 @@ export default ({ assert, describe, it }) => {
 
     // TODO tests for `config` & `isExpanded` options
     describe('getKnobPanel()', () => {
-        let result = getKnobPanel('dungeon');
-        let body   = parseHtml(result);
+        let body = parseHtml(getKnobPanel('dungeon'));
 
-        it('returns a string', () => {
-            assert(result).isString();
+        it('returns valid HTML', () => {
+            assert(Boolean(body)).isTrue();
         });
 
         it('contains a submit button', () => {

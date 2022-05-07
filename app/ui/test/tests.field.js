@@ -140,9 +140,11 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('slider()', () => {
-        const result  = slider('widget');
-        const body    = parseHtml(result);
-        const inputEl = body.querySelector('input');
+        const inputEl = parseHtml(slider('widget')).querySelector('input');
+
+        it('contains an HTML input element', () => {
+            assert(Boolean(inputEl)).isTrue();
+        });
 
         it('returns a string', () => {
             assert(slider('widget')).isString();

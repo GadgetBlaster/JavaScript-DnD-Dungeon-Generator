@@ -24,7 +24,7 @@ export default ({ assert, describe, it }) => {
             });
         });
 
-        it('returns an unordered list html element string', () => {
+        it('contains an unordered list HTML element', () => {
             const body = parseHtml(list([ 'Blasted!' ]));
             assert(Boolean(body.querySelector('ul'))).isTrue();
         });

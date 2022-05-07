@@ -29,8 +29,8 @@ export default ({ assert, describe, it }) => {
             const result  = func('Gandalf', { 'data-action': 'fireball', 'aria-label': 'Watch out!' });
             const element = parseHtml(result).querySelector(tag);
 
-            it('returns an html element string with the correct the tag name', () => {
-                assert(result).isElementTag(tag);
+            it(`contains an HTML ${tag} element`, () => {
+                assert(Boolean(element)).isTrue();
             });
 
             it('contains the given label', () => {
