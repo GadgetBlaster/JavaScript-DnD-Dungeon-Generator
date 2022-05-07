@@ -25,13 +25,12 @@ export default ({ assert, describe, it }) => {
         });
 
         it('returns an unordered list html element string', () => {
-            // TODO parseHtml()
-            assert(list([ 'Blasted!' ])).equals('<ul><li>Blasted!</li></ul>');
+            const body = parseHtml(list([ 'Blasted!' ]));
+            assert(Boolean(body.querySelector('ul'))).isTrue();
         });
 
         describe('given a single list item', () => {
-            const result = list([ 'Pompous Wizards' ], { 'data-type': 'unknown' });
-            const body   = parseHtml(result);
+            const body = parseHtml(list([ 'Pompous Wizards' ], { 'data-type': 'unknown' }));
 
             it('includes a single list item with the given content', () => {
                 const items = body.querySelectorAll('li');

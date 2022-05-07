@@ -85,12 +85,14 @@ export function element(tag, content = '', attributes = {}) {
  *
  * @throws
  *
- * @pram {string} string
+ * @param {string} string
  *
  * @returns {HTMLBodyElement}
  */
 export function parseHtml(string) {
-    let doc = domParser.parseFromString(string, 'text/html');
+    typeof string !== 'string' && toss('A string is required in parseHtml()');
+
+    let doc  = domParser.parseFromString(string, 'text/html');
     let body = doc.querySelector('body');
 
     if (!body.children.length && !body.textContent) {
@@ -104,11 +106,13 @@ export function parseHtml(string) {
  * Parses and returns an XMLDocument fro the given SVG string, or null if the
  * string cannot be parsed.
  *
- * @pram {string} string
+ * @param {string} string
  *
  * @returns {XMLDocument}
  */
 export function parseSvg(string) {
+    typeof string !== 'string' && toss('A string is required in parseSvg()');
+
     let doc = domParser.parseFromString(string, 'image/svg+xml');
     let errorNode = doc.querySelector('parsererror');
 

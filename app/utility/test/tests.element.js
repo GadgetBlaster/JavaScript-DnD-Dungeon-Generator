@@ -141,6 +141,14 @@ export default ({ assert, describe, it }) => {
             });
         });
 
+        describe('given an invalid type', () => {
+            it('throws', () => {
+                // @ts-expect-error
+                assert(() => parseHtml(true))
+                    .throws('A string is required in parseHtml()');
+            });
+        });
+
         describe('given an invalid HTML string', () => {
             it('throws', () => {
                 assert(() => parseHtml('<beware bad HTML'))
@@ -165,6 +173,14 @@ export default ({ assert, describe, it }) => {
                 assert(doc.querySelector('text').getAttribute('x')).equals('396');
                 assert(doc.querySelector('text').getAttribute('y')).equals('410');
                 assert(doc.querySelector('text').textContent).equals('Happiness');
+            });
+        });
+
+        describe('given an invalid type', () => {
+            it('throws', () => {
+                // @ts-expect-error
+                assert(() => parseSvg([]))
+                    .throws('A string is required in parseSvg()');
             });
         });
 
