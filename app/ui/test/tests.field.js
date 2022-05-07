@@ -19,18 +19,23 @@ export default ({ assert, describe, it }) => {
     // -- Public Functions -----------------------------------------------------
 
     describe('fieldLabel()', () => {
-        it('should return an html button element string', () => {
-            assert(fieldLabel('Widget')).isElementTag('label');
+        const body    = parseHtml(fieldLabel('Widget', { for: 'house' }));
+        const element = body.children.item(0);
+
+        it('returns an single element', () => {
+            assert(body.children.length).equals(1);
+        });
+
+        it('returns an html LABEL element', () => {
+            assert(element.tagName).equals('LABEL');
         });
 
         it('contains the provided label', () => {
-            assert(fieldLabel('Widget')).stringIncludes('Widget');
+            assert(element.textContent).equals('Widget');
         });
 
-        describe('given attributes', () => {
-            it('includes the attributes on the element', () => {
-                assert(fieldLabel('Widget', { for: 'house' })).stringIncludes('for="house"');
-            });
+        it('has the given attributes', () => {
+            assert(element).hasAttributes({ for: 'house' });
         });
     });
 

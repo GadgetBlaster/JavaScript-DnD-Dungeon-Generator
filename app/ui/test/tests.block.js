@@ -26,8 +26,20 @@ export default ({ assert, describe, it }) => {
 
     Object.entries(blocks).forEach(([ tag, func ]) => {
         describe(`${tag}()`, () => {
-            const result  = func('Gandalf', { 'data-action': 'fireball', 'aria-label': 'Watch out!' });
-            const element = parseHtml(result).querySelector(tag);
+            const body = parseHtml(func('Gandalf', {
+                'aria-label' : 'Watch out!',
+                'data-action': 'fireball',
+            }));
+
+            const element = body.children.item(0);
+
+            it('returns an single element', () => {
+                assert(body.children.length).equals(1);
+            });
+
+            it(`returns an HTML ${tag} element`, () => {
+                assert(element.tagName).equals(tag.toUpperCase());
+            });
 
             it(`contains an HTML ${tag} element`, () => {
                 assert(Boolean(element)).isTrue();
@@ -38,7 +50,10 @@ export default ({ assert, describe, it }) => {
             });
 
             it('has the given attributes', () => {
-                assert(element).hasAttributes({ 'data-action': 'fireball', 'aria-label': 'Watch out!' });
+                assert(element).hasAttributes({
+                    'aria-label' : 'Watch out!',
+                    'data-action': 'fireball',
+                });
             });
         });
     });

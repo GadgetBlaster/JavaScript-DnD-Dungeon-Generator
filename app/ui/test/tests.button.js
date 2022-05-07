@@ -14,8 +14,11 @@ export default ({ assert, describe, it }) => {
         const body    = parseHtml(button('click me', 'navigate'));
         const element = body.children.item(0);
 
-        it('returns an HTML button element', () => {
+        it('returns an single element', () => {
             assert(body.children.length).equals(1);
+        });
+
+        it('returns an HTML button element', () => {
             assert(element.tagName).equals('BUTTON');
         });
 
