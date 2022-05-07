@@ -52,18 +52,28 @@ export default ({ assert, describe, it }) => {
                 { isOk: false, msg: 'failure' },
             ];
 
-            it('returns only the failure', () => {
-                assert(getLog(results))
-                    .equals('<li class="fail">failure</li>');
+            it('contains only the failure', () => {
+                const body  = parseHtml(getLog(results));
+                const items = [ ...body.querySelectorAll('li') ];
+
+                assert(items.length).equals(1);
+                assert(items.pop()).hasAttributes({ 'data-unit-test': 'fail' });
             });
 
             describe('given the verbose flag', () => {
-                it('returns the success and the failure', () => {
-                    assert(getLog(results, { verbose: true }))
-                        .equals([
-                            '<li>success</li>',
-                            '<li class="fail">failure</li>',
-                        ].join(''));
+                it('contains the success and the failure', () => {
+                    const body  = parseHtml(getLog(results, { verbose: true }));
+                    const items = [ ...body.querySelectorAll('li') ];
+
+                    assert(items.length).equals(2);
+
+                    const [ item1, item2 ] = items;
+
+                    assert(item1).hasAttributes({ 'data-unit-test': 'ok' });
+                    assert(item1.textContent).equals('success');
+
+                    assert(item2).hasAttributes({ 'data-unit-test': 'fail' });
+                    assert(item2.textContent).equals('failure');
                 });
             });
         });
@@ -77,22 +87,29 @@ export default ({ assert, describe, it }) => {
             ];
 
             it('returns only the two failures', () => {
-                assert(getLog(results))
-                    .equals([
-                        '<li class="fail">nope</li>',
-                        '<li class="fail">no way</li>',
-                    ].join(''));
+                const body  = parseHtml(getLog(results));
+                const items = [ ...body.querySelectorAll('li') ];
+
+                assert(items.length).equals(2);
+                items.forEach((item) => {
+                    assert(item).hasAttributes({ 'data-unit-test': 'fail' });
+                });
             });
 
             describe('given the verbose flag', () => {
                 it('returns the two success and the two failures', () => {
-                    assert(getLog(results, { verbose: true }))
-                        .equals([
-                            '<li>yep</li>',
-                            '<li>you bet</li>',
-                            '<li class="fail">nope</li>',
-                            '<li class="fail">no way</li>',
-                        ].join(''));
+                    const body  = parseHtml(getLog(results, { verbose: true }));
+                    const items = [ ...body.querySelectorAll('li') ];
+
+                    assert(items.length).equals(4);
+                    items.forEach((item, i) => {
+                        const { isOk, msg } = results[i];
+                        assert(item).hasAttributes({
+                            'data-unit-test': isOk ? 'ok': 'fail',
+                        });
+
+                        assert(item.textContent).equals(msg);
+                    });
                 });
             });
         });

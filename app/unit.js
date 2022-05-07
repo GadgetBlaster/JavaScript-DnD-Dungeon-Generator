@@ -33,10 +33,7 @@ const verbose = Boolean(urlParams.get('verbose'));
 
 // -- Render -------------------------------------------------------------------
 
-navContainer.innerHTML = getTestNav({ scope, verbose });
-
-contentContainer.dataset.loaded = 'true';
-
+navContainer.innerHTML     = getTestNav({ scope, verbose });
 contentContainer.innerHTML = getOutput(suite, unitState(), {
     scope,
     verbose,

@@ -61,6 +61,7 @@
 /* Focus */
 
 :focus {
+    /* TODO glow */
     outline: 1px dashed var(--color-white);
     outline-offset: -1px;
 }
@@ -494,6 +495,11 @@ li {
     padding-right: var(--spacing-default);
 }
 
+ul[data-list-style="none"] {
+    list-style: none;
+}
+
+/* TODO Rework legend & remove these data-flex list rules */
 ul[data-flex] {
     list-style: none;
     padding-left: 0;
@@ -517,11 +523,25 @@ ul[data-flex] li span {
     height: 6px;
     border-radius: 6px;
     display: inline-block;
-    margin: 0 2px;
+    margin: var(--spacing-small) 2px;
 }
 
 [data-dot="ok"] { background: var(--color-success); }
 [data-dot="fail"] { background: var(--color-error); }
+
+[data-unit-test] {
+    margin: var(--spacing-default) 0;
+    padding-left: var(--spacing-medium);
+    padding-right: var(--spacing-medium);
+}
+
+[data-unit-test="ok"] {
+    border-left: 3px solid var(--color-success);
+}
+
+[data-unit-test="fail"] {
+    border-left: 3px solid var(--color-error);
+}
 
 /* Alignment */
 
@@ -545,12 +565,20 @@ ul[data-flex] li span {
     flex-direction: column;
 }
 
+[data-flex*="items-center"] {
+    align-items: center;
+}
+
 [data-flex*="justify-between"] {
     justify-content: space-between;
 }
 
-[data-flex*="items-center"] {
-    align-items: center;
+[data-flex*="justify-center"] {
+    justify-content: center;
+}
+
+[data-flex*="wrap"] {
+    flex-wrap: wrap;
 }
 
 /* Grid */

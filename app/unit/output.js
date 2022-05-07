@@ -66,7 +66,7 @@ function escapeHTML(string) {
 }
 
 /**
- * Returns the result log as an HTML string.
+ * Returns the result log as an HTML list element string.
  *
  * @private
  *
@@ -77,13 +77,21 @@ function escapeHTML(string) {
  * @returns {string}
  */
 function getLog(results, { verbose } = {}) {
-    return results.map(({ isOk, msg }) => {
-        if (verbose && isOk) {
-            return logEntry(msg);
+    let items = results.map(({ isOk, msg }) => {
+        if (!verbose && isOk) {
+            return;
         }
 
-        return !isOk && logEntry(msg, { class: 'fail' });
+        return element('li', escapeHTML(msg), {
+            'data-unit-test': isOk ? 'ok' : 'fail',
+        });
     }).filter(Boolean).join('');
+
+    if (!items) {
+        return '';
+    }
+
+    return element('ul', items, { 'data-list-style': 'none' });
 }
 
 /**
@@ -128,16 +136,16 @@ function getResults(summary, options = {}) {
         onSuccess('Zero mischievous kobolds found 👏');
     }
 
-    let dots = results.map(({ isOk  }) => {
-        return span('', { 'data-dot': isOk ? 'ok' : 'fail' });
+    let dots = results.map(({ isOk }, i) => {
+        return span('', {
+            'data-dot': isOk ? 'ok' : 'fail',
+        });
     }).join('');
 
-    let log = getLog(results, { verbose });
-
     return title(scope || 'All Tests')
-        + div(dots, { 'data-spacing': 'y-medium' })
         + paragraph(getSummary(summary))
-        + (log ? element('ul', log) : ''); // TODO use list()
+        + div(dots, { 'data-flex': 'justify-center wrap' })
+        + getLog(results, { verbose });
 }
 
 /**
@@ -238,18 +246,6 @@ function getTestList(suite, { verbose } = {}) {
     return title('Spell book')
         + list(getSuiteList(Object.keys(suite), { verbose }));
 }
-
-/**
- * Returns a unit test log entry as an HTML string.
- *
- * @private
- *
- * @param {string} message
- * @param {Attributes} [attributes]
- *
- * @returns {string}
- */
-const logEntry = (message, attributes) => element('li', escapeHTML(message), attributes);
 
 /**
  * Constructs URL params for the unit test navigation.
