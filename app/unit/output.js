@@ -293,9 +293,8 @@ export function getOutput(suite, state, options = {}) {
         return getTestList(suite, options);
     }
 
-    let list = Object.keys(suite); // TODO fix name
-    let testScope = list.includes(scope) ? scope : undefined;
-    let summary = run(state, suite, testScope);
+    let testScope = Object.keys(suite).includes(scope) ? scope : undefined;
+    let summary   = run(state, suite, testScope);
 
     return getResults(summary, options);
 }
