@@ -83,6 +83,8 @@ export function element(tag, content = '', attributes = {}) {
  * Parses and returns an HTMLDocument fro the given HTML string, or null if the
  * string cannot be parsed.
  *
+ * TODO move to dom.js
+ *
  * @throws
  *
  * @param {string} string
@@ -105,6 +107,10 @@ export function parseHtml(string) {
 /**
  * Parses and returns an XMLDocument fro the given SVG string, or null if the
  * string cannot be parsed.
+ *
+ * TODO move to dom.js
+ *
+ * @throws
  *
  * @param {string} string
  *

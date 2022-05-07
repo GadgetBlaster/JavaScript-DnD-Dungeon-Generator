@@ -63,6 +63,7 @@ export default ({ assert, describe, it }) => {
 
     // -- Public Functions -----------------------------------------------------
 
+    // TODO update to use parseHtml()
     describe('element()', () => {
         it('returns a string', () => {
             assert(element('p')).isString();
