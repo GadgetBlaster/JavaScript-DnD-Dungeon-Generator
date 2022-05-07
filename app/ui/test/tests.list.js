@@ -24,36 +24,50 @@ export default ({ assert, describe, it }) => {
             });
         });
 
-        it('contains an unordered list HTML element', () => {
-            const body = parseHtml(list([ 'Blasted!' ]));
-            assert(Boolean(body.querySelector('ul'))).isTrue();
+        const body    = parseHtml(list([ 'Blasted!' ]));
+        const element = body.children.item(0);
+
+        it('returns an single element', () => {
+            assert(body.children.length).equals(1);
+        });
+
+        it('returns an HTML unordered list element', () => {
+            assert(element.tagName).equals('UL');
         });
 
         describe('given a single list item', () => {
-            const body = parseHtml(list([ 'Pompous Wizards' ], { 'data-type': 'unknown' }));
-
             it('includes a single list item with the given content', () => {
-                const items = body.querySelectorAll('li');
+                const html = list([ 'Pompous Wizards' ], { 'data-type': 'unknown' });
+                const items = parseHtml(html).querySelectorAll('li');
 
                 assert(items.length).equals(1);
-                assert(items[0].textContent).equals('Pompous Wizards');
+                assert(items.item(0).textContent).equals('Pompous Wizards');
             });
+        });
 
-            describe('given attributes', () => {
-                it('has the given attributes', () => {
-                    assert(body.querySelector('ul')).hasAttributes({ 'data-type': 'unknown' });
+        describe('given attributes', () => {
+            it('has the given attributes', () => {
+                const html = list([ 'Pompous Wizards' ], {
+                    'data-spells': 'many',
+                    'data-type'  : 'unknown',
                 });
+
+                assert(parseHtml(html).children.item(0))
+                    .hasAttributes({
+                        'data-spells': 'many',
+                        'data-type'  : 'unknown',
+                    });
             });
         });
 
         describe('given multiple list items', () => {
             it('contains each list item', () => {
-                const body  = parseHtml(list([ 'Beavers', 'Gorillas', 'Guardians' ]));
-                const items = body.querySelectorAll('li');
+                const html  = list([ 'Beavers', 'Gorillas', 'Guardians' ]);
+                const items = parseHtml(html).querySelectorAll('li');
 
-                assert(items[0].textContent).equals('Beavers');
-                assert(items[1].textContent).equals('Gorillas');
-                assert(items[2].textContent).equals('Guardians');
+                assert(items.item(0).textContent).equals('Beavers');
+                assert(items.item(1).textContent).equals('Gorillas');
+                assert(items.item(2).textContent).equals('Guardians');
             });
         });
     });

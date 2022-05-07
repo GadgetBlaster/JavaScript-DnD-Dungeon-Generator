@@ -11,21 +11,19 @@ export default ({ assert, describe, it }) => {
     // -- Public Functions -----------------------------------------------------
 
     describe('link()', () => {
-        const element = parseHtml(link('Home')).querySelector('a');
+        const body    = parseHtml(link('Home'));
+        const element = body.children.item(0);
 
-        it('contains an HTML anchor element', () => {
-            assert(Boolean(element)).isTrue();
+        it('returns an single element', () => {
+            assert(body.children.length).equals(1);
+        });
+
+        it('returns an HTML anchor element', () => {
+            assert(element.tagName).equals('A');
         });
 
         it('contains the given label', () => {
             assert(element.textContent).equals('Home');
-        });
-
-        describe('given an href', () => {
-            it('should contain the href', () => {
-                let linkHtml = link('Home', 'https://www.mysticwaffle.com');
-                assert(linkHtml).stringIncludes('href="https://www.mysticwaffle.com"');
-            });
         });
 
         describe('given no href', () => {
@@ -34,9 +32,24 @@ export default ({ assert, describe, it }) => {
             });
         });
 
-        describe('given an `attrs` param', () => {
-            it('should contain the content string', () => {
-                assert(link('Home', '/', { 'data-active': true })).stringIncludes('data-active="true"');
+        describe('given an href', () => {
+            it('has the given href attribute', () => {
+                const html = link('Home', 'https://www.mysticwaffle.com');
+
+                assert(parseHtml(html).children.item(0))
+                    .hasAttributes({ href: 'https://www.mysticwaffle.com' });
+            });
+        });
+
+        describe('given attributes', () => {
+            it('has the given attributes', () => {
+                const html = link('Home', '/', {
+                    'data-active': true,
+                    'id': 'home',
+                });
+
+                assert(parseHtml(html).children.item(0))
+                    .hasAttributes({ 'data-active': 'true', id: 'home' });
             });
         });
     });
