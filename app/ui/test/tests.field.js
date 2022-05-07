@@ -142,7 +142,7 @@ export default ({ assert, describe, it }) => {
     describe('slider()', () => {
         const inputEl = parseHtml(slider('widget')).querySelector('input');
 
-        it('contains an HTML input element', () => {
+        it('returns an HTML input element', () => {
             assert(Boolean(inputEl)).isTrue();
         });
 
