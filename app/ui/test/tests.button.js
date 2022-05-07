@@ -102,6 +102,15 @@ export default ({ assert, describe, it }) => {
                     .hasAttributes({ type: 'submit' });
             });
         });
+
+        describe('given an ariaLabel option', () => {
+            it('contains an aria-label attribute with the given value', () => {
+                const html = button('Magic missile', 'toggle', { ariaLabel: 'Magic button' });
+
+                assert(parseHtml(html).children.item(0))
+                    .hasAttributes({ 'aria-label': 'Magic button' });
+            });
+        });
     });
 
 };

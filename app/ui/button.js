@@ -24,11 +24,12 @@ const validSizes = new Set([ 'auto', 'large', 'small' ]);
  * @param {string} label
  * @param {Action} action
  * @param {{
- *     active ?: boolean;
- *     size   ?: "auto" | "large" | "small";
- *     target ?: string;
- *     type   ?: "button" | "submit";
- *     value  ?: string;
+ *     active   ?: boolean;
+ *     ariaLabel?: string;
+ *     size     ?: "auto" | "large" | "small";
+ *     target   ?: string;
+ *     type     ?: "button" | "submit";
+ *     value    ?: string;
  * }} [options]
  *
  * @throws
@@ -42,6 +43,7 @@ export function button(label, action, options = {}) {
         target,
         type = 'button',
         value,
+        ariaLabel,
     } = options;
 
     !label                && toss('label is required by button()');
@@ -63,6 +65,10 @@ export function button(label, action, options = {}) {
     }, {});
 
     attributes['type'] = type;
+
+    if (ariaLabel) {
+        attributes['aria-label'] = ariaLabel;
+    }
 
     return element('button', label, attributes);
 }

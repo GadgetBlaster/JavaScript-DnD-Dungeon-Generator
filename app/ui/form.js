@@ -2,9 +2,8 @@
 
 import { button, infoLabel } from './button.js';
 import { div, fieldset, section } from './block.js';
-import { element } from '../utility/element.js';
 import { knobConfig, getKnobConfig } from '../controller/knobs.js';
-import { paragraph, small, title } from './typography.js';
+import { paragraph, small, span, title } from './typography.js';
 import { select, input, slider, fieldLabel } from './field.js';
 import { toDash, toss } from '../utility/tools.js';
 
@@ -20,8 +19,14 @@ import { toDash, toss } from '../utility/tools.js';
 
 const maxExpandedColumns = 3;
 
-const expandButton = button(element('span', '&#x25C1'), 'expand', {
+const expandButton = button(span(''), 'expand', {
     size: 'auto',
+    ariaLabel: 'Expand form',
+});
+
+const collapseButton = button(span(''), 'expand', {
+    size: 'auto',
+    ariaLabel: 'Collapse form',
 });
 
 const submitButton = button('Generate', 'generate', {
@@ -213,8 +218,10 @@ export function getKnobPanel(generator, { config, isExpanded } = {}) {
     let knobContainerAttrs   = isExpanded ? { 'data-grid': columnCount } : {};
     let buttonContainerAttrs = { 'data-flex': 'justify-between', 'data-spacing': 'default' };
 
+    let expandCollapseButton = isExpanded ? collapseButton : expandButton;
+
     let content =
-        div(submitButton + expandButton, buttonContainerAttrs) +
+        div(submitButton + expandCollapseButton, buttonContainerAttrs) +
         div(knobPanel, knobContainerAttrs);
 
     return content;
