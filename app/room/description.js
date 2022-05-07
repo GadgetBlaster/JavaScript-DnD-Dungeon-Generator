@@ -19,12 +19,13 @@ import { appendRoomTypes, customRoomLabels } from './room.js';
 /** @typedef {import('../controller/knobs.js').RoomConfig} RoomConfig */
 /** @typedef {import('../dungeon/grid.js').Dimensions} Dimensions */
 /** @typedef {import('../dungeon/map.js').Connection} Connection */
+/** @typedef {import('../dungeon/map.js').Direction} Direction */
 /** @typedef {import('../dungeon/map.js').Door} Door */
 /** @typedef {import('../item/furnishing.js').FurnitureQuantity} FurnitureQuantity */
 /** @typedef {import('./door.js').DoorKey} DoorKey */
 /** @typedef {import('./door.js').DoorType} DoorType */
-/** @typedef {import('./generate').Room} Room */
 /** @typedef {import('./generate').GeneratedRoomConfig} GeneratedRoomConfig */
+/** @typedef {import('./generate').Room} Room */
 /** @typedef {import('./room.js').RoomType} RoomType */
 
 // -- Types --------------------------------------------------------------------
@@ -385,7 +386,11 @@ export {
  * @param {Door[]} roomDoors
  * @param {number} roomNumber
  *
- * @returns {string[]}
+ * @returns {{
+ *   connection: string;
+ *   desc: string;
+ *   direction: Direction;
+ * }[]}
  */
 export const getDoorwayDescriptionList = (roomDoors, roomNumber) => {
     isRequired(roomNumber, 'roomNumber is required in getDoorwayDescriptionList()');
@@ -400,11 +405,11 @@ export const getDoorwayDescriptionList = (roomDoors, roomNumber) => {
 
         let { direction, to } = connections[roomNumber];
 
-        let desc    = getDoorwayDescription(door);
-        let connect = to === outside ? 'leading out of the dungeon' : `to room ${to}`;
-        let text    = `${capitalize(direction)}: ${capitalize(desc)} ${connect}`;
-
-        return text;
+        return {
+            connection: to === outside ? 'leading out of the dungeon' : `to room ${to}`,
+            desc: getDoorwayDescription(door),
+            direction,
+        };
     });
 
     return doors;

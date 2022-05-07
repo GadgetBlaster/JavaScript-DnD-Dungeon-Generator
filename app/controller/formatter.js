@@ -121,7 +121,11 @@ function formatRoom(room, doors) {
 
     if (doors) {
         doorwayDescriptions = subtitle('Doorways' + formatDetail(doors.length.toString()))
-            + list(getDoorwayDescriptionList(doors, roomNumber));
+            + list(getDoorwayDescriptionList(doors, roomNumber).map(({
+                direction,
+                desc,
+                connection,
+            }) => `${capitalize(direction)}: ${capitalize(desc)} ${connection}`));
     }
 
     let map   = room.map ? getMapDescription() : '';

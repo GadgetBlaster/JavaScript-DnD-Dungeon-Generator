@@ -729,16 +729,22 @@ export default ({ assert, describe, it }) => {
                         12: { direction: 'north', to: 3 },
                         3 : { direction: 'south', to: 12 },
                     },
+                    type: 'iron',
                 },
             ];
 
             const doorwayList = getDoorwayDescriptionList(doors, 12);
 
-            it('returns a list of doorway descriptions for each door', () => {
+            it('returns a list of doorway description objects for each door', () => {
                 assert(doorwayList).isArray();
+
                 doorwayList && assert(doorwayList.length).equals(2);
-                doorwayList && doorwayList.forEach((desc, i) => {
-                    assert(desc).stringIncludes(capitalize(doors[i].connections[12].direction));
+                doorwayList && doorwayList.forEach((doorway, i) => {
+                    const doorObj = doors[i];
+
+                    assert(doorway.connection).equals(`to room ${doorObj.connections[12].to}`);
+                    assert(doorway.desc).stringIncludes(doorObj.type);
+                    assert(doorway.direction).equals(doorObj.connections[12].direction);
                 });
             });
         });
@@ -752,9 +758,11 @@ export default ({ assert, describe, it }) => {
                 },
             }];
 
-            it('includes "leading out of the dungeon"', () => {
-                assert(getDoorwayDescriptionList(doors, 3).pop())
-                    .stringIncludes('leading out of the dungeon');
+            describe('the doorway connection', () => {
+                it('is "leading out of the dungeon"', () => {
+                    assert(getDoorwayDescriptionList(doors, 3).pop().connection)
+                        .equals('leading out of the dungeon');
+                });
             });
         });
 
@@ -774,8 +782,8 @@ export default ({ assert, describe, it }) => {
                 }];
 
                 it(`includes ${type} passage in the description`, () => {
-                    assert(getDoorwayDescriptionList(doors, 2).pop())
-                        .stringIncludes(`${capitalize(type)} passage`);
+                    assert(getDoorwayDescriptionList(doors, 2).pop().desc)
+                        .stringIncludes(`${type} passage`);
                 });
             });
         });
