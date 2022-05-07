@@ -533,6 +533,8 @@ ul[data-flex] li span {
     margin: var(--spacing-default) 0;
     padding-left: var(--spacing-medium);
     padding-right: var(--spacing-medium);
+    white-space: pre-wrap;
+    font-family: monospace;
 }
 
 [data-unit-test="ok"] {
