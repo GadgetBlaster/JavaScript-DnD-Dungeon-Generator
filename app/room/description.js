@@ -3,7 +3,7 @@
 import { capitalize, indefiniteArticle, isRequired, toss, toWords } from '../utility/tools.js';
 import { cellFeet } from '../dungeon/grid.js';
 import { outside } from '../dungeon/map.js';
-import { strong, subtitle } from '../ui/typography.js';
+import { subtitle } from '../ui/typography.js';
 import { getEnvironmentDescription } from './environment.js';
 import { indicateRarity } from '../attribute/rarity.js';
 import { list } from '../ui/list.js';

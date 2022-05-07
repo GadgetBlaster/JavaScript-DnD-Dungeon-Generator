@@ -6,7 +6,6 @@ import {
     paragraph,
     small,
     span,
-    strong,
     subtitle,
     title,
 } from '../typography.js';
@@ -20,7 +19,6 @@ const type = {
     'p'     : paragraph,
     'small' : small,
     'span'  : span,
-    'strong': strong,
 };
 
 /**

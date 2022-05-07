@@ -49,16 +49,6 @@ export const small = (label, attributes) => element('small', label, attributes);
 export const span = (label, attributes) => element('span', label, attributes);
 
 /**
- * Returns an HTML strong element string.
- *
- * @param {string} label
- * @param {Attributes} [attributes]
- *
- * @returns {string}
- */
-export const strong = (label, attributes) => element('strong', label, attributes);
-
-/**
  * Returns an HTML subtitle (h3) element string.
  *
  * @param {string} label
