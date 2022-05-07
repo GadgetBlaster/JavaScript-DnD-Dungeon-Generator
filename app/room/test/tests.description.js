@@ -11,6 +11,7 @@ import {
     testGetKeyDetail                 as getKeyDetail,
     testGetRoomDimensionsDescription as getRoomDimensionsDescription,
     testGetRoomDoorwayDescription    as getRoomDoorwayDescription,
+    testSortDoorways                 as sortDoorways,
 
     // Public Functions
     getDoorwayDescriptionList,
@@ -21,7 +22,6 @@ import {
 } from '../description.js';
 
 import { appendRoomTypes } from '../room.js';
-import { capitalize } from '../../utility/tools.js';
 import { cellFeet } from '../../dungeon/grid.js';
 import { conditions } from '../../attribute/condition.js';
 import { furnitureQuantities } from '../../item/furnishing.js';
@@ -57,7 +57,6 @@ export default ({ assert, describe, it }) => {
     // -- Private Functions ----------------------------------------------------
 
     describe('getRoomContentDescription()', () => {
-
         describe('given no roomType', () => {
             it('throws', () => {
                 const missingRoomType = { ...config };
@@ -448,6 +447,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
+    // TODO fix config objects
     describe('getItemConditionDescription()', () => {
         describe('given no item quantity', () => {
             it('returns undefined', () => {
@@ -508,7 +508,8 @@ export default ({ assert, describe, it }) => {
 
         describe('given an undefined door type', () => {
             it('includes the word "Key"', () => {
-                assert(getKeyDetail('Undefined key type')).stringIncludes('Key');
+                // @ts-expect-error // TODO throws()
+                assert(getKeyDetail()).stringIncludes('Key');
             });
         });
     });
@@ -685,6 +686,76 @@ export default ({ assert, describe, it }) => {
                 assert(getRoomDimensionsDescription({ width: 2, height: 3 }))
                     .equals(`${2 * cellFeet} x ${3 * cellFeet} feet`);
             });
+        });
+    });
+
+    describe('sortDoorways()', () => {
+        /** @type {Pick<Door, "rectangle" | "locked">} */
+        const doorPartial = {
+            locked: false,
+            rectangle: { x: 1, y: 1, width: 1, height: 1 },
+        };
+
+        it('sorts the doors by direction first and room connection second, based on the current roomNumber', () => {
+            /** @type {Door[]} */
+            const doors = [
+                {
+                    ...doorPartial,
+                    connections: {
+                        1: { direction: 'south', to: 3 },
+                        3: { direction: 'north', to: 1 },
+                    },
+                    direction: 'south',
+                    type: 'archway',
+                },
+                {
+                    ...doorPartial,
+                    connections: {
+                        1: { direction: 'south', to: 2 },
+                        2: { direction: 'north', to: 1 },
+                    },
+                    direction: 'south',
+                    type: 'iron',
+                },
+                {
+                    ...doorPartial,
+                    connections: {
+                        1: { direction: 'north', to: 4 },
+                        4: { direction: 'south', to: 1 },
+                    },
+                    direction: 'north',
+                    type: 'wooden',
+                },
+                {
+                    ...doorPartial,
+                    connections: {
+                        1: { direction: 'west', to: 5 },
+                        5: { direction: 'east', to: 1 },
+                    },
+                    direction: 'west',
+                    type: 'secret',
+                },
+                {
+                    ...doorPartial,
+                    connections: {
+                        1: { direction: 'east', to: 6 },
+                        6: { direction: 'west', to: 1 },
+                    },
+                    direction: 'east',
+                    type: 'passageway',
+                },
+            ];
+
+            const result = sortDoorways(doors, 1);
+
+            assert(result).isArray();
+
+            result && assert(result.length).equals(5);
+            result && assert(result.shift().type).equals('wooden');
+            result && assert(result.shift().type).equals('passageway');
+            result && assert(result.shift().type).equals('iron');
+            result && assert(result.shift().type).equals('archway');
+            result && assert(result.shift().type).equals('secret');
         });
     });
 

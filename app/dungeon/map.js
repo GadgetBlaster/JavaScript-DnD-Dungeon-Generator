@@ -187,7 +187,7 @@ function createDoor(rectangle, type, { direction, from, to }, lockedChance = 0) 
     return {
         rectangle,
         type,
-        direction,
+        direction, // TODO possible to remove direction?
         locked,
         connections: {
             [from]: { direction, to },

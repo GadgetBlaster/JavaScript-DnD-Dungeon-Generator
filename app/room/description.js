@@ -2,7 +2,7 @@
 
 import { capitalize, indefiniteArticle, isRequired, toss, toWords } from '../utility/tools.js';
 import { cellFeet } from '../dungeon/grid.js';
-import { outside } from '../dungeon/map.js';
+import { directions, outside } from '../dungeon/map.js';
 import { subtitle } from '../ui/typography.js';
 import { getEnvironmentDescription } from './environment.js';
 import { indicateRarity } from '../attribute/rarity.js';
@@ -295,6 +295,7 @@ function getKeyDetail(type) {
             return 'A mechanical leaver';
 
         default:
+            // TODO toss()
             console.warn(`Undefined key description for lockable door type ${type}`);
             return 'Key';
     }
@@ -364,6 +365,41 @@ function getRoomDoorwayDescription(roomDoors, roomNumber) {
     return `${capitalize(descParts.join(', '))}${comma} and ${last}`;
 }
 
+/**
+ * Returns an array of door configs sorted by direction relative to the given
+ * room number.
+ *
+ * @private
+  *
+ * @param {Door[]} roomDoors
+ * @param {number} roomNumber
+ *
+ * @returns {Door[]}
+ */
+function sortDoorways(roomDoors, roomNumber) {
+    if (roomDoors.length === 1) {
+        return roomDoors;
+    }
+
+    return roomDoors.sort((doorA, doorB) => {
+        let { connections: connectionsA } = doorA;
+        let { connections: connectionsB } = doorB;
+
+        if (!connectionsA[roomNumber] || !connectionsB[roomNumber]) {
+            toss('Invalid roomNumber for door connections in sortDoorways()');
+        }
+
+        let { direction: directionA, to: toA } = connectionsA[roomNumber];
+        let { direction: directionB, to: toB } = connectionsB[roomNumber];
+
+        if (directionA === directionB) {
+            return toA - toB;
+        }
+
+        return directions.indexOf(directionA) - directions.indexOf(directionB);
+    });
+}
+
 export {
     getContentDescription        as testGetContentDescription,
     getContentRarityDetail       as testGetContentRarityDetail,
@@ -374,14 +410,13 @@ export {
     getKeyDetail                 as testGetKeyDetail,
     getRoomDimensionsDescription as testGetRoomDimensionsDescription,
     getRoomDoorwayDescription    as testGetRoomDoorwayDescription,
+    sortDoorways                 as testSortDoorways,
 };
 
 // -- Public Functions ---------------------------------------------------------
 
 /**
- * Returns a list of doorways.
- *
- * TODO return an object an handle formatting in formatter.js
+ * Returns a list of doorway descriptions objects.
  *
  * @param {Door[]} roomDoors
  * @param {number} roomNumber
@@ -395,9 +430,8 @@ export {
 export const getDoorwayDescriptionList = (roomDoors, roomNumber) => {
     isRequired(roomNumber, 'roomNumber is required in getDoorwayDescriptionList()');
 
-    // TODO sort by cardinal directions, N, E, S, W
-    let doors = roomDoors.map((door) => {
-        let { connections} = door;
+    return sortDoorways(roomDoors, roomNumber).map((door) => {
+        let { connections } = door;
 
         if (!connections[roomNumber]) {
             toss('Invalid roomNumber for door connections in getDoorwayDescriptionList()');
@@ -411,8 +445,6 @@ export const getDoorwayDescriptionList = (roomDoors, roomNumber) => {
             direction,
         };
     });
-
-    return doors;
 };
 
 /**
