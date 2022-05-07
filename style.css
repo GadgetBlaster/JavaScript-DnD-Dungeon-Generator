@@ -4,6 +4,7 @@
 /* Config */
 
 :root {
+    /* Type */
     --font-default: 'Varela', monospace;
     --font-logo: 'Tapestry', monospace;
 
@@ -19,17 +20,21 @@
 
     --button-font-size: 13px;
 
+    /* Borders */
     --border-radius: 3px;
 
+    /* Transitions */
     --transition-default: 500ms;
 
-    --color-action-1: #BF0252;
-    --color-action-2: #F2065F;
-
+    /* Colors */
+    --color-action: #BF0252;
+    --color-action-active: #F2065F;
+    --color-secondary: #08B3BD;
+    --color-secondary-active: #04d4e0;
     --color-error: #FF0000;
-
     --color-success: #14c80f;
 
+    --color-gray-0: #ffffff;
     --color-gray-10: #F2F2F2;
     --color-gray-12: #a3a3a3;
     --color-gray-15: #798282;
@@ -37,9 +42,6 @@
     --color-gray-30: #3B3D3D;
     --color-gray-35: #202121;
     --color-gray-40: #0C0F0F;
-
-    --color-secondary: #08B3BD;
-    --color-white: #ffffff;
 
     --text-color: var(--color-gray-10);
     --link-color: #FF4289;
@@ -50,20 +52,21 @@
     --bg-sidebar: var(--color-gray-35);
     --bg: var(--color-gray-40);
 
+    /* Spacing */
     --spacing-default: 20px;
     --spacing-large: 40px;
     --spacing-medium: 10px;
     --spacing-small: 5px;
 
+    /* UI */
     --sidebar-width: 220px;
 }
 
 /* Focus */
 
 :focus {
-    /* TODO glow */
-    outline: 1px dashed var(--color-white);
-    outline-offset: -1px;
+    outline: 2px solid var(--color-gray-10);
+    outline-offset: -2px;
 }
 
 /* Layout */
@@ -99,7 +102,6 @@ body > header {
 body > aside {
     grid-area: left;
     width: var(--sidebar-width);
-    color: var(--color-white);
     background: var(--bg-sidebar);
     animation-duration: var(--transition-default);
     animation-name: slideIn;
@@ -133,6 +135,7 @@ body > footer {
     position: fixed;
     bottom: 0;
     background: var(--bg-footer);
+    box-shadow: 0 0 40px 10px var(--color-gray-40);
     transform: translate3d(0, 100%, 0);
     animation-delay: 3s;
     animation-duration: 2s;
@@ -156,7 +159,7 @@ h1 {
 }
 
 h1 a {
-    color: var(--color-white);
+    color: var(--color-gray-0);
 }
 
 h1 a:hover {
@@ -166,7 +169,7 @@ h1 a:hover {
 /* Nav */
 
 body > header > nav {
-    color: var(--color-white);
+    color: var(--color-gray-0);
     display: flex;
     align-items: center;
     margin: 10px;
@@ -174,7 +177,7 @@ body > header > nav {
 
 body > header > nav [data-separator] {
     margin: 0 15px;
-    border-left: 1px solid var(--color-white);
+    border-left: 1px solid var(--color-gray-0);
     height: 15px;
 }
 
@@ -239,8 +242,8 @@ header nav a {
     cursor: pointer;
     border-radius: var(--border-radius);
     border: 0;
-    background: var(--color-action-1);
-    color: var(--color-white);
+    background: var(--color-action);
+    color: var(--color-gray-0);
     font-size: var(--button-font-size);
     font-family: var(--font-default);
     display: inline-flex;
@@ -254,7 +257,11 @@ button:hover,
 button[data-active],
 header nav a[data-active],
 header nav a:hover {
-    background: var(--color-action-2);
+    background: var(--color-action-active);
+    text-decoration: none;
+}
+
+header nav a:focus {
     text-decoration: none;
 }
 
@@ -329,7 +336,7 @@ button[data-ready]:hover {
 }
 
 button[data-ready] span {
-    text-shadow: 0 0 10px var(--color-white);
+    text-shadow: 0 0 10px var(--color-gray-0);
     font-size: var(--font-size-title);
 }
 
@@ -385,21 +392,33 @@ label {
 input,
 select {
     width: 100%;
-    height: 30px;
+    height: 38px;
+    margin: 0;
+    padding: 0 12px;
     box-sizing: border-box;
+    color: var(--text-color);
+    background: var(--color-gray-40);
+    border: 1px solid var(--color-gray-15);
     border-radius: var(--border-radius);
-    border: 0;
     font-size: var(--font-size-default);
+    transition: background var(--transition-default), border var(--transition-default);
 }
 
-input {
-    padding: 0 8px;
-    margin: 0;
+input:hover,
+select:hover {
+    border-color: var(--color-secondary);
+}
+
+input:focus,
+select:focus {
+    border-color: var(--color-secondary-active);
+    outline: none;
 }
 
 input[type="range"] {
     padding: 0;
     height: auto;
+    border: 0;
     width: 100%; /* Specific width is required for Firefox. */
     -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
     background: transparent; /* Otherwise white in Chrome */
@@ -408,11 +427,10 @@ input[type="range"] {
 input[type=range]::-webkit-slider-thumb {
     -webkit-appearance: none;
     margin-top: -4px;
-
     height: 16px;
     width: 16px;
     border-radius: 50%;
-    background: var(--color-white);
+    background: var(--color-gray-0);
     cursor: pointer;
 }
 
@@ -420,7 +438,7 @@ input[type=range]::-moz-range-thumb {
     height: 16px;
     width: 16px;
     border-radius: 50%;
-    background: var(--color-white);
+    background: var(--color-gray-0);
     cursor: pointer;
 }
 
@@ -430,6 +448,7 @@ input[type=range]::-webkit-slider-runnable-track {
     cursor: pointer;
     background: var(--color-secondary);
     border-radius: var(--border-radius);
+    transition: background var(--transition-default);
 }
 
 input[type=range]::-moz-range-track {
@@ -438,6 +457,26 @@ input[type=range]::-moz-range-track {
     cursor: pointer;
     background: var(--color-secondary);
     border-radius: var(--border-radius);
+    transition: background var(--transition-default);
+}
+
+input[type="range"]:focus::-webkit-slider-runnable-track {
+    background: var(--color-secondary-active);
+}
+
+input[type="range"]:focus::-moz-range-track {
+    background: var(--color-secondary-active);
+}
+
+select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg fill="white" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z" /><path d="M0 0h24v24H0" fill="none" /></svg>');
+    background-repeat: no-repeat;
+    background-position-x: calc(100% - 5px);
+    background-position-y: 50%;
+    padding-right: 36px;
+    cursor: pointer;
 }
 
 /* Type */
