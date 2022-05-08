@@ -194,11 +194,11 @@ export default ({ assert, describe, it }) => {
             const error = getErrorMessage();
 
             assert(error).isObject();
-            assert(error.title).isString();
+            assert(error.title).equals('Oh no!');
             assert(error.message).isString();
         });
 
-        describe('given a 4004 page', () => {
+        describe('given a 404 page', () => {
             it('returns a 404 error', () => {
                 const error = getErrorMessage(404);
 
