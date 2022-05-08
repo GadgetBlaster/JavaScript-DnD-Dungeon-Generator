@@ -231,8 +231,7 @@ article article {
     margin-bottom: var(--spacing-medium);
 }
 
-/* TODO rename data-info */
-article [data-info] {
+article [data-detail] {
     color: var(--color-gray-12);
 }
 
@@ -285,17 +284,14 @@ button[data-size="large"] {
 
 button[data-info] {
     padding: 0;
-    width: 20px;
-    height: 18px;
+    width: var(--spacing-default);
+    height: var(--spacing-default);
+    border-radius: var(--spacing-default);
 }
 
 button + button,
 header nav a + a {
     margin-left: 10px;
-}
-
-button[data-action="accordion"] {
-    justify-content: left;
 }
 
 button[data-action="generate"] {

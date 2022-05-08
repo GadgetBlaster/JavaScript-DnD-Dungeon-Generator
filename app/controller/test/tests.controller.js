@@ -140,7 +140,7 @@ export default ({ assert, describe, it }) => {
                 const list  = body.querySelector('ul');
 
                 assert(title.textContent).stringIncludes('Items');
-                assert(title.querySelector('span[data-info="true"]').textContent)
+                assert(title.querySelector('span[data-detail]').textContent)
                     .stringIncludes('1');
 
                 assert(list.querySelectorAll('li').length).equals(1);
@@ -163,7 +163,7 @@ export default ({ assert, describe, it }) => {
                 assert(title.textContent).equals('Room');
                 assert(subtitles[0].textContent).stringIncludes('Description');
                 assert(subtitles[1].textContent).stringIncludes('Items');
-                assert(subtitles[1].querySelector('span[data-info="true"]').textContent)
+                assert(subtitles[1].querySelector('span[data-detail]').textContent)
                     .stringIncludes('1');
 
                 assert(list.querySelectorAll('li').length).equals(1);

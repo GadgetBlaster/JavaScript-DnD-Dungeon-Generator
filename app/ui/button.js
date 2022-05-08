@@ -56,7 +56,7 @@ export function button(label, action, options = {}) {
         ...(active && { active }),
         ...(target && { target }),
         ...(value && { value }),
-        ...(label === infoLabel && { 'info': 'true' }),
+        ...(label === infoLabel && { 'info': '' }),
     };
 
     let attributes = Object.keys(dataAttrs).reduce((attrs, key) => {

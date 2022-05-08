@@ -53,9 +53,9 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a label that matches the infoLabel', () => {
-            it('contains a data-info="true" attribute', () => {
+            it('contains a data-info attribute', () => {
                 assert(parseHtml(button(infoLabel, 'navigate')).children.item(0))
-                    .hasAttributes({ 'data-info': 'true' });
+                    .hasAttributes({ 'data-info': '' });
             });
         });
 

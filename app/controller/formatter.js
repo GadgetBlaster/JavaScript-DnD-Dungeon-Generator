@@ -40,7 +40,7 @@ const maxRoomColumns = 3;
  *
  * @returns {string}
  */
-const formatDetail = (content) => span(` (${content})`, { 'data-info': true });
+const formatDetail = (content) => span(`(${content})`, { 'data-detail': '' });
 
 /**
  * Formats output for the item display.
@@ -120,7 +120,7 @@ function formatRoom(room, doors) {
     let doorwayDescriptions = '';
 
     if (doors) {
-        doorwayDescriptions = subtitle('Doorways' + formatDetail(doors.length.toString()))
+        doorwayDescriptions = subtitle('Doorways ' + formatDetail(doors.length.toString()))
             + list(getDoorwayDescriptionList(doors, roomNumber).map(({
                 direction,
                 desc,
@@ -131,7 +131,7 @@ function formatRoom(room, doors) {
     let map   = room.map ? getMapDescription() : '';
     let keys  = room.keys ? getKeyDescription(room.keys) : '';
     let traps = room.traps
-        ? subtitle('Traps' + formatDetail(room.traps.length.toString())) + list(room.traps)
+        ? subtitle('Traps ' + formatDetail(room.traps.length.toString())) + list(room.traps)
         : '';
 
     return article(articleHeader
@@ -139,7 +139,7 @@ function formatRoom(room, doors) {
         + subtitle('Description')
         + paragraph(description)
         + doorwayDescriptions
-        + subtitle('Items' + formatDetail(getItemTotal(itemSet).toString()))
+        + subtitle('Items ' + formatDetail(getItemTotal(itemSet).toString()))
         + formatItemContent(itemSet)
         + map
         + keys
@@ -202,7 +202,7 @@ function getItemDescription(item) {
 
     let noteText = notes.join(', ');
 
-    return name + (noteText ? formatDetail(noteText) : '');
+    return name + (noteText ? ' ' + formatDetail(noteText) : '');
 }
 
 /**
