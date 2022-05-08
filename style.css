@@ -224,9 +224,9 @@ article header {
     margin-bottom: var(--spacing-medium);
 }
 
-article article {
+article > section {
     border: 1px solid var(--color-gray-15);
-    border-radius: 0;
+    border-radius: var(--border-radius);
     padding: var(--spacing-medium);
     margin-bottom: var(--spacing-medium);
 }
@@ -535,7 +535,7 @@ small {
 ul {
     line-height: var(--leading-loose);
     padding-left: var(--spacing-default);
-    margin: var(--spacing-default) 0;
+    margin: var(--spacing-medium) 0;
 }
 
 li {
@@ -689,6 +689,10 @@ ul[data-flex] li span {
 
 [data-spacing="b"] {
     margin-bottom: var(--spacing-default);
+}
+
+[data-spacing="b-none"] {
+    margin-bottom: 0;
 }
 
 [data-spacing="medium"] {

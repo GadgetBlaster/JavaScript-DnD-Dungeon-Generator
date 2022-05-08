@@ -29,7 +29,9 @@ import {
 
 // -- Const --------------------------------------------------------------------
 
-const maxRoomColumns = 3;
+const idealItemsPerColumn = 12;
+const maxItemColumns      = 3;
+const maxRoomColumns      = 3;
 
 // -- Private Functions --------------------------------------------------------
 
@@ -48,12 +50,11 @@ const formatDetail = (content) => span(`(${content})`, { 'data-detail': '' });
  * @private
  *
  * @param {ItemSet} itemSet
+ * @param {number} [columns = 1]
  *
  * @returns {string}
  */
-function formatItemContent(itemSet) {
-    // TODO columns
-
+function formatItemContent(itemSet, columns = 1) {
     let {
         conditionUniformity,
         containers,
@@ -61,20 +62,24 @@ function formatItemContent(itemSet) {
         rarityUniformity,
     } = itemSet;
 
+    let itemListAttrs = { 'data-spacing': 'b-none' };
 
-    let itemsList = items.length ? list(items.map((item) => getItemDescription(item))) : '';
-    let containerList = '';
-
-    if (containers.length) {
-        containerList = itemSet.containers.map((item) => {
-            isRequired(item.contents, 'Contents are required in containers');
-
-            let content = getItemDescription(item)
-                + list(item.contents.map((containerItem) => getItemDescription(containerItem)));
-
-            return article(content);
-        }).join('');
+    if (columns > 1) {
+        itemListAttrs['data-columns'] = columns;
     }
+
+    let itemsList = items.length ? list(items.map((item) => getItemDescription(item)), itemListAttrs) : '';
+
+    let containerList = containers.map((item) => {
+        isRequired(item.contents, 'Contents are required in containers');
+
+        let content = getItemDescription(item)
+            + list(item.contents.map((containerItem) => getItemDescription(containerItem)), {
+                'data-spacing': 'b-none',
+            });
+
+        return section(content);
+    }).join('');
 
     let description = '';
 
@@ -233,7 +238,7 @@ export {
 // -- Public Functions ---------------------------------------------------------
 
 /**
- * Formats output from the dungeon generator.
+ * Formats output of the dungeon generator.
  *
  * @param {Dungeon} dungeon
  */
@@ -247,8 +252,6 @@ export function formatDungeon(dungeon) {
 
 /**
  * Formats output for an error page.
- *
- * TODO tests
  *
  * @param {string} errorTitle
  * @param {string[]} messages
@@ -264,21 +267,24 @@ export function formatError(errorTitle, messages) {
 }
 
 /**
- * Formats output from the item generator.
+ * Formats output of the item generator.
  *
  * @param {ItemSet} itemSet
  *
  * @returns {string}
  */
 export function formatItems(itemSet) {
-    let content = header(title('Items' + formatDetail(getItemTotal(itemSet).toString())))
-        + formatItemContent(itemSet);
+    let columns = Math.min(Math.ceil(itemSet.items.length / idealItemsPerColumn), maxItemColumns);
+
+    let content = header(title('Items ' + formatDetail(getItemTotal(itemSet).toString())))
+        + formatItemContent(itemSet, columns);
 
     return section(article(content));
 }
 
 /**
- * TODO
+ * Formats output of the name generator.
+ *
  * @param {string} name
  *
  * @returns {string}
@@ -288,7 +294,7 @@ export function formatName(name) {
 }
 
 /**
- * Formats ready UI.
+ * Formats the ready state UI.
  *
  * @private
  *
@@ -308,7 +314,7 @@ export function formatReadyState(message, icon) {
 }
 
 /**
- * Formats output from the room generator.
+ * Formats output of the room generator.
  *
  * @param {Room[]} rooms
  *
