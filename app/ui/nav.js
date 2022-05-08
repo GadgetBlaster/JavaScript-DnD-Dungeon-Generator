@@ -43,7 +43,7 @@ export const getNav = (activeGenerator) => generators
     .filter((generator) => !disabledGenerators.has(generator))
     .map((generator, i) => link(capitalize(generator), routeLookup[generator], {
         'data-action': 'navigate',
-        'data-active': activeGenerator === generator,
+        'data-active': activeGenerator === generator ? '' : null,
         'data-target': generator,
         'style'      : `animation-delay: ${2000 + (500 * i)}ms;`,
     })).join('');
@@ -57,7 +57,7 @@ export const getNav = (activeGenerator) => generators
 export function setActiveNavItem(nav, generator) {
     getElements(nav.children).forEach((btn) => {
         if (btn.dataset.target === generator) {
-            btn.dataset.active = 'true';
+            btn.dataset.active = '';
             return;
         }
 

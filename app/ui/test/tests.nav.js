@@ -46,7 +46,7 @@ export default ({ assert, describe, it }) => {
 
         it('sets the correct active item', () => {
             assert(body.querySelector('a[data-target="dungeon"]'))
-                .hasAttributes({ 'data-active': 'true' });
+                .hasAttributes({ 'data-active': '' });
         });
     });
 
@@ -54,7 +54,7 @@ export default ({ assert, describe, it }) => {
         describe('given a container with three nav buttons', () => {
             const nav = document.createElement('div');
             nav.innerHTML = `
-                <button data-target="dungeon" data-active="true">Frog</button>
+                <button data-target="dungeon" data-active>Frog</button>
                 <button data-target="rooms">Grog</button>
                 <button data-target="items">Nog</button>
             `;
@@ -65,7 +65,7 @@ export default ({ assert, describe, it }) => {
                 it('remains the active element', () => {
                     /** @type {HTMLElement} targetEl */
                     const targetEl = nav.querySelector('[data-target="dungeon"]');
-                    assert(targetEl.dataset.active).equals('true');
+                    assert(targetEl.dataset.active).equals('');
                 });
 
                 it('is the only active element', () => {
@@ -79,7 +79,7 @@ export default ({ assert, describe, it }) => {
                 it('sets the target element as the active element', () => {
                     /** @type {HTMLElement} targetEl */
                     const targetEl = nav.querySelector('[data-target="items"]');
-                    assert(targetEl.dataset.active).equals('true');
+                    assert(targetEl.dataset.active).equals('');
                 });
 
                 it('is the only active element', () => {

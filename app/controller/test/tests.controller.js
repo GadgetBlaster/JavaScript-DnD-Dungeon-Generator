@@ -312,7 +312,7 @@ export default ({ assert, describe, it }) => {
                 assert(knobs.innerHTML).stringIncludes('Generate');
 
                 // Nav
-                assert(roomsButton.dataset.active).equals('true');
+                assert(roomsButton.dataset.active).equals('');
                 assert(dungeonButton.dataset.active).isUndefined();
 
                 // Router
@@ -333,7 +333,7 @@ export default ({ assert, describe, it }) => {
 
             assert(content.innerHTML).stringIncludes('Generate Dungeon');
             assert(knobs.innerHTML).stringIncludes('Generate');
-            assert(dungeonButton.dataset.active).equals('true');
+            assert(dungeonButton.dataset.active).equals('');
         });
 
         describe('when the layout is full', () => {
