@@ -42,7 +42,6 @@ We ask you don't use this for commercial use without permission and link Attribu
 
 ## TODO list:
 
-- [ ] Loading indicator.
 - [ ] Fix awkward room descriptions.
 - [ ] Add rare loot and magical item generation.
 - [ ] Required items by room type. For example, a bedroom should always contain at least a bed.

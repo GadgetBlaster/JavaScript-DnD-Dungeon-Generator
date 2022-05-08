@@ -563,6 +563,26 @@ ul[data-flex] li span {
     margin-left: var(--spacing-medium);
 }
 
+/* Spinner */
+
+[data-spinner] {
+    position: absolute;
+}
+
+[data-spinner]:after {
+    content: '';
+    box-sizing: border-box;
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    margin-top: -100px;
+    margin-left: -100px;
+    border-radius: 50%;
+    border-top: 2px solid var(--color-secondary);
+    border-right: 2px solid transparent;
+    animation: spin 2s linear infinite;
+}
+
 /* Unit */
 
 [data-dot] {
@@ -694,7 +714,7 @@ ul[data-flex] li span {
 }
 
 /* Print */
-/* TODO print needs to negate dark mode? */
+/* TODO print needs to negate dark mode, or provide a print feature */
 
 @media print {
     [data-no-print] {
@@ -732,4 +752,8 @@ ul[data-flex] li span {
     to {
         transform: translate3d(0, 0, 0);
     }
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }
