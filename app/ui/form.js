@@ -128,12 +128,12 @@ const getInputElements = (knobContainer) => [ ...knobContainer.querySelectorAll(
  * @private
  * @throws
  *
- * @param {KnobFieldConfig} settings
+ * @param {KnobFieldConfig} config
  * @param {string} id
  *
  * @returns {string}
  */
-function getKnob(settings, id) {
+function getKnob(config, id) {
     let {
         name,
         type,
@@ -141,13 +141,12 @@ function getKnob(settings, id) {
         values,
         min,
         max,
-    } = settings;
+    } = config;
 
     switch (type) {
         case 'select':
             if (typeof value !== 'undefined' && typeof value !== 'string') {
-                toss('Value of select must be of type string in getKnob()');
-                return;
+                toss('Select value must be a string in getKnob()');
             }
 
             return select(name, values, value, { id });
@@ -159,7 +158,7 @@ function getKnob(settings, id) {
             return slider(name, { min, max, value, id });
 
         default:
-            toss('Invalid knob type');
+            toss('Invalid knob type in getKnob()');
     }
 }
 

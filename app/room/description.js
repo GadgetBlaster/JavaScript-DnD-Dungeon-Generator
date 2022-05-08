@@ -389,7 +389,7 @@ function sortDoorways(roomDoors, roomNumber) {
         let b = connectionB.get(roomNumber);
 
         if (!a || !b) {
-            toss('Invalid roomNumber for door connection in sortDoorways()');
+            toss(`Invalid roomNumber "${roomNumber}" for door connection in sortDoorways()`);
         }
 
         let { direction: directionA, to: toA } = a;

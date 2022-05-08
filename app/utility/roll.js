@@ -26,7 +26,6 @@ export function createProbability(distributionTable) {
     !distributionTable.size && toss('distributionTable Map must have values in createProbability()');
 
     distributionTable.forEach((value, key) => {
-        typeof value !== 'string' && toss(`distributionTable value "${value}" must be a string in createProbability()`);
         !Number.isInteger(key) && toss(`distributionTable key "${key}" must be an integer in createProbability()`);
 
         key < minPercent && toss(`distributionTable key "${key}" must be ${minPercent} or greater in createProbability()`);
@@ -67,11 +66,11 @@ export function createProbability(distributionTable) {
  * @returns {number}
  */
 export function roll(min = 0, max = 1) {
-    !Number.isInteger(min) && toss('Roll `min` must be an integer');
-    !Number.isInteger(max) && toss('Roll `max` must be an integer');
+    !Number.isInteger(min) && toss('min must be an integer in roll()');
+    !Number.isInteger(max) && toss('max must be an integer in roll()');
 
-    min < 0   && toss('Roll `min` cannot be negative');
-    min > max && toss('Roll `min` must less than or equal to `max`');
+    min < 0   && toss('min cannot be negative in roll()');
+    min > max && toss('min must less than or equal to max in roll()');
 
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -86,8 +85,8 @@ export function roll(min = 0, max = 1) {
  * @returns {*}
  */
 export function rollArrayItem(array) {
-    !Array.isArray(array) && toss('Invalid roll array');
-    !array.length && toss('Roll array must have values');
+    !Array.isArray(array) && toss('Invalid array in rollArrayItem()');
+    !array.length && toss('array must have values in rollArrayItem()');
 
     return array[Math.floor(Math.random() * array.length)];
 }
@@ -102,9 +101,9 @@ export function rollArrayItem(array) {
  * @returns {boolean}
  */
 export function rollPercentile(chance) {
-    !Number.isInteger(chance) && toss('rollPercentile() chance must be an integer');
-    chance < minPercent && toss(`rollPercentile() chance must be ${minPercent} or greater`);
-    chance > maxPercent && toss(`rollPercentile() chance cannot exceed ${maxPercent}`);
+    !Number.isInteger(chance) && toss('chance must be an integer in rollPercentile()');
+    chance < minPercent && toss(`chance must be ${minPercent} or greater in rollPercentile()`);
+    chance > maxPercent && toss(`chance cannot exceed ${maxPercent} in rollPercentile()`);
 
     if (chance === 0) {
         return false;

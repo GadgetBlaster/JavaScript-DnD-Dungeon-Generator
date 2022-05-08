@@ -30,8 +30,6 @@ export { disabledGenerators as testDisabledGenerators };
 const getElements = (collection) => [ ...collection ].map((el) =>
     el instanceof HTMLElement && el).filter(Boolean);
 
-export { getElements as testGetElements };
-
 // -- Public Functions ---------------------------------------------------------
 
 /**

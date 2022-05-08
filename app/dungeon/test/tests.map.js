@@ -32,7 +32,7 @@ import {
 import { createBlankGrid, wallSize } from '../grid.js';
 import { roomDimensionRanges } from '../../room/dimensions.js';
 import { generateRooms } from '../../room/generate.js';
-import { testTrapLabel as trapLabel } from '../draw.js';
+
 import {
     doorTypes,
     probability as doorProbability,
@@ -1074,7 +1074,7 @@ export default ({ assert, describe, it }) => {
                 itemRarity           : 'average',
                 itemType             : 'miscellaneous',
                 roomCondition        : 'average',
-                roomCount            : 34,
+                roomCount            : 2,
                 roomFurnitureQuantity: 'average',
                 roomSize             : 'medium',
                 roomType             : 'room',

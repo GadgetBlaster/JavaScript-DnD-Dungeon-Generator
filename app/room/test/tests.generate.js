@@ -91,14 +91,14 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given an item condition of "random"', () => {
-            describe('when `isRandomItemConditionUniform` is falsy', () => {
+            describe('when isRandomItemConditionUniform is falsy', () => {
                 it('returns an item condition of "random"', () => {
                     const randomizedItemConfig = applyRoomRandomization({ ...roomConfig, itemCondition: 'random' });
                     assert(randomizedItemConfig.itemCondition).equals('random');
                 });
             });
 
-            describe('when `isRandomItemConditionUniform` is true', () => {
+            describe('when isRandomItemConditionUniform is true', () => {
                 it('returns a randomized item condition', () => {
                     const randomizedItemConfig = applyRoomRandomization({ ...roomConfig, itemCondition: 'random' }, {
                         isRandomItemConditionUniform: true,
@@ -110,14 +110,14 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given an item rarity of "random"', () => {
-            describe('when `isRandomItemRarityUniform` is falsy', () => {
+            describe('when isRandomItemRarityUniform is falsy', () => {
                 it('returns an undefined item rarity', () => {
                     const randomizedItemConfig = applyRoomRandomization({ ...roomConfig, itemRarity: 'random' });
                     assert(randomizedItemConfig.itemRarity).equals('random');
                 });
             });
 
-            describe('when `isRandomItemRarityUniform` is true', () => {
+            describe('when isRandomItemRarityUniform is true', () => {
                 it('returns a randomized item rarity', () => {
                     const randomizedItemConfig = applyRoomRandomization({ ...roomConfig, itemRarity: 'random' }, {
                         isRandomItemRarityUniform: true,
@@ -188,7 +188,7 @@ export default ({ assert, describe, it }) => {
                 'roomSize',
                 'roomType',
             ].forEach((requiredConfig) => {
-                describe(`given no \`${requiredConfig}\``, () => {
+                describe(`given no ${requiredConfig}`, () => {
                     const incompleteConfig = { ...config };
                     delete incompleteConfig[requiredConfig];
 
@@ -199,7 +199,7 @@ export default ({ assert, describe, it }) => {
                 });
             });
 
-            describe('given a `roomCount` of 2', () => {
+            describe('given a roomCount of 2', () => {
                 it('returns an array with 2 room objects', () => {
                     const rooms = generateRooms({
                         ...config,
@@ -209,14 +209,14 @@ export default ({ assert, describe, it }) => {
                     assert(rooms).isArray();
                     assert(rooms.length).equals(2);
 
-                    rooms && rooms.forEach((roomConfig) => {
+                    rooms.forEach((roomConfig) => {
                         assert(roomConfig.config).isObject();
                         assert(roomConfig.itemSet).isObject();
                     });
                 });
             });
 
-            describe('given a `knobs.itemQuantity` of "couple"', () => {
+            describe('given a itemQuantity of "couple"', () => {
                 it('returns an array of room objects with two items each', () => {
                     const room = generateRooms({
                         ...config,
@@ -230,7 +230,7 @@ export default ({ assert, describe, it }) => {
                     assert(itemCount + containerCount).equals(2);
                 });
 
-                describe('given a `roomFurnitureQuantity` of `minimum`', () => {
+                describe('given a roomFurnitureQuantity of "minimum"', () => {
                     it('returns an array of room objects with three items', () => {
                         const room = generateRooms({
                             ...config,

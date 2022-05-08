@@ -751,6 +751,23 @@ export default ({ assert, describe, it }) => {
             result && assert(result.shift().type).equals('archway');
             result && assert(result.shift().type).equals('secret');
         });
+
+        describe('given an roomNumber not connected to the doorway', () => {
+            it('throws', () => {
+                /** @type {Door} */
+                const door = {
+                    ...doorPartial,
+                    connection: new Map([
+                        [ 1, { direction: 'south', to: 3 } ],
+                        [ 3, { direction: 'north', to: 1 } ],
+                    ]),
+                    type: 'archway',
+                };
+
+                assert(() => sortDoorways([ door, door ], 216))
+                    .throws('Invalid roomNumber "216" for door connection in sortDoorways()');
+            });
+        });
     });
 
     // -- Public Functions -----------------------------------------------------

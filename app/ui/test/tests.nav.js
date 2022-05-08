@@ -7,9 +7,6 @@ import {
     testDisabledGenerators as disabledGenerators,
 
     // Public Functions
-    testGetElements as getElements,
-
-    // Public Functions
     getNav,
     setActiveNavItem,
 } from '../nav.js';
@@ -27,34 +24,6 @@ export default ({ assert, describe, it }) => {
 
             disabledGenerators.forEach((generator) => {
                 assert(generator).isInArray(generators);
-            });
-        });
-    });
-
-    // -- Private Functions ----------------------------------------------------
-
-    describe('getElements()', () => {
-        describe('given an invalid HTML collection', () => {
-            it('returns an empty array', () => {
-                // @ts-expect-error
-                assert(getElements([ 'hi', 'toad '])).equalsArray([]);
-            });
-        });
-
-        describe('given a valid HTML collection', () => {
-            it('returns an array of HTML Elements', () => {
-                const div  = document.createElement('div');
-                const p    = document.createElement('p');
-                const span = document.createElement('span');
-
-                div.appendChild(p);
-                div.appendChild(span);
-
-                const elements = getElements(div.children);
-
-                assert(elements).isArray();
-                assert(elements[0].tagName).equals('P');
-                assert(elements[1].tagName).equals('SPAN');
             });
         });
     });

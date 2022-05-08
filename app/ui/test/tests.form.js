@@ -216,7 +216,7 @@ export default ({ assert, describe, it }) => {
             it('throws', () => {
                 // @ts-expect-error
                 assert(() => getKnob({ ...fakeKnob, type: 'junk' }))
-                    .throws('Invalid knob type');
+                    .throws('Invalid knob type in getKnob()');
             });
         });
 
@@ -249,9 +249,8 @@ export default ({ assert, describe, it }) => {
 
             describe('given a value that is not a string', () => {
                 it('throws', () => {
-                    // @ts-expect-error
-                    assert(() => getKnob({ ...fakeKnob, type: 'junk' }))
-                        .throws('Invalid knob type');
+                    assert(() => getKnob({ ...fakeKnob, type: 'select', value: 12 }, 'knob-dungeon-complexity'))
+                        .throws('Select value must be a string in getKnob()');
                 });
             });
         });
