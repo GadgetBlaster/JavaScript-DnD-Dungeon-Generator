@@ -53,10 +53,13 @@ export default ({ assert, describe, it }) => {
                             assert(fieldConfig.desc).isString();
                             assert(fieldConfig.type).isString();
 
-                            fieldConfig.min && assert(fieldConfig.min).isNumber();
-                            fieldConfig.max && assert(fieldConfig.max).isNumber();
-                            fieldConfig.value && assert(typeof fieldConfig.value === 'number' || typeof fieldConfig.value === 'string').isTrue();
+                            fieldConfig.min    && assert(fieldConfig.min).isNumber();
+                            fieldConfig.max    && assert(fieldConfig.max).isNumber();
                             fieldConfig.values && assert(fieldConfig.values).isArray();
+                            fieldConfig.value  && assert(
+                                typeof fieldConfig.value === 'number'
+                                || typeof fieldConfig.value === 'string'
+                            ).isTrue();
 
                             if (fieldConfig.generators) {
                                 fieldConfig.generators.forEach((generator) =>

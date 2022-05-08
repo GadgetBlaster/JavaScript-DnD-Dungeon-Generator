@@ -36,13 +36,14 @@ export default ({ assert, describe, it }) => {
         const runUnits = (name, tests) => {
             names.push(name);
             functions.push(tests);
+            tests(); // Noop
         };
 
         const getSummary = () => mockSummary;
 
         const results = run({ ...mockUnit, runUnits, getSummary }, suite);
 
-        it('calls `runUnits()` for each function in the suite', () => {
+        it('calls runUnits() for each function in the suite', () => {
             const keys = Object.keys(suite);
 
             names.forEach((name, index) => {
@@ -50,18 +51,18 @@ export default ({ assert, describe, it }) => {
             });
         });
 
-        it('injects a tests function into `runUnits()` for each test file', () => {
+        it('injects a tests function into runUnits() for each test file', () => {
             functions.forEach((func) => {
                 assert(func).isFunction();
             });
         });
 
-        it('calls `getSummary()` and returns the summary', () => {
+        it('calls getSummary() and returns the summary', () => {
             assert(results).equalsObject(mockSummary);
         });
     });
 
-    describe('given an undefined `suite`', () => {
+    describe('given an undefined test suite', () => {
         let onErrorResult;
 
         const onError = (error) => { onErrorResult = error; };
@@ -76,7 +77,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('given an invalid suite', () => {
+    describe('given an invalid test suite', () => {
         let onErrorResult;
 
         const onError = (error) => { onErrorResult = error; };
@@ -91,21 +92,21 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('given an empty suite', () => {
+    describe('given an empty test suite', () => {
         let onErrorResult;
 
         const onError = (error) => { onErrorResult = error; };
 
         run({ ...mockUnit, onError }, {});
 
-        it('calls `onError()` and returns a string that includes "Empty"', () => {
+        it('calls onError() and returns a string that includes "Empty"', () => {
             assert(onErrorResult)
                 .isString()
                 .stringIncludes('Empty');
         });
     });
 
-    describe('given a `scope`', () => {
+    describe('given a scope', () => {
         let unitsRun = [];
 
         const scope = '/some/scope';
@@ -118,13 +119,13 @@ export default ({ assert, describe, it }) => {
 
         run({ ...mockUnit, runUnits }, suite, scope);
 
-        it('calls `runUnits()` once for the scoped function', () => {
+        it('calls runUnits() once for the scoped function', () => {
             assert(unitsRun.length).equals(1);
             assert(unitsRun[0]).equals(scope);
         });
     });
 
-    describe('given an invalid `scope`', () => {
+    describe('given an invalid scope', () => {
         let onErrorResult;
 
         const onError = (error) => { onErrorResult = error; };
@@ -133,7 +134,7 @@ export default ({ assert, describe, it }) => {
 
         run({ ...mockUnit, onError }, suite, scope);
 
-        it('calls `onError()` and returns a string that includes "Invalid" and the test scope', () => {
+        it('calls onError() and returns a string that includes "Invalid" and the test scope', () => {
             assert(onErrorResult)
                 .isString()
                 .stringIncludes('Invalid')
@@ -149,7 +150,7 @@ export default ({ assert, describe, it }) => {
 
         run({ ...mockUnit, onError }, suite);
 
-        it('calls `onError()` and returns a string that includes "Invalid" and the test scope', () => {
+        it('calls onError() and returns a string that includes "Invalid" and the test scope', () => {
             assert(onErrorResult)
                 .isString()
                 .stringIncludes('Invalid')
@@ -157,7 +158,7 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('given a test function that throws an `Error` object`', () => {
+    describe('given a test function that throws an Error object', () => {
         let onErrorResult;
 
         const onError  = (error) => { onErrorResult = error; };
@@ -166,7 +167,7 @@ export default ({ assert, describe, it }) => {
 
         run({ ...mockUnit, onError, runUnits }, suite);
 
-        it('calls `onError()` and returns a string that includes the error', () => {
+        it('calls onError() and returns a string that includes the error', () => {
             assert(onErrorResult)
                 .isString()
                 .stringIncludes('Error')
@@ -183,7 +184,7 @@ export default ({ assert, describe, it }) => {
 
         run({ ...mockUnit, onError, runUnits }, suite);
 
-        it('calls `onError()` and returns the error string', () => {
+        it('calls onError() and returns the error string', () => {
             assert(onErrorResult)
                 .isString()
                 .equals('Something is wrong');

@@ -176,14 +176,14 @@ export default ({ assert, describe, it }) => {
 
                 assert(grid).isArray();
 
-                grid && assert(grid.length).equals(4);
+                assert(grid.length).equals(4);
 
-                grid && grid.forEach((col) => {
+                grid.forEach((col) => {
                     assert(col).isArray();
                     col && assert(col.length).equals(3);
                 });
 
-                grid && assert(grid.toString()).equals([
+                assert(grid.toString()).equals([
                     [ cellEmpty, cellEmpty, cellEmpty ],
                     [ cellEmpty, cellEmpty, cellEmpty ],
                     [ cellEmpty, cellEmpty, cellEmpty ],
@@ -233,8 +233,8 @@ export default ({ assert, describe, it }) => {
                 assert(x).isNumber();
                 assert(y).isNumber();
 
-                assert(x === wallSize || x === (gridWidth  - wallSize));
-                assert(y === wallSize || y === (gridHeight - wallSize));
+                assert(x >= wallSize && x <= (gridWidth  - wallSize));
+                assert(y >= wallSize && y <= (gridHeight - wallSize));
             });
         });
     });
@@ -246,7 +246,7 @@ export default ({ assert, describe, it }) => {
             const roomDimensions = { width: 1, height: 1 };
 
             // TODO use `addRoomToGrid()`
-            grid[4][4] = '1';
+            grid[4][4] = 1;
             grid[3][3] = cellCornerWall;
             grid[4][3] = cellWall;
             grid[5][3] = cellCornerWall;
@@ -285,10 +285,10 @@ export default ({ assert, describe, it }) => {
 
                 assert(validCords).isArray();
 
-                validCords && assert(validCords.length).equals(expectedCords.length);
-                validCords && validCords.forEach((cords, i) => {
+                assert(validCords.length).equals(expectedCords.length);
+                validCords.forEach((cords, i) => {
                     assert(expectedCords[i]).isObject();
-                    expectedCords[i] && assert(cords).equalsObject(expectedCords[i]);
+                    assert(cords).equalsObject(expectedCords[i]);
                 });
             });
         });
@@ -299,12 +299,12 @@ export default ({ assert, describe, it }) => {
             const roomDimensions = { width: 2, height: 3 };
 
             // TODO use `addRoomToGrid()`
-            grid[4][5] = '1';
-            grid[4][6] = '1';
-            grid[4][7] = '1';
-            grid[5][5] = '1';
-            grid[5][6] = '1';
-            grid[5][7] = '1';
+            grid[4][5] = 1;
+            grid[4][6] = 1;
+            grid[4][7] = 1;
+            grid[5][5] = 1;
+            grid[5][6] = 1;
+            grid[5][7] = 1;
             grid[3][4] = cellCornerWall;
             grid[4][4] = cellWall;
             grid[5][4] = cellWall;
@@ -365,10 +365,10 @@ export default ({ assert, describe, it }) => {
 
                 assert(validCords).isArray();
 
-                validCords && assert(validCords.length).equals(expectedCords.length);
-                validCords && validCords.forEach((cords, i) => {
+                assert(validCords.length).equals(expectedCords.length);
+                validCords.forEach((cords, i) => {
                     assert(expectedCords[i]).isObject();
-                    expectedCords[i] && assert(cords).equalsObject(expectedCords[i]);
+                    assert(cords).equalsObject(expectedCords[i]);
                 });
             });
         });
@@ -379,12 +379,12 @@ export default ({ assert, describe, it }) => {
             const roomDimensions = { width: 3, height: 2 };
 
             // TODO use `addRoomToGrid()`
-            grid[3][3] = '1';
-            grid[4][3] = '1';
-            grid[3][4] = '1';
-            grid[4][4] = '1';
-            grid[3][5] = '1';
-            grid[4][5] = '1';
+            grid[3][3] = 1;
+            grid[4][3] = 1;
+            grid[3][4] = 1;
+            grid[4][4] = 1;
+            grid[3][5] = 1;
+            grid[4][5] = 1;
             grid[2][2] = cellCornerWall;
             grid[3][2] = cellWall;
             grid[4][2] = cellWall;
@@ -434,10 +434,10 @@ export default ({ assert, describe, it }) => {
 
                 assert(validCords).isArray();
 
-                validCords && assert(validCords.length).equals(expectedCords.length);
-                validCords && validCords.forEach((cords, i) => {
+                assert(validCords.length).equals(expectedCords.length);
+                validCords.forEach((cords, i) => {
                     assert(expectedCords[i]).isObject();
-                    expectedCords[i] && assert(cords).equalsObject(expectedCords[i]);
+                    assert(cords).equalsObject(expectedCords[i]);
                 });
             });
         });
