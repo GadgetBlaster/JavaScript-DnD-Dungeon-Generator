@@ -13,6 +13,8 @@ import {
     getRoomDoors,
 } from '../door.js';
 
+/** @typedef {import('../../dungeon/map.js').Door} Door */
+
 /**
  * @param {import('../../unit/state.js').Utility} utility
  */
@@ -76,14 +78,15 @@ export default ({ assert, describe, it }) => {
 
     describe('getRoomDoors()', () => {
         describe('given an array with a single room door', () => {
+            /** @type {Door[]} */
             const dungeonDoors = [
                 {
-                    connections: {
-                        1: { direction: 'north', to: 2 },
-                        2: { direction: 'south', to: 1 },
-                    },
+                    connection: new Map([
+                        [ 1, { direction: 'north', to: 2 } ],
+                        [ 2, { direction: 'south', to: 1 } ],
+                    ]),
                     locked: false,
-                    size: 2,
+                    rectangle: { x: 1, y: 1, width: 1, height: 2 },
                     type: 'archway',
                 },
             ];
@@ -115,10 +118,10 @@ export default ({ assert, describe, it }) => {
 
                     assert(roomDoorKeys[0]).equalsObject({
                         type: 'wooden',
-                        connections: {
-                            1: { direction: 'north', to: 2 },
-                            2: { direction: 'south', to: 1 },
-                        },
+                        connection: new Map([
+                            [ 1, { direction: 'north', to: 2 } ],
+                            [ 2, { direction: 'south', to: 1 } ],
+                        ]),
                     });
                 });
             });

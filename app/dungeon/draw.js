@@ -3,6 +3,7 @@
 import { defaultFontSize, drawCircle, drawLine, drawRect, drawText } from '../utility/shape.js';
 import { element } from '../utility/element.js';
 import { lockable } from '../room/door.js';
+import { toss } from '../utility/tools.js';
 
 // -- Type Imports -------------------------------------------------------------
 
@@ -12,6 +13,7 @@ import { lockable } from '../room/door.js';
 /** @typedef {import('./grid').Coordinates} Coordinates */
 /** @typedef {import('./grid').Dimensions} Dimensions */
 /** @typedef {import('./grid').Rectangle} Rectangle */
+/** @typedef {import('./map').Connection} Connection */
 /** @typedef {import('./map').Direction} Direction */
 /** @typedef {import('./map').Door} Door */
 
@@ -187,6 +189,53 @@ function drawTrapText({ x, y, height }) {
 }
 
 /**
+ * Determines a direction orientation, returning "horizontal" or "vertical".
+ *
+ * @private
+ *
+ * @param {Direction} direction
+ *
+ * @returns {"horizontal" | "vertical"}
+ */
+const getDirectionOrientation = (direction) => direction === 'north' || direction === 'south'
+    ? 'vertical'
+    : 'horizontal';
+
+/**
+ * Determines a door orientation, returning "horizontal" or "vertical".
+ *
+ * @private
+ * @throws
+ *
+ * @param {Connection} connection
+ *
+ * @returns {"horizontal" | "vertical"}
+ */
+function getDoorOrientation(connection) {
+    if (connection.size !== 1 && connection.size !== 2) {
+        toss('Invalid connection in getDoorOrientation()');
+    }
+
+    let [ first, second ] = [ ...connection.values() ].map(({ direction }) => direction);
+
+    if (!second) {
+        // Out of the dungeon
+        return getDirectionOrientation(first);
+    }
+
+    let isInvalid = (first === 'north' && second !== 'south')
+        || (first === 'east' && second !== 'west')
+        || (first === 'south' && second !== 'north')
+        || (first === 'west' && second !== 'east');
+
+    if (isInvalid) {
+        toss('Invalid connection directions in getDoorOrientation()');
+    }
+
+    return getDirectionOrientation(first);
+}
+
+/**
  * Get rectangle attributes.
  *
  * @private
@@ -211,16 +260,18 @@ function getRectAttrs({ x, y, width, height }) {
 }
 
 export {
-    drawCircle      as testDrawCircle,
-    drawLine        as testDrawLine,
-    drawPillar      as testDrawPillar,
-    drawPillarCell  as testDrawPillarCell,
-    drawRect        as testDrawRect,
-    drawRoomPillars as testDrawRoomPillars,
-    drawRoomText    as testDrawRoomText,
-    drawText        as testDrawText,
-    drawTrapText    as testDrawTrapText,
-    getRectAttrs    as testGetRectAttrs,
+    drawCircle              as testDrawCircle,
+    drawLine                as testDrawLine,
+    drawPillar              as testDrawPillar,
+    drawPillarCell          as testDrawPillarCell,
+    drawRect                as testDrawRect,
+    drawRoomPillars         as testDrawRoomPillars,
+    drawRoomText            as testDrawRoomText,
+    drawText                as testDrawText,
+    drawTrapText            as testDrawTrapText,
+    getDirectionOrientation as testGetDirectionOrientation,
+    getDoorOrientation      as testGetDoorOrientation,
+    getRectAttrs            as testGetRectAttrs,
 };
 
 // -- Public Functions ---------------------------------------------------------
@@ -236,9 +287,9 @@ export function drawDoor(door) {
     // TODO doors should only ever be 1 wide or 1 tall depending on direction
 
     let {
+        connection,
         rectangle,
         type,
-        direction,
         locked,
     } = door;
 
@@ -255,8 +306,8 @@ export function drawDoor(door) {
 
     let { x, y, width, height } = rectAttributes;
 
-    let lineCords = [];
-    let isVertical = direction === 'north' || direction === 'south';
+    let lineCords  = [];
+    let isVertical = getDoorOrientation(connection) === 'vertical';
 
     let xHalf   = x + (width / 2);
     let yHalf   = y + (height / 2);

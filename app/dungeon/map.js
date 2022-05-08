@@ -63,14 +63,7 @@ import { isRequired, toWords } from '../utility/tools.js';
  * @prop {Room[]} skippedRooms
  */
 
-/**
- * @typedef {object} Connection
- *
- * @prop {Direction} direction
- * @prop {number} to
- */
-
-/** @typedef {{ [roomNumber: number]: Connection }} Connections */
+/** @typedef {Map<number, { direction: Direction; to: number; }>} Connection */
 
 /** @typedef {"north" | "east" | "south" | "west"} Direction */
 
@@ -79,9 +72,8 @@ import { isRequired, toWords } from '../utility/tools.js';
  *
  * @prop {Rectangle} rectangle
  * @prop {DoorType} type
- * @prop {Direction} direction
  * @prop {boolean} locked
- * @prop {Connections} connections
+ * @prop {Connection} connection
  */
 
 /** @typedef {{ [roomNumber: number]: Door[] }} Doors */
@@ -170,7 +162,9 @@ function checkForAdjacentDoor(grid, { x, y }) {
 
 /**
  * Returns a door object for the given rectangle, door type, direction, and
- * connections.
+ * connection.
+ *
+ * TODO fix lockedChance
  *
  * @private
  *
@@ -187,12 +181,11 @@ function createDoor(rectangle, type, { direction, from, to }, lockedChance = 0) 
     return {
         rectangle,
         type,
-        direction, // TODO possible to remove direction?
         locked,
-        connections: {
-            [from]: { direction, to },
-            [to]  : { direction: directionOppositeLookup[direction], to: from },
-        },
+        connection: new Map([
+            [ from, { direction, to } ],
+            [ to,   { direction: directionOppositeLookup[direction], to: from } ],
+        ]),
     };
 }
 
@@ -602,8 +595,8 @@ function getExtraDoors(grid, rooms, existingDoors) {
 
         let connectedTo = new Set();
 
-        [ ...existingDoors, ...doors ].forEach((door) => {
-            let connection = door.connections[roomNumber];
+        [ ...existingDoors, ...doors ].forEach((/** @type {Door} */ door) => {
+            let connection = door.connection.get(roomNumber);
 
             if (connection) {
                 connectedTo.add(connection.to);

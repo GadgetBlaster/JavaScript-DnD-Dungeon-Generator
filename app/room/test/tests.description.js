@@ -33,6 +33,7 @@ import { quantities } from '../../attribute/quantity.js';
 /** @typedef {import('../../controller/knobs.js').ItemConfig} ItemConfig */
 /** @typedef {import('../../dungeon/map').Direction} Direction */
 /** @typedef {import('../../dungeon/map').Door} Door */
+/** @typedef {import('../door.js').DoorKey} DoorKey */
 /** @typedef {import('../door.js').DoorType} DoorType */
 /** @typedef {import('../generate').GeneratedRoomConfig} GeneratedRoomConfig */
 
@@ -263,11 +264,10 @@ export default ({ assert, describe, it }) => {
     describe('getDoorwayDescription()', () => {
         /** @type {Door} */
         const door = {
-            connections: {
-                1: { direction: 'north', to: 2 },
-                2: { direction: 'south', to: 1 },
-            },
-            direction: 'north',
+            connection: new Map([
+                [ 1, { direction: 'north', to: 2 } ],
+                [ 2, { direction: 'south', to: 1 } ],
+            ]),
             locked: false,
             rectangle: { x: 1, y: 1, width: 1, height: 1 },
             type: 'archway',
@@ -517,11 +517,10 @@ export default ({ assert, describe, it }) => {
     describe('getRoomDoorwayDescription()', () => {
         /** @type {Door} */
         const door = {
-            connections: {
-                1: { direction: 'south', to: 2 },
-                2: { direction: 'north', to: 1 },
-            },
-            direction: 'south',
+            connection: new Map([
+                [ 1, { direction: 'south', to: 2 } ],
+                [ 2, { direction: 'north', to: 1 } ],
+            ]),
             locked: false,
             rectangle: { x: 1, y: 1, width: 1, height: 1 },
             type: 'passageway',
@@ -538,7 +537,7 @@ export default ({ assert, describe, it }) => {
         describe('given a door which does not connect to the room number', () => {
             it('throws', () => {
                 assert(() => getRoomDoorwayDescription([ door ], 3))
-                    .throws('Invalid door connections for roomNumber in getRoomDoorwayDescription()');
+                    .throws('Invalid door connection for roomNumber in getRoomDoorwayDescription()');
             });
         });
 
@@ -584,10 +583,10 @@ export default ({ assert, describe, it }) => {
             /** @type {Door[]} */
             const doors = [{
                 ...door,
-                connections: {
-                    4: { direction: 'south', to: outside },
-                    5: { direction: 'north', to: 4 },
-                },
+                connection: new Map([
+                    [ 4, { direction: 'south', to: outside } ],
+                    [ 5, { direction: 'north', to: 4       } ],
+                ]),
             }];
 
             it('includes a description of the door to the outside', () => {
@@ -601,18 +600,18 @@ export default ({ assert, describe, it }) => {
             const doors = [
                 {
                     ...door,
-                    connections: {
-                        1: { direction: 'south', to: 2 },
-                        2: { direction: 'north', to: 1 },
-                    },
+                    connection: new Map([
+                        [ 1, { direction: 'south', to: 2 } ],
+                        [ 2, { direction: 'north', to: 1 } ],
+                    ]),
                     type: 'archway',
                 },
                 {
                     ...door,
-                    connections: {
-                        1: { direction: 'east', to: 3 },
-                        3: { direction: 'west', to: 1 },
-                    },
+                    connection: new Map([
+                        [ 1, { direction: 'east', to: 3 } ],
+                        [ 3, { direction: 'west', to: 1 } ],
+                    ]),
                     type: 'passageway',
                 },
             ];
@@ -649,26 +648,26 @@ export default ({ assert, describe, it }) => {
             const doors = [
                 {
                     ...door,
-                    connections: {
-                        1: { direction: 'south', to: 2 },
-                        2: { direction: 'north', to: 1 },
-                    },
+                    connection: new Map([
+                        [ 1, { direction: 'south', to: 2 } ],
+                        [ 2, { direction: 'north', to: 1 } ],
+                    ]),
                     type: 'archway',
                 },
                 {
                     ...door,
-                    connections: {
-                        1: { direction: 'north', to: 3 },
-                        3: { direction: 'south', to: 1 },
-                    },
+                    connection: new Map([
+                        [ 1, { direction: 'north', to: 3 } ],
+                        [ 3, { direction: 'south', to: 1 } ],
+                    ]),
                     type: 'passageway',
                 },
                 {
                     ...door,
-                    connections: {
-                        1: { direction: 'east', to: 4 },
-                        4: { direction: 'west', to: 1 },
-                    },
+                    connection: new Map([
+                        [ 1, { direction: 'east', to: 4 } ],
+                        [ 4, { direction: 'west', to: 1 } ],
+                    ]),
                     type: 'hole',
                 },
             ];
@@ -701,47 +700,42 @@ export default ({ assert, describe, it }) => {
             const doors = [
                 {
                     ...doorPartial,
-                    connections: {
-                        1: { direction: 'south', to: 3 },
-                        3: { direction: 'north', to: 1 },
-                    },
-                    direction: 'south',
+                    connection: new Map([
+                        [ 1, { direction: 'south', to: 3 } ],
+                        [ 3, { direction: 'north', to: 1 } ],
+                    ]),
                     type: 'archway',
                 },
                 {
                     ...doorPartial,
-                    connections: {
-                        1: { direction: 'south', to: 2 },
-                        2: { direction: 'north', to: 1 },
-                    },
-                    direction: 'south',
+                    connection: new Map([
+                        [ 1, { direction: 'south', to: 2 } ],
+                        [ 2, { direction: 'north', to: 1 } ],
+                    ]),
                     type: 'iron',
                 },
                 {
                     ...doorPartial,
-                    connections: {
-                        1: { direction: 'north', to: 4 },
-                        4: { direction: 'south', to: 1 },
-                    },
-                    direction: 'north',
+                    connection: new Map([
+                        [ 1, { direction: 'north', to: 4 } ],
+                        [ 4, { direction: 'south', to: 1 } ],
+                    ]),
                     type: 'wooden',
                 },
                 {
                     ...doorPartial,
-                    connections: {
-                        1: { direction: 'west', to: 5 },
-                        5: { direction: 'east', to: 1 },
-                    },
-                    direction: 'west',
+                    connection: new Map([
+                        [ 1, { direction: 'west', to: 5 } ],
+                        [ 5, { direction: 'east', to: 1 } ],
+                    ]),
                     type: 'secret',
                 },
                 {
                     ...doorPartial,
-                    connections: {
-                        1: { direction: 'east', to: 6 },
-                        6: { direction: 'west', to: 1 },
-                    },
-                    direction: 'east',
+                    connection: new Map([
+                        [ 1, { direction: 'east', to: 6 } ],
+                        [ 6, { direction: 'west', to: 1 } ],
+                    ]),
                     type: 'passageway',
                 },
             ];
@@ -764,11 +758,10 @@ export default ({ assert, describe, it }) => {
     describe('getDoorwayDescriptionList()', () => {
         /** @type {Door} */
         const door = {
-            connections: {
-                12: { direction: 'south', to: 4 },
-                4 : { direction: 'north', to: 12 },
-            },
-            direction: 'south',
+            connection: new Map([
+                [ 12, { direction: 'south', to: 4  } ],
+                [ 4 , { direction: 'north', to: 12 } ],
+            ]),
             locked: false,
             rectangle: { x: 1, y: 2, width: 1, height: 1 },
             type: 'archway',
@@ -785,7 +778,7 @@ export default ({ assert, describe, it }) => {
         describe('given a door config with an invalid connection', () => {
             it('throws', () => {
                 assert(() => getDoorwayDescriptionList([ door ], 216))
-                    .throws('Invalid roomNumber for door connections in getDoorwayDescriptionList()');
+                    .throws('Invalid roomNumber for door connection in getDoorwayDescriptionList()');
             });
         });
 
@@ -795,11 +788,10 @@ export default ({ assert, describe, it }) => {
                 door,
                 {
                     ...door,
-                    direction: 'north',
-                    connections: {
-                        12: { direction: 'north', to: 3 },
-                        3 : { direction: 'south', to: 12 },
-                    },
+                    connection: new Map([
+                        [ 12, { direction: 'north', to: 3  } ],
+                        [ 3 , { direction: 'south', to: 12 } ],
+                    ]),
                     type: 'iron',
                 },
             ];
@@ -813,9 +805,9 @@ export default ({ assert, describe, it }) => {
                 doorwayList && doorwayList.forEach((doorway, i) => {
                     const doorObj = doors[i];
 
-                    assert(doorway.connection).equals(`to room ${doorObj.connections[12].to}`);
+                    assert(doorway.connection).equals(`to room ${doorObj.connection.get(12).to}`);
                     assert(doorway.desc).stringIncludes(doorObj.type);
-                    assert(doorway.direction).equals(doorObj.connections[12].direction);
+                    assert(doorway.direction).equals(doorObj.connection.get(12).direction);
                 });
             });
         });
@@ -824,9 +816,9 @@ export default ({ assert, describe, it }) => {
             /** @type {Door[]} */
             const doors = [{
                 ...door,
-                connections: {
-                    3: { direction: 'south', to: outside },
-                },
+                connection: new Map([
+                    [ 3, { direction: 'south', to: outside } ],
+                ]),
             }];
 
             describe('the doorway connection', () => {
@@ -845,10 +837,10 @@ export default ({ assert, describe, it }) => {
                 /** @type {Door[]} */
                 const doors = [{
                     ...door,
-                    connections: {
-                        2: { direction: 'east', to: 1 },
-                        1: { direction: 'west', to: 2 },
-                    },
+                    connection: new Map([
+                        [ 2, { direction: 'east', to: 1 } ],
+                        [ 1, { direction: 'west', to: 2 } ],
+                    ]),
                     type,
                 }];
 
@@ -862,21 +854,21 @@ export default ({ assert, describe, it }) => {
 
     describe('getKeyDescription()', () => {
         describe('given am array with two key configs', () => {
-            // TODO types
+            /** @type {DoorKey[]} */
             const keys = [
                 {
                     type: 'Any',
-                    connections: {
-                        1: { direction: 'north', to: 2 },
-                        2: { direction: 'south', to: 1 },
-                    },
+                    connection: new Map([
+                        [ 1, { direction: 'north', to: 2 } ],
+                        [ 2, { direction: 'south', to: 1 } ],
+                    ]),
                 },
                 {
                     type: 'Any',
-                    connections: {
-                        1 : { direction: 'east', to: 23 },
-                        23: { direction: 'west', to: 1 },
-                    },
+                    connection: new Map([
+                        [ 1 , { direction: 'east', to: 23 } ],
+                        [ 23, { direction: 'west', to: 1  } ],
+                    ]),
                 },
             ];
 
@@ -890,7 +882,7 @@ export default ({ assert, describe, it }) => {
                 assert(result).stringIncludes('<h3>Keys (2)</h3>');
             });
 
-            it('includes am html list with items for each key and the correct room connections', () => {
+            it('includes am html list with items for each key and the correct room connection', () => {
                 const snapshot = '<ul><li>Key to room 1 / 2</li><li>Key to room 1 / 23</li></ul>';
                 assert(result).stringIncludes(snapshot);
             });
@@ -1033,13 +1025,12 @@ export default ({ assert, describe, it }) => {
 
                     /** @type {Door[]} */
                     const roomDoors = [{
-                        connections: {
-                            1: { direction: 'south', to: outside },
-                        },
-                        direction: 'south',
+                        connection: new Map([
+                            [ 1, { direction: 'south', to: outside } ],
+                        ]),
                         locked: false,
                         rectangle: { x: 1, y: 1, width: 1, height: 2 },
-                        type: /** @type {DoorType} */ ('passageway'),
+                        type: 'passageway',
                     }];
 
                     assert(getRoomDescription(room, roomDoors).description)

@@ -2,12 +2,11 @@
 
 import { createProbability } from '../utility/roll.js';
 
-// TODO move to dungeon/* and rename everything to "connections"
+// TODO move to dungeon/*
 
 // -- Type Imports -------------------------------------------------------------
 
 /** @typedef {import('../dungeon/map.js').Connection} Connection */
-/** @typedef {import('../dungeon/map.js').Connections} Connections */
 /** @typedef {import('../dungeon/map.js').Door} Door */
 /** @typedef {import('../dungeon/map.js').Doors} Doors */
 
@@ -18,7 +17,7 @@ import { createProbability } from '../utility/roll.js';
 /**
  * @typedef {Object} DoorKey
  *
- * @prop {Connections} connections
+ * @prop {Connection} connection
  * @prop {string} type - Door type
  */
 
@@ -145,7 +144,7 @@ export function getRoomDoors(doors) {
     let roomKeys = []; // TODO rename to `keys`
 
     doors.forEach((door) => {
-        Object.keys(door.connections).forEach((roomNumber) => {
+        [ ...door.connection.keys() ].forEach((roomNumber) => {
             if (!roomDoors[roomNumber]) {
                 roomDoors[roomNumber] = [];
             }
@@ -153,7 +152,7 @@ export function getRoomDoors(doors) {
             if (door.locked) {
                 roomKeys.push({
                     type: door.type,
-                    connections: door.connections,
+                    connection: door.connection,
                 });
             }
 

@@ -55,6 +55,4 @@ We ask you don't use this for commercial use without permission and link Attribu
 - [ ] Generate dungeon title and dungeon description.
 - [ ] Generate random encounters based on challenge rating and frequency knobs.
 - [ ] Add dungeon and environment types. Such as classic dungeon, wilderness, jungle ruin, etc.
-- [ ] JS doc blocks & type defs
-- [ ] Unit test coverage
 - [ ] Config for multiple entrances & exits to the dungeon

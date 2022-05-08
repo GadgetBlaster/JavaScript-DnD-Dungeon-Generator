@@ -17,12 +17,14 @@ import {
     testTrapLabel           as trapLabel,
 
     // Private Functions
-    testDrawPillar      as drawPillar,
-    testDrawPillarCell  as drawPillarCell,
-    testDrawRoomPillars as drawRoomPillars,
-    testDrawRoomText    as drawRoomText,
-    testDrawTrapText    as drawTrapText,
-    testGetRectAttrs    as getRectAttrs,
+    testDrawPillar              as drawPillar,
+    testDrawPillarCell          as drawPillarCell,
+    testDrawRoomPillars         as drawRoomPillars,
+    testDrawRoomText            as drawRoomText,
+    testDrawTrapText            as drawTrapText,
+    testGetDirectionOrientation as getDirectionOrientation,
+    testGetDoorOrientation      as getDoorOrientation,
+    testGetRectAttrs            as getRectAttrs,
 
     // Public functions
     drawDoor,
@@ -250,6 +252,96 @@ export default ({ assert, describe, it }) => {
         });
     });
 
+    describe('getDirectionOrientation()', () => {
+        describe('given "north"', () => {
+            it('returns "vertical"', () => {
+                assert(getDirectionOrientation('north')).equals('vertical');
+            });
+        });
+
+        describe('given "east"', () => {
+            it('returns "horizontal"', () => {
+                assert(getDirectionOrientation('east')).equals('horizontal');
+            });
+        });
+
+        describe('given "south"', () => {
+            it('returns "vertical"', () => {
+                assert(getDirectionOrientation('south')).equals('vertical');
+            });
+        });
+
+        describe('given "west"', () => {
+            it('returns "horizontal"', () => {
+                assert(getDirectionOrientation('west')).equals('horizontal');
+            });
+        });
+
+    });
+
+    describe('getDoorOrientation()', () => {
+        describe('given no connection', () => {
+            it('throws', () => {
+                assert(() => getDoorOrientation(new Map()))
+                    .throws('Invalid connection in getDoorOrientation()');
+            });
+        });
+
+        describe('given a connection with too may items', () => {
+            it('throws', () => {
+                assert(() => getDoorOrientation(new Map([
+                    [ 1, { direction: 'east', to: 2 } ],
+                    [ 2, { direction: 'east', to: 1 } ],
+                    [ 3, { direction: 'east', to: 2 } ],
+                ]))).throws('Invalid connection in getDoorOrientation()');
+            });
+        });
+
+        describe('given a connection with the same directions', () => {
+            it('throws', () => {
+                assert(() => getDoorOrientation(new Map([
+                    [ 1, { direction: 'east', to: 2 } ],
+                    [ 2, { direction: 'east', to: 1 } ],
+                ]))).throws('Invalid connection directions in getDoorOrientation()');
+            });
+        });
+
+        describe('given a connection with conflicting directions', () => {
+            it('throws', () => {
+                assert(() => getDoorOrientation(new Map([
+                    [ 1, { direction: 'north', to: 2 } ],
+                    [ 2, { direction: 'east', to: 1 } ],
+                ]))).throws('Invalid connection directions in getDoorOrientation()');
+            });
+        });
+
+        describe('given a connection with a single item', () => {
+            it('returns the connection orientation', () => {
+                assert(getDoorOrientation(new Map([
+                    [ 1, { direction: 'east', to: 0 } ],
+                ]))).equals('horizontal');
+            });
+        });
+
+        describe('given a vertical connection', () => {
+            it('returns "vertical"', () => {
+                assert(getDoorOrientation(new Map([
+                    [ 1, { direction: 'north', to: 2 } ],
+                    [ 2, { direction: 'south', to: 1 } ],
+                ]))).equals('vertical');
+            });
+        });
+
+        describe('given a horizontal connection', () => {
+            it('returns "horizontal"', () => {
+                assert(getDoorOrientation(new Map([
+                    [ 1, { direction: 'east', to: 2 } ],
+                    [ 2, { direction: 'west', to: 1 } ],
+                ]))).equals('horizontal');
+            });
+        });
+    });
+
     describe('getRectAttrs()', () => {
         it('returns each value multiplied by `pxCell`', () => {
             /** @type {Rectangle} */
@@ -272,8 +364,10 @@ export default ({ assert, describe, it }) => {
     describe('drawDoor()', () => {
         /** @type {Door} */
         const doorConfig = {
-            connections: {},
-            direction: 'south',
+            connection: new Map([
+                [ 1, { direction: 'north', to: 2 } ],
+                [ 2, { direction: 'south', to: 1 } ],
+            ]),
             locked: false,
             rectangle: { x: 10, y: 20, width: 1, height: 1 },
             type: 'passageway',
@@ -306,14 +400,16 @@ export default ({ assert, describe, it }) => {
         const northSouthDoor = {
             ...doorConfig,
             rectangle: { x: 10, y: 20, width: 2, height: 1 },
-            direction: 'north',
         };
 
         /** @type {Door} */
         const eastWestDoor = {
             ...doorConfig,
+            connection: new Map([
+                [ 1, { direction: 'east', to: 2 } ],
+                [ 2, { direction: 'west', to: 1 } ],
+            ]),
             rectangle: { x: 10, y: 20, width: 1, height: 2 },
-            direction: 'east',
         };
 
         describe('door orientations', () => {

@@ -22,16 +22,14 @@ import { list } from '../ui/list.js';
  * @returns {string}
  */
 export function drawLegend() {
-
     let gridDimensions = { width: 1, height: 1 };
     let rectangle = { x: 0, y: 0, width: 1, height: 1 };
 
     /** @type {Omit<Door, "type">} */
     let doorBase = {
         rectangle,
-        direction: 'east',
         locked: false,
-        connections: {},
+        connection: new Map([[ 1, { direction: 'east', to: 2 } ]]),
     };
 
     let scale = `${cellFeet} x ${cellFeet} ft`;
