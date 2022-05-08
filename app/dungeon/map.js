@@ -750,7 +750,7 @@ export function generateMap(gridDimensions, roomConfigs) {
     let { rooms, doors } = procedurallyApplyRooms(gridDimensions, roomConfigs, grid);
 
     if (roomConfigs.length <= rooms.length) {
-        console.warn('Not enough rooms generated', roomConfigs.length, rooms.length);
+        console.warn('Not enough rooms generated in generateMap()');
     }
 
     let roomRects = rooms.map((room) => {

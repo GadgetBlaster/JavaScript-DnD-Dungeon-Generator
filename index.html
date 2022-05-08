@@ -7,8 +7,17 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tapestry&family=Varela&display=swap">
-
         <link rel="stylesheet" href="./style.css">
+
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-QENH0RMNMR"></script>
+        <script>
+            if (window.location.hostname === 'dnd.mysticwaffle.com') {
+                window.dataLayer = window.dataLayer || [];
+                function gtag() { dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'G-QENH0RMNMR');
+            }
+        </script>
     </head>
     <body data-layout="full">
 
@@ -30,7 +39,6 @@
         <footer data-no-print data-flex="justify-between" id="footer"></footer>
 
         <script src="./app/app.js" type="module"></script>
-        <script async src="/analytics.js"></script>
 
     </body>
 </html>
