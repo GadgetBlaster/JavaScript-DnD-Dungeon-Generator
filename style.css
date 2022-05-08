@@ -490,6 +490,7 @@ select {
 
 h1, h2, h3 {
     font-weight: normal;
+    line-height: var(--leading-loose);
 }
 
 h1 {

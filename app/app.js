@@ -47,7 +47,7 @@ const activeGenerator = getActiveGenerator(getPathname());
 const testSummary     = getSummaryLink(run(unitState(), suite));
 const render          = getRender(sections);
 
-attachClickDelegate(sections.body, triggers);
+attachClickDelegate(sections, triggers, console.error);
 
 // -- Router -------------------------------------------------------------------
 

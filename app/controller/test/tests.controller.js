@@ -194,8 +194,8 @@ export default ({ assert, describe, it }) => {
             const error = getErrorMessage();
 
             assert(error).isObject();
-            error && assert(error.title).isString();
-            error && assert(error.message).isString();
+            assert(error.title).isString();
+            assert(error.message).isString();
         });
 
         describe('given a 4004 page', () => {
@@ -203,8 +203,8 @@ export default ({ assert, describe, it }) => {
                 const error = getErrorMessage(404);
 
                 assert(error).isObject();
-                error && assert(error.title).stringIncludes('404');
-                error && assert(error.message).isString();
+                assert(error.title).stringIncludes('404');
+                assert(error.message).isString();
             });
         });
     });
@@ -213,7 +213,8 @@ export default ({ assert, describe, it }) => {
         describe('given an action that does not exist on the given triggers', () => {
             it('throws', () => {
                 // @ts-expect-error
-                assert(() => getTrigger({}, 'bellyFlop')).throws('Invalid action "bellyFlop" passed to getTrigger()');
+                assert(() => getTrigger({}, 'bellyFlop'))
+                    .throws('Invalid action "bellyFlop" passed to getTrigger()');
             });
         });
 
@@ -264,7 +265,7 @@ export default ({ assert, describe, it }) => {
 
             assert(Boolean(content.querySelector('article'))).isTrue();
             assert(Boolean(title)).isTrue();
-            title && assert(title.textContent).stringIncludes('Items');
+            assert(title.textContent).stringIncludes('Items');
         });
 
         describe('when the active page is not a generator', () => {
@@ -274,7 +275,7 @@ export default ({ assert, describe, it }) => {
                 const title = content.querySelector('h2');
 
                 assert(Boolean(title)).isTrue();
-                title && assert(title.textContent).equals('Oh no!');
+                assert(title.textContent).equals('Oh no!');
             });
         });
 
@@ -576,17 +577,22 @@ export default ({ assert, describe, it }) => {
 
     describe('attachClickDelegate()', () => {
         describe('when a child element is clicked', () => {
-            const containerEl = document.createElement('div');
-            const buttonEl1   = document.createElement('button');
-            const buttonEl2   = document.createElement('button');
-            const buttonEl3   = document.createElement('button');
+            const sections = getMockSections();
 
-            buttonEl1.dataset.action  = 'generate';
-            buttonEl3.dataset.action = 'invalid-action';
+            const button1 = document.createElement('button');
+            const button2 = document.createElement('button');
+            const button3 = document.createElement('button');
+            const button4 = document.createElement('button');
 
-            containerEl.appendChild(buttonEl1);
-            containerEl.appendChild(buttonEl2);
-            containerEl.appendChild(buttonEl3);
+            button1.dataset.action = 'generate';
+            button3.dataset.action = 'invalid-action';
+            button4.dataset.action = 'navigate';
+
+            sections.body.appendChild(sections.content);
+            sections.body.appendChild(button1);
+            sections.body.appendChild(button2);
+            sections.body.appendChild(button3);
+            sections.body.appendChild(button4);
 
             const events = [];
 
@@ -596,14 +602,16 @@ export default ({ assert, describe, it }) => {
                 accordion: trigger,
                 expand   : trigger,
                 generate : trigger,
-                navigate : trigger,
+                navigate : () => { throw new Error('Fake!'); },
                 toggle   : trigger,
             };
 
-            attachClickDelegate(containerEl, triggers);
+            let errorResult;
 
-            describe('when the clicked element has a valid `data-action` attribute', () => {
-                buttonEl1.dispatchEvent(new CustomEvent('click', { bubbles: true }));
+            attachClickDelegate(sections, triggers, (error) => errorResult = error);
+
+            describe('when the clicked element has a valid data-action attribute', () => {
+                button1.dispatchEvent(new CustomEvent('click', { bubbles: true }));
                 const event = events.pop();
 
                 it('triggers the click delegate and calls the action', () => {
@@ -612,14 +620,30 @@ export default ({ assert, describe, it }) => {
 
                 it('calls the action with a click event object param', () => {
                     assert(event).isObject();
-                    event && assert(event.type).equals('click');
+                    assert(event.type).equals('click');
                 });
             });
 
             describe('when the click target has no action', () => {
                 it('no actions are called', () => {
-                    buttonEl2.dispatchEvent(new CustomEvent('click', { bubbles: true }));
+                    button2.dispatchEvent(new CustomEvent('click', { bubbles: true }));
                     assert(events.length).equals(0);
+                });
+            });
+
+            describe('when the click target has an invalid action', () => {
+                it('no actions are called', () => {
+                    button3.dispatchEvent(new CustomEvent('click', { bubbles: true }));
+                    assert(events.length).equals(0);
+                });
+            });
+
+            describe('when an error is thrown', () => {
+                it('renders an error page and calls the onError callback', () => {
+                    button4.dispatchEvent(new CustomEvent('click', { bubbles: true }));
+
+                    assert(sections.body.textContent).stringIncludes('Oh no!');
+                    assert(errorResult.toString()).stringIncludes('Error: Fake!');
                 });
             });
         });

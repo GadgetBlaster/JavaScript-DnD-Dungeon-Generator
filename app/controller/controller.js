@@ -188,12 +188,11 @@ function getErrorMessage(page) {
         };
     }
 
-    // TODO try/catch for errors on generate and render this page on error
     // TODO log errors?
     return {
         title: 'Oh no!',
         message: 'Goblins have infiltrated the castle and hacked into the JavaScript!'
-            + '<br />I need to fix this...',
+            + '<br />AJ needs to fix this...',
     };
 }
 
@@ -319,7 +318,7 @@ function renderApp({ body, content, knobs, nav }, page) {
         let { title, message } = getErrorMessage(page);
 
         body.dataset.layout = 'full';
-        content.innerHTML = formatError(title, message);
+        content.innerHTML   = formatError(title, message);
         return;
     }
 
@@ -442,11 +441,14 @@ export {
 /**
  * Attaches an application level click delegate to the document body.
  *
- * @param {HTMLElement} docBody
+ * @param {Sections} sections
  * @param {Triggers} triggers
+ * @param {(any) => void} onError
  */
-export function attachClickDelegate(docBody, triggers) {
-    docBody.addEventListener('click', (e) => {
+export function attachClickDelegate(sections, triggers, onError) {
+    let { body } = sections;
+
+    body.addEventListener('click', (e) => {
         /** @type {{ action?: Action }} */
         let { action } = getDataset(e.target);
 
@@ -454,10 +456,16 @@ export function attachClickDelegate(docBody, triggers) {
             return;
         }
 
-        let trigger = getTrigger(triggers, action);
-
         e.preventDefault();
-        trigger(e);
+
+        try {
+            let trigger = getTrigger(triggers, action);
+
+            trigger(e);
+        } catch (error) {
+            onError(error);
+            renderApp(sections, 'error');
+        }
     });
 }
 
