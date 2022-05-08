@@ -383,7 +383,7 @@ fieldset > div:last-child {
     padding-bottom: var(--spacing-large);
 }
 
-fieldset[data-collapsed="true"] > div {
+fieldset[data-accordion="collapsed"] > div {
     display: none;
 }
 

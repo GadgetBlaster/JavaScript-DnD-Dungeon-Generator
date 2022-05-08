@@ -62,7 +62,7 @@ export default ({ assert, describe, it }) => {
             });
 
             it('does not collapse the first section', () => {
-                assert(fieldset).hasAttributes({ 'data-collapsed': 'false' });
+                assert(fieldset).hasAttributes({ 'data-accordion': 'expanded' });
             });
         });
 
@@ -103,9 +103,9 @@ export default ({ assert, describe, it }) => {
                 const fieldsets = body.querySelectorAll('fieldset');
 
                 assert(fieldsets.length).equals(3);
-                assert(fieldsets[0]).hasAttributes({ 'data-collapsed': 'false', 'data-id': 'fieldset-shovels' });
-                assert(fieldsets[1]).hasAttributes({ 'data-collapsed': 'true', 'data-id': 'fieldset-gardening-tools' });
-                assert(fieldsets[2]).hasAttributes({ 'data-collapsed': 'true', 'data-id': 'fieldset-weed-whackers' });
+                assert(fieldsets[0]).hasAttributes({ 'data-accordion': 'expanded',  'data-id': 'fieldset-shovels'         });
+                assert(fieldsets[1]).hasAttributes({ 'data-accordion': 'collapsed', 'data-id': 'fieldset-gardening-tools' });
+                assert(fieldsets[2]).hasAttributes({ 'data-accordion': 'collapsed', 'data-id': 'fieldset-weed-whackers'   });
             });
         });
     });

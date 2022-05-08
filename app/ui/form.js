@@ -56,7 +56,7 @@ const formatKnobAccordions = (knobs) => knobs.map((knobSet, i) => {
     let handle = button(label, 'accordion', { target: fieldsetId });
 
     let attrs = {
-        'data-collapsed': i === 0 ? false : true,
+        'data-accordion': i === 0 ? 'expanded' : 'collapsed',
         'data-id': fieldsetId,
     };
 

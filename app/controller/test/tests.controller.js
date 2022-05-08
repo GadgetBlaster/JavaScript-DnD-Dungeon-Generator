@@ -394,7 +394,7 @@ export default ({ assert, describe, it }) => {
                 const fieldsetEl = document.createElement('div');
                 const buttonEl   = document.createElement('button');
 
-                fieldsetEl.dataset.collapsed = 'true';
+                fieldsetEl.dataset.accordion = 'collapsed';
                 fieldsetEl.dataset.id = i.toString();
 
                 buttonEl.dataset.action = 'accordion';
@@ -406,10 +406,10 @@ export default ({ assert, describe, it }) => {
 
             const each = ({ collapsed }) => {
                 /** @type {NodeListOf<HTMLElement>} */
-                const sectionEls = containerEl.querySelectorAll('[data-collapsed]');
+                const sectionEls = containerEl.querySelectorAll('[data-accordion]');
 
                 sectionEls.forEach((sectionEl) => {
-                    sectionEl.dataset.collapsed = collapsed;
+                    sectionEl.dataset.accordion = collapsed ? 'collapsed' : 'expanded';
                 });
             };
 
@@ -423,10 +423,10 @@ export default ({ assert, describe, it }) => {
                     collapseAll();
 
                     /** @type {HTMLElement} */
-                    const sectionEl = containerEl.querySelector('[data-collapsed][data-id="1"]');
+                    const sectionEl = containerEl.querySelector('[data-accordion][data-id="1"]');
 
                     toggleAccordion(containerEl, getMockClickEvent(targetEl));
-                    assert(sectionEl.dataset.collapsed).equals('false');
+                    assert(sectionEl.dataset.accordion).equals('expanded');
                 });
             });
 
@@ -435,11 +435,11 @@ export default ({ assert, describe, it }) => {
                     collapseAll();
 
                     /** @type {HTMLElement} */
-                    const sectionEl = containerEl.querySelector('[data-collapsed][data-id="1"]');
-                    sectionEl.dataset.collapsed = 'false';
+                    const sectionEl = containerEl.querySelector('[data-accordion][data-id="1"]');
+                    sectionEl.dataset.accordion = 'expanded';
 
                     toggleAccordion(containerEl, getMockClickEvent(targetEl));
-                    assert(sectionEl.dataset.collapsed).equals('true');
+                    assert(sectionEl.dataset.accordion).equals('collapsed');
                 });
             });
 
@@ -448,11 +448,11 @@ export default ({ assert, describe, it }) => {
                     collapseAll();
 
                     /** @type {HTMLElement} */
-                    const accordionEl = containerEl.querySelector('[data-collapsed][data-id="2"]');
-                    accordionEl.dataset.collapsed = 'false';
+                    const accordionEl = containerEl.querySelector('[data-accordion][data-id="2"]');
+                    accordionEl.dataset.accordion = 'expanded';
 
                     toggleAccordion(containerEl, getMockClickEvent(targetEl));
-                    assert(accordionEl.dataset.collapsed).equals('true');
+                    assert(accordionEl.dataset.accordion).equals('collapsed');
                 });
             });
 
@@ -680,11 +680,11 @@ export default ({ assert, describe, it }) => {
 
                 /** @type {HTMLElement} */
                 const fieldsetEl = knobs.querySelector('[data-id="fieldset-item-settings"]');
-                const wasCollapsed = fieldsetEl.dataset.collapsed === 'true';
+                const wasCollapsed = fieldsetEl.dataset.accordion === 'collapsed';
 
                 triggers.accordion(getMockClickEvent(accordionButtonEl));
 
-                assert(fieldsetEl.dataset.collapsed).equals(wasCollapsed ? 'false' : 'true');
+                assert(fieldsetEl.dataset.accordion).equals(wasCollapsed ? 'expanded' : 'collapsed');
             });
         });
 

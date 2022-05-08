@@ -352,22 +352,22 @@ function toggleAccordion(container, e) {
     isRequired(target, 'Missing target for accordion toggle');
 
     /** @type {HTMLElement} targetSectionEl */
-    let targetSectionEl = container.querySelector(`[data-collapsed][data-id="${target}"]`);
+    let targetSectionEl = container.querySelector(`[data-accordion][data-id="${target}"]`);
 
     !targetSectionEl && toss(`Invalid accordion section target "${target}"`);
 
     /** @type {NodeListOf<HTMLElement>} sectionEls */
-    let sectionEls = container.querySelectorAll('[data-collapsed]');
+    let sectionEls = container.querySelectorAll('[data-accordion]');
 
     [ ...sectionEls ].forEach((el) => {
         if (el !== targetSectionEl) {
-            el.dataset.collapsed = 'true';
+            el.dataset.accordion = 'collapsed';
         }
     });
 
-    let isCollapsed = targetSectionEl.dataset.collapsed === 'true';
+    let isCollapsed = targetSectionEl.dataset.accordion === 'collapsed';
 
-    targetSectionEl.dataset.collapsed = isCollapsed ? 'false' : 'true';
+    targetSectionEl.dataset.accordion = isCollapsed ? 'expanded' : 'collapsed';
 }
 
 /**
