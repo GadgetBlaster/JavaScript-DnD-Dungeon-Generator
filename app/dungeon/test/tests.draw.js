@@ -186,7 +186,7 @@ export default ({ assert, describe, it }) => {
             height: 50,
         };
 
-        const roomText = drawRoomText(roomTextConfig, { roomNumber: 42 });
+        const roomText = drawRoomText(roomTextConfig, { roomNumber: '42' });
 
         it('returns a single `<text>` element string', () => {
             assert(roomText).isElementTag('text');
@@ -208,7 +208,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given a `roomLabel`', () => {
             const roomTextWithLabel = drawRoomText(roomTextConfig, {
-                roomNumber: 42,
+                roomNumber: '42',
                 roomLabel: 'Thar be dragons',
             });
 

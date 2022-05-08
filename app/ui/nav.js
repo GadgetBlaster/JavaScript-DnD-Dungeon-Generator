@@ -11,6 +11,7 @@ import { link } from './link.js';
 
 // -- Config -------------------------------------------------------------------
 
+/** @type {Set<Generator>} */
 const disabledGenerators = new Set([ 'names' ]);
 
 export { disabledGenerators as testDisabledGenerators };
@@ -29,6 +30,8 @@ export { disabledGenerators as testDisabledGenerators };
 const getElements = (collection) => [ ...collection ].map((el) =>
     el instanceof HTMLElement && el).filter(Boolean);
 
+export { getElements as testGetElements };
+
 // -- Public Functions ---------------------------------------------------------
 
 /**
@@ -40,7 +43,7 @@ const getElements = (collection) => [ ...collection ].map((el) =>
  */
 export const getNav = (activeGenerator) => generators
     .filter((generator) => !disabledGenerators.has(generator))
-    .map((generator, i) => link(capitalize(generator), routeLookup[generator] || '/', {
+    .map((generator, i) => link(capitalize(generator), routeLookup[generator], {
         'data-action': 'navigate',
         'data-active': activeGenerator === generator,
         'data-target': generator,
