@@ -60,7 +60,7 @@ const formatKnobAccordions = (knobs) => knobs.map((knobSet, i) => {
         'data-id': fieldsetId,
     };
 
-    return fieldset(handle + section(getFields(fields)), attrs);
+    return fieldset(handle + getFields(fields), attrs);
 }).join('');
 
 /**
@@ -79,7 +79,7 @@ const formatKnobSections = (knobs) => knobs.map((knobSet) => {
         fields,
     } = knobSet;
 
-    return fieldset(title(label) + section(getFields(fields)));
+    return fieldset(title(label) + getFields(fields));
 }).join('');
 
 /**

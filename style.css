@@ -374,14 +374,16 @@ fieldset > h2 {
     padding: 4px 20px;
 }
 
-/* TODO */
-/* fieldset > section > label { */
-fieldset > section > div {
+fieldset > div {
     padding: var(--spacing-default);
     display: block;
 }
 
-fieldset[data-collapsed="true"] > section {
+fieldset > div:last-child {
+    padding-bottom: var(--spacing-large);
+}
+
+fieldset[data-collapsed="true"] > div {
     display: none;
 }
 
