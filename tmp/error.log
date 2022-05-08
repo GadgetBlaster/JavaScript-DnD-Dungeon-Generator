@@ -1,0 +1,7 @@
+2022-05-08 19:38:11 ReferenceError: adsf is not defined
+    at generateDungeonRooms (http://dungeon-generator.test/app/dungeon/generate.js:86:1)
+    at generateDungeon (http://dungeon-generator.test/app/dungeon/generate.js:184:27)
+    at dungeonGenerator (http://dungeon-generator.test/app/controller/controller.js:89:26)
+    at onGenerate (http://dungeon-generator.test/app/controller/controller.js:279:25)
+    at generate (http://dungeon-generator.test/app/controller/controller.js:508:27)
+    at HTMLBodyElement.<anonymous> (http://dungeon-generator.test/app/controller/controller.js:465:13)

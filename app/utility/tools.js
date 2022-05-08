@@ -193,3 +193,14 @@ export const toss = (message) => { throw new TypeError(message); };
 export function isRequired(value, message) {
     typeof value === 'undefined' && toss(message);
 }
+
+// -- Error Handling -----------------------------------------------------------
+
+/**
+ * Returns an error message
+ *
+ * @param {any} error
+ *
+ * @returns {string}
+ */
+export const getErrorMessage = (error) => typeof error === 'object' ? error.stack.toString() : error;

@@ -178,21 +178,22 @@ function getGenerator(generator) {
  *
  * @param {Page} [page]
  *
- * @returns {{ title: string; message: string }}
+ * @returns {{ title: string; messages: string[] }}
  */
-function getErrorMessage(page) {
+function getErrorPageContent(page) {
     if (page === 404) {
         return {
-            title: '404',
-            message: 'These are not the mischievous kobolds you are looking for.',
+            title   : '404',
+            messages: [ 'These are not the mischievous kobolds you are looking for.' ],
         };
     }
 
-    // TODO log errors?
     return {
-        title: 'Oh no!',
-        message: 'Goblins have infiltrated the castle and hacked into the JavaScript!'
-            + '<br />AJ needs to fix this...',
+        title   : 'Oh no!',
+        messages: [
+            'Goblins have infiltrated the castle and hacked into the JavaScript!',
+            'This error has been scribbled onto a magical scroll by a preposterous robot so AJ can fix this bug.',
+        ],
     };
 }
 
@@ -315,10 +316,10 @@ function onNavigate(sections, e, updatePath) {
  */
 function renderApp({ body, content, knobs, nav }, page) {
     if (!page || page == 404 || page == 'error') {
-        let { title, message } = getErrorMessage(page);
+        let { title, messages } = getErrorPageContent(page);
 
         body.dataset.layout = 'full';
-        content.innerHTML   = formatError(title, message);
+        content.innerHTML   = formatError(title, messages);
         return;
     }
 
@@ -423,17 +424,17 @@ function toggleVisibility(container, e) {
 }
 
 export {
-    getDataset        as testGetDataset,
-    getErrorMessage   as testGetErrorMessage,
-    getGenerator      as testGetGenerator,
-    getTrigger        as testGetTrigger,
-    isSidebarExpanded as testIsSidebarExpanded,
-    onGenerate        as testOnGenerate,
-    onNavigate        as testOnNavigate,
-    renderApp         as testRenderApp,
-    toggleAccordion   as testToggleAccordion,
-    toggleExpand      as testToggleExpand,
-    toggleVisibility  as testToggleVisibility,
+    getDataset          as testGetDataset,
+    getErrorPageContent as testGetErrorPageContent,
+    getGenerator        as testGetGenerator,
+    getTrigger          as testGetTrigger,
+    isSidebarExpanded   as testIsSidebarExpanded,
+    onGenerate          as testOnGenerate,
+    onNavigate          as testOnNavigate,
+    renderApp           as testRenderApp,
+    toggleAccordion     as testToggleAccordion,
+    toggleExpand        as testToggleExpand,
+    toggleVisibility    as testToggleVisibility,
 };
 
 // -- Public Functions ---------------------------------------------------------

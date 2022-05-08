@@ -1,6 +1,8 @@
 // @ts-check
 
+import { getErrorMessage } from './utility/tools.js';
 import { getSummaryLink } from './unit/output.js';
+import { request } from './utility/xhr.js';
 import { unitState } from './unit/state.js';
 import run from './unit/run.js';
 import suite from './unit/suite.js';
@@ -47,7 +49,22 @@ const activeGenerator = getActiveGenerator(getPathname());
 const testSummary     = getSummaryLink(run(unitState(), suite));
 const render          = getRender(sections);
 
-attachClickDelegate(sections, triggers, console.error);
+/**
+ * Returns the current route
+ *
+ * @param {string} error
+ */
+function logError(error) {
+    console.error(error);
+
+    request({
+        data  : { error: getErrorMessage(error) },
+        method: 'POST',
+        url   : '/api/log/error',
+    });
+}
+
+attachClickDelegate(sections, triggers, logError);
 
 // -- Router -------------------------------------------------------------------
 

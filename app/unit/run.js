@@ -1,6 +1,6 @@
 // @ts-check
 
-import { getErrorMessage } from './output.js';
+import { getErrorMessage } from '../utility/tools.js';
 
 // -- Type Imports -------------------------------------------------------------
 

@@ -9,16 +9,16 @@ import {
     testGetGenerator as getGenerator,
 
     // Private Functions
-    testGetDataset        as getDataset,
-    testGetErrorMessage   as getErrorMessage,
-    testGetTrigger        as getTrigger,
-    testIsSidebarExpanded as isSidebarExpanded,
-    testOnGenerate        as onGenerate,
-    testOnNavigate        as onNavigate,
-    testRenderApp         as renderApp,
-    testToggleAccordion   as toggleAccordion,
-    testToggleExpand      as toggleExpand,
-    testToggleVisibility  as toggleVisibility,
+    testGetDataset          as getDataset,
+    testGetErrorPageContent as getErrorPageContent,
+    testGetTrigger          as getTrigger,
+    testIsSidebarExpanded   as isSidebarExpanded,
+    testOnGenerate          as onGenerate,
+    testOnNavigate          as onNavigate,
+    testRenderApp           as renderApp,
+    testToggleAccordion     as toggleAccordion,
+    testToggleExpand        as toggleExpand,
+    testToggleVisibility    as toggleVisibility,
 
     // Public Functions
     attachClickDelegate,
@@ -189,22 +189,24 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('getErrorMessage()', () => {
+    describe('getErrorPageContent()', () => {
         it('returns an error object', () => {
-            const error = getErrorMessage();
+            const content = getErrorPageContent();
 
-            assert(error).isObject();
-            assert(error.title).equals('Oh no!');
-            assert(error.message).isString();
+            assert(content).isObject();
+            assert(content.title).equals('Oh no!');
+            assert(content.messages).isArray();
+            content.messages.forEach((message) => { assert(message).isString(); });
         });
 
         describe('given a 404 page', () => {
             it('returns a 404 error', () => {
-                const error = getErrorMessage(404);
+                const content = getErrorPageContent(404);
 
-                assert(error).isObject();
-                assert(error.title).stringIncludes('404');
-                assert(error.message).isString();
+                assert(content).isObject();
+                assert(content.title).stringIncludes('404');
+                assert(content.messages).isArray();
+                content.messages.forEach((message) => { assert(message).isString(); });
             });
         });
     });

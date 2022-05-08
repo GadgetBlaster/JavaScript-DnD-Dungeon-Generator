@@ -251,13 +251,16 @@ export function formatDungeon(dungeon) {
  * TODO tests
  *
  * @param {string} errorTitle
- * @param {string} message
+ * @param {string[]} messages
  *
  * @returns {string}
  */
-export function formatError(errorTitle, message) {
+export function formatError(errorTitle, messages) {
     return title(errorTitle, { 'data-title': 'page', 'data-spacing': 'b-medium' })
-        + title(message, { 'data-align': 'center' });
+        + messages.map((message, i) => i > 0
+            ? paragraph(message, { 'data-align': 'center' })
+            : title(message, { 'data-align': 'center' })
+        ).join('');
 }
 
 /**

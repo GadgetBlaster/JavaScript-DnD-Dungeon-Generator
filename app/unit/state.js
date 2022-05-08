@@ -1,7 +1,8 @@
 // @ts-check
 
 import * as assertFunctions from './assert.js';
-import { getErrorMessage, getResultMessage } from './output.js';
+import { getErrorMessage } from '../utility/tools.js';
+import { getResultMessage } from './output.js';
 
 // -- Types --------------------------------------------------------------------
 

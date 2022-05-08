@@ -5,6 +5,7 @@ import {
     capitalizeWords,
     chunk,
     createRangeLookup,
+    getErrorMessage,
     indefiniteArticle,
     isEven,
     isOdd,
@@ -351,5 +352,11 @@ export default ({ assert, describe, it }) => {
                 assert(isRequired('Good stuff', 'No good dude')).equals(undefined);
             });
         });
+    });
+
+    // -- Error Handling -----------------------------------------------------------
+
+    describe('getErrorMessage()', () => {
+        // TODO
     });
 };

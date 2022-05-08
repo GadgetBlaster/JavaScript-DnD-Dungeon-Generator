@@ -300,14 +300,6 @@ export function getOutput(suite, state, options = {}) {
 }
 
 /**
- * Returns an error message
- *
- * @param {any} error
- * @returns {string}
- */
-export const getErrorMessage = (error) => typeof error === 'object' ? error.stack.toString() : error;
-
-/**
  * Returns an assertion result's message string.
  *
  * @param {CurrentScope[]} entries
