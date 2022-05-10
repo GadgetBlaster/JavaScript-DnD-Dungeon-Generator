@@ -1,1 +1,3 @@
 FallbackResource /index.html
+
+Header set Cache-Control "max-age=18000, public"
