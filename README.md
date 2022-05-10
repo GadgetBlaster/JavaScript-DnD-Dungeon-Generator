@@ -2,7 +2,7 @@
 
 D&D Generator at [dnd.mysticwaffle.com](https://dnd.mysticwaffle.com/) is web application, forged by AJ, a human, written (mostly) in JavaScript. The app implements a procedural generation algorithm to draw Dungeons & Dragons game maps as SVG graphics based on user configuration. The maps are accompanied by randomly generated room descriptions, doorway connections, and items.
 
-The application requires zero 3rd party code dependencies. Functionally is validated on page load by a custom built unit testing framework.
+The application requires zero 3rd party library dependencies. Functionally is validated on page load by a custom built unit testing framework.
 
 This project is a work in progress with numerous features and configuration options still to come.
 
@@ -12,7 +12,7 @@ This project is a work in progress with numerous features and configuration opti
 
 ## Application Design
 
-This app uses native browser support for importing JavaScript modules, and so will only run in modern browsers.
+The app uses native browser support for importing JavaScript modules, and so will only run in modern browsers.
 
 HTML is generated via template literals.
 
@@ -33,7 +33,9 @@ size and condition
 
 ## Unit Tests
 
-Because I'm crazy, and wanted to avoid 3rd party libraries, I wrote a custom unit test framework found in the `/unit/*` directory. Tests are run by navigating to `/unit.html` as well as on page load of the main app at `/`. Output is printed to the browser. New unit test suites need to be added to the test manifest in `/unit/suite.js`.
+Because 3rd party libraries are avoided, a custom unit test framework can be found in the `/unit/*` directory. Tests are run by navigating to `/unit.html` as well as on every page load of the main app. Test output is printed to the browser.
+
+New unit test suites must be added to the test manifest in `/unit/suite.js`.
 
 ## Creative Commons
 
