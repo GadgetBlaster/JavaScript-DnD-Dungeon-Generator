@@ -1,5 +1,7 @@
 // @ts-check
 
+// TODO move parts to `/ui`
+
 import { toss } from './tools.js';
 
 // -- Types --------------------------------------------------------------------
