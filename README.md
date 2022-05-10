@@ -4,7 +4,7 @@ A JavaScript based D&D Dungeon Generator. Procedurally generates a dungeon map b
 
 ## Examples
 
-Live  Demo: [D&D Dungeon Generator App on Mystic Waffle](http://dnd.mysticwaffle.com/)
+Live  Demo: [D&D Dungeon Generator App on Mystic Waffle](https://dnd.mysticwaffle.com/)
 
 ![D&D Dungeon Generator Map Example](/img/example.png)
 

@@ -273,7 +273,7 @@ function onGenerate(sections, getPathname) {
         renderApp(sections, 'error');
         return;
     }
-
+    throw new TypeError('Testing error log');
     let generate = getGenerator(generator);
 
     content.innerHTML = generate(config);
