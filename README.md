@@ -1,6 +1,6 @@
 # JavaScript D&D Generator
 
-D&D Generator at [dnd.mysticwaffle.com](https://dnd.mysticwaffle.com/) is web application, forged by AJ, a human, written (mostly) in JavaScript. The app implements a procedural generation algorithm to draw Dungeons & Dragons game maps as SVG graphics based on user configuration. The maps are accompanied by randomly generated room descriptions, doorway connections, and items.
+D&D Generator at [dnd.mysticwaffle.com](https://dnd.mysticwaffle.com/) is web application, forged by AJ, a Human Sorcerer, written (mostly) in JavaScript. The app implements a procedural generation algorithm to draw Dungeons & Dragons game maps as SVG graphics using user input. The maps are accompanied by randomly generated room descriptions, doorway connections, and items.
 
 The application requires zero 3rd party library dependencies. Functionally is validated on page load by a custom built unit testing framework.
 
