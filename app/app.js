@@ -54,13 +54,13 @@ const render          = getRender(sections);
  *
  * @param {string} error
  */
-function logError(error) {
+async function logError(error) {
     console.error(error);
 
-    request({
-        data  : { error: getErrorMessage(error) },
-        method: 'POST',
-        url   : '/api/log/error',
+    request('/api/log/error', {
+        callback: (response) => response.error && console.error(response),
+        data    : { error: getErrorMessage(error) },
+        method  : 'POST',
     });
 }
 

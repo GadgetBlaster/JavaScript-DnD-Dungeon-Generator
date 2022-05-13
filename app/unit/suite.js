@@ -9,6 +9,7 @@ import element from '../utility/test/tests.element.js';
 import roll    from '../utility/test/tests.roll.js';
 import shape   from '../utility/test/tests.shape.js';
 import tools   from '../utility/test/tests.tools.js';
+import xhr     from '../utility/test/tests.xhr.js';
 
 import condition from '../attribute/test/tests.condition.js';
 import quantity  from '../attribute/test/tests.quantity.js';
@@ -58,6 +59,7 @@ export default {
     '/app/utility/test/tests.roll.js'   : roll,
     '/app/utility/test/tests.shape.js'  : shape,
     '/app/utility/test/tests.tools.js'  : tools,
+    '/app/utility/test/tests.xhr.js'    : xhr,
 
     '/app/attribute/test/tests.condition.js': condition,
     '/app/attribute/test/tests.quantity.js' : quantity,

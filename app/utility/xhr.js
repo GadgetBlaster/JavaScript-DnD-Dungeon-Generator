@@ -1,46 +1,49 @@
 // @ts-check
 
-/** @typedef {{ status: number; data: object }} Response */
+import { isRequired } from './tools';
+
+/**
+ * @typedef {{
+ *     data?: object;
+ *     error?: string;
+ *     status?: number;
+ * }} Response
+ */
 
 /**
  * Sends an XHR request in JSON format.
  *
- * TODO tests
- *
- * @param {object} args
- *     @param {"GET" | "POST"} args.method
- *     @param {string} args.url
- *     @param {object} args.data
- *
+ * @param {string} url
  * @param {object} [options]
  *     @param {(Response) => void} [options.callback]
+ *     @param {object} [options.data]
+ *     @param {"GET" | "POST"} [options.method = "GET"]
+ *     @param {XMLHttpRequest} [options.xhr = XMLHttpRequest]
  */
-export function request({ method, url, data }, { callback } = {}) {
-    let xhr = new XMLHttpRequest();
+export function request(url, {
+    callback,
+    data,
+    method = 'GET',
+    xhr = new XMLHttpRequest(),
+} = {}) {
+    isRequired(url, 'url is required in request()');
 
-    xhr.open(method, url);
-
-    xhr.setRequestHeader('Content-Type', 'application/json');
-
-    xhr.onload = () => {
-        if (!callback) {
-            return;
-        }
-
-        /** @type {Response} */
-        let response = {
-            data: {},
-            status: xhr.status,
-        };
+    xhr.addEventListener('load', () => {
+        let response = {};
 
         try {
-            response.data = JSON.parse(xhr.response);
+            response = JSON.parse(xhr.response);
         } catch (error) {
-            response.data = { error: 'Unable to parse JSON from the response' };
+            response.error = 'Unable to parse JSON response';
         }
 
-        callback(response);
-    };
+        response.status = xhr.status;
+
+        callback && callback(response);
+    });
+
+    xhr.open(method, url, true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
 
     xhr.send(JSON.stringify(data));
 }

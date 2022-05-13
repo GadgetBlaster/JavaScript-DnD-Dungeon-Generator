@@ -8,30 +8,34 @@ error_reporting(E_ALL);
 class API {
 
     private const ERROR_LOG_PATH = DOC_ROOT . '/tmp/error.log';
-    private const METHODS        = [ 'GET', 'POST' ];
+
+    private const ROUTES = [
+        '/api/log/error' => [ 'POST' ],
+    ];
 
     // -- Constructor ----------------------------------------------------------
 
     public function __construct() {
         $method = $this->getMethod();
+        $path = $this->getPath();
 
-        if (!$method) {
-            return $this->notAllowed();
+        if (!isset(self::ROUTES[$path])) {
+            $this->notFound();
+            $this->outputResponse('fail', '404: Not Found');
+            return;
         }
 
-        $path = $this->getPath();
+        if (!in_array($method, self::ROUTES[$path])) {
+            $this->notAllowed();
+            $this->outputResponse('fail', '405: Method Not Allowed');
+            return;
+        }
 
         switch ($path) {
             case '/api/log/error':
-                if ($method !== 'POST') {
-                    return $this->notAllowed();
-                }
-
                 $this->addErrorLog();
                 return;
         }
-
-        $this->notFound();
     }
 
     // -- Router ---------------------------------------------------------------
@@ -42,7 +46,8 @@ class API {
      * @return string
      */
     private function getPath() {
-        return '/api/' . htmlspecialchars($_GET['path']);
+        $path = isset($_GET['path']) ? htmlspecialchars($_GET['path']) : '';
+        return '/api/' . $path;
     }
 
     /**
@@ -51,21 +56,10 @@ class API {
      * @return string|void
      */
     private function getMethod() {
-        $method = $_SERVER['REQUEST_METHOD'];
-
-        if (in_array($method, self::METHODS)) {
-            return $method;
-        }
+        return $_SERVER['REQUEST_METHOD'];
     }
 
     // -- HTTP Headers ---------------------------------------------------------
-
-    /**
-     * Sets a JSON response header
-     */
-    private function setJsonContent() {
-        header('Content-type: application/json');
-    }
 
     /**
      * Sets a 405 error header
@@ -81,6 +75,27 @@ class API {
         header("HTTP/1.0 404 Not Found");
     }
 
+    /**
+     * Sets a JSON response header
+     */
+    private function setJsonContent() {
+        header('Content-type: application/json');
+    }
+
+    /**
+     * Sets an HTTP response code.
+     *
+     * @param "success"|"fail" $status
+     */
+    private function setResponseCode($status) {
+        if ($status === 'success') {
+            header("HTTP/1.0 200 OK");
+            return;
+        }
+
+        header("HTTP/1.0 400 Bad Request");
+    }
+
     // -- Get Request Content --------------------------------------------------
 
     /**
@@ -92,7 +107,7 @@ class API {
 
         if (!$data) {
             $this->writeToErrorLog('Unable to decode JSON request');
-            $this->outputJsonResponse([ 'status' => 'Unable to decode JSON request' ]);
+            $this->outputResponse('fail', 'Unable to decode JSON request');
             return;
         }
 
@@ -102,11 +117,27 @@ class API {
     // -- Return JSON Response -------------------------------------------------
 
     /**
+     * Outputs a JSON response.
      *
+     * @param "success"|"fail" $status
+     * @param string $error
+     * @param array $data
      */
-    private function outputJsonResponse($data) {
+    private function outputResponse($status, $error = null, $data = null) {
         $this->setJsonContent();
-        echo json_encode($data);
+        $this->setResponseCode($status);
+
+        $response = [];
+
+        if (isset($error)) {
+            $response['error'] = $error;
+        }
+
+        if (isset($data)) {
+            $response['data'] = $data;
+        }
+
+        echo json_encode($response);
     }
 
     // -- Logs -----------------------------------------------------------------
@@ -118,16 +149,17 @@ class API {
         $data = $this->getRequestContent();
 
         if (!isset($data->error) || !is_string($data->error)) {
-            $this->writeToErrorLog('Invalid request error log object');
-            $this->outputJsonResponse([ 'status' => 'Invalid request error log object' ]);
+            $this->writeToErrorLog('Invalid error log object');
+            $this->outputResponse('fail', 'Invalid error log object');
             return;
         }
 
-        $success = $this->writeToErrorLog($data->error);
+        if ($this->writeToErrorLog($data->error)) {
+            $this->outputResponse('success');
+            return;
+        }
 
-        $this->outputJsonResponse([
-            'status' => $success ? 'success' : 'fail',
-        ]);
+        $this->outputResponse('fail', 'Unable to write to log');
     }
 
     /**
@@ -158,13 +190,6 @@ class API {
         fclose($handle);
 
         return $bytes;
-    }
-
-    /**
-     * Outputs the application log as JSON.
-     */
-    private function outputLog() {
-
     }
 
 }
