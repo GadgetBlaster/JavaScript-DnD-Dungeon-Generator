@@ -220,20 +220,92 @@ export default ({ assert, describe, it }) => {
             });
         });
 
+        describe('given a type of "number"', () => {
+            const body = parseHtml(getKnob({
+                ...fakeKnob,
+                type: 'number',
+                value: 12,
+            }, 'knob-dungeon-babble'));
+
+            const input = /** @type {HTMLInputElement} */ (body.children.item(0));
+
+            it('returns an HTML input element', () => {
+                assert(input.tagName).equals('INPUT');
+            });
+
+            it('has a type of "number"', () => {
+                assert(input).hasAttributes({ type: 'number' });
+            });
+
+            it('has the given value', () => {
+                assert(input.value).equals('12');
+            });
+
+            it('has the given name and id attributes', () => {
+                assert(input).hasAttributes({
+                    id  : 'knob-dungeon-babble',
+                    name: 'dungeonComplexity',
+                });
+            });
+        });
+
+        describe('given a type of "range"', () => {
+            const body = parseHtml(getKnob({
+                ...fakeKnob,
+                max: 216,
+                min: 12,
+                type: 'range',
+                value: 121,
+            }, 'knob-dungeon-slider'));
+
+            const input = /** @type {HTMLInputElement} */ (body.children.item(0));
+
+            it('returns an HTML input element', () => {
+                assert(input.tagName).equals('INPUT');
+            });
+
+            it('has a type of "range"', () => {
+                assert(input).hasAttributes({ type: 'range' });
+            });
+
+            it('has the given value', () => {
+                assert(input.value).equals('121');
+            });
+
+            it('has the given name and id attributes', () => {
+                assert(input).hasAttributes({
+                    id  : 'knob-dungeon-slider',
+                    name: 'dungeonComplexity',
+                });
+            });
+
+            it('has the provided min and max attributes', () => {
+                assert(input).hasAttributes({ min: '12', max: '216' });
+            });
+        });
+
         describe('given a type of "select"', () => {
             const body = parseHtml(getKnob({
                 ...fakeKnob,
                 type: 'select',
+                value: 'toast',
                 values: [ 'toast', 'coffee' ],
             }, 'knob-dungeon-complexity'));
 
-            it('contains an HTML select element', () => {
-                assert(Boolean(body.querySelector('select'))).isTrue();
+            const select = /** @type {HTMLSelectElement} */ (body.children.item(0));
+
+            it('returns an HTML select element', () => {
+                assert(select.tagName).equals('SELECT');
             });
 
-            it('has the provided name and id', () => {
-                assert(body.querySelector('select[name="dungeonComplexity"]')).hasAttributes({
-                    id: 'knob-dungeon-complexity',
+            it('has the given value', () => {
+                assert(select.value).equals('toast');
+            });
+
+            it('has the given name and id attributes', () => {
+                assert(select).hasAttributes({
+                    id  : 'knob-dungeon-complexity',
+                    name: 'dungeonComplexity',
                 });
             });
 
@@ -255,36 +327,31 @@ export default ({ assert, describe, it }) => {
             });
         });
 
-        describe('given a type of "number"', () => {
+        describe('given a type of "text"', () => {
             const body = parseHtml(getKnob({
                 ...fakeKnob,
-                type: 'number',
+                type: 'text',
+                value: 'Bob is a cool dude',
             }, 'knob-dungeon-babble'));
 
-            it('contains an HTML input element', () => {
-                assert(Boolean(body.querySelector('input'))).isTrue();
+            const input = /** @type {HTMLInputElement} */ (body.children.item(0));
+
+            it('returns an HTML input element', () => {
+                assert(input.tagName).equals('INPUT');
             });
 
-            it('has the provided name and id', () => {
-                assert(body.querySelector('input[name="dungeonComplexity"]')).hasAttributes({
-                    id: 'knob-dungeon-babble',
-                });
-            });
-        });
-
-        describe('given a type of "range"', () => {
-            const body = parseHtml(getKnob({
-                ...fakeKnob,
-                type: 'number',
-            }, 'knob-dungeon-slider'));
-
-            it('contains an HTML input element', () => {
-                assert(Boolean(body.querySelector('input'))).isTrue();
+            it('has a type of "text"', () => {
+                assert(input).hasAttributes({ type: 'text' });
             });
 
-            it('has the provided name and id', () => {
-                assert(body.querySelector('input[name="dungeonComplexity"]')).hasAttributes({
-                    id: 'knob-dungeon-slider',
+            it('has the given value', () => {
+                assert(input.value).equals('Bob is a cool dude');
+            });
+
+            it('has the given name and id attributes', () => {
+                assert(input).hasAttributes({
+                    id  : 'knob-dungeon-babble',
+                    name: 'dungeonComplexity',
                 });
             });
         });

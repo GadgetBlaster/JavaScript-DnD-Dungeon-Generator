@@ -1,7 +1,7 @@
 // @ts-check
 
 import { button, infoLabel } from './button.js';
-import { div, fieldset, section } from './block.js';
+import { div, fieldset } from './block.js';
 import { knobConfig, getKnobConfig } from '../controller/knobs.js';
 import { paragraph, small, span, title } from './typography.js';
 import { select, input, slider, fieldLabel } from './field.js';
@@ -144,6 +144,12 @@ function getKnob(config, id) {
     } = config;
 
     switch (type) {
+        case 'number':
+            return input(name, { type: 'number' , value, id });
+
+        case 'range':
+            return slider(name, { min, max, value, id });
+
         case 'select':
             if (typeof value !== 'undefined' && typeof value !== 'string') {
                 toss('Select value must be a string in getKnob()');
@@ -151,11 +157,8 @@ function getKnob(config, id) {
 
             return select(name, values, value, { id });
 
-        case 'number':
-            return input(name, { type: 'number' , value, id });
-
-        case 'range':
-            return slider(name, { min, max, value, id });
+        case 'text':
+            return input(name, { type: 'text' , value, id });
 
         default:
             toss('Invalid knob type in getKnob()');
@@ -208,7 +211,7 @@ export function getFormData(knobContainer) {
  * @returns {string}
  */
 export function getKnobPanel(generator, { config, isExpanded } = {}) {
-    let knobs = getKnobConfig(knobConfig, generator, config);
+    let knobs     = getKnobConfig(knobConfig, generator, config);
     let knobPanel = isExpanded
         ? formatKnobSections(knobs)
         : formatKnobAccordions(knobs);
