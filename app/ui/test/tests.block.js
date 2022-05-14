@@ -41,10 +41,6 @@ export default ({ assert, describe, it }) => {
                 assert(element.tagName).equals(tag.toUpperCase());
             });
 
-            it(`contains an HTML ${tag} element`, () => {
-                assert(Boolean(element)).isTrue();
-            });
-
             it('contains the given label', () => {
                 assert(element.textContent).equals('Gandalf');
             });

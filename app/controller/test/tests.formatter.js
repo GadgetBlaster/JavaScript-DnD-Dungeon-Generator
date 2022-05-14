@@ -14,6 +14,7 @@ import {
     formatError,
     formatItems,
     formatName,
+    formatReadyState,
     formatRooms,
 } from '../formatter.js';
 
@@ -29,7 +30,20 @@ export default ({ assert, describe, it }) => {
     // -- Private Functions ----------------------------------------------------
 
     describe('formatDetail()', () => {
-        // TODO
+        const body    = parseHtml(formatDetail('super fragilistic'));
+        const element = body.children.item(0);
+
+        it('returns an HTML span element', () => {
+            assert(element.tagName).equals('SPAN');
+        });
+
+        it('contains the given label', () => {
+            assert(element.textContent).stringIncludes('super fragilistic');
+        });
+
+        it('has a data-detail attributes', () => {
+            assert(element).hasAttributes({ 'data-detail' : '' });
+        });
     });
 
 
@@ -89,6 +103,10 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('formatName()', () => {
+        // TODO
+    });
+
+    describe('formatReadyState()', () => {
         // TODO
     });
 

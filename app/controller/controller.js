@@ -494,9 +494,7 @@ export function attachClickDelegate(sections, triggers, onError) {
  *
  * @returns {Generator | undefined}
  */
-export function getActiveGenerator(route) {
-    return routes[route];
-}
+export const getActiveGenerator = (route) => routes[route];
 
 /**
  * Returns the app's render function.
