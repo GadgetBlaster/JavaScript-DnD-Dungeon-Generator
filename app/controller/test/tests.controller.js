@@ -2,7 +2,7 @@
 
 import { getKnobPanel } from '../../ui/form.js';
 import { getNav } from '../../ui/nav.js';
-import { parseHtml } from '../../utility/element.js';
+import { parseHtml, parseSvg } from '../../utility/element.js';
 import {
     // Config
     generators,
@@ -11,13 +11,13 @@ import {
     // Private Functions
     testGetDataset          as getDataset,
     testGetErrorPageContent as getErrorPageContent,
-    testGetReadyState       as getReadyState, // TODO
+    testGetReadyState       as getReadyState,
     testGetTrigger          as getTrigger,
     testIsSidebarExpanded   as isSidebarExpanded,
     testOnGenerate          as onGenerate,
     testOnNavigate          as onNavigate,
     testRenderApp           as renderApp,
-    testRenderErrorPage     as renderErrorPage, // TODO
+    testRenderErrorPage     as renderErrorPage,
     testToggleAccordion     as toggleAccordion,
     testToggleExpand        as toggleExpand,
     testToggleVisibility    as toggleVisibility,
@@ -218,6 +218,32 @@ export default ({ assert, describe, it }) => {
         });
     });
 
+    describe('getReadyState()', () => {
+        generators.forEach((generator) => {
+            describe(`given a generator of "${generator}"`, () => {
+                it('returns an object containing a title and icon', () => {
+                    const result = getReadyState(generator);
+
+                    assert(result).isObject();
+                    assert(result.title).isString();
+
+                    const icon = parseSvg(result.icon);
+
+                    assert(icon.children.length).equals(1);
+                    assert(icon.children.item(0).tagName).equals('svg');
+                });
+            });
+        });
+
+        describe('given an invalid generator', () => {
+            it('throws', () => {
+                // @ts-expect-error
+                assert(() => getReadyState('Alwrong the Goblin!'))
+                    .throws('Invalid generator "Alwrong the Goblin!" in getReadyState()');
+            });
+        });
+    });
+
     describe('getTrigger()', () => {
         describe('given an action that does not exist on the given triggers', () => {
             it('throws', () => {
@@ -374,6 +400,26 @@ export default ({ assert, describe, it }) => {
                 // @ts-expect-error
                 renderApp(sections);
                 assert(body).hasAttributes({ 'data-layout': 'full' });
+                assert(content.querySelector('h2').textContent).stringIncludes('404');
+            });
+        });
+    });
+
+    describe('renderErrorPage()', () => {
+        const sections = getMockSections();
+        const { body, content } = sections;
+
+        it('renders an error message in a full layout', () => {
+            renderErrorPage(sections);
+
+            assert(body).hasAttributes({ 'data-layout': 'full' });
+            assert(content.querySelector('h2').textContent).stringIncludes('Oh no!');
+        });
+
+        describe('given a 404 status code', () => {
+            it('renders a 404 message', () => {
+                renderErrorPage(sections, 404);
+
                 assert(content.querySelector('h2').textContent).stringIncludes('404');
             });
         });
