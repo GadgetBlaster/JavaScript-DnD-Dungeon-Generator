@@ -106,7 +106,7 @@ export const knobConfig = [
         generators : new Set([ 'dungeon' ]),
         fields     : [
             {
-                label : 'Dungeon Name',
+                label : 'Name',
                 name  : 'dungeonName',
                 desc  : 'Dungeon name.', // TODO make desc optional
                 type  : 'text',
