@@ -50,11 +50,12 @@ const formatDetail = (content) => span(`(${content})`, { 'data-detail': '' });
  * @private
  *
  * @param {ItemSet} itemSet
- * @param {number} [columns = 1]
+ * @param {object} [options]
+ *     @param {number} [options.columns = 1]
  *
  * @returns {string}
  */
-function formatItemContent(itemSet, columns = 1) {
+function formatItemContent(itemSet, { columns = 1 } = {}) {
     let {
         conditionUniformity,
         containers,
@@ -277,7 +278,7 @@ export function formatItems(itemSet) {
     let columns = Math.min(Math.ceil(itemSet.items.length / idealItemsPerColumn), maxItemColumns);
 
     let content = header(title('Items ' + formatDetail(getItemTotal(itemSet).toString())))
-        + formatItemContent(itemSet, columns);
+        + formatItemContent(itemSet, { columns });
 
     return section(article(content));
 }
