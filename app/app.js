@@ -31,6 +31,24 @@ import { getNav } from './ui/nav.js';
  * @prop {Path} path
  */
 
+// -- Functions ----------------------------------------------------------------
+
+/**
+ * Logs an error.
+ *
+ * @param {string} error
+ */
+function logError(error) {
+    console.error(error);
+
+    request('/api/log/error', {
+        callback: (response) => response.error && console.error(response),
+        data    : { error: getErrorMessage(error) },
+        method  : 'POST',
+    });
+}
+
+
 // -- Config -------------------------------------------------------------------
 
 /** @type {Sections} sections */
@@ -47,22 +65,7 @@ const sections = {
 const triggers        = getTriggers(sections, updatePath, getPathname);
 const activeGenerator = getActiveGenerator(getPathname());
 const testSummary     = getSummaryLink(run(unitState(), suite));
-const render          = getRender(sections);
-
-/**
- * Returns the current route
- *
- * @param {string} error
- */
-async function logError(error) {
-    console.error(error);
-
-    request('/api/log/error', {
-        callback: (response) => response.error && console.error(response),
-        data    : { error: getErrorMessage(error) },
-        method  : 'POST',
-    });
-}
+const render          = getRender(sections, logError);
 
 attachClickDelegate(sections, triggers, logError);
 
@@ -98,4 +101,4 @@ window.addEventListener('popstate', (event) => {
 sections.nav.innerHTML    = getNav(activeGenerator);
 sections.footer.innerHTML = getFooter(testSummary);
 
-render(activeGenerator || 404);
+render(activeGenerator);

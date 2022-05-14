@@ -6,7 +6,7 @@ import {
 } from '../xhr.js';
 
 /**
- * Fakes an XHR object. I know, I don't want to talk about it.
+ * Mocks an XHR object. I know, I don't want to talk about it.
  *
  * @param {object} [options]
  *     @param {object} [options.response]

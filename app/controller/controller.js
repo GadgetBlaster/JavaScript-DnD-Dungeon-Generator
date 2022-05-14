@@ -51,7 +51,8 @@ import { toss, isRequired } from '../utility/tools.js';
  * } Action
  */
 
-/** @typedef {Generator | "error" | 404} Page */
+/** @typedef {Generator} Page */
+/** @typedef {404} StatusCode */
 
 // -- Config -------------------------------------------------------------------
 
@@ -176,12 +177,12 @@ function getGenerator(generator) {
  *
  * @private
  *
- * @param {Page} [page]
+ * @param {StatusCode} [statusCode]
  *
  * @returns {{ title: string; messages: string[] }}
  */
-function getErrorPageContent(page) {
-    if (page === 404) {
+function getErrorPageContent(statusCode) {
+    if (statusCode === 404) {
         return {
             title   : '404',
             messages: [ 'These are not the mischievous kobolds you are looking for.' ],
@@ -270,7 +271,7 @@ function onGenerate(sections, getPathname) {
     let generator = getActiveGenerator(getPathname());
 
     if (!generator) {
-        renderApp(sections, 'error');
+        renderErrorPage(sections);
         return;
     }
 
@@ -314,14 +315,13 @@ function onNavigate(sections, e, updatePath) {
  * @param {Sections} sections
  * @param {Page} page
  */
-function renderApp({ body, content, knobs, nav }, page) {
-    if (!page || page == 404 || page == 'error') {
-        let { title, messages } = getErrorPageContent(page);
-
-        body.dataset.layout = 'full';
-        content.innerHTML   = formatError(title, messages);
+function renderApp(sections, page) {
+    if (!page) {
+        renderErrorPage(sections, 404);
         return;
     }
+
+    let { body, content, knobs, nav } = sections;
 
     if (body.dataset.layout === 'full') {
         body.dataset.layout = 'default';
@@ -334,6 +334,21 @@ function renderApp({ body, content, knobs, nav }, page) {
 
     knobs.innerHTML   = getKnobPanel(page, { isExpanded });
     content.innerHTML = formatReadyState(title, icon);
+}
+
+/**
+ * Renders the error page.
+ *
+ * @private
+ *
+ * @param {Sections} sections
+ * @param {404} [statusCode]
+ */
+function renderErrorPage({ body, content }, statusCode) {
+    let { title, messages } = getErrorPageContent(statusCode);
+
+    body.dataset.layout = 'full';
+    content.innerHTML   = formatError(title, messages);
 }
 
 /**
@@ -388,7 +403,7 @@ function toggleExpand(sections, getPathname) {
     let generator = getActiveGenerator(getPathname());
 
     if (!generator) {
-        renderApp(sections, 'error');
+        renderErrorPage(sections);
         return;
     }
 
@@ -427,11 +442,13 @@ export {
     getDataset          as testGetDataset,
     getErrorPageContent as testGetErrorPageContent,
     getGenerator        as testGetGenerator,
+    getReadyState       as testGetReadyState,
     getTrigger          as testGetTrigger,
     isSidebarExpanded   as testIsSidebarExpanded,
     onGenerate          as testOnGenerate,
     onNavigate          as testOnNavigate,
     renderApp           as testRenderApp,
+    renderErrorPage     as testRenderErrorPage,
     toggleAccordion     as testToggleAccordion,
     toggleExpand        as testToggleExpand,
     toggleVisibility    as testToggleVisibility,
@@ -465,7 +482,7 @@ export function attachClickDelegate(sections, triggers, onError) {
             trigger(e);
         } catch (error) {
             onError(error);
-            renderApp(sections, 'error');
+            renderErrorPage(sections);
         }
     });
 }
@@ -485,10 +502,18 @@ export function getActiveGenerator(route) {
  * Returns the app's render function.
  *
  * @param {Sections} sections
+ * @param {(any) => void} onError
  *
  * @returns {(page: Page) => void}
  */
-export const getRender = (sections) => (generator) => renderApp(sections, generator);
+export const getRender = (sections, onError) => (generator) => {
+    try {
+        renderApp(sections, generator);
+    } catch (error) {
+        onError(error);
+        renderErrorPage(sections);
+    }
+};
 
 /**
  * Returns an object of action triggers.

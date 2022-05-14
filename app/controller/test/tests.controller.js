@@ -11,11 +11,13 @@ import {
     // Private Functions
     testGetDataset          as getDataset,
     testGetErrorPageContent as getErrorPageContent,
+    testGetReadyState       as getReadyState, // TODO
     testGetTrigger          as getTrigger,
     testIsSidebarExpanded   as isSidebarExpanded,
     testOnGenerate          as onGenerate,
     testOnNavigate          as onNavigate,
     testRenderApp           as renderApp,
+    testRenderErrorPage     as renderErrorPage, // TODO
     testToggleAccordion     as toggleAccordion,
     testToggleExpand        as toggleExpand,
     testToggleVisibility    as toggleVisibility,
@@ -58,6 +60,11 @@ function getMockSections() {
     const footer  = document.createElement('footer');
     const knobs   = document.createElement('form');
     const nav     = document.createElement('nav');
+
+    body.appendChild(content);
+    body.appendChild(footer);
+    body.appendChild(knobs);
+    body.appendChild(nav);
 
     body.dataset.layout = 'default';
 
@@ -362,28 +369,12 @@ export default ({ assert, describe, it }) => {
             });
         });
 
-        describe('when the page is 404', () => {
-            it('renders a 404 message in a full layout', () => {
-                renderApp(sections, 404);
-                assert(body).hasAttributes({ 'data-layout': 'full' });
-                assert(content.querySelector('h2').textContent).stringIncludes('404');
-            });
-        });
-
-        describe('when the page is "error"', () => {
-            it('renders an error message in a full layout', () => {
-                renderApp(sections, 'error');
-                assert(body).hasAttributes({ 'data-layout': 'full' });
-                assert(content.querySelector('h2').textContent).stringIncludes('Oh no!');
-            });
-        });
-
         describe('when the page is undefined', () => {
-            it('renders an error message in a full layout', () => {
+            it('renders a 404 message in a full layout', () => {
                 // @ts-expect-error
                 renderApp(sections);
                 assert(body).hasAttributes({ 'data-layout': 'full' });
-                assert(content.querySelector('h2').textContent).stringIncludes('Oh no!');
+                assert(content.querySelector('h2').textContent).stringIncludes('404');
             });
         });
     });
@@ -590,7 +581,6 @@ export default ({ assert, describe, it }) => {
             button3.dataset.action = 'invalid-action';
             button4.dataset.action = 'navigate';
 
-            sections.body.appendChild(sections.content);
             sections.body.appendChild(button1);
             sections.body.appendChild(button2);
             sections.body.appendChild(button3);
@@ -667,23 +657,31 @@ export default ({ assert, describe, it }) => {
         const sections = getMockSections();
         const { content, knobs } = sections;
 
-        it('returns a render function bound to the given sections', () => {
-            const render = getRender(sections);
+        let errorResult;
 
+        const render = getRender(sections, (error) => errorResult = error);
+
+        it('returns a render function bound to the given sections', () => {
             render('items');
 
             assert(content.textContent).equals('Generate Items');
             assert(Boolean(knobs.querySelector('button[data-action="generate"]'))).isTrue();
+        });
+
+        describe('when an error is thrown', () => {
+            it('renders an error page and calls the onError callback', () => {
+                // @ts-expect-error
+                render('bubbling cauldron oil');
+
+                assert(sections.body.textContent).stringIncludes('Oh no!');
+                assert(errorResult.toString()).stringIncludes('Invalid generator "bubbling cauldron oil"');
+            });
         });
     });
 
     describe('getTriggers()', () => {
         const sections = getMockSections();
         const { body, content, knobs, nav } = sections;
-
-        body.appendChild(nav);
-        body.appendChild(knobs);
-        body.appendChild(content);
 
         let updatePathValue;
 
