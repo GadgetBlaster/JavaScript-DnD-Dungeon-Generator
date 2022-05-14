@@ -244,9 +244,12 @@ export {
  * @param {Dungeon} dungeon
  */
 export function formatDungeon(dungeon) {
-    let { mapSvg, rooms, doors } = dungeon;
+    let { name, mapSvg, rooms, doors } = dungeon;
 
-    return section(mapSvg)
+    let dungeonTitle = name ? title(name, { 'data-spacing': 'b-medium' }) : '';
+
+    return dungeonTitle
+        + section(mapSvg)
         + section(drawLegend())
         + formatRoomGrid(rooms, doors);
 }

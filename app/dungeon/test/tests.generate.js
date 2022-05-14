@@ -107,6 +107,7 @@ export default ({ assert, describe, it }) => {
 
         /** @type {Omit<DungeonConfig, "roomCount">} */
         const config = {
+            dungeonName          : 'Dungeon test!',
             dungeonComplexity    : complexity,
             dungeonConnections   : 0,
             dungeonMaps          : 0,
@@ -125,12 +126,13 @@ export default ({ assert, describe, it }) => {
 
         it('should return a `Dungeon` object', () => {
             assert(dungeon).isObject();
+            assert(dungeon.name).equals('Dungeon test!');
             assert(dungeon.mapSvg).isString();
             assert(/<svg(.*?)>(.*?)<\/svg>/.test(dungeon.mapSvg)).isTrue();
             assert(dungeon.rooms).isArray();
         });
 
-        it('generates a number of `Room` config less than or equal to the max room count', () => {
+        it('generates a number of `Room` configs less than or equal to the max room count', () => {
             assert(dungeon.rooms.length < getMaxRoomCount(complexity)).isTrue();
         });
 

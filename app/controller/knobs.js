@@ -43,7 +43,7 @@ import { sizes } from '../attribute/size.js';
 /**
  * @typedef {object} DungeonConfigBase
  *
- * @prop {number} dungeonName
+ * @prop {string} dungeonName
  * @prop {number} dungeonComplexity
  * @prop {number} dungeonConnections
  * @prop {number} dungeonMaps
@@ -105,13 +105,13 @@ export const knobConfig = [
         label      : 'Dungeon Settings',
         generators : new Set([ 'dungeon' ]),
         fields     : [
-            // {
-            //     label : 'Dungeon Name',
-            //     name  : 'dungeonName',
-            //     desc  : 'Controls dungeon size and room count.',
-            //     type  : 'text',
-            //     value : 'Random Dungeon',
-            // },
+            {
+                label : 'Dungeon Name',
+                name  : 'dungeonName',
+                desc  : 'Dungeon name.', // TODO make desc optional
+                type  : 'text',
+                value : 'Random Dungeon',
+            },
             {
                 label : 'Complexity',
                 name  : 'dungeonComplexity',
@@ -157,7 +157,7 @@ export const knobConfig = [
             {
                 label      : 'Rooms',
                 name       : 'roomCount',
-                desc       : 'Number of rooms to generate',
+                desc       : 'Number of rooms to generate.',
                 type       : 'number',
                 generators : new Set([ 'rooms' ]),
                 value      : 1,

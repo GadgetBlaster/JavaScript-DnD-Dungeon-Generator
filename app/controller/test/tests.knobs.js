@@ -15,6 +15,8 @@ import { generators } from '../controller.js';
 
 /** @typedef {import('../knobs.js').KnobConfig} KnobConfig */
 
+const validFieldValueTypes = new Set([ 'number', 'string' ]);
+
 /**
  * @param {import('../../unit/state.js').Utility} utility
  */
@@ -56,10 +58,7 @@ export default ({ assert, describe, it }) => {
                             fieldConfig.min    && assert(fieldConfig.min).isNumber();
                             fieldConfig.max    && assert(fieldConfig.max).isNumber();
                             fieldConfig.values && assert(fieldConfig.values).isArray();
-                            fieldConfig.value  && assert(
-                                typeof fieldConfig.value === 'number'
-                                || typeof fieldConfig.value === 'string'
-                            ).isTrue();
+                            fieldConfig.value  && assert(validFieldValueTypes.has(typeof fieldConfig.value)).isTrue();
 
                             if (fieldConfig.generators) {
                                 fieldConfig.generators.forEach((generator) =>

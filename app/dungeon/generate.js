@@ -19,6 +19,7 @@ import trapList from '../room/trap.js';
 /**
  * @typedef {object} Dungeon
  *
+ * @prop {string} name
  * @prop {string} mapSvg
  * @prop {Room[]} rooms
  * @prop {Doors} doors
@@ -169,6 +170,7 @@ export {
  */
 export function generateDungeon(config) {
     let {
+        dungeonName,
         dungeonComplexity,
         dungeonConnections,
         dungeonMaps,
@@ -203,6 +205,7 @@ export function generateDungeon(config) {
     }
 
     return {
+        name  : dungeonName,
         mapSvg: dungeon.map,
         rooms : dungeon.rooms,
         doors : doors,
