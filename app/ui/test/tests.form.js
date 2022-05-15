@@ -5,6 +5,7 @@ import {
     testFormatKnobAccordions as formatKnobAccordions,
     testGetFields            as getFields,
     testGetKnob              as getKnob,
+    testGetKnobIds           as getKnobIds,
 
     // Public Functions
     getFormData,
@@ -156,36 +157,50 @@ export default ({ assert, describe, it }) => {
 
             it('contains an input element with the correct name', () => {
                 assert(Boolean(input)).isTrue();
-                input && assert(input).hasAttributes({ name: 'dungeonComplexity' });
+                assert(input).hasAttributes({ name: 'dungeonComplexity' });
             });
 
             it('contains a html label element associated to an input', () => {
                 const label = body.querySelector('label');
 
                 assert(Boolean(label)).isTrue();
-                label && assert(label.textContent).stringIncludes('Complexity'); // TODO equals
-                label && input && assert(label).hasAttributes({ for: input.id });
+                assert(label.textContent).stringIncludes('Complexity'); // TODO equals
+                assert(label).hasAttributes({ for: input.id });
             });
 
             it('contains an info button element with the correct target', () => {
                 const button = body.querySelector('button');
 
                 assert(Boolean(button)).isTrue();
-                button && assert(button.textContent).equals('?');
-                button && assert(button).hasAttributes({
+                assert(button.textContent).equals('?');
+                assert(button).hasAttributes({
                     'data-action': 'toggle',
-                    'data-target': 'info-dungeonComplexity',
+                    'data-target': 'info-dungeon-complexity',
                 });
             });
 
             it('contains a hidden info paragraph element', () => {
-                const info = body.querySelector('p');
+                const info = body.querySelector('[id="info-dungeon-complexity"]');
 
                 assert(Boolean(info)).isTrue();
+                assert(info.tagName).equals('P');
                 assert(info.textContent).equals('Pi');
                 assert(info).hasAttributes({
                     'hidden': 'true',
-                    id      : 'info-dungeonComplexity',
+                    id      : 'info-dungeon-complexity',
+                });
+            });
+
+            it('contains a hidden error paragraph element', () => {
+                const error = body.querySelector('p[id="error-dungeon-complexity"]');
+
+                assert(Boolean(error)).isTrue();
+                assert(error.tagName).equals('P');
+                assert(error.textContent).equals('');
+                assert(error).hasAttributes({
+                    'data-error': '',
+                    'hidden'    : 'true',
+                    id          : 'error-dungeon-complexity',
                 });
             });
         });
@@ -204,9 +219,9 @@ export default ({ assert, describe, it }) => {
             });
 
             it('contains a label element for each knob', () => {
-                assert(Boolean(body.querySelector(`label[for="knob-itemtype"]`))).isTrue();
-                assert(Boolean(body.querySelector(`label[for="knob-itemrarity"]`))).isTrue();
-                assert(Boolean(body.querySelector(`label[for="knob-itemtype"]`))).isTrue();
+                assert(Boolean(body.querySelector(`label[for="knob-item-type"]`))).isTrue();
+                assert(Boolean(body.querySelector(`label[for="knob-item-rarity"]`))).isTrue();
+                assert(Boolean(body.querySelector(`label[for="knob-item-type"]`))).isTrue();
             });
         });
     });
@@ -214,7 +229,7 @@ export default ({ assert, describe, it }) => {
     describe('getKnob()', () => {
         describe('given an invalid type', () => {
             it('throws', () => {
-                const ids = { descId: '1', errorId: '2', knobId: '3' };
+                const ids = { infoId: '1', errorId: '2', knobId: '3' };
 
                 // @ts-expect-error
                 assert(() => getKnob({ ...fakeKnob, type: 'junk' }, ids))
@@ -223,8 +238,8 @@ export default ({ assert, describe, it }) => {
         });
 
         const ids = {
-            descId : 'info-dungeonBabble',
             errorId: 'error-dungeonBabble',
+            infoId : 'info-dungeonBabble',
             knobId : 'knob-dungeon-babble',
         };
 
@@ -253,7 +268,7 @@ export default ({ assert, describe, it }) => {
 
             it('has correct attributes', () => {
                 assert(input).hasAttributes({
-                    'aria-describedby': `${ids.descId} ${ids.errorId}`,
+                    'aria-describedby': `${ids.infoId} ${ids.errorId}`,
                     'data-error-id'   : ids.errorId,
                     id                : 'knob-dungeon-babble',
                     name              : 'dungeonComplexity',
@@ -290,7 +305,7 @@ export default ({ assert, describe, it }) => {
 
             it('has correct attributes', () => {
                 assert(input).hasAttributes({
-                    'aria-describedby': `${ids.descId} ${ids.errorId}`,
+                    'aria-describedby': `${ids.infoId} ${ids.errorId}`,
                     'data-error-id'   : ids.errorId,
                     id                : 'knob-dungeon-babble',
                     name              : 'dungeonComplexity',
@@ -322,7 +337,7 @@ export default ({ assert, describe, it }) => {
 
             it('has correct attributes', () => {
                 assert(select).hasAttributes({
-                    'aria-describedby': `${ids.descId} ${ids.errorId}`,
+                    'aria-describedby': `${ids.infoId} ${ids.errorId}`,
                     'data-error-id'   : ids.errorId,
                     id                : 'knob-dungeon-babble',
                     name              : 'dungeonComplexity',
@@ -370,11 +385,21 @@ export default ({ assert, describe, it }) => {
 
             it('has correct attributes', () => {
                 assert(input).hasAttributes({
-                    'aria-describedby': `${ids.descId} ${ids.errorId}`,
+                    'aria-describedby': `${ids.infoId} ${ids.errorId}`,
                     'data-error-id'   : ids.errorId,
                     id                : 'knob-dungeon-babble',
                     name              : 'dungeonComplexity',
                 });
+            });
+        });
+    });
+
+    describe('getKnobIds()', () => {
+        it('returns description, error, and knob ids for the given control name', () => {
+            assert(getKnobIds('widgetSwitch')).equalsObject({
+                errorId: 'error-widget-switch',
+                infoId : 'info-widget-switch',
+                knobId : 'knob-widget-switch',
             });
         });
     });

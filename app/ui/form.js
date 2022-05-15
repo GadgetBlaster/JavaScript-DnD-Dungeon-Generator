@@ -5,7 +5,7 @@ import { div, fieldset } from './block.js';
 import { knobConfig, getKnobConfig } from '../controller/knobs.js';
 import { paragraph, small, span, title } from './typography.js';
 import { select, input, slider, fieldLabel } from './field.js';
-import { toDash, toss } from '../utility/tools.js';
+import { toDash, toss, toWords } from '../utility/tools.js';
 
 // TODO rename "knobs" to "controls"
 
@@ -102,18 +102,15 @@ const getFields = (fields) => fields.map((settings) => {
     !label && toss('Missing required knob label');
     !desc  && toss('Missing required knob description');
 
-    let descId  = `info-${name}`; // TODO toDash
-    let errorId = `error-${name}`; // TODO toDash
-    let knobId  = getKnobId(name);
+    let { errorId, infoId, knobId}  = getKnobIds(name);
 
-    let knob       = getKnob(settings, { knobId, descId, errorId });
-    let descButton = button(infoLabel, 'toggle', { target: descId, size: 'auto' });
-    // TODO make into pop-up
-    let descText   = paragraph(small(desc), { hidden: 'true', id: descId });
-    let knobLabel  = fieldLabel(label + descButton, { for: knobId });
-    let errorText  = paragraph('', { id: errorId, hidden: 'true', 'data-error': '' }); // TODO tests
+    let knob       = getKnob(settings, { knobId, infoId, errorId });
+    let infoButton = button(infoLabel, 'toggle', { target: infoId, size: 'auto' });
+    let infoText   = paragraph(small(desc), { hidden: 'true', id: infoId }); // TODO make into pop-up
+    let knobLabel  = fieldLabel(label + infoButton, { for: knobId }); // TODO restructure
+    let errorText  = paragraph('', { id: errorId, hidden: 'true', 'data-error': '' });
 
-    return div(knobLabel + descText + knob + errorText);
+    return div(knobLabel + infoText + knob + errorText);
 }).join('');
 
 /**
@@ -135,9 +132,9 @@ const getInputElements = (knobContainer) => [ ...knobContainer.querySelectorAll(
  *
  * @param {KnobFieldConfig} config
  * @param {object} ids
- *     @param {string} ids.knobId
- *     @param {string} ids.descId
  *     @param {string} ids.errorId
+ *     @param {string} ids.infoId
+ *     @param {string} ids.knobId
  *
  * @returns {string}
  */
@@ -151,11 +148,11 @@ function getKnob(config, ids) {
         max,
     } = config;
 
-    let { descId, errorId, knobId } = ids;
+    let { errorId, infoId, knobId } = ids;
 
     // TODO tests
     let attrs = {
-        'aria-describedby': `${descId} ${errorId}`,
+        'aria-describedby': `${infoId} ${errorId}`,
         'data-error-id': errorId,
         id: knobId,
     };
@@ -183,19 +180,31 @@ function getKnob(config, ids) {
 }
 
 /**
- * Returns a knob's id attribute value.
+ * Returns various HTML attribute ids for a knob.
  *
  * @param {string} name
  *
- * @returns {string}
+ * @returns {{
+ *   errorId: string;
+ *   infoId : string;
+ *   knobId : string;
+ * }}
  */
-const getKnobId = (name) => `knob-${toDash(name)}`;
+function getKnobIds(name) {
+    let dashName = toDash(toWords(name));
+
+    return {
+        errorId: `error-${dashName}`,
+        infoId : `info-${dashName}`,
+        knobId : `knob-${dashName}`,
+    };
+}
 
 export {
     formatKnobAccordions as testFormatKnobAccordions,
     getFields            as testGetFields,
     getKnob              as testGetKnob,
-    getKnobId            as testGetKnobId,
+    getKnobIds           as testGetKnobIds,
 };
 
 // -- Public Functions ---------------------------------------------------------

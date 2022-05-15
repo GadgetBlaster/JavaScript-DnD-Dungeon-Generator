@@ -77,7 +77,7 @@ export function sentenceList(parts) {
 }
 
 /**
- * Convert spaces to dashes
+ * Converts spaces to dashes.
  *
  * @param {string} text
  *
@@ -86,7 +86,7 @@ export function sentenceList(parts) {
 export const toDash = (text) => text.replace(/\s+/g, '-').toLowerCase();
 
 /**
- * Convert camel case to words
+ * Converts camel case to words.
  *
  * @param {string} text
  *

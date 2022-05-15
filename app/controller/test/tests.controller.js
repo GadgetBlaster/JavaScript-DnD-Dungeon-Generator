@@ -813,10 +813,10 @@ export default ({ assert, describe, it }) => {
         describe('toggle', () => {
             it('updates the target\'s visibility', () => {
                 /** @type {HTMLElement} */
-                const toggleButtonEl = knobs.querySelector('[data-action="toggle"][data-target="info-itemQuantity"]');
+                const toggleButtonEl = knobs.querySelector('[data-action="toggle"][data-target="info-item-quantity"]');
 
                 /** @type {HTMLElement} */
-                const infoEl = knobs.querySelector('[id="info-itemQuantity"]');
+                const infoEl = knobs.querySelector('[id="info-item-quantity"]');
 
                 assert(infoEl.hidden).isTrue();
 
