@@ -13,7 +13,7 @@ import { generateDungeon } from '../dungeon/generate.js';
 import { generateItems } from '../item/generate.js';
 import { generateName } from '../name/generate.js';
 import { generateRooms } from '../room/generate.js';
-import { getFormData, getKnobPanel } from '../ui/form.js';
+import { getFormData, getKnobPanel, validateOnBlur } from '../ui/form.js';
 import { setActiveNavItem } from '../ui/nav.js';
 import { toss, isRequired } from '../utility/tools.js';
 
@@ -133,17 +133,6 @@ function roomGenerator(config) {
 // -- Private Functions --------------------------------------------------------
 
 /**
- * Get element dataset.
- *
- * @private
- *
- * @param {EventTarget} target
- *
- * @returns {{ [attribute: string]: string }}
- */
-const getDataset = (target) => target instanceof HTMLElement ? target.dataset : {};
-
-/**
  * Returns a generator function.
  *
  * @private
@@ -245,6 +234,33 @@ function getReadyState(generator) {
 }
 
 /**
+ * Returns true if the event target if a control element.
+ *
+ * TODO tests
+ *
+ * @private
+ *
+ * @param {EventTarget} target
+ *
+ * @returns {HTMLInputElement | HTMLSelectElement}
+ */
+const getTargetControl = (target) =>
+    target instanceof HTMLInputElement || target instanceof HTMLSelectElement
+        ? target
+        : null;
+
+/**
+ * Returns an event target's dataset, if any.
+ *
+ * @private
+ *
+ * @param {EventTarget} target
+ *
+ * @returns {{ [attribute: string]: string }}
+ */
+const getTargetDataset = (target) => target instanceof HTMLElement ? target.dataset : {};
+
+/**
  * Returns a boolean to indicate if the sidebar is expanded
  *
  * @private
@@ -294,7 +310,7 @@ function onGenerate(sections, getPathname) {
  * @param {(string) => void} updatePath
  */
 function onNavigate(sections, e, updatePath) {
-    let { target } = getDataset(e.target);
+    let { target } = getTargetDataset(e.target);
     let generator = /** @type {Generator} */ (target);
 
     let route = routeLookup[generator];
@@ -362,7 +378,7 @@ function renderErrorPage({ body, content }, statusCode) {
  * @param {Event} e
  */
 function toggleAccordion(container, e) {
-    let { target } = getDataset(e.target);
+    let { target } = getTargetDataset(e.target);
 
     isRequired(target, 'Missing target for accordion toggle');
 
@@ -416,8 +432,8 @@ function toggleExpand(sections, getPathname) {
 }
 
 /**
- * Toggles visibility of an element identified by the value of the `data-target`
- * attribute on a click event's `target` element.
+ * Toggles visibility of an element based on the element's id, identified by the
+ * value of the `data-target` attribute on a click event's `target` element.
  *
  * @private
  * @throws
@@ -426,12 +442,12 @@ function toggleExpand(sections, getPathname) {
  * @param {Event} e
  */
 function toggleVisibility(container, e) {
-    let { target } = getDataset(e.target);
+    let { target } = getTargetDataset(e.target);
 
     isRequired(target, 'Missing target for visibility toggle');
 
     /** @type {HTMLElement} targetEl */
-    let targetEl = container.querySelector(`[data-id="${target}"]`);
+    let targetEl = container.querySelector(`[id="${target}"]`);
 
     !targetEl && toss(`Invalid visibility toggle target "${target}"`);
 
@@ -439,10 +455,11 @@ function toggleVisibility(container, e) {
 }
 
 export {
-    getDataset          as testGetDataset,
     getErrorPageContent as testGetErrorPageContent,
     getGenerator        as testGetGenerator,
     getReadyState       as testGetReadyState,
+    getTargetDataset    as testGetTargetDataset,
+    getTargetControl    as testGetTargetControl,
     getTrigger          as testGetTrigger,
     isSidebarExpanded   as testIsSidebarExpanded,
     onGenerate          as testOnGenerate,
@@ -464,11 +481,11 @@ export {
  * @param {(any) => void} onError
  */
 export function attachClickDelegate(sections, triggers, onError) {
-    let { body } = sections;
+    let { body, knobs } = sections;
 
     body.addEventListener('click', (e) => {
         /** @type {{ action?: Action }} */
-        let { action } = getDataset(e.target);
+        let { action } = getTargetDataset(e.target);
 
         if (!action) {
             return;
@@ -485,6 +502,22 @@ export function attachClickDelegate(sections, triggers, onError) {
             renderErrorPage(sections);
         }
     });
+
+    // TODO tests
+    body.addEventListener('blur', (e) => {
+        let control = getTargetControl(e.target);
+
+        if (!control) {
+            return;
+        }
+
+        try {
+            validateOnBlur(knobs, control);
+        } catch (error) {
+            onError(error);
+            renderErrorPage(sections);
+        }
+    }, true);
 }
 
 /**

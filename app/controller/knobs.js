@@ -3,6 +3,7 @@
 import { conditions, probability as conditionProbability } from '../attribute/condition.js';
 import { furnitureQuantities, probability as furnitureQuantityProbability } from '../item/furnishing.js';
 import { itemTypes } from '../item/item.js';
+import { maxDungeonMaps, minDungeonMaps } from '../dungeon/generate.js';
 import { quantities, probability as quantityProbability } from '../attribute/quantity.js';
 import { rarities, probability as rarityProbability } from '../attribute/rarity.js';
 import { roomTypes } from '../room/room.js';
@@ -137,6 +138,8 @@ export const knobConfig = [
                 name  : 'dungeonMaps',
                 desc  : 'Number of maps to scatter throughout the dungeon.',
                 type  : 'number',
+                max   : maxDungeonMaps,
+                min   : minDungeonMaps,
                 value : 2,
             },
             {

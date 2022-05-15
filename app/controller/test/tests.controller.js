@@ -9,9 +9,10 @@ import {
     testGetGenerator as getGenerator,
 
     // Private Functions
-    testGetDataset          as getDataset,
     testGetErrorPageContent as getErrorPageContent,
     testGetReadyState       as getReadyState,
+    testGetTargetControl    as getTargetControl,
+    testGetTargetDataset    as getTargetDataset,
     testGetTrigger          as getTrigger,
     testIsSidebarExpanded   as isSidebarExpanded,
     testOnGenerate          as onGenerate,
@@ -178,24 +179,6 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('getDataset()', () => {
-        describe('given an HTML element target', () => {
-            it('returns the element\'s data attributes', () => {
-                const divEl = document.createElement('div');
-
-                divEl.dataset.type = 'blackKnight';
-
-                assert(getDataset(divEl)).equalsObject({ type: 'blackKnight' });
-            });
-        });
-
-        describe('given a target that is not an HTML element', () => {
-            it('returns an empty object', () => {
-                assert(getDataset(null)).equalsObject({});
-            });
-        });
-    });
-
     describe('getErrorPageContent()', () => {
         it('returns an error object', () => {
             const content = getErrorPageContent();
@@ -240,6 +223,28 @@ export default ({ assert, describe, it }) => {
                 // @ts-expect-error
                 assert(() => getReadyState('Alwrong the Goblin!'))
                     .throws('Invalid generator "Alwrong the Goblin!" in getReadyState()');
+            });
+        });
+    });
+
+    describe('getTargetControl()', () => {
+        // TODO
+    });
+
+    describe('getTargetDataset()', () => {
+        describe('given an HTML element target', () => {
+            it('returns the element\'s data attributes', () => {
+                const divEl = document.createElement('div');
+
+                divEl.dataset.type = 'blackKnight';
+
+                assert(getTargetDataset(divEl)).equalsObject({ type: 'blackKnight' });
+            });
+        });
+
+        describe('given a target that is not an HTML element', () => {
+            it('returns an empty object', () => {
+                assert(getTargetDataset(null)).equalsObject({});
             });
         });
     });
@@ -562,8 +567,8 @@ export default ({ assert, describe, it }) => {
         const containerEl = document.createElement('div');
         const paragraphEl = document.createElement('p');
 
-        paragraphEl.dataset.id = targetId;
-        paragraphEl.hidden     = false;
+        paragraphEl.id     = targetId;
+        paragraphEl.hidden = false;
 
         containerEl.appendChild(paragraphEl);
 
@@ -811,7 +816,7 @@ export default ({ assert, describe, it }) => {
                 const toggleButtonEl = knobs.querySelector('[data-action="toggle"][data-target="info-itemQuantity"]');
 
                 /** @type {HTMLElement} */
-                const infoEl = knobs.querySelector('[data-id="info-itemQuantity"]');
+                const infoEl = knobs.querySelector('[id="info-itemQuantity"]');
 
                 assert(infoEl.hidden).isTrue();
 

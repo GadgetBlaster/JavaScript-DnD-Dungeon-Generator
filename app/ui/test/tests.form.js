@@ -183,9 +183,9 @@ export default ({ assert, describe, it }) => {
 
                 assert(Boolean(info)).isTrue();
                 assert(info.textContent).equals('Pi');
-                info && assert(info).hasAttributes({
-                    'data-id': 'info-dungeonComplexity',
-                    'hidden' : 'true',
+                assert(info).hasAttributes({
+                    'hidden': 'true',
+                    id      : 'info-dungeonComplexity',
                 });
             });
         });
@@ -214,18 +214,28 @@ export default ({ assert, describe, it }) => {
     describe('getKnob()', () => {
         describe('given an invalid type', () => {
             it('throws', () => {
+                const ids = { descId: '1', errorId: '2', knobId: '3' };
+
                 // @ts-expect-error
-                assert(() => getKnob({ ...fakeKnob, type: 'junk' }))
+                assert(() => getKnob({ ...fakeKnob, type: 'junk' }, ids))
                     .throws('Invalid knob type in getKnob()');
             });
         });
 
+        const ids = {
+            descId : 'info-dungeonBabble',
+            errorId: 'error-dungeonBabble',
+            knobId : 'knob-dungeon-babble',
+        };
+
         describe('given a type of "number"', () => {
             const body = parseHtml(getKnob({
                 ...fakeKnob,
+                max: 25,
+                min: 0,
                 type: 'number',
                 value: 12,
-            }, 'knob-dungeon-babble'));
+            }, ids));
 
             const input = /** @type {HTMLInputElement} */ (body.children.item(0));
 
@@ -241,11 +251,17 @@ export default ({ assert, describe, it }) => {
                 assert(input.value).equals('12');
             });
 
-            it('has the given name and id attributes', () => {
+            it('has correct attributes', () => {
                 assert(input).hasAttributes({
-                    id  : 'knob-dungeon-babble',
-                    name: 'dungeonComplexity',
+                    'aria-describedby': `${ids.descId} ${ids.errorId}`,
+                    'data-error-id'   : ids.errorId,
+                    id                : 'knob-dungeon-babble',
+                    name              : 'dungeonComplexity',
                 });
+            });
+
+            it('has the provided min and max attributes', () => {
+                assert(input).hasAttributes({ min: '0', max: '25' });
             });
         });
 
@@ -256,7 +272,7 @@ export default ({ assert, describe, it }) => {
                 min: 12,
                 type: 'range',
                 value: 121,
-            }, 'knob-dungeon-slider'));
+            }, ids));
 
             const input = /** @type {HTMLInputElement} */ (body.children.item(0));
 
@@ -272,10 +288,12 @@ export default ({ assert, describe, it }) => {
                 assert(input.value).equals('121');
             });
 
-            it('has the given name and id attributes', () => {
+            it('has correct attributes', () => {
                 assert(input).hasAttributes({
-                    id  : 'knob-dungeon-slider',
-                    name: 'dungeonComplexity',
+                    'aria-describedby': `${ids.descId} ${ids.errorId}`,
+                    'data-error-id'   : ids.errorId,
+                    id                : 'knob-dungeon-babble',
+                    name              : 'dungeonComplexity',
                 });
             });
 
@@ -290,7 +308,7 @@ export default ({ assert, describe, it }) => {
                 type: 'select',
                 value: 'toast',
                 values: [ 'toast', 'coffee' ],
-            }, 'knob-dungeon-complexity'));
+            }, ids));
 
             const select = /** @type {HTMLSelectElement} */ (body.children.item(0));
 
@@ -302,10 +320,12 @@ export default ({ assert, describe, it }) => {
                 assert(select.value).equals('toast');
             });
 
-            it('has the given name and id attributes', () => {
+            it('has correct attributes', () => {
                 assert(select).hasAttributes({
-                    id  : 'knob-dungeon-complexity',
-                    name: 'dungeonComplexity',
+                    'aria-describedby': `${ids.descId} ${ids.errorId}`,
+                    'data-error-id'   : ids.errorId,
+                    id                : 'knob-dungeon-babble',
+                    name              : 'dungeonComplexity',
                 });
             });
 
@@ -321,7 +341,7 @@ export default ({ assert, describe, it }) => {
 
             describe('given a value that is not a string', () => {
                 it('throws', () => {
-                    assert(() => getKnob({ ...fakeKnob, type: 'select', value: 12 }, 'knob-dungeon-complexity'))
+                    assert(() => getKnob({ ...fakeKnob, type: 'select', value: 12 }, ids))
                         .throws('Select value must be a string in getKnob()');
                 });
             });
@@ -332,7 +352,7 @@ export default ({ assert, describe, it }) => {
                 ...fakeKnob,
                 type: 'text',
                 value: 'Bob is a cool dude',
-            }, 'knob-dungeon-babble'));
+            }, ids));
 
             const input = /** @type {HTMLInputElement} */ (body.children.item(0));
 
@@ -348,10 +368,12 @@ export default ({ assert, describe, it }) => {
                 assert(input.value).equals('Bob is a cool dude');
             });
 
-            it('has the given name and id attributes', () => {
+            it('has correct attributes', () => {
                 assert(input).hasAttributes({
-                    id  : 'knob-dungeon-babble',
-                    name: 'dungeonComplexity',
+                    'aria-describedby': `${ids.descId} ${ids.errorId}`,
+                    'data-error-id'   : ids.errorId,
+                    id                : 'knob-dungeon-babble',
+                    name              : 'dungeonComplexity',
                 });
             });
         });

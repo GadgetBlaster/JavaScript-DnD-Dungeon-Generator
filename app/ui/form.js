@@ -7,10 +7,13 @@ import { paragraph, small, span, title } from './typography.js';
 import { select, input, slider, fieldLabel } from './field.js';
 import { toDash, toss } from '../utility/tools.js';
 
+// TODO rename "knobs" to "controls"
+
 // -- Type Imports -------------------------------------------------------------
 
 /** @typedef {import('../controller/controller.js').Action} Action */
 /** @typedef {import('../controller/controller.js').Generator} Generator */
+/** @typedef {import('../controller/controller.js').Sections} Sections */
 /** @typedef {import('../controller/knobs.js').Config} Config */
 /** @typedef {import('../controller/knobs.js').KnobConfig} KnobConfig */
 /** @typedef {import('../controller/knobs.js').KnobFieldConfig} KnobFieldConfig */
@@ -99,16 +102,18 @@ const getFields = (fields) => fields.map((settings) => {
     !label && toss('Missing required knob label');
     !desc  && toss('Missing required knob description');
 
-    let descId = `info-${name}`; // TODO toDash
-    let knobId = getKnobId(name);
+    let descId  = `info-${name}`; // TODO toDash
+    let errorId = `error-${name}`; // TODO toDash
+    let knobId  = getKnobId(name);
 
-    let knob       = getKnob(settings, knobId);
+    let knob       = getKnob(settings, { knobId, descId, errorId });
     let descButton = button(infoLabel, 'toggle', { target: descId, size: 'auto' });
     // TODO make into pop-up
-    let descText   = paragraph(small(desc), { hidden: true, 'data-id': descId });
+    let descText   = paragraph(small(desc), { hidden: 'true', id: descId });
     let knobLabel  = fieldLabel(label + descButton, { for: knobId });
+    let errorText  = paragraph('', { id: errorId, hidden: 'true', 'data-error': '' }); // TODO tests
 
-    return div(knobLabel + descText + knob);
+    return div(knobLabel + descText + knob + errorText);
 }).join('');
 
 /**
@@ -129,11 +134,14 @@ const getInputElements = (knobContainer) => [ ...knobContainer.querySelectorAll(
  * @throws
  *
  * @param {KnobFieldConfig} config
- * @param {string} id
+ * @param {object} ids
+ *     @param {string} ids.knobId
+ *     @param {string} ids.descId
+ *     @param {string} ids.errorId
  *
  * @returns {string}
  */
-function getKnob(config, id) {
+function getKnob(config, ids) {
     let {
         name,
         type,
@@ -143,22 +151,31 @@ function getKnob(config, id) {
         max,
     } = config;
 
+    let { descId, errorId, knobId } = ids;
+
+    // TODO tests
+    let attrs = {
+        'aria-describedby': `${descId} ${errorId}`,
+        'data-error-id': errorId,
+        id: knobId,
+    };
+
     switch (type) {
         case 'number':
-            return input(name, { type: 'number' , value, id });
+            return input(name, { ...attrs, min, max, type: 'number', value });
 
         case 'range':
-            return slider(name, { min, max, value, id });
+            return slider(name, { ...attrs, min, max, value });
 
         case 'select':
             if (typeof value !== 'undefined' && typeof value !== 'string') {
                 toss('Select value must be a string in getKnob()');
             }
 
-            return select(name, values, value, { id });
+            return select(name, values, value, { ...attrs });
 
         case 'text':
-            return input(name, { type: 'text' , value, id });
+            return input(name, { ...attrs, type: 'text', value });
 
         default:
             toss('Invalid knob type in getKnob()');
@@ -191,8 +208,8 @@ export {
  * @returns {Config}
  */
 export function getFormData(knobContainer) {
-    return getInputElements(knobContainer).reduce((setting, item) => {
-        let { name, value } = item;
+    return getInputElements(knobContainer).reduce((setting, knob) => {
+        let { name, value } = knob;
 
         setting[name] = value;
 
@@ -227,4 +244,43 @@ export function getKnobPanel(generator, { config, isExpanded } = {}) {
         div(knobPanel, knobContainerAttrs);
 
     return content;
+}
+
+/**
+ * Validates a control element on blur, adding or clearing the error state.
+ *
+ * TODO tests
+ *
+ * @param {HTMLElement} knobs
+ * @param {HTMLInputElement | HTMLSelectElement} element
+ */
+export function validateOnBlur(knobs, element) {
+    let { value } = element;
+
+    let min = element.getAttribute('min');
+    let max = element.getAttribute('max');
+
+    let errors = [];
+
+    if (min && Number(value) < Number(min)) {
+        errors.push(`Min: ${min}`);
+    }
+
+    if (max && Number(value) > Number(max)) {
+        errors.push(`Max: ${max}`);
+    }
+
+    let errorId = element.dataset.errorId;
+    let errorEl = /** @type {HTMLElement} */ (knobs.querySelector(`[id="${errorId}"]`));
+
+    if (!errors.length) {
+        delete element.dataset.error;
+        errorEl.textContent = '';
+        errorEl.hidden = true;
+        return;
+    }
+
+    element.dataset.error = '';
+    errorEl.textContent = errors.join('. ').trim();
+    errorEl.hidden = false;
 }

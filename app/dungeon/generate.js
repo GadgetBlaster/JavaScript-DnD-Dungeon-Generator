@@ -14,6 +14,7 @@ import trapList from '../room/trap.js';
 /** @typedef {import('../room/door.js').DoorKey} DoorKey */
 /** @typedef {import('../room/generate').Room} Room */
 /** @typedef {import('./grid.js').Dimensions} Dimensions */
+/** @typedef {import('./map.js').AppliedRoom} AppliedRoom */
 /** @typedef {import('./map.js').Doors} Doors */
 
 /**
@@ -44,6 +45,9 @@ const complexityMultiplierMinXY     = 5;
 const complexityRoomCountMultiplier = 10;
 const trapCountMultiplier           = 5;
 
+export const maxDungeonMaps = 10;
+export const minDungeonMaps = 0;
+
 export {
     complexityMultiplierMaxXY     as testComplexityMultiplierMaxXY,
     complexityMultiplierMinXY     as testComplexityMultiplierMinXY,
@@ -52,6 +56,23 @@ export {
 };
 
 // -- Private Functions --------------------------------------------------------
+
+/**
+ * Distributes maps throughout the dungeon.
+ *
+ * TODO tests
+ *
+ * @param {number} dungeonMaps
+ * @param {AppliedRoom[]} rooms
+ */
+function distributeMaps(dungeonMaps, rooms) {
+    let count = Math.max(Math.min(maxDungeonMaps, dungeonMaps), minDungeonMaps);
+
+    for (let i = 0; i < count; i++) {
+        let room = rollArrayItem(rooms);
+        room.map = true;
+    }
+}
 
 /**
  * Returns generate dungeon room configs.
@@ -187,6 +208,7 @@ export function generateDungeon(config) {
     let dungeon         = generateMap(gridDimensions, rooms);
     let { doors, keys } = getRoomDoors(dungeon.doors);
 
+    // TODO break out
     keys.length && keys.forEach((key) => {
         let room = rollArrayItem(dungeon.rooms);
 
@@ -197,12 +219,7 @@ export function generateDungeon(config) {
         room.keys.push(key);
     });
 
-    if (dungeonMaps) {
-        for (let i = 0; i < dungeonMaps; i++) {
-            let room = rollArrayItem(dungeon.rooms);
-            room.map = true;
-        }
-    }
+    distributeMaps(dungeonMaps, dungeon.rooms);
 
     return {
         name  : dungeonName,

@@ -486,6 +486,19 @@ select {
     cursor: pointer;
 }
 
+input[data-error],
+select[data-error] {
+    border-color: var(--color-error);
+}
+
+input[type=range][data-error]::-webkit-slider-runnable-track {
+    background: var(--color-error);
+}
+
+input[type="rage"][data-error]::-moz-range-track {
+    background: var(--color-error);
+}
+
 /* Type */
 
 h1, h2, h3 {
