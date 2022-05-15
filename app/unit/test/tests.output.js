@@ -11,6 +11,7 @@ import {
     testGetTestList     as getTestList,
 
     // Public Functions
+    getFailureSummary,
     getOutput,
     getResultMessage,
     getSummaryLink,
@@ -497,6 +498,69 @@ export default ({ assert, describe, it }) => {
     });
 
     // -- Public Functions -----------------------------------------------------
+
+    describe('getFailureSummary()', () => {
+        const summary = {
+            assertions: 0,
+            errors    : 0,
+            failures  : 0,
+            results   : [],
+        };
+
+        describe('when there are no failures or errors', () => {
+            it('returns undefined', () => {
+                assert(getFailureSummary(summary)).isUndefined();
+            });
+        });
+
+        describe('when there is one failure', () => {
+            it('contains a singular failure description', () => {
+                assert(getFailureSummary({ ...summary, failures: 1 })).equalsArray([
+                    'Encountered 1 ogre!',
+                ]);
+            });
+        });
+
+        describe('when there are multiple failure', () => {
+            it('contains a plural failure description', () => {
+                assert(getFailureSummary({ ...summary, failures: 12 })).equalsArray([
+                    'Encountered 12 ogres!',
+                ]);
+            });
+        });
+
+        describe('when there is one error', () => {
+            it('contains a singular error description', () => {
+                assert(getFailureSummary({ ...summary, errors: 1 })).equalsArray([
+                    'Encountered 1 dragon!',
+                ]);
+            });
+        });
+
+        describe('when there are multiple failure', () => {
+            it('contains a plural failure description', () => {
+                assert(getFailureSummary({ ...summary, errors: 4 })).equalsArray([
+                    'Encountered 4 dragons!',
+                ]);
+            });
+        });
+
+        describe('error and failure results', () => {
+            it('returns a concatenated string of results filtered by errors and failures', () => {
+                const results = [
+                    { isOk: false, msg: 'Failed to do X' },
+                    { isOk: true,  msg: 'Woo' },
+                    { isOk: false, msg: 'Bugs! Bugs everywhere!' },
+                ];
+
+                assert(getFailureSummary({ ...summary, errors: 1, failures: 1, results })).equalsArray([
+                    'Encountered 1 ogre!',
+                    'Encountered 1 dragon!',
+                    'Failed to do X\nBugs! Bugs everywhere!',
+                ]);
+            });
+        });
+    });
 
     describe('getOutput()', () => {
         const suite = { '/test/tests.fake.js': noop };

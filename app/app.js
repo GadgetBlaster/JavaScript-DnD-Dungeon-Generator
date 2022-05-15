@@ -1,7 +1,7 @@
 // @ts-check
 
 import { getErrorMessage } from './utility/tools.js';
-import { getSummaryLink } from './unit/output.js';
+import { getFailureSummary, getSummaryLink } from './unit/output.js';
 import { request } from './utility/xhr.js';
 import { unitState } from './unit/state.js';
 import run from './unit/run.js';
@@ -60,11 +60,20 @@ const sections = {
     nav    : document.getElementById('nav'),
 };
 
+// -- Tests --------------------------------------------------------------------
+
+const testSummary     = run(unitState(), suite);
+const testSummaryLink = getSummaryLink(testSummary);
+const errorSummary    = getFailureSummary(testSummary);
+
+if (errorSummary) {
+    console.error(...errorSummary);
+}
+
 // -- Initialization -----------------------------------------------------------
 
 const triggers        = getTriggers(sections, updatePath, getPathname);
 const activeGenerator = getActiveGenerator(getPathname());
-const testSummary     = getSummaryLink(run(unitState(), suite));
 const render          = getRender(sections, logError);
 
 attachClickDelegate(sections, triggers, logError);
@@ -99,6 +108,6 @@ window.addEventListener('popstate', (event) => {
 // -- Initial Render -----------------------------------------------------------
 
 sections.nav.innerHTML    = getNav(activeGenerator);
-sections.footer.innerHTML = getFooter(testSummary);
+sections.footer.innerHTML = getFooter(testSummaryLink);
 
 render(activeGenerator);

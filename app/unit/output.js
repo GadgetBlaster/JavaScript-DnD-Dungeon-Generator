@@ -117,26 +117,14 @@ function getResults(summary, options = {}) {
     } = options;
 
     if (onError && (failures || errors)) {
-        let messages = [];
-
-        if (failures) {
-            messages.push(`Encountered ${failures} ${pluralize(failures, 'ogre')}!`);
-        }
-
-        if (errors) {
-            messages.push(`Encountered ${errors} ${pluralize(errors, 'dragon')}!`);
-        }
-
-        let logEntries = results.filter(({ isOk }) => !isOk).map(({ msg }) => msg).join('');
-
-        onError(...messages, logEntries);
+        onError(...getFailureSummary(summary));
     }
 
     if (onSuccess && !failures && !errors) {
         onSuccess('Zero mischievous kobolds found 👏');
     }
 
-    let dots = results.map(({ isOk }, i) => {
+    let dots = results.map(({ isOk }) => {
         return span('', {
             'data-dot': isOk ? 'ok' : 'fail',
         });
@@ -276,6 +264,37 @@ export {
 };
 
 // -- Public Functions ---------------------------------------------------------
+
+/**
+ * Returns a summary of unit tests errors.
+ *
+ * @param {Summary} summary
+ *
+ * @returns {string[]}
+ */
+export function getFailureSummary({ errors, failures, results }) {
+    if (!failures && !errors) {
+        return;
+    }
+
+    let messages = [];
+
+    if (failures) {
+        messages.push(`Encountered ${failures} ${pluralize(failures, 'ogre')}!`);
+    }
+
+    if (errors) {
+        messages.push(`Encountered ${errors} ${pluralize(errors, 'dragon')}!`);
+    }
+
+    let log = results.filter(({ isOk }) => !isOk).map(({ msg }) => msg).join('\n');
+
+    if (log) {
+        messages.push(log);
+    }
+
+    return messages;
+}
 
 /**
  * Returns unit test output as an HTML string.
