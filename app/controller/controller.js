@@ -480,7 +480,7 @@ export {
  * @param {Triggers} triggers
  * @param {(any) => void} onError
  */
-export function attachClickDelegate(sections, triggers, onError) {
+export function attachEventDelegates(sections, triggers, onError) {
     let { body, knobs } = sections;
 
     body.addEventListener('click', (e) => {

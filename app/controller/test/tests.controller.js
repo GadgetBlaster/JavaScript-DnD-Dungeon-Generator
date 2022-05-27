@@ -24,7 +24,7 @@ import {
     testToggleVisibility    as toggleVisibility,
 
     // Public Functions
-    attachClickDelegate,
+    attachEventDelegates,
     getActiveGenerator,
     getRender,
     getTriggers,
@@ -644,7 +644,7 @@ export default ({ assert, describe, it }) => {
 
     // -- Public Functions -----------------------------------------------------
 
-    describe('attachClickDelegate()', () => {
+    describe('attachEventDelegates()', () => {
         describe('when a child element is clicked', () => {
             const sections = getMockSections();
 
@@ -676,7 +676,7 @@ export default ({ assert, describe, it }) => {
 
             let errorResult;
 
-            attachClickDelegate(sections, triggers, (error) => errorResult = error);
+            attachEventDelegates(sections, triggers, (error) => errorResult = error);
 
             describe('when the clicked element has a valid data-action attribute', () => {
                 button1.dispatchEvent(new CustomEvent('click', { bubbles: true }));

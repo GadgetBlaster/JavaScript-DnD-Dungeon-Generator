@@ -8,7 +8,7 @@ import run from './unit/run.js';
 import suite from './unit/suite.js';
 
 import {
-    attachClickDelegate,
+    attachEventDelegates,
     getActiveGenerator,
     getRender,
     getTriggers,
@@ -76,7 +76,7 @@ const triggers        = getTriggers(sections, updatePath, getPathname);
 const activeGenerator = getActiveGenerator(getPathname());
 const render          = getRender(sections, logError);
 
-attachClickDelegate(sections, triggers, logError);
+attachEventDelegates(sections, triggers, logError);
 
 // -- Router -------------------------------------------------------------------
 
