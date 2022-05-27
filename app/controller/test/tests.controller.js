@@ -228,7 +228,32 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getTargetControl()', () => {
-        // TODO
+        describe('given an input element event target', () => {
+            it('returns the element', () => {
+                const input   = document.createElement('input');
+                const element = getTargetControl(getMockClickEvent(input).target);
+
+                assert(element.tagName).equals('INPUT');
+            });
+        });
+
+        describe('given a select element event target', () => {
+            it('returns the element', () => {
+                const input   = document.createElement('select');
+                const element = getTargetControl(getMockClickEvent(input).target);
+
+                assert(element.tagName).equals('SELECT');
+            });
+        });
+
+        describe('given an event target which is not a control element', () => {
+            it('returns null', () => {
+                const input  = document.createElement('div');
+                const result = getTargetControl(getMockClickEvent(input).target);
+
+                assert(result).isNull();
+            });
+        });
     });
 
     describe('getTargetDataset()', () => {

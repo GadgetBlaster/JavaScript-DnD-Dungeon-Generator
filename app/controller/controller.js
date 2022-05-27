@@ -234,9 +234,7 @@ function getReadyState(generator) {
 }
 
 /**
- * Returns true if the event target if a control element.
- *
- * TODO tests
+ * Returns true if the event target is a control element.
  *
  * @private
  *
