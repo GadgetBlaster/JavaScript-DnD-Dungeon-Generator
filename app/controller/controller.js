@@ -474,8 +474,6 @@ export {
 /**
  * Attaches an application level click delegate to the document body.
  *
- * TODO rename to attachEventDelegates()
- *
  * @param {Sections} sections
  * @param {Triggers} triggers
  * @param {(any) => void} onError

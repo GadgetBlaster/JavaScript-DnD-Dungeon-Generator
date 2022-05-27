@@ -9,11 +9,11 @@ import {
     testDoorInset           as doorInset,
     testDoorSecretLabel     as doorSecretLabel,
     testDoorWidth           as doorWidth,
+    testHoleRadius          as holeRadius,
     testPillarGridInset     as pillarGridInset,
     testPillarGridThreshold as pillarGridThreshold,
+    testPillarRadius        as pillarRadius,
     testPxCell              as pxCell,
-    testRadiusHole          as radiusHole,
-    testRadiusPillar        as radiusPillar,
     testTrapLabel           as trapLabel,
 
     // Private Functions
@@ -594,7 +594,7 @@ export default ({ assert, describe, it }) => {
                         const cx2 = (x * pxCell) + (width  * pxCell);
                         const cy  = (y * pxCell) + ((height /2) * pxCell);
 
-                        const pillars = archwayDoor.match(RegExp(`<circle(.+?)r="${radiusPillar}"(.+?)/>`, 'g'));
+                        const pillars = archwayDoor.match(RegExp(`<circle(.+?)r="${pillarRadius}"(.+?)/>`, 'g'));
 
                         assert(pillars).isArray();
 
@@ -620,7 +620,7 @@ export default ({ assert, describe, it }) => {
                         const cy1 = y * pxCell;
                         const cy2 = (y * pxCell) + (height * pxCell);
 
-                        const pillars = archwayDoor.match(RegExp(`<circle(.+?)r="${radiusPillar}"(.+?)/>`, 'g'));
+                        const pillars = archwayDoor.match(RegExp(`<circle(.+?)r="${pillarRadius}"(.+?)/>`, 'g'));
 
                         assert(pillars).isArray();
 
@@ -637,7 +637,7 @@ export default ({ assert, describe, it }) => {
 
             describe('when the door is a hole', () => {
                 describe('when the door direction is north or south', () => {
-                    it('draws a circle with a radius of `radiusHole` centered horizontally', () => {
+                    it('draws a circle with the correct radius, centered horizontally', () => {
                         const { x, y, width, height } = northSouthDoor.rectangle;
                         const archwayDoor = drawDoor({
                             ...northSouthDoor,
@@ -647,7 +647,7 @@ export default ({ assert, describe, it }) => {
                         const cx = (x + (width  / 2)) * pxCell;
                         const cy = (y + (height / 2)) * pxCell;
 
-                        const hole = archwayDoor.match(RegExp(`<circle(.+?)r="${radiusHole}"(.+?)/>`, 'g'));
+                        const hole = archwayDoor.match(RegExp(`<circle(.+?)r="${holeRadius}"(.+?)/>`, 'g'));
 
                         assert(hole).isArray();
 
@@ -670,7 +670,7 @@ export default ({ assert, describe, it }) => {
                         const cx = (x + (width  / 2)) * pxCell;
                         const cy = (y + (height / 2)) * pxCell;
 
-                        const hole = archwayDoor.match(RegExp(`<circle(.+?)r="${radiusHole}"(.+?)/>`, 'g'));
+                        const hole = archwayDoor.match(RegExp(`<circle(.+?)r="${holeRadius}"(.+?)/>`, 'g'));
 
                         assert(hole).isArray();
 
@@ -840,7 +840,7 @@ export default ({ assert, describe, it }) => {
 
                 const roomWithPillars = drawRoom({ ...rectangle, width, height }, text);
 
-                const matches = roomWithPillars.match(RegExp(`<circle(.+?)r="${radiusPillar}"(.+?)/>`, 'g'));
+                const matches = roomWithPillars.match(RegExp(`<circle(.+?)r="${pillarRadius}"(.+?)/>`, 'g'));
 
                 assert(matches).isArray();
                 matches && assert(matches.length).equals(4);
