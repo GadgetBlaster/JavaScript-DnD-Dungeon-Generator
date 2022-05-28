@@ -20,9 +20,25 @@ import {
 
 import { parseHtml } from '../../utility/element.js';
 
+/** @typedef {import('../../dungeon/map').Door} Door */
 /** @typedef {import('../../item/generate').Container} Container */
 /** @typedef {import('../../item/generate').Item} Item */
 /** @typedef {import('../../item/generate').ItemSet} ItemSet */
+/** @typedef {import('../../room/generate').GeneratedRoomConfig} GeneratedRoomConfig */
+/** @typedef {import('../../room/generate').Room} Room */
+
+/** @type {GeneratedRoomConfig} */
+const generatedRoomConfig = {
+    itemCondition         : 'average',
+    itemQuantity          : 'zero',
+    itemRarity            : 'average',
+    itemType              : 'random',
+    roomCondition         : 'average',
+    roomCount             : 1,
+    roomFurnitureQuantity : 'average',
+    roomSize              : 'small',
+    roomType              : 'room',
+};
 
 /**
  * @param {import('../../unit/state.js').Utility} utility
@@ -178,7 +194,55 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('formatRoomGrid()', () => {
-        // TODO
+        /** @type {Room} */
+        const room = {
+            config: generatedRoomConfig,
+            itemSet: {
+                containers: [],
+                items     : [],
+            },
+            roomNumber: 1,
+        };
+
+
+        it('returns section with a grid of room articles', () => {
+            const body    = parseHtml(formatRoomGrid([ room ]));
+            const section = body.children.item(0);
+
+            assert(body.children.length).equals(1);
+            assert(section.tagName).equals('SECTION');
+            assert(section).hasAttributes({ 'data-grid': '1' });
+        });
+
+        describe('given two rooms', () => {
+            it('returns a grid with two columns', () => {
+                const body = parseHtml(formatRoomGrid([ room, room ]));
+                assert(body.children.item(0)).hasAttributes({ 'data-grid': '2' });
+            });
+        });
+
+        describe('given three rooms', () => {
+            it('returns a grid with three columns', () => {
+                const body = parseHtml(formatRoomGrid([ room, room, room ]));
+                assert(body.children.item(0)).hasAttributes({ 'data-grid': '3' });
+            });
+        });
+
+        describe('given doors', () => {
+            it('includes doorways with the room descriptions', () => {
+                /** @type {Door} */
+                const door = {
+                    connection : new Map([[ 1, { direction: 'south', to: 2 } ]]),
+                    locked     : false,
+                    rectangle  : { width: 1, height: 1, x: 1, y: 1 },
+                    type       : 'stone',
+                };
+
+                assert(formatRoomGrid([ room ], { 1: [ door ] }))
+                    .stringIncludes('Doorways')
+                    .stringIncludes('South: Stone doorway to room 2');
+            });
+        });
     });
 
     describe('getItemDescription()', () => {

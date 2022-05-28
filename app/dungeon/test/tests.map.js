@@ -49,15 +49,15 @@ import {
 
 /** @type {GeneratedRoomConfig} */
 const generatedRoomConfig = {
-    itemCondition: 'average',
-    itemQuantity: 'zero',
-    itemRarity: 'average',
-    itemType: 'random',
-    roomSize: 'small',
-    roomType: 'room',
-    roomCondition: 'average',
-    roomCount: 1,
-    roomFurnitureQuantity: 'average',
+    itemCondition         : 'average',
+    itemQuantity          : 'zero',
+    itemRarity            : 'average',
+    itemType              : 'random',
+    roomCondition         : 'average',
+    roomCount             : 1,
+    roomFurnitureQuantity : 'average',
+    roomSize              : 'small',
+    roomType              : 'room',
 };
 
 /**

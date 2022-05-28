@@ -70,10 +70,10 @@ import { isRequired, toWords } from '../utility/tools.js';
 /**
  * @typedef {object} Door
  *
+ * @prop {Connection} connection
+ * @prop {boolean} locked
  * @prop {Rectangle} rectangle
  * @prop {DoorType} type
- * @prop {boolean} locked
- * @prop {Connection} connection
  */
 
 /** @typedef {{ [roomNumber: number]: Door[] }} Doors */

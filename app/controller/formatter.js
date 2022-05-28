@@ -139,7 +139,7 @@ function formatRoom(room, doors) {
             }) => `${capitalize(direction)}: ${capitalize(desc)} ${connection}`));
     }
 
-    let map   = room.map ? getMapDescription() : '';
+    let map   = room.map  ? getMapDescription() : '';
     let keys  = room.keys ? getKeyDescription(room.keys) : '';
     let traps = room.traps
         ? subtitle('Traps ' + formatDetail(room.traps.length.toString())) + list(room.traps)
@@ -172,11 +172,10 @@ function formatRoomGrid(rooms, doors = {}) {
     let formattedRooms = rooms.map((room) =>
         formatRoom(room, doors[room.roomNumber])).join('');
 
-    let columns = Math.min(maxRoomColumns, rooms.length); // TODO tests
+    let columns = Math.min(maxRoomColumns, rooms.length);
 
     return section(formattedRooms, { 'data-grid': columns });
 }
-
 
 /**
  * Get item description

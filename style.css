@@ -98,6 +98,7 @@ body > header {
     position: sticky;
     top: 0;
     background: var(--bg-header);
+    z-index: 1;
 }
 
 body > aside {
