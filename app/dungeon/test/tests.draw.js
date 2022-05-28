@@ -9,7 +9,7 @@ import {
     testDoorInset           as doorInset,
     testDoorSecretLabel     as doorSecretLabel,
     testDoorWidth           as doorWidth,
-    testHoleRadius          as holeRadius,
+    testHoleRadiusRatio     as holeRadiusRatio,
     testPillarGridInset     as pillarGridInset,
     testPillarGridThreshold as pillarGridThreshold,
     testPillarRadiusRatio   as pillarRadiusRatio,
@@ -647,7 +647,7 @@ export default ({ assert, describe, it }) => {
                         const cx = (x + (width  / 2)) * pxCell;
                         const cy = (y + (height / 2)) * pxCell;
 
-                        const hole = archwayDoor.match(RegExp(`<circle(.+?)r="${holeRadius}"(.+?)/>`, 'g'));
+                        const hole = archwayDoor.match(RegExp(`<circle(.+?)r="${Math.round(pxCell * holeRadiusRatio)}"(.+?)/>`, 'g'));
 
                         assert(hole).isArray();
 
@@ -670,7 +670,7 @@ export default ({ assert, describe, it }) => {
                         const cx = (x + (width  / 2)) * pxCell;
                         const cy = (y + (height / 2)) * pxCell;
 
-                        const hole = archwayDoor.match(RegExp(`<circle(.+?)r="${holeRadius}"(.+?)/>`, 'g'));
+                        const hole = archwayDoor.match(RegExp(`<circle(.+?)r="${Math.round(pxCell * holeRadiusRatio)}"(.+?)/>`, 'g'));
 
                         assert(hole).isArray();
 

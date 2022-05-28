@@ -43,8 +43,8 @@ const colorRoomStroke   = '#a9a9a9';
 const colorTransparent  = 'transparent';
 const colorTrapFill     = 'rgba(207, 207, 207, 0.8)';
 
-const pillarRadiusRatio = 0.18; // % of cell px
-const holeRadius   = 6;
+const pillarRadiusRatio = 0.18; // % of pxCell
+const holeRadiusRatio   = 0.25; // % of pxCell
 
 const doorInset    = 12; // In px?
 const doorWidth    = 8; // TODO rename to door size
@@ -67,7 +67,7 @@ export {
     doorInset           as testDoorInset,
     doorSecretLabel     as testDoorSecretLabel,
     doorWidth           as testDoorWidth,
-    holeRadius          as testHoleRadius,
+    holeRadiusRatio     as testHoleRadiusRatio,
     pillarGridInset     as testPillarGridInset,
     pillarGridThreshold as testPillarGridThreshold,
     pillarRadiusRatio   as testPillarRadiusRatio,
@@ -379,7 +379,7 @@ export function drawDoor(door) {
         let cx = isVertical ? xHalf : x1;
         let cy = isVertical ? y1 : yHalf;
 
-        details.push(drawCircle({ cx, cy, r: holeRadius }, { fill: colorPillarFill }));
+        details.push(drawCircle({ cx, cy, r: Math.round(pxCell * holeRadiusRatio) }, { fill: colorPillarFill }));
     } else if (type === 'secret') {
         details.push(drawText(doorSecretLabel, { x: xHalf, y: yHalf }));
     } else if (type === 'concealed') {
