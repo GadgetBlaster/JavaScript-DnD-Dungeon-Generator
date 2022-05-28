@@ -129,24 +129,46 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a condition uniformity', () => {
-            it('renders a paragraph describing the condition', () => {
-                const body = parseHtml(formatItemContent({
-                    ...itemSet,
-                    conditionUniformity: 'busted',
-                }));
+            const body = parseHtml(formatItemContent({
+                ...itemSet,
+                items: [ item, item, item ],
+                conditionUniformity: 'busted',
+            }));
 
+            it('renders a paragraph describing the condition', () => {
                 assert(body.querySelector('p').textContent).equals('Item condition: Busted');
+            });
+
+            it('excludes the condition label on individual items', () => {
+                const list = body.querySelector('ul');
+
+                assert(list.children.length).equals(3);
+                [ ...list.children ].forEach((listItem) => {
+                    assert(listItem.textContent)
+                        .stringExcludes('busted')
+                        .stringExcludes('condition');
+                });
             });
         });
 
         describe('given a rarity uniformity', () => {
-            it('renders a paragraph describing the rarity', () => {
-                const body = parseHtml(formatItemContent({
-                    ...itemSet,
-                    rarityUniformity: 'legendary',
-                }));
+            const body = parseHtml(formatItemContent({
+                ...itemSet,
+                items: [ item, item, item ],
+                rarityUniformity: 'legendary',
+            }));
 
+            it('renders a paragraph describing the rarity', () => {
                 assert(body.querySelector('p').textContent).equals('Item rarity: Legendary');
+            });
+
+            it('excludes the condition label on individual items', () => {
+                const list = body.querySelector('ul');
+
+                assert(list.children.length).equals(3);
+                [ ...list.children ].forEach((listItem) => {
+                    assert(listItem.textContent).stringExcludes('legendary');
+                });
             });
         });
     });
@@ -170,18 +192,66 @@ export default ({ assert, describe, it }) => {
             type: 'miscellaneous',
         };
 
+        const args = {
+            isConditionUniform: false,
+            isRarityUniform: false,
+        };
+
         describe('given an item count of 1', () => {
             it('returns the item label with no count', () => {
-                assert(getItemDescription(item)).equals('Goblin juice');
+                assert(getItemDescription(item, args)).equals('Goblin juice');
             });
         });
 
         describe('given an item count larger than 1', () => {
             it('returns the item label with the count appended', () => {
-                let desc = parseHtml(getItemDescription({ ...item, count: 12 }));
+                let desc = parseHtml(getItemDescription({ ...item, count: 12 }, args));
                 assert(desc.textContent).equals('Goblin juice (12)');
             });
         });
+
+        describe('given a rarity that should be indicated', () => {
+            /** @type {Item} */
+            const exoticItem = { ...item, rarity: 'exotic' };
+
+            it('includes the rarity on the item label', () => {
+                let desc = parseHtml(getItemDescription(exoticItem, args));
+                assert(desc.textContent).equals('Goblin juice (exotic)');
+            });
+
+            describe('when rarity is uniform', () => {
+                it('excludes the condition from the item label', () => {
+                    let desc = parseHtml(getItemDescription(exoticItem, {
+                        ...args,
+                        isRarityUniform: true,
+                    }));
+
+                    assert(desc.textContent).equals('Goblin juice');
+                });
+            });
+        });
+
+        describe('given a condition that should be indicated', () => {
+            /** @type {Item} */
+            const bustedItem = { ...item, condition: 'busted' };
+
+            it('includes the condition on the item label', () => {
+                let desc = parseHtml(getItemDescription(bustedItem, args));
+                assert(desc.textContent).equals('Goblin juice (busted condition)');
+            });
+
+            describe('when condition is uniform', () => {
+                it('excludes the condition from the item label', () => {
+                    let desc = parseHtml(getItemDescription(bustedItem, {
+                        ...args,
+                        isConditionUniform: true,
+                    }));
+
+                    assert(desc.textContent).equals('Goblin juice');
+                });
+            });
+        });
+
     });
 
     describe('getItemTotal()', () => {

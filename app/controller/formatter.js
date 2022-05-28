@@ -69,13 +69,18 @@ function formatItemContent(itemSet, { columns = 1 } = {}) {
         itemListAttrs['data-columns'] = columns;
     }
 
-    let itemsList = items.length ? list(items.map((item) => getItemDescription(item)), itemListAttrs) : '';
+    let descArgs = {
+        isConditionUniform : Boolean(conditionUniformity),
+        isRarityUniform    : Boolean(rarityUniformity),
+    };
+
+    let itemsList = items.length ? list(items.map((item) => getItemDescription(item, descArgs)), itemListAttrs) : '';
 
     let containerList = containers.map((item) => {
         isRequired(item.contents, 'Contents are required in containers');
 
-        let content = getItemDescription(item)
-            + list(item.contents.map((containerItem) => getItemDescription(containerItem)), {
+        let content = getItemDescription(item, descArgs)
+            + list(item.contents.map((containerItem) => getItemDescription(containerItem, descArgs)), {
                 'data-spacing': 'b-none',
             });
 
@@ -176,13 +181,14 @@ function formatRoomGrid(rooms, doors = {}) {
 /**
  * Get item description
  *
- * TODO uniformity formatting?
- *
  * @param {Item} item
+ * @param {object} args
+ *     @param {boolean} args.isConditionUniform
+ *     @param {boolean} args.isRarityUniform
  *
  * @returns {string}
  */
-function getItemDescription(item) {
+function getItemDescription(item, { isConditionUniform, isRarityUniform }) {
     let {
         condition,
         count,
@@ -190,7 +196,8 @@ function getItemDescription(item) {
         rarity,
     } = item;
 
-    let indicateRare = indicateItemRarity.has(rarity);
+    let indicateCondition = !isConditionUniform && condition !== 'average';
+    let indicateRare      = !isRarityUniform && indicateItemRarity.has(rarity);
 
     let notes = [];
 
@@ -202,7 +209,7 @@ function getItemDescription(item) {
         notes.push(rarity);
     }
 
-    if (condition !== 'average') {
+    if (indicateCondition) {
         notes.push(`${condition} condition`);
     }
 
