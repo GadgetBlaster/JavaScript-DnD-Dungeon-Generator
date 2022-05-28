@@ -43,7 +43,6 @@ const colorRoomStroke   = '#a9a9a9';
 const colorTransparent  = 'transparent';
 const colorTrapFill     = 'rgba(207, 207, 207, 0.8)';
 
-const pillarRadius = 4;
 const holeRadius   = 6;
 
 const doorInset    = 12; // In px?
@@ -70,7 +69,6 @@ export {
     holeRadius          as testHoleRadius,
     pillarGridInset     as testPillarGridInset,
     pillarGridThreshold as testPillarGridThreshold,
-    pillarRadius        as testPillarRadius,
     pxCell              as testPxCell,
     trapLabel           as testTrapLabel,
 };
@@ -91,7 +89,7 @@ function drawPillar({ cx, cy }, { stroke } = {}) {
     return drawCircle({
         cx,
         cy,
-        r: pillarRadius,
+        r: Math.round(pxCell / 6),
     }, {
         fill: colorPillarFill,
         stroke: stroke || colorRoomStroke,
