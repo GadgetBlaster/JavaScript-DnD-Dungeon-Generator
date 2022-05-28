@@ -12,6 +12,7 @@ import {
     testHoleRadius          as holeRadius,
     testPillarGridInset     as pillarGridInset,
     testPillarGridThreshold as pillarGridThreshold,
+    testPillarRadiusRatio   as pillarRadiusRatio,
     testPxCell              as pxCell,
     testTrapLabel           as trapLabel,
 
@@ -593,7 +594,7 @@ export default ({ assert, describe, it }) => {
                         const cx2 = (x * pxCell) + (width  * pxCell);
                         const cy  = (y * pxCell) + ((height /2) * pxCell);
 
-                        const pillars = archwayDoor.match(RegExp(`<circle(.+?)r="4"(.+?)/>`, 'g'));
+                        const pillars = archwayDoor.match(RegExp(`<circle(.+?)r="${Math.round(pxCell * pillarRadiusRatio)}"(.+?)/>`, 'g'));
 
                         assert(pillars).isArray();
 
@@ -619,7 +620,7 @@ export default ({ assert, describe, it }) => {
                         const cy1 = y * pxCell;
                         const cy2 = (y * pxCell) + (height * pxCell);
 
-                        const pillars = archwayDoor.match(RegExp(`<circle(.+?)r="4"(.+?)/>`, 'g'));
+                        const pillars = archwayDoor.match(RegExp(`<circle(.+?)r="${Math.round(pxCell * pillarRadiusRatio)}"(.+?)/>`, 'g'));
 
                         assert(pillars).isArray();
 
@@ -839,7 +840,7 @@ export default ({ assert, describe, it }) => {
 
                 const roomWithPillars = drawRoom({ ...rectangle, width, height }, text);
 
-                const matches = roomWithPillars.match(RegExp(`<circle(.+?)r="4"(.+?)/>`, 'g'));
+                const matches = roomWithPillars.match(RegExp(`<circle(.+?)r="${Math.round(pxCell * pillarRadiusRatio)}"(.+?)/>`, 'g'));
 
                 assert(matches).isArray();
                 matches && assert(matches.length).equals(4);
