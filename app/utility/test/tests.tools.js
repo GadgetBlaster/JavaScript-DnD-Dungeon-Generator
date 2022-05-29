@@ -357,6 +357,18 @@ export default ({ assert, describe, it }) => {
     // -- Error Handling -----------------------------------------------------------
 
     describe('getErrorMessage()', () => {
-        // TODO
+        describe('when the error is a string', () => {
+            it('returns the error', () => {
+                assert(getErrorMessage('this bad')).equals('this bad');
+            });
+        });
+
+        describe('when the error is an Error object', () => {
+            it('returns a stringified version of the error stack', () => {
+                assert(getErrorMessage(new Error('this real bad')))
+                    .stringIncludes('Error: this real bad')
+                    .stringIncludes('/app/utility/test/tests.tools.js:368:40');
+            });
+        });
     });
 };
