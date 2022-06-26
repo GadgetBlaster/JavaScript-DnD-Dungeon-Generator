@@ -8,7 +8,7 @@ import { getResultMessage } from './output.js';
 
 /** @typedef {import('./assert.js').Result} Result */
 
-/** @typedef {(value: any) => Assertions} Assertion */
+/** @typedef {(value?: any) => Assertions} Assertion */
 
 /**
  * @typedef {object} Assertions
