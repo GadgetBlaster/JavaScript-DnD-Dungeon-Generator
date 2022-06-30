@@ -43,8 +43,12 @@ export { isElement as testIsElement };
  * @returns {Result}
  */
 export function equals(value, expected) {
-    let isOk = expected === value;
+    let isOk = value === expected;
     let msg  = `expected "${value}" to equal "${expected}"`;
+
+    if (!isOk && value == expected) {
+        msg  = `expected "${value}" (${typeof value}) to equal "${expected}" (${typeof expected})`;
+    }
 
     return { msg, isOk };
 }
@@ -201,31 +205,22 @@ export function isBoolean(value) {
 }
 
 /**
- * @param {any} value
+ * @param {any} element
  * @param {string} tag
  *
  * @returns {Result}
  */
-export function isElementTag(value, tag) {
-    let checkType = isString(value);
+export function isElementTag(element, tag) {
+    let checkElType = isElement(element);
 
-    if (!checkType.isOk) {
-        return checkType;
+    if (!checkElType.isOk) {
+        return checkElType;
     }
 
-    let regExp  = new RegExp('^<'+tag+'(?:>| [^>]+>)', 'g');
-    let isEmpty = selfClosingElements.includes(tag);
-    let isTag   = regExp.test(value) && value.endsWith(isEmpty ? ' />' : `</${tag}>`);
-    let msg     = `expected "${value}" to be an element tag string of ${isEmpty ? `<${tag} />` : `<${tag}>*</${tag}>`}`;
+    let isOk = element.tagName === tag || element.tagName === tag.toUpperCase();
+    let msg  = `expected "${element.tagName}" to have a tag name of "${tag}"`;
 
-    if (!isTag) {
-        return { msg, isOk: false };
-    }
-
-    let brackets = isEmpty ? 1 : 2;
-    let isSingleTag = value.match(/</g).length === brackets && value.match(/>/g).length === brackets;
-
-    return { msg, isOk: isSingleTag };
+    return { msg, isOk: isOk };
 }
 
 /**

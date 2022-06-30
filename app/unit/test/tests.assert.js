@@ -68,6 +68,7 @@ const groups = {
     },
     element: {
         'an element': document.createElement('p'),
+        'an svg element': document.createElementNS('http://www.w3.org/2000/svg', 'circle'),
     },
     function: {
         'a function': equals, // Any function will do
@@ -193,11 +194,18 @@ export default ({ assert, describe, it }) => {
             });
         });
 
-        describe('given two values that are not the same type', () => {
+        describe('given two of the same values which are not the same type', () => {
             it('returns a false `isOk` property', () => {
                 assert(equals(3, '3').isOk).isFalse();
             });
+
+            describe('when the values are the same but not strictly equal', () => {
+                it('includes the value types in the message', () => {
+                    assert(equals(3, '3').msg).equals('expected "3" (number) to equal "3" (string)');
+                });
+            });
         });
+
     });
 
     describe('equalsArray()', () => {
@@ -250,6 +258,7 @@ export default ({ assert, describe, it }) => {
     describe('equalsObject()', () => {
         describe('given a value that is not a object', () => {
             it('returns a false `isOk` property', () => {
+                // @ts-expect-error
                 assert(equalsObject('sinking hippogryphs').isOk).isFalse();
             });
         });
@@ -337,6 +346,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given an invalid attributes expectation', () => {
             it('returns a false `isOk` property', () => {
+                // @ts-expect-error
                 assert(excludesAttributes(el, null).isOk).isFalse();
             });
         });
@@ -435,80 +445,60 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('isElementTag()', () => {
-        describe('given a string that is the desired html tag', () => {
+        describe('given an element that is the desired html tag', () => {
             it('returns a true `isOk` property', () => {
-                assert(isElementTag('<strong>Wizards!</strong>', 'strong').isOk).isTrue();
+                let el = document.createElement('strong');
+                el.textContent = 'Wizards!';
+
+                assert(isElementTag(el, 'strong').isOk).isTrue();
             });
         });
 
-        describe('given a string that is the desired html tag with attributes', () => {
+        describe('given an element that is the desired html tag with attributes', () => {
             it('returns a true `isOk` property', () => {
-                assert(isElementTag('<strong data-type="goblin">Goblins</strong>', 'strong').isOk).isTrue();
+                let el = document.createElement('strong');
+                el.setAttribute('data-type', 'goblin');
+                el.textContent = 'Goblins';
+
+                assert(isElementTag(el, 'strong').isOk).isTrue();
             });
         });
 
-        describe('given a string that is not an html tag', () => {
+        describe('given an element that is not an html tag', () => {
             it('returns a false `isOk` property', () => {
                 assert(isElementTag('Grumpy wizards', 'b').isOk).isFalse();
             });
         });
 
-        describe('given a string that is not the desired html tag', () => {
+        describe('given an element that is not the desired html tag', () => {
             it('returns a false `isOk` property', () => {
-                assert(isElementTag('<div>Goblins</div>', 'b').isOk).isFalse();
+                let el = document.createElement('div');
+                el.textContent = 'Goblins';
+
+                assert(isElementTag(el, 'b').isOk).isFalse();
             });
         });
 
-        describe('given a string that does not start with an html tag', () => {
-            it('returns a false `isOk` property', () => {
-                assert(isElementTag('The crafty <span>Pixie</span>', 'span').isOk).isFalse();
-            });
-        });
-
-        describe('given a string that does not end with an html tag', () => {
-            it('returns a false `isOk` property', () => {
-                assert(isElementTag('<span>Pixies</span> can turn invisible', 'span').isOk).isFalse();
-            });
-        });
-
-        describe('given a string that is a malformed html tag', () => {
-            it('returns a false `isOk` property', () => {
-                assert(isElementTag('p>Pixies</p>', 'p').isOk).isFalse();
-                assert(isElementTag('<>Pixies</p>', 'p').isOk).isFalse();
-                assert(isElementTag('<pPixies</p>', 'p').isOk).isFalse();
-                assert(isElementTag('<p>Pixies/p>', 'p').isOk).isFalse();
-                assert(isElementTag('<p>Pixies<p>', 'p').isOk).isFalse();
-                assert(isElementTag('<p>Pixies</>', 'p').isOk).isFalse();
-                assert(isElementTag('<p>Pixies</p', 'p').isOk).isFalse();
-                assert(isElementTag('<input>', 'input').isOk).isFalse();
-                assert(isElementTag('<input', 'input').isOk).isFalse();
-                assert(isElementTag('<input /', 'input').isOk).isFalse();
-                assert(isElementTag('input />', 'input').isOk).isFalse();
-            });
-        });
-
-        describe('given a self closing html tag', () => {
+        describe('given a self closing html element', () => {
             it('returns a true `isOk` property', () => {
-                assert(isElementTag('<input name="ted" />', 'input').isOk).isTrue();
+                let el = document.createElement('input');
+                el.name = 'ted';
+
+                assert(isElementTag(el, 'input').isOk).isTrue();
             });
         });
 
-        describe('given multiple tags', () => {
-            it('returns a false `isOk` property', () => {
-                assert(isElementTag('<p>Hello</p><p>Dungeon</p>', 'input').isOk).isFalse();
+        describe('given an SVG element', () => {
+            it('returns a true `isOk` property', () => {
+                let el = document.createElementNS('http://www.w3.org/2000/svg', 'circle')
+                assert(isElementTag(el, 'circle').isOk).isTrue();
             });
         });
 
-        describe('given multiple self closing tags', () => {
-            it('return a false `isOk` property', () => {
-                assert(isElementTag('<input /><input />', 'input').isOk).isFalse();
-            });
-        });
-
-        nonStringTypes.forEach(([ key, value ]) => {
+        nonElementTypes.forEach(([ key, value ]) => {
             describe(`given ${key}`, () => {
                 it('returns a false `isOk` property', () => {
-                    assert(isString(value).isOk).isFalse();
+                    assert(isElementTag(value, key).isOk).isFalse();
                 });
             });
         });
@@ -699,7 +689,14 @@ export default ({ assert, describe, it }) => {
     describe('isUndefined()', () => {
         describe('given nothing', () => {
             it('returns a true `isOk` property', () => {
+                // @ts-expect-error
                 assert(isUndefined().isOk).isTrue();
+            });
+        });
+
+        describe('given undefined', () => {
+            it('returns a true `isOk` property', () => {
+                assert(isUndefined(undefined).isOk).isTrue();
             });
         });
 
@@ -772,6 +769,7 @@ export default ({ assert, describe, it }) => {
     describe('throws()', () => {
         describe('given a non-function', () => {
             it('returns a false `isOk` property', () => {
+                // @ts-expect-error
                 assert(throws(undefined, 'junk').isOk).isFalse();
             });
         });
