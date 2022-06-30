@@ -99,7 +99,7 @@ export function parseHtml(string) {
     let doc  = domParser.parseFromString(string, 'text/html');
     let body = doc.querySelector('body');
 
-    if (!body.children.length && !body.textContent) {
+    if (!body || (!body.children.length && !body.textContent)) {
         toss(`Invalid HTML string "${string}"`);
     }
 

@@ -37,7 +37,7 @@ export default ({ assert, describe, it }) => {
                 assert(body.children.length).equals(1);
             });
 
-            it(`returns an HTML ${tag} element`, () => {
+            it(`returns an html ${tag} element`, () => {
                 assert(element.tagName).equals(tag.toUpperCase());
             });
 

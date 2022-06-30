@@ -39,6 +39,8 @@ import {
     drawRect,
 } from '../../utility/shape.js';
 
+import { element, parseSvg } from '../../utility/element.js';
+
 /** @typedef {import('../../utility/shape.js').Circle} Circle */
 /** @typedef {import('../draw.js').RoomText} RoomText */
 /** @typedef {import('../map.js').Rectangle} Rectangle */
@@ -54,53 +56,64 @@ export default ({ assert, describe, it }) => {
     // -- Private Functions ----------------------------------------------------
 
     describe('drawPillar()', () => {
-        /** @type {Pick<Circle, "cx" | "cy">} */
-        const pillarCoordinates = { cx: 114, cy: 214 };
-        const pillar = drawPillar(pillarCoordinates);
+        const result = drawPillar({ cx: 114, cy: 214 });
+        const doc    = parseSvg(result);
+        const pillar = doc.children.item(0);
 
-        it('returns a `<circle />` element string', () => {
+        it('returns a single svg string', () => {
+            assert(result).isString();
+            assert(doc.children.length).equals(1);
+            assert(Boolean(pillar)).isTrue();
+        });
+
+        it('returns a circle element', () => {
             assert(pillar).isElementTag('circle');
         });
 
         it('has the correct `cx` and `cy` attributes', () => {
-            assert(pillar)
-                .stringIncludes('cx="114"')
-                .stringIncludes('cy="214"');
+            assert(pillar).hasAttributes({ cx: '114', cy: '214' });
         });
 
-        it('haves the pillar fill color', () => {
-            assert(pillar).stringIncludes(`fill="${colorPillarFill}"`);
+        it('has the pillar fill color', () => {
+            assert(pillar).hasAttributes({ fill: colorPillarFill });
         });
 
-        it('haves the room stroke color by default', () => {
-            assert(pillar).stringIncludes(`stroke="${colorRoomStroke}"`);
+        it('has the room stroke color by default', () => {
+            assert(pillar).hasAttributes({ stroke: colorRoomStroke });
         });
 
         describe('given a stroke option', () => {
-            it('adds to or overrides the default attributes', () => {
-                const redPillar = drawPillar(pillarCoordinates, { stroke: 'red' });
-                assert(redPillar).stringIncludes('stroke="red"');
+            it('overrides the default attributes', () => {
+                const redPillar = parseSvg(drawPillar({ cx: 114, cy: 214 }, { stroke: 'red' })).children.item(0);
+                assert(redPillar).hasAttributes({ stroke: 'red' });
             });
         });
     });
 
     describe('drawPillarCell()', () => {
-        const pillarCell = drawPillarCell({ x: 15, y: 25 });
+        const result     = drawPillarCell({ x: 15, y: 25 });
+        const doc        = parseSvg(result);
+        const pillarCell = doc.children.item(0);
 
-        it('returns a `<circle />` element string', () => {
+        it('returns a single svg string', () => {
+            assert(result).isString();
+            assert(doc.children.length).equals(1);
+            assert(Boolean(pillarCell)).isTrue();
+        });
+
+        it('returns a circle element', () => {
             assert(pillarCell).isElementTag('circle');
         });
 
-        describe('given attributes', () => {
-            it('has `cx` and `cy` attributes in the center of the cell', () => {
-                const pxHalfCell = (pxCell / 2);
+        it('has `cx` and `cy` attributes in the center of the given cell coordinates', () => {
+            const pxHalfCell = (pxCell / 2);
 
-                const cx = (15 * pxCell) + pxHalfCell;
-                const cy = (25 * pxCell) + pxHalfCell;
+            const cx = (15 * pxCell) + pxHalfCell;
+            const cy = (25 * pxCell) + pxHalfCell;
 
-                assert(pillarCell)
-                    .stringIncludes(`cx="${cx}"`)
-                    .stringIncludes(`cy="${cy}"`);
+            assert(pillarCell).hasAttributes({
+                cx: cx.toString(),
+                cy: cy.toString(),
             });
         });
     });
@@ -137,12 +150,18 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a room `width` and `height` of at least `pillarThreshold`', () => {
-            const pillars = drawRoomPillars(roomRectangle);
-            const matches = pillars.match(/<circle(.+?)\/>/g);
+            const result  = drawRoomPillars(roomRectangle);
+            const doc     = parseSvg(`<svg>${result}</svg>`);
+            const pillars = [ ...doc.querySelectorAll('circle') ];
 
-            it('returns four `<circle />` element strings', () => {
-                assert(matches).isArray();
-                matches && assert(matches.length).equals(4);
+            it('returns an svg string that parses', () => {
+                assert(result).isString();
+                assert(doc.children.length).equals(1);
+            });
+
+            it('contains four circle svg element strings', () => {
+                assert(pillars).isArray();
+                assert(pillars.length).equals(4);
             });
 
             it('places a pillar in the center of each corner cell of the room, inset by `pillarInset`', () => {
@@ -158,21 +177,25 @@ export default ({ assert, describe, it }) => {
                 const yTop    = ((y + pillarGridInset) * pxCell) + halfPxCell;
                 const yBottom = ((y + innerHeight)     * pxCell) + halfPxCell;
 
-                matches && assert(matches.shift())
-                    .stringIncludes(`cx="${xLeft}"`)
-                    .stringIncludes(`cy="${yTop}"`);
+                assert(pillars.shift()).hasAttributes({
+                    cx: xLeft.toString(),
+                    cy: yTop.toString(),
+                });
 
-                matches && assert(matches.shift())
-                    .stringIncludes(`cx="${xRight}"`)
-                    .stringIncludes(`cy="${yTop}"`);
+                assert(pillars.shift()).hasAttributes({
+                    cx: xRight.toString(),
+                    cy: yTop.toString(),
+                });
 
-                matches && assert(matches.shift())
-                    .stringIncludes(`cx="${xLeft}"`)
-                    .stringIncludes(`cy="${yBottom}"`);
+                assert(pillars.shift()).hasAttributes({
+                    cx: xLeft.toString(),
+                    cy: yBottom.toString(),
+                });
 
-                matches && assert(matches.shift())
-                    .stringIncludes(`cx="${xRight}"`)
-                    .stringIncludes(`cy="${yBottom}"`);
+                assert(pillars.shift()).hasAttributes({
+                    cx: xRight.toString(),
+                    cy: yBottom.toString(),
+                });
             });
         });
     });
@@ -186,59 +209,77 @@ export default ({ assert, describe, it }) => {
             height: 50,
         };
 
-        const roomText = drawRoomText(roomTextConfig, { roomNumber: '42' });
+        const result   = drawRoomText(roomTextConfig, { roomNumber: '42' });
+        const doc      = parseSvg(result);
+        const roomText = doc.children.item(0);
 
-        it('returns a single `<text>` element string', () => {
+        it('returns a single svg string', () => {
+            assert(result).isString();
+            assert(doc.children.length).equals(1);
+            assert(Boolean(roomText)).isTrue();
+        });
+
+        it('returns a single text svg element string', () => {
             assert(roomText).isElementTag('text');
         });
 
-        it('contains the roomLabel as the content', () => {
-            assert(/<text(.+?)>42<\/text>/.test(roomText)).isTrue();
+        it('contains the `roomNumber` as the content', () => {
+            roomText && assert(roomText.textContent).equals('42');
         });
 
         it('the `x` coordinate is at the horizontal center of the room rect', () => {
             const x = roomTextConfig.x + (roomTextConfig.width / 2);
-            assert(roomText).stringIncludes(`x="${x}"`);
+            assert(roomText).hasAttributes({ x: x.toString() });
         });
 
         it('the `y` coordinate is at the vertical center of the room rect plus the `pxTextOffset`', () => {
             const y = (roomTextConfig.y + (roomTextConfig.height / 2)) + pxTextOffset;
-            assert(roomText).stringIncludes(`y="${y}"`);
+            assert(roomText).hasAttributes({ y: y.toString() });
         });
 
         describe('given a `roomLabel`', () => {
-            const roomTextWithLabel = drawRoomText(roomTextConfig, {
+            const docRoomTextWithLabel = parseSvg(element('svg', drawRoomText(roomTextConfig, {
                 roomNumber: '42',
                 roomLabel: 'Thar be dragons',
-            });
+            })));
 
-            it('returns two `<text>` element strings', () => {
-                const matches = roomTextWithLabel.match(/<text(.+?)>(.+?)<\/text>/g);
+            const matches = [ ...docRoomTextWithLabel.querySelectorAll('text') ];
 
+            it('returns two text svg element strings', () => {
                 assert(matches).isArray();
-                matches && assert(matches.length).equals(2);
+                assert(matches.length).equals(2);
             });
 
-            it('contains the roomLabel as the content', () => {
-                assert(/<text(.+?)>Thar be dragons<\/text>/.test(roomTextWithLabel)).isTrue();
+            it('contains the `roomLabel` as the content', () => {
+                assert(matches.filter(({ textContent }) => textContent === 'Thar be dragons').length)
+                    .equals(1);
             });
         });
     });
 
     describe('drawTrapText()', () => {
-        const trapText = drawTrapText({
+        const result = drawTrapText({
             x: 10,
             y: 10,
             width: 40,
             height: 60,
         });
 
-        it('returns a `<text>` element string', () => {
+        const doc      = parseSvg(result);
+        const trapText = doc.children.item(0);
+
+        it('returns a single svg string', () => {
+            assert(result).isString();
+            assert(doc.children.length).equals(1);
+            assert(Boolean(trapText)).isTrue();
+        });
+
+        it('returns a text svg element string', () => {
             assert(trapText).isElementTag('text');
         });
 
         it('contains the trap label', () => {
-            assert(RegExp(`<text(.+?)>${trapLabel}</text>`).test(trapText)).isTrue();
+            trapText && assert(trapText.textContent).equals(trapLabel);
         });
 
         it('the `x` and `y` coordinates are at the center of the lower left cell of the room', () => {
@@ -247,8 +288,10 @@ export default ({ assert, describe, it }) => {
             const x = 10 + pxHalfCell;
             const y = 70 - pxHalfCell + pxTextOffset;
 
-            assert(trapText).stringIncludes(`x="${x}"`);
-            assert(trapText).stringIncludes(`y="${y}"`);
+            assert(trapText).hasAttributes({
+                x: x.toString(),
+                y: y.toString(),
+            });
         });
     });
 
@@ -373,27 +416,35 @@ export default ({ assert, describe, it }) => {
             type: 'passageway',
         };
 
-        const door     = drawDoor(doorConfig);
-        const doorRect = door.slice(0, door.indexOf('/>') + 2);
+        const result   = drawDoor(doorConfig);
+        const doc      = parseSvg(element('svg', result));
+        const doorRect = doc.querySelector('rect');
 
-        it('returns a string starting with a `<rect />` element string', () => {
+        it('returns an svg string that parses', () => {
+            assert(result).isString();
+            assert(doc.children.length).equals(1);
+        });
+
+        it('contains a rect svg element string', () => {
             assert(doorRect).isElementTag('rect');
         });
 
-        it('the `<rect />` has the correct `x` and `y` attributes', () => {
+        it('the rect has correct `x` and `y` attributes', () => {
             const { x, y } = doorConfig.rectangle;
 
-            assert(doorRect)
-                .stringIncludes(`x="${x * pxCell}"`)
-                .stringIncludes(`y="${y * pxCell}"`);
+            assert(doorRect).hasAttributes({
+                x: (x * pxCell).toString(),
+                y: (y * pxCell).toString(),
+            });
         });
 
-        it('the `<rect />` has the correct `width` and `height` attributes', () => {
+        it('the rect has correct `width` and `height` attributes', () => {
             const { width, height } = doorConfig.rectangle;
 
-            assert(doorRect)
-                .stringIncludes(`width="${width * pxCell}"`)
-                .stringIncludes(`height="${height * pxCell}"`);
+            assert(doorRect).hasAttributes({
+                width : (width * pxCell).toString(),
+                height: (height * pxCell).toString(),
+            });
         });
 
         /** @type {Door} */
@@ -415,7 +466,7 @@ export default ({ assert, describe, it }) => {
         describe('door orientations', () => {
             describe('door wall lines', () => {
                 describe('when the door direction is north or south', () => {
-                    it('includes two horizontal wall lines with correct coordinate attributes', () => {
+                    it('contains two vertical wall lines with correct coordinate attributes', () => {
                         const { x, y, width, height } = northSouthDoor.rectangle;
 
                         const line1x = x * pxCell;
@@ -424,27 +475,30 @@ export default ({ assert, describe, it }) => {
                         const y1 = y * pxCell;
                         const y2 = (y + height) * pxCell;
 
-                        const doorLines = drawDoor(northSouthDoor)
-                            .match(/<line(.+?) \/>/g);
+                        const doorLines = [ ...parseSvg(element('svg', drawDoor(northSouthDoor)))
+                            .querySelectorAll('line') ];
 
                         assert(doorLines).isArray();
+                        assert(doorLines.length).equals(2);
 
-                        doorLines && assert(doorLines.shift())
-                            .stringIncludes(`x1="${line1x}"`)
-                            .stringIncludes(`y1="${y1}"`)
-                            .stringIncludes(`x2="${line1x}"`)
-                            .stringIncludes(`y2="${y2}"`);
+                        assert(doorLines.shift()).hasAttributes({
+                            x1: line1x.toString(),
+                            y1: y1.toString(),
+                            x2: line1x.toString(),
+                            y2: y2.toString(),
+                        });
 
-                        doorLines && assert(doorLines.shift())
-                            .stringIncludes(`x1="${line2x}"`)
-                            .stringIncludes(`y1="${y1}"`)
-                            .stringIncludes(`x2="${line2x}"`)
-                            .stringIncludes(`y2="${y2}"`);
+                        assert(doorLines.shift()).hasAttributes({
+                            x1: line2x.toString(),
+                            y1: y1.toString(),
+                            x2: line2x.toString(),
+                            y2: y2.toString(),
+                        });
                     });
                 });
 
                 describe('when the door direction is east or west', () => {
-                    it('includes two horizontal wall lines with correct coordinate attributes', () => {
+                    it('contains two horizontal wall lines with correct coordinate attributes', () => {
                         const { x, y, width, height } = eastWestDoor.rectangle;
 
                         const x1 = x * pxCell;
@@ -453,22 +507,25 @@ export default ({ assert, describe, it }) => {
                         const line1y = y * pxCell;
                         const line2y = (y + height) * pxCell;
 
-                        const doorLines = drawDoor(eastWestDoor)
-                            .match(/<line(.+?) \/>/g);
+                        const doorLines = [ ...parseSvg(element('svg', drawDoor(eastWestDoor)))
+                            .querySelectorAll('line') ];
 
                         assert(doorLines).isArray();
+                        assert(doorLines.length).equals(2);
 
-                        doorLines && assert(doorLines.shift())
-                            .stringIncludes(`x1="${x1}"`)
-                            .stringIncludes(`y1="${line1y}"`)
-                            .stringIncludes(`x2="${x2}"`)
-                            .stringIncludes(`y2="${line1y}"`);
+                        assert(doorLines.shift()).hasAttributes({
+                            x1: x1.toString(),
+                            y1: line1y.toString(),
+                            x2: x2.toString(),
+                            y2: line1y.toString(),
+                        });
 
-                        doorLines && assert(doorLines.shift())
-                            .stringIncludes(`x1="${x1}"`)
-                            .stringIncludes(`y1="${line2y}"`)
-                            .stringIncludes(`x2="${x2}"`)
-                            .stringIncludes(`y2="${line2y}"`);
+                        assert(doorLines.shift()).hasAttributes({
+                            x1: x1.toString(),
+                            y1: line2y.toString(),
+                            x2: x2.toString(),
+                            y2: line2y.toString(),
+                        });
                     });
                 });
             });
@@ -476,42 +533,37 @@ export default ({ assert, describe, it }) => {
             describe('when the door type is lockable', () => {
                 describe('when the door is locked', () => {
                     it('sets the door rectangle fill to `colorLockedFill`', () => {
-                        const lockedDoor = drawDoor({
+                        const lockedDoorDoc = parseSvg(element('svg', drawDoor({
                             ...doorConfig,
                             locked: true,
                             type: 'wooden',
-                        });
+                        })));
 
-                        assert(RegExp(`<rect(.+?)fill="${colorLockedFill}"(.+?)>`).test(lockedDoor)).isTrue();
+                        assert(Boolean(lockedDoorDoc.querySelector(`rect[fill="${colorLockedFill}"]`))).isTrue();
                     });
                 });
 
                 describe('when the door direction is north or south', () => {
                     const { x, y, width, height } = northSouthDoor.rectangle;
-                    const lockableDoor = drawDoor({
+                    const lockableDoorDoc = parseSvg(element('svg', drawDoor({
                         ...northSouthDoor,
                         type: 'wooden',
-                    });
+                    })));
 
-                    it('includes a horizontal line in the center of the cell ', () => {
+                    it('contains a horizontal line in the center of the cell ', () => {
                         const x1 = x * pxCell;
                         const x2 = (x + width) * pxCell;
                         const y1 = (y + (height / 2)) * pxCell;
                         const y2 = y1;
 
-                        const matches = lockableDoor.match(/<line(.+?) \/>/g);
-
                         assert(x2 > x1).isTrue();
-                        assert(matches).isArray();
 
-                        matches && assert(matches.filter((line) =>
-                            line.includes(`x1="${x1}"`) &&
-                            line.includes(`y1="${y1}"`) &&
-                            line.includes(`x2="${x2}"`) &&
-                            line.includes(`y2="${y2}"`)).length).equals(1);
+                        const selector = `line[x1="${x1}"][x2="${x2}"][y1="${y1}"][y2="${y2}"]`;
+
+                        assert(Boolean(lockableDoorDoc.querySelector(selector))).isTrue();
                     });
 
-                    it('includes a horizontal inset rectangle representing the door', () => {
+                    it('contains a horizontal inset rectangle representing the door', () => {
                         const rectCenterY = (y * pxCell) + ((height * pxCell) / 2);
 
                         const rectX = (x * pxCell) + (doorInset / 2);
@@ -520,45 +572,33 @@ export default ({ assert, describe, it }) => {
                         const rectW = (width * pxCell) - doorInset;
                         const rectH = doorWidth;
 
-                        const matches = lockableDoor.match(/<rect(.+?) \/>/g);
+                        const selector = `rect[x="${rectX}"][y="${rectY}"][width="${rectW}"][height="${rectH}"]`;
 
                         assert(rectW > rectH).isTrue();
-                        assert(matches).isArray();
-
-                        matches && assert(matches.filter((line) =>
-                            line.includes(`x="${rectX}"`) &&
-                            line.includes(`y="${rectY}"`) &&
-                            line.includes(`width="${rectW}"`) &&
-                            line.includes(`height="${rectH}"`)).length).equals(1);
+                        assert(Boolean(lockableDoorDoc.querySelector(selector))).isTrue();
                     });
                 });
 
                 describe('when the door direction is east or west', () => {
                     const { x, y, width, height } = eastWestDoor.rectangle;
-                    const lockableDoor = drawDoor({
+                    const lockableDoorDoc = parseSvg(element('svg', drawDoor({
                         ...eastWestDoor,
                         type: 'wooden',
-                    });
+                    })));
 
-                    it('includes a vertical line in the center of the cell ', () => {
+                    it('contains a vertical line in the center of the cell ', () => {
                         const x1 = (x + (width / 2)) * pxCell;
                         const x2 = x1;
                         const y1 = y * pxCell;
                         const y2 = (y + height) * pxCell;
 
-                        const matches = lockableDoor.match(/<line(.+?) \/>/g);
+                        const selector = `line[x1="${x1}"][x2="${x2}"][y1="${y1}"][y2="${y2}"]`;
 
                         assert(y2 > y1).isTrue();
-                        assert(matches).isArray();
-
-                        matches && assert(matches.filter((line) =>
-                            line.includes(`x1="${x1}"`) &&
-                            line.includes(`y1="${y1}"`) &&
-                            line.includes(`x2="${x2}"`) &&
-                            line.includes(`y2="${y2}"`)).length).equals(1);
+                        assert(Boolean(lockableDoorDoc.querySelector(selector))).isTrue();
                     });
 
-                    it('includes a vertical inset rectangle representing the door', () => {
+                    it('contains a vertical inset rectangle representing the door', () => {
                         const rectCenterX = (x * pxCell) + ((width  * pxCell) / 2);
 
                         const rectX = rectCenterX  - (doorWidth / 2);
@@ -567,157 +607,166 @@ export default ({ assert, describe, it }) => {
                         const rectW = doorWidth;
                         const rectH = (height * pxCell) - doorInset;
 
-                        const matches = lockableDoor.match(/<rect(.+?) \/>/g);
+                        const selector = `rect[x="${rectX}"][y="${rectY}"][width="${rectW}"][height="${rectH}"]`;
 
                         assert(rectH > rectW).isTrue();
-                        assert(matches).isArray();
-
-                        matches && assert(matches.filter((line) =>
-                            line.includes(`x="${rectX}"`) &&
-                            line.includes(`y="${rectY}"`) &&
-                            line.includes(`width="${rectW}"`) &&
-                            line.includes(`height="${rectH}"`)).length).equals(1);
+                        assert(Boolean(lockableDoorDoc.querySelector(selector))).isTrue();
                     });
                 });
             });
 
             describe('when the door is an archway', () => {
+                const pillarRadius = Math.round(pxCell * pillarRadiusRatio);
+
                 describe('when the door direction is north or south', () => {
                     it('draws two vertically centered pillars on the left and right of the cell', () => {
                         const { x, y, width, height } = northSouthDoor.rectangle;
-                        const archwayDoor = drawDoor({
+                        const archwayDoorDoc = parseSvg(element('svg', drawDoor({
                             ...northSouthDoor,
                             type: 'archway',
-                        });
+                        })));
 
                         const cx1 = x * pxCell;
                         const cx2 = (x * pxCell) + (width  * pxCell);
                         const cy  = (y * pxCell) + ((height /2) * pxCell);
 
-                        const pillars = archwayDoor.match(RegExp(`<circle(.+?)r="${Math.round(pxCell * pillarRadiusRatio)}"(.+?)/>`, 'g'));
+                        const pillars = [ ...archwayDoorDoc.querySelectorAll(`circle[r="${pillarRadius}"]`) ];
 
-                        assert(pillars).isArray();
+                        assert(pillars.length).equals(2);
 
-                        pillars && assert(pillars.shift())
-                            .stringIncludes(`cx="${cx1}"`)
-                            .stringIncludes(`cy="${cy}"`);
+                        assert(pillars.shift()).hasAttributes({
+                            cx: cx1.toString(),
+                            cy: cy.toString(),
+                        });
 
-                        pillars && assert(pillars.shift())
-                            .stringIncludes(`cx="${cx2}"`)
-                            .stringIncludes(`cy="${cy}"`);
+                        assert(pillars.shift()).hasAttributes({
+                            cx: cx2.toString(),
+                            cy: cy.toString(),
+                        });
                     });
                 });
 
                 describe('when the door direction is east or west', () => {
                     it('draws two horizontally centered pillars at the top and bottom of the cell', () => {
                         const { x, y, width, height } = eastWestDoor.rectangle;
-                        const archwayDoor = drawDoor({
+                        const archwayDoorDoc = parseSvg(element('svg', drawDoor({
                             ...eastWestDoor,
                             type: 'archway',
-                        });
+                        })));
 
                         const cx  = (x * pxCell) + ((width / 2) * pxCell);
                         const cy1 = y * pxCell;
                         const cy2 = (y * pxCell) + (height * pxCell);
 
-                        const pillars = archwayDoor.match(RegExp(`<circle(.+?)r="${Math.round(pxCell * pillarRadiusRatio)}"(.+?)/>`, 'g'));
+                        const pillars = [ ...archwayDoorDoc.querySelectorAll(`circle[r="${pillarRadius}"]`) ];
 
-                        assert(pillars).isArray();
+                        assert(pillars.length).equals(2);
 
-                        pillars && assert(pillars.shift())
-                            .stringIncludes(`cx="${cx}"`)
-                            .stringIncludes(`cy="${cy1}"`);
+                        assert(pillars.shift()).hasAttributes({
+                            cx: cx.toString(),
+                            cy: cy1.toString(),
+                        });
 
-                        pillars && assert(pillars.shift())
-                            .stringIncludes(`cx="${cx}"`)
-                            .stringIncludes(`cy="${cy2}"`);
+                        assert(pillars.shift()).hasAttributes({
+                            cx: cx.toString(),
+                            cy: cy2.toString(),
+                        });
                     });
                 });
             });
 
             describe('when the door is a hole', () => {
+                const holeRadius = Math.round(pxCell * holeRadiusRatio);
+
                 describe('when the door direction is north or south', () => {
                     it('draws a circle with the correct radius, centered horizontally', () => {
                         const { x, y, width, height } = northSouthDoor.rectangle;
-                        const archwayDoor = drawDoor({
+                        const holeDoorDoc = parseSvg(element('svg', drawDoor({
                             ...northSouthDoor,
                             type: 'hole',
-                        });
+                        })));
 
                         const cx = (x + (width  / 2)) * pxCell;
                         const cy = (y + (height / 2)) * pxCell;
 
-                        const hole = archwayDoor.match(RegExp(`<circle(.+?)r="${Math.round(pxCell * holeRadiusRatio)}"(.+?)/>`, 'g'));
+                        const hole = holeDoorDoc.querySelector(`circle[r="${holeRadius}"]`);
 
-                        assert(hole).isArray();
-
-                        hole && assert(hole.length).equals(1);
-
-                        hole && assert(hole.shift())
-                            .stringIncludes(`cx="${cx}"`)
-                            .stringIncludes(`cy="${cy}"`);
+                        assert(Boolean(hole)).isTrue();
+                        assert(hole).hasAttributes({
+                            cx: cx.toString(),
+                            cy: cy.toString(),
+                        });
                     });
                 });
 
                 describe('when the door direction is east or west', () => {
                     it('draws a circle centered vertically', () => {
                         const { x, y, width, height } = eastWestDoor.rectangle;
-                        const archwayDoor = drawDoor({
+                        const holeDoorDoc = parseSvg(element('svg', drawDoor({
                             ...eastWestDoor,
                             type: 'hole',
-                        });
+                        })));
 
                         const cx = (x + (width  / 2)) * pxCell;
                         const cy = (y + (height / 2)) * pxCell;
 
-                        const hole = archwayDoor.match(RegExp(`<circle(.+?)r="${Math.round(pxCell * holeRadiusRatio)}"(.+?)/>`, 'g'));
+                        const hole = holeDoorDoc.querySelector(`circle[r="${holeRadius}"]`);
 
-                        assert(hole).isArray();
-
-                        hole && assert(hole.length).equals(1);
-
-                        hole && assert(hole.shift())
-                            .stringIncludes(`cx="${cx}"`)
-                            .stringIncludes(`cy="${cy}"`);
+                        assert(Boolean(hole)).isTrue();
+                        assert(hole).hasAttributes({
+                            cx: cx.toString(),
+                            cy: cy.toString(),
+                        });
                     });
                 });
             });
 
             describe('when the door is a secret door', () => {
-                const secretDoor = drawDoor({ ...doorConfig, type: 'secret' });
-                const secretDoorRect = secretDoor.slice(0, secretDoor.indexOf('/>') + 2);
+                const secretDoorDoc  = parseSvg(element('svg', drawDoor({ ...doorConfig, type: 'secret' })));
+                const secretDoorRect = secretDoorDoc.querySelector('rect');
 
                 it('has a transparent fill and stroke', () => {
-                    assert(secretDoorRect)
-                        .stringIncludes('fill="transparent"')
-                        .stringIncludes('stroke="transparent"');
+                    assert(secretDoorRect).hasAttributes({
+                        fill  : 'transparent',
+                        stroke: 'transparent',
+                    });
                 });
 
-                it('includes the secret door label', () => {
-                    assert(RegExp(`<text(.+?)>${doorSecretLabel}</text>`, 'g').test(secretDoor)).isTrue();
+                it('contains a secret door label', () => {
+                    const secretDoorText = secretDoorDoc.querySelector('text');
+
+                    assert(Boolean(secretDoorText)).isTrue();
+                    secretDoorText && assert(secretDoorText.textContent).equals(doorSecretLabel);
                 });
 
                 it('has dashed lines for the walls', () => {
-                    const matches = secretDoor
-                        .match(RegExp(`<line(.+?)stroke-dasharray="${dashLength}"(.+?)/>`, 'g'));
+                    const lines = secretDoorDoc.querySelectorAll('line');
 
-                    assert(matches).isArray();
-                    matches && assert(matches.length).equals(2);
+                    assert(lines.length).equals(2);
+                    lines.forEach((line) => {
+                        assert(line).hasAttributes({
+                            'stroke-dasharray': dashLength.toString(),
+                        });
+                    });
                 });
             });
 
             describe('when the door is a concealed door', () => {
-                const concealedDoor = drawDoor({ ...doorConfig, type: 'concealed' });
-                const concealedDoorRect = concealedDoor.slice(0, concealedDoor.indexOf('/>') + 2);
+                const concealedDoorDoc  = parseSvg(element('svg', drawDoor({ ...doorConfig, type: 'concealed' })));
+                const concealedDoorRect = concealedDoorDoc.querySelector('rect');
 
                 it('has a transparent fill and stroke', () => {
-                    assert(concealedDoorRect)
-                        .stringIncludes('fill="transparent"')
-                        .stringIncludes('stroke="transparent"');
+                    assert(concealedDoorRect).hasAttributes({
+                        fill  : 'transparent',
+                        stroke: 'transparent',
+                    });
                 });
 
-                it('includes the concealed door label', () => {
-                    assert(RegExp(`<text(.+?)>${doorConcealedLabel}</text>`, 'g').test(concealedDoor)).isTrue();
+                it('contains a concealed door label', () => {
+                    const concealedDoorText = concealedDoorDoc.querySelector('text');
+
+                    assert(Boolean(concealedDoorText)).isTrue();
+                    concealedDoorText && assert(concealedDoorText.textContent).equals(doorConcealedLabel);
                 });
             });
         });
@@ -727,73 +776,73 @@ export default ({ assert, describe, it }) => {
         const width  = 4;
         const height = 5;
 
-        const grid = drawGrid({ width, height });
-        const lines = grid.match(/<line(.+?) \/>/g);
+        const gridDoc = parseSvg(element('svg', drawGrid({ width, height })));
+        const lines   = [ ...gridDoc.querySelectorAll('line') ];
 
-        it('returns the correct number of `<line />` element strings', () => {
-            const lineCount = width + 1 + height + 1;
-
-            assert(lines).isArray();
-            lines && assert(lines.length).equals(lineCount);
+        it('returns the correct number of svg line elements', () => {
+            assert(lines.length).equals(width + 1 + height + 1);
         });
 
-        it('returns a vertical `<line />` element string for each horizontal grid cell and the outer edge', () => {
+        it('contains a vertical line svg element for each horizontal grid cell and the outer edge', () => {
             const y2 = height * pxCell;
 
             const verticalLines = lines.filter((line) =>
-                line.includes('y1="0"') && line.includes(`y2="${y2}"`));
+                line.getAttribute('y1') === '0' && line.getAttribute('y2') === y2.toString());
 
             assert(verticalLines.length).equals(width + 1);
 
             verticalLines.forEach((line, xCord) => {
                 const x = xCord * pxCell;
 
-                assert(line)
-                    .stringIncludes(`x1="${x}"`)
-                    .stringIncludes(`x2="${x}"`);
+                assert(line).hasAttributes({
+                    x1: x.toString(),
+                    x2: x.toString(),
+                });
             });
         });
 
-        it('returns a horizontal `<line />` element string for each vertical grid cell and the outer edge', () => {
+        it('contains a horizontal line svg element for each vertical grid cell and the outer edge', () => {
             const x2 = width * pxCell;
 
             const horizontalLines = lines.filter((line) =>
-                line.includes('x1="0"') && line.includes(`x2="${x2}"`));
+                line.getAttribute('x1') === '0' && line.getAttribute('x2') === x2.toString());
 
             assert(horizontalLines.length).equals(height + 1);
 
             horizontalLines.forEach((line, yCord) => {
                 const y = yCord * pxCell;
 
-                assert(line)
-                    .stringIncludes(`y1="${y}"`)
-                    .stringIncludes(`y2="${y}"`);
+                assert(line).hasAttributes({
+                    y1: y.toString(),
+                    y2: y.toString(),
+                });
             });
         });
     });
 
     describe('drawMap()', () => {
         const dimensions = { width: 12, height: 14 };
-        const map = drawMap(dimensions, '');
+        const mapDoc      = parseSvg(drawMap(dimensions, '')).children.item(0);
 
         it('returns an SVG element string', () => {
-            assert(map).isElementTag('svg');
+            assert(mapDoc).isElementTag('svg');
         });
 
         it('has correct width and heigh attributes', () => {
             const pxWidth = dimensions.width * pxCell;
             const pxHeight = dimensions.height * pxCell;
 
-            assert(map)
-                .stringIncludes(`width="${pxWidth}"`)
-                .stringIncludes(`height="${pxHeight}"`);
+            assert(mapDoc).hasAttributes({
+                width: pxWidth.toString(),
+                height: pxHeight.toString(),
+            });
         });
 
-        it('includes the content', () => {
+        it('contains the content', () => {
             const content = drawRect({ x: 0, y: 0, width: 10, height: 10 });
             const mapWithContent = drawMap(dimensions, content);
 
-            assert(RegExp(`<svg(.+?)>${content}</svg>`).test(mapWithContent)).isTrue();
+            assert(mapWithContent).stringIncludes(content);
         });
     });
 
@@ -802,56 +851,63 @@ export default ({ assert, describe, it }) => {
         const rectangle = { x: 1, y: 2, width: 3, height: 4 };
 
         /** @type {RoomText} */
-        const text = { roomNumber: '11' };
+        const roomText = { roomNumber: '11' };
 
-        const room     = drawRoom(rectangle, text);
-        const roomRect = room.slice(0, room.indexOf('/>') + 2);
+        const roomDoc  = parseSvg(element('svg', drawRoom(rectangle, roomText)));
+        const roomRect = roomDoc.querySelector('rect');
 
-        it('includes a `<rect />` element string', () => {
-            assert(roomRect).isElementTag('rect');
-        });
-
-        describe('the rect element', () => {
-            it('has correct attributes', () => {
-                assert(roomRect)
-                    .stringIncludes('x="24"')
-                    .stringIncludes('y="48"')
-                    .stringIncludes('width="72"')
-                    .stringIncludes('height="96"');
+        it('contains a rect svg element with correct attributes', () => {
+            assert(Boolean(roomRect)).isTrue();
+            assert(roomRect).hasAttributes({
+                x: (rectangle.x * pxCell).toString(),
+                y: (rectangle.y * pxCell).toString(),
+                width: (rectangle.width * pxCell).toString(),
+                height: (rectangle.height * pxCell).toString(),
             });
         });
 
-        it('includes a <text> element string containing the room number', () => {
-            assert(/<text(.+?)>11<\/text>/.test(room)).isTrue();
+        it('contains a text svg element containing the room number', () => {
+            const text = roomDoc.querySelector('text');
+
+            assert(Boolean(text)).isTrue();
+            text && assert(text.textContent).equals('11');
         });
 
         describe('given a room label', () => {
-            it('includes a `<text>` element string containing the room number', () => {
-                const roomWithLabel = drawRoom(rectangle, { ...text, roomLabel: 'Goblin Cafeteria' });
+            it('contains a text svg element with the room label', () => {
+                const roomWithLabelDoc = parseSvg(element('svg', drawRoom(rectangle, {
+                    ...roomText,
+                    roomLabel: 'Goblin Cafeteria',
+                })));
 
-                assert(/<text(.+?)>Goblin Cafeteria<\/text>/.test(roomWithLabel)).isTrue();
+                const texts = [ ...roomWithLabelDoc.querySelectorAll('text') ];
+
+                assert(texts.length).equals(2);
+                assert(texts.filter((text) => text.textContent === 'Goblin Cafeteria').length).equals(1);
             });
         });
 
         describe('when the room\'s width and height is greater than or equal to `pillarThreshold`', () => {
-            it('includes 4 pillar circles', () => {
+            it('contains 4 pillar circles', () => {
                 const width  = pillarGridThreshold;
                 const height = pillarGridThreshold;
 
-                const roomWithPillars = drawRoom({ ...rectangle, width, height }, text);
+                const roomWithPillarsDoc = parseSvg(element('svg', drawRoom({ ...rectangle, width, height }, roomText)));
 
-                const matches = roomWithPillars.match(RegExp(`<circle(.+?)r="${Math.round(pxCell * pillarRadiusRatio)}"(.+?)/>`, 'g'));
+                const pillars = roomWithPillarsDoc.querySelectorAll(`circle[r="${Math.round(pxCell * pillarRadiusRatio)}"]`);
 
-                assert(matches).isArray();
-                matches && assert(matches.length).equals(4);
+                assert(pillars.length).equals(4);
             });
         });
 
         describe('when the room has a trap', () => {
-            it('includes a `<text>` trap indicator', () => {
-                const roomWithTrap = drawRoom(rectangle, text, { hasTraps: true });
+            it('contains a text svg element as tha trap indicator', () => {
+                const roomWithTrapDoc = parseSvg(element('svg', drawRoom(rectangle, roomText, { hasTraps: true })));
 
-                assert(RegExp(`<text(.+?)>${trapLabel}</text>`).test(roomWithTrap)).isTrue();
+                const texts = [ ...roomWithTrapDoc.querySelectorAll('text') ];
+
+                assert(texts.length).equals(2);
+                assert(texts.filter((text) => text.textContent === trapLabel).length).equals(1);
             });
         });
     });

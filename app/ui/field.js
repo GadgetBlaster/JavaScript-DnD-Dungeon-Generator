@@ -68,7 +68,9 @@ export function select(name, values, selectedValue, attributes = {}) {
     (!values || !values.length) && toss('Select fields require option values');
 
     let options = values.map((value) => {
-        let attrs = value === selectedValue ? { selected: true } : {};
+        /** @type {Attributes} */
+        let attrs = value === selectedValue ? { selected: '' } : {};
+
         return option(value, toWords(value), attrs);
     }).join('');
 

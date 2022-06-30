@@ -9,8 +9,6 @@ import {
 
 import { parseHtml } from '../../utility/element.js';
 
-// TODO complete parseHtml() test updates
-
 /**
  * @param {import('../../unit/state.js').Utility} utility
  */
@@ -19,19 +17,22 @@ export default ({ assert, describe, it }) => {
     // -- Public Functions -----------------------------------------------------
 
     describe('fieldLabel()', () => {
-        const body    = parseHtml(fieldLabel('Widget', { for: 'house' }));
+        const result  = fieldLabel('Widget', { for: 'house' });
+        const body    = parseHtml(result);
         const element = body.children.item(0);
 
-        it('returns an single element', () => {
+        it('returns an single element string', () => {
+            assert(result).isString();
             assert(body.children.length).equals(1);
+            assert(Boolean(element)).isTrue();
         });
 
-        it('returns an html LABEL element', () => {
-            assert(element.tagName).equals('LABEL');
+        it('returns an html label element', () => {
+            assert(element).isElementTag('label');
         });
 
         it('contains the provided label', () => {
-            assert(element.textContent).equals('Widget');
+            assert((element || {}).textContent).equals('Widget');
         });
 
         it('has the given attributes', () => {
@@ -41,41 +42,53 @@ export default ({ assert, describe, it }) => {
 
     describe('input()', () => {
         describe('given a `name`', () => {
-            let inputHtml = input('widget');
+            const result  = input('widget');
+            const body    = parseHtml(result);
+            const inputEl = body.children.item(0);
 
-            it('should return an html input element string', () => {
-                assert(inputHtml).isElementTag('input');
+            it('returns an single element', () => {
+                assert(result).isString();
+                assert(body.children.length).equals(1);
+                assert(Boolean(inputEl)).isTrue();
             });
 
-            it('should contain the correct `name` attribute', () => {
-                assert(inputHtml).stringIncludes('name="widget"');
+            it('returns an html input element', () => {
+                assert(inputEl).isElementTag('input');
             });
 
-            it('should contain the `type="text"` attribute by default', () => {
-                assert(inputHtml).stringIncludes('type="text"');
+            it('contains the correct `name` attribute', () => {
+                assert(inputEl).hasAttributes({ name: 'widget' });
+            });
+
+            it('has a `type="text"` attribute by default', () => {
+                assert(inputEl).hasAttributes({ type: 'text' });
             });
         });
 
         describe('given a type', () => {
-            it('contains a type attribute with the given type', () => {
-                assert(input('widget', { type: 'number' })).stringIncludes('type="number"');
+            it('has a type attribute with the given type', () => {
+                const inputEl = parseHtml(input('widget', { type: 'number' })).children.item(0);
+                assert(inputEl).hasAttributes({ type: 'number' });
             });
         });
 
         describe('given a `value`', () => {
-            it('should contain a `value` attribute with the given value', () => {
-                assert(input('widget', { value: 15 })).stringIncludes('value="15"');
+            it('contains a `value` attribute with the given value', () => {
+                const inputEl = parseHtml(input('widget', { value: 15 })).children.item(0);
+                assert(inputEl).hasAttributes({ value: '15' });
             });
         });
 
         describe('given an undefined attribute', () => {
-            it('should not add that attribute to the html input element', () => {
-                assert(input('widget', { action: undefined })).stringExcludes('action');
+            it('does not contain that attribute', () => {
+                /** @ts-expect-error */
+                const inputEl = parseHtml(input('widget', { action: undefined })).children.item(0);
+                assert(inputEl).excludesAttributes([ 'action' ]);
             });
         });
 
         describe('given a `name` attribute', () => {
-            it('should throw', () => {
+            it('throws', () => {
                 assert(() => input('widget', { name: 'not-widget' }))
                     .throws('Input `attrs` cannot contain a name');
             });
@@ -83,14 +96,22 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('select()', () => {
-        const selectHTML = select('widget', [ 'one' ]);
+        const result   = select('widget', [ 'one' ]);
+        const body     = parseHtml(result);
+        const selectEl = body.children.item(0);
 
-        it('should return an HTML select element string', () => {
-            assert(/<select(.*?)>(.*?)<\/select>/.test(selectHTML)).isTrue();
+        it('returns an single element', () => {
+            assert(result).isString();
+            assert(body.children.length).equals(1);
+            assert(Boolean(selectEl)).isTrue();
         });
 
-        it('should contain the correct `name` attribute', () => {
-            assert(selectHTML).stringIncludes('name="widget"');
+        it('returns an html select element', () => {
+            assert(selectEl).isElementTag('select');
+        });
+
+        it('contains the correct `name` attribute', () => {
+            assert(selectEl).hasAttributes({ name: 'widget' });
         });
 
         describe('given no values', () => {
@@ -107,57 +128,68 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given 3 select values', () => {
-            it('should return an HTML select element string with 3 options', () => {
-                let result = select('widget', [ 'a', 'two', 'pi' ]);
-                let expect = '<select name="widget">' +
-                    '<option value="a">a</option>' +
-                    '<option value="two">two</option>' +
-                    '<option value="pi">pi</option>' +
-                '</select>';
-
-                assert(result).equals(expect);
+            it('returns an html select element string with the 3 given options', () => {
+                assert(select('widget', [ 'a', 'two', 'pi' ])).equals(
+                    '<select name="widget">' +
+                        '<option value="a">a</option>' +
+                        '<option value="two">two</option>' +
+                        '<option value="pi">pi</option>' +
+                    '</select>'
+                );
             });
 
-            describe('given a selectedValue', () => {
+            describe('given a `selectedValue`', () => {
                 it('marks the correct option as selected', () => {
-                    let result = select('widget', [ 'a', 'two', 'pi' ], 'two');
-                    assert(result).stringIncludes('<option selected="true" value="two">two</option>');
+                    const bodyEl          = parseHtml(select('widget', [ 'a', 'two', 'pi' ], 'two'));
+                    const selectWithValue = /** @type {HTMLSelectElement} */ (bodyEl.children.item(0));
+                    const optionEl        = selectWithValue && selectWithValue.querySelector('option[selected]');
+
+                    assert(Boolean(selectWithValue)).isTrue();
+                    assert(Boolean(optionEl)).isTrue();
+
+                    optionEl && assert(optionEl.textContent).equals('two');
+                    selectWithValue && assert(selectWithValue.value).equals('two');
                 });
             });
         });
 
         describe('given a camelCase option', () => {
-            it('should convert the camelCase option to words on the option label', () => {
-                let result = select('widget', [ 'bloodthirstyBarbarians' ]);
-                let expect = '<select name="widget">' +
-                    '<option value="bloodthirstyBarbarians">bloodthirsty barbarians</option>' +
-                '</select>';
+            it('converts the camelCase option to words as the option label', () => {
+                const bodyEl   = parseHtml(select('widget', [ 'bloodthirstyBarbarians' ]));
+                const optionEl = bodyEl.querySelector('option');
 
-                assert(result).equals(expect);
+                assert(Boolean(optionEl)).isTrue();
+                optionEl && assert(optionEl.value).equals('bloodthirstyBarbarians');
+                optionEl && assert(optionEl.textContent).equals('bloodthirsty barbarians');
             });
         });
 
         describe('given attributes', () => {
             it('includes the attributes on the element', () => {
-                assert(select('widget', [ 'one' ], null, { for: 'house' })).stringIncludes('for="house"');
+                const selectWithAttrs = parseHtml(select('widget', [ 'one' ], undefined, { for: 'house' })).children.item(0);
+                assert(selectWithAttrs).hasAttributes({ for: 'house' });
             });
         });
     });
 
     describe('slider()', () => {
-        const inputEl = parseHtml(slider('widget')).querySelector('input');
+        const result  = slider('widget');
+        const body    = parseHtml(result);
+        const inputEl = body.children.item(0);
 
-        it('returns an HTML input element', () => {
+        it('returns an single element', () => {
+            assert(result).isString();
+            assert(body.children.length).equals(1);
             assert(Boolean(inputEl)).isTrue();
         });
 
-        it('returns a string', () => {
-            assert(slider('widget')).isString();
+
+        it('returns an html input element', () => {
+            assert(inputEl).isElementTag('input');
         });
 
-        it('returns an html input element string with the given name and default attributes', () => {
-            assert(Boolean(inputEl)).isTrue();
-            input && assert(inputEl).hasAttributes({
+        it('has the given name and default attributes', () => {
+            assert(inputEl).hasAttributes({
                 max : '100',
                 min : '1',
                 name: 'widget',
@@ -166,21 +198,23 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a value', () => {
-            it('contains a value attribute with the given value', () => {
-                const inputWithValue = parseHtml(slider('widget', { value: 15 }));
-                assert(inputWithValue.querySelector('input')).hasAttributes({ value : '15' });
+            it('has the correct value attribute', () => {
+                const inputWithValue = parseHtml(slider('widget', { value: 15 })).children.item(0);
+                assert(inputWithValue).hasAttributes({ value : '15' });
             });
         });
 
         describe('given a `min`', () => {
             it('should include a `min` attribute with the given value', () => {
-                assert(slider('widget', { min: 32 })).stringIncludes('min="32"');
+                const inputWithMin = parseHtml(slider('widget', { min: 32 })).children.item(0);
+                assert(inputWithMin).hasAttributes({ min: '32' });
             });
         });
 
         describe('given a `max`', () => {
             it('should include a `max` attribute with the given value', () => {
-                assert(slider('widget', { max: 23 })).stringIncludes('max="23"');
+                const inputWithMax = parseHtml(slider('widget', { max: 23 })).children.item(0);
+                assert(inputWithMax).hasAttributes({ max: '23' });
             });
         });
 

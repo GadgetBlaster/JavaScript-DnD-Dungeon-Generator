@@ -63,26 +63,31 @@ export default ({ assert, describe, it }) => {
 
     // -- Public Functions -----------------------------------------------------
 
-    // TODO update to use parseHtml()
     describe('element()', () => {
         it('returns a string', () => {
             assert(element('p')).isString();
         });
 
         describe('given the tag "section"', () => {
-            it('returns a `<section>` html element string', () => {
-                assert(element('section')).equals('<section></section>');
+            const result = element('section');
+
+            it('returns a section html element string', () => {
+                assert(result).equals('<section></section>');
+            });
+
+            it('parses to an HTML section element', () => {
+                assert(parseHtml(result).children.item(0)).isElementTag('section');
             });
         });
 
         describe('given a non-empty content string', () => {
-            it('renders the content inside the element string', () => {
+            it('returns a string with the content inside the html element string', () => {
                 assert(element('h1', 'Howdy Partner')).equals('<h1>Howdy Partner</h1>');
             });
         });
 
         describe('given an attributes object', () => {
-            it('renders the element string with correct attributes', () => {
+            it('returns the html element string with correct attributes', () => {
                 const el = element('div', 'Always out numbered', { 'data-type': 'ranger' });
                 assert(el).equals('<div data-type="ranger">Always out numbered</div>');
             });
@@ -94,8 +99,8 @@ export default ({ assert, describe, it }) => {
             });
 
             describe('given an attributes object', () => {
-                it('renders the element string with correct attributes', () => {
-                    const el = element('img', null, {
+                it('returns the element string with correct attributes', () => {
+                    const el = element('img', undefined, {
                         'alt': 'Dragons of Twilight',
                         'src': 'dragons.jpg',
                     });
@@ -119,7 +124,7 @@ export default ({ assert, describe, it }) => {
                 const doc = parseHtml('<main><h1>Monsters and Monoliths</h1></main>');
 
                 assert(doc instanceof HTMLBodyElement).isTrue();
-                assert(doc.querySelector('h1').textContent).equals('Monsters and Monoliths');
+                assert((doc.querySelector('h1') || {}).textContent).equals('Monsters and Monoliths');
             });
         });
 
@@ -164,16 +169,20 @@ export default ({ assert, describe, it }) => {
                 const doc = parseSvg('<svg><rect x="288" y="210" width="216" height="240"></rect><text x="396" y="410">Happiness</text></svg>');
 
                 assert(doc instanceof XMLDocument).isTrue();
-                assert(Boolean(doc.querySelector('rect'))).isTrue();
-                assert(doc.querySelector('rect').getAttribute('x')).equals('288');
-                assert(doc.querySelector('rect').getAttribute('y')).equals('210');
-                assert(doc.querySelector('rect').getAttribute('width')).equals('216');
-                assert(doc.querySelector('rect').getAttribute('height')).equals('240');
 
-                assert(Boolean(doc.querySelector('text'))).isTrue();
-                assert(doc.querySelector('text').getAttribute('x')).equals('396');
-                assert(doc.querySelector('text').getAttribute('y')).equals('410');
-                assert(doc.querySelector('text').textContent).equals('Happiness');
+                const rect = doc.querySelector('rect');
+                assert(Boolean(rect)).isTrue();
+                // TODO use `hasAttributes()`
+                rect && assert(rect.getAttribute('x')).equals('288');
+                rect && assert(rect.getAttribute('y')).equals('210');
+                rect && assert(rect.getAttribute('width')).equals('216');
+                rect && assert(rect.getAttribute('height')).equals('240');
+
+                const text = doc.querySelector('text');
+                assert(Boolean(text)).isTrue();
+                text && assert(text.getAttribute('x')).equals('396');
+                text && assert(text.getAttribute('y')).equals('410');
+                text && assert(text.textContent).equals('Happiness');
             });
         });
 
