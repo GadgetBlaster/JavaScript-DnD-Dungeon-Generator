@@ -121,28 +121,33 @@ export default ({ assert, describe, it }) => {
     describe('parseHtml()', () => {
         describe('given a valid HTML string', () => {
             it('returns the string parsed as an HTMLDocument', () => {
-                const doc = parseHtml('<main><h1>Monsters and Monoliths</h1></main>');
+                const doc = parseHtml('<main><h1 data-title="yep">Monsters and Monoliths</h1></main>');
 
                 assert(doc instanceof HTMLBodyElement).isTrue();
-                assert((doc.querySelector('h1') || {}).textContent).equals('Monsters and Monoliths');
+
+                const h1 = doc.querySelector('h1');
+
+                assert(Boolean(h1)).isTrue();
+                assert(h1).hasAttributes({ 'data-title': 'yep' });
+                h1 && assert(h1.textContent).equals('Monsters and Monoliths');
             });
         });
 
         describe('given plain text', () => {
             it('returns the string parsed as an HTMLDocument', () => {
-                const doc = parseHtml('Just Monsters, no Monoliths');
+                const doc = parseHtml('Just monsters, no monoliths');
 
                 assert(doc instanceof HTMLBodyElement).isTrue();
-                assert(doc.textContent).equals('Just Monsters, no Monoliths');
+                assert(doc.textContent).equals('Just monsters, no monoliths');
             });
         });
 
         describe('given plain text and HTML', () => {
             it('returns the string parsed as an HTMLDocument', () => {
-                const doc = parseHtml('Just Monsters, <em>some</em> Monoliths');
+                const doc = parseHtml('Monsters and <em>some</em> monoliths');
 
                 assert(doc instanceof HTMLBodyElement).isTrue();
-                assert(doc.textContent).equals('Just Monsters, some Monoliths');
+                assert(doc.textContent).equals('Monsters and some monoliths');
                 assert(Boolean(doc.querySelector('em'))).isTrue();
             });
         });
@@ -171,17 +176,19 @@ export default ({ assert, describe, it }) => {
                 assert(doc instanceof XMLDocument).isTrue();
 
                 const rect = doc.querySelector('rect');
+
                 assert(Boolean(rect)).isTrue();
-                // TODO use `hasAttributes()`
-                rect && assert(rect.getAttribute('x')).equals('288');
-                rect && assert(rect.getAttribute('y')).equals('210');
-                rect && assert(rect.getAttribute('width')).equals('216');
-                rect && assert(rect.getAttribute('height')).equals('240');
+                assert(rect).hasAttributes({
+                    x     : '288',
+                    y     : '210',
+                    width : '216',
+                    height: '240',
+                });
 
                 const text = doc.querySelector('text');
+
                 assert(Boolean(text)).isTrue();
-                text && assert(text.getAttribute('x')).equals('396');
-                text && assert(text.getAttribute('y')).equals('410');
+                assert(text).hasAttributes({ x: '396', y: '410' });
                 text && assert(text.textContent).equals('Happiness');
             });
         });
