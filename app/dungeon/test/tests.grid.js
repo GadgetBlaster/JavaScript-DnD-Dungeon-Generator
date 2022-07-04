@@ -6,8 +6,9 @@ import {
     wallSize,
 
     // Private Functions
-    testIsEmptyCell  as isEmptyCell,
-    testIsRoomCorner as isRoomCorner,
+    testGetRandomPoint as getRandomPoint,
+    testIsEmptyCell    as isEmptyCell,
+    testIsRoomCorner   as isRoomCorner,
 
     // Public functions
     createBlankGrid,
@@ -26,6 +27,72 @@ import {
 export default ({ assert, describe, it }) => {
 
     // -- Private Functions ----------------------------------------------------
+
+    describe('getRandomPoint()', () => {
+        describe('given a direction of "north"', () => {
+            it('returns an x coordinate within the minX & maxX, and the minY coordinate', () => {
+                assert(getRandomPoint('north', { minX: 5, minY: 2, maxX: 5, maxY: 9 }))
+                    .equalsObject({ x: 5, y: 2 });
+            });
+
+            describe('when minX and maxX has a rage', () => {
+                it('returns an x coordinate within the range', () => {
+                    let { x } = getRandomPoint('north', { minX: 5, minY: 2, maxX: 9, maxY: 2 });
+                    assert(x >= 5 && x <= 9 ).isTrue();
+                });
+            });
+        });
+
+        describe('given a direction of "east"', () => {
+            it('returns the maxX coordinate, and a y coordinate within the minY & maxY coordinate', () => {
+                assert(getRandomPoint('east', { minX: 2, minY: 3, maxX: 5, maxY: 3 }))
+                    .equalsObject({ x: 5, y: 3 });
+            });
+
+            describe('when minX and maxX has a rage', () => {
+                it('returns a y coordinate within the range', () => {
+                    let { y } = getRandomPoint('east', { minX: 5, minY: 2, maxX: 5, maxY: 8 });
+                    assert(y >= 2 && y <= 8 ).isTrue();
+                });
+            });
+        });
+
+        describe('given a direction of "south"', () => {
+            it('returns an x coordinate within the minX & maxX, and the maxY coordinate', () => {
+                assert(getRandomPoint('south', { minX: 5, minY: 2, maxX: 5, maxY: 9 }))
+                    .equalsObject({ x: 5, y: 9 });
+            });
+
+            describe('when minX and maxX has a rage', () => {
+                it('returns an x coordinate within the range', () => {
+                    let { x } = getRandomPoint('south', { minX: 5, minY: 2, maxX: 9, maxY: 2 });
+                    assert(x >= 5 && x <= 9 ).isTrue();
+                });
+            });
+        });
+
+        describe('given a direction of "west"', () => {
+            it('returns the minX coordinate, and a y coordinate within the minY & maxY coordinate', () => {
+                assert(getRandomPoint('west', { minX: 2, minY: 3, maxX: 5, maxY: 3 }))
+                    .equalsObject({ x: 2, y: 3 });
+            });
+
+            describe('when minX and maxX has a rage', () => {
+                it('returns a y coordinate within the range', () => {
+                    let { y } = getRandomPoint('west', { minX: 5, minY: 2, maxX: 5, maxY: 8 });
+                    assert(y >= 2 && y <= 8 ).isTrue();
+                });
+            });
+        });
+
+        describe('given an invalid direction', () => {
+            it('throws', () => {
+                // @ts-expect-error
+                assert(() => getRandomPoint('junk', { minX: 1, minY: 1, maxX: 2, maxY: 2}))
+                    .throws('Invalid direction in getRandomPoint()');
+            });
+        });
+    });
 
     describe('isEmptyCell()', () => {
         describe('given a 4 x 5 grid', () => {

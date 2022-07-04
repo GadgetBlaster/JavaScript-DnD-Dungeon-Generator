@@ -4,6 +4,10 @@ import { directions } from './map.js';
 import { roll, rollArrayItem } from '../utility/roll.js';
 import { toss } from '../utility/tools.js';
 
+// -- Type Imports -------------------------------------------------------------
+
+/** @typedef {import('./map.js').Direction} Direction */
+
 // -- Types --------------------------------------------------------------------
 
 /**
@@ -55,6 +59,49 @@ export { cellEmpty as testCellEmpty };
 // -- Private Functions --------------------------------------------------------
 
 /**
+ * Returns a random direction.
+ *
+ * @param {Direction} direction
+ * @param {{
+ *   minX: number;
+ *   minY: number;
+ *   maxX: number;
+ *   maxY: number;
+ * }} coordinateBounds
+ *
+ * @returns {Coordinates}
+ */
+function getRandomPoint(direction, { minX, minY, maxX, maxY }) {
+    !directions.includes(direction) && toss('Invalid direction in getRandomPoint()');
+
+    switch (direction) {
+        case 'north':
+            return {
+                x: roll(minX, maxX),
+                y: minY,
+            };
+
+        case 'east':
+            return {
+                x: maxX,
+                y: roll(minY, maxY),
+            };
+
+        case 'south':
+            return {
+                x: roll(minX, maxX),
+                y: maxY,
+            };
+
+        case 'west':
+            return {
+                x: minX,
+                y: roll(minY, maxY),
+            };
+    }
+}
+
+/**
  * Checks if a grid cell is empty.
  *
  * @private
@@ -64,7 +111,7 @@ export { cellEmpty as testCellEmpty };
  *
  * @returns {boolean}
  */
- function isEmptyCell(grid, { x, y, width, height }) {
+function isEmptyCell(grid, { x, y, width, height }) {
     let minX = wallSize;
     let minY = wallSize;
     let maxX = grid.length - wallSize;
@@ -114,8 +161,9 @@ function isRoomCorner({ x, y, minX, minY, maxX, maxY }) {
 }
 
 export {
-    isEmptyCell  as testIsEmptyCell,
-    isRoomCorner as testIsRoomCorner,
+    getRandomPoint as testGetRandomPoint,
+    isEmptyCell    as testIsEmptyCell,
+    isRoomCorner   as testIsRoomCorner,
 };
 
 // -- Public Functions ---------------------------------------------------------
@@ -153,36 +201,9 @@ export function getStartingPoint(gridDimensions, roomDimensions) {
     maxX < minX && toss(`Invalid gridWidth "${gridWidth}" in getStartingPoint()`);
     maxY < minY && toss(`Invalid gridHeight "${gridHeight}" in getStartingPoint()`);
 
-    let x;
-    let y;
-
-    // TODO inject randomization
     let direction = rollArrayItem(directions);
 
-    switch (direction) {
-        case 'east':
-            x = maxX;
-            y = roll(minY, maxY);
-            break;
-
-        case 'south':
-            x = roll(minX, maxX);
-            y = maxY;
-            break;
-
-        case 'west':
-            x = minX;
-            y = roll(minY, maxY);
-            break;
-
-        case 'north':
-        default:
-            x = roll(minX, maxX);
-            y = minY;
-            break;
-    }
-
-    return { x, y };
+    return getRandomPoint(direction, { minX, minY, maxX, maxY });
 }
 
 /**
