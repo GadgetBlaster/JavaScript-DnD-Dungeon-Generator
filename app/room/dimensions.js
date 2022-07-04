@@ -11,11 +11,6 @@ import { sizes } from '../attribute/size.js';
 /** @typedef {import('./room.js').RoomType} RoomType */
 /** @typedef {import('../utility/tools.js').Range} Range */
 
-// -- Types --------------------------------------------------------------------
-
-
-/** @typedef {[ number, number ]} RoomDimensions */ // TODO use Dimensions type
-
 // -- Config -------------------------------------------------------------------
 
 // TODO rename to not confuse "width" with x-axis
