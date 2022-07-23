@@ -104,6 +104,8 @@ function getRandomPoint(direction, { minX, minY, maxX, maxY }) {
 /**
  * Checks if a grid cell is empty.
  *
+ * TODO rename isEmptyArea
+ *
  * @private
  *
  * @param {Grid} grid
