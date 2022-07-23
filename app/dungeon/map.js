@@ -226,7 +226,7 @@ function applyRooms(gridDimensions, mapRooms, grid, {
         let { config, roomNumber } = room;
         let { roomType } = config;
 
-        let roomDimensions = getRoomDimensions(gridDimensions, config);
+        let roomDimensions = rollRoomDimensions(gridDimensions, config);
         let cords = getRoomConnection(grid, roomType, roomDimensions, prevRoom);
 
         if (!cords) {
@@ -649,44 +649,6 @@ function getRoomConnection(grid, roomType, roomDimensions, prevRoom) {
 }
 
 /**
- * Returns randomized room dimensions for the given room type.
- *
- * TODO rename to rollRoomDimensions
- *
- * @private
- *
- * @param {Dimensions} gridDimensions
- * @param {GeneratedRoomConfig} roomConfig
- *
- * @returns {Dimensions}
- */
-function getRoomDimensions(gridDimensions, roomConfig) {
-    let { roomSize, roomType } = roomConfig;
-
-    isRequired(roomSize, 'roomSize is required in getRoomDimensions()');
-    isRequired(roomType, 'roomType is required in getRoomDimensions()');
-
-    let { width: gridWidth, height: gridHeight } = gridDimensions;
-
-    let roomWidth;
-    let roomHeight;
-
-    if (customDimensions[roomType]) {
-        ({ width: roomWidth, height: roomHeight } = customDimensions[roomType](roomSize));
-    } else {
-        let { min, max } = roomDimensionRanges[roomSize];
-
-        roomWidth  = roll(min, max);
-        roomHeight = roll(min, max);
-    }
-
-    let width  = Math.min(gridWidth - (wallSize * 2), roomWidth);
-    let height = Math.min(gridHeight - (wallSize * 2), roomHeight);
-
-    return { width, height };
-}
-
-/**
  * Returns a room's text config.
  *
  * @param {AppliedRoom} room
@@ -752,6 +714,44 @@ function procedurallyApplyRooms(gridDimensions, rooms, grid) {
     };
 }
 
+
+/**
+ * Returns randomized room dimensions for the given room type.
+ *
+ * @private
+ * @throws
+ *
+ * @param {Dimensions} gridDimensions
+ * @param {GeneratedRoomConfig} roomConfig
+ *
+ * @returns {Dimensions}
+ */
+function rollRoomDimensions(gridDimensions, roomConfig) {
+    let { roomSize, roomType } = roomConfig;
+
+    isRequired(roomSize, 'roomSize is required in rollRoomDimensions()');
+    isRequired(roomType, 'roomType is required in rollRoomDimensions()');
+
+    let { width: gridWidth, height: gridHeight } = gridDimensions;
+
+    let roomWidth;
+    let roomHeight;
+
+    if (customDimensions[roomType]) {
+        ({ width: roomWidth, height: roomHeight } = customDimensions[roomType](roomSize));
+    } else {
+        let { min, max } = roomDimensionRanges[roomSize];
+
+        roomWidth  = roll(min, max);
+        roomHeight = roll(min, max);
+    }
+
+    let width  = Math.min(gridWidth - (wallSize * 2), roomWidth);
+    let height = Math.min(gridHeight - (wallSize * 2), roomHeight);
+
+    return { width, height };
+}
+
 export {
     applyDoorToGrid        as testApplyDoorToGrid,
     applyRooms             as testApplyRooms,
@@ -763,9 +763,9 @@ export {
     getDoorType            as testGetDoorType,
     getExtraDoors          as testGetExtraDoors,
     getRoomConnection      as testGetRoomConnection,
-    getRoomDimensions      as testGetRoomDimensions,
     getRoomText            as testGetRoomText,
     procedurallyApplyRooms as testProcedurallyApplyRooms,
+    rollRoomDimensions     as testRollRoomDimensions,
 };
 
 // -- Public Functions ---------------------------------------------------------

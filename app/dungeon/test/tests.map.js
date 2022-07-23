@@ -21,9 +21,9 @@ import {
     testGetDoorType            as getDoorType,
     testGetExtraDoors          as getExtraDoors,
     testGetRoomConnection      as getRoomConnection,
-    testGetRoomDimensions      as getRoomDimensions,
     testGetRoomText            as getRoomText,
     testProcedurallyApplyRooms as procedurallyApplyRooms,
+    testRollRoomDimensions     as rollRoomDimensions,
 
     // Public functions
     generateMap,
@@ -1009,70 +1009,6 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('getRoomDimensions()', () => {
-        const gridDimensions = { width: 10, height: 6 };
-
-        describe('given a room config with a missing room type', () => {
-            it('throws', () => {
-                // @ts-expect-error
-                assert(() => getRoomDimensions(gridDimensions, { roomSize: 'small' }))
-                    .throws('roomType is required in getRoomDimensions()');
-            });
-        });
-
-        describe('given a room config with a missing room size', () => {
-            it('throws', () => {
-                // @ts-expect-error
-                assert(() => getRoomDimensions(gridDimensions, { roomType: 'library' }))
-                    .throws('roomSize is required in getRoomDimensions()');
-            });
-        });
-
-        describe('given a room type which requires custom dimensions', () => {
-            // TODO need to inject randomization for testing
-            it('returns a room width and height ', () => {
-                const dimensions = getRoomDimensions(gridDimensions, {
-                    ...generatedRoomConfig,
-                    roomType: 'hallway',
-                });
-
-                assert(dimensions.width).isNumber();
-                assert(dimensions.height).isNumber();
-            });
-        });
-
-        describe('given a room type which does not require custom dimensions', () => {
-            it('returns a room width and height within the range specified for the room size', () => {
-                const { min, max } = roomDimensionRanges.small;
-
-                const { width, height } = getRoomDimensions(gridDimensions, {
-                    ...generatedRoomConfig,
-                    roomSize: 'small',
-                });
-
-                assert(width >= min && width <= max).isTrue();
-                assert(height >= min && height <= max).isTrue();
-            });
-        });
-
-        describe('when the room dimensions are larger than the grid dimensions', () => {
-            it('returns a room width and height no larger than the grid width minus twice the wall size', () => {
-                const gridWidth  = 5;
-                const gridHeight = 5;
-
-                const miniMapDimensions = { width: gridWidth, height: gridHeight };
-
-                const { width, height } = getRoomDimensions(miniMapDimensions, {
-                    ...generatedRoomConfig,
-                    roomSize: 'massive',
-                });
-
-                assert(width <= (gridWidth - (wallSize * 2))).isTrue();
-                assert(height <= (gridHeight - (wallSize * 2))).isTrue();
-            });
-        });
-    });
-
     describe('getRoomText()', () => {
         const rectangle = { x: 3, y: 3, width: 3, height: 2 };
 
@@ -1218,6 +1154,70 @@ export default ({ assert, describe, it }) => {
                     assert(doorConfig.rectangle).isObject();
                     assert(doorConfig.type).isInArray(doorTypes);
                 });
+            });
+        });
+    });
+
+    describe('rollRoomDimensions()', () => {
+        const gridDimensions = { width: 10, height: 6 };
+
+        describe('given a room config with a missing room type', () => {
+            it('throws', () => {
+                // @ts-expect-error
+                assert(() => rollRoomDimensions(gridDimensions, { roomSize: 'small' }))
+                    .throws('roomType is required in rollRoomDimensions()');
+            });
+        });
+
+        describe('given a room config with a missing room size', () => {
+            it('throws', () => {
+                // @ts-expect-error
+                assert(() => rollRoomDimensions(gridDimensions, { roomType: 'library' }))
+                    .throws('roomSize is required in rollRoomDimensions()');
+            });
+        });
+
+        describe('given a room type which requires custom dimensions', () => {
+            // TODO need to inject randomization for testing
+            it('returns a room width and height ', () => {
+                const dimensions = rollRoomDimensions(gridDimensions, {
+                    ...generatedRoomConfig,
+                    roomType: 'hallway',
+                });
+
+                assert(dimensions.width).isNumber();
+                assert(dimensions.height).isNumber();
+            });
+        });
+
+        describe('given a room type which does not require custom dimensions', () => {
+            it('returns a room width and height within the range specified for the room size', () => {
+                const { min, max } = roomDimensionRanges.small;
+
+                const { width, height } = rollRoomDimensions(gridDimensions, {
+                    ...generatedRoomConfig,
+                    roomSize: 'small',
+                });
+
+                assert(width >= min && width <= max).isTrue();
+                assert(height >= min && height <= max).isTrue();
+            });
+        });
+
+        describe('when the room dimensions are larger than the grid dimensions', () => {
+            it('returns a room width and height no larger than the grid width minus twice the wall size', () => {
+                const gridWidth  = 5;
+                const gridHeight = 5;
+
+                const miniMapDimensions = { width: gridWidth, height: gridHeight };
+
+                const { width, height } = rollRoomDimensions(miniMapDimensions, {
+                    ...generatedRoomConfig,
+                    roomSize: 'massive',
+                });
+
+                assert(width <= (gridWidth - (wallSize * 2))).isTrue();
+                assert(height <= (gridHeight - (wallSize * 2))).isTrue();
             });
         });
     });
