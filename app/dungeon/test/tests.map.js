@@ -146,9 +146,10 @@ export default ({ assert, describe, it }) => {
             });
 
             describe('when connecting to a room', () => {
-                it('connects the rooms', () => {
+                function getBoilerPlate() {
                     const grid = createBlankGrid(gridDimensions);
-                    let prevRect = {
+
+                    const prevRect = {
                         x: 1,
                         y: 1,
                         width: 2,
@@ -169,6 +170,12 @@ export default ({ assert, describe, it }) => {
                         roomNumber: 2,
                     };
 
+                    return { grid, room, prevRoom };
+                }
+
+                it('connects the rooms', () => {
+                    const { grid, room, prevRoom } = getBoilerPlate();
+
                     const result = applyRooms(gridDimensions, [ room ], grid, { prevRoom });
                     assert(result.doors).isArray();
 
@@ -186,6 +193,39 @@ export default ({ assert, describe, it }) => {
                     assert(connection2).isObject();
                     connection2 && assert(connection2.direction).isInArray(directions);
                     connection2 && assert(connection2.to).equals(1);
+                });
+
+                describe('given a custom door type roll', () => {
+                    it('returns one of the custom door types', () => {
+                        const { grid, room, prevRoom } = getBoilerPlate();
+
+                        const result = applyRooms(gridDimensions, [ room ], grid, {
+                            prevRoom,
+                            rollDoorType: () => 'stone',
+                        });
+
+                        const door = result.doors.pop();
+
+                        assert(door).isObject();
+                        door && assert(door.type).equals('stone');
+                    });
+                });
+
+                describe('when the new rooms are on a pathway fork', () => {
+                    it('allows secret doors', () => {
+                        const { grid, room, prevRoom } = getBoilerPlate();
+
+                        const result = applyRooms(gridDimensions, [ room ], grid, {
+                            isFork: true,
+                            prevRoom,
+                            rollSecretDoorType: () => 'secret',
+                        });
+
+                        const door = result.doors.pop();
+
+                        assert(door).isObject();
+                        door && assert(door.type).equals('secret');
+                    });
                 });
             });
 

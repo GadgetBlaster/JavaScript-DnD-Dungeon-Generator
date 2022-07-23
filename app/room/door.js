@@ -108,7 +108,7 @@ export const probability = createProbability(new Map([
  *
  * @type {Readonly<{
  *   description: string;
- *   roll: () => "concealed" | "secret" | undefined;
+ *   roll: RollSecretDoorType;
  * }>}
  */
 export const secretProbability = createProbability(new Map([
