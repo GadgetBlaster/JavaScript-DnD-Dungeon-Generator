@@ -369,7 +369,7 @@ function getDoor(grid, room, prevRoom, { allowSecret } = {}) {
 
     let from = room.roomNumber;
     let to   = prevRoom ? prevRoom.roomNumber : outside;
-    let type = getDoorType(doorProbability.roll, allowSecret && secretProbability.roll);
+    let type = getDoorType(doorProbability.roll, allowSecret ? secretProbability.roll : undefined);
 
     return createDoor(doorRectangle, type, { direction, from, to }, lockedChance);
 }
@@ -399,17 +399,17 @@ function getDoorCells(grid, room, prevGridRoom) {
 
         let { x, y, width, height } = room.rectangle;
 
-        /** @type {Direction[]} doorDirections */
         let doorDirections = [
             y === wallSize              ? 'north' : undefined,
             x === (gridWidth - width)   ? 'east'  : undefined,
             y === (gridHeight - height) ? 'south' : undefined,
             x === wallSize              ? 'west'  : undefined,
-        ];
+        ].filter(Boolean);
 
         // TODO require room is against a grid edge
 
-        let direction = rollArrayItem(doorDirections.filter(Boolean));
+        /** @type {Direction} */
+        let direction = rollArrayItem(doorDirections);
         let dimension = (direction === 'north' || direction === 'south') ? gridWidth : gridHeight;
 
         for (let i = 0; i <= dimension; i++) {
@@ -561,9 +561,9 @@ function getExtraDoors(grid, rooms, existingDoors) {
                 let yCell = grid[x] && grid[x][yAdjust];
 
                 let xConnect    = xCell && Number.isInteger(xCell) && Number(xCell);
-                let canConnectX = xConnect && xConnect !== roomNumber && !connectedTo.has(xConnect);
+                let canConnectX = xConnect !== roomNumber && !connectedTo.has(xConnect);
 
-                if (canConnectX && rollPercentile(chance)) {
+                if (xConnect && canConnectX && rollPercentile(chance)) {
                     grid[x][y] = cellDoor;
 
                     connectedTo.add(xConnect);
@@ -581,9 +581,9 @@ function getExtraDoors(grid, rooms, existingDoors) {
                 }
 
                 let yConnect    = yCell && Number.isInteger(yCell) && Number(yCell);
-                let canConnectY = yConnect && yConnect !== roomNumber && !connectedTo.has(yConnect);
+                let canConnectY = yConnect !== roomNumber && !connectedTo.has(yConnect);
 
-                if (canConnectY && rollPercentile(chance)) {
+                if (yConnect && canConnectY && rollPercentile(chance)) {
                     grid[x][y] = cellDoor;
 
                     connectedTo.add(yConnect);
