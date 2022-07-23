@@ -196,8 +196,7 @@ function applyDoorToGrid(grid, room, prevRoom, {
  *
  * @private
  *
- * @param {Dimensions} gridDimensions // TODO redundant to `Grid`
- * @param {Room[]} mapRooms
+ * @param {Room[]} rooms
  * @param {Grid} grid
  * @param {object} [options]
  *     @param {AppliedRoom} [options.prevRoom]
@@ -207,14 +206,14 @@ function applyDoorToGrid(grid, room, prevRoom, {
  *
  * @returns {AppliedRoomResults}
  */
-function applyRooms(gridDimensions, mapRooms, grid, {
+function applyRooms(rooms, grid, {
     isFork,
     prevRoom,
     rollDoorType,
     rollSecretDoorType,
 } = {}) {
     /** @type {AppliedRoom[]} */
-    let rooms = [];
+    let appliedRooms = [];
 
     /** @type {Door[]} */
     let doors = [];
@@ -222,7 +221,9 @@ function applyRooms(gridDimensions, mapRooms, grid, {
     /** @type {Room[]} */
     let skippedRooms = [];
 
-    mapRooms.forEach((room) => {
+    let gridDimensions = getGridDimensions(grid);
+
+    rooms.forEach((room) => {
         let { config, roomNumber } = room;
         let { roomType } = config;
 
@@ -249,16 +250,16 @@ function applyRooms(gridDimensions, mapRooms, grid, {
             rollSecretDoorType,
         }));
 
-        rooms.push(appliedRoom);
+        appliedRooms.push(appliedRoom);
 
         prevRoom = appliedRoom;
     });
 
-    let extraDoors = getExtraDoors(grid, rooms, doors);
+    let extraDoors = getExtraDoors(grid, appliedRooms, doors);
 
     return {
         doors: doors.concat(extraDoors),
-        rooms,
+        rooms: appliedRooms,
         skippedRooms,
     };
 }
@@ -672,11 +673,8 @@ function getRoomText(room) {
 /**
  * Procedurally applies rooms to a grid, returning arrays of rooms and doors.
  *
- * TODO infer gridDimension from grid
- *
  * @private
  *
- * @param {Dimensions} gridDimensions
  * @param {Room[]} rooms
  * @param {Grid} grid
  *
@@ -685,12 +683,12 @@ function getRoomText(room) {
  *     doors: Door[];
  * }}
  */
-function procedurallyApplyRooms(gridDimensions, rooms, grid) {
+function procedurallyApplyRooms(rooms, grid) {
     let {
         rooms: initialRooms,
         doors,
         skippedRooms,
-    } = applyRooms(gridDimensions, rooms, grid);
+    } = applyRooms(rooms, grid);
 
     // TODO Aggregate skipped rooms?
     let lastSkipped = skippedRooms;
@@ -698,7 +696,7 @@ function procedurallyApplyRooms(gridDimensions, rooms, grid) {
     let appliedRooms = [ ...initialRooms ];
 
     initialRooms.forEach((room) => {
-        let fork = applyRooms(gridDimensions, lastSkipped, grid, { isFork: true, prevRoom: room });
+        let fork = applyRooms(lastSkipped, grid, { isFork: true, prevRoom: room });
 
         if (fork.rooms.length && fork.doors.length) {
             lastSkipped = fork.skippedRooms;
@@ -785,7 +783,7 @@ export {
 export function generateMap(gridDimensions, roomConfigs) {
     let grid = createBlankGrid(gridDimensions);
 
-    let { rooms, doors } = procedurallyApplyRooms(gridDimensions, roomConfigs, grid);
+    let { rooms, doors } = procedurallyApplyRooms(roomConfigs, grid);
 
     if (roomConfigs.length <= rooms.length) {
         console.warn('Not enough rooms generated in generateMap()');

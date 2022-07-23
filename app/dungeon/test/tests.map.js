@@ -142,7 +142,7 @@ export default ({ assert, describe, it }) => {
         it('returns an AppliedRoomResults object', () => {
             const grid = createBlankGrid(gridDimensions);
             const room = { config: generatedRoomConfig, itemSet, roomNumber: 1 };
-            const result = applyRooms(gridDimensions, [ room ], grid);
+            const result = applyRooms([ room ], grid);
 
             assert(result).isObject();
             assert(result.doors).isArray();
@@ -157,7 +157,7 @@ export default ({ assert, describe, it }) => {
             it('is connected to an edge of the map', () => {
                 const grid = createBlankGrid(gridDimensions);
                 const room = { config: generatedRoomConfig, itemSet, roomNumber: 1 };
-                const result = applyRooms(gridDimensions, [ room, room ], grid);
+                const result = applyRooms([ room, room ], grid);
                 const firstDoor = result.doors.shift();
 
                 assert(Boolean(firstDoor)).isTrue();
@@ -177,7 +177,7 @@ export default ({ assert, describe, it }) => {
                     roomNumber: 1,
                 };
 
-                const result = applyRooms(gridDimensions, [ room, room ], grid);
+                const result = applyRooms([ room, room ], grid);
 
                 assert(result.skippedRooms.length).equals(1);
             });
@@ -204,7 +204,7 @@ export default ({ assert, describe, it }) => {
                     };
 
                     // @ts-expect-error
-                    assert(() => applyRooms(gridDimensions, [ room ], grid, { prevRoom }))
+                    assert(() => applyRooms([ room ], grid, { prevRoom }))
                         .throws('Previous room requires wall coordinates in getRoomConnection()');
                 });
             });
@@ -240,7 +240,7 @@ export default ({ assert, describe, it }) => {
                 it('connects the rooms', () => {
                     const { grid, room, prevRoom } = getBoilerPlate();
 
-                    const result = applyRooms(gridDimensions, [ room ], grid, { prevRoom });
+                    const result = applyRooms([ room ], grid, { prevRoom });
                     assert(result.doors).isArray();
 
                     const door = result.doors.pop();
@@ -263,7 +263,7 @@ export default ({ assert, describe, it }) => {
                     it('returns one of the custom door types', () => {
                         const { grid, room, prevRoom } = getBoilerPlate();
 
-                        const result = applyRooms(gridDimensions, [ room ], grid, {
+                        const result = applyRooms([ room ], grid, {
                             prevRoom,
                             rollDoorType: () => 'stone',
                         });
@@ -279,7 +279,7 @@ export default ({ assert, describe, it }) => {
                     it('allows secret doors', () => {
                         const { grid, room, prevRoom } = getBoilerPlate();
 
-                        const result = applyRooms(gridDimensions, [ room ], grid, {
+                        const result = applyRooms([ room ], grid, {
                             isFork: true,
                             prevRoom,
                             rollSecretDoorType: () => 'secret',
@@ -320,7 +320,7 @@ export default ({ assert, describe, it }) => {
                         roomNumber: 2,
                     };
 
-                    const result = applyRooms(gridDimensions, [ hallway ], grid, { prevRoom });
+                    const result = applyRooms([ hallway ], grid, { prevRoom });
                     assert(result.doors).isArray();
 
                     const door = result.doors.pop();
@@ -1121,17 +1121,11 @@ export default ({ assert, describe, it }) => {
             };
 
             it('returns an object containing rooms and doors', () => {
-                const { rooms, doors } = procedurallyApplyRooms(
-                    {
-                        width: gridWidth,
-                        height: gridHeight,
-                    }, [
-                        { ...room },
-                        { ...room, roomNumber: 2 },
-                        { ...room, roomNumber: 3 },
-                    ],
-                    grid
-                );
+                const { rooms, doors } = procedurallyApplyRooms([
+                    { ...room },
+                    { ...room, roomNumber: 2 },
+                    { ...room, roomNumber: 3 },
+                ], grid);
 
                 assert(rooms).isArray();
                 assert(rooms.length).equals(3);
