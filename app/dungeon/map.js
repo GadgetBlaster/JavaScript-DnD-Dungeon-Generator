@@ -680,9 +680,8 @@ function getRoomDimensions(gridDimensions, roomConfig) {
         roomHeight = roll(min, max);
     }
 
-    // TODO replace - 2 with - (wallSize * 2)
-    let width  = Math.min(gridWidth - 2, roomWidth);
-    let height = Math.min(gridHeight - 2, roomHeight);
+    let width  = Math.min(gridWidth - (wallSize * 2), roomWidth);
+    let height = Math.min(gridHeight - (wallSize * 2), roomHeight);
 
     return { width, height };
 }
