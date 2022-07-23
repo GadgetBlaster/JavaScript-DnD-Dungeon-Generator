@@ -177,6 +177,11 @@ export default ({ assert, describe, it }) => {
                 assert(list.querySelectorAll('li').length).equals(1);
             });
         });
+
+        // TODO
+        // describe('name generator', () => {
+
+        // });
     });
 
     describe('getErrorPageContent()', () => {

@@ -196,7 +196,7 @@ function getErrorPageContent(statusCode) {
  * @param {Triggers} triggers
  * @param {Action} action
  *
- * @returns {Trigger?}
+ * @returns {Trigger}
  */
 function getTrigger(triggers, action) {
     isRequired(triggers[action], `Invalid action "${action}" passed to getTrigger()`);
@@ -234,13 +234,13 @@ function getReadyState(generator) {
 }
 
 /**
- * Returns true if the event target is a control element.
+ * Returns the element if the event target is a control element, otherwise null.
  *
  * @private
  *
- * @param {EventTarget} target
+ * @param {EventTarget | null} target
  *
- * @returns {HTMLInputElement | HTMLSelectElement}
+ * @returns {HTMLInputElement | HTMLSelectElement | null}
  */
 const getTargetControl = (target) =>
     target instanceof HTMLInputElement || target instanceof HTMLSelectElement
@@ -252,9 +252,9 @@ const getTargetControl = (target) =>
  *
  * @private
  *
- * @param {EventTarget} target
+ * @param {EventTarget | null} target
  *
- * @returns {{ [attribute: string]: string }}
+ * @returns {DOMStringMap}
  */
 const getTargetDataset = (target) => target instanceof HTMLElement ? target.dataset : {};
 
@@ -380,10 +380,12 @@ function toggleAccordion(container, e) {
 
     isRequired(target, 'Missing target for accordion toggle');
 
-    /** @type {HTMLElement} targetSectionEl */
+    /** @type {HTMLElement | null} targetSectionEl */
     let targetSectionEl = container.querySelector(`[data-accordion][data-id="${target}"]`);
 
-    !targetSectionEl && toss(`Invalid accordion section target "${target}"`);
+    if (!targetSectionEl) {
+        toss(`Invalid accordion section target "${target}"`);
+    }
 
     /** @type {NodeListOf<HTMLElement>} sectionEls */
     let sectionEls = container.querySelectorAll('[data-accordion]');
@@ -444,10 +446,12 @@ function toggleVisibility(container, e) {
 
     isRequired(target, 'Missing target for visibility toggle');
 
-    /** @type {HTMLElement} targetEl */
+    /** @type {HTMLElement | null} targetEl */
     let targetEl = container.querySelector(`[id="${target}"]`);
 
-    !targetEl && toss(`Invalid visibility toggle target "${target}"`);
+    if (!targetEl) {
+        toss(`Invalid visibility toggle target "${target}"`);
+    }
 
     targetEl.hidden = !targetEl.hidden;
 }
