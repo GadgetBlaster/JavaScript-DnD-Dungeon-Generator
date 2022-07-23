@@ -132,61 +132,6 @@ export {
 
 // -- Private Functions --------------------------------------------------------
 
-// TODO alphabetize funcs
-
-/**
- * Checks if there is an adjacent door to the given cell.
- *
- * @private
- *
- * @param {Grid} grid
- * @param {Coordinates} coordinates
- *
- * @returns {boolean}
- */
-function checkForAdjacentDoor(grid, { x, y }) {
-    return [ -1, 1 ].some((adjust) => {
-        let xAdjust = x + adjust;
-        let yAdjust = y + adjust;
-
-        let xCell = grid[xAdjust] && grid[xAdjust][y];
-        let yCell = grid[x] && grid[x][yAdjust];
-
-        if (xCell === cellDoor || yCell === cellDoor) {
-            return true;
-        }
-
-        return false;
-    });
-}
-
-/**
- * Returns a door object for the given rectangle, door type, direction, and
- * connection.
- *
- * @private
- *
- * @param {Rectangle} rectangle
- * @param {DoorType} type
- * @param {{ direction: Direction; from: number; to: number; }} roomConnection
- * @param {number} [lockedPercentChance = 0]
- *
- * @returns {Door}
- */
-function createDoor(rectangle, type, { direction, from, to }, lockedPercentChance = 0) {
-    let locked = lockable.has(type) && rollPercentile(lockedPercentChance);
-
-    return {
-        rectangle,
-        type,
-        locked,
-        connection: new Map([
-            [ from, { direction, to } ],
-            [ to,   { direction: directionOppositeLookup[direction], to: from } ],
-        ]),
-    };
-}
-
 /**
  * Applies rooms to a map grid and returns the applied results.
  *
@@ -262,6 +207,119 @@ function applyRooms(gridDimensions, mapRooms, grid, { isFork, prevRoom } = {}) {
         doors: doors.concat(extraDoors),
         rooms,
         skippedRooms,
+    };
+}
+
+/**
+ * Applies a room to the grid and returns an array of wall coordinates.
+ *
+ * @private
+ *
+ * @param {Grid} grid
+ * @param {Rectangle} rectangle
+ * @param {number} roomNumber
+ *
+ * @returns {Coordinates[]}
+ */
+function applyRoomToGrid(grid, rectangle, roomNumber) {
+    isRequired(roomNumber, 'roomNumber is required in applyRoomToGrid()');
+
+    let { x, y, width, height } = rectangle;
+
+    /** @type {Coordinates[]} */
+    let walls = [];
+
+    for (let w = -wallSize; w < (width + wallSize); w++) {
+        for (let h = -wallSize; h < (height + wallSize); h++) {
+            let xCord = x + w;
+            let yCord = y + h;
+
+            if (!grid[xCord] || !grid[xCord][yCord]) {
+                // TODO throw?
+                console.error('Hey there, looks like you tried to iterate into oblivion');
+                continue;
+            }
+
+            let isCornerWall = (w === -wallSize && h === -wallSize) ||
+                               (w === -wallSize && h === height) ||
+                               (w === width && h === -wallSize) ||
+                               (w === width && h === height);
+
+            let isWall = !isCornerWall && (
+                w === -wallSize || w === width ||
+                h === -wallSize || h === height
+            );
+
+            if (isWall) {
+                walls.push({ x: xCord, y: yCord });
+            }
+
+            /** @type {CellValue} cell */
+            let cell = roomNumber;
+
+            if (isWall) {
+                cell = cellWall;
+            } else if (isCornerWall) {
+                cell = cellCornerWall;
+            }
+
+            grid[xCord][yCord] = cell;
+        }
+    }
+
+    return walls;
+}
+
+/**
+ * Checks if there is an adjacent door to the given cell.
+ *
+ * @private
+ *
+ * @param {Grid} grid
+ * @param {Coordinates} coordinates
+ *
+ * @returns {boolean}
+ */
+function checkForAdjacentDoor(grid, { x, y }) {
+    return [ -1, 1 ].some((adjust) => {
+        let xAdjust = x + adjust;
+        let yAdjust = y + adjust;
+
+        let xCell = grid[xAdjust] && grid[xAdjust][y];
+        let yCell = grid[x] && grid[x][yAdjust];
+
+        if (xCell === cellDoor || yCell === cellDoor) {
+            return true;
+        }
+
+        return false;
+    });
+}
+
+/**
+ * Returns a door object for the given rectangle, door type, direction, and
+ * connection.
+ *
+ * @private
+ *
+ * @param {Rectangle} rectangle
+ * @param {DoorType} type
+ * @param {{ direction: Direction; from: number; to: number; }} roomConnection
+ * @param {number} [lockedPercentChance = 0]
+ *
+ * @returns {Door}
+ */
+function createDoor(rectangle, type, { direction, from, to }, lockedPercentChance = 0) {
+    let locked = lockable.has(type) && rollPercentile(lockedPercentChance);
+
+    return {
+        rectangle,
+        type,
+        locked,
+        connection: new Map([
+            [ from, { direction, to } ],
+            [ to,   { direction: directionOppositeLookup[direction], to: from } ],
+        ]),
     };
 }
 
@@ -447,126 +505,6 @@ function getDoorType(rollDoorType, rollSecretDoorType) {
 }
 
 /**
- * Returns randomized room dimensions for the given room type.
- *
- * TODO rename to rollRoomDimensions
- *
- * @private
- *
- * @param {Dimensions} gridDimensions
- * @param {GeneratedRoomConfig} roomConfig
- *
- * @returns {Dimensions}
- */
-function getRoomDimensions(gridDimensions, roomConfig) {
-    let { roomSize, roomType } = roomConfig;
-
-    isRequired(roomSize, 'roomSize is required in getRoomDimensions()');
-    isRequired(roomType, 'roomType is required in getRoomDimensions()');
-
-    let { width: gridWidth, height: gridHeight } = gridDimensions;
-
-    let roomWidth;
-    let roomHeight;
-
-    if (customDimensions[roomType]) {
-        ({ width: roomWidth, height: roomHeight } = customDimensions[roomType](roomSize));
-    } else {
-        let { min, max } = roomDimensionRanges[roomSize];
-
-        roomWidth  = roll(min, max);
-        roomHeight = roll(min, max);
-    }
-
-    // TODO replace - 2 with - (wallSize * 2)
-    let width  = Math.min(gridWidth - 2, roomWidth);
-    let height = Math.min(gridHeight - 2, roomHeight);
-
-    return { width, height };
-}
-
-/**
- * Applies a room to the grid and returns an array of wall coordinates.
- *
- * @private
- *
- * @param {Grid} grid
- * @param {Rectangle} rectangle
- * @param {number} roomNumber
- *
- * @returns {Coordinates[]}
- */
-function applyRoomToGrid(grid, rectangle, roomNumber) {
-    isRequired(roomNumber, 'roomNumber is required in applyRoomToGrid()');
-
-    let { x, y, width, height } = rectangle;
-
-    /** @type {Coordinates[]} */
-    let walls = [];
-
-    for (let w = -wallSize; w < (width + wallSize); w++) {
-        for (let h = -wallSize; h < (height + wallSize); h++) {
-            let xCord = x + w;
-            let yCord = y + h;
-
-            if (!grid[xCord] || !grid[xCord][yCord]) {
-                // TODO throw?
-                console.error('Hey there, looks like you tried to iterate into oblivion');
-                continue;
-            }
-
-            let isCornerWall = (w === -wallSize && h === -wallSize) ||
-                               (w === -wallSize && h === height) ||
-                               (w === width && h === -wallSize) ||
-                               (w === width && h === height);
-
-            let isWall = !isCornerWall && (
-                w === -wallSize || w === width ||
-                h === -wallSize || h === height
-            );
-
-            if (isWall) {
-                walls.push({ x: xCord, y: yCord });
-            }
-
-            /** @type {CellValue} cell */
-            let cell = roomNumber;
-
-            if (isWall) {
-                cell = cellWall;
-            } else if (isCornerWall) {
-                cell = cellCornerWall;
-            }
-
-            grid[xCord][yCord] = cell;
-        }
-    }
-
-    return walls;
-}
-
-/**
- * Returns a room's text config.
- *
- * @param {AppliedRoom} room
- *
- * @returns {RoomText}
- */
-function getRoomText(room) {
-    let { rectangle, config, roomNumber } = room;
-    let { roomType } = config;
-    let { width, height } = rectangle;
-
-    let showRoomLabel = roomType !== 'room'
-        && width >= labelMinRoomWidth
-        && height >= labelMinRoomHeight;
-
-    let roomLabel = showRoomLabel ? toWords(roomType) : undefined;
-
-    return { roomNumber: roomNumber.toString(), roomLabel };
-}
-
-/**
  * Returns an array of Door configs for additional connections to the given
  * Room, if any.
  *
@@ -666,6 +604,66 @@ function getExtraDoors(grid, rooms, existingDoors) {
     });
 
     return doors;
+}
+
+/**
+ * Returns randomized room dimensions for the given room type.
+ *
+ * TODO rename to rollRoomDimensions
+ *
+ * @private
+ *
+ * @param {Dimensions} gridDimensions
+ * @param {GeneratedRoomConfig} roomConfig
+ *
+ * @returns {Dimensions}
+ */
+function getRoomDimensions(gridDimensions, roomConfig) {
+    let { roomSize, roomType } = roomConfig;
+
+    isRequired(roomSize, 'roomSize is required in getRoomDimensions()');
+    isRequired(roomType, 'roomType is required in getRoomDimensions()');
+
+    let { width: gridWidth, height: gridHeight } = gridDimensions;
+
+    let roomWidth;
+    let roomHeight;
+
+    if (customDimensions[roomType]) {
+        ({ width: roomWidth, height: roomHeight } = customDimensions[roomType](roomSize));
+    } else {
+        let { min, max } = roomDimensionRanges[roomSize];
+
+        roomWidth  = roll(min, max);
+        roomHeight = roll(min, max);
+    }
+
+    // TODO replace - 2 with - (wallSize * 2)
+    let width  = Math.min(gridWidth - 2, roomWidth);
+    let height = Math.min(gridHeight - 2, roomHeight);
+
+    return { width, height };
+}
+
+/**
+ * Returns a room's text config.
+ *
+ * @param {AppliedRoom} room
+ *
+ * @returns {RoomText}
+ */
+function getRoomText(room) {
+    let { rectangle, config, roomNumber } = room;
+    let { roomType } = config;
+    let { width, height } = rectangle;
+
+    let showRoomLabel = roomType !== 'room'
+        && width >= labelMinRoomWidth
+        && height >= labelMinRoomHeight;
+
+    let roomLabel = showRoomLabel ? toWords(roomType) : undefined;
+
+    return { roomNumber: roomNumber.toString(), roomLabel };
 }
 
 /**

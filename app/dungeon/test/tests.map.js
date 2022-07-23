@@ -68,75 +68,6 @@ export default ({ assert, describe, it }) => {
 
     // -- Private Functions ----------------------------------------------------
 
-    describe('checkForAdjacentDoor()', () => {
-        describe('given coordinates which are adjacent to a door', () => {
-            // d = cellDoor
-            // x = checked cell
-
-            //   0 1 2
-            // 0 . d .
-            // 1 d x d
-            // 2 . d .
-
-            [
-                [ 1, 0 ],
-                [ 2, 1 ],
-                [ 1, 2 ],
-                [ 0, 1 ],
-            ].forEach((doorCords) => {
-                it('returns false', () => {
-                    const [ x, y ] = doorCords;
-                    const grid = createBlankGrid({ width: 3, height: 3 });
-
-                    grid[x][y] = cellDoor;
-
-                    assert(checkForAdjacentDoor(grid, { x: 1, y: 1 })).isTrue();
-                });
-            });
-        });
-
-        describe('given coordinates which are not adjacent to a door', () => {
-            it('returns true', () => {
-                const grid = createBlankGrid({ width: 3, height: 3 });
-                assert(checkForAdjacentDoor(grid, { x: 1, y: 1 })).isFalse();
-            });
-        });
-    });
-
-
-    describe('createDoor()', () => {
-        const rect = {
-            x: 1,
-            y: 2,
-            width: 4,
-            height: 3,
-        };
-
-        const roomConnection = {
-            direction: /** @type {Direction} */ ('south'),
-            from: 1,
-            to: 2,
-        };
-
-        it('returns a door config', () => {
-            const door = createDoor(rect, 'stone', roomConnection);
-
-            assert(door).isObject();
-            assert(door.rectangle).isObject();
-            assert(door.type).equals('stone');
-            assert(door.locked).isBoolean();
-            assert(door.connection.get(1)).equalsObject({ direction: 'south', to: 2 });
-            assert(door.connection.get(2)).equalsObject({ direction: 'north', to: 1 });
-        });
-
-        describe('given a lockable door type and a 100% chance the door is locked', () => {
-            it('returns a locked door config', () => {
-                const door = createDoor(rect, 'brass', roomConnection, 100);
-                assert(door.locked).isTrue();
-            });
-        });
-    });
-
     describe('applyRooms()', () => {
         // TODO, missing `isFork` tests
 
@@ -298,6 +229,152 @@ export default ({ assert, describe, it }) => {
                     assert(connection2.direction).isString();
                     assert(connection2.to).equals(1);
                 });
+            });
+        });
+    });
+
+    describe('applyRoomToGrid()', () => {
+        describe('given a room config without a roomNumber', () => {
+            it('throws', () => {
+                const grid = createBlankGrid({ width: 8, height: 6 });
+
+                // @ts-expect-error
+                assert(() => applyRoomToGrid(grid, { x: 1, y:1, width: 1, height: 1 }))
+                    .throws('roomNumber is required in applyRoomToGrid()');
+            });
+        });
+
+        describe('given a grid and a room config', () => {
+            // w = cellWall
+            // c = cellCornerWall
+            // 7 = room 7
+
+            //   0 1 2 3 4 5 6 7
+            // 0 . . . . . . . .
+            // 1 . . . . . . . .
+            // 2 . . c w w w c .
+            // 3 . . w 7 7 7 w .
+            // 4 . . w 7 7 7 w .
+            // 5 . . c w w w c .
+            // 6 . . . . . . . .
+
+            const grid = createBlankGrid({ width: 8, height: 6 });
+            const rect = {
+                x: 3,
+                y: 3,
+                width: 3,
+                height: 2,
+            };
+
+            const expectedCords = [
+                { x: 2, y: 3 },
+                { x: 2, y: 4 },
+                { x: 3, y: 2 },
+                { x: 3, y: 5 },
+                { x: 4, y: 2 },
+                { x: 4, y: 5 },
+                { x: 5, y: 2 },
+                { x: 5, y: 5 },
+                { x: 6, y: 3 },
+                { x: 6, y: 4 },
+            ];
+
+            const expectedCornerCords = [
+                { x: 2, y: 2 },
+                { x: 2, y: 5 },
+                { x: 6, y: 2 },
+                { x: 6, y: 5 },
+            ];
+
+            describe('when the room type is "room"', () => {
+                const walls = applyRoomToGrid(grid, rect, 7);
+
+                it('returns an array of wall cells', () => {
+                    assert(walls).isArray();
+
+                    walls && assert(walls.length).equals(10);
+                    walls && expectedCords.forEach((cords) => {
+                        assert(walls.shift()).equalsObject(cords);
+                    });
+                });
+
+                it('updates the grid with correctly placed `cellWall` and `cellCornerWall` indicators', () => {
+                    expectedCords.forEach(({ x, y }) => {
+                        assert(grid[x][y]).equals(cellWall);
+                    });
+
+                    expectedCornerCords.forEach(({ x, y }) => {
+                        assert(grid[x][y]).equals(cellCornerWall);
+                    });
+                });
+            });
+        });
+    });
+
+    describe('checkForAdjacentDoor()', () => {
+        describe('given coordinates which are adjacent to a door', () => {
+            // d = cellDoor
+            // x = checked cell
+
+            //   0 1 2
+            // 0 . d .
+            // 1 d x d
+            // 2 . d .
+
+            [
+                [ 1, 0 ],
+                [ 2, 1 ],
+                [ 1, 2 ],
+                [ 0, 1 ],
+            ].forEach((doorCords) => {
+                it('returns false', () => {
+                    const [ x, y ] = doorCords;
+                    const grid = createBlankGrid({ width: 3, height: 3 });
+
+                    grid[x][y] = cellDoor;
+
+                    assert(checkForAdjacentDoor(grid, { x: 1, y: 1 })).isTrue();
+                });
+            });
+        });
+
+        describe('given coordinates which are not adjacent to a door', () => {
+            it('returns true', () => {
+                const grid = createBlankGrid({ width: 3, height: 3 });
+                assert(checkForAdjacentDoor(grid, { x: 1, y: 1 })).isFalse();
+            });
+        });
+    });
+
+    describe('createDoor()', () => {
+        const rect = {
+            x: 1,
+            y: 2,
+            width: 4,
+            height: 3,
+        };
+
+        const roomConnection = {
+            direction: /** @type {Direction} */ ('south'),
+            from: 1,
+            to: 2,
+        };
+
+        it('returns a door config', () => {
+            const door = createDoor(rect, 'stone', roomConnection);
+
+            assert(door).isObject();
+            assert(door.rectangle).isObject();
+            assert(door.type).equals('stone');
+            assert(door.locked).isBoolean();
+            assert(door.connection.get(1)).equalsObject({ direction: 'south', to: 2 });
+            assert(door.connection.get(2)).equalsObject({ direction: 'north', to: 1 });
+        });
+
+        describe('given a lockable door type and a 100% chance the door is locked', () => {
+            it('returns a locked door config', () => {
+                const door = createDoor(rect, 'brass', roomConnection, 100);
+                assert(door.locked).isTrue();
             });
         });
     });
@@ -783,80 +860,66 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('applyRoomToGrid()', () => {
-        describe('given a room config without a roomNumber', () => {
-            it('throws', () => {
-                const grid = createBlankGrid({ width: 8, height: 6 });
+    describe('getRoomDimensions()', () => {
+        const gridDimensions = { width: 10, height: 6 };
 
+        describe('given a room config with a missing room type', () => {
+            it('throws', () => {
                 // @ts-expect-error
-                assert(() => applyRoomToGrid(grid, { x: 1, y:1, width: 1, height: 1 }))
-                    .throws('roomNumber is required in applyRoomToGrid()');
+                assert(() => getRoomDimensions(gridDimensions, { roomSize: 'small' }))
+                    .throws('roomType is required in getRoomDimensions()');
             });
         });
 
-        describe('given a grid and a room config', () => {
-            // w = cellWall
-            // c = cellCornerWall
-            // 7 = room 7
+        describe('given a room config with a missing room size', () => {
+            it('throws', () => {
+                // @ts-expect-error
+                assert(() => getRoomDimensions(gridDimensions, { roomType: 'library' }))
+                    .throws('roomSize is required in getRoomDimensions()');
+            });
+        });
 
-            //   0 1 2 3 4 5 6 7
-            // 0 . . . . . . . .
-            // 1 . . . . . . . .
-            // 2 . . c w w w c .
-            // 3 . . w 7 7 7 w .
-            // 4 . . w 7 7 7 w .
-            // 5 . . c w w w c .
-            // 6 . . . . . . . .
-
-            const grid = createBlankGrid({ width: 8, height: 6 });
-            const rect = {
-                x: 3,
-                y: 3,
-                width: 3,
-                height: 2,
-            };
-
-            const expectedCords = [
-                { x: 2, y: 3 },
-                { x: 2, y: 4 },
-                { x: 3, y: 2 },
-                { x: 3, y: 5 },
-                { x: 4, y: 2 },
-                { x: 4, y: 5 },
-                { x: 5, y: 2 },
-                { x: 5, y: 5 },
-                { x: 6, y: 3 },
-                { x: 6, y: 4 },
-            ];
-
-            const expectedCornerCords = [
-                { x: 2, y: 2 },
-                { x: 2, y: 5 },
-                { x: 6, y: 2 },
-                { x: 6, y: 5 },
-            ];
-
-            describe('when the room type is "room"', () => {
-                const walls = applyRoomToGrid(grid, rect, 7);
-
-                it('returns an array of wall cells', () => {
-                    assert(walls).isArray();
-
-                    walls && assert(walls.length).equals(10);
-                    walls && expectedCords.forEach((cords) => {
-                        assert(walls.shift()).equalsObject(cords);
-                    });
+        describe('given a room type which requires custom dimensions', () => {
+            // TODO need to inject randomization for testing
+            it('returns a room width and height ', () => {
+                const dimensions = getRoomDimensions(gridDimensions, {
+                    ...generatedRoomConfig,
+                    roomType: 'hallway',
                 });
 
-                it('updates the grid with correctly placed `cellWall` and `cellCornerWall` indicators', () => {
-                    expectedCords.forEach(({ x, y }) => {
-                        assert(grid[x][y]).equals(cellWall);
-                    });
+                assert(dimensions.width).isNumber();
+                assert(dimensions.height).isNumber();
+            });
+        });
 
-                    expectedCornerCords.forEach(({ x, y }) => {
-                        assert(grid[x][y]).equals(cellCornerWall);
-                    });
+        describe('given a room type which does not require custom dimensions', () => {
+            it('returns a room width and height within the range specified for the room size', () => {
+                const { min, max } = roomDimensionRanges.small;
+
+                const { width, height } = getRoomDimensions(gridDimensions, {
+                    ...generatedRoomConfig,
+                    roomSize: 'small',
                 });
+
+                assert(width >= min && width <= max).isTrue();
+                assert(height >= min && height <= max).isTrue();
+            });
+        });
+
+        describe('when the room dimensions are larger than the grid dimensions', () => {
+            it('returns a room width and height no larger than the grid width minus twice the wall size', () => {
+                const gridWidth  = 5;
+                const gridHeight = 5;
+
+                const miniMapDimensions = { width: gridWidth, height: gridHeight };
+
+                const { width, height } = getRoomDimensions(miniMapDimensions, {
+                    ...generatedRoomConfig,
+                    roomSize: 'massive',
+                });
+
+                assert(width <= (gridWidth - (wallSize * 2))).isTrue();
+                assert(height <= (gridHeight - (wallSize * 2))).isTrue();
             });
         });
     });
@@ -950,70 +1013,6 @@ export default ({ assert, describe, it }) => {
 
                     assert(libraryRoomText.roomLabel).equals('library');
                 });
-            });
-        });
-    });
-
-    describe('getRoomDimensions()', () => {
-        const gridDimensions = { width: 10, height: 6 };
-
-        describe('given a room config with a missing room type', () => {
-            it('throws', () => {
-                // @ts-expect-error
-                assert(() => getRoomDimensions(gridDimensions, { roomSize: 'small' }))
-                    .throws('roomType is required in getRoomDimensions()');
-            });
-        });
-
-        describe('given a room config with a missing room size', () => {
-            it('throws', () => {
-                // @ts-expect-error
-                assert(() => getRoomDimensions(gridDimensions, { roomType: 'library' }))
-                    .throws('roomSize is required in getRoomDimensions()');
-            });
-        });
-
-        describe('given a room type which requires custom dimensions', () => {
-            // TODO need to inject randomization for testing
-            it('returns a room width and height ', () => {
-                const dimensions = getRoomDimensions(gridDimensions, {
-                    ...generatedRoomConfig,
-                    roomType: 'hallway',
-                });
-
-                assert(dimensions.width).isNumber();
-                assert(dimensions.height).isNumber();
-            });
-        });
-
-        describe('given a room type which does not require custom dimensions', () => {
-            it('returns a room width and height within the range specified for the room size', () => {
-                const { min, max } = roomDimensionRanges.small;
-
-                const { width, height } = getRoomDimensions(gridDimensions, {
-                    ...generatedRoomConfig,
-                    roomSize: 'small',
-                });
-
-                assert(width >= min && width <= max).isTrue();
-                assert(height >= min && height <= max).isTrue();
-            });
-        });
-
-        describe('when the room dimensions are larger than the grid dimensions', () => {
-            it('returns a room width and height no larger than the grid width minus twice the wall size', () => {
-                const gridWidth  = 5;
-                const gridHeight = 5;
-
-                const miniMapDimensions = { width: gridWidth, height: gridHeight };
-
-                const { width, height } = getRoomDimensions(miniMapDimensions, {
-                    ...generatedRoomConfig,
-                    roomSize: 'massive',
-                });
-
-                assert(width <= (gridWidth - (wallSize * 2))).isTrue();
-                assert(height <= (gridHeight - (wallSize * 2))).isTrue();
             });
         });
     });
