@@ -432,12 +432,6 @@ export default ({ assert, describe, it }) => {
             });
         });
 
-        describe('when the expected value is an empty string', () => {
-            it('throws', () => {
-                assert(() => hasTextContent(el, '')).throws('Invalid empty string expected in hasTextContent()');
-            });
-        });
-
         nonElementTypes.forEach(([ key, value ]) => {
             describe(`given ${key}`, () => {
                 it('returns a false `isOk` property', () => {

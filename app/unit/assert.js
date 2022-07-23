@@ -193,10 +193,6 @@ export function hasTextContent(element, includes) {
         return checkElType;
     }
 
-    if (includes === '') {
-        throw new TypeError('Invalid empty string expected in hasTextContent()');
-    }
-
     let isOk = element.textContent.includes(includes);
     let msg  = `expected "${element.textContent}" to include "${includes}"`;
 

@@ -62,20 +62,6 @@ import { quantityRanges, probability as quantityProbability } from '../attribute
  * @prop {Rarity} [rarityUniformity]
  */
 
-// -- Config -------------------------------------------------------------------
-
-/**
- * Maximum number of columns for dungeon item lists.
- *
- * TODO rename.
- */
-const maxColumnsItems = 4;
-
-/**
- * Maximum number of columns for non-dungeon room item lists.
- */
-const maxColumnsRoom = 2;
-
 // -- Private Functions --------------------------------------------------------
 
 /**

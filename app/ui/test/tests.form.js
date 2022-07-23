@@ -56,7 +56,10 @@ export default ({ assert, describe, it }) => {
             });
 
             it('contains an accordion button associated to the fieldset', () => {
-                assert(fieldset.querySelector('button[data-action="accordion"]'))
+                const accordion = fieldset && fieldset.querySelector('button[data-action="accordion"]');
+
+                assert(Boolean(accordion)).isTrue();
+                assert(accordion)
                     .hasAttributes({
                         'data-target': 'fieldset-shovels-and-spades',
                     });
@@ -83,12 +86,11 @@ export default ({ assert, describe, it }) => {
 
             it('contains input and label elements for each knob', () => {
                 fields.forEach(({ name, label }) => {
-                    /** @type {HTMLElement} */
                     const knob = body.querySelector(`[name="${name}"]`);
 
                     assert(Boolean(knob)).isTrue();
-                    knob && assert(body.querySelector(`label[for="${knob.id}"]`).textContent)
-                        .stringIncludes(label);
+                    knob && assert(body.querySelector(`label[for="${knob.id}"]`))
+                        .hasTextContent(label);
                 });
             });
         });
@@ -121,6 +123,8 @@ export default ({ assert, describe, it }) => {
         describe('given a knob with no name', () => {
             it('throws', () => {
                 const knob = { ...fakeKnob };
+
+                // @ts-expect-error
                 delete knob.name;
 
                 assert(() => getFields([ knob ]))
@@ -131,6 +135,8 @@ export default ({ assert, describe, it }) => {
         describe('given a knob with no label', () => {
             it('throws', () => {
                 const knob = { ...fakeKnob };
+
+                // @ts-expect-error
                 delete knob.label;
 
                 assert(() => getFields([ knob ]))
@@ -141,6 +147,8 @@ export default ({ assert, describe, it }) => {
         describe('given a knob with no description', () => {
             it('throws', () => {
                 const knob = { ...fakeKnob };
+
+                // @ts-expect-error
                 delete knob.desc;
 
                 assert(() => getFields([ knob ]))
@@ -164,15 +172,15 @@ export default ({ assert, describe, it }) => {
                 const label = body.querySelector('label');
 
                 assert(Boolean(label)).isTrue();
-                assert(label.textContent).stringIncludes('Complexity'); // TODO equals
-                assert(label).hasAttributes({ for: input.id });
+                assert(label).hasTextContent('Complexity');
+                input && assert(label).hasAttributes({ for: input.id });
             });
 
             it('contains an info button element with the correct target', () => {
                 const button = body.querySelector('button');
 
                 assert(Boolean(button)).isTrue();
-                assert(button.textContent).equals('?');
+                assert(button).hasTextContent('?');
                 assert(button).hasAttributes({
                     'data-action': 'toggle',
                     'data-target': 'info-dungeon-complexity',
@@ -183,8 +191,8 @@ export default ({ assert, describe, it }) => {
                 const info = body.querySelector('[id="info-dungeon-complexity"]');
 
                 assert(Boolean(info)).isTrue();
-                assert(info.tagName).equals('P');
-                assert(info.textContent).equals('Pi');
+                assert(info).isElementTag('p');
+                assert(info).hasTextContent('Pi');
                 assert(info).hasAttributes({
                     'hidden': 'true',
                     id      : 'info-dungeon-complexity',
@@ -195,8 +203,8 @@ export default ({ assert, describe, it }) => {
                 const error = body.querySelector('p[id="error-dungeon-complexity"]');
 
                 assert(Boolean(error)).isTrue();
-                assert(error.tagName).equals('P');
-                assert(error.textContent).equals('');
+                assert(error).isElementTag('p');
+                assert(error).hasTextContent('');
                 assert(error).hasAttributes({
                     'data-error': '',
                     'hidden'    : 'true',
@@ -255,7 +263,7 @@ export default ({ assert, describe, it }) => {
             const input = /** @type {HTMLInputElement} */ (body.children.item(0));
 
             it('returns an HTML input element', () => {
-                assert(input.tagName).equals('INPUT');
+                assert(input).isElementTag('input');
             });
 
             it('has a type of "number"', () => {
@@ -292,7 +300,7 @@ export default ({ assert, describe, it }) => {
             const input = /** @type {HTMLInputElement} */ (body.children.item(0));
 
             it('returns an HTML input element', () => {
-                assert(input.tagName).equals('INPUT');
+                assert(input).isElementTag('input');
             });
 
             it('has a type of "range"', () => {
@@ -328,7 +336,7 @@ export default ({ assert, describe, it }) => {
             const select = /** @type {HTMLSelectElement} */ (body.children.item(0));
 
             it('returns an HTML select element', () => {
-                assert(select.tagName).equals('SELECT');
+                assert(select).isElementTag('select');
             });
 
             it('has the given value', () => {
@@ -348,9 +356,9 @@ export default ({ assert, describe, it }) => {
                 const options = body.querySelectorAll('option');
 
                 assert(options.length).equals(2);
-                assert(options[0].textContent).equals('toast');
+                assert(options[0]).hasTextContent('toast');
                 assert(options[0]).hasAttributes({ 'value': 'toast' });
-                assert(options[1].textContent).equals('coffee');
+                assert(options[1]).hasTextContent('coffee');
                 assert(options[1]).hasAttributes({ 'value': 'coffee' });
             });
 
@@ -372,7 +380,7 @@ export default ({ assert, describe, it }) => {
             const input = /** @type {HTMLInputElement} */ (body.children.item(0));
 
             it('returns an HTML input element', () => {
-                assert(input.tagName).equals('INPUT');
+                assert(input).isElementTag('input');
             });
 
             it('has a type of "text"', () => {
@@ -453,7 +461,7 @@ export default ({ assert, describe, it }) => {
             const button = body.querySelector('button[type="submit"]');
 
             assert(Boolean(button)).isTrue();
-            button && assert(button.textContent).equals('Generate');
+            button && assert(button).hasTextContent('Generate');
             button && assert(button).hasAttributes({
                 'data-action': 'generate',
             });

@@ -63,7 +63,7 @@ Object.keys(furnishing).forEach((key) => {
     let label = item.name;
 
     if (item.variants) {
-        // TODO this should but randomized for each instance when fetched...
+        // TODO this should be randomized for each instance when fetched...
         let variant = rollArrayItem(item.variants);
         label += `, ${variant}`;
     }
