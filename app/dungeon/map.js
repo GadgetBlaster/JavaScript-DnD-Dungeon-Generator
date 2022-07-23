@@ -636,7 +636,6 @@ function getRoomConnection(grid, roomType, roomDimensions, prevRoom) {
     let validCords = getValidRoomConnections(grid, roomDimensions, prevRoom.rectangle);
 
     if (!validCords.length) {
-        // TODO skippedRooms.push(room);
         return;
     }
 
