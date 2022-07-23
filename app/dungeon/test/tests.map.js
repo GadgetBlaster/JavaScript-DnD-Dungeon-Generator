@@ -46,6 +46,7 @@ import {
 /** @typedef {import('../grid.js').Grid} Grid */
 /** @typedef {import('../grid.js').Rectangle} Rectangle */
 /** @typedef {import('../map.js').AppliedRoom} AppliedRoom */
+/** @typedef {import('../map.js').Direction} Direction */
 
 /** @type {GeneratedRoomConfig} */
 const generatedRoomConfig = {
@@ -104,18 +105,21 @@ export default ({ assert, describe, it }) => {
 
 
     describe('createDoor()', () => {
-        // TODO test locked, test locked types
+        const rect = {
+            x: 1,
+            y: 2,
+            width: 4,
+            height: 3,
+        };
+
+        const roomConnection = {
+            direction: /** @type {Direction} */ ('south'),
+            from: 1,
+            to: 2,
+        };
+
         it('returns a door config', () => {
-            const door = createDoor({
-                x: 1,
-                y: 2,
-                width: 4,
-                height: 3,
-            }, 'stone', {
-                direction: 'south',
-                from: 1,
-                to: 2,
-            });
+            const door = createDoor(rect, 'stone', roomConnection);
 
             assert(door).isObject();
             assert(door.rectangle).isObject();
@@ -123,6 +127,13 @@ export default ({ assert, describe, it }) => {
             assert(door.locked).isBoolean();
             assert(door.connection.get(1)).equalsObject({ direction: 'south', to: 2 });
             assert(door.connection.get(2)).equalsObject({ direction: 'north', to: 1 });
+        });
+
+        describe('given a lockable door type and a 100% chance the door is locked', () => {
+            it('returns a locked door config', () => {
+                const door = createDoor(rect, 'brass', roomConnection, 100);
+                assert(door.locked).isTrue();
+            });
         });
     });
 

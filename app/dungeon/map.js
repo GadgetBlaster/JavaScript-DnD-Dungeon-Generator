@@ -164,19 +164,17 @@ function checkForAdjacentDoor(grid, { x, y }) {
  * Returns a door object for the given rectangle, door type, direction, and
  * connection.
  *
- * TODO fix lockedChance
- *
  * @private
  *
  * @param {Rectangle} rectangle
  * @param {DoorType} type
  * @param {{ direction: Direction; from: number; to: number; }} roomConnection
- * @param {number} [lockedChance = 0]
+ * @param {number} [lockedPercentChance = 0]
  *
  * @returns {Door}
  */
-function createDoor(rectangle, type, { direction, from, to }, lockedChance = 0) {
-    let locked = lockable.has(type) && rollPercentile(lockedChance);
+function createDoor(rectangle, type, { direction, from, to }, lockedPercentChance = 0) {
+    let locked = lockable.has(type) && rollPercentile(lockedPercentChance);
 
     return {
         rectangle,
