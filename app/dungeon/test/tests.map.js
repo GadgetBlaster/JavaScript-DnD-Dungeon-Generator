@@ -11,11 +11,11 @@ import {
     testLabelMinRoomWidth  as labelMinRoomWidth,
 
     // Private Functions
+    testApplyDoorToGrid        as applyDoorToGrid,
     testApplyRooms             as applyRooms,
     testApplyRoomToGrid        as applyRoomToGrid,
     testCheckForAdjacentDoor   as checkForAdjacentDoor,
     testCreateDoor             as createDoor,
-    testGetDoor                as getDoor,
     testGetDoorCells           as getDoorCells,
     testGetDoorDirection       as getDoorDirection,
     testGetDoorType            as getDoorType,
@@ -68,6 +68,70 @@ const generatedRoomConfig = {
 export default ({ assert, describe, it }) => {
 
     // -- Private Functions ----------------------------------------------------
+
+    describe('applyDoorToGrid()', () => {
+        // TODO needs test w/o previous room
+        it('returns a Door object', () => {
+            // w = cellWall
+            // c = cellCornerWall
+            // 1 = room 1
+            // 2 = room 2
+
+            //   0 1 2 3 4 5 6 7 8 9
+            // 0 . . . . . . . . . .
+            // 1 . c w w c . . . . .
+            // 2 . w 1 1 w . . . . .
+            // 3 . w 1 1 w . . . . .
+            // 4 . c w w c . . . . .
+            // 5 . w 2 2 w . . . . .
+            // 6 . w 2 2 w . . . . .
+            // 7 . c w w c . . . . .
+            // 8 . . . . . . . . . .
+            // 9 . . . . . . . . . .
+
+            const grid = createBlankGrid({ width: 10, height: 10 });
+
+            const prevRect = {
+                x: 2,
+                y: 2,
+                width: 2,
+                height: 2,
+            };
+
+            const prevRoom = {
+                config: generatedRoomConfig,
+                itemSet: { items: [], containers: [] },
+                rectangle: prevRect,
+                roomNumber: 1,
+                walls: applyRoomToGrid(grid, prevRect, 1),
+            };
+
+            const rect = {
+                x: 2,
+                y: 5,
+                width: 2,
+                height: 2,
+            };
+
+            const room = {
+                config: generatedRoomConfig,
+                itemSet: { items: [], containers: [] },
+                rectangle: rect,
+                roomNumber: 2,
+                walls: applyRoomToGrid(grid, rect, 2),
+            };
+
+            // TODO test grid has door applied
+            const door = applyDoorToGrid(grid, room, prevRoom);
+
+            assert(door).isObject();
+            assert(door.connection.get(1)).equalsObject({ direction: 'south', to: 2 });
+            assert(door.connection.get(2)).equalsObject({ direction: 'north', to: 1 });
+            assert(door.locked).isBoolean();
+            assert(door.rectangle).isObject();
+            assert(door.type).isInArray(doorTypes);
+        });
+    });
 
     describe('applyRooms()', () => {
         // TODO, missing `isFork` tests
@@ -421,69 +485,6 @@ export default ({ assert, describe, it }) => {
                 const door = createDoor(rect, 'brass', roomConnection, 100);
                 assert(door.locked).isTrue();
             });
-        });
-    });
-
-    describe('getDoor()', () => {
-        // TODO needs test w/o previous room
-        it('returns a Door object', () => {
-            // w = cellWall
-            // c = cellCornerWall
-            // 1 = room 1
-            // 2 = room 2
-
-            //   0 1 2 3 4 5 6 7 8 9
-            // 0 . . . . . . . . . .
-            // 1 . c w w c . . . . .
-            // 2 . w 1 1 w . . . . .
-            // 3 . w 1 1 w . . . . .
-            // 4 . c w w c . . . . .
-            // 5 . w 2 2 w . . . . .
-            // 6 . w 2 2 w . . . . .
-            // 7 . c w w c . . . . .
-            // 8 . . . . . . . . . .
-            // 9 . . . . . . . . . .
-
-            const grid = createBlankGrid({ width: 10, height: 10 });
-
-            const prevRect = {
-                x: 2,
-                y: 2,
-                width: 2,
-                height: 2,
-            };
-
-            const prevRoom = {
-                config: generatedRoomConfig,
-                itemSet: { items: [], containers: [] },
-                rectangle: prevRect,
-                roomNumber: 1,
-                walls: applyRoomToGrid(grid, prevRect, 1),
-            };
-
-            const rect = {
-                x: 2,
-                y: 5,
-                width: 2,
-                height: 2,
-            };
-
-            const room = {
-                config: generatedRoomConfig,
-                itemSet: { items: [], containers: [] },
-                rectangle: rect,
-                roomNumber: 2,
-                walls: applyRoomToGrid(grid, rect, 2),
-            };
-
-            const door = getDoor(grid, room, prevRoom);
-
-            assert(door).isObject();
-            assert(door.connection.get(1)).equalsObject({ direction: 'south', to: 2 });
-            assert(door.connection.get(2)).equalsObject({ direction: 'north', to: 1 });
-            assert(door.locked).isBoolean();
-            assert(door.rectangle).isObject();
-            assert(door.type).isInArray(doorTypes);
         });
     });
 

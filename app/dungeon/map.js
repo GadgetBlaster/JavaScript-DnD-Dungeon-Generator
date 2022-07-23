@@ -133,6 +133,64 @@ export {
 
 // -- Private Functions --------------------------------------------------------
 
+
+/**
+ * Applies a door to a map grid and returns a door object based on the given
+ * grid, room, and previous room configs.
+ *
+ * @private
+ *
+ * @param {Grid} grid
+ * @param {AppliedRoom} room
+ * @param {AppliedRoom} [prevRoom]
+ * @param {object} [options = {}]
+ *     @param {boolean} [options.allowSecret]
+ *     @param {RollDoorType} [options.rollDoorType]
+ *     @param {RollSecretDoorType} [options.rollSecretDoorType]
+ *
+ * @returns {Door}
+ */
+function applyDoorToGrid(grid, room, prevRoom, {
+    allowSecret,
+    // TODO tests
+    rollDoorType = doorProbability.roll,
+    rollSecretDoorType = secretProbability.roll,
+} = {}) {
+    let cells     = getDoorCells(grid, room, prevRoom);
+    let max       = Math.min(maxDoorGridUnits, Math.ceil(cells.length / 2));
+    let size      = roll(1, max);
+    let remainder = cells.length - size;
+
+    let useEdge = prevRoom
+        && prevRoom.config.roomType === 'hallway'
+        && room.config.roomType === 'hallway';
+
+    let start     = useEdge ? rollArrayItem([ 0, remainder ]) : roll(0, remainder);
+    let doorCells = cells.slice(start, start + size);
+    let { x, y }  = doorCells[0];
+    let direction = getDoorDirection({ x, y }, room.rectangle);
+
+    let width  = 1;
+    let height = 1;
+
+    grid[x][y] = cellDoor;
+
+    doorCells.forEach(({ x: cellX, y: cellY }) => {
+        if (cellX > x || cellY > y) {
+            cellX > x ? width++ : height++;
+            grid[cellX][cellY] = cellDoor;
+        }
+    });
+
+    let doorRectangle = { x, y, width, height };
+
+    let from = room.roomNumber;
+    let to   = prevRoom ? prevRoom.roomNumber : outside;
+    let type = getDoorType(rollDoorType, allowSecret ? rollSecretDoorType : undefined);
+
+    return createDoor(doorRectangle, type, { direction, from, to }, lockedChance);
+}
+
 /**
  * Applies rooms to a map grid and returns the applied results.
  *
@@ -203,7 +261,7 @@ function applyRooms(gridDimensions, mapRooms, grid, {
             walls,
         };
 
-        doors.push(getDoor(grid, appliedRoom, prevRoom, {
+        doors.push(applyDoorToGrid(grid, appliedRoom, prevRoom, {
             allowSecret: isFork,
             rollDoorType,
             rollSecretDoorType,
@@ -334,64 +392,6 @@ function createDoor(rectangle, type, { direction, from, to }, lockedPercentChanc
             [ to,   { direction: directionOppositeLookup[direction], to: from } ],
         ]),
     };
-}
-
-/**
- * Returns a door object based on the given grid, room, and previous room.
- *
- * TODO rename to applyDoorToGrid()
- *
- * @private
- *
- * @param {Grid} grid
- * @param {AppliedRoom} room
- * @param {AppliedRoom} [prevRoom]
- * @param {object} [options = {}]
- *     @param {boolean} [options.allowSecret]
- *     @param {RollDoorType} [options.rollDoorType]
- *     @param {RollSecretDoorType} [options.rollSecretDoorType]
- *
- * @returns {Door}
- */
-function getDoor(grid, room, prevRoom, {
-    allowSecret,
-    // TODO tests
-    rollDoorType = doorProbability.roll,
-    rollSecretDoorType = secretProbability.roll,
-} = {}) {
-    let cells     = getDoorCells(grid, room, prevRoom);
-    let max       = Math.min(maxDoorGridUnits, Math.ceil(cells.length / 2));
-    let size      = roll(1, max);
-    let remainder = cells.length - size;
-
-    let useEdge = prevRoom
-        && prevRoom.config.roomType === 'hallway'
-        && room.config.roomType === 'hallway';
-
-    let start     = useEdge ? rollArrayItem([ 0, remainder ]) : roll(0, remainder);
-    let doorCells = cells.slice(start, start + size);
-    let { x, y }  = doorCells[0];
-    let direction = getDoorDirection({ x, y }, room.rectangle);
-
-    let width  = 1;
-    let height = 1;
-
-    grid[x][y] = cellDoor;
-
-    doorCells.forEach(({ x: cellX, y: cellY }) => {
-        if (cellX > x || cellY > y) {
-            cellX > x ? width++ : height++;
-            grid[cellX][cellY] = cellDoor;
-        }
-    });
-
-    let doorRectangle = { x, y, width, height };
-
-    let from = room.roomNumber;
-    let to   = prevRoom ? prevRoom.roomNumber : outside;
-    let type = getDoorType(rollDoorType, allowSecret ? rollSecretDoorType : undefined);
-
-    return createDoor(doorRectangle, type, { direction, from, to }, lockedChance);
 }
 
 /**
@@ -775,11 +775,11 @@ function procedurallyApplyRooms(gridDimensions, rooms, grid) {
 }
 
 export {
+    applyDoorToGrid        as testApplyDoorToGrid,
     applyRooms             as testApplyRooms,
     applyRoomToGrid        as testApplyRoomToGrid,
     checkForAdjacentDoor   as testCheckForAdjacentDoor,
     createDoor             as testCreateDoor,
-    getDoor                as testGetDoor,
     getDoorCells           as testGetDoorCells,
     getDoorDirection       as testGetDoorDirection,
     getDoorType            as testGetDoorType,
