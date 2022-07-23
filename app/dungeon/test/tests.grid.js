@@ -12,6 +12,7 @@ import {
 
     // Public functions
     createBlankGrid,
+    getGridDimensions,
     getStartingPoint,
     getValidRoomConnections,
 } from '../grid.js';
@@ -256,6 +257,15 @@ export default ({ assert, describe, it }) => {
                     [ cellEmpty, cellEmpty, cellEmpty ],
                     [ cellEmpty, cellEmpty, cellEmpty ],
                 ].toString());
+            });
+        });
+    });
+
+    describe('getGridDimensions()', () => {
+        describe('given a 4 x 6 grid', () => {
+            it('returns the correct dimensions', () => {
+                assert(getGridDimensions(createBlankGrid({ width: 4, height: 6 })))
+                    .equalsObject({ width: 4, height: 6 });
             });
         });
     });

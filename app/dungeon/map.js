@@ -2,6 +2,7 @@
 
 import {
     createBlankGrid,
+    getGridDimensions,
     getStartingPoint,
     getValidRoomConnections,
     wallSize,
@@ -137,7 +138,7 @@ export {
  *
  * @private
  *
- * @param {Dimensions} gridDimensions
+ * @param {Dimensions} gridDimensions // TODO redundant to `Grid`
  * @param {Room[]} mapRooms
  * @param {Grid} grid
  * @param {object} [options]
@@ -162,10 +163,10 @@ function applyRooms(gridDimensions, mapRooms, grid, { isFork, prevRoom } = {}) {
 
         let roomDimensions = getRoomDimensions(gridDimensions, config);
 
+        // TODO break out into private function
         let x;
         let y;
 
-        // TODO break out into private function
         if (prevRoom) {
             isRequired(prevRoom.walls, 'Previous grid room requires wall coordinates in drawRooms()');
 
@@ -393,7 +394,9 @@ function getDoorCells(grid, room, prevGridRoom) {
         // TODO require rooms share an edge
         prevWalls = prevGridRoom.walls;
     } else {
-        // TODO get grid dimensions helper?
+        // TODO get grid dimensions helper? use map.js `getGridDimensions()`
+        // TODO these should not be decremented by 1, likely a bug or unexpected
+        // logic.
         let gridWidth  = grid.length - 1;
         let gridHeight = grid[0].length - 1;
 
@@ -607,6 +610,46 @@ function getExtraDoors(grid, rooms, existingDoors) {
 }
 
 /**
+ * Returns randomized room connection coordinates for an applied room.
+ *
+ * @private
+ * @throws
+ *
+ * @todo tests, use in `applyRooms()`
+ *
+ * @param {Grid} grid
+ * @param {RoomType} roomType
+ * @param {Dimensions} roomDimensions
+ * @param {AppliedRoom} prevRoom
+ *
+ * @returns {Coordinates | undefined}
+ */
+function getRoomConnection(grid, roomType, roomDimensions, prevRoom) {
+    let gridDimensions = getGridDimensions(grid);
+
+    if (!prevRoom) {
+        return getStartingPoint(gridDimensions, roomDimensions);
+    }
+
+    isRequired(prevRoom.walls, 'Previous grid room requires wall coordinates in getRoomConnection()');
+
+    let validCords = getValidRoomConnections(grid, roomDimensions, prevRoom.rectangle);
+
+    if (!validCords.length) {
+        // TODO skippedRooms.push(room);
+        return;
+    }
+
+    if (roomType === 'hallway') {
+        // TODO remind me why the last set of cords is used for halls? Maybe
+        // so hals are always connected at one end? Maybe make configurable?
+        return validCords[validCords.length - 1];
+    }
+
+    return rollArrayItem(validCords);
+}
+
+/**
  * Returns randomized room dimensions for the given room type.
  *
  * TODO rename to rollRoomDimensions
@@ -721,6 +764,7 @@ export {
     getDoorDirection       as testGetDoorDirection,
     getDoorType            as testGetDoorType,
     getExtraDoors          as testGetExtraDoors,
+    getRoomConnection      as testGetRoomConnection,
     getRoomDimensions      as testGetRoomDimensions,
     getRoomText            as testGetRoomText,
     procedurallyApplyRooms as testProcedurallyApplyRooms,

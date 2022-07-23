@@ -20,6 +20,7 @@ import {
     testGetDoorDirection       as getDoorDirection,
     testGetDoorType            as getDoorType,
     testGetExtraDoors          as getExtraDoors,
+    testGetRoomConnection      as getRoomConnection,
     testGetRoomDimensions      as getRoomDimensions,
     testGetRoomText            as getRoomText,
     testProcedurallyApplyRooms as procedurallyApplyRooms,
@@ -864,6 +865,10 @@ export default ({ assert, describe, it }) => {
                 });
             });
         });
+    });
+
+    describe('getRoomConnection()', () => {
+        // TODO
     });
 
     describe('getRoomDimensions()', () => {

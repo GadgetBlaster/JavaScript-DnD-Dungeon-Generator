@@ -183,6 +183,20 @@ export const createBlankGrid = ({ width, height }) =>
         Array(height).fill(cellEmpty));
 
 /**
+ * Returns dimensions for the given grid
+ *
+ * @param {Grid} grid
+ *
+ * @returns {Dimensions}
+ */
+export function getGridDimensions(grid) {
+    let width  = grid.length;
+    let height = grid[0].length;
+
+    return { width, height };
+}
+
+/**
  * Returns a random starting point for the dungeon door along one of the grid
  * edges.
  *
