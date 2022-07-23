@@ -620,7 +620,7 @@ function getExtraDoors(grid, rooms, existingDoors) {
  * @param {Grid} grid
  * @param {RoomType} roomType
  * @param {Dimensions} roomDimensions
- * @param {AppliedRoom} prevRoom
+ * @param {AppliedRoom} [prevRoom]
  *
  * @returns {Coordinates | undefined}
  */
@@ -631,7 +631,8 @@ function getRoomConnection(grid, roomType, roomDimensions, prevRoom) {
         return getStartingPoint(gridDimensions, roomDimensions);
     }
 
-    isRequired(prevRoom.walls, 'Previous grid room requires wall coordinates in getRoomConnection()');
+    isRequired(prevRoom.walls, 'Previous room requires wall coordinates in getRoomConnection()');
+    isRequired(prevRoom.rectangle, 'Previous room requires a rectangle in getRoomConnection()');
 
     let validCords = getValidRoomConnections(grid, roomDimensions, prevRoom.rectangle);
 

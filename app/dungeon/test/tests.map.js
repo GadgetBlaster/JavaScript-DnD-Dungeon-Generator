@@ -868,7 +868,104 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getRoomConnection()', () => {
-        // TODO
+        const gridWidth  = 8;
+        const gridHeight = 9;
+        const roomWidth  = 2;
+        const roomHeight = 2;
+
+        const roomDimensions = {
+            width: roomWidth,
+            height: roomHeight,
+        };
+
+
+        describe('given no previous room', () => {
+            it('returns coordinates for the starting position on the edge of the grid', () => {
+                const grid = createBlankGrid({ width: gridWidth, height: gridHeight });
+                const coords = getRoomConnection(grid, 'bedroom', roomDimensions);
+
+                assert(coords).isObject();
+
+                const x = coords && coords.x;
+                const y = coords && coords.y;
+
+                assert(x).isNumber();
+                assert(y).isNumber();
+
+                assert(
+                    x === wallSize ||
+                    x === gridWidth - roomWidth - wallSize ||
+                    y === wallSize ||
+                    y === gridHeight - roomHeight - wallSize
+                ).isTrue();
+            });
+        });
+
+        describe('given a previous room', () => {
+            const grid = createBlankGrid({ width: 6, height: 8 });
+
+            const prevRoomRect = { x: 2, y: 2, width: 2, height: 1 };
+            const prevRoom = {
+                config: generatedRoomConfig,
+                itemSet: {
+                    items: [],
+                    containers: [],
+                },
+                rectangle: prevRoomRect,
+                roomNumber: 1,
+                walls: applyRoomToGrid(grid, prevRoomRect, 1),
+            };
+
+            describe('when there are no valid room connections', () => {
+                it('returns undefined', () => {
+                    const coords = getRoomConnection(grid, 'bedroom', { width: 10, height: 10 }, prevRoom);
+                    assert(coords).isUndefined();
+                });
+            });
+
+            describe('when there are valid room connections', () => {
+                it('returns coordinates', () => {
+                    const coords = getRoomConnection(grid, 'bedroom', { width: 2, height: 2 }, prevRoom);
+
+                    assert(coords).isObject();
+
+                    coords && assert(coords.x >= 1 && coords.x <= 3).isTrue(1);
+                    coords && assert(coords.y).equals(4);
+                });
+            });
+
+            describe('when the room is a hallway', () => {
+                it('returns coordinates', () => {
+                    const coords = getRoomConnection(grid, 'hallway', { width: 1, height: 3 }, prevRoom);
+
+                    assert(coords).isObject();
+
+                    // Last entry is currently always used for halls
+                    coords && assert(coords.x).equals(3);
+                    coords && assert(coords.y).equals(4);
+                });
+            });
+
+            describe('when the previous room is missing walls', () => {
+                it('throws', () => {
+                    const incompleteRoom = { rectangle: prevRoom.rectangle };
+
+                    // @ts-expect-error
+                    assert(() => getRoomConnection(grid, 'bedroom', roomDimensions, incompleteRoom))
+                        .throws('Previous room requires wall coordinates in getRoomConnection()');
+                });
+            });
+
+            describe('when the previous room is missing a rectangle', () => {
+                it('throws', () => {
+                    const incompleteRoom = { walls: prevRoom.walls };
+
+                    // @ts-expect-error
+                    assert(() => getRoomConnection(grid, 'bedroom', roomDimensions, incompleteRoom))
+                        .throws('Previous room requires a rectangle in getRoomConnection()');
+                });
+            });
+        });
     });
 
     describe('getRoomDimensions()', () => {

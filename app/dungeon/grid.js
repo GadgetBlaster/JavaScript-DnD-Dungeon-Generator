@@ -243,6 +243,7 @@ export function getValidRoomConnections(grid, roomDimensions, prevRoomRect) {
 
     // Add extra `wallSize` unit in each direction because rooms are placed 1
     // wall unit apart, a space which can be occupied by a door cell.
+    // TODO simplify by using previous room walls array?
     let minX = prevX - roomWidth - wallSize;
     let maxX = prevX + prevWidth + wallSize;
 
