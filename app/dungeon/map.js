@@ -227,32 +227,14 @@ function applyRooms(gridDimensions, mapRooms, grid, {
         let { roomType } = config;
 
         let roomDimensions = getRoomDimensions(gridDimensions, config);
+        let cords = getRoomConnection(grid, roomType, roomDimensions, prevRoom);
 
-        // TODO break out into private function `getRoomConnection()`
-        let x;
-        let y;
-
-        if (prevRoom) {
-            isRequired(prevRoom.walls, 'Previous grid room requires wall coordinates in drawRooms()');
-
-            let validCords = getValidRoomConnections(grid, roomDimensions, prevRoom.rectangle);
-
-            if (!validCords.length) {
-                skippedRooms.push(room);
-                return;
-            }
-
-            if (roomType === 'hallway') {
-                // TODO remind me why the last set of cords is used for halls?
-                ({ x, y } = validCords[validCords.length - 1]);
-            } else {
-                ({ x, y } = rollArrayItem(validCords));
-            }
-        } else {
-            ({ x, y } = getStartingPoint(gridDimensions, roomDimensions));
+        if (!cords) {
+            skippedRooms.push(room);
+            return;
         }
 
-        let rectangle = { x, y, ...roomDimensions };
+        let rectangle = { ...cords, ...roomDimensions };
         let walls = applyRoomToGrid(grid, rectangle, roomNumber);
 
         let appliedRoom = {
@@ -633,8 +615,6 @@ function getExtraDoors(grid, rooms, existingDoors) {
  *
  * @private
  * @throws
- *
- * @todo tests, use in `applyRooms()`
  *
  * @param {Grid} grid
  * @param {RoomType} roomType

@@ -205,7 +205,7 @@ export default ({ assert, describe, it }) => {
 
                     // @ts-expect-error
                     assert(() => applyRooms(gridDimensions, [ room ], grid, { prevRoom }))
-                        .throws('Previous grid room requires wall coordinates in drawRooms()');
+                        .throws('Previous room requires wall coordinates in getRoomConnection()');
                 });
             });
 
