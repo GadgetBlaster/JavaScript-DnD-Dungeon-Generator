@@ -18,6 +18,7 @@ import { getResultMessage } from './output.js';
  * @prop {Assertion} equalsObject
  * @prop {Assertion} excludesAttributes
  * @prop {Assertion} hasAttributes
+ * @prop {Assertion} hasTextContent
  * @prop {Assertion} isArray
  * @prop {Assertion} isBoolean
  * @prop {Assertion} isElementTag

@@ -181,6 +181,29 @@ export function hasAttributes(element, attributes) {
 }
 
 /**
+ * @param {any} element
+ * @param {string} includes
+ *
+ * @returns {Result}
+ */
+export function hasTextContent(element, includes) {
+    let checkElType = isElement(element);
+
+    if (!checkElType.isOk) {
+        return checkElType;
+    }
+
+    if (includes === '') {
+        throw new TypeError('Invalid empty string expected in hasTextContent()');
+    }
+
+    let isOk = element.textContent.includes(includes);
+    let msg  = `expected "${element.textContent}" to include "${includes}"`;
+
+    return { msg, isOk };
+}
+
+/**
  * @param {any} value
  *
  * @returns {Result}

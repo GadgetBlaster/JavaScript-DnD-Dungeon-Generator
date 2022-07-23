@@ -134,8 +134,7 @@ export default ({ assert, describe, it }) => {
                 }));
 
                 assert(Boolean(body.querySelector('svg'))).isTrue();
-                assert(body.querySelector('article').querySelector('h2').textContent)
-                    .stringIncludes('Room 1');
+                assert(body.querySelector('h2')).hasTextContent('Room 1');
             });
         });
 
@@ -147,11 +146,12 @@ export default ({ assert, describe, it }) => {
                 const title = body.querySelector('h2');
                 const list  = body.querySelector('ul');
 
-                assert(title.textContent).stringIncludes('Items');
-                assert(title.querySelector('span[data-detail]').textContent)
-                    .stringIncludes('1');
+                assert(title).hasTextContent('Items');
+                title && assert(title.querySelector('span[data-detail]'))
+                    .hasTextContent('1');
 
-                assert(list.querySelectorAll('li').length).equals(1);
+                assert(list).isElementTag('ul');
+                list && assert(list.querySelectorAll('li').length).equals(1);
             });
         });
 
@@ -168,13 +168,14 @@ export default ({ assert, describe, it }) => {
                 const subtitles = body.querySelectorAll('h3');
                 const list      = body.querySelector('ul');
 
-                assert(title.textContent).equals('Room');
-                assert(subtitles[0].textContent).stringIncludes('Description');
-                assert(subtitles[1].textContent).stringIncludes('Items');
-                assert(subtitles[1].querySelector('span[data-detail]').textContent)
-                    .stringIncludes('1');
+                assert(title).hasTextContent('Room');
+                assert(subtitles[0]).hasTextContent('Description');
+                assert(subtitles[1]).hasTextContent('Items');
+                assert(subtitles[1].querySelector('span[data-detail]'))
+                    .hasTextContent('1');
 
-                assert(list.querySelectorAll('li').length).equals(1);
+                assert(list).isElementTag('ul');
+                list && assert(list.querySelectorAll('li').length).equals(1);
             });
         });
 
@@ -218,7 +219,7 @@ export default ({ assert, describe, it }) => {
                     const icon = parseSvg(result.icon);
 
                     assert(icon.children.length).equals(1);
-                    assert(icon.children.item(0).tagName).equals('svg');
+                    assert(icon.children.item(0)).isElementTag('svg');
                 });
             });
         });
@@ -238,7 +239,7 @@ export default ({ assert, describe, it }) => {
                 const input   = document.createElement('input');
                 const element = getTargetControl(getMockClickEvent(input).target);
 
-                assert(element.tagName).equals('INPUT');
+                assert(element).isElementTag('input');
             });
         });
 
@@ -247,7 +248,7 @@ export default ({ assert, describe, it }) => {
                 const input   = document.createElement('select');
                 const element = getTargetControl(getMockClickEvent(input).target);
 
-                assert(element.tagName).equals('SELECT');
+                assert(element).isElementTag('select');
             });
         });
 
@@ -300,7 +301,7 @@ export default ({ assert, describe, it }) => {
 
                 Object.entries(([ action, expectation ]) => {
                     const trigger = getTrigger(triggers, action);
-                    assert(trigger()).equals(expectation);
+                    assert(trigger({})).equals(expectation);
                 });
             });
         });
@@ -334,8 +335,7 @@ export default ({ assert, describe, it }) => {
             const title = content.querySelector('h2');
 
             assert(Boolean(content.querySelector('article'))).isTrue();
-            assert(Boolean(title)).isTrue();
-            assert(title.textContent).stringIncludes('Items');
+            assert(title).hasTextContent('Items');
         });
 
         describe('when the active page is not a generator', () => {
@@ -344,8 +344,7 @@ export default ({ assert, describe, it }) => {
 
                 const title = content.querySelector('h2');
 
-                assert(Boolean(title)).isTrue();
-                assert(title.textContent).equals('Oh no!');
+                assert(title).hasTextContent('Oh no!');
             });
         });
 
@@ -366,25 +365,28 @@ export default ({ assert, describe, it }) => {
                 const sections = getMockSections();
                 const { content, knobs, nav } = sections;
 
-                /** @type {HTMLElement} */
+                /** @type {HTMLElement | null} */
                 const dungeonButton = nav.querySelector('[data-target="dungeon"]');
 
-                /** @type {HTMLElement} */
+                /** @type {HTMLElement | null} */
                 const roomsButton = nav.querySelector('[data-target="rooms"]');
+
+                assert(Boolean(dungeonButton)).isTrue();
+                assert(Boolean(roomsButton)).isTrue();
 
                 let updatePathValue;
 
-                onNavigate(sections, getMockClickEvent(roomsButton), (route) => {
+                roomsButton && onNavigate(sections, getMockClickEvent(roomsButton), (route) => {
                     updatePathValue = route;
                 });
 
                 // Sections
-                assert(content.innerHTML).stringIncludes('Generate Room');
-                assert(knobs.innerHTML).stringIncludes('Generate');
+                assert(content).hasTextContent('Generate Room');
+                assert(knobs).hasTextContent('Generate');
 
                 // Nav
-                assert(roomsButton.dataset.active).equals('');
-                assert(dungeonButton.dataset.active).isUndefined();
+                roomsButton && assert(roomsButton.dataset.active).equals('');
+                dungeonButton && assert(dungeonButton.dataset.active).isUndefined();
 
                 // Router
                 assert(updatePathValue).equals('/rooms');
@@ -397,14 +399,16 @@ export default ({ assert, describe, it }) => {
         const { body, content, knobs, nav } = sections;
 
         it('updates the content, knobs, and nav elements', () => {
-            /** @type {HTMLElement} */
+            /** @type {HTMLElement | null} */
             const dungeonButton = nav.querySelector('[data-target="dungeon"]');
+
+            assert(Boolean(dungeonButton)).isTrue();
 
             renderApp(sections, 'dungeon');
 
-            assert(content.innerHTML).stringIncludes('Generate Dungeon');
-            assert(knobs.innerHTML).stringIncludes('Generate');
-            assert(dungeonButton.dataset.active).equals('');
+            assert(content).hasTextContent('Generate Dungeon');
+            assert(knobs).hasTextContent('Generate');
+            dungeonButton && assert(dungeonButton.dataset.active).equals('');
         });
 
         describe('when the layout is full', () => {
@@ -435,7 +439,7 @@ export default ({ assert, describe, it }) => {
                 // @ts-expect-error
                 renderApp(sections);
                 assert(body).hasAttributes({ 'data-layout': 'full' });
-                assert(content.querySelector('h2').textContent).stringIncludes('404');
+                assert(content.querySelector('h2')).hasTextContent('404');
             });
         });
     });
@@ -448,14 +452,14 @@ export default ({ assert, describe, it }) => {
             renderErrorPage(sections);
 
             assert(body).hasAttributes({ 'data-layout': 'full' });
-            assert(content.querySelector('h2').textContent).stringIncludes('Oh no!');
+            assert(content.querySelector('h2')).hasTextContent('Oh no!');
         });
 
         describe('given a 404 status code', () => {
             it('renders a 404 message', () => {
                 renderErrorPage(sections, 404);
 
-                assert(content.querySelector('h2').textContent).stringIncludes('404');
+                assert(content.querySelector('h2')).hasTextContent('404');
             });
         });
     });
@@ -490,18 +494,26 @@ export default ({ assert, describe, it }) => {
 
             const collapseAll = () => each({ collapsed: true });
 
-            /** @type {HTMLElement} */
+            /** @type {HTMLElement | null} */
             const targetEl = containerEl.querySelector('[data-action="accordion"][data-target="1"]');
+
+            describe('the mock target', () => {
+                it('is defined', () => {
+                    assert(Boolean(targetEl)).isTrue();
+                });
+            });
 
             describe('when an accordion section is collapsed', () => {
                 it('expands the accordion item', () => {
                     collapseAll();
 
-                    /** @type {HTMLElement} */
+                    /** @type {HTMLElement | null} */
                     const sectionEl = containerEl.querySelector('[data-accordion][data-id="1"]');
 
-                    toggleAccordion(containerEl, getMockClickEvent(targetEl));
-                    assert(sectionEl.dataset.accordion).equals('expanded');
+                    assert(Boolean(sectionEl)).isTrue();
+
+                    targetEl && toggleAccordion(containerEl, getMockClickEvent(targetEl));
+                    sectionEl && assert(sectionEl.dataset.accordion).equals('expanded');
                 });
             });
 
@@ -509,12 +521,16 @@ export default ({ assert, describe, it }) => {
                 it('collapses the accordion item', () => {
                     collapseAll();
 
-                    /** @type {HTMLElement} */
+                    /** @type {HTMLElement | null} */
                     const sectionEl = containerEl.querySelector('[data-accordion][data-id="1"]');
-                    sectionEl.dataset.accordion = 'expanded';
+                    assert(Boolean(sectionEl)).isTrue();
 
-                    toggleAccordion(containerEl, getMockClickEvent(targetEl));
-                    assert(sectionEl.dataset.accordion).equals('collapsed');
+                    if (sectionEl) {
+                        sectionEl.dataset.accordion = 'expanded';
+                    }
+
+                    targetEl && toggleAccordion(containerEl, getMockClickEvent(targetEl));
+                    sectionEl && assert(sectionEl.dataset.accordion).equals('collapsed');
                 });
             });
 
@@ -522,12 +538,16 @@ export default ({ assert, describe, it }) => {
                 it('collapses all accordion items', () => {
                     collapseAll();
 
-                    /** @type {HTMLElement} */
+                    /** @type {HTMLElement | null} */
                     const accordionEl = containerEl.querySelector('[data-accordion][data-id="2"]');
-                    accordionEl.dataset.accordion = 'expanded';
+                    assert(Boolean(accordionEl)).isTrue();
 
-                    toggleAccordion(containerEl, getMockClickEvent(targetEl));
-                    assert(accordionEl.dataset.accordion).equals('collapsed');
+                    if (accordionEl) {
+                        accordionEl.dataset.accordion = 'expanded';
+                    }
+
+                    targetEl && toggleAccordion(containerEl, getMockClickEvent(targetEl));
+                    accordionEl && assert(accordionEl.dataset.accordion).equals('collapsed');
                 });
             });
 
@@ -587,7 +607,7 @@ export default ({ assert, describe, it }) => {
                 const title = content.querySelector('h2');
 
                 assert(Boolean(title)).isTrue();
-                title && assert(title.textContent).equals('Oh no!');
+                title && assert(title).hasTextContent('Oh no!');
             });
         });
     });
@@ -715,7 +735,7 @@ export default ({ assert, describe, it }) => {
                 it('renders an error page and calls the onError callback', () => {
                     button4.dispatchEvent(new CustomEvent('click', { bubbles: true }));
 
-                    assert(sections.body.textContent).stringIncludes('Oh no!');
+                    assert(sections.body).hasTextContent('Oh no!');
                     assert(errorResult.toString()).stringIncludes('Error: Fake!');
                 });
             });
@@ -745,7 +765,7 @@ export default ({ assert, describe, it }) => {
         it('returns a render function bound to the given sections', () => {
             render('items');
 
-            assert(content.textContent).equals('Generate Items');
+            assert(content).hasTextContent('Generate Items');
             assert(Boolean(knobs.querySelector('button[data-action="generate"]'))).isTrue();
         });
 
@@ -754,7 +774,7 @@ export default ({ assert, describe, it }) => {
                 // @ts-expect-error
                 render('bubbling cauldron oil');
 
-                assert(sections.body.textContent).stringIncludes('Oh no!');
+                assert(sections.body).hasTextContent('Oh no!');
                 assert(errorResult.toString()).stringIncludes('Invalid generator "bubbling cauldron oil"');
             });
         });
@@ -780,16 +800,20 @@ export default ({ assert, describe, it }) => {
 
         describe('accordion', () => {
             it('toggles an accordion', () => {
-                /** @type {HTMLElement} */
+                /** @type {HTMLElement | null} */
                 const accordionButtonEl = knobs.querySelector('[data-target="fieldset-item-settings"]');
 
-                /** @type {HTMLElement} */
+                /** @type {HTMLElement | null} */
                 const fieldsetEl = knobs.querySelector('[data-id="fieldset-item-settings"]');
-                const wasCollapsed = fieldsetEl.dataset.accordion === 'collapsed';
 
-                triggers.accordion(getMockClickEvent(accordionButtonEl));
+                assert(Boolean(accordionButtonEl)).isTrue();
+                assert(Boolean(fieldsetEl)).isTrue();
 
-                assert(fieldsetEl.dataset.accordion).equals(wasCollapsed ? 'expanded' : 'collapsed');
+                const wasCollapsed = fieldsetEl && fieldsetEl.dataset.accordion === 'collapsed';
+
+                accordionButtonEl && triggers.accordion(getMockClickEvent(accordionButtonEl));
+
+                fieldsetEl && assert(fieldsetEl.dataset.accordion).equals(wasCollapsed ? 'expanded' : 'collapsed');
             });
         });
 
@@ -797,7 +821,7 @@ export default ({ assert, describe, it }) => {
             it('toggles the layout state', () => {
                 assert(body).hasAttributes({ 'data-layout': 'default' });
 
-                triggers.expand();
+                triggers.expand({});
 
                 assert(body).hasAttributes({ 'data-layout': 'sidebar-expanded' });
             });
@@ -805,36 +829,41 @@ export default ({ assert, describe, it }) => {
 
         describe('generate', () => {
             it('updates the content for the current route', () => {
-                /** @type {HTMLElement} */
+                /** @type {HTMLElement | null} */
                 const generateButtonEl = knobs.querySelector('[data-action="generate"]');
 
-                triggers.generate(getMockClickEvent(generateButtonEl));
+                generateButtonEl && triggers.generate(getMockClickEvent(generateButtonEl));
 
                 const title = content.querySelector('h2');
 
+                assert(Boolean(generateButtonEl)).isTrue();
+
                 assert(Boolean(content.querySelector('article'))).isTrue();
                 assert(Boolean(title)).isTrue();
-                title && assert(title.textContent).stringIncludes('Items');
+                title && assert(title).hasTextContent('Items');
             });
         });
 
         describe('navigate', () => {
             it('updates the content to the generator\'s ready state', () => {
-                /** @type {HTMLElement} */
+                /** @type {HTMLElement | null} */
                 const roomsButtonEl = nav.querySelector('[data-action="navigate"][data-target="rooms"]');
 
-                assert(content.innerHTML).stringIncludes('Items');
+                assert(Boolean(roomsButtonEl)).isTrue();
+                assert(content).hasTextContent('Items');
 
-                triggers.navigate(getMockClickEvent(roomsButtonEl));
+                roomsButtonEl && triggers.navigate(getMockClickEvent(roomsButtonEl));
 
-                assert(content.innerHTML).stringIncludes('Generate Rooms');
+                assert(content).hasTextContent('Generate Rooms');
             });
 
             it('calls updatePath() with the new pathname', () => {
-                /** @type {HTMLElement} */
+                /** @type {HTMLElement | null} */
                 const roomsButtonEl = nav.querySelector('[data-action="navigate"][data-target="rooms"]');
 
-                triggers.navigate(getMockClickEvent(roomsButtonEl));
+                assert(Boolean(roomsButtonEl)).isTrue();
+
+                roomsButtonEl && triggers.navigate(getMockClickEvent(roomsButtonEl));
 
                 assert(updatePathValue).equals('/rooms');
             });
@@ -842,17 +871,20 @@ export default ({ assert, describe, it }) => {
 
         describe('toggle', () => {
             it('updates the target\'s visibility', () => {
-                /** @type {HTMLElement} */
+                /** @type {HTMLElement | null} */
                 const toggleButtonEl = knobs.querySelector('[data-action="toggle"][data-target="info-item-quantity"]');
 
-                /** @type {HTMLElement} */
+                /** @type {HTMLElement | null} */
                 const infoEl = knobs.querySelector('[id="info-item-quantity"]');
 
-                assert(infoEl.hidden).isTrue();
+                assert(Boolean(toggleButtonEl)).isTrue();
+                assert(Boolean(infoEl)).isTrue();
 
-                triggers.toggle(getMockClickEvent(toggleButtonEl));
+                infoEl && assert(infoEl.hidden).isTrue();
 
-                assert(infoEl.hidden).isFalse();
+                toggleButtonEl && triggers.toggle(getMockClickEvent(toggleButtonEl));
+
+                infoEl && assert(infoEl.hidden).isFalse();
             });
         });
     });

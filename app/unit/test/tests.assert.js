@@ -10,6 +10,7 @@ import {
     equalsObject,
     excludesAttributes,
     hasAttributes,
+    hasTextContent,
     isArray,
     isBoolean,
     isElementTag,
@@ -33,6 +34,7 @@ const assertions = [
     equalsArray,
     excludesAttributes,
     hasAttributes,
+    hasTextContent,
     isArray,
     isBoolean,
     isElement,
@@ -386,6 +388,7 @@ export default ({ assert, describe, it }) => {
 
         describe('given an invalid attributes expectation', () => {
             it('returns a false `isOk` property', () => {
+                // @ts-expect-error
                 assert(hasAttributes(el, null).isOk).isFalse();
             });
         });
@@ -403,6 +406,42 @@ export default ({ assert, describe, it }) => {
             describe(`given ${key}`, () => {
                 it('returns a false `isOk` property', () => {
                     assert(hasAttributes(value, {}).isOk).isFalse();
+                });
+            });
+        });
+    });
+
+    describe('hasTextContent()', () => {
+        let el = document.createElement('p');
+        el.textContent = 'rascally wabbit';
+
+        describe('given an element which does not contain the expected text', () => {
+            it('returns a false `isOk` property and the element\'s text content', () => {
+                let result = hasTextContent(el, 'peaches');
+
+                assert(result.isOk).isFalse();
+                assert(result.msg).equals('expected "rascally wabbit" to include "peaches"');
+            });
+        });
+
+        describe('given an element which does contain the expected text', () => {
+            it('returns a false `isOk` property and the element\'s text content', () => {
+                let result = hasTextContent(el, 'wabbit');
+
+                assert(result.isOk).isTrue();
+            });
+        });
+
+        describe('when the expected value is an empty string', () => {
+            it('throws', () => {
+                assert(() => hasTextContent(el, '')).throws('Invalid empty string expected in hasTextContent()');
+            });
+        });
+
+        nonElementTypes.forEach(([ key, value ]) => {
+            describe(`given ${key}`, () => {
+                it('returns a false `isOk` property', () => {
+                    assert(hasTextContent(value, 'test').isOk).isFalse();
                 });
             });
         });
