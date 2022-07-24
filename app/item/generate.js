@@ -112,8 +112,6 @@ function generateFurnishings(roomType, quantity, roomCondition = 'average') {
 /**
  * Generates an item config based on room settings.
  *
- * @TODO break out or inject randomization logic for testing.
- *
  * @param {ItemConfig} config
  *
  * @returns {Item}
@@ -126,11 +124,10 @@ const generateItem = (config) => {
         itemType,
     } = config;
 
-    // TODO `isRequired()`
-    !itemCondition && toss('Item condition is required in generateItem()');
-    !itemType      && toss('Item type is required in generateItem()');
-    !itemQuantity  && toss('Item quantity is required in generateItem()');
-    !itemRarity    && toss('Item rarity is required in generateItem()');
+    isRequired(itemCondition, 'Item condition is required in generateItem()');
+    isRequired(itemType, 'Item type is required in generateItem()');
+    isRequired(itemQuantity, 'Item quantity is required in generateItem()');
+    isRequired(itemRarity, 'Item rarity is required in generateItem()');
 
     itemQuantity === 'zero' && toss('Item quantity cannot be zero');
 
@@ -138,18 +135,7 @@ const generateItem = (config) => {
         itemRarity = rarityProbability.roll();
     }
 
-    let randomItem;
-
-    // TODO break out into function, add early returns for undefined groups.
-    if (itemType === 'random') {
-        randomItem = itemsByRarity[itemRarity] && rollArrayItem(itemsByRarity[itemRarity]);
-    } else {
-        let itemsByTypeAndRarity = itemsByType[itemType] && itemsByType[itemType][itemRarity];
-        randomItem = itemsByTypeAndRarity && itemsByTypeAndRarity.length && rollArrayItem(itemsByTypeAndRarity);
-    }
-
-    /** @type {ItemBase} */
-    let item = randomItem || mysteriousObject;
+    let item = getRandomItem(itemType, itemRarity);
 
     let {
         type,
@@ -291,16 +277,22 @@ function getItemCount(itemQuantity) {
  * @returns {ItemBase}
  */
 function getRandomItem(itemType, itemRarity) {
-    let randomItem;
-
     if (itemType === 'random') {
-        randomItem = itemsByRarity[itemRarity] && rollArrayItem(itemsByRarity[itemRarity]);
-    } else {
-        let itemsByTypeAndRarity = itemsByType[itemType] && itemsByType[itemType][itemRarity];
-        randomItem = itemsByTypeAndRarity && itemsByTypeAndRarity.length && rollArrayItem(itemsByTypeAndRarity);
+        if (!itemsByRarity[itemRarity]) {
+            return mysteriousObject;
+        }
+
+        return rollArrayItem(itemsByRarity[itemRarity]);
     }
 
-    return randomItem || mysteriousObject;
+    if (!itemsByType[itemType]
+        || !itemsByType[itemType][itemRarity]
+        || !itemsByType[itemType][itemRarity].length
+    ) {
+        return mysteriousObject;
+    }
+
+    return rollArrayItem(itemsByType[itemType][itemRarity]);
 }
 
 export {

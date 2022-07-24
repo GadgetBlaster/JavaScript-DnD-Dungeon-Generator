@@ -339,7 +339,7 @@ export default ({ assert, describe, it }) => {
                 });
             });
 
-            describe('given a valid item rarity', () => {
+            describe('given an item rarity which has items', () => {
                 it('returns a random object of that rarity', () => {
                     // Assert there are items in the legendary rarity group.
                     assert(itemsByRarity.legendary).isArray();
@@ -365,6 +365,20 @@ export default ({ assert, describe, it }) => {
 
                     // @ts-expect-error
                     assert(getRandomItem('armor', 'notARarity')).equalsObject(mysteriousObject);
+                });
+            });
+
+            describe('given an item type and rarity which has items', () => {
+                it('returns a random object of that type and rarity', () => {
+                    // Assert there are rare items in the armor group.
+                    assert(itemsByType.armor).isObject();
+                    assert(itemsByType.armor.rare).isArray();
+                    assert(itemsByType.armor.rare.length === 0).isFalse();
+
+                    let item = getRandomItem('armor', 'rare');
+
+                    assert(item.type).equals('armor');
+                    assert(item.rarity).equals('rare');
                 });
             });
         });
