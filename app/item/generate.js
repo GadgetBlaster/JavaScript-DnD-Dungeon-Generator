@@ -30,6 +30,7 @@ import { quantityRanges, probability as quantityProbability } from '../attribute
 /** @typedef {import('../attribute/rarity.js').Rarity} Rarity */
 /** @typedef {import('../attribute/size.js').Size} Size */
 /** @typedef {import('../controller/knobs.js').Config} Config */
+/** @typedef {import('../controller/knobs.js').ItemConfig} ItemConfig */
 /** @typedef {import('./furnishing.js').FurnitureQuantity} FurnitureQuantity */
 /** @typedef {import('./item.js').ItemBase} ItemBase */
 /** @typedef {import('./item.js').ItemType} ItemType */
@@ -113,7 +114,7 @@ function generateFurnishings(roomType, quantity, roomCondition = 'average') {
  *
  * @TODO break out or inject randomization logic for testing.
  *
- * @param {Config} config
+ * @param {ItemConfig} config
  *
  * @returns {Item}
  */
@@ -125,6 +126,7 @@ const generateItem = (config) => {
         itemType,
     } = config;
 
+    // TODO `isRequired()`
     !itemCondition && toss('Item condition is required in generateItem()');
     !itemType      && toss('Item type is required in generateItem()');
     !itemQuantity  && toss('Item quantity is required in generateItem()');
@@ -202,7 +204,7 @@ const generateItem = (config) => {
  * @private
  *
  * @param {number} count
- * @param {Config} config
+ * @param {ItemConfig} config
  *
  * @returns {Item[]}
  */
@@ -278,12 +280,36 @@ function getItemCount(itemQuantity) {
     return roll(min, max);
 }
 
+/**
+ * Returns a randomized item of the given type and rarity.
+ *
+ * @private
+ *
+ * @param {ItemType | "random"} itemType
+ * @param {Rarity} itemRarity
+ *
+ * @returns {ItemBase}
+ */
+function getRandomItem(itemType, itemRarity) {
+    let randomItem;
+
+    if (itemType === 'random') {
+        randomItem = itemsByRarity[itemRarity] && rollArrayItem(itemsByRarity[itemRarity]);
+    } else {
+        let itemsByTypeAndRarity = itemsByType[itemType] && itemsByType[itemType][itemRarity];
+        randomItem = itemsByTypeAndRarity && itemsByTypeAndRarity.length && rollArrayItem(itemsByTypeAndRarity);
+    }
+
+    return randomItem || mysteriousObject;
+}
+
 export {
     generateFurnishings  as testGenerateFurnishings,
     generateItem         as testGenerateItem,
     generateItemObjects  as testGenerateItemObjects,
     getFurnishingObjects as testGetFurnishingObjects,
     getItemCount         as testGetItemCount,
+    getRandomItem        as testGetRandomItem,
 };
 
 // -- Public Functions ---------------------------------------------------------

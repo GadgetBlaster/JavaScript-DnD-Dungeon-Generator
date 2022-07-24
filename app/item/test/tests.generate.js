@@ -7,6 +7,7 @@ import {
     testGenerateItemObjects  as generateItemObjects,
     testGetFurnishingObjects as getFurnishingObjects,
     testGetItemCount         as getItemCount,
+    testGetRandomItem        as getRandomItem,
 
     // Public Functions
     generateItems,
@@ -20,7 +21,7 @@ import {
     requiredRoomFurniture,
 } from '../furnishing.js';
 
-import { itemTypes } from '../item.js';
+import { itemTypes, itemsByRarity, itemsByType, mysteriousObject } from '../item.js';
 import { conditions } from '../../attribute/condition.js';
 import { rarities } from '../../attribute/rarity.js';
 import { sizes } from '../../attribute/size.js';
@@ -325,6 +326,46 @@ export default ({ assert, describe, it }) => {
                 const isInRange    = count >= min && count <= max;
 
                 assert(isInRange).isTrue();
+            });
+        });
+    });
+
+    describe('getRandomItem()', () => {
+        describe('given an item type of "random"', () => {
+            describe('given an item rarity which has no items', () => {
+                it('returns a mysterious object', () => {
+                    // @ts-expect-error
+                    assert(getRandomItem('random', 'notARarity')).equalsObject(mysteriousObject);
+                });
+            });
+
+            describe('given a valid item rarity', () => {
+                it('returns a random object of that rarity', () => {
+                    // Assert there are items in the legendary rarity group.
+                    assert(itemsByRarity.legendary).isArray();
+                    assert(itemsByRarity.legendary.length === 0).isFalse();
+
+                    assert(getRandomItem('random', 'legendary').rarity).equals('legendary');
+                });
+            });
+        });
+
+        describe('given an item type', () => {
+            describe('given an item type which has no items', () => {
+                it('returns a mysterious object', () => {
+                    // @ts-expect-error
+                    assert(getRandomItem('notAType', 'legendary')).equalsObject(mysteriousObject);
+                });
+            });
+
+            describe('given an item rarity which has no items', () => {
+                it('returns a mysterious object', () => {
+                    // Assert there are rarity groups in the armor group.
+                    assert(itemsByType.armor).isObject();
+
+                    // @ts-expect-error
+                    assert(getRandomItem('armor', 'notARarity')).equalsObject(mysteriousObject);
+                });
             });
         });
     });

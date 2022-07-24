@@ -146,7 +146,7 @@ const {
         }
 
         if (!byType[type]) {
-            byType[type] = [];
+            byType[type] = {};
         }
 
         if (!byType[type][rarity]) {
