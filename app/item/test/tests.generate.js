@@ -80,6 +80,10 @@ export default ({ assert, describe, it }) => {
 
         describe('given a room type included in `furnishingByRoomType`', () => {
             it('should include only furniture appropriate to the room type', () => {
+                // Make sure "room" is still included in
+                // `requiredRoomFurniture`.
+                assert(furnishingByRoomType.room).isArray();
+
                 const validFurniture = furnishingByRoomType.room.concat(anyRoomFurniture)
                     .map(({ name }) => name);
 
@@ -94,12 +98,11 @@ export default ({ assert, describe, it }) => {
             it('should include any furnishing', () => {
                 // Make sure 'newRoomType' is not included in
                 // `furnishingByRoomType`.
-                // @ts-expect-error
                 assert(furnishingByRoomType.newRoomType).isUndefined();
 
                 const furniture = generateFurnishings('newRoomType', 'minimum').pop();
                 assert(furniture).isObject();
-                assert(furniture.name).isString();
+                furniture && assert(furniture.name).isString();
             });
         });
     });
@@ -132,6 +135,8 @@ export default ({ assert, describe, it }) => {
         describe('given no `itemCondition` setting', () => {
             it('should throw', () => {
                 let settings = { ...itemSettings };
+
+                // @ts-expect-error
                 delete settings.itemCondition;
                 assert(() => generateItem(settings)).throws('Item condition is required in generateItem()');
             });
@@ -140,6 +145,8 @@ export default ({ assert, describe, it }) => {
         describe('given no `itemQuantity` setting', () => {
             it('should throw', () => {
                 let settings = { ...itemSettings };
+
+                // @ts-expect-error
                 delete settings.itemQuantity;
                 assert(() => generateItem(settings)).throws('Item quantity is required in generateItem()');
             });
@@ -156,6 +163,8 @@ export default ({ assert, describe, it }) => {
         describe('given no `itemRarity` setting', () => {
             it('should throw', () => {
                 let settings = { ...itemSettings };
+
+                // @ts-expect-error
                 delete settings.itemRarity;
                 assert(() => generateItem(settings)).throws('Item rarity is required in generateItem()');
             });
@@ -164,6 +173,8 @@ export default ({ assert, describe, it }) => {
         describe('given no `itemQuantity` setting', () => {
             it('should throw', () => {
                 let settings = { ...itemSettings };
+
+                // @ts-expect-error
                 delete settings.itemType;
                 assert(() => generateItem(settings)).throws('Item type is required in generateItem()');
             });

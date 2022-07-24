@@ -110,7 +110,7 @@ let {
 } = furnishing;
 
 /**
- * @type {{ [key in RoomType]?: ItemPartial[] }}
+ * Furniture that typically exists in a specific room type.
  */
 export const furnishingByRoomType = {
     /* eslint-disable max-len */
@@ -142,8 +142,6 @@ export const furnishingByRoomType = {
 
 /**
  * Furniture that must be included in a specific room type.
- *
- * @type {{ [key in RoomType]?: ItemPartial[] }}
  */
 export const requiredRoomFurniture = {
     armory    : [ rack ],
@@ -161,6 +159,9 @@ export const requiredRoomFurniture = {
     throne    : [ throne ],
 };
 
+/**
+ * Furniture that can exist in any room type.
+ */
 export const anyRoomFurniture = [ painting, tapestry ];
 
 export const furnitureQuantities = Object.freeze(/** @type {const} */ ([
@@ -187,7 +188,6 @@ export const probability = createProbability(new Map([
     [ 100, 'furnished' ],
 ]));
 
-/** @type {{ [key in FurnitureQuantity]?: number }} */
 export const furnishingQuantityRanges = {
     minimum  : 1,
     sparse   : 2,

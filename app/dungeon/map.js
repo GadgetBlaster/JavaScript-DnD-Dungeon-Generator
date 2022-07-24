@@ -696,6 +696,7 @@ function procedurallyApplyRooms(rooms, grid) {
     let appliedRooms = [ ...initialRooms ];
 
     initialRooms.forEach((room) => {
+        // TODO dungeons with zero connectivity should not fork
         let fork = applyRooms(lastSkipped, grid, { isFork: true, prevRoom: room });
 
         if (fork.rooms.length && fork.doors.length) {
