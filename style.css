@@ -364,23 +364,21 @@ button[data-ready] {
     background: var(--color-gray-35);
     border: 1px solid var(--color-gray-20);
     border-radius: var(--spacing-default);
+    text-shadow: 0 0 10px var(--color-gray-0);
+    font-size: var(--font-size-title);
     opacity: 0;
     animation-delay: 500ms;
     animation-duration: 5s;
     animation-fill-mode: forwards;
     animation-name: fadeIn;
+
 }
 
 button[data-ready]:hover {
     background: var(--color-gray-40);
 }
 
-button[data-ready] span {
-    text-shadow: 0 0 10px var(--color-gray-0);
-    font-size: var(--font-size-title);
-}
-
-button[data-ready] svg {
+button[data-ready] div {
     pointer-events: none;
 }
 

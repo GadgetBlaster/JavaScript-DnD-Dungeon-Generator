@@ -329,7 +329,7 @@ export function formatName(name) {
  * @returns {string}
  */
 export function formatReadyState(message, icon) {
-    let content = div(icon, { 'data-spacing': 'b' }) + span(message);
+    let content = div(icon, { 'data-spacing': 'b' }) + message;
 
     return element('button', content, {
         'data-action': 'generate',
