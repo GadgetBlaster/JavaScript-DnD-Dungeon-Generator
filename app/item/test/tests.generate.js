@@ -2,12 +2,12 @@
 
 import {
     // Private Functions
-    testGenerateFurnishings  as generateFurnishings,
-    testGenerateItem         as generateItem,
-    testGenerateItemObjects  as generateItemObjects,
-    testGetFurnishingObjects as getFurnishingObjects,
-    testGetRandomItem        as getRandomItem,
-    testRollItemCount        as rollItemCount,
+    testAggregateItems         as aggregateItems,
+    testGenerateFurnishingList as generateFurnishingList,
+    testGenerateItem           as generateItem,
+    testGenerateItemList       as generateItemList,
+    testGetRandomItem          as getRandomItem,
+    testRollItemCount          as rollItemCount,
 
     // Public Functions
     generateItems,
@@ -36,15 +36,69 @@ export default ({ assert, describe, it }) => {
 
     // -- Private Functions ----------------------------------------------------
 
-    describe('generateFurnishings()', () => {
+    describe('aggregateItems()', () => {
+        /** @type {Item} table */
+        const table = {
+            condition: 'average',
+            count: 1,
+            name: 'Table',
+            rarity: 'average',
+            setCount: 1,
+            size: 'medium',
+            type: 'furnishing',
+        };
+
+        describe('given a single item', () => {
+            const furnishings = aggregateItems([ table ]);
+
+            it('returns an array with that item', () => {
+                assert(furnishings).isArray();
+                assert(furnishings.length).equals(1);
+
+                const furnishing = furnishings[0];
+                assert(furnishing).isObject();
+                assert(furnishing.name).equals('Table');
+            });
+        });
+
+        describe('given multiple, different items', () => {
+            const chair = {
+                ...table,
+                name: 'Chair',
+                label: 'Chair',
+            };
+
+            const furnishings = aggregateItems([ table, chair ]);
+
+            it('return an array of furnishings for the given items', () => {
+                assert(furnishings).isArray();
+                assert(furnishings.length).equals(2);
+            });
+        });
+
+        describe('given duplicate items', () => {
+            const furnishings = aggregateItems([ table, table ]);
+
+            it('returns an array with the furnishings consolidated', () => {
+                assert(furnishings).isArray();
+                assert(furnishings.length).equals(1);
+            });
+
+            it('returns the item with a count incremented', () => {
+                assert(furnishings[0].count).equals(2);
+            });
+        });
+    });
+
+    describe('generateFurnishingList()', () => {
         it('should return an array', () => {
-            const furniture = generateFurnishings('room', 'minimum');
+            const furniture = generateFurnishingList('room', 'minimum');
             assert(furniture).isArray();
         });
 
         describe('given `none`', () => {
             it('should return an empty array', () => {
-                const furniture = generateFurnishings('smithy', 'none');
+                const furniture = generateFurnishingList('smithy', 'none');
                 assert(furniture).isArray();
                 assert(furniture.length).equals(0);
             });
@@ -56,7 +110,7 @@ export default ({ assert, describe, it }) => {
                 // `requiredRoomFurniture`.
                 assert(requiredRoomFurniture.room).isUndefined();
 
-                const furniture = generateFurnishings('room', 'furnished');
+                const furniture = generateFurnishingList('room', 'furnished');
                 const count     = furniture.length;
                 const max       = furnishingQuantityRanges.furnished;
 
@@ -65,7 +119,7 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a `roomType` that requires furniture', () => {
-            const furniture = generateFurnishings('smithy', 'minimum')
+            const furniture = generateFurnishingList('smithy', 'minimum')
                 .map(({ name }) => name);
 
             it('should return an array including all required room type furniture', () => {
@@ -88,7 +142,7 @@ export default ({ assert, describe, it }) => {
                 const validFurniture = furnishingByRoomType.room.concat(anyRoomFurniture)
                     .map(({ name }) => name);
 
-                generateFurnishings('room', 'furnished')
+                generateFurnishingList('room', 'furnished')
                     .forEach(({ name }) => {
                         assert(name).isInArray(validFurniture);
                     });
@@ -101,7 +155,9 @@ export default ({ assert, describe, it }) => {
                 // `furnishingByRoomType`.
                 assert(furnishingByRoomType.newRoomType).isUndefined();
 
-                const furniture = generateFurnishings('newRoomType', 'minimum').pop();
+                // @ts-expect-error
+                const furniture = generateFurnishingList('newRoomType', 'minimum').pop();
+
                 assert(furniture).isObject();
                 furniture && assert(furniture.name).isString();
             });
@@ -125,12 +181,13 @@ export default ({ assert, describe, it }) => {
             // * @prop {number} [capacity] - Max number of small items found inside
             // * @prop {string[]} [variants] - Array of variations
 
-            assert(item.name).isString();
             assert(item.condition).isInArray(conditions);
+            assert(item.count).equals(1);
+            assert(item.name).isString();
             assert(item.rarity).isInArray(rarities);
+            assert(item.setCount).equals(1);
             assert(item.size).isInArray(sizes);
             assert(item.type).isInArray(itemTypes);
-            assert(item.count).equals(1);
         });
 
         describe('given no `itemCondition` setting', () => {
@@ -182,16 +239,16 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('generateItemObjects()', () => {
+    describe('generateItemList()', () => {
         describe('given a count of 1', () => {
-            const items = generateItemObjects(1, {
+            const items = generateItemList(1, {
                 itemCondition: 'random',
                 itemQuantity : 'one',
                 itemRarity   : 'random',
                 itemType     : 'random',
             });
 
-            it('return an array with a single item', () => {
+            it('returns a single item', () => {
                 assert(items).isArray();
                 assert(items.length).equals(1);
 
@@ -202,88 +259,16 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a count greater than 1', () => {
-            const items = generateItemObjects(3, {
+            const items = generateItemList(3, {
                 itemCondition: 'random',
                 itemQuantity : 'one',
                 itemRarity   : 'random',
                 itemType     : 'random',
             });
 
-            it('returns an array with item matching the count', () => {
+            it('returns items for the given count', () => {
                 assert(items).isArray();
-                assert(items.reduce((total, { count }) => total + count, 0)).equals(3);
-            });
-        });
-
-        describe('when duplicates of the same item are generated', () => {
-            const items = generateItemObjects(3, {
-                itemCondition: 'average',
-                itemQuantity : 'one',
-                itemRarity   : 'common',
-                itemType     : 'mysterious',
-            });
-
-            it('should return an array with the items consolidated', () => {
-                assert(items).isArray();
-                assert(items.length).equals(1);
-            });
-
-            it('should return an item object with a count of duplicates', () => {
-                assert(items).isArray();
-                assert(items[0].count).equals(3);
-            });
-        });
-    });
-
-    describe('getFurnishingObjects()', () => {
-        /** @type {Item} table */
-        const table = {
-            condition: 'average',
-            count: 1,
-            name: 'Table',
-            rarity: 'average',
-            size: 'medium',
-            type: 'furnishing',
-        };
-
-        describe('given a single furnishing object', () => {
-            const furnishings = getFurnishingObjects([ table ]);
-
-            it('returns an array with a single furnishing', () => {
-                assert(furnishings).isArray();
-                assert(furnishings.length).equals(1);
-
-                const furnishing = furnishings[0];
-                assert(furnishing).isObject();
-                assert(furnishing.name).equals('Table');
-            });
-        });
-
-        describe('given multiple furnishing objects', () => {
-            const chair = {
-                ...table,
-                name: 'Chair',
-                label: 'Chair',
-            };
-
-            const furnishings = getFurnishingObjects([ table, chair ]);
-
-            it('return an array of furnishings for the given items', () => {
-                assert(furnishings).isArray();
-                assert(furnishings.length).equals(2);
-            });
-        });
-
-        describe('given duplicate furnishing objects', () => {
-            const furnishings = getFurnishingObjects([ table, table ]);
-
-            it('returns an array with the furnishings consolidated', () => {
-                assert(furnishings).isArray();
-                assert(furnishings.length).equals(1);
-            });
-
-            it('returns the furnishing with a count of duplicates', () => {
-                assert(furnishings[0].count).equals(2);
+                assert(items.length).equals(3);
             });
         });
     });

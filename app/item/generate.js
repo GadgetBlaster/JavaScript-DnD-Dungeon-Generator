@@ -68,7 +68,35 @@ import { quantityRanges, probability as quantityProbability } from '../attribute
 // -- Private Functions --------------------------------------------------------
 
 /**
- * Generates furnishings by room type.
+ * Aggregate items grouped by name, variant, condition, and set count.
+ *
+ * @private
+ *
+ * @param {Item[]} items
+ *
+ * @returns {Item[]}
+ */
+const aggregateItems = (items) => Object.values(items.reduce((obj, item) => {
+    let { condition, name, setCount, variant } = item;
+
+    let key = `${name}${variant || ''}.${condition}.${setCount}`;
+
+    if (!obj[key]) {
+        obj[key] = {
+            ...item,
+            count: 1,
+        };
+
+        return obj;
+    }
+
+    obj[key].count++;
+
+    return obj;
+}, {}));
+
+/**
+ * Generates a list of furnishings for the given room type.
  *
  * @private
  *
@@ -78,7 +106,7 @@ import { quantityRanges, probability as quantityProbability } from '../attribute
  *
  * @returns {Item[]}
  */
-function generateFurnishings(roomType, quantity, roomCondition = 'average') {
+function generateFurnishingList(roomType, quantity, roomCondition = 'average') {
     let furniture = [];
 
     if (quantity === 'none') {
@@ -179,9 +207,7 @@ function generateItem(config) {
 }
 
 /**
- * Generate item objects
- *
- * TODO rename to getItemObjects
+ * Generates a list of items.
  *
  * @private
  *
@@ -190,56 +216,15 @@ function generateItem(config) {
  *
  * @returns {Item[]}
  */
-const generateItemObjects = (count, config) => Object.values([ ...Array(count) ].reduce((items) => {
-    let item  = generateItem(config);
-    let { condition, name, setCount, variant } = item;
+function generateItemList(count, config) {
+    let items = [];
 
-    let key = `${condition}.${name}.${setCount}.${variant}`;
-
-    if (!items[key]) {
-        items[key] = {
-            ...item,
-            count: 1,
-        };
-
-        return items;
+    for (let i = 0; i < count; i++) {
+        items.push(generateItem(config));
     }
-
-    items[key].count++;
 
     return items;
-}, {}));
-
-/**
- * Get furnishing objects
- *
- * TODO rename to `getFurnishing()`
- * TODO move to furnishing.js
- *
- * @private
- *
- * @param {Item[]} furnishings
- *
- * @returns {Item[]}
- */
-const getFurnishingObjects = (furnishings) => Object.values(furnishings.reduce((obj, item) => {
-    let { condition, name, setCount, variant } = item;
-
-    let key = `${condition}.${name}.${setCount}.${variant}`;
-
-    if (!obj[key]) {
-        obj[key] = {
-            ...item,
-            count: 1,
-        };
-
-        return obj;
-    }
-
-    obj[key].count++;
-
-    return obj;
-}, {}));
+}
 
 /**
  * Returns a randomized item of the given type and rarity.
@@ -292,12 +277,12 @@ function rollItemCount(itemQuantity) {
 }
 
 export {
-    generateFurnishings  as testGenerateFurnishings,
-    generateItem         as testGenerateItem,
-    generateItemObjects  as testGenerateItemObjects,
-    getFurnishingObjects as testGetFurnishingObjects,
-    getRandomItem        as testGetRandomItem,
-    rollItemCount        as testRollItemCount,
+    aggregateItems         as testAggregateItems,
+    generateFurnishingList as testGenerateFurnishingList,
+    generateItem           as testGenerateItem,
+    generateItemList       as testGenerateItemList,
+    getRandomItem          as testGetRandomItem,
+    rollItemCount          as testRollItemCount,
 };
 
 // -- Public Functions ---------------------------------------------------------
@@ -351,12 +336,12 @@ export function generateItems(config) {
     }
 
     let count = rollItemCount(itemQuantity);
-    let items = generateItemObjects(count, {
+    let items = aggregateItems(generateItemList(count, {
         itemCondition,
         itemQuantity,
         itemRarity,
         itemType,
-    });
+    }));
 
     let containers = [];
 
@@ -366,9 +351,8 @@ export function generateItems(config) {
     /** @type {Item[]} */
     let remaining  = [];
 
-    // TODO Break out into function and check for required configs inside
-    let furnishingConfigs = roomType ? generateFurnishings(roomType, roomFurnitureQuantity, roomCondition) : [];
-    let furnishings = getFurnishingObjects(furnishingConfigs);
+    // TODO check for roomType, furniture quantity, etc. inside `generateFurnishingList()`
+    let furnishings = roomType ? aggregateItems(generateFurnishingList(roomType, roomFurnitureQuantity, roomCondition)) : [];
 
     // TODO break out into function for testing
     // distributeItems() ?
