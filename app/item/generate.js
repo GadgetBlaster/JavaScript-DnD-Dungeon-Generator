@@ -162,7 +162,7 @@ function generateItem(config) {
         if (count > 1) {
             if (type === 'coin') {
                 // TODO pluralize()
-                name = `${maxCount} ${name}${maxCount > 1 ? 's' : ''}`;
+                name = `${count} ${name}${maxCount > 1 ? 's' : ''}`;
             } else {
                 name += `, set of ${count}`;
             }
