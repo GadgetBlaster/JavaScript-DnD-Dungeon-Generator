@@ -7,7 +7,7 @@ const defaults = {
     type: 'tool',
 };
 
-/** @type {{ [name: string]: Partial<ItemPartial>}} */
+/** @type {{ [name: string]: Partial<ItemPartial>?}} */
 const tools = {
     'Alchemist’s supplies'   : { rarity: 'rare' },
     'Ball bearings'          : { maxCount: 100 },

@@ -37,12 +37,12 @@ const defaults = {
     type  : 'container',
 };
 
-/** @type {{ [name: string]: Partial<ItemPartial>}} */
+/** @type {{ [name: string]: Partial<ItemPartial>?}} */
 const containers = {
     'Backpack'           : { size: 'medium' },
     'Barrel, large'      : { size: 'large' },
     'Barrel, medium'     : { size: 'medium' },
-    'Barrel, small'      : { },
+    'Barrel, small'      : null,
     'Basket, large'      : { size: 'medium' },
     'Basket, small'      : { size: 'small' },
     'Belt pouch, large'  : { },
@@ -52,25 +52,25 @@ const containers = {
     'Box, large'         : { size: 'large', variants: [ 'wood', 'stone', 'metal' ] },
     'Box, medium'        : { size: 'medium', variants: [ 'wood', 'stone', 'metal' ] },
     'Box, small'         : { variants: [ 'wood', 'stone', 'metal' ] },
-    'Bucket'             : { },
-    'Case, crossbow bolt': { },
-    'Case, map or scroll': { },
+    'Bucket'             : null,
+    'Case, crossbow bolt': null,
+    'Case, map or scroll': null,
     'Chest, large'       : { size: 'large' },
     'Chest, medium'      : { size: 'medium' },
-    'Chest, small'       : { },
+    'Chest, small'       : null,
     'Component pouch'    : { size: 'tiny', rarity: 'rare' },
-    'Crate'              : { },
+    'Crate'              : null,
     'Flask'              : { size: 'tiny' },
     'Glass case'         : { size: 'medium' },
-    'Jug'                : { },
-    'Pitcher'            : { },
+    'Jug'                : null,
+    'Pitcher'            : null,
     'Pouch'              : { size: 'tiny' },
-    'Quiver'             : { },
-    'Sack'               : { },
+    'Quiver'             : null,
+    'Sack'               : null,
     'Tankard'            : { size: 'tiny', rarity: 'abundant' },
     'Vial'               : { size: 'tiny', rarity: 'uncommon' },
     'Wagon'              : { size: 'large' },
-    'Waterskin'          : { },
+    'Waterskin'          : null,
 };
 
 // TODO tests

@@ -7,7 +7,7 @@ const defaults = {
     rarity: 'common',
 };
 
-/** @type {{ [name: string]: Partial<ItemPartial>}} */
+/** @type {{ [name: string]: Partial<ItemPartial>?}} */
 const miscellaneousItems = {
     'Bell'       : null,
     'Bone'       : { variants: [ 'rib', 'pelvis', 'femur', 'leg', 'arm' ] },

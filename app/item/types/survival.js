@@ -8,7 +8,7 @@ const defaults = {
     type  : 'survival',
 };
 
-/** @type {{ [name: string]: Partial<ItemPartial>}} */
+/** @type {{ [name: string]: Partial<ItemPartial>?}} */
 const survivalEquipment = {
     'Bedroll'           : { rarity: 'common' },
     'Blanket'           : { rarity: 'common' },

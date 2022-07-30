@@ -8,7 +8,7 @@ const defaults = {
     type  : 'tack',
 };
 
-/** @type {{ [name: string]: Partial<ItemPartial>}} */
+/** @type {{ [name: string]: Partial<ItemPartial>?}} */
 const tack = {
     'Barding'       : { variants: [ 'chain', 'plage', 'scabb' ] },
     'Bit and bridle': null,

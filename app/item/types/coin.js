@@ -9,7 +9,7 @@ const defaults = {
     rarity  : 'uncommon',
 };
 
-/** @type {{ [name: string]: Partial<ItemPartial>}} */
+/** @type {{ [name: string]: Partial<ItemPartial>?}} */
 const coins = {
     'Copper piece'  : { rarity: 'common' },
     'Silver piece'  : null,

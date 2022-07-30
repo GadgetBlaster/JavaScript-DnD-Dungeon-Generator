@@ -8,7 +8,7 @@ const defaults = {
     type  : 'kitchen',
 };
 
-/** @type {{ [name: string]: Partial<ItemPartial>}} */
+/** @type {{ [name: string]: Partial<ItemPartial>?}} */
 const kitchenSupplies = {
     'Basin'        : null,
     'Cauldron'     : { rarity: 'average' },

@@ -8,7 +8,7 @@ const defaults = {
     type  : 'mystic',
 };
 
-/** @type {{ [name: string]: Partial<ItemPartial>}} */
+/** @type {{ [name: string]: Partial<ItemPartial>?}} */
 const mysticItems = {
     'Arcane focus' : { variants: [ 'crystal', 'orb', 'rod', 'staff', 'wand' ] },
     'Druidic focus': null,
