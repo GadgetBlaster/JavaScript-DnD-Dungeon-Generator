@@ -31,6 +31,7 @@ import { quantityRanges, probability as quantityProbability } from '../attribute
 /** @typedef {import('../attribute/size.js').Size} Size */
 /** @typedef {import('../controller/knobs.js').Config} Config */
 /** @typedef {import('../controller/knobs.js').ItemConfig} ItemConfig */
+/** @typedef {import('../room/room.js').RoomType} RoomType */
 /** @typedef {import('./furnishing.js').FurnitureQuantity} FurnitureQuantity */
 /** @typedef {import('./item.js').ItemBase} ItemBase */
 /** @typedef {import('./item.js').ItemType} ItemType */
@@ -70,7 +71,7 @@ import { quantityRanges, probability as quantityProbability } from '../attribute
  *
  * @private
  *
- * @param {string} roomType
+ * @param {RoomType} roomType
  * @param {FurnitureQuantity} quantity
  * @param {Condition} [roomCondition]
  *
@@ -116,7 +117,7 @@ function generateFurnishings(roomType, quantity, roomCondition = 'average') {
  *
  * @returns {Item}
  */
-const generateItem = (config) => {
+function generateItem(config) {
     let {
         itemCondition,
         itemQuantity,
@@ -180,7 +181,7 @@ const generateItem = (config) => {
         size: item.size,
         type: item.type,
     };
-};
+}
 
 /**
  * Generate item objects
@@ -324,15 +325,19 @@ export function generateItems(config) {
         roomType,
     } = config;
 
-    isRequired(itemCondition, 'itemCondition is required in generateItems()');
-    isRequired(itemQuantity,  'itemQuantity is required in generateItems()');
-    isRequired(itemRarity,    'itemRarity is required in generateItems()');
-    isRequired(itemType,      'itemType is required in generateItems()');
+    if (!itemCondition) { toss('itemCondition is required in generateItems()'); }
+    if (!itemQuantity)  { toss('itemQuantity is required in generateItems()');  }
+    if (!itemRarity)    { toss('itemRarity is required in generateItems()');    }
+    if (!itemType)      { toss('itemType is required in generateItems()');      }
 
-    let inRoom = Boolean(roomType);
+    if (roomType && !roomCondition) {
+        // TODO check in `generateFurnishings()`
+        toss('roomCondition is required for room items in generateItems()');
+    }
 
-    if (inRoom && !roomCondition) {
-        isRequired(roomCondition, 'roomCondition is required for room items in generateItems()');
+    if (roomType === 'random') {
+        // TODO add test
+        toss('roomType cannot be "random" in generateItems()');
     }
 
     if (itemQuantity === 'random') {
@@ -351,7 +356,12 @@ export function generateItems(config) {
     }
 
     let count = getItemCount(itemQuantity);
-    let items = generateItemObjects(count, config);
+    let items = generateItemObjects(count, {
+        itemCondition,
+        itemQuantity,
+        itemRarity,
+        itemType,
+    });
 
     let containers = [];
 
@@ -361,7 +371,8 @@ export function generateItems(config) {
     /** @type {Item[]} */
     let remaining  = [];
 
-    let furnishingConfigs = inRoom ? generateFurnishings(roomType, roomFurnitureQuantity, roomCondition) : [];
+    // TODO Break out into function and check for required configs inside
+    let furnishingConfigs = roomType ? generateFurnishings(roomType, roomFurnitureQuantity, roomCondition) : [];
     let furnishings = getFurnishingObjects(furnishingConfigs);
 
     // TODO break out into function for testing
@@ -408,7 +419,7 @@ export function generateItems(config) {
 
             let item = smallItems[0];
 
-            if (!item) {
+            if (!item || (item.size !== 'tiny' && item.size !== 'small')) {
                 continue;
             }
 
@@ -416,7 +427,7 @@ export function generateItems(config) {
                 continue;
             }
 
-            let spaceRequired     = itemSizeSpace[item.size];
+            let spaceRequired     = itemSizeSpace[item.size] || Infinity;
             let spaceAfterAdded   = remainingSpace - spaceRequired;
 
             if (spaceAfterAdded < 0) {
