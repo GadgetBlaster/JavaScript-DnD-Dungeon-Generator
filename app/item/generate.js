@@ -254,7 +254,7 @@ function getItemCount(itemQuantity) {
     let range = quantityRanges[itemQuantity];
 
     if (!range) {
-        toss('Invalid quantity "${itemQuantity}" in getItemCount()');
+        toss(`Invalid quantity "${itemQuantity}" in getItemCount()`);
     }
 
     let { min, max } = range;
