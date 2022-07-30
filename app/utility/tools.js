@@ -188,7 +188,6 @@ export const toss = (message) => { throw new TypeError(message); };
  * @param {any} value
  * @param {string} message
  *
- * @deprecated TODO remove, does not enforce type checking
  * @throws
  */
 export function isRequired(value, message) {

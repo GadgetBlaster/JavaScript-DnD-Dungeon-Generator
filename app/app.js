@@ -52,14 +52,7 @@ function logError(error) {
 
 // -- Config -------------------------------------------------------------------
 
-/**
- * Returns application HTML sections.
- *
- * @param {Document} document
- *
- * @returns {Sections}
- */
-function getSections(document) {
+const sections = (/** @type {() => Sections} */ () => {
     let body    = document.body;
     let content = document.getElementById('content');
     let footer  = document.getElementById('footer');
@@ -73,17 +66,8 @@ function getSections(document) {
     if (!nav)     { toss('Cannot find nav element'); }
     if (!toolbar) { toss('Cannot find toolbar element'); }
 
-    return {
-        body,
-        content,
-        footer,
-        knobs,
-        nav,
-        toolbar,
-    };
-}
-
-const sections = getSections(document);
+    return { body, content, footer, knobs, nav, toolbar };
+})();
 
 // -- Tests --------------------------------------------------------------------
 

@@ -329,7 +329,7 @@ function onNavigate(sections, e, updatePath) {
  * @private
  *
  * @param {Sections} sections
- * @param {Generator} generator
+ * @param {Generator | undefined} generator
  */
 function renderApp(sections, generator) {
     if (!generator) {
@@ -540,7 +540,7 @@ export const getActiveGenerator = (route) => routes[route];
  * @param {Sections} sections
  * @param {(error: Error) => void} onError
  *
- * @returns {(generator: Generator) => void}
+ * @returns {(generator: Generator | undefined) => void}
  */
 export const getRender = (sections, onError) => (generator) => {
     try {
