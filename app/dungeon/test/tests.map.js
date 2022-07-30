@@ -1233,10 +1233,16 @@ export default ({ assert, describe, it }) => {
                 roomType             : 'room',
             };
 
-            const { map, rooms, doors } = generateMap({ width: 30, height: 24 }, generateRooms(roomConfig));
+            const gridDimensions = {
+                width: 30,
+                height: 24,
+            };
+
+            const { dimensions, map, rooms, doors } = generateMap(gridDimensions, generateRooms(roomConfig));
 
             assert(map).isString();
             assert(rooms).isArray();
+            assert(dimensions).equalsObject(gridDimensions);
 
             let lastRoomNumber = 0;
 

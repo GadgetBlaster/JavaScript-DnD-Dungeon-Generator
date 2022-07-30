@@ -770,26 +770,15 @@ export {
 // -- Public Functions ---------------------------------------------------------
 
 /**
- * Generates a dungeon map.
+ * Returns an SVG element string for the given map configs.
  *
- * @param {Dimensions} gridDimensions
- * @param {Room[]} roomConfigs
+ * @param {Dimensions} dimensions
+ * @param {AppliedRoom[]} rooms
+ * @param {Door[]} doors
  *
- * @returns {{
- *     map: string;
- *     rooms: AppliedRoom[];
- *     doors: Door[];
- * }}
+ * @returns {string}
  */
-export function generateMap(gridDimensions, roomConfigs) {
-    let grid = createBlankGrid(gridDimensions);
-
-    let { rooms, doors } = procedurallyApplyRooms(roomConfigs, grid);
-
-    if (roomConfigs.length <= rooms.length) {
-        console.warn('Not enough rooms generated in generateMap()');
-    }
-
+export function getMapSvg(dimensions, rooms, doors) {
     let roomRects = rooms.map((room) => {
         let { rectangle, traps } = room;
 
@@ -800,13 +789,39 @@ export function generateMap(gridDimensions, roomConfigs) {
 
     let doorRects = doors.map((door) => drawDoor(door)).join('');
 
-    let gridLines = drawGrid(gridDimensions);
+    let gridLines = drawGrid(dimensions);
 
     let content = gridLines + roomRects + doorRects;
 
+    return drawMap(dimensions, content);
+}
+
+/**
+ * Generates a dungeon map.
+ *
+ * @param {Dimensions} dimensions
+ * @param {Room[]} roomConfigs
+ *
+ * @returns {{
+ *     dimensions: Dimensions;
+ *     doors: Door[];
+ *     map: string;
+ *     rooms: AppliedRoom[];
+ * }}
+ */
+export function generateMap(dimensions, roomConfigs) {
+    let grid = createBlankGrid(dimensions);
+
+    let { rooms, doors } = procedurallyApplyRooms(roomConfigs, grid);
+
+    if (roomConfigs.length <= rooms.length) {
+        console.warn('Not enough rooms generated in generateMap()');
+    }
+
     return {
+        dimensions,
         doors,
-        map: drawMap(gridDimensions, content),
+        map: getMapSvg(dimensions, rooms, doors),
         rooms,
     };
 }
