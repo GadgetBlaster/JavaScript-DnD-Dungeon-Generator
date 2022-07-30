@@ -53,7 +53,7 @@ import { quantityRanges, probability as quantityProbability } from '../attribute
  */
 
 /**
- * @typedef {Item & { contents: Item[] }} Container
+ * @typedef {Item & { contents?: Item[] }} Container
  */
 
 /**
@@ -343,6 +343,7 @@ export function generateItems(config) {
         itemType,
     }));
 
+    /** @type {Container[]} */
     let containers = [];
 
     /** @type {Item[]} */
@@ -387,8 +388,10 @@ export function generateItems(config) {
             return;
         }
 
-        let contents       = [];
-        let remainingSpace = capacity[container.size]; // TODO can be undefined
+        /** @type {Item[]} */
+        let contents = [];
+
+        let remainingSpace = capacity[container.size] || 0;
         let itemCount      = smallItems.length;
 
         for (let i = 0; i < itemCount; i++) {
@@ -415,7 +418,9 @@ export function generateItems(config) {
 
             remainingSpace = spaceAfterAdded;
 
-            contents.push(smallItems.shift());
+            let itemToAdd = smallItems.shift();
+
+            itemToAdd && contents.push(itemToAdd);
         }
 
         if (contents.length) {
