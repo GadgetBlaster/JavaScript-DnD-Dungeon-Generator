@@ -21,7 +21,8 @@ import trapList from '../room/trap.js';
  * @typedef {object} Dungeon
  *
  * @prop {string} name
- * @prop {string} mapSvg
+ * @prop {Dimensions} dimensions
+ * @prop {string} map
  * @prop {Room[]} rooms
  * @prop {Doors} doors
  */
@@ -222,9 +223,8 @@ export function generateDungeon(config) {
     distributeMaps(dungeonMaps, dungeon.rooms);
 
     return {
-        name  : dungeonName,
-        mapSvg: dungeon.map,
-        rooms : dungeon.rooms,
-        doors : doors,
+        name: dungeonName,
+        ...dungeon,
+        doors,
     };
 }

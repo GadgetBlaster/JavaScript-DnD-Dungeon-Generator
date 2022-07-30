@@ -16,6 +16,8 @@ import {
     generateDungeon,
 } from '../generate.js';
 
+import { parseSvg } from '../../utility/element.js';
+
 import trapList from '../../room/trap.js';
 
 /**
@@ -127,9 +129,13 @@ export default ({ assert, describe, it }) => {
         it('should return a `Dungeon` object', () => {
             assert(dungeon).isObject();
             assert(dungeon.name).equals('Dungeon test!');
-            assert(dungeon.mapSvg).isString();
-            assert(/<svg(.*?)>(.*?)<\/svg>/.test(dungeon.mapSvg)).isTrue();
+            assert(dungeon.map).isString();
+            assert(parseSvg(dungeon.map).children[0]).isElementTag('svg');
             assert(dungeon.rooms).isArray();
+            assert(dungeon.doors).isObject();
+            assert(dungeon.dimensions).isObject();
+            assert(dungeon.dimensions.width).isNumber();
+            assert(dungeon.dimensions.height).isNumber();
         });
 
         it('generates a number of `Room` configs less than or equal to the max room count', () => {
