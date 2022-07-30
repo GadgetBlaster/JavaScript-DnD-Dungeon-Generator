@@ -78,7 +78,7 @@ const containers = {
 /** @type {ItemPartial[]} */
 export default Object.entries(containers).map(([ name, config ]) => ({
     name,
-    capacity: config.size ? capacity[config.size] : capacity.small,
+    capacity: config && config.size ? capacity[config.size] : capacity.small,
     ...defaults,
     ...config,
 }));

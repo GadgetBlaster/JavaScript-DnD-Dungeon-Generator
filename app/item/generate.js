@@ -283,7 +283,7 @@ function rollItemCount(itemQuantity) {
     let range = quantityRanges[itemQuantity];
 
     if (!range) {
-        toss(`Invalid quantity "${itemQuantity}" in getItemCount()`);
+        toss(`Invalid quantity "${itemQuantity}" in rollItemCount()`);
     }
 
     let { min, max } = range;

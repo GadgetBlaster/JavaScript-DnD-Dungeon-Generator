@@ -347,7 +347,7 @@ export default ({ assert, describe, it }) => {
             it('throws', () => {
                 // @ts-expect-error
                 assert(() => rollItemCount('billion'))
-                    .throws('Invalid quantity "${itemQuantity}" in rollItemCount()');
+                    .throws('Invalid quantity "billion" in rollItemCount()');
             });
         });
 
