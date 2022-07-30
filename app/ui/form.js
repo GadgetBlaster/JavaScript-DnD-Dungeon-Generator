@@ -7,8 +7,6 @@ import { paragraph, small, span, title } from './typography.js';
 import { select, input, slider, fieldLabel } from './field.js';
 import { toDash, toss, toWords } from '../utility/tools.js';
 
-// TODO rename "knobs" to "controls"
-
 // -- Type Imports -------------------------------------------------------------
 
 /** @typedef {import('../controller/controller.js').Action} Action */
