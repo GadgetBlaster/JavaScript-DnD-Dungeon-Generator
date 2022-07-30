@@ -3,6 +3,7 @@
 import { getErrorMessage } from './utility/tools.js';
 import { getFailureSummary, getSummaryLink } from './unit/output.js';
 import { request } from './utility/xhr.js';
+import { toss } from './utility/tools.js';
 import { unitState } from './unit/state.js';
 import run from './unit/run.js';
 import suite from './unit/suite.js';
@@ -36,7 +37,7 @@ import { getNav } from './ui/nav.js';
 /**
  * Logs an error.
  *
- * @param {string} error
+ * @param {Error} error
  */
 function logError(error) {
     console.error(error);
@@ -51,14 +52,38 @@ function logError(error) {
 
 // -- Config -------------------------------------------------------------------
 
-/** @type {Sections} sections */
-const sections = {
-    body   : document.body,
-    content: document.getElementById('content'),
-    footer : document.getElementById('footer'),
-    knobs  : document.getElementById('knobs'),
-    nav    : document.getElementById('nav'),
-};
+/**
+ * Returns application HTML sections.
+ *
+ * @param {Document} document
+ *
+ * @returns {Sections}
+ */
+function getSections(document) {
+    let body    = document.body;
+    let content = document.getElementById('content');
+    let footer  = document.getElementById('footer');
+    let knobs   = document.getElementById('knobs');
+    let nav     = document.getElementById('nav');
+    let toolbar = document.getElementById('toolbar');
+
+    if (!content) { toss('Cannot find content element'); }
+    if (!footer)  { toss('Cannot find footer element'); }
+    if (!knobs)   { toss('Cannot find knobs element'); }
+    if (!nav)     { toss('Cannot find nav element'); }
+    if (!toolbar) { toss('Cannot find toolbar element'); }
+
+    return {
+        body,
+        content,
+        footer,
+        knobs,
+        nav,
+        toolbar,
+    };
+}
+
+const sections = getSections(document);
 
 // -- Tests --------------------------------------------------------------------
 
