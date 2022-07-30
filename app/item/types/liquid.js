@@ -22,7 +22,7 @@ const defaults = {
     variants: variants,
 };
 
-/** @type {{ [name: string]: Partial<ItemPartial>}} */
+/** @type {{ [name: string]: Partial<ItemPartial>?}} */
 const liquids = {
     'Acid'            : null,
     'Alchemist’s fire': null,

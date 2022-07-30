@@ -106,7 +106,7 @@ const trinkets = [
     'A petrified mouse',
     'A black pirate flag adorned with a dragon’s skull and crossbones',
     'A tiny mechanical crab or spider that moves about when it’s not being observed',
-    'A glass jar containing lard with a label that reads, “Griffon Grease”',
+    'A glass jar containing lard with a label that reads: “Griffon Grease”',
     'A wooden box with a ceramic bottom that holds a living worm with a head on each end of its body',
     'A metal urn containing the ashes of a hero',
 ];

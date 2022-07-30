@@ -47,8 +47,9 @@ import { quantityRanges, probability as quantityProbability } from '../attribute
  * @prop {Size} size
  * @prop {ItemType} type
  * @prop {number} count
- * @prop {number} [capacity] - Max number of small items found inside
- * @prop {string[]} [variants] - Array of variations
+ * @prop {number} setCount
+ * @prop {number} [capacity] - Max number of small or tiny items which fit.
+ * @prop {string} [variant]
  */
 
 /**
@@ -153,33 +154,27 @@ function generateItem(config) {
         itemCondition = conditionProbability.roll();
     }
 
-    let count = 1;
+    let setCount = 1;
 
     if (maxCount > 1) {
-        count = roll(1, maxCount);
-
-        // TODO breakout into function. move to formatting
-        if (count > 1) {
-            if (type === 'coin') {
-                // TODO pluralize()
-                name = `${count} ${name}${maxCount > 1 ? 's' : ''}`;
-            } else {
-                name += `, set of ${count}`;
-            }
-        }
+        setCount = roll(1, maxCount);
     }
 
+    let variant;
+
     if (item.variants) {
-        name += `, ${rollArrayItem(item.variants)}`;
+        variant = rollArrayItem(item.variants);
     }
 
     return {
-        name,
-        count,
         condition: itemCondition,
+        count: 1,
+        name,
         rarity: itemRarity,
+        setCount,
         size: item.size,
         type: item.type,
+        variant,
     };
 }
 
@@ -197,9 +192,9 @@ function generateItem(config) {
  */
 const generateItemObjects = (count, config) => Object.values([ ...Array(count) ].reduce((items) => {
     let item  = generateItem(config);
-    let { condition, name } = item;
+    let { condition, name, setCount, variant } = item;
 
-    let key = `${name}-${condition}`;
+    let key = `${condition}.${name}.${setCount}.${variant}`;
 
     if (!items[key]) {
         items[key] = {

@@ -9,7 +9,7 @@ const defaults = {
     size  : 'medium',
 };
 
-/** @type {{ [name: string]: Partial<ItemPartial>}} */
+/** @type {{ [name: string]: Partial<ItemPartial>?}} */
 const armor = {
     'Breastplate'          : { rarity: 'rare' },
     'Chain mail'           : { rarity: 'rare' },

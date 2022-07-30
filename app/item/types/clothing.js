@@ -8,7 +8,7 @@ const defaults = {
     type  : 'clothing',
 };
 
-/** @type {{ [name: string]: Partial<ItemPartial>}} */
+/** @type {{ [name: string]: Partial<ItemPartial>?}} */
 const clothing = {
     'Belt'        : null,
     'Boots'       : { variants: [ 'riding', 'soft', 'combat' ] },
@@ -17,7 +17,7 @@ const clothing = {
     'Cap'         : null,
     'Cape'        : { variants: [ 'cotton', 'canvas', 'fur', 'silk' ] },
     'Cloak'       : { variants: [ 'cotton', 'canvas', 'fur', 'silk' ] },
-    'Clothes, set': { variants: [ 'common', 'costume', 'fine', 'traveler’s' ] },
+    'Clothes'     : { variants: [ 'common', 'costume', 'fine', 'traveler’s' ] },
     'Gloves'      : null,
     'Gown'        : null,
     'Hat'         : null,

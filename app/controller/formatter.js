@@ -2,7 +2,7 @@
 
 import { article, div, header, section } from '../ui/block.js';
 import { element } from '../utility/element.js';
-import { capitalize, isRequired } from '../utility/tools.js';
+import { capitalize, isRequired, pluralize } from '../utility/tools.js';
 import { drawLegend } from '../dungeon/legend.js';
 import { indicateItemRarity } from '../item/item.js';
 import { list } from '../ui/list.js';
@@ -193,6 +193,9 @@ function getItemDescription(item, { isConditionUniform, isRarityUniform }) {
         count,
         name,
         rarity,
+        setCount,
+        type,
+        variant,
     } = item;
 
     let indicateCondition = !isConditionUniform && condition !== 'average';
@@ -213,6 +216,18 @@ function getItemDescription(item, { isConditionUniform, isRarityUniform }) {
     }
 
     let noteText = notes.join(', ');
+
+    if (variant) {
+        name += `, ${variant}`;
+    }
+
+    if (setCount > 1) {
+        if (type === 'coin') {
+            name = `${setCount} ${pluralize(setCount, name)}`;
+        } else {
+            name += `, set of ${setCount}`;
+        }
+    }
 
     return name + (noteText ? ' ' + formatDetail(noteText) : '');
 }
