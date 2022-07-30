@@ -6,8 +6,8 @@ import {
     testGenerateItem         as generateItem,
     testGenerateItemObjects  as generateItemObjects,
     testGetFurnishingObjects as getFurnishingObjects,
-    testGetItemCount         as getItemCount,
     testGetRandomItem        as getRandomItem,
+    testRollItemCount        as rollItemCount,
 
     // Public Functions
     generateItems,
@@ -288,48 +288,6 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    describe('getItemCount()', () => {
-        describe('given an invalid quantity', () => {
-            it('throws', () => {
-                // @ts-expect-error
-                assert(() => getItemCount('billion'))
-                    .throws('Invalid quantity "${itemQuantity}" in getItemCount()');
-            });
-        });
-
-        describe('given a quantity of "zero"', () => {
-            it('returns 0', () => {
-                assert(getItemCount('zero')).equals(0);
-            });
-        });
-
-        describe('given a quantity of "one"', () => {
-            it('returns 1', () => {
-                assert(getItemCount('one')).equals(1);
-            });
-        });
-
-        describe('given a quantity of "few"', () => {
-            it('returns a value in the range of "few"', () => {
-                const count        = getItemCount('few');
-                const { min, max } = quantityRanges.few;
-                const isInRange    = count >= min && count <= max;
-
-                assert(isInRange).isTrue();
-            });
-        });
-
-        describe('given a quantity of "numerous"', () => {
-            it('returns a value in the range of "numerous"', () => {
-                const count        = getItemCount('numerous');
-                const { min, max } = quantityRanges.numerous;
-                const isInRange    = count >= min && count <= max;
-
-                assert(isInRange).isTrue();
-            });
-        });
-    });
-
     describe('getRandomItem()', () => {
         describe('given an item type of "random"', () => {
             describe('given an item rarity which has no items', () => {
@@ -380,6 +338,48 @@ export default ({ assert, describe, it }) => {
                     assert(item.type).equals('armor');
                     assert(item.rarity).equals('rare');
                 });
+            });
+        });
+    });
+
+    describe('rollItemCount()', () => {
+        describe('given an invalid quantity', () => {
+            it('throws', () => {
+                // @ts-expect-error
+                assert(() => rollItemCount('billion'))
+                    .throws('Invalid quantity "${itemQuantity}" in rollItemCount()');
+            });
+        });
+
+        describe('given a quantity of "zero"', () => {
+            it('returns 0', () => {
+                assert(rollItemCount('zero')).equals(0);
+            });
+        });
+
+        describe('given a quantity of "one"', () => {
+            it('returns 1', () => {
+                assert(rollItemCount('one')).equals(1);
+            });
+        });
+
+        describe('given a quantity of "few"', () => {
+            it('returns a value in the range of "few"', () => {
+                const count        = rollItemCount('few');
+                const { min, max } = quantityRanges.few;
+                const isInRange    = count >= min && count <= max;
+
+                assert(isInRange).isTrue();
+            });
+        });
+
+        describe('given a quantity of "numerous"', () => {
+            it('returns a value in the range of "numerous"', () => {
+                const count        = rollItemCount('numerous');
+                const { min, max } = quantityRanges.numerous;
+                const isInRange    = count >= min && count <= max;
+
+                assert(isInRange).isTrue();
             });
         });
     });

@@ -223,9 +223,9 @@ const generateItemObjects = (count, config) => Object.values([ ...Array(count) ]
  * @returns {Item[]}
  */
 const getFurnishingObjects = (furnishings) => Object.values(furnishings.reduce((obj, item) => {
-    let { name, condition } = item;
+    let { condition, name, setCount, variant } = item;
 
-    let key = `${name}-${condition}`;
+    let key = `${condition}.${name}.${setCount}.${variant}`;
 
     if (!obj[key]) {
         obj[key] = {
@@ -240,27 +240,6 @@ const getFurnishingObjects = (furnishings) => Object.values(furnishings.reduce((
 
     return obj;
 }, {}));
-
-/**
- * Get item count based on quantity config.
- *
- * @private
- *
- * @param {Quantity} itemQuantity
- *
- * @returns {number}
- */
-function getItemCount(itemQuantity) {
-    let range = quantityRanges[itemQuantity];
-
-    if (!range) {
-        toss(`Invalid quantity "${itemQuantity}" in getItemCount()`);
-    }
-
-    let { min, max } = range;
-
-    return roll(min, max);
-}
 
 /**
  * Returns a randomized item of the given type and rarity.
@@ -291,13 +270,34 @@ function getRandomItem(itemType, itemRarity) {
     return rollArrayItem(itemsByType[itemType][itemRarity]);
 }
 
+/**
+ * Get item count based on quantity config.
+ *
+ * @private
+ *
+ * @param {Quantity} itemQuantity
+ *
+ * @returns {number}
+ */
+function rollItemCount(itemQuantity) {
+    let range = quantityRanges[itemQuantity];
+
+    if (!range) {
+        toss(`Invalid quantity "${itemQuantity}" in getItemCount()`);
+    }
+
+    let { min, max } = range;
+
+    return roll(min, max);
+}
+
 export {
     generateFurnishings  as testGenerateFurnishings,
     generateItem         as testGenerateItem,
     generateItemObjects  as testGenerateItemObjects,
     getFurnishingObjects as testGetFurnishingObjects,
-    getItemCount         as testGetItemCount,
     getRandomItem        as testGetRandomItem,
+    rollItemCount        as testRollItemCount,
 };
 
 // -- Public Functions ---------------------------------------------------------
@@ -350,7 +350,7 @@ export function generateItems(config) {
         roomFurnitureQuantity = roomFurnishingProbability.roll();
     }
 
-    let count = getItemCount(itemQuantity);
+    let count = rollItemCount(itemQuantity);
     let items = generateItemObjects(count, {
         itemCondition,
         itemQuantity,
