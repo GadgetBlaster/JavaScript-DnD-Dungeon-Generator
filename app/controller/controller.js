@@ -15,6 +15,7 @@ import { generateName } from '../name/generate.js';
 import { generateRooms } from '../room/generate.js';
 import { getFormData, getKnobPanel, validateOnBlur } from '../ui/form.js';
 import { setActiveNavItem } from '../ui/nav.js';
+import { getToolbar } from '../ui/toolbar.js';
 import { toss, isRequired } from '../utility/tools.js';
 
 // -- Type Imports -------------------------------------------------------------
@@ -40,6 +41,7 @@ import { toss, isRequired } from '../utility/tools.js';
  * @prop {HTMLElement} footer
  * @prop {HTMLElement} knobs
  * @prop {HTMLElement} nav
+ * @prop {HTMLElement} toolbar
  */
 
 /**
@@ -47,11 +49,11 @@ import { toss, isRequired } from '../utility/tools.js';
  * | "expand"
  * | "generate"
  * | "navigate"
+ * | "save"
  * | "toggle"
  * } Action
  */
 
-/** @typedef {Generator} Page */
 /** @typedef {404} StatusCode */
 
 // -- Config -------------------------------------------------------------------
@@ -327,26 +329,27 @@ function onNavigate(sections, e, updatePath) {
  * @private
  *
  * @param {Sections} sections
- * @param {Page} page
+ * @param {Generator} generator
  */
-function renderApp(sections, page) {
-    if (!page) {
+function renderApp(sections, generator) {
+    if (!generator) {
         renderErrorPage(sections, 404);
         return;
     }
 
-    let { body, content, knobs, nav } = sections;
+    let { body, content, knobs, nav, toolbar } = sections;
 
     if (body.dataset.layout === 'full') {
         body.dataset.layout = 'default';
     }
 
-    setActiveNavItem(nav, page);
+    setActiveNavItem(nav, generator);
 
     let isExpanded = isSidebarExpanded(body);
-    let { title, icon } = getReadyState(page);
+    let { title, icon } = getReadyState(generator);
 
-    knobs.innerHTML   = getKnobPanel(page, { isExpanded });
+    toolbar.innerHTML = getToolbar(generator);
+    knobs.innerHTML   = getKnobPanel(generator, { isExpanded });
     content.innerHTML = formatReadyState(title, icon);
 }
 
@@ -535,9 +538,9 @@ export const getActiveGenerator = (route) => routes[route];
  * Returns the app's render function.
  *
  * @param {Sections} sections
- * @param {(any) => void} onError
+ * @param {(error: Error) => void} onError
  *
- * @returns {(page: Page) => void}
+ * @returns {(generator: Generator) => void}
  */
 export const getRender = (sections, onError) => (generator) => {
     try {
@@ -565,6 +568,7 @@ export function getTriggers(sections, updatePath, getPathname) {
         expand   : ( ) => toggleExpand(sections, getPathname),
         generate : ( ) => onGenerate(sections, getPathname),
         navigate : (e) => onNavigate(sections, e, updatePath),
+        save     : ( ) => console.log('saving...'),
         toggle   : (e) => toggleVisibility(body, e),
     };
 }

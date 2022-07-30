@@ -61,11 +61,13 @@ function getMockSections() {
     const footer  = document.createElement('footer');
     const knobs   = document.createElement('form');
     const nav     = document.createElement('nav');
+    const toolbar = document.createElement('menu');
 
-    body.appendChild(content);
-    body.appendChild(footer);
-    body.appendChild(knobs);
     body.appendChild(nav);
+    body.appendChild(toolbar);
+    body.appendChild(content);
+    body.appendChild(knobs);
+    body.appendChild(footer);
 
     body.dataset.layout = 'default';
 
@@ -78,6 +80,7 @@ function getMockSections() {
         footer,
         knobs,
         nav,
+        toolbar,
     };
 }
 
@@ -396,9 +399,9 @@ export default ({ assert, describe, it }) => {
 
     describe('renderApp()', () => {
         const sections = getMockSections();
-        const { body, content, knobs, nav } = sections;
+        const { body, content, knobs, nav, toolbar } = sections;
 
-        it('updates the content, knobs, and nav elements', () => {
+        it('updates the content, knobs, nav, and toolbar elements', () => {
             /** @type {HTMLElement | null} */
             const dungeonButton = nav.querySelector('[data-target="dungeon"]');
 
@@ -408,6 +411,7 @@ export default ({ assert, describe, it }) => {
 
             assert(content).hasTextContent('Generate Dungeon');
             assert(knobs).hasTextContent('Generate');
+            assert(Boolean(toolbar.querySelector('button[data-action="save"]'))).isTrue();
             dungeonButton && assert(dungeonButton.dataset.active).equals('');
         });
 
@@ -434,7 +438,7 @@ export default ({ assert, describe, it }) => {
             });
         });
 
-        describe('when the page is undefined', () => {
+        describe('when the generator is undefined', () => {
             it('renders a 404 message in a full layout', () => {
                 // @ts-expect-error
                 renderApp(sections);
