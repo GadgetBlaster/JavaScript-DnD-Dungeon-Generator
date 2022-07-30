@@ -6,7 +6,7 @@ import { toss } from './tools.js';
 
 // -- Types --------------------------------------------------------------------
 
-/** @typedef {{ [attribute: string]: string | number | boolean }} Attributes */
+/** @typedef {{ [attribute: string]: string | number | boolean | undefined }} Attributes */
 
 // -- Config -------------------------------------------------------------------
 

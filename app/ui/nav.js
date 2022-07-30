@@ -16,20 +16,6 @@ const disabledGenerators = new Set([ 'names' ]);
 
 export { disabledGenerators as testDisabledGenerators };
 
-// -- Private Functions --------------------------------------------------------
-
-/**
- * Returns an array of HTMLElement children for an HTMLElement.
- *
- * @private
- *
- * @param {HTMLCollection} collection
- *
- * @returns {HTMLElement[]}
- */
-const getElements = (collection) => [ ...collection ].map((el) =>
-    el instanceof HTMLElement && el).filter(Boolean);
-
 // -- Public Functions ---------------------------------------------------------
 
 /**
@@ -43,7 +29,7 @@ export const getNav = (activeGenerator) => generators
     .filter((generator) => !disabledGenerators.has(generator))
     .map((generator, i) => link(capitalize(generator), routeLookup[generator], {
         'data-action': 'navigate',
-        'data-active': activeGenerator === generator ? '' : null,
+        'data-active': activeGenerator === generator ? '' : undefined,
         'data-target': generator,
         'style'      : `animation-delay: ${2000 + (500 * i)}ms;`,
     })).join('');
@@ -55,7 +41,11 @@ export const getNav = (activeGenerator) => generators
  * @param {Generator} generator
  */
 export function setActiveNavItem(nav, generator) {
-    getElements(nav.children).forEach((btn) => {
+    [ ...nav.children ].forEach((btn) => {
+        if (!(btn instanceof HTMLElement)) {
+            return;
+        }
+
         if (btn.dataset.target === generator) {
             btn.dataset.active = '';
             return;
