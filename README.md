@@ -6,9 +6,9 @@ The application has zero 3rd party library dependencies. Functionally is validat
 
 This project is a work in progress with numerous features and configuration options still to come.
 
-## Example
+## Screenshot
 
-![D&D Dungeon Generator Map Example](/img/example.png)
+![D&D Dungeon Generator App](/img/screenshot.png)
 
 ## Application Design
 
