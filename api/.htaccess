@@ -1,7 +1,0 @@
-Options -Indexes
-
-RewriteEngine On
-
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^([^?]*)$ /api/index.php?path=$1 [NC,L,QSA]
