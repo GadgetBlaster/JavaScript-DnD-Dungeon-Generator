@@ -451,7 +451,7 @@ export default ({ assert, describe, it }) => {
 
     // TODO tests for `config` & `isExpanded` options, expand/collapse button
     describe('getKnobPanel()', () => {
-        let body = parseHtml(getKnobPanel('dungeon'));
+        let body = parseHtml(getKnobPanel('maps'));
 
         it('returns valid HTML', () => {
             assert(Boolean(body)).isTrue();

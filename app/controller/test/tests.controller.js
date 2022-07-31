@@ -7,10 +7,13 @@ import { parseHtml, parseSvg } from '../../utility/element.js';
 import {
     // Config
     generators,
-    testGetGenerator as getGenerator,
+    testGenKeyRouteRegEx as genKeyRouteRegEx,
+    testRoutes           as routes,
 
     // Private Functions
+    testGetActiveRoute      as getActiveRoute,
     testGetErrorPageContent as getErrorPageContent,
+    testGetGenerator        as getGenerator,
     testGetReadyState       as getReadyState,
     testGetTargetControl    as getTargetControl,
     testGetTargetDataset    as getTargetDataset,
@@ -26,7 +29,6 @@ import {
 
     // Public Functions
     attachEventDelegates,
-    getActiveGenerator,
     getRender,
     getTriggers,
 } from '../controller.js';
@@ -87,12 +89,123 @@ function getMockSections() {
     };
 }
 
+const mockState = (() => {
+    let state;
+    return {
+        get: () => state,
+        set: (newState) => state = newState,
+    };
+})();
+
 /**
  * @param {import('../../unit/state.js').Utility} utility
  */
 export default ({ assert, describe, it }) => {
 
+    // -- Config ---------------------------------------------------------------
+
+    describe('genKeyRouteRegEx', () => {
+        describe('given a path to a generator with a valid key', () => {
+            it('parses correct path parts', () => {
+                generators.forEach((generator) => {
+                    let route = `/${generator}/1234567891234`;
+                    let parts = route.match(genKeyRouteRegEx);
+
+                    assert(parts).isArray();
+                    parts && assert(parts.length).equals(3);
+                    parts && assert(parts[0]).equals(route);
+                    parts && assert(parts[1]).equals(generator);
+                    parts && assert(parts[2]).equals('1234567891234');
+                });
+            });
+        });
+
+        describe('given a path to a generator without a key', () => {
+            it('parses a single path part', () => {
+                let parts = '/items'.match(genKeyRouteRegEx);
+
+                assert(parts).isArray();
+                parts && assert(parts.length).equals(3);
+                parts && assert(parts[0]).equals('/items');
+                parts && assert(parts[1]).equals('items');
+                parts && assert(parts[2]).isUndefined();
+            });
+        });
+
+        describe('given a path to a generator with an invalid key', () => {
+            it('parses a single path part', () => {
+                [ '', '1234', '1234567&91234', '1234567-91234' ].forEach((invalidKey) => {
+                    let parts = `/items/${invalidKey}`.match(genKeyRouteRegEx);
+
+                    assert(parts).isArray();
+                    parts && assert(parts.length).equals(3);
+                    parts && assert(parts[0]).equals('/items');
+                    parts && assert(parts[1]).equals('items');
+                    parts && assert(parts[2]).isUndefined();
+                });
+            });
+        });
+
+        describe('given a path to an invalid generator with a valid key', () => {
+            it('returns null', () => {
+                let parts = '/nope/1234567891234'.match(genKeyRouteRegEx);
+                assert(parts).isNull();
+            });
+        });
+    });
+
+    describe('routes', () => {
+
+    });
+
     // -- Private Functions ----------------------------------------------------
+
+    describe('getActiveRoute()', () => {
+        describe('when the path is the homepage', () => {
+            it('returns the active generator', () => {
+                assert(getActiveRoute('/')).equalsObject({
+                    page: 'home',
+                });
+            });
+        });
+
+        describe('when there is no key in the path', () => {
+            it('returns the active generator', () => {
+                assert(getActiveRoute('/rooms')).equalsObject({
+                    generator: 'rooms',
+                });
+            });
+        });
+
+        describe('when there is a valid key in the path', () => {
+            it('returns the active generator and the key', () => {
+                assert(getActiveRoute('/rooms/asd3uyt76k98n')).equalsObject({
+                    generator: 'rooms',
+                    key: 'asd3uyt76k98n',
+                });
+            });
+        });
+
+        describe('when there is an invalid key in the path', () => {
+            it('returns an empty object', () => {
+                assert(getActiveRoute('/rooms/123')).equalsObject({});
+            });
+        });
+
+        describe('when there is a trailing slash in the path', () => {
+            it('returns an empty object', () => {
+                [ '/rooms/', '/rooms/asd3uyt76k98n/' ].forEach((path) => {
+                    assert(getActiveRoute(path)).equalsObject({});
+                });
+            });
+        });
+
+        describe('given an invalid route', () => {
+            it('returns an empty object', () => {
+                assert(getActiveRoute('/cowboys')).equalsObject({});
+            });
+        });
+    });
 
     describe('getGenerator()', () => {
         /** @type {ItemConfig} itemSettings */
@@ -129,8 +242,8 @@ export default ({ assert, describe, it }) => {
 
         describe('dungeon generator', () => {
             it('returns a generated dungeon', () => {
-                const dungeonGen = getGenerator('dungeon');
-                const body       = parseHtml(dungeonGen({
+                const dungeonGen = getGenerator('maps');
+                const body       = parseHtml(dungeonGen(mockState, {
                     ...itemSettings,
                     ...roomSettingsBase,
                     dungeonComplexity : 2,
@@ -147,7 +260,7 @@ export default ({ assert, describe, it }) => {
         describe('item generator', () => {
             it('returns generated items', () => {
                 const itemGen = getGenerator('items');
-                const body    = parseHtml(itemGen(itemSettings));
+                const body    = parseHtml(itemGen(mockState, itemSettings));
 
                 const title = body.querySelector('h2');
                 const list  = body.querySelector('ul');
@@ -164,7 +277,7 @@ export default ({ assert, describe, it }) => {
         describe('room generator', () => {
             it('returns generated rooms', () => {
                 const roomGen = getGenerator('rooms');
-                const body    = parseHtml(roomGen({
+                const body    = parseHtml(roomGen(mockState, {
                     ...itemSettings,
                     ...roomSettingsBase,
                     roomCount : 1,
@@ -302,6 +415,7 @@ export default ({ assert, describe, it }) => {
                     expand   : () => 'expand action',
                     generate : () => 'generate action',
                     navigate : () => 'navigate action',
+                    save     : () => 'save action',
                     toggle   : () => 'toggle action',
                 };
 
@@ -336,7 +450,7 @@ export default ({ assert, describe, it }) => {
         const { body, content } = sections;
 
         it('generates content for the current route', () => {
-            onGenerate(sections, () => '/items');
+            onGenerate(mockState, sections, () => '/items');
 
             const title = content.querySelector('h2');
 
@@ -346,7 +460,7 @@ export default ({ assert, describe, it }) => {
 
         describe('when the active page is not a generator', () => {
             it('renders an error page', () => {
-                onGenerate(sections, () => '/nothing-to-see-here');
+                onGenerate(mockState, sections, () => '/nothing-to-see-here');
 
                 const title = content.querySelector('h2');
 
@@ -358,7 +472,7 @@ export default ({ assert, describe, it }) => {
             it('closes the sidebar', () => {
                 body.dataset.layout = 'sidebar-expanded';
 
-                onGenerate(sections, () => '/items');
+                onGenerate(mockState, sections, () => '/items');
 
                 assert(body).hasAttributes({ 'data-layout': 'default' });
             });
@@ -372,7 +486,7 @@ export default ({ assert, describe, it }) => {
                 const { content, knobs, nav } = sections;
 
                 /** @type {HTMLElement | null} */
-                const dungeonButton = nav.querySelector('[data-target="dungeon"]');
+                const dungeonButton = nav.querySelector('[data-target="maps"]');
 
                 /** @type {HTMLElement | null} */
                 const roomsButton = nav.querySelector('[data-target="rooms"]');
@@ -406,11 +520,11 @@ export default ({ assert, describe, it }) => {
 
         it('updates the content, knobs, nav, and toolbar elements', () => {
             /** @type {HTMLElement | null} */
-            const dungeonButton = nav.querySelector('[data-target="dungeon"]');
+            const dungeonButton = nav.querySelector('[data-target="maps"]');
 
             assert(Boolean(dungeonButton)).isTrue();
 
-            renderApp(sections, 'dungeon');
+            renderApp(sections, '/maps');
 
             assert(content).hasTextContent('Generate Dungeon');
             assert(knobs).hasTextContent('Generate');
@@ -423,7 +537,7 @@ export default ({ assert, describe, it }) => {
                 const bodyEl = document.createElement('div');
                 bodyEl.dataset.layout = 'full';
 
-                renderApp({ ...sections, body: bodyEl }, 'items');
+                renderApp({ ...sections, body: bodyEl }, '/items');
 
                 assert(bodyEl).hasAttributes({ 'data-layout': 'default' });
             });
@@ -434,14 +548,14 @@ export default ({ assert, describe, it }) => {
                 const bodyEl = document.createElement('div');
                 bodyEl.dataset.layout = 'sidebar-expanded';
 
-                renderApp({ ...sections, body: bodyEl }, 'items');
+                renderApp({ ...sections, body: bodyEl }, '/items');
 
                 assert(bodyEl).hasAttributes({ 'data-layout': 'sidebar-expanded' });
                 assert(Boolean(knobs.querySelector('div[data-grid="1"]'))).isTrue();
             });
         });
 
-        describe('when the generator is undefined', () => {
+        describe('when the path is undefined', () => {
             it('renders a 404 message in a full layout', () => {
                 // @ts-expect-error
                 renderApp(sections);
@@ -677,7 +791,7 @@ export default ({ assert, describe, it }) => {
     // -- Public Functions -----------------------------------------------------
 
     describe('attachEventDelegates()', () => {
-        describe('when a child element is clicked', () => {
+        describe('when an element is clicked', () => {
             const sections = getMockSections();
 
             const button1 = document.createElement('button');
@@ -703,12 +817,13 @@ export default ({ assert, describe, it }) => {
                 expand   : trigger,
                 generate : trigger,
                 navigate : () => { throw new Error('Fake!'); },
+                save     : trigger,
                 toggle   : trigger,
             };
 
             let errorResult;
 
-            attachEventDelegates(sections, triggers, (error) => errorResult = error);
+            attachEventDelegates(sections, triggers, (error) => { errorResult = error; });
 
             describe('when the clicked element has a valid data-action attribute', () => {
                 button1.dispatchEvent(new CustomEvent('click', { bubbles: true }));
@@ -742,22 +857,14 @@ export default ({ assert, describe, it }) => {
                 it('renders an error page and calls the onError callback', () => {
                     button4.dispatchEvent(new CustomEvent('click', { bubbles: true }));
 
-                    assert(sections.body).hasTextContent('Oh no!');
+                    assert(sections.content).hasTextContent('Oh no!');
                     assert(errorResult.toString()).stringIncludes('Error: Fake!');
                 });
             });
         });
-    });
 
-    describe('getActiveGenerator()', () => {
-        it('returns the active generated based on the route', () => {
-            assert(getActiveGenerator('/rooms')).equals('rooms');
-        });
-
-        describe('given an invalid route', () => {
-            it('returns undefined', () => {
-                assert(getActiveGenerator('/cowboys')).isUndefined();
-            });
+        describe('when an element loses focus', () => {
+            // TODO
         });
     });
 
@@ -770,20 +877,21 @@ export default ({ assert, describe, it }) => {
         const render = getRender(sections, (error) => errorResult = error);
 
         it('returns a render function bound to the given sections', () => {
-            render('items');
+            render('/items');
 
             assert(content).hasTextContent('Generate Items');
             assert(Boolean(knobs.querySelector('button[data-action="generate"]'))).isTrue();
         });
 
-        describe('when an error is thrown', () => {
-            it('renders an error page and calls the onError callback', () => {
-                // @ts-expect-error
-                render('bubbling cauldron oil');
-
-                assert(sections.body).hasTextContent('Oh no!');
-                assert(errorResult.toString()).stringIncludes('Invalid generator "bubbling cauldron oil"');
+        describe('when a route does not exist', () => {
+            it('renders a 404', () => {
+                render('/bubbling-cauldron-of-oil');
+                assert(sections.content).hasTextContent('404');
             });
+        });
+
+        describe('when an error is thrown', () => {
+            // TODO
         });
     });
 
@@ -793,15 +901,17 @@ export default ({ assert, describe, it }) => {
 
         let updatePathValue;
 
-        const updatePath = (path) => { updatePathValue = path; };
         const getPathname = () => '/items';
+        const request = () => {};
+        const updatePath = (path) => { updatePathValue = path; };
 
-        const triggers = getTriggers(sections, updatePath, getPathname);
+        const triggers = getTriggers(mockState, sections, updatePath, getPathname, request);
 
         it('returns an object containing all application triggers', () => {
             assert(triggers.accordion).isFunction();
             assert(triggers.generate).isFunction();
             assert(triggers.navigate).isFunction();
+            assert(triggers.save).isFunction();
             assert(triggers.toggle).isFunction();
         });
 
@@ -874,6 +984,10 @@ export default ({ assert, describe, it }) => {
 
                 assert(updatePathValue).equals('/rooms');
             });
+        });
+
+        describe('save', () => {
+            // TODO
         });
 
         describe('toggle', () => {

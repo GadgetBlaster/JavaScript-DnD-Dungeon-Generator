@@ -31,7 +31,7 @@ export default ({ assert, describe, it }) => {
     // -- Public Functions -----------------------------------------------------
 
     describe('getNav()', () => {
-        const body = parseHtml(getNav('dungeon'));
+        const body = parseHtml(getNav('maps'));
 
         it('returns valid HTML', () => {
             assert(Boolean(body)).isTrue();
@@ -45,7 +45,7 @@ export default ({ assert, describe, it }) => {
         });
 
         it('sets the correct active item', () => {
-            assert(body.querySelector('a[data-target="dungeon"]'))
+            assert(body.querySelector('a[data-target="maps"]'))
                 .hasAttributes({ 'data-active': '' });
         });
     });
@@ -54,17 +54,17 @@ export default ({ assert, describe, it }) => {
         describe('given a container with three nav buttons', () => {
             const nav = document.createElement('div');
             nav.innerHTML = `
-                <button data-target="dungeon" data-active>Frog</button>
+                <button data-target="maps" data-active>Frog</button>
                 <button data-target="rooms">Grog</button>
                 <button data-target="items">Nog</button>
             `;
 
             describe('given a generator which is already active', () => {
-                setActiveNavItem(nav, 'dungeon');
+                setActiveNavItem(nav, 'maps');
 
                 it('remains the active element', () => {
                     /** @type {HTMLElement} targetEl */
-                    const targetEl = nav.querySelector('[data-target="dungeon"]');
+                    const targetEl = nav.querySelector('[data-target="maps"]');
                     assert(targetEl.dataset.active).equals('');
                 });
 

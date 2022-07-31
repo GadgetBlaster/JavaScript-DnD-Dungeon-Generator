@@ -112,7 +112,6 @@ body > aside {
     grid-area: left;
     width: var(--sidebar-width);
     background: var(--bg-sidebar);
-    border-right: 1px solid var(--bg);
     animation-duration: var(--transition-default);
     animation-name: slideIn;
 }

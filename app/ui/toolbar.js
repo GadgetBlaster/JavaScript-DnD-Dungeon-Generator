@@ -71,7 +71,7 @@ export function getToolbar(generator) {
     ];
 
     switch (generator) {
-        case 'dungeon':
+        case 'maps':
             return toolbarItems(defaultButtons);
 
         case 'rooms':

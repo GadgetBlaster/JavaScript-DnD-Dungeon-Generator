@@ -104,7 +104,7 @@ import { sizes } from '../attribute/size.js';
 export const knobConfig = [
     {
         label      : 'Dungeon Settings',
-        generators : new Set([ 'dungeon' ]),
+        generators : new Set([ 'maps' ]),
         fields     : [
             {
                 label : 'Name',
@@ -155,7 +155,7 @@ export const knobConfig = [
     },
     {
         label      : 'Room Settings',
-        generators : new Set([ 'dungeon', 'rooms' ]),
+        generators : new Set([ 'maps', 'rooms' ]),
         fields     : [
             {
                 label      : 'Rooms',
@@ -197,7 +197,7 @@ export const knobConfig = [
     },
     {
         label      : 'Item Settings',
-        generators : new Set([ 'dungeon', 'rooms', 'items' ]),
+        generators : new Set([ 'maps', 'rooms', 'items' ]),
         fields     : [
             {
                 // TODO Exclude quantity zero in item generator page

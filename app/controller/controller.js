@@ -71,26 +71,33 @@ import { toss, isRequired } from '../utility/tools.js';
 // -- Config -------------------------------------------------------------------
 
 export const generators = Object.freeze(/** @type {const} */ ([
-    'dungeon',
-    'rooms',
     'items',
+    'maps',
     'names',
+    'rooms',
 ]));
 
-export const routes = Object.freeze(/** @type {const} */ ({
-    '/'      : 'dungeon',
+/**
+ * Application routes, object order determines the order of navigation links.
+ */
+const routes = Object.freeze(/** @type {const} */ ({
+    '/maps'  : 'maps',
+    '/rooms' : 'rooms',
     '/items' : 'items',
     '/names' : 'names',
-    '/rooms' : 'rooms',
 }));
 
-// TODO tests
-const routeRegEx = `(${Object.keys(routes).map((route) => '\\'+route).join('|')}\)(\\/[a-zA0-9]{13})`;
+const genKeyRouteRegEx = `\/(${generators.join('|')})(?:\/([a-z0-9]{13}))?`;
 
 export const routeLookup = Object.freeze(Object.entries(routes).reduce((lookup, [ route, generator ]) => {
     lookup[generator] = route;
     return lookup;
 }, {}));
+
+export {
+    genKeyRouteRegEx as testGenKeyRouteRegEx,
+    routes           as testRoutes,
+};
 
 // -- Private Generator Functions ----------------------------------------------
 
@@ -167,6 +174,44 @@ function roomGenerator(state, config) {
 // -- Private Functions --------------------------------------------------------
 
 /**
+ * Returns the active generator based on the route, or undefined.
+ *
+ * TODO update tests
+ * @private
+ *
+ * @param {string} path
+ *
+ * @returns {{
+ *     generator?: Generator;
+ *     key?: string;
+ *     page?: string; // TODO type
+ * }}
+ */
+function getActiveRoute(path) {
+    if (path === '/') {
+        return { page: 'home' };
+    }
+
+    if (!path || path.slice(-1) === '/') {
+        return {};
+    }
+
+    let parts    = path.match(genKeyRouteRegEx)?.filter(Boolean);
+    let segments = path.split('/', 3).length;
+
+    if (!parts || parts.length !== segments) {
+        return {};
+    }
+
+    let [ , generator, key ] = parts;
+
+    return {
+        generator: /** @type {Generator} */ (generator),
+        key,
+    };
+}
+
+/**
  * Returns a generator function.
  *
  * @private
@@ -178,7 +223,7 @@ function roomGenerator(state, config) {
  */
 function getGenerator(generator) {
     switch (generator) {
-        case 'dungeon':
+        case 'maps':
             return dungeonGenerator;
 
         case 'rooms':
@@ -250,7 +295,7 @@ function getTrigger(triggers, action) {
  */
 function getReadyState(generator) {
     switch (generator) {
-        case 'dungeon':
+        case 'maps':
             return { title: 'Generate Dungeon', icon: dungeonIcon };
 
         case 'rooms':
@@ -317,7 +362,7 @@ function onGenerate(state, sections, getPathname) {
     let { body, content, knobs } = sections;
 
     let config    = getFormData(knobs);
-    let generator = getActiveGenerator(getPathname());
+    let { generator } = getActiveRoute(getPathname());
 
     if (!generator) {
         renderErrorPage(sections);
@@ -350,6 +395,7 @@ function onNavigate(sections, e, updatePath) {
     let generator = /** @type {Generator} */ (target);
 
     let path = routeLookup[generator];
+
     isRequired(path, `Invalid path for "${generator}" in onNavigate()`);
 
     // Update URL
@@ -369,13 +415,10 @@ function onNavigate(sections, e, updatePath) {
  * @param {() => string} getPathname
  */
 function onSave(state, request, getPathname) {
-    let generator = getActiveGenerator(getPathname());
-
-    // TODO rename 'dungeon' to 'map' in types, Generators, UI, etc
-    if (generator === 'dungeon') {
-        // @ts-ignore-error
-        generator = 'map';
-    }
+    let {
+        generator,
+        key, // TODO update existing record
+    } = getActiveRoute(getPathname());
 
     request(`/api/save/${generator}`, {
         data: state.get(),
@@ -395,7 +438,10 @@ function onSave(state, request, getPathname) {
  * @param {string} path
  */
 function renderApp(sections, path) {
-    let generator = getActiveGenerator(path);
+    let {
+        generator,
+        key, // TODO render existing record
+    } = getActiveRoute(path);
 
     if (!generator) {
         renderErrorPage(sections, 404);
@@ -407,7 +453,6 @@ function renderApp(sections, path) {
     if (body.dataset.layout === 'full') {
         body.dataset.layout = 'default';
     }
-
 
     setActiveNavItem(nav, generator);
 
@@ -485,7 +530,7 @@ function toggleExpand(sections, getPathname) {
         ? 'default'
         : 'sidebar-expanded';
 
-    let generator = getActiveGenerator(getPathname());
+    let { generator } = getActiveRoute(getPathname());
 
     if (!generator) {
         renderErrorPage(sections);
@@ -526,11 +571,12 @@ function toggleVisibility(container, e) {
 }
 
 export {
+    getActiveRoute      as testGetActiveRoute,
     getErrorPageContent as testGetErrorPageContent,
     getGenerator        as testGetGenerator,
     getReadyState       as testGetReadyState,
-    getTargetDataset    as testGetTargetDataset,
     getTargetControl    as testGetTargetControl,
+    getTargetDataset    as testGetTargetDataset,
     getTrigger          as testGetTrigger,
     isSidebarExpanded   as testIsSidebarExpanded,
     onGenerate          as testOnGenerate,
@@ -594,28 +640,6 @@ export function attachEventDelegates(sections, triggers, onError) {
 }
 
 /**
- * Returns the active generator based on the route, or undefined.
- *
- * TODO update tests
- * TODO private
- *
- * @param {string} path
- *
- * @returns {Generator | undefined}
- */
-export function getActiveGenerator(path) {
-    if (routes[path]) {
-        return routes[path];
-    }
-
-    let parts = path.match(routeRegEx);
-
-    if (parts && parts.length === 3 && routes[parts[1]]) {
-        return routes[parts[1]];
-    }
-}
-
-/**
  *
  * @param {Sections} sections
  * @param {(error: Error) => void} onError
@@ -623,7 +647,7 @@ export function getActiveGenerator(path) {
  * @param {() => string} getPathname
  * @param {Request} request
  * @returns {{
- *   render: (path) => void;
+ *     render: (path) => void;
  * }}
  */
 export function initController(sections, onError, updatePath, getPathname, request) {
@@ -634,11 +658,11 @@ export function initController(sections, onError, updatePath, getPathname, reque
     };
 
     let triggers = getTriggers(state, sections, updatePath, getPathname, request);
-    let activeGenerator = getActiveGenerator(getPathname());
+    let { generator } = getActiveRoute(getPathname());
 
     attachEventDelegates(sections, triggers, onError);
 
-    sections.nav.innerHTML = getNav(activeGenerator);
+    sections.nav.innerHTML = getNav(generator);
 
     return {
         render: getRender(sections, onError),
