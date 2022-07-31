@@ -11,14 +11,27 @@ import { isRequired } from './tools';
  */
 
 /**
+ * @typedef {object} RequestOptions
+ *
+ * @prop {(Response) => void} [callback]
+ * @prop {object} [data]
+ * @prop {"GET" | "POST"} [options.method = "GET"]
+ * @prop {XMLHttpRequest} [options.xhr = XMLHttpRequest]
+ */
+
+/**
+ * @typedef {object} RequestParams
+ *
+ * @prop {string} url
+ * @prop {RequestOptions} [options]
+ */
+
+/** @typedef {(url: string, options?: RequestOptions) => void} Request */
+
+/**
  * Sends an XHR request in JSON format.
  *
- * @param {string} url
- * @param {object} [options]
- *     @param {(Response) => void} [options.callback]
- *     @param {object} [options.data]
- *     @param {"GET" | "POST"} [options.method = "GET"]
- *     @param {XMLHttpRequest} [options.xhr = XMLHttpRequest]
+ * @type {Request}
  */
 export function request(url, {
     callback,

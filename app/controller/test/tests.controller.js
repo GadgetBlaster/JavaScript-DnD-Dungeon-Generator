@@ -2,6 +2,7 @@
 
 import { getKnobPanel } from '../../ui/form.js';
 import { getNav } from '../../ui/nav.js';
+import { getToolbar } from '../../ui/toolbar.js';
 import { parseHtml, parseSvg } from '../../utility/element.js';
 import {
     // Config
@@ -48,8 +49,9 @@ const getMockClickEvent = (targetEl) => ({
     target: targetEl,
 });
 
-const knobHTML = getKnobPanel('items');
-const navHTML  = getNav('items');
+const knobHTML    = getKnobPanel('items');
+const navHTML     = getNav('items');
+const toolbarHTML = getToolbar('items');
 
 /**
  * Returns a mock sections object.
@@ -71,8 +73,9 @@ function getMockSections() {
 
     body.dataset.layout = 'default';
 
-    knobs.innerHTML = knobHTML;
-    nav.innerHTML   = navHTML;
+    knobs.innerHTML   = knobHTML;
+    nav.innerHTML     = navHTML;
+    toolbar.innerHTML = toolbarHTML;
 
     return {
         body,

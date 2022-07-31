@@ -305,10 +305,15 @@ button {
     transition: background var(--transition-default);
 }
 
-button:hover,
+button:hover:not([disabled]),
 button[data-active] {
     background: var(--color-action-active);
     text-decoration: none;
+}
+
+button[disabled] {
+    opacity: 0.25;
+    cursor: default;
 }
 
 button[data-size="small"] {

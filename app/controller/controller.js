@@ -1,6 +1,12 @@
 // @ts-check
 
 import {
+    disableSaveButton,
+    enableSaveButton,
+    getToolbar,
+} from '../ui/toolbar.js';
+import { dungeonIcon, itemsIcon, roomsIcon } from '../ui/icon.js';
+import {
     formatDungeon,
     formatError,
     formatItems,
@@ -8,18 +14,17 @@ import {
     formatReadyState,
     formatRooms,
 } from './formatter.js';
-import { dungeonIcon, itemsIcon, roomsIcon } from '../ui/icon.js';
 import { generateDungeon } from '../dungeon/generate.js';
 import { generateItems } from '../item/generate.js';
 import { generateName } from '../name/generate.js';
 import { generateRooms } from '../room/generate.js';
 import { getFormData, getKnobPanel, validateOnBlur } from '../ui/form.js';
 import { setActiveNavItem } from '../ui/nav.js';
-import { getToolbar } from '../ui/toolbar.js';
 import { toss, isRequired } from '../utility/tools.js';
 
 // -- Type Imports -------------------------------------------------------------
 
+/** @typedef {import('../utility/xhr.js').Request} Request */
 /** @typedef {import('./knobs.js').Config} Config */
 /** @typedef {import('./knobs.js').DungeonConfig} DungeonConfig */
 /** @typedef {import('./knobs.js').ItemConfig} ItemConfig */
@@ -77,6 +82,12 @@ export const routeLookup = Object.freeze(Object.entries(routes).reduce((lookup, 
     return lookup;
 }, {}));
 
+// -- State --------------------------------------------------------------------
+
+let state;
+
+const clearState = () => state = undefined;
+
 // -- Private Generator Functions ----------------------------------------------
 
 /**
@@ -89,7 +100,9 @@ export const routeLookup = Object.freeze(Object.entries(routes).reduce((lookup, 
  * @returns {string}
  */
 function dungeonGenerator(config) {
-    return formatDungeon(generateDungeon(config));
+    state = generateDungeon(config);
+
+    return formatDungeon(state);
 }
 /**
  * Generates and formats output for the item generator.
@@ -101,7 +114,9 @@ function dungeonGenerator(config) {
  * @returns {string}
  */
 function itemGenerator(config) {
-    return formatItems(generateItems(config));
+    state = generateItems(config);
+
+    return formatItems(state);
 }
 
 /**
@@ -116,7 +131,9 @@ function itemGenerator(config) {
  * @returns {string}
  */
 function nameGenerator(config) {
-    return formatName(generateName(config));
+    state = generateName(config);
+
+    return formatName(state);
 }
 
 /**
@@ -129,7 +146,9 @@ function nameGenerator(config) {
  * @returns {string}
  */
 function roomGenerator(config) {
-    return formatRooms(generateRooms(config));
+    state = generateRooms(config);
+
+    return formatRooms(state);
 }
 
 // -- Private Functions --------------------------------------------------------
@@ -295,6 +314,8 @@ function onGenerate(sections, getPathname) {
 
     content.innerHTML = generate(config);
 
+    enableSaveButton(sections.toolbar); // TODO test
+
     if (isSidebarExpanded(body)) {
         toggleExpand(sections, getPathname);
     }
@@ -321,6 +342,32 @@ function onNavigate(sections, e, updatePath) {
 
     // Render it
     renderApp(sections, generator);
+
+    disableSaveButton(sections.toolbar); // TODO test
+}
+
+/**
+ * Initiates downloading a JSON file for the current generation.
+ *
+ * @param {Request} request
+ * @param {() => string} getPathname
+ */
+function onSave(request, getPathname) {
+    let generator = getActiveGenerator(getPathname());
+
+    // TODO rename 'dungeon' to 'map' in types, Generators, UI, etc
+    if (generator === 'dungeon') {
+        // @ts-ignore-error
+        generator = 'map';
+    }
+
+    request(`/api/save/${generator}`, {
+        data: state,
+        method: 'POST',
+        callback: (test) => {
+            console.log(test);
+        },
+    });
 }
 
 /**
@@ -551,16 +598,19 @@ export const getRender = (sections, onError) => (generator) => {
     }
 };
 
+export const getState = () => state;
+
 /**
  * Returns an object of action triggers.
  *
  * @param {Sections} sections
  * @param {(path: Path) => void} updatePath
  * @param {() => string} getPathname
+ * @param {Request} request
  *
  * @returns {Triggers}
  */
-export function getTriggers(sections, updatePath, getPathname) {
+export function getTriggers(sections, updatePath, getPathname, request) {
     let { body } = sections;
 
     return {
@@ -568,7 +618,7 @@ export function getTriggers(sections, updatePath, getPathname) {
         expand   : ( ) => toggleExpand(sections, getPathname),
         generate : ( ) => onGenerate(sections, getPathname),
         navigate : (e) => onNavigate(sections, e, updatePath),
-        save     : ( ) => console.log('saving...'),
+        save     : ( ) => onSave(request, getPathname),
         toggle   : (e) => toggleVisibility(body, e),
     };
 }

@@ -81,7 +81,7 @@ if (errorSummary) {
 
 // -- Initialization -----------------------------------------------------------
 
-const triggers        = getTriggers(sections, updatePath, getPathname);
+const triggers        = getTriggers(sections, updatePath, getPathname, request);
 const activeGenerator = getActiveGenerator(getPathname());
 const render          = getRender(sections, logError);
 
