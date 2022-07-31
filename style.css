@@ -160,8 +160,6 @@ body[data-layout="sidebar-expanded"] > main {
 body > footer {
     grid-area: footer;
     width: 100%;
-    position: fixed;
-    bottom: 0;
     background: var(--bg-footer);
     box-shadow: 0 0 40px 10px var(--color-gray-40);
     transform: translate3d(0, 100%, 0);
@@ -365,6 +363,7 @@ button[data-ready] {
     flex-grow: 0;
     max-width: 360px;
     max-height: 360px;
+    margin-bottom: 100px;
     padding: var(--spacing-large);
     background: var(--color-gray-35);
     border: 1px solid var(--color-gray-20);
