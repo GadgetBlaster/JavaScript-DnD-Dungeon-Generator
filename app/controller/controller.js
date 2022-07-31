@@ -19,7 +19,7 @@ import { generateItems } from '../item/generate.js';
 import { generateName } from '../name/generate.js';
 import { generateRooms } from '../room/generate.js';
 import { getFormData, getKnobPanel, validateOnBlur } from '../ui/form.js';
-import { setActiveNavItem } from '../ui/nav.js';
+import { getNav, setActiveNavItem } from '../ui/nav.js';
 import { toss, isRequired } from '../utility/tools.js';
 
 // -- Type Imports -------------------------------------------------------------
@@ -50,6 +50,13 @@ import { toss, isRequired } from '../utility/tools.js';
  */
 
 /**
+ * @typedef {object} State
+ *
+ * @prop {() => object} get
+ * @prop {(object) => object} set
+ */
+
+/**
  * @typedef {"accordion"
  * | "expand"
  * | "generate"
@@ -77,16 +84,13 @@ export const routes = Object.freeze(/** @type {const} */ ({
     '/rooms' : 'rooms',
 }));
 
+// TODO tests
+const routeRegEx = `(${Object.keys(routes).map((route) => '\\'+route).join('|')}\)(\\/[a-zA0-9]{13})`;
+
 export const routeLookup = Object.freeze(Object.entries(routes).reduce((lookup, [ route, generator ]) => {
     lookup[generator] = route;
     return lookup;
 }, {}));
-
-// -- State --------------------------------------------------------------------
-
-let state;
-
-const clearState = () => state = undefined;
 
 // -- Private Generator Functions ----------------------------------------------
 
@@ -95,28 +99,33 @@ const clearState = () => state = undefined;
  *
  * @private
  *
+ * @param {State} state
  * @param {DungeonConfig} config
  *
  * @returns {string}
  */
-function dungeonGenerator(config) {
-    state = generateDungeon(config);
+function dungeonGenerator(state, config) {
+    let newState = generateDungeon(config);
 
-    return formatDungeon(state);
+    state.set(newState);
+
+    return formatDungeon(newState);
 }
 /**
  * Generates and formats output for the item generator.
  *
  * @private
  *
+ * @param {State} state
  * @param {ItemConfig} config
  *
  * @returns {string}
  */
-function itemGenerator(config) {
-    state = generateItems(config);
+function itemGenerator(state, config) {
+    let newState = generateItems(config);
+    state.set(newState);
 
-    return formatItems(state);
+    return formatItems(newState);
 }
 
 /**
@@ -126,14 +135,16 @@ function itemGenerator(config) {
  *
  * @private
  *
+ * @param {State} state
  * @param {NameConfig} config
  *
  * @returns {string}
  */
-function nameGenerator(config) {
-    state = generateName(config);
+function nameGenerator(state, config) {
+    let newState = generateName(config);
+    state.set(newState);
 
-    return formatName(state);
+    return formatName(newState);
 }
 
 /**
@@ -141,14 +152,16 @@ function nameGenerator(config) {
  *
  * @private
  *
+ * @param {State} state
  * @param {RoomConfig} config
  *
  * @returns {string}
  */
-function roomGenerator(config) {
-    state = generateRooms(config);
+function roomGenerator(state, config) {
+    let newState = generateRooms(config);
+    state.set(newState);
 
-    return formatRooms(state);
+    return formatRooms(newState);
 }
 
 // -- Private Functions --------------------------------------------------------
@@ -161,7 +174,7 @@ function roomGenerator(config) {
  *
  * @param {Generator} generator
  *
- * @returns {(Config) => string}
+ * @returns {(state: State, config: DungeonConfig | ItemConfig | NameConfig | RoomConfig) => string}
  */
 function getGenerator(generator) {
     switch (generator) {
@@ -296,10 +309,11 @@ const isSidebarExpanded = (body) => body.dataset.layout === 'sidebar-expanded';
  * @private
  * @throws
  *
+ * @param {State} state
  * @param {Sections} sections
  * @param {() => string} getPathname
  */
-function onGenerate(sections, getPathname) {
+function onGenerate(state, sections, getPathname) {
     let { body, content, knobs } = sections;
 
     let config    = getFormData(knobs);
@@ -312,7 +326,7 @@ function onGenerate(sections, getPathname) {
 
     let generate = getGenerator(generator);
 
-    content.innerHTML = generate(config);
+    content.innerHTML = generate(state, config);
 
     enableSaveButton(sections.toolbar); // TODO test
 
@@ -332,16 +346,17 @@ function onGenerate(sections, getPathname) {
  */
 function onNavigate(sections, e, updatePath) {
     let { target } = getTargetDataset(e.target);
+
     let generator = /** @type {Generator} */ (target);
 
-    let route = routeLookup[generator];
-    isRequired(route, `Invalid target "${generator}" in onNavigate()`);
+    let path = routeLookup[generator];
+    isRequired(path, `Invalid path for "${generator}" in onNavigate()`);
 
     // Update URL
-    updatePath(route);
+    updatePath(path);
 
     // Render it
-    renderApp(sections, generator);
+    renderApp(sections, path);
 
     disableSaveButton(sections.toolbar); // TODO test
 }
@@ -349,10 +364,11 @@ function onNavigate(sections, e, updatePath) {
 /**
  * Initiates downloading a JSON file for the current generation.
  *
+ * @param {State} state
  * @param {Request} request
  * @param {() => string} getPathname
  */
-function onSave(request, getPathname) {
+function onSave(state, request, getPathname) {
     let generator = getActiveGenerator(getPathname());
 
     // TODO rename 'dungeon' to 'map' in types, Generators, UI, etc
@@ -362,7 +378,7 @@ function onSave(request, getPathname) {
     }
 
     request(`/api/save/${generator}`, {
-        data: state,
+        data: state.get(),
         method: 'POST',
         callback: (test) => {
             console.log(test);
@@ -376,9 +392,11 @@ function onSave(request, getPathname) {
  * @private
  *
  * @param {Sections} sections
- * @param {Generator | undefined} generator
+ * @param {string} path
  */
-function renderApp(sections, generator) {
+function renderApp(sections, path) {
+    let generator = getActiveGenerator(path);
+
     if (!generator) {
         renderErrorPage(sections, 404);
         return;
@@ -389,6 +407,7 @@ function renderApp(sections, generator) {
     if (body.dataset.layout === 'full') {
         body.dataset.layout = 'default';
     }
+
 
     setActiveNavItem(nav, generator);
 
@@ -528,6 +547,8 @@ export {
 /**
  * Attaches an application level click delegate to the document body.
  *
+ * TODO private
+ *
  * @param {Sections} sections
  * @param {Triggers} triggers
  * @param {(any) => void} onError
@@ -575,34 +596,80 @@ export function attachEventDelegates(sections, triggers, onError) {
 /**
  * Returns the active generator based on the route, or undefined.
  *
- * @param {string} route
+ * TODO update tests
+ * TODO private
+ *
+ * @param {string} path
  *
  * @returns {Generator | undefined}
  */
-export const getActiveGenerator = (route) => routes[route];
+export function getActiveGenerator(path) {
+    if (routes[path]) {
+        return routes[path];
+    }
+
+    let parts = path.match(routeRegEx);
+
+    if (parts && parts.length === 3 && routes[parts[1]]) {
+        return routes[parts[1]];
+    }
+}
+
+/**
+ *
+ * @param {Sections} sections
+ * @param {(error: Error) => void} onError
+ * @param {(path: Path) => void} updatePath
+ * @param {() => string} getPathname
+ * @param {Request} request
+ * @returns {{
+ *   render: (path) => void;
+ * }}
+ */
+export function initController(sections, onError, updatePath, getPathname, request) {
+    let controllerState;
+    let state = {
+        get: () => controllerState,
+        set: (newState) => controllerState = newState,
+    };
+
+    let triggers = getTriggers(state, sections, updatePath, getPathname, request);
+    let activeGenerator = getActiveGenerator(getPathname());
+
+    attachEventDelegates(sections, triggers, onError);
+
+    sections.nav.innerHTML = getNav(activeGenerator);
+
+    return {
+        render: getRender(sections, onError),
+    };
+}
 
 /**
  * Returns the app's render function.
  *
+ * TODO private
+ *
  * @param {Sections} sections
  * @param {(error: Error) => void} onError
  *
- * @returns {(generator: Generator | undefined) => void}
+ * @returns {(path: string) => void}
  */
-export const getRender = (sections, onError) => (generator) => {
+export const getRender = (sections, onError) => (path) => {
     try {
-        renderApp(sections, generator);
+        renderApp(sections, path);
     } catch (error) {
         onError(error);
         renderErrorPage(sections);
     }
 };
 
-export const getState = () => state;
-
 /**
  * Returns an object of action triggers.
  *
+ * TODO private
+ *
+ * @param {State} state
  * @param {Sections} sections
  * @param {(path: Path) => void} updatePath
  * @param {() => string} getPathname
@@ -610,15 +677,15 @@ export const getState = () => state;
  *
  * @returns {Triggers}
  */
-export function getTriggers(sections, updatePath, getPathname, request) {
+export function getTriggers(state, sections, updatePath, getPathname, request) {
     let { body } = sections;
 
     return {
         accordion: (e) => toggleAccordion(body, e),
         expand   : ( ) => toggleExpand(sections, getPathname),
-        generate : ( ) => onGenerate(sections, getPathname),
+        generate : ( ) => onGenerate(state, sections, getPathname),
         navigate : (e) => onNavigate(sections, e, updatePath),
-        save     : ( ) => onSave(request, getPathname),
+        save     : ( ) => onSave(state, request, getPathname),
         toggle   : (e) => toggleVisibility(body, e),
     };
 }

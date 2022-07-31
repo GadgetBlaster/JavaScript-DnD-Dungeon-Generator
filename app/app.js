@@ -8,16 +8,9 @@ import { unitState } from './unit/state.js';
 import run from './unit/run.js';
 import suite from './unit/suite.js';
 
-import {
-    attachEventDelegates,
-    getActiveGenerator,
-    getRender,
-    getTriggers,
-    routes,
-} from './controller/controller.js';
+import { initController } from './controller/controller.js';
 
 import { getFooter } from './ui/footer.js';
-import { getNav } from './ui/nav.js';
 
 // -- Type Imports -------------------------------------------------------------
 
@@ -81,11 +74,7 @@ if (errorSummary) {
 
 // -- Initialization -----------------------------------------------------------
 
-const triggers        = getTriggers(sections, updatePath, getPathname, request);
-const activeGenerator = getActiveGenerator(getPathname());
-const render          = getRender(sections, logError);
-
-attachEventDelegates(sections, triggers, logError);
+const { render } = initController(sections, logError, updatePath, getPathname, request);
 
 // -- Router -------------------------------------------------------------------
 
@@ -111,12 +100,11 @@ function updatePath(path) {
 }
 
 window.addEventListener('popstate', (event) => {
-    event.state && event.state.path && render(routes[event.state.path]);
+    event.state && event.state.path && render(event.state.path);
 });
 
 // -- Initial Render -----------------------------------------------------------
 
-sections.nav.innerHTML    = getNav(activeGenerator);
 sections.footer.innerHTML = getFooter(testSummaryLink);
 
-render(activeGenerator);
+render(getPathname());
