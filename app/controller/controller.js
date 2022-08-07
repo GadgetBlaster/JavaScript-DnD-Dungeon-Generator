@@ -35,8 +35,8 @@ import { toss, isRequired } from '../utility/tools.js';
 
 /** @typedef {(Event) => void} Trigger */ // Rename to AppEvent?
 /** @typedef {{ [key in Action]: Trigger }} Triggers */
-/** @typedef {keyof routes} Path */
-/** @typedef {typeof generators[number]} Generator */
+/** @typedef {typeof generators[keyof typeof generators]} Generator */
+/** @typedef {typeof pages[keyof typeof pages]} Page */
 
 /**
  * @typedef {object} Sections
@@ -57,6 +57,14 @@ import { toss, isRequired } from '../utility/tools.js';
  */
 
 /**
+ * @typedef {object} Route
+ *
+ * @prop {Generator} [generator]
+ * @prop {string} [key]
+ * @prop {Page} [page]
+ */
+
+/**
  * @typedef {"accordion"
  * | "expand"
  * | "generate"
@@ -70,33 +78,26 @@ import { toss, isRequired } from '../utility/tools.js';
 
 // -- Config -------------------------------------------------------------------
 
-export const generators = Object.freeze(/** @type {const} */ ([
-    'items',
-    'maps',
-    'names',
-    'rooms',
-]));
-
 /**
- * Application routes, object order determines the order of navigation links.
+ * App generators, keyed by generator route.
+ *
+ * Object order determines the order of navigation links.
  */
-const routes = Object.freeze(/** @type {const} */ ({
-    '/maps'  : 'maps',
-    '/rooms' : 'rooms',
-    '/items' : 'items',
-    '/names' : 'names',
+export const generators = Object.freeze(/** @type {const} */ ({
+    '/maps' : 'maps',
+    '/rooms': 'rooms',
+    '/items': 'items',
+    // '/names': 'names', // Disabled
 }));
 
-const genKeyRouteRegEx = `\/(${generators.join('|')})(?:\/([a-z0-9]{13}))?`;
+export const pages = Object.freeze(/** @type {const} */ ({
+    '/' : 'home',
+}));
 
-export const routeLookup = Object.freeze(Object.entries(routes).reduce((lookup, [ route, generator ]) => {
-    lookup[generator] = route;
-    return lookup;
-}, {}));
+const genKeyRouteRegEx = `^\\\/(${Object.keys(generators).join('|').replace(/\//g, '')})\\\/([a-z0-9]{13}$)`;
 
 export {
-    genKeyRouteRegEx as testGenKeyRouteRegEx,
-    routes           as testRoutes,
+    genKeyRouteRegEx   as testGenKeyRouteRegEx,
 };
 
 // -- Private Generator Functions ----------------------------------------------
@@ -181,34 +182,35 @@ function roomGenerator(state, config) {
  *
  * @param {string} path
  *
- * @returns {{
- *     generator?: Generator;
- *     key?: string;
- *     page?: string; // TODO type
- * }}
+ * @returns {Route}
  */
 function getActiveRoute(path) {
-    if (path === '/') {
-        return { page: 'home' };
+    let page = pages[path];
+
+    if (page) {
+        return { page };
     }
 
-    if (!path || path.slice(-1) === '/') {
-        return {};
+    let generator = generators[path];
+
+    if (generator) {
+        return { generator };
     }
 
-    let parts    = path.match(genKeyRouteRegEx)?.filter(Boolean);
-    let segments = path.split('/', 3).length;
+    let parts = path.match(genKeyRouteRegEx);
 
-    if (!parts || parts.length !== segments) {
-        return {};
+    if (parts?.length === 3) {
+        parts.shift();
+
+        let [ gen, key ] = parts;
+
+        return {
+            generator: /** @type {Generator} */ (gen),
+            key,
+        };
     }
 
-    let [ , generator, key ] = parts;
-
-    return {
-        generator: /** @type {Generator} */ (generator),
-        key,
-    };
+    return {}; // 404
 }
 
 /**
@@ -232,8 +234,8 @@ function getGenerator(generator) {
         case 'items':
             return itemGenerator;
 
-        case 'names':
-            return nameGenerator;
+        // case 'names':
+        //     return nameGenerator;
 
         default:
             toss(`Invalid generator "${generator}" in getGenerator()`);
@@ -338,6 +340,17 @@ const getTargetControl = (target) =>
 const getTargetDataset = (target) => target instanceof HTMLElement ? target.dataset : {};
 
 /**
+ * Returns an event target's href, if any.
+ *
+ * @private
+ *
+ * @param {EventTarget | null} target
+ *
+ * @returns {string?}
+ */
+const getTargetHref = (target) => target instanceof HTMLElement ? target.getAttribute('href') : null;
+
+/**
  * Returns a boolean to indicate if the sidebar is expanded
  *
  * @private
@@ -361,7 +374,9 @@ const isSidebarExpanded = (body) => body.dataset.layout === 'sidebar-expanded';
 function onGenerate(state, sections, getPathname) {
     let { body, content, knobs } = sections;
 
-    let config    = getFormData(knobs);
+    let config = getFormData(knobs);
+
+    // TODO support page routes...
     let { generator } = getActiveRoute(getPathname());
 
     if (!generator) {
@@ -390,19 +405,17 @@ function onGenerate(state, sections, getPathname) {
  * @param {(string) => void} updatePath
  */
 function onNavigate(sections, e, updatePath) {
-    let { target } = getTargetDataset(e.target);
+    let href = getTargetHref(e.target);
 
-    let generator = /** @type {Generator} */ (target);
-
-    let path = routeLookup[generator];
-
-    isRequired(path, `Invalid path for "${generator}" in onNavigate()`);
+    if (!href) {
+        toss(`Invalid href "${href}" in onNavigate`);
+    }
 
     // Update URL
-    updatePath(path);
+    updatePath(href);
 
     // Render it
-    renderApp(sections, path);
+    renderApp(sections, getActiveRoute(href));
 
     disableSaveButton(sections.toolbar); // TODO test
 }
@@ -430,18 +443,19 @@ function onSave(state, request, getPathname) {
 }
 
 /**
- * Renders the given generator.
+ * Renders the given page or generator.
  *
  * @private
  *
  * @param {Sections} sections
- * @param {string} path
+ * @param {Route} route
  */
-function renderApp(sections, path) {
+function renderApp(sections, route) {
     let {
         generator,
         key, // TODO render existing record
-    } = getActiveRoute(path);
+        // TODO page routes
+    } = route;
 
     if (!generator) {
         renderErrorPage(sections, 404);
@@ -640,10 +654,11 @@ export function attachEventDelegates(sections, triggers, onError) {
 }
 
 /**
+ * Initializes the application controller.
  *
  * @param {Sections} sections
  * @param {(error: Error) => void} onError
- * @param {(path: Path) => void} updatePath
+ * @param {(path: string) => void} updatePath
  * @param {() => string} getPathname
  * @param {Request} request
  * @returns {{
@@ -681,7 +696,7 @@ export function initController(sections, onError, updatePath, getPathname, reque
  */
 export const getRender = (sections, onError) => (path) => {
     try {
-        renderApp(sections, path);
+        renderApp(sections, getActiveRoute(path));
     } catch (error) {
         onError(error);
         renderErrorPage(sections);
@@ -695,7 +710,7 @@ export const getRender = (sections, onError) => (path) => {
  *
  * @param {State} state
  * @param {Sections} sections
- * @param {(path: Path) => void} updatePath
+ * @param {(path: string) => void} updatePath
  * @param {() => string} getPathname
  * @param {Request} request
  *

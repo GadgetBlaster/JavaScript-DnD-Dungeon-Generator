@@ -17,6 +17,8 @@ import { generators } from '../controller.js';
 
 const validFieldValueTypes = new Set([ 'number', 'string' ]);
 
+const generatorValues = Object.values(generators);
+
 /**
  * @param {import('../../unit/state.js').Utility} utility
  */
@@ -39,7 +41,7 @@ export default ({ assert, describe, it }) => {
                     assert(knobs.label).isString();
 
                     knobs.generators.forEach((generator) => {
-                        assert(generator).isInArray(generators);
+                        assert(generator).isInArray(generatorValues);
                     });
                 });
 
@@ -62,7 +64,7 @@ export default ({ assert, describe, it }) => {
 
                             if (fieldConfig.generators) {
                                 fieldConfig.generators.forEach((generator) =>
-                                    assert(generator).isInArray(generators));
+                                    assert(generator).isInArray(generatorValues));
                             }
                         });
                     });

@@ -7,8 +7,8 @@ import { parseHtml, parseSvg } from '../../utility/element.js';
 import {
     // Config
     generators,
+    pages,
     testGenKeyRouteRegEx as genKeyRouteRegEx,
-    testRoutes           as routes,
 
     // Private Functions
     testGetActiveRoute      as getActiveRoute,
@@ -42,7 +42,7 @@ import {
 /**
  * Returns a mocked event with click target.
  *
- * @param {HTMLElement} targetEl
+ * @param {Element} targetEl
  *
  * @returns {Event}
  */
@@ -104,11 +104,19 @@ export default ({ assert, describe, it }) => {
 
     // -- Config ---------------------------------------------------------------
 
+    describe('generators', () => {
+
+    });
+
+    describe('pages', () => {
+
+    });
+
     describe('genKeyRouteRegEx', () => {
         describe('given a path to a generator with a valid key', () => {
             it('parses correct path parts', () => {
-                generators.forEach((generator) => {
-                    let route = `/${generator}/1234567891234`;
+                Object.entries(generators).forEach(([ genRoute, generator ]) => {
+                    let route = `${genRoute}/1234567891234`;
                     let parts = route.match(genKeyRouteRegEx);
 
                     assert(parts).isArray();
@@ -121,55 +129,38 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a path to a generator without a key', () => {
-            it('parses a single path part', () => {
-                let parts = '/items'.match(genKeyRouteRegEx);
-
-                assert(parts).isArray();
-                parts && assert(parts.length).equals(3);
-                parts && assert(parts[0]).equals('/items');
-                parts && assert(parts[1]).equals('items');
-                parts && assert(parts[2]).isUndefined();
+            it('returns null', () => {
+                assert('/items'.match(genKeyRouteRegEx)).isNull();
             });
         });
 
         describe('given a path to a generator with an invalid key', () => {
-            it('parses a single path part', () => {
+            it('returns null', () => {
                 [ '', '1234', '1234567&91234', '1234567-91234' ].forEach((invalidKey) => {
-                    let parts = `/items/${invalidKey}`.match(genKeyRouteRegEx);
-
-                    assert(parts).isArray();
-                    parts && assert(parts.length).equals(3);
-                    parts && assert(parts[0]).equals('/items');
-                    parts && assert(parts[1]).equals('items');
-                    parts && assert(parts[2]).isUndefined();
+                    assert(`/items/${invalidKey}`.match(genKeyRouteRegEx)).isNull();
                 });
             });
         });
 
         describe('given a path to an invalid generator with a valid key', () => {
             it('returns null', () => {
-                let parts = '/nope/1234567891234'.match(genKeyRouteRegEx);
-                assert(parts).isNull();
+                assert('/nope/1234567891234'.match(genKeyRouteRegEx)).isNull();
             });
         });
-    });
-
-    describe('routes', () => {
-
     });
 
     // -- Private Functions ----------------------------------------------------
 
     describe('getActiveRoute()', () => {
-        describe('when the path is the homepage', () => {
-            it('returns the active generator', () => {
+        describe('when the path is a page', () => {
+            it('returns the active page', () => {
                 assert(getActiveRoute('/')).equalsObject({
                     page: 'home',
                 });
             });
         });
 
-        describe('when there is no key in the path', () => {
+        describe('when the path is a generator', () => {
             it('returns the active generator', () => {
                 assert(getActiveRoute('/rooms')).equalsObject({
                     generator: 'rooms',
@@ -177,18 +168,20 @@ export default ({ assert, describe, it }) => {
             });
         });
 
-        describe('when there is a valid key in the path', () => {
-            it('returns the active generator and the key', () => {
-                assert(getActiveRoute('/rooms/asd3uyt76k98n')).equalsObject({
-                    generator: 'rooms',
-                    key: 'asd3uyt76k98n',
+        describe('when the path is a generator with a key', () => {
+            describe('when the key is valid', () => {
+                it('returns the active generator and the key', () => {
+                    assert(getActiveRoute('/rooms/asd3uyt76k98n')).equalsObject({
+                        generator: 'rooms',
+                        key: 'asd3uyt76k98n',
+                    });
                 });
             });
-        });
 
-        describe('when there is an invalid key in the path', () => {
-            it('returns an empty object', () => {
-                assert(getActiveRoute('/rooms/123')).equalsObject({});
+            describe('when the key is invalid', () => {
+                it('returns an empty object', () => {
+                    assert(getActiveRoute('/rooms/123')).equalsObject({});
+                });
             });
         });
 
@@ -200,7 +193,7 @@ export default ({ assert, describe, it }) => {
             });
         });
 
-        describe('given an invalid route', () => {
+        describe('when the path is invalid', () => {
             it('returns an empty object', () => {
                 assert(getActiveRoute('/cowboys')).equalsObject({});
             });
@@ -227,7 +220,7 @@ export default ({ assert, describe, it }) => {
         };
 
         it('returns a function for each generator', () => {
-            generators.forEach((generator) => {
+            Object.values(generators).forEach((generator) => {
                 assert(getGenerator(generator)).isFunction();
             });
         });
@@ -327,7 +320,7 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getReadyState()', () => {
-        generators.forEach((generator) => {
+        Object.values(generators).forEach((generator) => {
             describe(`given a generator of "${generator}"`, () => {
                 it('returns an object containing a title and icon', () => {
                     const result = getReadyState(generator);
@@ -480,35 +473,34 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('onNavigate()', () => {
-        describe('given an event with the target generator of "rooms"', () => {
-            it('updates the content, knobs, and nav elements and calls updatePath() with the new route', () => {
+        describe('given an event with the href of "/rooms"', () => {
+            it('updates the content, knobs, and nav elements and calls updatePath() for the new path', () => {
                 const sections = getMockSections();
                 const { content, knobs, nav } = sections;
 
-                /** @type {HTMLElement | null} */
-                const dungeonButton = nav.querySelector('[data-target="maps"]');
+                const dungeonLink = nav.querySelector('[data-action="navigate"][href="/maps"]');
+                const roomsLink   = nav.querySelector('[data-action="navigate"][href="/rooms"]');
 
-                /** @type {HTMLElement | null} */
-                const roomsButton = nav.querySelector('[data-target="rooms"]');
-
-                assert(Boolean(dungeonButton)).isTrue();
-                assert(Boolean(roomsButton)).isTrue();
+                assert(dungeonLink).isElementTag('a');
+                assert(roomsLink).isElementTag('a');
 
                 let updatePathValue;
 
-                roomsButton && onNavigate(sections, getMockClickEvent(roomsButton), (route) => {
+                roomsLink && onNavigate(sections, getMockClickEvent(roomsLink), (route) => {
                     updatePathValue = route;
                 });
 
-                // Sections
+                // Content
                 assert(content).hasTextContent('Generate Room');
+
+                // Knobs
                 assert(knobs).hasTextContent('Generate');
 
                 // Nav
-                roomsButton && assert(roomsButton.dataset.active).equals('');
-                dungeonButton && assert(dungeonButton.dataset.active).isUndefined();
+                roomsLink && assert(roomsLink).hasAttributes({ 'data-active': '' });
+                dungeonLink && assert(dungeonLink).excludesAttributes([ 'data-active' ]);
 
-                // Router
+                // updatePath()
                 assert(updatePathValue).equals('/rooms');
             });
         });
@@ -519,17 +511,23 @@ export default ({ assert, describe, it }) => {
         const { body, content, knobs, nav, toolbar } = sections;
 
         it('updates the content, knobs, nav, and toolbar elements', () => {
-            /** @type {HTMLElement | null} */
-            const dungeonButton = nav.querySelector('[data-target="maps"]');
+            const dungeonLink = nav.querySelector('[data-action="navigate"][href="/maps"]');
 
-            assert(Boolean(dungeonButton)).isTrue();
+            assert(dungeonLink).isElementTag('a');
 
-            renderApp(sections, '/maps');
+            renderApp(sections, { generator: 'maps' });
 
+            // Content
             assert(content).hasTextContent('Generate Dungeon');
+
+            // Knobs
             assert(knobs).hasTextContent('Generate');
+
+            // Nav
+            dungeonLink && assert(dungeonLink).hasAttributes({ 'data-active': '' });
+
+            // Toolbar
             assert(Boolean(toolbar.querySelector('button[data-action="save"]'))).isTrue();
-            dungeonButton && assert(dungeonButton.dataset.active).equals('');
         });
 
         describe('when the layout is full', () => {
@@ -537,7 +535,7 @@ export default ({ assert, describe, it }) => {
                 const bodyEl = document.createElement('div');
                 bodyEl.dataset.layout = 'full';
 
-                renderApp({ ...sections, body: bodyEl }, '/items');
+                renderApp({ ...sections, body: bodyEl }, { generator: 'items' });
 
                 assert(bodyEl).hasAttributes({ 'data-layout': 'default' });
             });
@@ -548,17 +546,16 @@ export default ({ assert, describe, it }) => {
                 const bodyEl = document.createElement('div');
                 bodyEl.dataset.layout = 'sidebar-expanded';
 
-                renderApp({ ...sections, body: bodyEl }, '/items');
+                renderApp({ ...sections, body: bodyEl }, { generator: 'items' });
 
                 assert(bodyEl).hasAttributes({ 'data-layout': 'sidebar-expanded' });
                 assert(Boolean(knobs.querySelector('div[data-grid="1"]'))).isTrue();
             });
         });
 
-        describe('when the path is undefined', () => {
+        describe('when the route is empty', () => {
             it('renders a 404 message in a full layout', () => {
-                // @ts-expect-error
-                renderApp(sections);
+                renderApp(sections, {});
                 assert(body).hasAttributes({ 'data-layout': 'full' });
                 assert(content.querySelector('h2')).hasTextContent('404');
             });
@@ -963,24 +960,22 @@ export default ({ assert, describe, it }) => {
 
         describe('navigate', () => {
             it('updates the content to the generator\'s ready state', () => {
-                /** @type {HTMLElement | null} */
-                const roomsButtonEl = nav.querySelector('[data-action="navigate"][data-target="rooms"]');
+                const roomsLink = nav.querySelector('[data-action="navigate"][href="/rooms"]');
 
-                assert(Boolean(roomsButtonEl)).isTrue();
+                assert(Boolean(roomsLink)).isTrue();
                 assert(content).hasTextContent('Items');
 
-                roomsButtonEl && triggers.navigate(getMockClickEvent(roomsButtonEl));
+                roomsLink && triggers.navigate(getMockClickEvent(roomsLink));
 
                 assert(content).hasTextContent('Generate Rooms');
             });
 
             it('calls updatePath() with the new pathname', () => {
-                /** @type {HTMLElement | null} */
-                const roomsButtonEl = nav.querySelector('[data-action="navigate"][data-target="rooms"]');
+                const roomsLink = nav.querySelector('[data-action="navigate"][href="/rooms"]');
 
-                assert(Boolean(roomsButtonEl)).isTrue();
+                assert(roomsLink).isElementTag('a');
 
-                roomsButtonEl && triggers.navigate(getMockClickEvent(roomsButtonEl));
+                roomsLink && triggers.navigate(getMockClickEvent(roomsLink));
 
                 assert(updatePathValue).equals('/rooms');
             });

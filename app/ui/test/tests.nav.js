@@ -1,11 +1,9 @@
 // @ts-check
 
+import { capitalize } from '../../utility/tools.js';
 import { parseHtml } from '../../utility/element.js';
 import { generators } from '../../controller/controller.js';
 import {
-    // Config
-    testDisabledGenerators as disabledGenerators,
-
     // Public Functions
     getNav,
     setActiveNavItem,
@@ -16,18 +14,6 @@ import {
  */
 export default ({ assert, describe, it }) => {
 
-    // -- Config ---------------------------------------------------------------
-
-    describe('disabledGenerators', () => {
-        it('should be a set of Generators', () => {
-            assert(disabledGenerators).isSet();
-
-            disabledGenerators.forEach((generator) => {
-                assert(generator).isInArray(generators);
-            });
-        });
-    });
-
     // -- Public Functions -----------------------------------------------------
 
     describe('getNav()', () => {
@@ -37,15 +23,17 @@ export default ({ assert, describe, it }) => {
             assert(Boolean(body)).isTrue();
         });
 
-        it('contains a nav link for each generator that is not disabled', () => {
-            generators.filter((generator) => !disabledGenerators.has(generator)).forEach((generator) => {
-                const button = body.querySelector(`a[data-target="${generator}"]`);
-                assert(Boolean(button)).isTrue();
+        it('contains a nav link for each generator', () => {
+            Object.entries(generators).forEach(([ route, generator ]) => {
+                const link = body.querySelector(`[href="${route}"]`);
+
+                assert(link).isElementTag('a');
+                assert(link).hasTextContent(capitalize(generator));
             });
         });
 
         it('sets the correct active item', () => {
-            assert(body.querySelector('a[data-target="maps"]'))
+            assert(body.querySelector('a[href="/maps"]'))
                 .hasAttributes({ 'data-active': '' });
         });
     });
@@ -54,18 +42,17 @@ export default ({ assert, describe, it }) => {
         describe('given a container with three nav buttons', () => {
             const nav = document.createElement('div');
             nav.innerHTML = `
-                <button data-target="maps" data-active>Frog</button>
-                <button data-target="rooms">Grog</button>
-                <button data-target="items">Nog</button>
+                <a href="/maps" data-active>Frog</button>
+                <a href="/rooms">Grog</button>
+                <a href="/items">Nog</button>
             `;
 
             describe('given a generator which is already active', () => {
                 setActiveNavItem(nav, 'maps');
 
                 it('remains the active element', () => {
-                    /** @type {HTMLElement} targetEl */
-                    const targetEl = nav.querySelector('[data-target="maps"]');
-                    assert(targetEl.dataset.active).equals('');
+                    const targetEl = nav.querySelector('[href="/maps"]');
+                    assert(targetEl).hasAttributes({ 'data-active': '' });
                 });
 
                 it('is the only active element', () => {
@@ -77,9 +64,8 @@ export default ({ assert, describe, it }) => {
                 setActiveNavItem(nav, 'items');
 
                 it('sets the target element as the active element', () => {
-                    /** @type {HTMLElement} targetEl */
-                    const targetEl = nav.querySelector('[data-target="items"]');
-                    assert(targetEl.dataset.active).equals('');
+                    const targetEl = nav.querySelector('[href="/items"]');
+                    assert(targetEl).hasAttributes({ 'data-active': '' });
                 });
 
                 it('is the only active element', () => {

@@ -1,7 +1,7 @@
 // @ts-check
 
-import { capitalize } from '../utility/tools.js';
-import { generators, routeLookup } from '../controller/controller.js';
+import { capitalize, toss } from '../utility/tools.js';
+import { generators } from '../controller/controller.js';
 import { link } from './link.js';
 
 // -- Types --------------------------------------------------------------------
@@ -9,12 +9,6 @@ import { link } from './link.js';
 /** @typedef {import('../controller/controller.js').Generator} Generator */
 /** @typedef {import('../controller/controller.js').Sections} Sections */
 
-// -- Config -------------------------------------------------------------------
-
-/** @type {Set<Generator>} */
-const disabledGenerators = new Set([ 'names' ]);
-
-export { disabledGenerators as testDisabledGenerators };
 
 // -- Public Functions ---------------------------------------------------------
 
@@ -25,13 +19,11 @@ export { disabledGenerators as testDisabledGenerators };
  *
  * @returns {string}
  */
-export const getNav = (activeGenerator) => generators
-    .filter((generator) => !disabledGenerators.has(generator))
-    .map((generator, i) => link(capitalize(generator), routeLookup[generator], {
+export const getNav = (activeGenerator) => Object.entries(generators)
+    .map(([ route, generator ], i) => link(capitalize(generator), route, {
         'data-action': 'navigate',
-        'data-active': activeGenerator === generator ? '' : undefined,
-        'data-target': generator,
         'style'      : `animation-delay: ${2000 + (500 * i)}ms;`,
+        ...(activeGenerator === generator ? { 'data-active':  '' } : null),
     })).join('');
 
 /**
@@ -41,16 +33,23 @@ export const getNav = (activeGenerator) => generators
  * @param {Generator} generator
  */
 export function setActiveNavItem(nav, generator) {
-    [ ...nav.children ].forEach((btn) => {
-        if (!(btn instanceof HTMLElement)) {
+    [ ...nav.children ].forEach((a) => {
+        if (!(a instanceof HTMLElement)) {
             return;
         }
 
-        if (btn.dataset.target === generator) {
-            btn.dataset.active = '';
+        let href = a.getAttribute('href');
+
+        if (!href) {
+            // TODO tests
+            toss(`Nav item missing href in setActiveNavItem()`);
+        }
+
+        if (generators[href] === generator) {
+            a.dataset.active = '';
             return;
         }
 
-        delete btn.dataset.active;
+        delete a.dataset.active;
     });
 }
