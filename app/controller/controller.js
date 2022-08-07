@@ -9,6 +9,7 @@ import { dungeonIcon, itemsIcon, roomsIcon } from '../ui/icon.js';
 import {
     formatDungeon,
     formatError,
+    formatHomepage,
     formatItems,
     formatName,
     formatReadyState,
@@ -306,8 +307,8 @@ function getReadyState(generator) {
         case 'items':
             return { title: 'Generate Items', icon: itemsIcon };
 
-        case 'names':
-            return { title: 'Generate Names', icon: dungeonIcon }; // TODO missing name icon
+        // case 'names':
+        //     return { title: 'Generate Names', icon: dungeonIcon }; // TODO missing name icon
 
         default:
             toss(`Invalid generator "${generator}" in getReadyState()`);
@@ -376,7 +377,6 @@ function onGenerate(state, sections, getPathname) {
 
     let config = getFormData(knobs);
 
-    // TODO support page routes...
     let { generator } = getActiveRoute(getPathname());
 
     if (!generator) {
@@ -451,16 +451,53 @@ function onSave(state, request, getPathname) {
  * @param {Route} route
  */
 function renderApp(sections, route) {
-    let {
-        generator,
-        key, // TODO render existing record
-        // TODO page routes
-    } = route;
+    let { generator, key, page } = route;
 
-    if (!generator) {
-        renderErrorPage(sections, 404);
+    if (generator) {
+        renderGenerator(sections, { generator, key });
         return;
     }
+
+    if (page) {
+        renderPage(sections, { page });
+        return;
+    }
+
+    renderErrorPage(sections, 404);
+}
+
+/**
+ * Renders the error page.
+ *
+ * @private
+ *
+ * @param {Sections} sections
+ * @param {404} [statusCode]
+ */
+function renderErrorPage({ body, content, knobs, nav, toolbar }, statusCode) {
+    let { title, messages } = getErrorPageContent(statusCode);
+
+    setActiveNavItem(nav); // Clear it
+
+    body.dataset.layout = 'full';
+
+    toolbar.innerHTML = '';
+    knobs.innerHTML   = '';
+    content.innerHTML = formatError(title, messages);
+}
+
+/**
+ * Renders a generator.
+ *
+ * // TODO tests from `renderApp()`
+ *
+ * @private
+ *
+ * @param {Sections} sections
+ * @param {{ generator: Generator; key?: string }} generatorRoute
+ */
+function renderGenerator(sections, { generator, key }) {
+    // TODO render existing record by key
 
     let { body, content, knobs, nav, toolbar } = sections;
 
@@ -479,18 +516,31 @@ function renderApp(sections, route) {
 }
 
 /**
- * Renders the error page.
+ * Renders a page.
+ *
+ * // TODO tests
  *
  * @private
  *
  * @param {Sections} sections
- * @param {404} [statusCode]
+ * @param {{ page: Page }} pageRoute
  */
-function renderErrorPage({ body, content }, statusCode) {
-    let { title, messages } = getErrorPageContent(statusCode);
+function renderPage({ body, content, knobs, nav, toolbar }, { page }) {
+    setActiveNavItem(nav); // Clear it
 
     body.dataset.layout = 'full';
-    content.innerHTML   = formatError(title, messages);
+
+    toolbar.innerHTML = '';
+    knobs.innerHTML   = '';
+
+    switch (page) {
+        case 'home':
+            content.innerHTML = formatHomepage();
+            return;
+
+        default:
+            toss(`Invalid page "${page}" in renderPage()`);
+    }
 }
 
 /**

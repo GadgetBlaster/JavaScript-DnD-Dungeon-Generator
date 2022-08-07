@@ -30,7 +30,7 @@ export const getNav = (activeGenerator) => Object.entries(generators)
  * Sets the active navigation target.
  *
  * @param {HTMLElement} nav
- * @param {Generator} generator
+ * @param {Generator} [generator]
  */
 export function setActiveNavItem(nav, generator) {
     [ ...nav.children ].forEach((a) => {

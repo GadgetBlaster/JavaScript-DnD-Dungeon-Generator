@@ -1,12 +1,14 @@
 // @ts-check
 
 import { article, div, header, section } from '../ui/block.js';
-import { element } from '../utility/element.js';
 import { capitalize, isRequired, pluralize } from '../utility/tools.js';
 import { drawLegend } from '../dungeon/legend.js';
+import { element } from '../utility/element.js';
+import { generators } from './controller.js';
 import { indicateItemRarity } from '../item/item.js';
 import { list } from '../ui/list.js';
 import { paragraph, span, subtitle, title } from '../ui/typography.js';
+
 import {
     getDoorwayDescriptionList,
     getKeyDescription,
@@ -291,6 +293,16 @@ export function formatError(errorTitle, messages) {
         ).join('');
 }
 
+export function formatHomepage() {
+    return title('D&D Generator', { 'data-title': 'page', 'data-spacing': 'b-medium' }) +
+        Object.entries(generators).map(([ route, generator ]) =>
+            element('a', capitalize(generator), {
+                'data-action': 'navigate',
+                'data-ready': true,
+                href: route,
+            }));
+}
+
 /**
  * Formats output of the item generator.
  *
@@ -334,7 +346,6 @@ export function formatReadyState(message, icon) {
     return element('button', content, {
         'data-action': 'generate',
         'data-ready': true,
-        'type': 'button',
     });
 }
 
