@@ -20,12 +20,14 @@ import { button } from './button.js';
  * Enables the save button.
  *
  * @param {HTMLElement} toolbar
+ *
+ * @returns {HTMLButtonElement | undefined}
  */
 function getSaveButton(toolbar) {
     let btn = toolbar.querySelector('[data-action="save"]');
 
     if (!btn || !(btn instanceof HTMLButtonElement)) {
-        toss('Unable to find save button in getSaveButton()');
+        return;
     }
 
     return btn;
@@ -47,16 +49,26 @@ const toolbarItems = (items) => items.map((item) => element('li', item)).join(''
  *
  * @param {HTMLElement} toolbar
  */
-export const disableSaveButton = (toolbar) =>
-    getSaveButton(toolbar).setAttribute('disabled', '');
+export function disableSaveButton(toolbar) {
+    getSaveButton(toolbar)?.setAttribute('disabled', '');
+}
 
 /**
  * Enables the save button.
  *
+ * @throws
+ *
  * @param {HTMLElement} toolbar
  */
-export const enableSaveButton = (toolbar) =>
-    getSaveButton(toolbar).removeAttribute('disabled');
+export function enableSaveButton(toolbar) {
+    let btn = getSaveButton(toolbar);
+
+    if (!btn) {
+        toss('Unable to find save button in enableSaveButton()');
+    }
+
+    btn.removeAttribute('disabled');
+}
 
 /**
  * Returns a toolbar for the current generator.
