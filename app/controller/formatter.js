@@ -1,10 +1,10 @@
 // @ts-check
 
 import { article, div, header, section } from '../ui/block.js';
-import { capitalize, isRequired, pluralize } from '../utility/tools.js';
+import { capitalize, toss, pluralize } from '../utility/tools.js';
 import { drawLegend } from '../dungeon/legend.js';
 import { element } from '../utility/element.js';
-import { generators } from './controller.js';
+import { generators, generatorConfigs } from './controller.js';
 import { indicateItemRarity } from '../item/item.js';
 import { list } from '../ui/list.js';
 import { paragraph, span, subtitle, title } from '../ui/typography.js';
@@ -79,7 +79,9 @@ function formatItemContent(itemSet, { columns = 1 } = {}) {
     let itemsList = items.length ? list(items.map((item) => getItemDescription(item, descArgs)), itemListAttrs) : '';
 
     let containerList = containers.map((item) => {
-        isRequired(item.contents, 'Contents are required in containers');
+        if (!item.contents) {
+            toss('Contents are required in containers');
+        }
 
         let content = getItemDescription(item, descArgs)
             + list(item.contents.map((containerItem) => getItemDescription(containerItem, descArgs)), {
@@ -294,13 +296,17 @@ export function formatError(errorTitle, messages) {
 }
 
 export function formatHomepage() {
-    return title('D&D Generator', { 'data-title': 'page', 'data-spacing': 'b-medium' }) +
-        Object.entries(generators).map(([ route, generator ]) =>
-            element('a', capitalize(generator), {
+    return title('D&D Generator', { 'data-title': 'page', 'data-spacing': 'b' }) +
+        div(Object.entries(generators).map(([ route, generator ]) =>
+            element('a', div(generatorConfigs[generator].icon, { 'data-spacing': 'b' }) + capitalize(generator), {
                 'data-action': 'navigate',
                 'data-ready': true,
+                'data-spacing': 'x',
                 href: route,
-            }));
+            })).join(''),
+        {
+            'data-flex': true,
+        });
 }
 
 /**

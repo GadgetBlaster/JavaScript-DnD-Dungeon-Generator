@@ -91,8 +91,14 @@ export const generators = Object.freeze(/** @type {const} */ ({
     // '/names': 'names', // Disabled
 }));
 
+export const generatorConfigs = {
+    maps : { title: 'Generate Dungeon', icon: dungeonIcon },
+    rooms: { title: 'Generate Rooms',   icon: roomsIcon },
+    items: { title: 'Generate Items',   icon: itemsIcon },
+};
+
 export const pages = Object.freeze(/** @type {const} */ ({
-    '/' : 'home',
+    '/': 'home',
 }));
 
 const genKeyRouteRegEx = `^\\\/(${Object.keys(generators).join('|').replace(/\//g, '')})\\\/([a-z0-9]{13}$)`;
@@ -297,22 +303,7 @@ function getTrigger(triggers, action) {
  * @returns {{ title: string; icon: string }}
  */
 function getReadyState(generator) {
-    switch (generator) {
-        case 'maps':
-            return { title: 'Generate Dungeon', icon: dungeonIcon };
-
-        case 'rooms':
-            return { title: 'Generate Rooms', icon: roomsIcon };
-
-        case 'items':
-            return { title: 'Generate Items', icon: itemsIcon };
-
-        // case 'names':
-        //     return { title: 'Generate Names', icon: dungeonIcon }; // TODO missing name icon
-
-        default:
-            toss(`Invalid generator "${generator}" in getReadyState()`);
-    }
+    return generatorConfigs[generator] || toss(`Invalid generator "${generator}" in getReadyState()`);
 }
 
 /**
@@ -674,6 +665,7 @@ export function attachEventDelegates(sections, triggers, onError) {
             return;
         }
 
+        // TODO handle cmd click on links
         e.preventDefault();
 
         try {

@@ -244,6 +244,7 @@ section {
 a {
     color: var(--link-color);
     text-decoration: none;
+    transition: background var(--transition-default);
 }
 
 a:hover,
@@ -358,16 +359,23 @@ button[data-action="expand"] span {
     transform: scale(1.5, 1.2) rotate(90deg);
 }
 
+/* Ready Buttons */
+
+a[data-ready],
 button[data-ready] {
     flex-direction: column;
     flex-grow: 0;
-    max-width: 360px;
-    max-height: 360px;
+    justify-content: center;
+    display: inline-flex;
+    color: var(--color-gray-0);
+    text-align: center;
+    max-width: none;
+    min-width: 300px;
+    min-height: 300px;
     margin-bottom: 100px;
-    padding: var(--spacing-large);
     background: var(--color-gray-35);
     border: 1px solid var(--color-gray-20);
-    border-radius: var(--spacing-default);
+    border-radius: var(--spacing-small);
     text-shadow: 0 0 10px var(--color-gray-0);
     font-size: var(--font-size-title);
     opacity: 0;
@@ -375,13 +383,15 @@ button[data-ready] {
     animation-duration: 5s;
     animation-fill-mode: forwards;
     animation-name: fadeIn;
-
 }
 
+a[data-ready]:hover,
 button[data-ready]:hover {
+    text-decoration: none;
     background: var(--color-gray-40);
 }
 
+a[data-ready] div,
 button[data-ready] div {
     pointer-events: none;
 }
