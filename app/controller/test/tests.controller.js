@@ -91,6 +91,7 @@ function getMockSections() {
 
 const mockState = (() => {
     let state;
+
     return {
         get: () => state,
         set: (newState) => state = newState,
@@ -439,10 +440,11 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('onGenerate()', () => {
-        const sections = getMockSections();
-        const { body, content } = sections;
 
         it('generates content for the current route', () => {
+            const sections = getMockSections();
+            const { content } = sections;
+
             onGenerate(mockState, sections, () => '/items');
 
             const title = content.querySelector('h2');
@@ -453,6 +455,9 @@ export default ({ assert, describe, it }) => {
 
         describe('when the active page is not a generator', () => {
             it('renders an error page', () => {
+                const sections = getMockSections();
+                const { content } = sections;
+
                 onGenerate(mockState, sections, () => '/nothing-to-see-here');
 
                 const title = content.querySelector('h2');
@@ -463,6 +468,9 @@ export default ({ assert, describe, it }) => {
 
         describe('when the sidebar is expanded', () => {
             it('closes the sidebar', () => {
+                const sections = getMockSections();
+                const { body } = sections;
+
                 body.dataset.layout = 'sidebar-expanded';
 
                 onGenerate(mockState, sections, () => '/items');
