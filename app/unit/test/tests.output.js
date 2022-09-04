@@ -70,11 +70,11 @@ export default ({ assert, describe, it }) => {
 
                     const [ item1, item2 ] = items;
 
+                    assert(item1).hasTextContent('success');
                     assert(item1).hasAttributes({ 'data-unit-test': 'ok' });
-                    assert(item1.textContent).equals('success');
 
+                    assert(item2).hasTextContent('failure');
                     assert(item2).hasAttributes({ 'data-unit-test': 'fail' });
-                    assert(item2.textContent).equals('failure');
                 });
             });
         });
@@ -105,11 +105,12 @@ export default ({ assert, describe, it }) => {
                     assert(items.length).equals(4);
                     items.forEach((item, i) => {
                         const { isOk, msg } = results[i];
+
                         assert(item).hasAttributes({
                             'data-unit-test': isOk ? 'ok': 'fail',
                         });
 
-                        assert(item.textContent).equals(msg);
+                        assert(item).hasTextContent(msg);
                     });
                 });
             });
@@ -492,7 +493,7 @@ export default ({ assert, describe, it }) => {
                 const testName = `/test/tests.fake-${i}.js`;
 
                 assert(Boolean(item.querySelector(`a[href="?scope=${testName}"]`))).isTrue();
-                assert(item.textContent).equals(testName);
+                assert(item).hasTextContent(testName);
             });
         });
     });
@@ -662,9 +663,9 @@ export default ({ assert, describe, it }) => {
             assert(getSummaryLink({ ...defaultSummary })).isString();
         });
 
-        it('returns a link to `./unit.html`', () => {
+        it('returns a link to `/unit.html`', () => {
             const doc = parseHtml(getSummaryLink({ ...defaultSummary }));
-            assert(Boolean(doc.querySelector('a[href="./unit.html"]'))).isTrue();
+            assert(Boolean(doc.querySelector('a[href="/unit.html"]'))).isTrue();
         });
 
         describe('given errors', () => {
@@ -691,15 +692,15 @@ export default ({ assert, describe, it }) => {
             const navDoc = parseHtml(getTestNav({}));
 
             it('contains unit test links', () => {
-                assert(navDoc.querySelector('a[href="./unit.html"]').textContent).equals('All');
-                assert(navDoc.querySelector('a[href="./unit.html?scope=list"]').textContent).equals('Tests');
-                assert(navDoc.querySelector('a[href="./unit.html?verbose=true"]').textContent).equals('Verbose');
+                assert(navDoc.querySelector('a[href="/unit.html"]')).hasTextContent('All');
+                assert(navDoc.querySelector('a[href="/unit.html?scope=list"]')).hasTextContent('Tests');
+                assert(navDoc.querySelector('a[href="/unit.html?verbose=true"]')).hasTextContent('Verbose');
             });
 
             it('marks the "All" link as active', () => {
-                const link = navDoc.querySelector('a[href="./unit.html"]');
+                const link = navDoc.querySelector('a[href="/unit.html"]');
 
-                assert(link.textContent).equals('All');
+                assert(link).hasTextContent('All');
                 assert(link).hasAttributes({ 'data-active': 'true' });
             });
         });
@@ -708,14 +709,14 @@ export default ({ assert, describe, it }) => {
             const navDoc = parseHtml(getTestNav({ scope: 'fake' }));
 
             it('includes the scope on the verbose link', () => {
-                const link = navDoc.querySelector('a[href="./unit.html?scope=fake&verbose=true"]');
-                assert(link.textContent).equals('Verbose');
+                const link = navDoc.querySelector('a[href="/unit.html?scope=fake&verbose=true"]');
+                assert(link).hasTextContent('Verbose');
             });
 
             it('does not mark the "All" link as active', () => {
-                const link = navDoc.querySelector('a[href="./unit.html"]');
+                const link = navDoc.querySelector('a[href="/unit.html"]');
 
-                assert(link.textContent).equals('All');
+                assert(link).hasTextContent('All');
                 assert(link).excludesAttributes([ 'data-active' ]);
             });
         });
@@ -723,9 +724,9 @@ export default ({ assert, describe, it }) => {
         describe('given a `scope` option of "list"', () => {
             it('marks the "Tests" link as active', () => {
                 const doc  = parseHtml(getTestNav({ scope: 'list' }));
-                const link = doc.querySelector('a[href="./unit.html?scope=list"]');
+                const link = doc.querySelector('a[href="/unit.html?scope=list"]');
 
-                assert(link.textContent).equals('Tests');
+                assert(link).hasTextContent('Tests');
                 assert(link).hasAttributes({ 'data-active': 'true' });
             });
         });
@@ -734,15 +735,15 @@ export default ({ assert, describe, it }) => {
             const navDoc = parseHtml(getTestNav({ verbose: true }));
 
             it('contains verbose unit tests links', () => {
-                assert(navDoc.querySelector('a[href="./unit.html?verbose=true"]').textContent).equals('All');
-                assert(navDoc.querySelector('a[href="./unit.html?scope=list&verbose=true"]').textContent).equals('Tests');
-                assert(navDoc.querySelector('a[href="./unit.html"]').textContent).equals('Verbose');
+                assert(navDoc.querySelector('a[href="/unit.html?verbose=true"]')).hasTextContent('All');
+                assert(navDoc.querySelector('a[href="/unit.html?scope=list&verbose=true"]')).hasTextContent('Tests');
+                assert(navDoc.querySelector('a[href="/unit.html"]')).hasTextContent('Verbose');
             });
 
             it('marks the "Verbose" link as active', () => {
-                const link = navDoc.querySelector('a[href="./unit.html"]');
+                const link = navDoc.querySelector('a[href="/unit.html"]');
 
-                assert(link.textContent).equals('Verbose');
+                assert(link).hasTextContent('Verbose');
                 assert(link).hasAttributes({ 'data-active': 'true' });
             });
         });
@@ -751,8 +752,8 @@ export default ({ assert, describe, it }) => {
             const doc = parseHtml(getTestNav({ scope: 'fake', verbose: true }));
 
             it('includes the scope on the verbose link', () => {
-                const link = doc.querySelector('a[href="./unit.html?scope=fake"]');
-                assert(link.textContent).equals('Verbose');
+                const link = doc.querySelector('a[href="/unit.html?scope=fake"]');
+                assert(link).hasTextContent('Verbose');
             });
         });
     });

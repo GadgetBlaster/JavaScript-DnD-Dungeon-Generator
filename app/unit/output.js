@@ -48,7 +48,7 @@ const htmlEscapes = {
  *
  * @type {string}
  */
-const unitUrl = './unit.html';
+const unitUrl = '/unit.html';
 
 // -- Private Functions --------------------------------------------------------
 
