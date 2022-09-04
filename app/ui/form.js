@@ -11,7 +11,6 @@ import { toDash, toss, toWords } from '../utility/tools.js';
 
 /** @typedef {import('../controller/controller.js').Action} Action */
 /** @typedef {import('../controller/controller.js').Generator} Generator */
-/** @typedef {import('../controller/controller.js').Sections} Sections */
 /** @typedef {import('../controller/knobs.js').Config} Config */
 /** @typedef {import('../controller/knobs.js').KnobConfig} KnobConfig */
 /** @typedef {import('../controller/knobs.js').KnobFieldConfig} KnobFieldConfig */
@@ -167,6 +166,7 @@ function getKnob(config, ids) {
                 toss('Select value must be a string in getKnob()');
             }
 
+            // TODO type error
             return select(name, values, value, { ...attrs });
 
         case 'text':

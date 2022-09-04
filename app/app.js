@@ -50,15 +50,19 @@ const sections = (/** @type {() => Sections} */ () => {
     let footer  = document.getElementById('footer');
     let knobs   = document.getElementById('knobs');
     let nav     = document.getElementById('nav');
+    let overlay = document.getElementById('overlay');
+    let toast   = document.getElementById('toast');
     let toolbar = document.getElementById('toolbar');
 
     if (!content) { toss('Cannot find content element'); }
     if (!footer)  { toss('Cannot find footer element'); }
     if (!knobs)   { toss('Cannot find knobs element'); }
     if (!nav)     { toss('Cannot find nav element'); }
+    if (!overlay) { toss('Cannot find nav element'); }
+    if (!toast)   { toss('Cannot find nav element'); }
     if (!toolbar) { toss('Cannot find toolbar element'); }
 
-    return { body, content, footer, knobs, nav, toolbar };
+    return { body, content, footer, knobs, nav, overlay, toast, toolbar };
 })();
 
 // -- Tests --------------------------------------------------------------------
@@ -71,11 +75,7 @@ if (errorSummary) {
     console.error(...errorSummary);
 }
 
-// -- Initialization -----------------------------------------------------------
-
-const { render } = initController(sections, logError, updatePath, getPathname, request);
-
-// -- Router -------------------------------------------------------------------
+// -- Router Functions ---------------------------------------------------------
 
 /**
  * Returns the current route
@@ -97,6 +97,20 @@ function updatePath(path) {
 
     window.history.pushState(entry, '', path);
 }
+
+
+
+// -- Initialization -----------------------------------------------------------
+
+const { render } = initController({
+    getPathname,
+    onError: logError,
+    request,
+    sections,
+    updatePath,
+});
+
+// -- Router Listener ----------------------------------------------------------
 
 window.addEventListener('popstate', (event) => {
     event.state && event.state.path && render(event.state.path);

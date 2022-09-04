@@ -203,4 +203,22 @@ export function isRequired(value, message) {
  *
  * @returns {Error | string}
  */
-export const getErrorMessage = (error) => typeof error === 'object' ? error.stack.toString() : error;
+export const getErrorMessage = (error) => {
+    if (typeof error === 'string') {
+        return error;
+    }
+
+    if (error?.stack) {
+        return error.stack.toString();
+    }
+
+    if (typeof error === 'object') {
+        try {
+            return JSON.stringify(error);
+        } catch (err) {
+            return 'Unable to stringify object: ' + err.stack.toString();
+        }
+    }
+
+    return 'Unknown error type: ' + String(error);
+};

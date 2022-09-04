@@ -5,6 +5,7 @@ import {
     enableSaveButton,
     getToolbar,
 } from '../ui/toolbar.js';
+import { toast } from '../ui/alert.js';
 import { dungeonIcon, itemsIcon, roomsIcon } from '../ui/icon.js';
 import { spinner } from '../ui/spinner.js';
 import {
@@ -41,6 +42,17 @@ import { toss, isRequired } from '../utility/tools.js';
 /** @typedef {typeof pages[keyof typeof pages]} Page */
 
 /**
+ * @typedef {object} Controller
+ *
+ * @prop {() => string} getPathname
+ * @prop {(error: Error) => void} onError
+ * @prop {Request} request
+ * @prop {Sections} sections
+ * @prop {State} state
+ * @prop {(path: string) => void} updatePath
+ */
+
+/**
  * @typedef {object} Sections
  *
  * @prop {HTMLElement} body
@@ -48,6 +60,8 @@ import { toss, isRequired } from '../utility/tools.js';
  * @prop {HTMLElement} footer
  * @prop {HTMLElement} knobs
  * @prop {HTMLElement} nav
+ * @prop {HTMLElement} overlay
+ * @prop {HTMLElement} toast
  * @prop {HTMLElement} toolbar
  */
 
@@ -122,11 +136,11 @@ export {
  */
 function dungeonGenerator(state, config) {
     let newState = generateDungeon(config);
-
     state.set(newState);
 
     return formatDungeon(newState);
 }
+
 /**
  * Generates and formats output for the item generator.
  *
@@ -271,7 +285,7 @@ function getErrorPageContent(statusCode) {
         title   : 'Oh no!',
         messages: [
             'Goblins have infiltrated the castle and hacked into the JavaScript!',
-            'This error has been scribbled onto a magical scroll by a preposterous robot so AJ can fix this bug.',
+            'This error has been scribbled on a magical scroll by a preposterous robot so AJ can fix this bug.',
         ],
     };
 }
@@ -358,13 +372,12 @@ const isSidebarExpanded = (body) => body.dataset.layout === 'sidebar-expanded';
  * Generator event handler.
  *
  * @private
- * @throws
+ * @throws // TODO What throws?
  *
- * @param {State} state
- * @param {Sections} sections
- * @param {() => string} getPathname
+ * @param {Controller} controller
  */
-function onGenerate(state, sections, getPathname) {
+function onGenerate(controller) {
+    let { state, sections, getPathname } = controller;
     let { body, content, knobs } = sections;
 
     let config = getFormData(knobs);
@@ -383,7 +396,7 @@ function onGenerate(state, sections, getPathname) {
     enableSaveButton(sections.toolbar); // TODO test
 
     if (isSidebarExpanded(body)) {
-        toggleExpand(sections, getPathname);
+        toggleExpand(controller);
     }
 }
 
@@ -392,23 +405,23 @@ function onGenerate(state, sections, getPathname) {
  *
  * @private
  *
- * @param {Sections} sections
+ * @param {Controller} controller
  * @param {Event} e
- * @param {Request} request
- * @param {(string) => void} updatePath
  */
-function onNavigate(sections, e, request, updatePath) {
+function onNavigate(controller, e) {
     let href = getTargetHref(e.target);
 
     if (!href) {
         toss(`Invalid href "${href}" in onNavigate`);
     }
 
+    let { sections, updatePath } = controller;
+
     // Update URL
     updatePath(href);
 
     // Render it
-    renderApp(sections, request, getActiveRoute(href));
+    renderApp(controller, href);
 
     disableSaveButton(sections.toolbar); // TODO test
 }
@@ -418,12 +431,9 @@ function onNavigate(sections, e, request, updatePath) {
  *
  * @private
  *
- * @param {State} state
- * @param {Request} request
- * @param {() => string} getPathname
- * @param {(string) => void} updatePath
+ * @param {Controller} controller
  */
-function onSave(state, request, getPathname, updatePath) {
+function onSave({ getPathname, onError, request, sections, state, updatePath }) {
     let {
         generator,
         key, // TODO update existing record
@@ -434,11 +444,12 @@ function onSave(state, request, getPathname, updatePath) {
         method: 'POST',
         callback: (result) => {
             if (result?.status !== 200 || !result?.data?.key) {
-                // TODO handle errors
-                console.error(result);
+                toast(sections.toast, 'An error occurred while saving.', { success: false });
+                onError(result);
                 return;
             }
 
+            toast(sections.toast, 'Creation saved.');
             updatePath(`/${generator}/${encodeURIComponent(result.data.key)}`);
         },
     });
@@ -449,15 +460,15 @@ function onSave(state, request, getPathname, updatePath) {
  *
  * @private
  *
- * @param {Sections} sections
- * @param {Request} request
- * @param {Route} route
+ * @param {Controller} controller
+ * @param {string} path
  */
-function renderApp(sections, request, route) {
-    let { generator, key, page } = route;
+function renderApp(controller, path) {
+    let { sections } = controller;
+    let { generator, key, page } = getActiveRoute(path);
 
     if (generator) {
-        renderGenerator(sections, request, { generator, key });
+        renderGenerator(controller, { generator, key });
         return;
     }
 
@@ -496,13 +507,13 @@ function renderErrorPage({ body, content, knobs, nav, toolbar }, statusCode) {
  *
  * @private
  *
- * @param {Sections} sections
- * @param {Request} request
+ * @param {Controller} controller
  * @param {{ generator: Generator; key?: string }} generatorRoute
  */
-function renderGenerator(sections, request, { generator, key }) {
+function renderGenerator(controller, { generator, key }) {
     // TODO render existing record by key
 
+    let { onError, sections, request } = controller;
     let { body, content, knobs, nav, toolbar } = sections;
 
     if (body.dataset.layout === 'full') {
@@ -526,7 +537,7 @@ function renderGenerator(sections, request, { generator, key }) {
             callback: (result) => {
                 if (result?.status !== 200 || !result?.data) {
                     // TODO handle errors
-                    console.error(result);
+                    onError(result);
                     return;
                 }
 
@@ -611,10 +622,9 @@ function toggleAccordion(container, e) {
  *
  * @private
  *
- * @param {Sections} sections
- * @param {() => string} getPathname
+ * @param {Controller} controller
  */
-function toggleExpand(sections, getPathname) {
+function toggleExpand({ sections, getPathname }) {
     let { body, knobs } = sections;
 
     body.dataset.layout = body.dataset.layout === 'sidebar-expanded'
@@ -732,50 +742,54 @@ export function attachEventDelegates(sections, triggers, onError) {
 }
 
 /**
- * Initializes the application controller.
+ * Initializes the application controller, injecting dependencies and creating
+ * a state object bound to a closure.
  *
- * @param {Sections} sections
- * @param {(error: Error) => void} onError
- * @param {(path: string) => void} updatePath
- * @param {() => string} getPathname
- * @param {Request} request
+ * @param {Omit<Controller, 'state'>} dependencies
+ *
  * @returns {{
  *     render: (path) => void;
  * }}
  */
-export function initController(sections, onError, updatePath, getPathname, request) {
-    let controllerState;
-    let state = {
-        get: () => controllerState,
-        set: (newState) => controllerState = newState,
+export function initController(dependencies) {
+    let state;
+
+    let controller = {
+        ...dependencies,
+        state: {
+            get: () => state,
+            set: (newState) => state = newState,
+        },
     };
 
-    let triggers = getTriggers(state, sections, updatePath, getPathname, request);
-    let { generator } = getActiveRoute(getPathname());
+    let { sections, onError, getPathname } = controller;
+
+    let triggers = getTriggers(controller);
+    let { generator } = getActiveRoute(getPathname()); // TODO check for generator
 
     attachEventDelegates(sections, triggers, onError);
 
     sections.nav.innerHTML = getNav(generator);
 
     return {
-        render: getRender(sections, request, onError),
+        render: getRender(controller),
     };
 }
 
 /**
  * Returns the app's render function.
  *
- * TODO private
+ * TODO @private
  *
- * @param {Sections} sections
- * @param {Request} request
- * @param {(error: Error) => void} onError
+ * @param {Controller} controller
  *
  * @returns {(path: string) => void}
  */
-export const getRender = (sections, request, onError) => (path) => {
+export const getRender = (controller) => (path) => {
+    let { sections, onError } = controller;
+
     try {
-        renderApp(sections, request, getActiveRoute(path));
+        renderApp(controller, path);
     } catch (error) {
         onError(error);
         renderErrorPage(sections);
@@ -785,25 +799,21 @@ export const getRender = (sections, request, onError) => (path) => {
 /**
  * Returns an object of action triggers.
  *
- * TODO private
+ * TODO @private
  *
- * @param {State} state
- * @param {Sections} sections
- * @param {(path: string) => void} updatePath
- * @param {() => string} getPathname
- * @param {Request} request
+ * @param {Controller} controller
  *
  * @returns {Triggers}
  */
-export function getTriggers(state, sections, updatePath, getPathname, request) {
-    let { body } = sections;
+export function getTriggers(controller) {
+    let { sections: { body } } = controller;
 
     return {
         accordion: (e) => toggleAccordion(body, e),
-        expand   : ( ) => toggleExpand(sections, getPathname),
-        generate : ( ) => onGenerate(state, sections, getPathname),
-        navigate : (e) => onNavigate(sections, e, request, updatePath),
-        save     : ( ) => onSave(state, request, getPathname, updatePath),
+        expand   : ( ) => toggleExpand(controller),
+        generate : ( ) => onGenerate(controller),
+        navigate : (e) => onNavigate(controller, e),
+        save     : ( ) => onSave(controller),
         toggle   : (e) => toggleVisibility(body, e),
     };
 }

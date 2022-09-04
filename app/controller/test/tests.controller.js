@@ -33,7 +33,9 @@ import {
     getTriggers,
 } from '../controller.js';
 
+/** @typedef {import('../controller.js').Controller} Controller */
 /** @typedef {import('../controller.js').Sections} Sections */
+/** @typedef {import('../controller.js').State} State */
 /** @typedef {import('../controller.js').Trigger} Trigger */
 /** @typedef {import('../controller.js').Triggers} Triggers */
 /** @typedef {import('../knobs.js').ItemConfig} ItemConfig */
@@ -58,20 +60,25 @@ const toolbarHTML = getToolbar('items');
 /**
  * Returns a mock sections object.
  *
- * @returns {Sections} */
+ * @returns {Sections}
+ */
 function getMockSections() {
     const body    = document.createElement('div');
     const content = document.createElement('div');
     const footer  = document.createElement('footer');
     const knobs   = document.createElement('form');
     const nav     = document.createElement('nav');
+    const overlay = document.createElement('div');
+    const toast   = document.createElement('div');
     const toolbar = document.createElement('menu');
 
-    body.appendChild(nav);
-    body.appendChild(toolbar);
     body.appendChild(content);
-    body.appendChild(knobs);
     body.appendChild(footer);
+    body.appendChild(knobs);
+    body.appendChild(nav);
+    body.appendChild(overlay);
+    body.appendChild(toast);
+    body.appendChild(toolbar);
 
     body.dataset.layout = 'default';
 
@@ -85,18 +92,44 @@ function getMockSections() {
         footer,
         knobs,
         nav,
+        overlay,
+        toast,
         toolbar,
     };
 }
 
-const mockState = (() => {
+/**
+ * Returns a mock state object.
+ *
+ * @returns {State}
+ */
+function getMockState() {
     let state;
 
     return {
         get: () => state,
         set: (newState) => state = newState,
     };
-})();
+}
+
+/**
+ * Returns a mock controller object.
+ *
+ * @param {Partial<Controller>} overrides
+ */
+function getMockController(overrides = {}) {
+    let state = getMockState();
+
+    return {
+        getPathname: () => '/items',
+        onError: () => {},
+        request: () => {},
+        sections: getMockSections(),
+        state,
+        updatePath: () => {},
+        ...overrides,
+    };
+}
 
 /**
  * @param {import('../../unit/state.js').Utility} utility
@@ -237,7 +270,7 @@ export default ({ assert, describe, it }) => {
         describe('dungeon generator', () => {
             it('returns a generated dungeon', () => {
                 const dungeonGen = getGenerator('maps');
-                const body       = parseHtml(dungeonGen(mockState, {
+                const body       = parseHtml(dungeonGen(getMockState(), {
                     ...itemSettings,
                     ...roomSettingsBase,
                     dungeonComplexity : 2,
@@ -254,7 +287,7 @@ export default ({ assert, describe, it }) => {
         describe('item generator', () => {
             it('returns generated items', () => {
                 const itemGen = getGenerator('items');
-                const body    = parseHtml(itemGen(mockState, itemSettings));
+                const body    = parseHtml(itemGen(getMockState(), itemSettings));
 
                 const title = body.querySelector('h2');
                 const list  = body.querySelector('ul');
@@ -271,7 +304,7 @@ export default ({ assert, describe, it }) => {
         describe('room generator', () => {
             it('returns generated rooms', () => {
                 const roomGen = getGenerator('rooms');
-                const body    = parseHtml(roomGen(mockState, {
+                const body    = parseHtml(roomGen(getMockState(), {
                     ...itemSettings,
                     ...roomSettingsBase,
                     roomCount : 1,
@@ -440,13 +473,12 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('onGenerate()', () => {
-
         it('generates content for the current route', () => {
-            const sections = getMockSections();
-            const { content } = sections;
+            const controller = getMockController();
 
-            onGenerate(mockState, sections, () => '/items');
+            onGenerate(controller);
 
+            const content = controller.sections.content;
             const title = content.querySelector('h2');
 
             assert(Boolean(content.querySelector('article'))).isTrue();
@@ -455,11 +487,13 @@ export default ({ assert, describe, it }) => {
 
         describe('when the active page is not a generator', () => {
             it('renders an error page', () => {
-                const sections = getMockSections();
-                const { content } = sections;
+                const controller = getMockController({
+                    getPathname: () => '/nothing-to-see-here',
+                });
 
-                onGenerate(mockState, sections, () => '/nothing-to-see-here');
+                onGenerate(controller);
 
+                const content = controller.sections.content;
                 const title = content.querySelector('h2');
 
                 assert(title).hasTextContent('Oh no!');
@@ -468,12 +502,12 @@ export default ({ assert, describe, it }) => {
 
         describe('when the sidebar is expanded', () => {
             it('closes the sidebar', () => {
-                const sections = getMockSections();
-                const { body } = sections;
+                const controller = getMockController();
+                const { body } = controller.sections;
 
                 body.dataset.layout = 'sidebar-expanded';
 
-                onGenerate(mockState, sections, () => '/items');
+                onGenerate(controller);
 
                 assert(body).hasAttributes({ 'data-layout': 'default' });
             });
@@ -483,9 +517,10 @@ export default ({ assert, describe, it }) => {
     describe('onNavigate()', () => {
         describe('given an event with the href of "/rooms"', () => {
             it('updates the content, knobs, and nav elements and calls updatePath() for the new path', () => {
-                const sections = getMockSections();
-                const { content, knobs, nav } = sections;
-                const request = () => {}; // TODO
+                const controller = getMockController({
+                    updatePath: (route) => { updatePathValue = route; },
+                });
+                const { content, knobs, nav } = controller.sections;
 
                 const dungeonLink = nav.querySelector('[data-action="navigate"][href="/maps"]');
                 const roomsLink   = nav.querySelector('[data-action="navigate"][href="/rooms"]');
@@ -495,9 +530,7 @@ export default ({ assert, describe, it }) => {
 
                 let updatePathValue;
 
-                roomsLink && onNavigate(sections, getMockClickEvent(roomsLink), request, (route) => {
-                    updatePathValue = route;
-                });
+                roomsLink && onNavigate(controller, getMockClickEvent(roomsLink));
 
                 // Content
                 assert(content).hasTextContent('Generate Room');
@@ -516,18 +549,15 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('renderApp()', () => {
-        const sections = getMockSections();
-        const { body, content, knobs, nav, toolbar } = sections;
-        const request = (key) => {
-            // TODO fake data
-        };
+        const controller = getMockController();
+        const { body, content, knobs, nav, toolbar } = controller.sections;
 
         it('updates the content, knobs, nav, and toolbar elements', () => {
             const dungeonLink = nav.querySelector('[data-action="navigate"][href="/maps"]');
 
             assert(dungeonLink).isElementTag('a');
 
-            renderApp(sections, request, { generator: 'maps' });
+            renderApp(controller, '/maps');
 
             // Content
             assert(content).hasTextContent('Generate Dungeon');
@@ -544,30 +574,29 @@ export default ({ assert, describe, it }) => {
 
         describe('when the layout is full', () => {
             it('updates the layout to "default"', () => {
-                const bodyEl = document.createElement('div');
-                bodyEl.dataset.layout = 'full';
+                body.dataset.layout = 'full';
 
-                renderApp({ ...sections, body: bodyEl }, request, { generator: 'items' });
+                renderApp(controller, '/items');
 
-                assert(bodyEl).hasAttributes({ 'data-layout': 'default' });
+                assert(body).hasAttributes({ 'data-layout': 'default' });
             });
         });
 
         describe('when the sidebar is expanded', () => {
             it('persists the expanded sidebar', () => {
-                const bodyEl = document.createElement('div');
-                bodyEl.dataset.layout = 'sidebar-expanded';
+                body.dataset.layout = 'sidebar-expanded';
 
-                renderApp({ ...sections, body: bodyEl }, request, { generator: 'items' });
+                renderApp(controller, '/items');
 
-                assert(bodyEl).hasAttributes({ 'data-layout': 'sidebar-expanded' });
+                assert(body).hasAttributes({ 'data-layout': 'sidebar-expanded' });
                 assert(Boolean(knobs.querySelector('div[data-grid="1"]'))).isTrue();
             });
         });
 
         describe('when the route is empty', () => {
             it('renders a 404 message in a full layout', () => {
-                renderApp(sections, request, {});
+                renderApp(controller, '');
+
                 assert(body).hasAttributes({ 'data-layout': 'full' });
                 assert(content.querySelector('h2')).hasTextContent('404');
             });
@@ -709,15 +738,15 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('toggleExpand()', () => {
-        const sections = getMockSections();
-        const { body, content, knobs } = sections;
+        const controller = getMockController();
+        const { body, knobs } = controller.sections;
 
         describe('when the sidebar is not expanded', () => {
             it('expands the sidebar', () => {
                 assert(body).hasAttributes({ 'data-layout': 'default' });
                 assert(Boolean(knobs.querySelector('div[data-grid]'))).isFalse();
 
-                toggleExpand(sections, () => '/items');
+                toggleExpand(controller);
 
                 assert(body).hasAttributes({ 'data-layout': 'sidebar-expanded' });
                 assert(Boolean(knobs.querySelector('div[data-grid]'))).isTrue();
@@ -729,7 +758,7 @@ export default ({ assert, describe, it }) => {
                 assert(body).hasAttributes({ 'data-layout': 'sidebar-expanded' });
                 assert(Boolean(knobs.querySelector('div[data-grid]'))).isTrue();
 
-                toggleExpand(sections, () => '/items');
+                toggleExpand(controller);
 
                 assert(body).hasAttributes({ 'data-layout': 'default' });
                 assert(Boolean(knobs.querySelector('div[data-grid]'))).isFalse();
@@ -738,9 +767,13 @@ export default ({ assert, describe, it }) => {
 
         describe('when the active page is not a generator', () => {
             it('renders an error page', () => {
-                toggleExpand(sections, () => '/nothing-to-see-here');
+                const controller404 = getMockController({
+                    getPathname: () => '/nothing-to-see-here',
+                });
 
-                const title = content.querySelector('h2');
+                toggleExpand(controller404);
+
+                const title = controller404.sections.content.querySelector('h2');
 
                 assert(Boolean(title)).isTrue();
                 title && assert(title).hasTextContent('Oh no!');
@@ -884,12 +917,15 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getRender()', () => {
-        const sections = getMockSections();
-        const { content, knobs } = sections;
-
         let errorResult;
 
-        const render = getRender(sections, (error) => errorResult = error);
+        const controller = getMockController({
+            onError: (error) => { errorResult = error; },
+        });
+
+        const { content, knobs } = controller.sections;
+
+        const render = getRender(controller);
 
         it('returns a render function bound to the given sections', () => {
             render('/items');
@@ -901,7 +937,7 @@ export default ({ assert, describe, it }) => {
         describe('when a route does not exist', () => {
             it('renders a 404', () => {
                 render('/bubbling-cauldron-of-oil');
-                assert(sections.content).hasTextContent('404');
+                assert(content).hasTextContent('404');
             });
         });
 
@@ -911,16 +947,15 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getTriggers()', () => {
-        const sections = getMockSections();
-        const { body, content, knobs, nav } = sections;
+        let updatedPathValue;
 
-        let updatePathValue;
+        const controller = getMockController({
+            getPathname: () => '/items',
+            updatePath: (path) => { updatedPathValue = path; },
+        });
 
-        const getPathname = () => '/items';
-        const request = () => {};
-        const updatePath = (path) => { updatePathValue = path; };
-
-        const triggers = getTriggers(mockState, sections, updatePath, getPathname, request);
+        const { body, content, knobs, nav } = controller.sections;
+        const triggers = getTriggers(controller);
 
         it('returns an object containing all application triggers', () => {
             assert(triggers.accordion).isFunction();
@@ -995,7 +1030,7 @@ export default ({ assert, describe, it }) => {
 
                 roomsLink && triggers.navigate(getMockClickEvent(roomsLink));
 
-                assert(updatePathValue).equals('/rooms');
+                assert(updatedPathValue).equals('/rooms');
             });
         });
 

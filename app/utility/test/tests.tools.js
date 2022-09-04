@@ -370,5 +370,29 @@ export default ({ assert, describe, it }) => {
                     .stringIncludes('/app/utility/test/tests.tools.js:368:40');
             });
         });
+
+        describe('when the error is an object', () => {
+            describe('when the object can be stringified', () => {
+                it('returns a stringified version of the error object', () => {
+                    assert(getErrorMessage({ something: 'went wrong' }))
+                        .equals('{"something":"went wrong"}');
+                });
+            });
+
+            describe('when the object _cannot_ be stringified', () => {
+                it('returns a stringified version of the error object', () => {
+                    assert(getErrorMessage({ x: 2n }))
+                        .stringIncludes('Unable to stringify object: ')
+                        .stringIncludes('TypeError: Do not know how to serialize a BigInt');
+                });
+            });
+        });
+
+        describe('when the type is unknown', () => {
+            it('returns a string for the given value', () => {
+                assert(getErrorMessage(216))
+                    .equals('Unknown error type: 216');
+            });
+        });
     });
 };

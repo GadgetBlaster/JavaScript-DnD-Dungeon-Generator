@@ -8,8 +8,6 @@ import { paragraph } from './typography.js';
 /**
  * Returns a loading indicator as an HTML string.
  *
- * TODO unit test
- *
  * @param {string} [label]
  *
  * @returns {string}
