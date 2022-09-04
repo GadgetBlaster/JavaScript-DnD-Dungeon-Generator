@@ -5,8 +5,8 @@
 
 :root {
     /* Type */
-    --font-default: 'Varela', monospace;
-    --font-logo: 'Tapestry', monospace;
+    --font-default: 'DM Sans', monospace;
+    --font-logo: 'DM Sans', monospace;
 
     --font-size-title: 22px;
     --font-size-subtitle: 18px;
@@ -177,19 +177,18 @@ body > footer > small {
 
 /* Logo */
 
-h1 {
-    font-size: var(--font-size-title);
+h1[data-logo] {
+    font-size: var(--font-size-subtitle);
     font-family: var(--font-logo);
     padding: 10px 20px;
     margin: 0;
-    font-variant: small-caps;
 }
 
-h1 a {
+h1[data-logo] a {
     color: var(--color-gray-0);
 }
 
-h1 a:hover {
+h1[data-logo] a:hover {
     text-decoration: none;
 }
 
