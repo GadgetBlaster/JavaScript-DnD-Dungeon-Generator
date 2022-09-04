@@ -28,6 +28,7 @@ import form       from '../ui/test/tests.form.js';
 import link       from '../ui/test/tests.link.js';
 import list       from '../ui/test/tests.list.js';
 import nav        from '../ui/test/tests.nav.js';
+import spinner    from '../ui/test/tests.spinner.js';
 import typography from '../ui/test/tests.typography.js';
 
 import roomDescription from '../room/test/tests.description.js';
@@ -78,6 +79,7 @@ export default {
     '/app/ui/test/tests.link.js'      : link,
     '/app/ui/test/tests.list.js'      : list,
     '/app/ui/test/tests.nav.js'       : nav,
+    '/app/ui/test/tests.spinner.js'   : spinner,
     '/app/ui/test/tests.typography.js': typography,
 
     '/app/room/test/tests.description.js': roomDescription,

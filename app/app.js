@@ -63,13 +63,13 @@ const sections = (/** @type {() => Sections} */ () => {
 
 // -- Tests --------------------------------------------------------------------
 
-// const testSummary     = run(unitState(), suite);
-const testSummaryLink = ''; //getSummaryLink(testSummary);
-// const errorSummary    = getFailureSummary(testSummary);
+const testSummary     = run(unitState(), suite);
+const testSummaryLink = getSummaryLink(testSummary);
+const errorSummary    = getFailureSummary(testSummary);
 
-// if (errorSummary) {
-//     console.error(...errorSummary);
-// }
+if (errorSummary) {
+    console.error(...errorSummary);
+}
 
 // -- Initialization -----------------------------------------------------------
 

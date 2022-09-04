@@ -645,7 +645,7 @@ ul[data-flex] li span {
     border-radius: 50%;
     border-top: 2px solid var(--color-secondary);
     border-right: 2px solid transparent;
-    /* animation: spin 1s linear infinite; */
+    animation: spin 1s linear infinite;
 }
 
 /* Unit */

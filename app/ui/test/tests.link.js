@@ -19,11 +19,11 @@ export default ({ assert, describe, it }) => {
         });
 
         it('returns an HTML anchor element', () => {
-            assert(element.tagName).equals('A');
+            assert(element).isElementTag('a');
         });
 
         it('contains the given label', () => {
-            assert(element.textContent).equals('Home');
+            assert(element).hasTextContent('Home');
         });
 
         describe('given no href', () => {
