@@ -485,6 +485,7 @@ export default ({ assert, describe, it }) => {
             it('updates the content, knobs, and nav elements and calls updatePath() for the new path', () => {
                 const sections = getMockSections();
                 const { content, knobs, nav } = sections;
+                const request = () => {}; // TODO
 
                 const dungeonLink = nav.querySelector('[data-action="navigate"][href="/maps"]');
                 const roomsLink   = nav.querySelector('[data-action="navigate"][href="/rooms"]');
@@ -494,7 +495,7 @@ export default ({ assert, describe, it }) => {
 
                 let updatePathValue;
 
-                roomsLink && onNavigate(sections, getMockClickEvent(roomsLink), (route) => {
+                roomsLink && onNavigate(sections, getMockClickEvent(roomsLink), request, (route) => {
                     updatePathValue = route;
                 });
 
@@ -517,13 +518,16 @@ export default ({ assert, describe, it }) => {
     describe('renderApp()', () => {
         const sections = getMockSections();
         const { body, content, knobs, nav, toolbar } = sections;
+        const request = (key) => {
+            // TODO fake data
+        };
 
         it('updates the content, knobs, nav, and toolbar elements', () => {
             const dungeonLink = nav.querySelector('[data-action="navigate"][href="/maps"]');
 
             assert(dungeonLink).isElementTag('a');
 
-            renderApp(sections, { generator: 'maps' });
+            renderApp(sections, request, { generator: 'maps' });
 
             // Content
             assert(content).hasTextContent('Generate Dungeon');
@@ -543,7 +547,7 @@ export default ({ assert, describe, it }) => {
                 const bodyEl = document.createElement('div');
                 bodyEl.dataset.layout = 'full';
 
-                renderApp({ ...sections, body: bodyEl }, { generator: 'items' });
+                renderApp({ ...sections, body: bodyEl }, request, { generator: 'items' });
 
                 assert(bodyEl).hasAttributes({ 'data-layout': 'default' });
             });
@@ -554,7 +558,7 @@ export default ({ assert, describe, it }) => {
                 const bodyEl = document.createElement('div');
                 bodyEl.dataset.layout = 'sidebar-expanded';
 
-                renderApp({ ...sections, body: bodyEl }, { generator: 'items' });
+                renderApp({ ...sections, body: bodyEl }, request, { generator: 'items' });
 
                 assert(bodyEl).hasAttributes({ 'data-layout': 'sidebar-expanded' });
                 assert(Boolean(knobs.querySelector('div[data-grid="1"]'))).isTrue();
@@ -563,9 +567,15 @@ export default ({ assert, describe, it }) => {
 
         describe('when the route is empty', () => {
             it('renders a 404 message in a full layout', () => {
-                renderApp(sections, {});
+                renderApp(sections, request, {});
                 assert(body).hasAttributes({ 'data-layout': 'full' });
                 assert(content.querySelector('h2')).hasTextContent('404');
+            });
+        });
+
+        describe('when the route contains a key', () => {
+            it('makes a network request to fetch the content for the key', () => {
+                // TODO
             });
         });
     });

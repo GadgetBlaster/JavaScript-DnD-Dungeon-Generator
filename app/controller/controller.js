@@ -6,6 +6,7 @@ import {
     getToolbar,
 } from '../ui/toolbar.js';
 import { dungeonIcon, itemsIcon, roomsIcon } from '../ui/icon.js';
+import { spinner } from '../ui/spinner.js';
 import {
     formatDungeon,
     formatError,
@@ -393,9 +394,10 @@ function onGenerate(state, sections, getPathname) {
  *
  * @param {Sections} sections
  * @param {Event} e
+ * @param {Request} request
  * @param {(string) => void} updatePath
  */
-function onNavigate(sections, e, updatePath) {
+function onNavigate(sections, e, request, updatePath) {
     let href = getTargetHref(e.target);
 
     if (!href) {
@@ -406,7 +408,7 @@ function onNavigate(sections, e, updatePath) {
     updatePath(href);
 
     // Render it
-    renderApp(sections, getActiveRoute(href));
+    renderApp(sections, request, getActiveRoute(href));
 
     disableSaveButton(sections.toolbar); // TODO test
 }
@@ -414,11 +416,14 @@ function onNavigate(sections, e, updatePath) {
 /**
  * Initiates downloading a JSON file for the current generation.
  *
+ * @private
+ *
  * @param {State} state
  * @param {Request} request
  * @param {() => string} getPathname
+ * @param {(string) => void} updatePath
  */
-function onSave(state, request, getPathname) {
+function onSave(state, request, getPathname, updatePath) {
     let {
         generator,
         key, // TODO update existing record
@@ -427,8 +432,14 @@ function onSave(state, request, getPathname) {
     request(`/api/save/${generator}`, {
         data: state.get(),
         method: 'POST',
-        callback: (test) => {
-            console.log(test);
+        callback: (result) => {
+            if (result?.status !== 200 || !result?.data?.key) {
+                // TODO handle errors
+                console.error(result);
+                return;
+            }
+
+            updatePath(`/${generator}/${encodeURIComponent(result.data.key)}`);
         },
     });
 }
@@ -439,13 +450,14 @@ function onSave(state, request, getPathname) {
  * @private
  *
  * @param {Sections} sections
+ * @param {Request} request
  * @param {Route} route
  */
-function renderApp(sections, route) {
+function renderApp(sections, request, route) {
     let { generator, key, page } = route;
 
     if (generator) {
-        renderGenerator(sections, { generator, key });
+        renderGenerator(sections, request, { generator, key });
         return;
     }
 
@@ -485,9 +497,10 @@ function renderErrorPage({ body, content, knobs, nav, toolbar }, statusCode) {
  * @private
  *
  * @param {Sections} sections
+ * @param {Request} request
  * @param {{ generator: Generator; key?: string }} generatorRoute
  */
-function renderGenerator(sections, { generator, key }) {
+function renderGenerator(sections, request, { generator, key }) {
     // TODO render existing record by key
 
     let { body, content, knobs, nav, toolbar } = sections;
@@ -503,6 +516,29 @@ function renderGenerator(sections, { generator, key }) {
 
     toolbar.innerHTML = getToolbar(generator);
     knobs.innerHTML   = getKnobPanel(generator, { isExpanded });
+
+    if (key) {
+        content.innerHTML = spinner();
+
+        request('/api/fetch/creation', {
+            data: { key },
+            method: 'POST',
+            callback: (result) => {
+                if (result?.status !== 200 || !result?.data) {
+                    // TODO handle errors
+                    console.error(result);
+                    return;
+                }
+
+                // TODO try/catch
+                content.innerHTML = formatRooms(JSON.parse(result.data.config));
+                console.log(JSON.parse(result.data.config));
+            },
+        });
+
+        return;
+    }
+
     content.innerHTML = formatReadyState(title, icon);
 }
 
@@ -722,7 +758,7 @@ export function initController(sections, onError, updatePath, getPathname, reque
     sections.nav.innerHTML = getNav(generator);
 
     return {
-        render: getRender(sections, onError),
+        render: getRender(sections, request, onError),
     };
 }
 
@@ -732,13 +768,14 @@ export function initController(sections, onError, updatePath, getPathname, reque
  * TODO private
  *
  * @param {Sections} sections
+ * @param {Request} request
  * @param {(error: Error) => void} onError
  *
  * @returns {(path: string) => void}
  */
-export const getRender = (sections, onError) => (path) => {
+export const getRender = (sections, request, onError) => (path) => {
     try {
-        renderApp(sections, getActiveRoute(path));
+        renderApp(sections, request, getActiveRoute(path));
     } catch (error) {
         onError(error);
         renderErrorPage(sections);
@@ -765,8 +802,8 @@ export function getTriggers(state, sections, updatePath, getPathname, request) {
         accordion: (e) => toggleAccordion(body, e),
         expand   : ( ) => toggleExpand(sections, getPathname),
         generate : ( ) => onGenerate(state, sections, getPathname),
-        navigate : (e) => onNavigate(sections, e, updatePath),
-        save     : ( ) => onSave(state, request, getPathname),
+        navigate : (e) => onNavigate(sections, e, request, updatePath),
+        save     : ( ) => onSave(state, request, getPathname, updatePath),
         toggle   : (e) => toggleVisibility(body, e),
     };
 }

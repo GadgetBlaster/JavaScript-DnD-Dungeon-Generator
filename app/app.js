@@ -14,7 +14,6 @@ import { getFooter } from './ui/footer.js';
 
 // -- Type Imports -------------------------------------------------------------
 
-/** @typedef {import('./controller/controller.js').Path} Path */
 /** @typedef {import('./controller/controller.js').Sections} Sections */
 
 // -- Types --------------------------------------------------------------------
@@ -22,7 +21,7 @@ import { getFooter } from './ui/footer.js';
 /**
  * @typedef {object} HistoryEntryState
  *
- * @prop {Path} path
+ * @prop {string} path
  */
 
 // -- Functions ----------------------------------------------------------------
@@ -64,13 +63,13 @@ const sections = (/** @type {() => Sections} */ () => {
 
 // -- Tests --------------------------------------------------------------------
 
-const testSummary     = run(unitState(), suite);
-const testSummaryLink = getSummaryLink(testSummary);
-const errorSummary    = getFailureSummary(testSummary);
+// const testSummary     = run(unitState(), suite);
+const testSummaryLink = ''; //getSummaryLink(testSummary);
+// const errorSummary    = getFailureSummary(testSummary);
 
-if (errorSummary) {
-    console.error(...errorSummary);
-}
+// if (errorSummary) {
+//     console.error(...errorSummary);
+// }
 
 // -- Initialization -----------------------------------------------------------
 
@@ -90,7 +89,7 @@ function getPathname() {
 /**
  * Updates the app's URL path.
  *
- * @param {Path} path
+ * @param {string} path
  */
 function updatePath(path) {
     /** @type {HistoryEntryState} */

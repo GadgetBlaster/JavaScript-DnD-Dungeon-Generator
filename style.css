@@ -628,7 +628,12 @@ ul[data-flex] li span {
 /* Spinner */
 
 [data-spinner] {
-    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 200px;
+    height: 200px;
 }
 
 [data-spinner]:after {
@@ -637,12 +642,10 @@ ul[data-flex] li span {
     position: absolute;
     width: 200px;
     height: 200px;
-    margin-top: -100px;
-    margin-left: -100px;
     border-radius: 50%;
     border-top: 2px solid var(--color-secondary);
     border-right: 2px solid transparent;
-    animation: spin 2s linear infinite;
+    /* animation: spin 1s linear infinite; */
 }
 
 /* Unit */
