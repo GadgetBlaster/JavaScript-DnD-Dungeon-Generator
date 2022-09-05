@@ -65,15 +65,26 @@ const sections = (/** @type {() => Sections} */ () => {
     return { body, content, footer, knobs, nav, overlay, toast, toolbar };
 })();
 
+const runTestsOnStartup = false;
+
 // -- Tests --------------------------------------------------------------------
 
-const testSummary     = run(unitState(), suite);
-const testSummaryLink = getSummaryLink(testSummary);
-const errorSummary    = getFailureSummary(testSummary);
+// TODO break out
+const testSummaryLink = runTestsOnStartup ? (() => {
+    let summary = run(unitState(), suite);
 
-if (errorSummary) {
-    console.error(...errorSummary);
-}
+    if (!summary) {
+        return 'Tests failed to run...';
+    }
+
+    let errors = getFailureSummary(summary);
+
+    if (errors) {
+        console.error(...errors);
+    }
+
+    return getSummaryLink(summary);
+})() : 'Tests disabled';
 
 // -- Router Functions ---------------------------------------------------------
 
@@ -98,8 +109,6 @@ function updatePath(path) {
     window.history.pushState(entry, '', path);
 }
 
-
-
 // -- Initialization -----------------------------------------------------------
 
 const { render } = initController({
@@ -112,6 +121,7 @@ const { render } = initController({
 
 // -- Router Listener ----------------------------------------------------------
 
+// TODO move into controller or new "listener" script
 window.addEventListener('popstate', (event) => {
     event.state && event.state.path && render(event.state.path);
 });

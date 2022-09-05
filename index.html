@@ -6,7 +6,7 @@
 
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Alegreya+SC:wght@700&family=DM+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
 
         <link rel="stylesheet" href="/style.css?v=1">
 
@@ -21,19 +21,19 @@
         </script>
     </head>
     <body data-layout="full">
+        <noscript>JavaScript must be enabled to run this app.</noscript>
 
-        <header data-no-print data-flex="justify-between items-center">
+        <header data-flex="justify-between items-center" data-no-print>
             <h1 data-logo>
-                <a href="/" data-action="navigate" data-flex>
-                    <span>D&D Generator by Mystic Waffle</span>
-                    <small data-spacing="x">[ Beta v0.1 ]</small>
+                <a href="/" data-action="navigate">
+                    D&D Generator
                 </a>
             </h1>
 
             <nav id="nav" data-spacing="small"></nav>
         </header>
 
-        <menu id="toolbar"></menu>
+        <menu id="toolbar" data-no-print></menu>
 
         <main id="content">
             <div data-spinner>
@@ -45,12 +45,11 @@
             <form id="knobs"></form>
         </aside>
 
-        <footer data-no-print data-flex="justify-between" id="footer"></footer>
+        <footer id="footer" data-no-print></footer>
 
         <div id="overlay" data-overlay></div>
         <div id="toast" data-toast></div>
 
         <script src="/app/app.js?v=1" type="module"></script>
-
     </body>
 </html>

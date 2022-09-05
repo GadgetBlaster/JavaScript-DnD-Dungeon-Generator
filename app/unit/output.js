@@ -71,7 +71,7 @@ function escapeHTML(string) {
  * @private
  *
  * @param {Result[]} results
- * @param {object} [options]
+ * @param {object} options
  *     @param {boolean} [options.verbose]
  *
  * @returns {string}
@@ -142,7 +142,7 @@ function getResults(summary, options = {}) {
  * @private
  *
  * @param {string[]} scopes
- * @param {object} [options]
+ * @param {object} options
  *     @param {boolean} [options.verbose]
  *
  * @returns {string[]}
@@ -226,7 +226,8 @@ function getSummaryParts(summary) {
  * @private
  *
  * @param {object} suite
- * @param {OutputOptions} [options]
+ * @param {object} options
+ *     @param {boolean} [options.verbose]
  *
  * @returns {string}
  */
@@ -270,7 +271,7 @@ export {
  *
  * @param {Summary} summary
  *
- * @returns {string[]}
+ * @returns {string[] | undefined}
  */
 export function getFailureSummary({ errors, failures, results }) {
     if (!failures && !errors) {
@@ -299,14 +300,14 @@ export function getFailureSummary({ errors, failures, results }) {
 /**
  * Returns unit test output as an HTML string.
  *
- * @param {object} suite
  * @param {State} state
+ * @param {object} suite
  * @param {OutputOptions} [options]
  *
  * @returns {string}
  */
-export function getOutput(suite, state, options = {}) {
-    let { scope } = options;
+export function getOutput(state, suite, options = {}) {
+    let { scope = '' } = options;
 
     if (scope === 'list') {
         return getTestList(suite, options);
@@ -315,7 +316,7 @@ export function getOutput(suite, state, options = {}) {
     let testScope = Object.keys(suite).includes(scope) ? scope : undefined;
     let summary   = run(state, suite, testScope);
 
-    return getResults(summary, options);
+    return summary ? getResults(summary, options) : 'Error: Failed to run tests';
 }
 
 /**
@@ -353,13 +354,14 @@ export function getSummaryLink(summary) {
 /**
  * Returns the unit test interface's navigation as an HTML string.
  *
- * @param {object} options
- *     @param {string} [options.scope]
- *     @param {boolean} [options.verbose]
+ * @param {{
+ *     scope?: string;
+ *     verbose?: boolean;
+ * }} [options]
  *
  * @returns {string}
  */
-export const getTestNav = ({ scope, verbose }) => [
+export const getTestNav = ({ scope, verbose } = {}) => [
     link('All', unitUrl + makeParams({ scope: null, verbose }), !scope ? { 'data-active': true } : null),
     link('Tests', unitUrl + makeParams({ scope: 'list', verbose }), scope === 'list' ? { 'data-active': true } : null),
     element('span', '', { role: 'presentation', 'data-separator': true }),

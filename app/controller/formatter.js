@@ -129,7 +129,7 @@ function formatRoom(room, doors) {
         type,
     } = getRoomDescription(room, doors);
 
-    let articleHeader = header(title(roomTitle)
+    let articleHeader = header(title(roomTitle, { 'data-font-size': 'title' })
         + (dimensions ? span(dimensions) : ''));
 
     let doorwayDescriptions = '';
@@ -288,25 +288,33 @@ export function formatDungeon(dungeon) {
  * @returns {string}
  */
 export function formatError(errorTitle, messages) {
-    return title(errorTitle, { 'data-title': 'page', 'data-spacing': 'b-medium' })
-        + messages.map((message, i) => i > 0
-            ? paragraph(message, { 'data-align': 'center' })
-            : title(message, { 'data-align': 'center' })
+    return title(errorTitle, { 'data-spacing': 'b-medium', 'data-font-size': 'huge' })
+        + messages.map((message) =>
+            paragraph(message, { 'data-font-size': 'title', 'data-align': 'center' })
         ).join('');
 }
 
+/**
+ * Content and format for the homepage.
+ *
+ * @returns {string}
+ */
 export function formatHomepage() {
-    return title('D&D Generator', { 'data-title': 'page', 'data-spacing': 'b' }) +
-        div(Object.entries(generators).map(([ route, generator ]) =>
-            element('a', div(generatorConfigs[generator].icon, { 'data-spacing': 'b' }) + capitalize(generator), {
-                'data-action': 'navigate',
-                'data-ready': true,
-                'data-spacing': 'x',
-                href: route,
-            })).join(''),
-        {
-            'data-flex': true,
-        });
+    return title('D&D Generator', {
+        'data-spacing': 'b',
+        'data-spacing-size': '40',
+    })
+
+    + div(Object.entries(generators).map(([ route, generator ]) =>
+        element('a', div(generatorConfigs[generator].icon, { 'data-spacing': 'b' }) + capitalize(generator), {
+            'data-action': 'navigate',
+            'data-ready': true,
+            'data-spacing': 'x',
+            href: route,
+        })).join(''),
+    {
+        'data-flex': true,
+    });
 }
 
 /**

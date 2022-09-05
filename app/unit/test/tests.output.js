@@ -577,12 +577,12 @@ export default ({ assert, describe, it }) => {
         };
 
         it('returns test results', () => {
-            assert(getOutput(suite, state)).stringIncludes('Checked for 1 mischievous kobold.');
+            assert(getOutput(state, suite)).stringIncludes('Checked for 1 mischievous kobold.');
         });
 
         describe('given a `scope` option of `list`', () => {
             it('returns a list of tests', () => {
-                const doc = parseHtml(getOutput(suite, state, { scope: 'list' }));
+                const doc = parseHtml(getOutput(state, suite, { scope: 'list' }));
 
                 assert(Boolean(doc.querySelector('ul'))).isTrue();
                 assert(Boolean(doc.querySelector('li'))).isTrue();
@@ -604,10 +604,17 @@ export default ({ assert, describe, it }) => {
                     runUnits: (path) => { scopesCalled.push(path); },
                 };
 
-                getOutput(scopedSuite, scopedState, { scope: '/test/tests.fake.js' });
+                getOutput(scopedState, scopedSuite, { scope: '/test/tests.fake.js' });
 
                 assert(scopesCalled.length).equals(1);
                 assert(scopesCalled[0]).equals('/test/tests.fake.js');
+            });
+        });
+
+        describe('given an empty suite', () => {
+            it('returns an error message', () => {
+                // @ts-expect-error
+                assert(getOutput({ onError: () => {} }, {})).equals('Error: Failed to run tests');
             });
         });
     });

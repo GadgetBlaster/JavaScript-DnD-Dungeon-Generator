@@ -8,24 +8,31 @@
 
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tapestry&family=Varela&display=swap">
+        <link href="https://fonts.googleapis.com/css2?family=Alegreya+SC:wght@700&family=DM+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
 
         <link rel="stylesheet" href="./style.css?v=1">
     </head>
     <body>
+        <noscript>JavaScript must be enabled to run this app.</noscript>
 
         <header data-flex="justify-between items-center">
-            <h1><a href="/" data-action="navigate">D&D Generator: Unit Tests</a></h1>
+            <h1 data-logo>
+                <a href="/" data-action="navigate">
+                    D&D Generator
+                </a>
+            </h1>
+
             <nav id="nav" data-spacing="small"></nav>
         </header>
 
         <main id="content">
-            <p data-align="center" data-spacing="default">
-                Mumbling incantations...
-            </p>
+            <div data-spinner>
+                <p>Mumbling incantations...</p>
+            </div>
         </main>
 
-        <script src="./app/unit.js?v=1" type="module"></script>
+        <footer id="footer"></footer>
 
+        <script src="./app/unit.js?v=1" type="module"></script>
     </body>
 </html>

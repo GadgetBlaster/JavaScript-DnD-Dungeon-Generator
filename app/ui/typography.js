@@ -56,7 +56,7 @@ export const span = (label, attributes) => element('span', label, attributes);
  *
  * @returns {string}
  */
-export const subtitle = (label, attributes) => element('h3', label, attributes);
+export const subtitle = (label, attributes) => element('h2', label, attributes);
 
 /**
  * Returns an HTML title (h2) element string.
@@ -66,4 +66,4 @@ export const subtitle = (label, attributes) => element('h3', label, attributes);
  *
  * @returns {string}
  */
-export const title = (label, attributes) => element('h2', label, attributes);
+export const title = (label, attributes) => element('h1', label, attributes);

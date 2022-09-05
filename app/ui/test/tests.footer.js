@@ -27,10 +27,11 @@ export default ({ assert, describe, it }) => {
 
         it('contains footer links', () => {
             const expectLinks = [
-                'Mystic Waffle',
                 'GitHub',
-                'CC License',
+                'License',
+                'Mystic Waffle',
                 'Privacy Policy',
+                'Release Notes',
             ];
 
             body.querySelectorAll('a').forEach((link) => {

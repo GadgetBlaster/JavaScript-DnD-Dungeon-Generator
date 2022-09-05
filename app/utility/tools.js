@@ -201,7 +201,7 @@ export function isRequired(value, message) {
  *
  * @param {any} error
  *
- * @returns {Error | string}
+ * @returns {string}
  */
 export const getErrorMessage = (error) => {
     if (typeof error === 'string') {

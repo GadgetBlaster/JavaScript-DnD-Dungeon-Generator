@@ -5,18 +5,21 @@
 
 :root {
     /* Type */
-    --font-default: 'DM Sans', monospace;
-    --font-logo: 'DM Sans', monospace;
+    --font-default: 'DM Sans', sans-serif;
+    --font-title: 'Alegreya SC', serif;
 
-    --font-size-title: 22px;
-    --font-size-subtitle: 18px;
-    --font-size-default: 14px;
-    --font-size-small: 13px;
     --font-size-tiny: 12px;
+    --font-size-small: 13px;
+    --font-size-default: 14px;
+    --font-size-subtitle: 18px;
+    --font-size-title: 22px;
+    --font-size-title-20: 46px;
+    --font-size-huge: 120px;
 
     --leading-default: 1.4rem;
     --leading-loose: 1.6rem;
     --leading-tight: 1.2rem;
+    --leading-none: 1;
 
     --button-font-size: 13px;
 
@@ -41,27 +44,28 @@
     --color-gray-12: #a3a3a3;
     --color-gray-15: #798282;
     --color-gray-20: #4f5252;
-    --color-gray-30: #3B3D3D;
+    --color-gray-30: #3b3d3d;
     --color-gray-35: #202121;
-    --color-gray-40: #0C0F0F;
+    --color-gray-40: #0c0f0f;
+    --color-gray-50: #000000;
 
     --text-color: var(--color-gray-10);
-    --link-color: #FF4289;
+    --link-color: #ff4289;
     --nav-item-color: #870048;
     --nav-item-active-color: var(--color-action-active);
 
     --bg-article: var(--color-gray-30);
     --bg-footer: var(--color-gray-30);
-    --bg-header: #70003C;
+    --bg-header: #70003c;
     --bg-sidebar: var(--color-gray-35);
     --bg-toolbar: var(--color-gray-35);
     --bg: var(--color-gray-40);
 
     /* Spacing */
+    --spacing-small: 5px;
+    --spacing-medium: 10px;
     --spacing-default: 20px;
     --spacing-large: 40px;
-    --spacing-medium: 10px;
-    --spacing-small: 5px;
 
     /* UI */
     --sidebar-width: 220px;
@@ -159,12 +163,14 @@ body[data-layout="sidebar-expanded"] > main {
 }
 
 body > footer {
+    display: flex;
+    justify-content: space-between;
     grid-area: footer;
     width: 100%;
     background: var(--bg-footer);
     box-shadow: 0 0 40px 10px var(--color-gray-40);
     transform: translate3d(0, 100%, 0);
-    animation-delay: 3s;
+    animation-delay: var(--transition-10);
     animation-duration: var(--transition-20);
     animation-fill-mode: forwards;
     animation-name: slideUp;
@@ -179,7 +185,6 @@ body > footer > small {
 
 h1[data-logo] {
     font-size: var(--font-size-subtitle);
-    font-family: var(--font-logo);
     padding: 10px 20px;
     margin: 0;
 }
@@ -373,10 +378,13 @@ button[data-ready] {
     min-width: 300px;
     min-height: 300px;
     margin-bottom: 100px;
-    background: var(--color-gray-35);
+    /* background: var(--color-gray-35); */
+    background:  var(--color-gray-35) radial-gradient(at 70% 40%, var(--color-gray-30) 10px, transparent);
+    transition: background var(--transition-10);
     border: 1px solid var(--color-gray-20);
-    border-radius: var(--spacing-small);
+    border-radius: 100%;
     text-shadow: 0 0 10px var(--color-gray-0);
+    font-family: var(--font-title);
     font-size: var(--font-size-title);
     opacity: 0;
     animation-delay: 500ms;
@@ -388,7 +396,7 @@ button[data-ready] {
 a[data-ready]:hover,
 button[data-ready]:hover {
     text-decoration: none;
-    background: var(--color-gray-40);
+    background: var(--color-gray-50) radial-gradient(at 70% 40%, var(--color-gray-30) 10px, transparent);
 }
 
 a[data-ready] div,
@@ -550,37 +558,22 @@ input[type="rage"][data-error]::-moz-range-track {
 
 /* Type */
 
-h1, h2, h3 {
-    font-weight: normal;
-    line-height: var(--leading-loose);
-}
-
 h1 {
-    font-size: var(--font-size-title);
-    font-family: var(--font-logo);
+    font-family: var(--font-title);
+    font-size: var(--font-size-title-20);
+    line-height: var(--leading-none);
+    font-weight: normal;
     margin: 0;
 }
 
 h2 {
+    font-family: var(--font-title);
     font-size: var(--font-size-title);
-    margin: 0;
-}
-
-h3 {
-    font-size: var(--font-size-subtitle);
     margin: var(--spacing-default) 0 var(--spacing-medium) 0;
 }
 
-h3:first-child {
+h2:first-child {
     margin-top: 0;
-}
-
-h2[data-title="page"] {
-    font-family: var(--font-logo);
-    font-size: 60px;
-    line-height: 1em;
-    letter-spacing: 5px;
-    text-transform: uppercase;
 }
 
 p {
@@ -590,6 +583,14 @@ p {
 
 small {
     font-size: var(--font-size-small);
+}
+
+[data-font-size="title"] {
+    font-size: var(--font-size-title);
+}
+
+[data-font-size="huge"] {
+    font-size: var(--font-size-huge);
 }
 
 /* Lists */
@@ -687,23 +688,46 @@ ul[data-flex] li span {
 
 /* Spacing */
 
+
+[data-spacing] {
+    --space: var(--spacing-default);
+}
+
 [data-spacing="default"] {
-    margin: var(--spacing-default);
+    margin: var(--space);
 }
 
 [data-spacing="x"] {
-    margin-left: var(--spacing-default);
-    margin-right: var(--spacing-default);
+    margin-left: var(--space);
+    margin-right: var(--space);
 }
 
 [data-spacing="y"] {
-    margin-top: var(--spacing-default);
-    margin-bottom: var(--spacing-default);
+    margin-top: var(--space);
+    margin-bottom: var(--space);
+}
+
+[data-spacing="t"] {
+    margin-top: var(--space);
+}
+
+[data-spacing="r"] {
+    margin-top: var(--space);
 }
 
 [data-spacing="b"] {
-    margin-bottom: var(--spacing-default);
+    margin-bottom: var(--space);
 }
+
+[data-spacing="l"] {
+    margin-bottom: var(--space);
+}
+
+[data-spacing-size="40"] {
+    --space: var(--spacing-large);
+}
+
+/* Deprecated */
 
 [data-spacing="b-none"] {
     margin-bottom: 0;
@@ -832,7 +856,7 @@ ul[data-flex] li span {
 
 /* Print */
 /* TODO print needs to negate dark mode, or provide a print feature */
-
+/* Reverse behavior, make everything except `<main>` no print */
 @media print {
     [data-no-print] {
         display: none;

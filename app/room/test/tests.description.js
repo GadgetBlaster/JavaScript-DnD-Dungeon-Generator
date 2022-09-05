@@ -862,7 +862,7 @@ export default ({ assert, describe, it }) => {
                 }];
 
                 it(`includes ${type} passage in the description`, () => {
-                    assert(getDoorwayDescriptionList(doors, 2).pop().desc)
+                    assert(getDoorwayDescriptionList(doors, 2)?.pop()?.desc)
                         .stringIncludes(`${type} passage`);
                 });
             });
@@ -896,7 +896,7 @@ export default ({ assert, describe, it }) => {
             });
 
             it('includes a sub title with the number of keys', () => {
-                assert(result).stringIncludes('<h3>Keys (2)</h3>');
+                assert(result).stringIncludes('<h2>Keys (2)</h2>');
             });
 
             it('includes am html list with items for each key and the correct room connection', () => {
@@ -908,7 +908,7 @@ export default ({ assert, describe, it }) => {
 
     describe('getMapDescription()', () => {
         it('includes a title', () => {
-            assert(getMapDescription()).stringIncludes('<h3>Map</h3>');
+            assert(getMapDescription()).stringIncludes('<h2>Map</h2>');
         });
 
         it('includes a list with a single item', () => {

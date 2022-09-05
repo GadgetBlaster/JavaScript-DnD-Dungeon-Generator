@@ -3,26 +3,43 @@
 import { small, span } from './typography.js';
 import { link } from './link.js';
 
-const ccUrl           = 'https://creativecommons.org/licenses/by-nc-sa/4.0/';
-const mysticWaffleUrl = 'https://www.mysticwaffle.com';
-const privacyUrl      = 'https://www.mysticwaffle.com/privacy-policy';
-const repoUrl         = 'https://github.com/GadgetBlaster/JavaScript-DnD-Dungeon-Generator';
+// -- Config --------------------------------------------------------
+
+const creativeCommonsUrl = 'https://creativecommons.org/licenses/by-nc-sa/4.0/';
+const mysticWaffleUrl    = 'https://www.mysticwaffle.com';
+const privacyUrl         = 'https://www.mysticwaffle.com/privacy-policy';
+const gitHubUrl          = 'https://github.com/GadgetBlaster/JavaScript-DnD-Dungeon-Generator';
+
+const copyright = `D&D Generator by ${link('Mystic Waffle', mysticWaffleUrl, { target: '_blank' })}`;
+
+// -- Private Functions --------------------------------------------------------
 
 /**
- * Renders the application footer.
+ * Returns a list of HTML items spaced by bullets.
+ *
+ * @param {string[]} items
+ *
+ * @returns {string}
+ */
+const spacedItems = (items) => items.join(span('&bull;', { 'data-spacing': 'x-small' }));
+
+// -- Public Functions ---------------------------------------------------------
+
+/**
+ * Content and format for the application footer.
  *
  * @param {string} testSummary
  *
  * @returns {string}
  */
 export function getFooter(testSummary) {
-    return small(testSummary)
-        + small(`D&D Generator by ${link('Mystic Waffle', mysticWaffleUrl, { target: '_blank' })}`)
-        + small(
-            [
-                link('GitHub', repoUrl, { target: '_blank' }),
-                link('CC License', ccUrl, { target: '_blank' }),
-                link('Privacy Policy', privacyUrl, { target: '_blank' }),
-            ].join(span('&bull;', { 'data-spacing': 'x-small' }))
-        );
+
+    return small(spacedItems([ 'Beta v0.1 ', testSummary ]))
+        + small(copyright)
+        + small(spacedItems([
+            link('Release Notes', '', { 'data-action': 'navigate', href: '/release-notes' }),
+            link('GitHub', gitHubUrl, { target: '_blank' }),
+            link('License', creativeCommonsUrl, { target: '_blank' }),
+            link('Privacy Policy', privacyUrl, { target: '_blank' }),
+        ]));
 }

@@ -17,7 +17,7 @@ import { getErrorMessage } from '../utility/tools.js';
  * @param {{ [path: string]: (Utility) => void }} suite
  * @param {string} [scope]
  *
- * @returns {Summary}
+ * @returns {Summary | undefined}
  */
 export default function ({ getSummary, onError, runUnits }, suite, scope) {
     if (!suite || typeof suite !== 'object') {
@@ -33,7 +33,7 @@ export default function ({ getSummary, onError, runUnits }, suite, scope) {
     }
 
     let {
-        [scope]: scopedTest,
+        [scope || '']: scopedTest,
     } = suite;
 
     if (scope && !scopedTest) {
@@ -41,7 +41,7 @@ export default function ({ getSummary, onError, runUnits }, suite, scope) {
         return;
     }
 
-    if (scopedTest) {
+    if (scope && scopedTest) {
         entries = [ [ scope, scopedTest ] ];
     }
 

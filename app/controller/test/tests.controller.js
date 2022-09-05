@@ -280,7 +280,7 @@ export default ({ assert, describe, it }) => {
                 }));
 
                 assert(Boolean(body.querySelector('svg'))).isTrue();
-                assert(body.querySelector('h2')).hasTextContent('Room 1');
+                assert(body.querySelector('h1')).hasTextContent('Room 1');
             });
         });
 
@@ -289,15 +289,15 @@ export default ({ assert, describe, it }) => {
                 const itemGen = getGenerator('items');
                 const body    = parseHtml(itemGen(getMockState(), itemSettings));
 
-                const title = body.querySelector('h2');
+                const title = body.querySelector('h1');
                 const list  = body.querySelector('ul');
 
                 assert(title).hasTextContent('Items');
-                title && assert(title.querySelector('span[data-detail]'))
+                assert(title?.querySelector('span[data-detail]'))
                     .hasTextContent('1');
 
                 assert(list).isElementTag('ul');
-                list && assert(list.querySelectorAll('li').length).equals(1);
+                assert(list?.querySelectorAll('li').length).equals(1);
             });
         });
 
@@ -310,8 +310,8 @@ export default ({ assert, describe, it }) => {
                     roomCount : 1,
                 }));
 
-                const title     = body.querySelector('h2');
-                const subtitles = body.querySelectorAll('h3');
+                const title     = body.querySelector('h1');
+                const subtitles = body.querySelectorAll('h2');
                 const list      = body.querySelector('ul');
 
                 assert(title).hasTextContent('Room');
@@ -321,7 +321,7 @@ export default ({ assert, describe, it }) => {
                     .hasTextContent('1');
 
                 assert(list).isElementTag('ul');
-                list && assert(list.querySelectorAll('li').length).equals(1);
+                assert(list?.querySelectorAll('li').length).equals(1);
             });
         });
 
@@ -479,7 +479,7 @@ export default ({ assert, describe, it }) => {
             onGenerate(controller);
 
             const content = controller.sections.content;
-            const title = content.querySelector('h2');
+            const title = content.querySelector('h1');
 
             assert(Boolean(content.querySelector('article'))).isTrue();
             assert(title).hasTextContent('Items');
@@ -494,7 +494,7 @@ export default ({ assert, describe, it }) => {
                 onGenerate(controller);
 
                 const content = controller.sections.content;
-                const title = content.querySelector('h2');
+                const title = content.querySelector('h1');
 
                 assert(title).hasTextContent('Oh no!');
             });
@@ -598,7 +598,7 @@ export default ({ assert, describe, it }) => {
                 renderApp(controller, '');
 
                 assert(body).hasAttributes({ 'data-layout': 'full' });
-                assert(content.querySelector('h2')).hasTextContent('404');
+                assert(content.querySelector('h1')).hasTextContent('404');
             });
         });
 
@@ -617,14 +617,14 @@ export default ({ assert, describe, it }) => {
             renderErrorPage(sections);
 
             assert(body).hasAttributes({ 'data-layout': 'full' });
-            assert(content.querySelector('h2')).hasTextContent('Oh no!');
+            assert(content.querySelector('h1')).hasTextContent('Oh no!');
         });
 
         describe('given a 404 status code', () => {
             it('renders a 404 message', () => {
                 renderErrorPage(sections, 404);
 
-                assert(content.querySelector('h2')).hasTextContent('404');
+                assert(content.querySelector('h1')).hasTextContent('404');
             });
         });
     });
@@ -773,10 +773,10 @@ export default ({ assert, describe, it }) => {
 
                 toggleExpand(controller404);
 
-                const title = controller404.sections.content.querySelector('h2');
+                const title = controller404.sections.content.querySelector('h1');
 
                 assert(Boolean(title)).isTrue();
-                title && assert(title).hasTextContent('Oh no!');
+                assert(title).hasTextContent('Oh no!');
             });
         });
     });
@@ -1001,13 +1001,13 @@ export default ({ assert, describe, it }) => {
 
                 generateButtonEl && triggers.generate(getMockClickEvent(generateButtonEl));
 
-                const title = content.querySelector('h2');
+                const title = content.querySelector('h1');
 
                 assert(Boolean(generateButtonEl)).isTrue();
 
                 assert(Boolean(content.querySelector('article'))).isTrue();
                 assert(Boolean(title)).isTrue();
-                title && assert(title).hasTextContent('Items');
+                assert(title).hasTextContent('Items');
             });
         });
 

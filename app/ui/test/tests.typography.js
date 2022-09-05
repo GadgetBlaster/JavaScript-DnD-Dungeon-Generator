@@ -14,8 +14,8 @@ import {
 
 const type = {
     'em'    : em,
-    'h2'    : title,
-    'h3'    : subtitle,
+    'h1'    : title,
+    'h2'    : subtitle,
     'p'     : paragraph,
     'small' : small,
     'span'  : span,
@@ -42,11 +42,11 @@ export default ({ assert, describe, it }) => {
             });
 
             it(`returns an HTML ${tag} element`, () => {
-                assert(element.tagName).equals(tag.toUpperCase());
+                assert(element).isElementTag(tag);
             });
 
             it('contains the given label', () => {
-                assert(element.textContent).equals('Expert Keyboardist');
+                assert(element).hasTextContent('Expert Keyboardist');
             });
 
             it('has the given attributes', () => {
