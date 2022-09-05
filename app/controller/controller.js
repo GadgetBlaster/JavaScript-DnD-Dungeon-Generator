@@ -11,11 +11,11 @@ import { spinner } from '../ui/spinner.js';
 import {
     formatDungeon,
     formatError,
-    formatHomepage,
     formatItems,
     formatName,
     formatReadyState,
     formatRooms,
+    getFormattedHomepage,
 } from './formatter.js';
 import { generateDungeon } from '../dungeon/generate.js';
 import { generateItems } from '../item/generate.js';
@@ -24,6 +24,7 @@ import { generateRooms } from '../room/generate.js';
 import { getFormData, getKnobPanel, validateOnBlur } from '../ui/form.js';
 import { getNav, setActiveNavItem } from '../ui/nav.js';
 import { toss, isRequired } from '../utility/tools.js';
+import { getFormattedNotes } from '../pages/notes.js';
 
 // -- Type Imports -------------------------------------------------------------
 
@@ -113,7 +114,8 @@ export const generatorConfigs = {
 };
 
 export const pages = Object.freeze(/** @type {const} */ ({
-    '/': 'home',
+    '/'             : 'home',
+    '/release-notes': 'notes',
 }));
 
 const genKeyRouteRegEx = `^\\\/(${Object.keys(generators).join('|').replace(/\//g, '')})\\\/([a-z0-9]{13}$)`;
@@ -492,8 +494,7 @@ function renderErrorPage({ body, content, knobs, nav, toolbar }, statusCode) {
     let { title, messages } = getErrorPageContent(statusCode);
 
     setActiveNavItem(nav); // Clear it
-
-    body.dataset.layout = 'full';
+    setLayout(body, 'full');
 
     toolbar.innerHTML = '';
     knobs.innerHTML   = '';
@@ -517,7 +518,7 @@ function renderGenerator(controller, { generator, key }) {
     let { body, content, knobs, nav, toolbar } = sections;
 
     if (body.dataset.layout === 'full') {
-        body.dataset.layout = 'default';
+        setLayout(body, 'default');
     }
 
     setActiveNavItem(nav, generator);
@@ -566,19 +567,36 @@ function renderGenerator(controller, { generator, key }) {
 function renderPage({ body, content, knobs, nav, toolbar }, { page }) {
     setActiveNavItem(nav); // Clear it
 
-    body.dataset.layout = 'full';
-
     toolbar.innerHTML = '';
     knobs.innerHTML   = '';
 
     switch (page) {
         case 'home':
-            content.innerHTML = formatHomepage();
+            setLayout(body, 'full');
+            content.innerHTML = getFormattedHomepage();
+            return;
+
+        case 'notes':
+            setLayout(body, 'slim');
+            content.innerHTML = getFormattedNotes();
             return;
 
         default:
             toss(`Invalid page "${page}" in renderPage()`);
     }
+}
+
+/**
+ * Sets the layout.
+ *
+ * TODO tests
+ *
+ * @param {HTMLElement} body
+ * @param {"default" | "full" | "slim" | "sidebar-expanded"} layout
+ *
+ */
+function setLayout(body, layout) {
+    body.dataset.layout = layout;
 }
 
 /**
@@ -627,9 +645,10 @@ function toggleAccordion(container, e) {
 function toggleExpand({ sections, getPathname }) {
     let { body, knobs } = sections;
 
-    body.dataset.layout = body.dataset.layout === 'sidebar-expanded'
+    setLayout(body, body.dataset.layout === 'sidebar-expanded'
         ? 'default'
-        : 'sidebar-expanded';
+        : 'sidebar-expanded'
+    );
 
     let { generator } = getActiveRoute(getPathname());
 

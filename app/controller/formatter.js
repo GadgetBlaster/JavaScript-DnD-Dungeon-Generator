@@ -1,13 +1,16 @@
 // @ts-check
 
 import { article, div, header, section } from '../ui/block.js';
-import { capitalize, toss, pluralize } from '../utility/tools.js';
-import { drawLegend } from '../dungeon/legend.js';
-import { element } from '../utility/element.js';
-import { generators, generatorConfigs } from './controller.js';
-import { indicateItemRarity } from '../item/item.js';
 import { list } from '../ui/list.js';
 import { paragraph, span, subtitle, title } from '../ui/typography.js';
+
+import { capitalize, toss, pluralize } from '../utility/tools.js';
+import { element } from '../utility/element.js';
+
+import { drawLegend } from '../dungeon/legend.js';
+import { indicateItemRarity } from '../item/item.js';
+
+import { generators, generatorConfigs } from './controller.js';
 
 import {
     getDoorwayDescriptionList,
@@ -15,7 +18,6 @@ import {
     getMapDescription,
     getRoomDescription,
 } from '../room/description.js';
-
 
 // TODO all HTML formatting should be excluded until this step, such as item
 // lists, etc
@@ -52,7 +54,7 @@ const formatDetail = (content) => span(`(${content})`, { 'data-detail': '' });
  * @private
  *
  * @param {ItemSet} itemSet
- * @param {object} [options]
+ * @param {object} options
  *     @param {number} [options.columns = 1]
  *
  * @returns {string}
@@ -295,29 +297,6 @@ export function formatError(errorTitle, messages) {
 }
 
 /**
- * Content and format for the homepage.
- *
- * @returns {string}
- */
-export function formatHomepage() {
-    return title('D&D Generator', {
-        'data-spacing': 'b',
-        'data-spacing-size': '40',
-    })
-
-    + div(Object.entries(generators).map(([ route, generator ]) =>
-        element('a', div(generatorConfigs[generator].icon, { 'data-spacing': 'b' }) + capitalize(generator), {
-            'data-action': 'navigate',
-            'data-ready': true,
-            'data-spacing': 'x',
-            href: route,
-        })).join(''),
-    {
-        'data-flex': true,
-    });
-}
-
-/**
  * Formats output of the item generator.
  *
  * @param {ItemSet} itemSet
@@ -372,4 +351,27 @@ export function formatReadyState(message, icon) {
  */
 export function formatRooms(rooms) {
     return formatRoomGrid(rooms);
+}
+
+/**
+ * Returns formatted content for the homepage.
+ *
+ * @returns {string}
+ */
+export function getFormattedHomepage() {
+    return title('D&D Generator', {
+        'data-spacing': 'b',
+        'data-spacing-size': '40',
+    })
+
+    + div(Object.entries(generators).map(([ route, generator ]) =>
+        element('a', div(generatorConfigs[generator].icon, { 'data-spacing': 'b' }) + capitalize(generator), {
+            'data-action': 'navigate',
+            'data-ready': true,
+            'data-spacing': 'x',
+            href: route,
+        })).join(''),
+    {
+        'data-flex': true,
+    });
 }

@@ -157,9 +157,16 @@ body[data-layout="sidebar-expanded"] > aside {
 
 body[data-layout="full"] > aside,
 body[data-layout="full"] > menu,
+body[data-layout="slim"] > aside,
+body[data-layout="slim"] > menu,
 body[data-layout="sidebar-expanded"] > menu,
 body[data-layout="sidebar-expanded"] > main {
     display: none;
+}
+
+body[data-layout="slim"] > main {
+    max-width: 600px;
+    margin: auto;
 }
 
 body > footer {
@@ -579,6 +586,10 @@ h2:first-child {
 p {
     line-height: var(--leading-loose);
     margin: var(--spacing-medium) 0;
+}
+
+p + p {
+    margin-top: 0;
 }
 
 small {
