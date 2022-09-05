@@ -1,7 +1,8 @@
 // @ts-check
 
-import { small, span } from './typography.js';
 import { link } from './link.js';
+import { small, span } from './typography.js';
+import { version } from '../pages/notes.js';
 
 // -- Config --------------------------------------------------------
 
@@ -34,7 +35,7 @@ const spacedItems = (items) => items.join(span('&bull;', { 'data-spacing': 'x-sm
  */
 export function getFooter(testSummary) {
 
-    return small(spacedItems([ 'Beta v0.1 ', testSummary ]))
+    return small(spacedItems([ `Alpha ${version}`, testSummary ]))
         + small(copyright)
         + small(spacedItems([
             link('Release Notes', '', { 'data-action': 'navigate', href: '/release-notes' }),

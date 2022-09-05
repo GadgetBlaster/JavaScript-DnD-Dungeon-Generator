@@ -685,8 +685,8 @@ ul[data-flex] li span {
 
 [data-grid] {
     display: grid;
-    grid-column-gap: 20px;
-    grid-row-gap: 20px;
+    grid-column-gap: var(--spacing-default);
+    grid-row-gap: var(--spacing-default);
 }
 
 [data-grid="2"] {
