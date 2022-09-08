@@ -33,14 +33,14 @@ const getGitHubTagUrl = (tag) => `https://github.com/GadgetBlaster/JavaScript-Dn
  */
 const notes = [
     {
-        title: 'Item Generation',
+        title: 'Item Generator',
         version: '0.2.0',
         date: '2019-12-18',
         description: [
             'What good is a dungeon room without loot in it?',
         ],
         details: [
-            'Adds a random item generator.',
+            'Added a random item generator.',
         ],
     },
     {
@@ -53,7 +53,7 @@ const notes = [
             'The app is basic right now, rendering an interface which allows users to configure and generate a simple room description.',
         ],
         details: [
-            'Adds a room description generator.',
+            'Added a room description generator.',
         ],
     },
 ];
