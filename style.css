@@ -273,6 +273,13 @@ hr {
     margin: 20px 0;
 }
 
+/* Images */
+
+img {
+    display: block;
+    max-width: 100%;
+}
+
 /* Articles */
 
 article {

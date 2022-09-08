@@ -8,7 +8,7 @@ This project is a work in progress with numerous features and configuration opti
 
 ## Screenshot
 
-![D&D Dungeon Generator App](/img/screenshot.png)
+![D&D Dungeon Generator App](/img/screenshot.jpg)
 
 ## Application Design
 

@@ -2,7 +2,7 @@
 
 import { link } from './link.js';
 import { small, span } from './typography.js';
-import { version } from '../pages/notes.js';
+import { currentVersion } from '../pages/notes.js';
 
 // -- Config --------------------------------------------------------
 
@@ -33,14 +33,12 @@ const spacedItems = (items) => items.join(span('&bull;', { 'data-spacing': 'x-sm
  *
  * @returns {string}
  */
-export function getFooter(testSummary) {
-
-    return small(spacedItems([ `Alpha ${version}`, testSummary ]))
-        + small(copyright)
-        + small(spacedItems([
-            link('Release Notes', '', { 'data-action': 'navigate', href: '/release-notes' }),
-            link('GitHub', gitHubUrl, { target: '_blank' }),
-            link('License', creativeCommonsUrl, { target: '_blank' }),
-            link('Privacy Policy', privacyUrl, { target: '_blank' }),
-        ]));
-}
+export const getFooter = (testSummary) =>
+    small(spacedItems([ `Alpha ${currentVersion}`, testSummary ]))
+    + small(copyright)
+    + small(spacedItems([
+        link('Release Notes', '', { 'data-action': 'navigate', href: '/release-notes' }),
+        link('GitHub', gitHubUrl, { target: '_blank' }),
+        link('License', creativeCommonsUrl, { target: '_blank' }),
+        link('Privacy Policy', privacyUrl, { target: '_blank' }),
+    ]));
