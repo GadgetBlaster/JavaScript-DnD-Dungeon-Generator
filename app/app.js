@@ -1,7 +1,7 @@
 // @ts-check
 
 import { getErrorMessage } from './utility/tools.js';
-import { getFailureSummary, getSummaryLink } from './unit/output.js';
+import { getFooterTestSummary } from './unit/output.js';
 import { request } from './utility/xhr.js';
 import { toss } from './utility/tools.js';
 import { unitState } from './unit/state.js';
@@ -27,7 +27,7 @@ import { getFooter } from './ui/footer.js';
 // -- Functions ----------------------------------------------------------------
 
 /**
- * Logs an error.
+ * Logs an error to the server.
  *
  * @param {Error} error
  */
@@ -40,7 +40,6 @@ function logError(error) {
         method  : 'POST',
     });
 }
-
 
 // -- Config -------------------------------------------------------------------
 
@@ -65,26 +64,16 @@ const sections = (/** @type {() => Sections} */ () => {
     return { body, content, footer, knobs, nav, overlay, toast, toolbar };
 })();
 
-const runTestsOnStartup = false;
+/**
+ * Whether unit tests should be skipped when loading the app.
+ *
+ * @type {boolean}
+ */
+const skipTests = false;
 
 // -- Tests --------------------------------------------------------------------
 
-// TODO break out
-const testSummaryLink = runTestsOnStartup ? (() => {
-    let summary = run(unitState(), suite);
-
-    if (!summary) {
-        return 'Tests failed to run...';
-    }
-
-    let errors = getFailureSummary(summary);
-
-    if (errors) {
-        console.error(...errors);
-    }
-
-    return getSummaryLink(summary);
-})() : 'Tests disabled';
+const testSummaryLink = getFooterTestSummary(skipTests, console.error, run(unitState(), suite));
 
 // -- Router Functions ---------------------------------------------------------
 
@@ -111,6 +100,7 @@ function updatePath(path) {
 
 // -- Initialization -----------------------------------------------------------
 
+// TODO move footer render into init controller
 const { render } = initController({
     getPathname,
     onError: logError,

@@ -1,6 +1,7 @@
 // @ts-check
 
 import { getTestNav, getOutput } from './unit/output.js';
+import { toss } from './utility/tools.js';
 import { unitState } from './unit/state.js';
 import suite from './unit/suite.js';
 
@@ -24,7 +25,7 @@ const urlParams = new URLSearchParams(window.location.search);
 /**
  * URL parameter to run a specific test file.
  */
-const scope = urlParams.get('scope');
+const scope = urlParams.get('scope') || undefined;
 
 /**
  * URL parameter to include verbose output.
@@ -32,6 +33,9 @@ const scope = urlParams.get('scope');
 const verbose = Boolean(urlParams.get('verbose'));
 
 // -- Render -------------------------------------------------------------------
+
+if (!navContainer)     { toss('Cannot find nav element'); }
+if (!contentContainer) { toss('Cannot find content element'); }
 
 navContainer.innerHTML     = getTestNav({ scope, verbose });
 contentContainer.innerHTML = getOutput(unitState(), suite, {

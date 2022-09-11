@@ -66,6 +66,39 @@ function escapeHTML(string) {
 }
 
 /**
+ * Returns a summary of unit tests errors.
+ *
+ * @private
+ *
+ * @param {Summary} summary
+ *
+ * @returns {string[] | undefined}
+ */
+function getFailureSummary({ errors, failures, results }) {
+    if (!failures && !errors) {
+        return;
+    }
+
+    let messages = [];
+
+    if (failures) {
+        messages.push(`Encountered ${failures} ${pluralize(failures, 'ogre')}!`);
+    }
+
+    if (errors) {
+        messages.push(`Encountered ${errors} ${pluralize(errors, 'dragon')}!`);
+    }
+
+    let log = results.filter(({ isOk }) => !isOk).map(({ msg }) => msg);
+
+    if (log) {
+        messages.push(...log);
+    }
+
+    return messages;
+}
+
+/**
  * Returns the result log as an HTML list element string.
  *
  * @private
@@ -116,8 +149,8 @@ function getResults(summary, options = {}) {
         verbose,
     } = options;
 
-    if (onError && (failures || errors)) {
-        onError(...getFailureSummary(summary));
+    if (failures || errors) {
+        getFailureSummary(summary)?.forEach((error) => onError?.(error));
     }
 
     if (onSuccess && !failures && !errors) {
@@ -255,47 +288,17 @@ function makeParams(entries) {
 }
 
 export {
-    escapeHTML      as testEscapeHTML,
-    getLog          as testGetLog,
-    getResults      as testGetResults,
-    getSuiteList    as testGetSuiteList,
-    getSummary      as testGetSummary,
-    getSummaryParts as testGetSummaryParts,
-    getTestList     as testGetTestList,
+    escapeHTML        as testEscapeHTML,
+    getFailureSummary as testGetFailureSummary,
+    getLog            as testGetLog,
+    getResults        as testGetResults,
+    getSuiteList      as testGetSuiteList,
+    getSummary        as testGetSummary,
+    getSummaryParts   as testGetSummaryParts,
+    getTestList       as testGetTestList,
 };
 
 // -- Public Functions ---------------------------------------------------------
-
-/**
- * Returns a summary of unit tests errors.
- *
- * @param {Summary} summary
- *
- * @returns {string[] | undefined}
- */
-export function getFailureSummary({ errors, failures, results }) {
-    if (!failures && !errors) {
-        return;
-    }
-
-    let messages = [];
-
-    if (failures) {
-        messages.push(`Encountered ${failures} ${pluralize(failures, 'ogre')}!`);
-    }
-
-    if (errors) {
-        messages.push(`Encountered ${errors} ${pluralize(errors, 'dragon')}!`);
-    }
-
-    let log = results.filter(({ isOk }) => !isOk).map(({ msg }) => msg).join('\n');
-
-    if (log) {
-        messages.push(log);
-    }
-
-    return messages;
-}
 
 /**
  * Returns unit test output as an HTML string.
@@ -331,27 +334,6 @@ export const getResultMessage = (entries) => entries.reduce((accumulator, value,
 }, '').trim();
 
 /**
- * Returns a link to the test summary as an HTML string.
- *
- * @param {Summary} summary
- *
- * @returns {string}
- */
-export function getSummaryLink(summary) {
-    let {
-        assertionsText,
-        checkedForText,
-        issuesText,
-    } = getSummaryParts(summary);
-
-    if (issuesText) {
-        return `${checkedForText} ${assertionsText}... ${link(issuesText, unitUrl, { 'data-error': true })}!`;
-    }
-
-    return `${checkedForText} ${link(capitalizeWords(assertionsText), unitUrl)}`;
-}
-
-/**
  * Returns the unit test interface's navigation as an HTML string.
  *
  * @param {{
@@ -367,3 +349,40 @@ export const getTestNav = ({ scope, verbose } = {}) => [
     element('span', '', { role: 'presentation', 'data-separator': true }),
     link('Verbose', unitUrl + makeParams({ scope, verbose: !verbose }), verbose ? { 'data-active': verbose } : undefined),
 ].join('');
+
+/**
+ * Returns a link to the test summary as an HTML string.
+ *
+ * @param {boolean} skip
+ * @param {(error: string) => void} onError
+ * @param {Summary | undefined} summary
+ *
+ * @returns {string}
+ */
+export function getFooterTestSummary(skip, onError, summary) {
+    if (skip) {
+        return 'Tests disabled';
+    }
+
+    if (!summary) {
+        return 'Tests failed to run...';
+    }
+
+    let errors = getFailureSummary(summary);
+
+    if (errors) {
+        errors.forEach((error) => onError(error));
+    }
+
+    let {
+        assertionsText,
+        checkedForText,
+        issuesText,
+    } = getSummaryParts(summary);
+
+    if (issuesText) {
+        return `${checkedForText} ${assertionsText}... ${link(issuesText, unitUrl, { 'data-error': true })}!`;
+    }
+
+    return `${checkedForText} ${link(capitalizeWords(assertionsText), unitUrl)}`;
+}

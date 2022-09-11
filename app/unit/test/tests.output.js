@@ -2,19 +2,19 @@
 
 import {
     // Private Functions
-    testEscapeHTML      as escapeHTML,
-    testGetLog          as getLog,
-    testGetResults      as getResults,
-    testGetSuiteList    as getSuiteList,
-    testGetSummary      as getSummary,
-    testGetSummaryParts as getSummaryParts,
-    testGetTestList     as getTestList,
+    testEscapeHTML        as escapeHTML,
+    testGetFailureSummary as getFailureSummary,
+    testGetLog            as getLog,
+    testGetResults        as getResults,
+    testGetSuiteList      as getSuiteList,
+    testGetSummary        as getSummary,
+    testGetSummaryParts   as getSummaryParts,
+    testGetTestList       as getTestList,
 
     // Public Functions
-    getFailureSummary,
+    getFooterTestSummary,
     getOutput,
     getResultMessage,
-    getSummaryLink,
     getTestNav,
 } from '../output.js';
 
@@ -36,6 +36,70 @@ export default ({ assert, describe, it }) => {
                 const expect = '&lt;h1 class=&quot;logo&quot;&gt;Sal&#x27;s Soups &amp;amp; Sandwiches&lt;&#x2F;h1&gt;';
 
                 assert(escapeHTML(html)).equals(expect);
+            });
+        });
+    });
+
+    describe('getFailureSummary()', () => {
+        const summary = {
+            assertions: 0,
+            errors    : 0,
+            failures  : 0,
+            results   : [],
+        };
+
+        describe('when there are no failures or errors', () => {
+            it('returns undefined', () => {
+                assert(getFailureSummary(summary)).isUndefined();
+            });
+        });
+
+        describe('when there is one failure', () => {
+            it('contains a singular failure description', () => {
+                assert(getFailureSummary({ ...summary, failures: 1 })).equalsArray([
+                    'Encountered 1 ogre!',
+                ]);
+            });
+        });
+
+        describe('when there are multiple failure', () => {
+            it('contains a plural failure description', () => {
+                assert(getFailureSummary({ ...summary, failures: 12 })).equalsArray([
+                    'Encountered 12 ogres!',
+                ]);
+            });
+        });
+
+        describe('when there is one error', () => {
+            it('contains a singular error description', () => {
+                assert(getFailureSummary({ ...summary, errors: 1 })).equalsArray([
+                    'Encountered 1 dragon!',
+                ]);
+            });
+        });
+
+        describe('when there are multiple failure', () => {
+            it('contains a plural failure description', () => {
+                assert(getFailureSummary({ ...summary, errors: 4 })).equalsArray([
+                    'Encountered 4 dragons!',
+                ]);
+            });
+        });
+
+        describe('error and failure results', () => {
+            it('returns a concatenated string of results filtered by errors and failures', () => {
+                const results = [
+                    { isOk: false, msg: 'Failed to do X' },
+                    { isOk: true,  msg: 'Woo' },
+                    { isOk: false, msg: 'Bugs! Bugs everywhere!' },
+                ];
+
+                assert(getFailureSummary({ ...summary, errors: 1, failures: 1, results })).equalsArray([
+                    'Encountered 1 ogre!',
+                    'Encountered 1 dragon!',
+                    'Failed to do X',
+                    'Bugs! Bugs everywhere!',
+                ]);
             });
         });
     });
@@ -211,7 +275,10 @@ export default ({ assert, describe, it }) => {
                 assertions: 1,
                 errors    : 0,
                 failures  : 1,
-                results   : [ { isOk: false, msg: 'fake failure' } ],
+                results   : [
+                    { isOk: false, msg: 'Fake failure' },
+                    { isOk: false, msg: 'Another fake failure' },
+                ],
             };
 
             let result = getResults(summary);
@@ -220,20 +287,26 @@ export default ({ assert, describe, it }) => {
                 const body = parseHtml(getResults(summary));
                 const dots = body.querySelectorAll('[data-dot="fail"]');
 
-                assert(dots.length).equals(1);
+                assert(dots.length).equals(2);
             });
 
             it('returns a log with the failure', () => {
-                assert(result).stringIncludes('fake failure');
+                assert(result)
+                    .stringIncludes('Fake failure')
+                    .stringIncludes('Another fake failure');
             });
 
-            describe('given an `onError` option', () => {
-                it('calls `onError` and returns the failure message', () => {
-                    let errorLog;
+            describe('given the `onError` option', () => {
+                it('calls `onError` with the summary and once for each failure', () => {
+                    let errorLog = [];
 
-                    getResults(summary, { onError: (msg) => { errorLog = msg; }});
+                    getResults(summary, { onError: (msg) => { errorLog.push(msg); }});
 
-                    assert(errorLog).equals('Encountered 1 ogre!');
+                    assert(errorLog).equalsArray([
+                        'Encountered 1 ogre!',
+                        'Fake failure',
+                        'Another fake failure',
+                    ]);
                 });
             });
         });
@@ -243,7 +316,7 @@ export default ({ assert, describe, it }) => {
                 assertions: 1,
                 errors    : 1,
                 failures  : 0,
-                results   : [ { isOk: false, msg: 'fake error' } ],
+                results   : [ { isOk: false, msg: 'Fake error' } ],
             };
 
             let result = getResults(summary);
@@ -256,16 +329,19 @@ export default ({ assert, describe, it }) => {
             });
 
             it('returns a log with the error', () => {
-                assert(result).stringIncludes('fake error');
+                assert(result).stringIncludes('Fake error');
             });
 
             describe('given an `onError` option', () => {
-                it('calls `onError` and returns the error message', () => {
-                    let errorLog;
+                it('calls `onError` with the summary and once for each error', () => {
+                    let errorLog = [];
 
-                    getResults(summary, { onError: (msg) => { errorLog = msg; }});
+                    getResults(summary, { onError: (msg) => { errorLog.push(msg); }});
 
-                    assert(errorLog).equals('Encountered 1 dragon!');
+                    assert(errorLog).equalsArray([
+                        'Encountered 1 dragon!',
+                        'Fake error',
+                    ]);
                 });
             });
         });
@@ -500,65 +576,82 @@ export default ({ assert, describe, it }) => {
 
     // -- Public Functions -----------------------------------------------------
 
-    describe('getFailureSummary()', () => {
-        const summary = {
+    describe('getFooterTestSummary()', () => {
+        const defaultSummary = {
             assertions: 0,
             errors    : 0,
             failures  : 0,
             results   : [],
         };
 
-        describe('when there are no failures or errors', () => {
-            it('returns undefined', () => {
-                assert(getFailureSummary(summary)).isUndefined();
+        let errors = [];
+
+        const onError = (error) => {
+            errors.push(error);
+        };
+
+        it('returns a string', () => {
+            assert(getFooterTestSummary(false, onError, { ...defaultSummary })).isString();
+        });
+
+        it('returns a link to `/unit.html`', () => {
+            const doc = parseHtml(getFooterTestSummary(false, onError, { ...defaultSummary }));
+            assert(Boolean(doc.querySelector('a[href="/unit.html"]'))).isTrue();
+        });
+
+        it('does not call the `onError` callback', () => {
+            assert(errors.length).equals(0);
+        });
+
+        describe('given errors', () => {
+            errors = [];
+
+            const doc = parseHtml(getFooterTestSummary(false, onError, {
+                ...defaultSummary,
+                errors: 2,
+                results: [
+                    { isOk: false, msg: 'Caught a JS error' },
+                    { isOk: false, msg: 'Caught another JS error' },
+                ],
+            }));
+
+            it('includes a link with a `data-error` attribute', () => {
+                assert(Boolean(doc.querySelector('a[data-error="true"]'))).isTrue();
+            });
+
+            it('invokes the `onError` callback for the error summary and once for each error', () => {
+                assert(errors).equalsArray([
+                    'Encountered 2 dragons!',
+                    'Caught a JS error',
+                    'Caught another JS error',
+                ]);
             });
         });
 
-        describe('when there is one failure', () => {
-            it('contains a singular failure description', () => {
-                assert(getFailureSummary({ ...summary, failures: 1 })).equalsArray([
+        describe('given failures', () => {
+            errors = [];
+
+            const doc = parseHtml(getFooterTestSummary(false, onError, {
+                ...defaultSummary,
+                failures: 1,
+                results: [ { isOk: false, msg: 'This is a test failure' } ],
+            }));
+
+            it('includes a link with a `data-error` attribute', () => {
+                assert(Boolean(doc.querySelector('a[data-error="true"]'))).isTrue();
+            });
+
+            it('invokes the `onError` callback for the failure summary and once for each failure', () => {
+                assert(errors).equalsArray([
                     'Encountered 1 ogre!',
+                    'This is a test failure',
                 ]);
             });
         });
 
-        describe('when there are multiple failure', () => {
-            it('contains a plural failure description', () => {
-                assert(getFailureSummary({ ...summary, failures: 12 })).equalsArray([
-                    'Encountered 12 ogres!',
-                ]);
-            });
-        });
-
-        describe('when there is one error', () => {
-            it('contains a singular error description', () => {
-                assert(getFailureSummary({ ...summary, errors: 1 })).equalsArray([
-                    'Encountered 1 dragon!',
-                ]);
-            });
-        });
-
-        describe('when there are multiple failure', () => {
-            it('contains a plural failure description', () => {
-                assert(getFailureSummary({ ...summary, errors: 4 })).equalsArray([
-                    'Encountered 4 dragons!',
-                ]);
-            });
-        });
-
-        describe('error and failure results', () => {
-            it('returns a concatenated string of results filtered by errors and failures', () => {
-                const results = [
-                    { isOk: false, msg: 'Failed to do X' },
-                    { isOk: true,  msg: 'Woo' },
-                    { isOk: false, msg: 'Bugs! Bugs everywhere!' },
-                ];
-
-                assert(getFailureSummary({ ...summary, errors: 1, failures: 1, results })).equalsArray([
-                    'Encountered 1 ogre!',
-                    'Encountered 1 dragon!',
-                    'Failed to do X\nBugs! Bugs everywhere!',
-                ]);
+        describe('give a truthy `skip` param', () => {
+            it('returns a tests disabled message', () => {
+                assert(getFooterTestSummary(true, onError, { ...defaultSummary })).equals('Tests disabled');
             });
         });
     });
@@ -654,42 +747,6 @@ export default ({ assert, describe, it }) => {
                 assert(lines[0]).stringExcludes(' ');
                 assert(lines[1]).stringIncludes('  ');
                 assert(lines[2]).stringIncludes('    ');
-            });
-        });
-    });
-
-    describe('getSummaryLink()', () => {
-        const defaultSummary = {
-            assertions: 0,
-            errors    : 0,
-            failures  : 0,
-            results   : [],
-        };
-
-        it('returns a string', () => {
-            assert(getSummaryLink({ ...defaultSummary })).isString();
-        });
-
-        it('returns a link to `/unit.html`', () => {
-            const doc = parseHtml(getSummaryLink({ ...defaultSummary }));
-            assert(Boolean(doc.querySelector('a[href="/unit.html"]'))).isTrue();
-        });
-
-        describe('given errors', () => {
-            it('include a link with a `data-error` attribute', () => {
-                const doc = parseHtml(getSummaryLink({
-                    ...defaultSummary,
-                    errors: 1,
-                }));
-
-                assert(Boolean(doc.querySelector('a[data-error="true"]'))).isTrue();
-            });
-        });
-
-        describe('given failures', () => {
-            it('includes a link with a `data-error` attribute', () => {
-                const doc = parseHtml(getSummaryLink({ ...defaultSummary, failures: 1 }));
-                assert(Boolean(doc.querySelector('a[data-error="true"]'))).isTrue();
             });
         });
     });
