@@ -4,9 +4,15 @@
     <loc>https://dnd.mysticwaffle.com/</loc>
   </url>
   <url>
+    <loc>https://dnd.mysticwaffle.com/maps</loc>
+  </url>
+  <url>
     <loc>https://dnd.mysticwaffle.com/rooms</loc>
   </url>
   <url>
     <loc>https://dnd.mysticwaffle.com/items</loc>
+  </url>
+  <url>
+    <loc>https://dnd.mysticwaffle.com/release-notes</loc>
   </url>
 </urlset>
