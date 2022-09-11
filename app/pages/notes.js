@@ -7,6 +7,7 @@ import { paragraph, subtitle, title } from '../ui/typography.js';
 import { element } from '../utility/element.js';
 
 // TODO tests, validate version sequence, font size
+// TODO navigating from release notes to a generator UI is missing
 
 // -- Types --------------------------------------------------------------------
 
@@ -48,7 +49,7 @@ const notes = [
             'Fixed a bug with incorrect coin labels.',
             'JavaScript errors are now caught and reported to a server log.',
             'Added humans.txt, robots.txt, and sitemap.xml documents.',
-            'Numerous code improvements and additional test coverage. The application now makes ?? unit test assertions.',
+            'Numerous code improvements and additional test coverage. The application now makes 2425 unit test assertions 🤯!',
         ],
     },
     {
