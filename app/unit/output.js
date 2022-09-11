@@ -357,13 +357,13 @@ export function getSummaryLink(summary) {
  * @param {{
  *     scope?: string;
  *     verbose?: boolean;
- * }} [options]
+ * }} options
  *
  * @returns {string}
  */
 export const getTestNav = ({ scope, verbose } = {}) => [
-    link('All', unitUrl + makeParams({ scope: null, verbose }), !scope ? { 'data-active': true } : null),
-    link('Tests', unitUrl + makeParams({ scope: 'list', verbose }), scope === 'list' ? { 'data-active': true } : null),
+    link('All', unitUrl + makeParams({ scope: null, verbose }), !scope ? { 'data-active': true } : undefined),
+    link('Tests', unitUrl + makeParams({ scope: 'list', verbose }), scope === 'list' ? { 'data-active': true } : undefined),
     element('span', '', { role: 'presentation', 'data-separator': true }),
-    link('Verbose', unitUrl + makeParams({ scope, verbose: !verbose }), verbose ? { 'data-active': verbose } : null),
+    link('Verbose', unitUrl + makeParams({ scope, verbose: !verbose }), verbose ? { 'data-active': verbose } : undefined),
 ].join('');
