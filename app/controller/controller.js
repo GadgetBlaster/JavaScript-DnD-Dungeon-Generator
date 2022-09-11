@@ -120,6 +120,12 @@ export const pages = Object.freeze(/** @type {const} */ ({
 
 const genKeyRouteRegEx = `^\\\/(${Object.keys(generators).join('|').replace(/\//g, '')})\\\/([a-z0-9]{13}$)`;
 
+/**
+ * Version of the JSON schema used for generations/creations. Sent to the API to
+ * enable migrating old content to the latest format.
+ */
+const schemaVersion = 1;
+
 export {
     genKeyRouteRegEx   as testGenKeyRouteRegEx,
 };
@@ -438,11 +444,14 @@ function onNavigate(controller, e) {
 function onSave({ getPathname, onError, request, sections, state, updatePath }) {
     let {
         generator,
-        key, // TODO update existing record
+        key, // TODO update existing records
     } = getActiveRoute(getPathname());
 
     request(`/api/save/${generator}`, {
-        data: state.get(),
+        data: {
+            ...state.get(),
+            version: schemaVersion,
+        },
         method: 'POST',
         callback: (result) => {
             if (result?.status !== 200 || !result?.data?.key) {
@@ -512,10 +521,30 @@ function renderErrorPage({ body, content, knobs, nav, toolbar }, statusCode) {
  * @param {{ generator: Generator; key?: string }} generatorRoute
  */
 function renderGenerator(controller, { generator, key }) {
-    // TODO render existing record by key
-
     let { onError, sections, request } = controller;
     let { body, content, knobs, nav, toolbar } = sections;
+
+    if (key) {
+        content.innerHTML = spinner();
+
+        request('/api/fetch/creation', {
+            data: { key },
+            method: 'POST',
+            callback: (result) => {
+                if (result?.status !== 200) {
+                    onError({ ...result, key });
+                    renderErrorPage(sections, result?.status);
+                    return;
+                }
+
+                // TODO try/catch json parse
+                content.innerHTML = formatRooms(JSON.parse(result.data.config));
+                console.log(JSON.parse(result.data.config));
+            },
+        });
+
+        return;
+    }
 
     if (body.dataset.layout === 'full') {
         setLayout(body, 'default');
@@ -528,28 +557,6 @@ function renderGenerator(controller, { generator, key }) {
 
     toolbar.innerHTML = getToolbar(generator);
     knobs.innerHTML   = getKnobPanel(generator, { isExpanded });
-
-    if (key) {
-        content.innerHTML = spinner();
-
-        request('/api/fetch/creation', {
-            data: { key },
-            method: 'POST',
-            callback: (result) => {
-                if (result?.status !== 200 || !result?.data) {
-                    // TODO handle errors
-                    onError(result);
-                    return;
-                }
-
-                // TODO try/catch
-                content.innerHTML = formatRooms(JSON.parse(result.data.config));
-                console.log(JSON.parse(result.data.config));
-            },
-        });
-
-        return;
-    }
 
     content.innerHTML = formatReadyState(title, icon);
 }
