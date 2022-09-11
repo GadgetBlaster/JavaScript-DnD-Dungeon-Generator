@@ -24,7 +24,7 @@ import { generateRooms } from '../room/generate.js';
 import { getFormData, getKnobPanel, validateOnBlur } from '../ui/form.js';
 import { getNav, setActiveNavItem } from '../ui/nav.js';
 import { toss, isRequired } from '../utility/tools.js';
-import { getFormattedNotes } from '../pages/notes.js';
+import { formatNotes, releaseNotes } from '../pages/notes.js';
 
 // -- Type Imports -------------------------------------------------------------
 
@@ -578,7 +578,7 @@ function renderPage({ body, content, knobs, nav, toolbar }, { page }) {
 
         case 'notes':
             setLayout(body, 'slim');
-            content.innerHTML = getFormattedNotes();
+            content.innerHTML = formatNotes(releaseNotes);
             return;
 
         default:

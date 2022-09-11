@@ -34,7 +34,7 @@ const getGitHubTagUrl = (tag) => `https://github.com/GadgetBlaster/JavaScript-Dn
  *
  * @type {ReleaseNote[]}
  */
-const notes = [
+export const releaseNotes = [
     {
         title: 'Numerous Fixes & Improvements',
         version: '1.4.0',
@@ -241,16 +241,18 @@ const notes = [
     },
 ];
 
-export const currentVersion = notes[0].version;
+export const currentVersion = releaseNotes[0].version;
 
 // -- Public Functions ---------------------------------------------------------
 
 /**
- * Returns formatted content for the release notes page.
+ * Formats content for the release notes page.
+ *
+ * @param {ReleaseNote[]} notes
  *
  * @returns {string}
  */
-export const getFormattedNotes = () =>
+export const formatNotes = (notes) =>
     div(notes.map(({ title: noteTitle, version, date, description, details }) => {
         let imgSrc = `/img/notes/v${version}.jpg`;
 

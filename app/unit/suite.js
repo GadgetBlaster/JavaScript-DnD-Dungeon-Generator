@@ -31,6 +31,9 @@ import nav        from '../ui/test/tests.nav.js';
 import spinner    from '../ui/test/tests.spinner.js';
 import typography from '../ui/test/tests.typography.js';
 
+import generateItems   from '../item/test/tests.generate.js';
+import item            from '../item/test/tests.item.js';
+
 import roomDescription from '../room/test/tests.description.js';
 import roomDimensions  from '../room/test/tests.dimensions.js';
 import door            from '../room/test/tests.door.js';
@@ -39,14 +42,13 @@ import feature         from '../room/test/tests.feature.js';
 import generateRooms   from '../room/test/tests.generate.js';
 import vegetation      from '../room/test/tests.vegetation.js';
 
-import generateItems   from '../item/test/tests.generate.js';
-import item            from '../item/test/tests.item.js';
-
 import draw     from '../dungeon/test/tests.draw.js';
 import generate from '../dungeon/test/tests.generate.js';
 import grid     from '../dungeon/test/tests.grid.js';
 import legend   from '../dungeon/test/tests.legend.js';
 import map      from '../dungeon/test/tests.map.js';
+
+import notes from '../pages/test/tests.notes.js';
 
 // -- Config -------------------------------------------------------------------
 
@@ -68,8 +70,8 @@ export default {
     '/app/attribute/test/tests.size.js'     : size,
 
     '/app/controller/test/tests.controller.js': controller,
-    '/app/controller/test/tests.formatter.js': formatter,
-    '/app/controller/test/tests.knobs.js': knobs,
+    '/app/controller/test/tests.formatter.js':  formatter,
+    '/app/controller/test/tests.knobs.js':      knobs,
 
     '/app/ui/test/tests.block.js'     : block,
     '/app/ui/test/tests.button.js'    : button,
@@ -82,6 +84,9 @@ export default {
     '/app/ui/test/tests.spinner.js'   : spinner,
     '/app/ui/test/tests.typography.js': typography,
 
+    '/app/item/test/tests.generate.js'    : generateItems,
+    '/app/item/test/tests.item.js'        : item,
+
     '/app/room/test/tests.description.js': roomDescription,
     '/app/room/test/tests.dimensions.js' : roomDimensions,
     '/app/room/test/tests.door.js'       : door,
@@ -90,12 +95,11 @@ export default {
     '/app/room/test/tests.generate.js'   : generateRooms,
     '/app/room/test/tests.vegetation.js' : vegetation,
 
-    '/app/item/test/tests.generate.js'    : generateItems,
-    '/app/item/test/tests.item.js'        : item,
-
     '/app/dungeon/test/tests.draw.js'    : draw,
     '/app/dungeon/test/tests.generate.js': generate,
     '/app/dungeon/test/tests.grid.js'    : grid,
     '/app/dungeon/test/tests.legend.js'  : legend,
     '/app/dungeon/test/tests.map.js'     : map,
+
+    '/app/pages/test/tests.notes.js': notes,
 };
