@@ -34,6 +34,7 @@ import { isRequired, toWords } from '../utility/tools.js';
 
 /** @typedef {import('../controller/knobs.js').DungeonConfig} DungeonConfig */
 /** @typedef {import('../controller/knobs.js').RoomConfig} RoomConfig */
+/** @typedef {import('../dungeon/generate.js').Dungeon} Dungeon */
 /** @typedef {import('../room/door.js').DoorType} DoorType */
 /** @typedef {import('../room/door.js').RollDoorType} RollDoorType */
 /** @typedef {import('../room/door.js').RollSecretDoorType} RollSecretDoorType */
@@ -77,7 +78,7 @@ import { isRequired, toWords } from '../utility/tools.js';
  * @prop {DoorType} type
  */
 
-/** @typedef {{ [roomNumber: number]: Door[] }} Doors */
+/** @typedef {{ [roomNumber: number]: Door[] }} RoomDoors */
 
 // -- Config -------------------------------------------------------------------
 
@@ -772,13 +773,11 @@ export {
 /**
  * Returns an SVG element string for the given map configs.
  *
- * @param {Dimensions} dimensions
- * @param {AppliedRoom[]} rooms
- * @param {Door[]} doors
+ * @param {Dungeon} dungeon
  *
  * @returns {string}
  */
-export function getMapSvg(dimensions, rooms, doors) {
+export function getMapSvg({ dimensions, rooms, doors }) {
     let roomRects = rooms.map((room) => {
         let { rectangle, traps } = room;
 
@@ -805,7 +804,6 @@ export function getMapSvg(dimensions, rooms, doors) {
  * @returns {{
  *     dimensions: Dimensions;
  *     doors: Door[];
- *     map: string;
  *     rooms: AppliedRoom[];
  * }}
  */
@@ -821,7 +819,6 @@ export function generateMap(dimensions, roomConfigs) {
     return {
         dimensions,
         doors,
-        map: getMapSvg(dimensions, rooms, doors),
         rooms,
     };
 }

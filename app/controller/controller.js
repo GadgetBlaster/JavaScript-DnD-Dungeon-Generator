@@ -18,9 +18,11 @@ import {
     getFormattedHomepage,
 } from './formatter.js';
 import { generateDungeon } from '../dungeon/generate.js';
+import { getMapSvg } from '../dungeon/map.js';
 import { generateItems } from '../item/generate.js';
 import { generateName } from '../name/generate.js';
 import { generateRooms } from '../room/generate.js';
+import { getRoomDoors } from '../room/door.js';
 import { getFormData, getKnobPanel, validateOnBlur } from '../ui/form.js';
 import { getNav, setActiveNavItem } from '../ui/nav.js';
 import { toss, isRequired } from '../utility/tools.js';
@@ -143,10 +145,12 @@ export {
  * @returns {string}
  */
 function dungeonGenerator(state, config) {
-    let newState = generateDungeon(config);
-    state.set(newState);
+    let dungeon = generateDungeon(config);
+    state.set(dungeon);
 
-    return formatDungeon(newState);
+    let roomDoors = getRoomDoors(dungeon.doors);
+
+    return formatDungeon(dungeon, getMapSvg(dungeon), roomDoors);
 }
 
 /**

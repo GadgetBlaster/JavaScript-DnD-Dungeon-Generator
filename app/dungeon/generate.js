@@ -2,7 +2,7 @@
 
 import { generateMap } from './map.js';
 import { generateRooms } from '../room/generate.js';
-import { getRoomDoors } from '../room/door.js';
+import { getDoorKeys } from '../room/door.js';
 import { roll, rollArrayItem } from '../utility/roll.js';
 import { isRequired } from '../utility/tools.js';
 import trapList from '../room/trap.js';
@@ -11,25 +11,25 @@ import trapList from '../room/trap.js';
 
 /** @typedef {import('../controller/knobs.js').DungeonConfig} DungeonConfig */
 /** @typedef {import('../item/generate.js').Item} Item */
+/** @typedef {import('../room/door.js').Door} Door */
 /** @typedef {import('../room/door.js').DoorKey} DoorKey */
 /** @typedef {import('../room/generate').Room} Room */
 /** @typedef {import('./grid.js').Dimensions} Dimensions */
 /** @typedef {import('./map.js').AppliedRoom} AppliedRoom */
-/** @typedef {import('./map.js').Doors} Doors */
+/** @typedef {import('./map.js').RoomDoors} RoomDoors */
 
 /**
  * @typedef {object} Dungeon
  *
  * @prop {string} name
  * @prop {Dimensions} dimensions
- * @prop {string} map
- * @prop {Room[]} rooms
- * @prop {Doors} doors
+ * @prop {AppliedRoom[]} rooms
+ * @prop {Door[]} doors
  */
 
 /**
  * @typedef {Room & {
- *     doors: Doors;
+ *     doors: RoomDoors;
  *     items?: Item[];
  *     keys?: DoorKey[];
  *     maps?: string[];
@@ -205,13 +205,18 @@ export function generateDungeon(config) {
     isRequired(dungeonTraps,       'dungeonTraps is required in generateDungeon()');
 
     let gridDimensions  = generateMapDimensions(dungeonComplexity);
-    let rooms           = generateDungeonRooms(config);
-    let dungeon         = generateMap(gridDimensions, rooms);
-    let { doors, keys } = getRoomDoors(dungeon.doors);
+    let roomConfigs     = generateDungeonRooms(config);
+    let {
+        dimensions,
+        rooms, // TODO drop room config, walls? no longer needed?
+        doors, // Drop empty door connections?
+    } = generateMap(gridDimensions, roomConfigs);
 
-    // TODO break out
+    let keys = getDoorKeys(doors);
+
+    // TODO break out to `distributeKeys()`
     keys.length && keys.forEach((key) => {
-        let room = rollArrayItem(dungeon.rooms);
+        let room = rollArrayItem(rooms);
 
         if (!room.keys) {
             room.keys = [];
@@ -220,11 +225,12 @@ export function generateDungeon(config) {
         room.keys.push(key);
     });
 
-    distributeMaps(dungeonMaps, dungeon.rooms);
+    distributeMaps(dungeonMaps, rooms);
 
     return {
-        name: dungeonName,
-        ...dungeon,
+        dimensions,
         doors,
+        name: dungeonName,
+        rooms,
     };
 }

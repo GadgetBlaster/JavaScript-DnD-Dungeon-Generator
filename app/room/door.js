@@ -8,7 +8,7 @@ import { createProbability } from '../utility/roll.js';
 
 /** @typedef {import('../dungeon/map.js').Connection} Connection */
 /** @typedef {import('../dungeon/map.js').Door} Door */
-/** @typedef {import('../dungeon/map.js').Doors} Doors */
+/** @typedef {import('../dungeon/map.js').RoomDoors} RoomDoors */
 
 // -- Types --------------------------------------------------------------------
 
@@ -131,17 +131,11 @@ export const lockedChance = 25;
  *
  * @param {Door[]} doors
  *
- * @returns {{
- *     keys: DoorKey[];
- *     doors: Doors;
- * }}
+ * @returns {RoomDoors}
  */
 export function getRoomDoors(doors) {
-    /** @type {Doors} */
+    /** @type {RoomDoors} */
     let roomDoors = {};
-
-    /** @type {DoorKey[]} */
-    let roomKeys = []; // TODO rename to `keys`
 
     doors.forEach((door) => {
         [ ...door.connection.keys() ].forEach((roomNumber) => {
@@ -149,19 +143,35 @@ export function getRoomDoors(doors) {
                 roomDoors[roomNumber] = [];
             }
 
-            if (door.locked) {
-                roomKeys.push({
-                    type: door.type,
-                    connection: door.connection,
-                });
-            }
-
             roomDoors[roomNumber].push(door);
         });
     });
 
-    return {
-        keys: roomKeys,
-        doors: roomDoors,
-    };
+    return roomDoors;
+}
+
+/**
+ * Returns an array of DoorKey objects for the given doors.
+ *
+ * TODO move to generate.js
+ * TODO tests
+ *
+ * @param {Door[]} doors
+ *
+ * @returns {DoorKey[]}
+ */
+export function getDoorKeys(doors) {
+    /** @type {DoorKey[]} */
+    let doorKeys = [];
+
+    doors.forEach((door) => {
+        if (door.locked) {
+            doorKeys.push({
+                type: door.type,
+                connection: door.connection,
+            });
+        }
+    });
+
+    return doorKeys;
 }

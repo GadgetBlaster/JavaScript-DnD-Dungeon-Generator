@@ -460,7 +460,7 @@ export function drawMap({ width, height }, content) {
  *
  * @param {Rectangle} rectangle
  * @param {RoomText} roomTextConfig
- * @param {object} [options]
+ * @param {object} options
  *     @param {boolean} [options.hasTraps]
  *
  * @returns {string}

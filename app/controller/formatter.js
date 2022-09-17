@@ -26,7 +26,7 @@ import {
 
 /** @typedef {import('../dungeon/generate.js').Dungeon} Dungeon */
 /** @typedef {import('../dungeon/map.js').Door} Door */
-/** @typedef {import('../dungeon/map.js').Doors} Doors */
+/** @typedef {import('../dungeon/map.js').RoomDoors} RoomDoors */
 /** @typedef {import('../item/generate.js').Item} Item */
 /** @typedef {import('../item/generate.js').ItemSet} ItemSet */
 /** @typedef {import('../room/generate.js').Room} Room */
@@ -170,13 +170,13 @@ function formatRoom(room, doors) {
  * @private
  *
  * @param {Room[]} rooms
- * @param {Doors} [doors = {}]
+ * @param {RoomDoors} [roomDoors]
  *
  * @returns {string}
  */
-function formatRoomGrid(rooms, doors = {}) {
+function formatRoomGrid(rooms, roomDoors = {}) {
     let formattedRooms = rooms.map((room) =>
-        formatRoom(room, doors[room.roomNumber])).join('');
+        formatRoom(room, roomDoors[room.roomNumber])).join('');
 
     let columns = Math.min(maxRoomColumns, rooms.length);
 
@@ -270,15 +270,15 @@ export {
  *
  * @param {Dungeon} dungeon
  */
-export function formatDungeon(dungeon) {
-    let { name, map, rooms, doors } = dungeon;
+export function formatDungeon(dungeon, map, roomDoors) {
+    let { name, rooms } = dungeon;
 
     let dungeonTitle = name ? title(name, { 'data-spacing': 'b-medium' }) : '';
 
     return dungeonTitle
         + section(map)
         + section(drawLegend())
-        + formatRoomGrid(rooms, doors);
+        + formatRoomGrid(rooms, roomDoors);
 }
 
 /**
