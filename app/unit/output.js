@@ -351,18 +351,22 @@ export const getTestNav = ({ scope, verbose } = {}) => [
 ].join('');
 
 /**
- * Returns a link to the test summary as an HTML string.
+ * Returns a test summary as an HTML message.
  *
  * @param {boolean} skip
  * @param {(error: string) => void} onError
- * @param {Summary | undefined} summary
+ * @param {State} state
+ * @param {object} suite
  *
  * @returns {string}
  */
-export function getFooterTestSummary(skip, onError, summary) {
+export function getTestSummary(skip, onError, state, suite) {
     if (skip) {
         return 'Tests disabled';
     }
+
+    // TODO update test
+    let summary = run(state, suite);
 
     if (!summary) {
         return 'Tests failed to run...';

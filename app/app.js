@@ -1,11 +1,10 @@
 // @ts-check
 
 import { getErrorMessage } from './utility/tools.js';
-import { getFooterTestSummary } from './unit/output.js';
+import { getTestSummary } from './unit/output.js';
 import { request } from './utility/xhr.js';
 import { toss } from './utility/tools.js';
 import { unitState } from './unit/state.js';
-import run from './unit/run.js';
 import suite from './unit/suite.js';
 
 import { initController } from './controller/controller.js';
@@ -73,7 +72,7 @@ const skipTests = false;
 
 // -- Tests --------------------------------------------------------------------
 
-const testSummaryLink = getFooterTestSummary(skipTests, console.error, run(unitState(), suite));
+const testSummaryLink = getTestSummary(skipTests, console.error, unitState(), suite);
 
 // -- Router Functions ---------------------------------------------------------
 
