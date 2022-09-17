@@ -365,7 +365,6 @@ export function getTestSummary(skip, onError, state, suite) {
         return 'Tests disabled';
     }
 
-    // TODO update test
     let summary = run(state, suite);
 
     if (!summary) {
