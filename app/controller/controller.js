@@ -282,20 +282,22 @@ function getGenerator(generator) {
  * @returns {{ title: string; messages: string[] }}
  */
 function getErrorPageContent(statusCode) {
-    if (statusCode === 404) {
-        return {
-            title   : '404',
-            messages: [ 'These are not the mischievous kobolds you are looking for.' ],
-        };
-    }
+    switch (statusCode) {
+        case 404:
+            return {
+                title   : '404',
+                messages: [ 'These are not the mischievous kobolds you are looking for.' ],
+            };
 
-    return {
-        title   : 'Oh no!',
-        messages: [
-            'Goblins have infiltrated the castle and hacked into the JavaScript!',
-            'This error has been scribbled on a magical scroll by a preposterous robot so AJ can fix this bug.',
-        ],
-    };
+        default:
+            return {
+                title   : 'Oh no!',
+                messages: [
+                    'Goblins have infiltrated the castle and hacked into the JavaScript!',
+                    'This error has been scribbled on a magical scroll by a preposterous robot so AJ can fix this bug.',
+                ],
+            };
+    }
 }
 
 /**
