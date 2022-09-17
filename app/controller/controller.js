@@ -221,18 +221,20 @@ function getActiveRoute(path) {
         return { page };
     }
 
-    let generator = generators[path];
-
-    if (generator) {
-        return { generator };
+    if (generators[path]) {
+        return { generator: generators[path] };
     }
 
-    let parts = path.match(genKeyRouteRegEx);
+    let parts = path?.match(genKeyRouteRegEx);
 
     if (parts?.length === 3) {
         parts.shift();
 
         let [ gen, key ] = parts;
+
+        if (!generators[`/${gen}`]) {
+            return {}; // 404
+        }
 
         return {
             generator: /** @type {Generator} */ (gen),
@@ -241,6 +243,35 @@ function getActiveRoute(path) {
     }
 
     return {}; // 404
+}
+
+/**
+ * Returns a formatter function.
+ *
+ * @private
+ * @throws
+ *
+ * @param {Generator} generator
+ *
+ * @returns {(config: DungeonConfig | ItemConfig | NameConfig | RoomConfig) => string}
+ */
+function getFormatter(generator) {
+    switch (generator) {
+        case 'maps':
+            return formatDungeon;
+
+        case 'rooms':
+            return formatRooms;
+
+        case 'items':
+            return formatItems;
+
+        // case 'names':
+        //     return formatName;
+
+        default:
+            toss(`Invalid generator "${generator}" in getGenerator()`);
+    }
 }
 
 /**
@@ -477,20 +508,60 @@ function onSave({ getPathname, onError, request, sections, state, updatePath }) 
  * @param {string} path
  */
 function renderApp(controller, path) {
-    let { sections } = controller;
+    let { onError, request, state, sections } = controller;
+    let { content } = sections;
     let { generator, key, page } = getActiveRoute(path);
-
-    if (generator) {
-        renderGenerator(controller, { generator, key });
-        return;
-    }
 
     if (page) {
         renderPage(sections, { page });
         return;
     }
 
-    renderErrorPage(sections, 404);
+    if (!generator) {
+        renderErrorPage(sections, 404);
+        return;
+    }
+
+    if (!key) {
+        renderGenerator(sections, generator);
+        return;
+    }
+
+    content.innerHTML = spinner();
+
+    request('/api/fetch/creation', {
+        data: { key },
+        method: 'POST',
+        callback: (result) => {
+            if (result?.status !== 200) {
+                onError({ ...result, key });
+                renderErrorPage(sections, result?.status);
+                return;
+            }
+
+            let type = result.data?.type;
+
+            if (!generator || type !== generator) {
+                renderErrorPage(sections, 404);
+                return;
+            }
+
+            let config;
+
+            try {
+                config = JSON.parse(result.data.config);
+            } catch (error) {
+                onError(error);
+                renderErrorPage(sections);
+                return;
+            }
+
+            state.set(config);
+
+            let formatConfig = getFormatter(generator);
+            renderGenerator(sections, generator, formatConfig(config));
+        },
+    });
 }
 
 /**
@@ -519,34 +590,12 @@ function renderErrorPage({ body, content, knobs, nav, toolbar }, statusCode) {
  *
  * @private
  *
- * @param {Controller} controller
- * @param {{ generator: Generator; key?: string }} generatorRoute
+ * @param {Sections} sections
+ * @param {Generator} generator
+ * @param {string} [savedGeneration]
  */
-function renderGenerator(controller, { generator, key }) {
-    let { onError, sections, request } = controller;
+function renderGenerator(sections, generator, savedGeneration) {
     let { body, content, knobs, nav, toolbar } = sections;
-
-    if (key) {
-        content.innerHTML = spinner();
-
-        request('/api/fetch/creation', {
-            data: { key },
-            method: 'POST',
-            callback: (result) => {
-                if (result?.status !== 200) {
-                    onError({ ...result, key });
-                    renderErrorPage(sections, result?.status);
-                    return;
-                }
-
-                // TODO try/catch json parse
-                content.innerHTML = formatRooms(JSON.parse(result.data.config));
-                console.log(JSON.parse(result.data.config));
-            },
-        });
-
-        return;
-    }
 
     if (body.dataset.layout === 'full') {
         setLayout(body, 'default');
@@ -555,11 +604,16 @@ function renderGenerator(controller, { generator, key }) {
     setActiveNavItem(nav, generator);
 
     let isExpanded = isSidebarExpanded(body);
-    let { title, icon } = getReadyState(generator);
 
     toolbar.innerHTML = getToolbar(generator);
     knobs.innerHTML   = getKnobPanel(generator, { isExpanded });
 
+    if (savedGeneration) {
+        content.innerHTML = savedGeneration;
+        return;
+    }
+
+    let { title, icon } = getReadyState(generator);
     content.innerHTML = formatReadyState(title, icon);
 }
 

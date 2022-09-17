@@ -59,3 +59,4 @@ I ask you don't use this for commercial use without permission and link attribut
 - [ ] Add dungeon and environment types. Such as classic dungeon, wilderness, jungle ruin, etc.
 - [ ] Config for multiple entrances & exits to the dungeon.
 - [ ] Better visuals
+- [ ] Add server side 404s headers
