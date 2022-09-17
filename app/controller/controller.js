@@ -46,7 +46,7 @@ import { formatNotes, releaseNotes } from '../pages/notes.js';
  * @typedef {object} Controller
  *
  * @prop {() => string} getPathname
- * @prop {(error: Error) => void} onError
+ * @prop {(error: Error | object | string) => void} onError
  * @prop {Request} request
  * @prop {Sections} sections
  * @prop {State} state

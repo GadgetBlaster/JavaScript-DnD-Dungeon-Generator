@@ -29,7 +29,7 @@ import { getFooter } from './ui/footer.js';
 /**
  * Logs an error to the server.
  *
- * @param {Error} error
+ * @param {Error | object | string} error
  */
 function logError(error) {
     console.error(error);
