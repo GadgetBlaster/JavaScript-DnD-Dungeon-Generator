@@ -751,17 +751,27 @@ export default ({ assert, describe, it }) => {
         };
 
         let errors = [];
+        let returnedSummary;
 
         const onError = (error) => {
             errors.push(error);
         };
 
+        const suite = { '/test/tests.fake.js': noop };
+        const state = {
+            getSummary: () => returnedSummary || defaultSummary,
+            onError: noop,
+            runUnits: noop,
+        };
+
+        const result = getTestSummary(false, onError, state, suite);
+
         it('returns a string', () => {
-            assert(getTestSummary(false, onError, { ...defaultSummary })).isString();
+            assert(result).isString();
         });
 
         it('returns a link to `/unit.html`', () => {
-            const doc = parseHtml(getTestSummary(false, onError, { ...defaultSummary }));
+            const doc = parseHtml(result);
             assert(Boolean(doc.querySelector('a[href="/unit.html"]'))).isTrue();
         });
 
@@ -772,14 +782,16 @@ export default ({ assert, describe, it }) => {
         describe('given errors', () => {
             errors = [];
 
-            const doc = parseHtml(getTestSummary(false, onError, {
+            returnedSummary = {
                 ...defaultSummary,
                 errors: 2,
                 results: [
                     { isOk: false, msg: 'Caught a JS error' },
                     { isOk: false, msg: 'Caught another JS error' },
                 ],
-            }));
+            };
+
+            const doc = parseHtml(getTestSummary(false, onError, state, suite));
 
             it('includes a link with a `data-error` attribute', () => {
                 assert(Boolean(doc.querySelector('a[data-error="true"]'))).isTrue();
@@ -797,11 +809,13 @@ export default ({ assert, describe, it }) => {
         describe('given failures', () => {
             errors = [];
 
-            const doc = parseHtml(getTestSummary(false, onError, {
+            returnedSummary = {
                 ...defaultSummary,
                 failures: 1,
                 results: [ { isOk: false, msg: 'This is a test failure' } ],
-            }));
+            };
+
+            const doc = parseHtml(getTestSummary(false, onError, state, suite));
 
             it('includes a link with a `data-error` attribute', () => {
                 assert(Boolean(doc.querySelector('a[data-error="true"]'))).isTrue();
@@ -817,7 +831,9 @@ export default ({ assert, describe, it }) => {
 
         describe('give a truthy `skip` param', () => {
             it('returns a tests disabled message', () => {
-                assert(getTestSummary(true, onError, { ...defaultSummary })).equals('Tests disabled');
+                returnedSummary = defaultSummary;
+
+                assert(getTestSummary(true, onError, state, suite)).equals('Tests disabled');
             });
         });
     });
