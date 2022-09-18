@@ -9,8 +9,9 @@ import {
     probability,
     secretProbability,
 
-    // Private Functions
-    getRoomDoors,
+    // Public Functions
+    getDoorKeys,
+    getDoorsByRoomNumber,
 } from '../door.js';
 
 /** @typedef {import('../../dungeon/map.js').Door} Door */
@@ -74,54 +75,70 @@ export default ({ assert, describe, it }) => {
         });
     });
 
-    // -- Config ---------------------------------------------------------------
+    // -- Public Functions -----------------------------------------------------
 
-    describe('getRoomDoors()', () => {
-        describe('given an array with a single room door', () => {
-            /** @type {Door[]} */
-            const dungeonDoors = [
-                {
-                    connection: new Map([
-                        [ 1, { direction: 'north', to: 2 } ],
-                        [ 2, { direction: 'south', to: 1 } ],
-                    ]),
-                    locked: false,
-                    rectangle: { x: 1, y: 1, width: 1, height: 2 },
-                    type: 'archway',
-                },
-            ];
+    /** @type {Door[]} */
+    const dungeonDoors = [
+        {
+            connection: new Map([
+                [ 0, { direction: 'east', to: 1 } ],
+                [ 1, { direction: 'west', to: 0 } ],
+            ]),
+            locked: false,
+            rectangle: { x: 0, y: 8, width: 1, height: 2 },
+            type: 'brass',
+        },
+        {
+            connection: new Map([
+                [ 1, { direction: 'north', to: 2 } ],
+                [ 2, { direction: 'south', to: 1 } ],
+            ]),
+            locked: true,
+            rectangle: { x: 4, y: 9, width: 2, height: 1 },
+            type: 'archway',
+        },
+        {
+            connection: new Map([
+                [ 1, { direction: 'east', to: 3 } ],
+                [ 3, { direction: 'west', to: 1 } ],
+            ]),
+            locked: true,
+            rectangle: { x: 6, y: 7, width: 1, height: 1 },
+            type: 'secret',
+        },
+    ];
 
-            describe('when the door is not locked', () => {
-                it('should return a RoomDoors object with no keys', () => {
-                    const roomDoors = getRoomDoors(dungeonDoors);
-                    assert(roomDoors.keys).equalsArray([]);
-                });
 
-                it('should return a RoomDoors object with a doors lookup', () => {
-                    const roomDoors = getRoomDoors(dungeonDoors).doors;
+    describe('getDoorKeys()', () => {
+        describe('given an array of doors', () => {
+            it('returns an array of keys for each locked door', () => {
+                const keys = getDoorKeys(dungeonDoors);
 
-                    assert(roomDoors).equalsObject({
-                        1: [ dungeonDoors[0] ],
-                        2: [ dungeonDoors[0] ],
-                    });
-                });
+                assert(keys).equalsArray([
+                    {
+                        type: dungeonDoors[1].type,
+                        connection: dungeonDoors[1].connection,
+                    },
+                    {
+                        type: dungeonDoors[2].type,
+                        connection: dungeonDoors[2].connection,
+                    },
+                ]);
             });
+        });
+    });
 
-            describe('when the door is locked', () => {
-                const lockedDungeonDoors = { ...dungeonDoors };
+    describe('getDoorsByRoomNumber()', () => {
+        describe('given an array of doors', () => {
+            describe('when the door is not locked', () => {
+                it('should return a DungeonDoors object with Door arrays keyed by room number', () => {
+                    const doors = getDoorsByRoomNumber(dungeonDoors);
 
-                lockedDungeonDoors[0].locked = true;
-                lockedDungeonDoors[0].type   = 'wooden';
-
-                it('should return a RoomDoors object with an array of Keys', () => {
-                    const roomDoorKeys = getRoomDoors(dungeonDoors).keys;
-
-                    assert(roomDoorKeys[0]).equalsObject({
-                        type: 'wooden',
-                        connection: new Map([
-                            [ 1, { direction: 'north', to: 2 } ],
-                            [ 2, { direction: 'south', to: 1 } ],
-                        ]),
+                    assert(doors).equalsObject({
+                        0: [ dungeonDoors[0] ],
+                        1: [ dungeonDoors[0], dungeonDoors[1], dungeonDoors[2] ],
+                        2: [ dungeonDoors[1] ],
+                        3: [ dungeonDoors[2] ],
                     });
                 });
             });

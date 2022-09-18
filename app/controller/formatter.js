@@ -26,7 +26,7 @@ import {
 
 /** @typedef {import('../dungeon/generate.js').Dungeon} Dungeon */
 /** @typedef {import('../dungeon/map.js').Door} Door */
-/** @typedef {import('../dungeon/map.js').RoomDoors} RoomDoors */
+/** @typedef {import('../dungeon/map.js').DungeonDoors} DungeonDoors */
 /** @typedef {import('../item/generate.js').Item} Item */
 /** @typedef {import('../item/generate.js').ItemSet} ItemSet */
 /** @typedef {import('../room/generate.js').Room} Room */
@@ -74,8 +74,8 @@ function formatItemContent(itemSet, { columns = 1 } = {}) {
     }
 
     let descArgs = {
-        isConditionUniform : Boolean(conditionUniformity),
-        isRarityUniform    : Boolean(rarityUniformity),
+        isConditionUniform: Boolean(conditionUniformity),
+        isRarityUniform   : Boolean(rarityUniformity),
     };
 
     let itemsList = items.length ? list(items.map((item) => getItemDescription(item, descArgs)), itemListAttrs) : '';
@@ -170,7 +170,7 @@ function formatRoom(room, doors) {
  * @private
  *
  * @param {Room[]} rooms
- * @param {RoomDoors} [roomDoors]
+ * @param {DungeonDoors} [roomDoors]
  *
  * @returns {string}
  */
@@ -269,8 +269,12 @@ export {
  * Formats output of the dungeon generator.
  *
  * @param {Dungeon} dungeon
+ * @param {string} map
+ * @param {DungeonDoors} dungeonDoors
+ *
+ * @returns {string}
  */
-export function formatDungeon(dungeon, map, roomDoors) {
+export function formatDungeon(dungeon, map, dungeonDoors) {
     let { name, rooms } = dungeon;
 
     let dungeonTitle = name ? title(name, { 'data-spacing': 'b-medium' }) : '';
@@ -278,7 +282,7 @@ export function formatDungeon(dungeon, map, roomDoors) {
     return dungeonTitle
         + section(map)
         + section(drawLegend())
-        + formatRoomGrid(rooms, roomDoors);
+        + formatRoomGrid(rooms, dungeonDoors);
 }
 
 /**
@@ -363,7 +367,6 @@ export function getFormattedHomepage() {
         'data-spacing': 'b',
         'data-spacing-size': '40',
     })
-
     + div(Object.entries(generators).map(([ route, generator ]) =>
         element('a', div(generatorConfigs[generator].icon, { 'data-spacing': 'b' }) + capitalize(generator), {
             'data-action': 'navigate',

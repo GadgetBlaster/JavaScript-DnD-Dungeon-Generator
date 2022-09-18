@@ -1219,7 +1219,7 @@ export default ({ assert, describe, it }) => {
     // -- Public Functions -----------------------------------------------------
 
     describe('generateMap()', () => {
-        it('generates a map, rooms, and doors', () => {
+        it('generates dimensions, rooms, and doors', () => {
             /** @type {GeneratedRoomConfig} */
             const roomConfig = {
                 itemCondition        : 'average',
@@ -1238,9 +1238,8 @@ export default ({ assert, describe, it }) => {
                 height: 24,
             };
 
-            const { dimensions, map, rooms, doors } = generateMap(gridDimensions, generateRooms(roomConfig));
+            const { dimensions, rooms, doors } = generateMap(gridDimensions, generateRooms(roomConfig));
 
-            assert(map).isString();
             assert(rooms).isArray();
             assert(dimensions).equalsObject(gridDimensions);
 

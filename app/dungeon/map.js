@@ -78,7 +78,11 @@ import { isRequired, toWords } from '../utility/tools.js';
  * @prop {DoorType} type
  */
 
-/** @typedef {{ [roomNumber: number]: Door[] }} RoomDoors */
+/**
+ * A lookup of dungeon Doors by room number.
+ *
+ * @typedef {{ [roomNumber: number]: Door[] }} DungeonDoors
+ */
 
 // -- Config -------------------------------------------------------------------
 
@@ -144,7 +148,7 @@ export {
  * @param {Grid} grid
  * @param {AppliedRoom} room
  * @param {AppliedRoom} [prevRoom]
- * @param {object} [options = {}]
+ * @param {object} options
  *     @param {boolean} [options.allowSecret]
  *     @param {RollDoorType} [options.rollDoorType]
  *     @param {RollSecretDoorType} [options.rollSecretDoorType]
@@ -199,7 +203,7 @@ function applyDoorToGrid(grid, room, prevRoom, {
  *
  * @param {Room[]} rooms
  * @param {Grid} grid
- * @param {object} [options]
+ * @param {object} options
  *     @param {AppliedRoom} [options.prevRoom]
  *     @param {boolean} [options.isFork]
  *     @param {RollDoorType} [options.rollDoorType]

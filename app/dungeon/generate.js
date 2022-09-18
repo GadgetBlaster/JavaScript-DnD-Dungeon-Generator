@@ -16,7 +16,7 @@ import trapList from '../room/trap.js';
 /** @typedef {import('../room/generate').Room} Room */
 /** @typedef {import('./grid.js').Dimensions} Dimensions */
 /** @typedef {import('./map.js').AppliedRoom} AppliedRoom */
-/** @typedef {import('./map.js').RoomDoors} RoomDoors */
+/** @typedef {import('./map.js').DungeonDoors} DungeonDoors */
 
 /**
  * @typedef {object} Dungeon
@@ -25,16 +25,6 @@ import trapList from '../room/trap.js';
  * @prop {Dimensions} dimensions
  * @prop {AppliedRoom[]} rooms
  * @prop {Door[]} doors
- */
-
-/**
- * @typedef {Room & {
- *     doors: RoomDoors;
- *     items?: Item[];
- *     keys?: DoorKey[];
- *     maps?: string[];
- *     traps?: string[];
- * }} DungeonRoom
  */
 
 // -- Config -------------------------------------------------------------------
