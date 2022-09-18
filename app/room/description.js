@@ -18,7 +18,6 @@ import { appendRoomTypes, customRoomLabels } from './room.js';
 /** @typedef {import('../controller/knobs.js').DungeonConfig} DungeonConfig */
 /** @typedef {import('../controller/knobs.js').RoomConfig} RoomConfig */
 /** @typedef {import('../dungeon/grid.js').Dimensions} Dimensions */
-/** @typedef {import('../dungeon/map.js').Connection} Connection */
 /** @typedef {import('../dungeon/map.js').Direction} Direction */
 /** @typedef {import('../dungeon/map.js').Door} Door */
 /** @typedef {import('../item/furnishing.js').FurnitureQuantity} FurnitureQuantity */
@@ -322,23 +321,25 @@ function getRoomDimensionsDescription({ width, height }) {
  * @param {Door[]} roomDoors
  * @param {number} roomNumber
  *
- * @returns {?string}
+ * @returns {string | undefined}
  */
 function getRoomDoorwayDescription(roomDoors, roomNumber) {
     isRequired(roomNumber, 'roomNumber is required in getRoomDoorwayDescription()');
 
     let descParts = roomDoors.map((door) => {
-        let { type, connection } = door;
+        let { type, connect } = door;
 
         if (type === 'concealed' || type === 'secret') {
             return;
         }
 
-        if (!connection.get(roomNumber)) {
+        let connection = connect[roomNumber];
+
+        if (!connection) {
             toss('Invalid door connection for roomNumber in getRoomDoorwayDescription()');
         }
 
-        let { direction, to } = connection.get(roomNumber);
+        let { direction, to } = connection;
 
         let desc = getDoorwayDescription(door);
         let out  = to === outside ? ' out of the dungeon' : '';
@@ -350,11 +351,11 @@ function getRoomDoorwayDescription(roomDoors, roomNumber) {
         return `${indefiniteArticle(desc)} ${desc} leads ${direction}${out}`;
     }).filter(Boolean);
 
-    if (descParts.length === 0) {
+    let last = descParts.pop();
+
+    if (!last) {
         return;
     }
-
-    let last = descParts.pop();
 
     if (descParts.length === 0) {
         return capitalize(last);
@@ -382,11 +383,11 @@ function sortDoorways(roomDoors, roomNumber) {
     }
 
     return roomDoors.sort((doorA, doorB) => {
-        let { connection: connectionA } = doorA;
-        let { connection: connectionB } = doorB;
+        let { connect: connectionA } = doorA;
+        let { connect: connectionB } = doorB;
 
-        let a = connectionA.get(roomNumber);
-        let b = connectionB.get(roomNumber);
+        let a = connectionA[roomNumber];
+        let b = connectionB[roomNumber];
 
         if (!a || !b) {
             toss(`Invalid roomNumber "${roomNumber}" for door connection in sortDoorways()`);
@@ -434,13 +435,15 @@ export const getDoorwayDescriptionList = (roomDoors, roomNumber) => {
     isRequired(roomNumber, 'roomNumber is required in getDoorwayDescriptionList()');
 
     return sortDoorways(roomDoors, roomNumber).map((door) => {
-        let { connection } = door;
+        let { connect } = door;
 
-        if (!connection.get(roomNumber)) {
+        let connection = connect[roomNumber];
+
+        if (!connection) {
             toss('Invalid roomNumber for door connection in getDoorwayDescriptionList()');
         }
 
-        let { direction, to } = connection.get(roomNumber);
+        let { direction, to } = connection;
 
         return {
             connection: to === outside ? 'leading out of the dungeon' : `to room ${to}`,
@@ -461,8 +464,8 @@ export const getDoorwayDescriptionList = (roomDoors, roomNumber) => {
  */
 export const getKeyDescription = (keys) => {
     return subtitle(`Keys (${keys.length})`) + list(keys.map((key) => {
-        let { connection, type } = key;
-        let [ from, to ] = connection.keys();
+        let { connect, type } = key;
+        let [ from, to ] = Object.keys(connect);
 
         return `${getKeyDetail(type)} to room ${from} / ${to}`;
     }));

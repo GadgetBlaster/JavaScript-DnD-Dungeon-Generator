@@ -29,7 +29,7 @@ export function drawLegend() {
     let doorBase = {
         rectangle,
         locked: false,
-        connection: new Map([[ 1, { direction: 'east', to: 2 } ]]),
+        connect: { 1: { direction: 'east', to: 2 } },
     };
 
     let scale = `${cellFeet} x ${cellFeet} ft`;

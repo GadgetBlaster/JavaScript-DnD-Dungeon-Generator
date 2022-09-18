@@ -486,8 +486,8 @@ function onSave({ getPathname, onError, request, sections, state, updatePath }) 
 
     request(`/api/save/${generator}`, {
         data: {
-            ...state.get(),
             version: schemaVersion,
+            ...state.get(),
         },
         method: 'POST',
         callback: (result) => {

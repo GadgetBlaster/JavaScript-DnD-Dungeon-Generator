@@ -17,8 +17,8 @@ import { createProbability } from '../utility/roll.js';
 /**
  * @typedef {Object} DoorKey
  *
- * @prop {Connection} connection
- * @prop {string} type - Door type
+ * @prop {Connection} connect
+ * @prop {DoorType} type
  */
 
 /** @typedef {() => DoorType} RollDoorType */
@@ -141,7 +141,7 @@ export function getDoorKeys(doors) {
         if (door.locked) {
             doorKeys.push({
                 type: door.type,
-                connection: door.connection,
+                connect: door.connect,
             });
         }
     });
@@ -163,7 +163,7 @@ export function getDoorsByRoomNumber(doors) {
     let roomDoors = {};
 
     doors.forEach((door) => {
-        [ ...door.connection.keys() ].forEach((roomNumber) => {
+        Object.keys(door.connect).forEach((roomNumber) => {
             if (!roomDoors[roomNumber]) {
                 roomDoors[roomNumber] = [];
             }

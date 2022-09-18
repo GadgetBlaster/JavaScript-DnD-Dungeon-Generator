@@ -232,10 +232,10 @@ export default ({ assert, describe, it }) => {
             it('includes doorways with the room descriptions', () => {
                 /** @type {Door} */
                 const door = {
-                    connection : new Map([[ 1, { direction: 'south', to: 2 } ]]),
-                    locked     : false,
-                    rectangle  : { width: 1, height: 1, x: 1, y: 1 },
-                    type       : 'stone',
+                    connect  : { 1: { direction: 'south', to: 2 } },
+                    locked   : false,
+                    rectangle: { width: 1, height: 1, x: 1, y: 1 },
+                    type     : 'stone',
                 };
 
                 assert(formatRoomGrid([ room ], { 1: [ door ] }))

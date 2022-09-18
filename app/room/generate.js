@@ -78,7 +78,7 @@ const uniformItemRarityChance = 10;
  *
  * @param {RoomConfig | DungeonConfig} config
  *
- * @param {object} [options]
+ * @param {object} options
  *     @param {boolean} [options.isRandomItemConditionUniform]
  *     @param {boolean} [options.isRandomItemRarityUniform]
  *

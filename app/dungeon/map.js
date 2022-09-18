@@ -65,14 +65,14 @@ import { isRequired, toWords } from '../utility/tools.js';
  * @prop {Room[]} skippedRooms
  */
 
-/** @typedef {Map<number, { direction: Direction; to: number; }>} Connection */
+/** @typedef {{ [roomNumber: number]: { direction: Direction; to: number; }}} Connection */
 
 /** @typedef {"north" | "east" | "south" | "west"} Direction */
 
 /**
  * @typedef {object} Door
  *
- * @prop {Connection} connection
+ * @prop {Connection} connect
  * @prop {boolean} locked
  * @prop {Rectangle} rectangle
  * @prop {DoorType} type
@@ -372,13 +372,13 @@ function createDoor(rectangle, type, { direction, from, to }, lockedPercentChanc
     let locked = lockable.has(type) && rollPercentile(lockedPercentChance);
 
     return {
-        rectangle,
+        rectangle, // TODO rename to `rect`
         type,
         locked,
-        connection: new Map([
-            [ from, { direction, to } ],
-            [ to,   { direction: directionOppositeLookup[direction], to: from } ],
-        ]),
+        connect: {
+            [from]: { direction, to },
+            [to]  : { direction: directionOppositeLookup[direction], to: from },
+        },
     };
 }
 
@@ -542,7 +542,7 @@ function getExtraDoors(grid, rooms, existingDoors) {
         let connectedTo = new Set();
 
         [ ...existingDoors, ...doors ].forEach((/** @type {Door} */ door) => {
-            let connection = door.connection.get(roomNumber);
+            let connection = door.connect[roomNumber];
 
             if (connection) {
                 connectedTo.add(connection.to);

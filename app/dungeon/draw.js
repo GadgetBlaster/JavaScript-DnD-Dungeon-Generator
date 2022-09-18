@@ -212,11 +212,13 @@ const getDirectionOrientation = (direction) => direction === 'north' || directio
  * @returns {"horizontal" | "vertical"}
  */
 function getDoorOrientation(connection) {
-    if (connection.size !== 1 && connection.size !== 2) {
-        toss('Invalid connection in getDoorOrientation()');
+    let connections = Object.values(connection);
+
+    if (!connections.length || connections.length > 2) {
+        toss('Invalid number of connections in getDoorOrientation()');
     }
 
-    let [ first, second ] = [ ...connection.values() ].map(({ direction }) => direction);
+    let [ first, second ] = connections.map(({ direction }) => direction);
 
     if (!second) {
         // Out of the dungeon
@@ -287,7 +289,7 @@ export function drawDoor(door) {
     // TODO doors should only ever be 1 wide or 1 tall depending on direction
 
     let {
-        connection,
+        connect: connection,
         rectangle,
         type,
         locked,
@@ -391,7 +393,7 @@ export function drawDoor(door) {
     let lines       = lineCords.map((cords) => drawLine({ ...cords, ...lineAttrs }, lineOptions)).join('');
 
     // TODO use `drawRect()`
-    return element('rect', null, attributes) + lines + details.join('');
+    return element('rect', undefined, attributes) + lines + details.join('');
 }
 
 /**

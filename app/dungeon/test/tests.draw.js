@@ -325,62 +325,62 @@ export default ({ assert, describe, it }) => {
     describe('getDoorOrientation()', () => {
         describe('given no connection', () => {
             it('throws', () => {
-                assert(() => getDoorOrientation(new Map()))
-                    .throws('Invalid connection in getDoorOrientation()');
+                assert(() => getDoorOrientation({}))
+                    .throws('Invalid number of connections in getDoorOrientation()');
             });
         });
 
         describe('given a connection with too may items', () => {
             it('throws', () => {
-                assert(() => getDoorOrientation(new Map([
-                    [ 1, { direction: 'east', to: 2 } ],
-                    [ 2, { direction: 'east', to: 1 } ],
-                    [ 3, { direction: 'east', to: 2 } ],
-                ]))).throws('Invalid connection in getDoorOrientation()');
+                assert(() => getDoorOrientation({
+                    1: { direction: 'east', to: 2 },
+                    2: { direction: 'east', to: 1 },
+                    3: { direction: 'east', to: 2 },
+                })).throws('Invalid number of connections in getDoorOrientation()');
             });
         });
 
         describe('given a connection with the same directions', () => {
             it('throws', () => {
-                assert(() => getDoorOrientation(new Map([
-                    [ 1, { direction: 'east', to: 2 } ],
-                    [ 2, { direction: 'east', to: 1 } ],
-                ]))).throws('Invalid connection directions in getDoorOrientation()');
+                assert(() => getDoorOrientation({
+                    1: { direction: 'east', to: 2 },
+                    2: { direction: 'east', to: 1 },
+                })).throws('Invalid connection directions in getDoorOrientation()');
             });
         });
 
         describe('given a connection with conflicting directions', () => {
             it('throws', () => {
-                assert(() => getDoorOrientation(new Map([
-                    [ 1, { direction: 'north', to: 2 } ],
-                    [ 2, { direction: 'east', to: 1 } ],
-                ]))).throws('Invalid connection directions in getDoorOrientation()');
+                assert(() => getDoorOrientation({
+                    1: { direction: 'north', to: 2 },
+                    2: { direction: 'east', to: 1 },
+                })).throws('Invalid connection directions in getDoorOrientation()');
             });
         });
 
         describe('given a connection with a single item', () => {
             it('returns the connection orientation', () => {
-                assert(getDoorOrientation(new Map([
-                    [ 1, { direction: 'east', to: 0 } ],
-                ]))).equals('horizontal');
+                assert(getDoorOrientation({
+                    1: { direction: 'east', to: 0 },
+                })).equals('horizontal');
             });
         });
 
         describe('given a vertical connection', () => {
             it('returns "vertical"', () => {
-                assert(getDoorOrientation(new Map([
-                    [ 1, { direction: 'north', to: 2 } ],
-                    [ 2, { direction: 'south', to: 1 } ],
-                ]))).equals('vertical');
+                assert(getDoorOrientation({
+                    1: { direction: 'north', to: 2 },
+                    2: { direction: 'south', to: 1 },
+                })).equals('vertical');
             });
         });
 
         describe('given a horizontal connection', () => {
             it('returns "horizontal"', () => {
-                assert(getDoorOrientation(new Map([
-                    [ 1, { direction: 'east', to: 2 } ],
-                    [ 2, { direction: 'west', to: 1 } ],
-                ]))).equals('horizontal');
+                assert(getDoorOrientation({
+                    1: { direction: 'east', to: 2 },
+                    2: { direction: 'west', to: 1 },
+                })).equals('horizontal');
             });
         });
     });
@@ -407,10 +407,10 @@ export default ({ assert, describe, it }) => {
     describe('drawDoor()', () => {
         /** @type {Door} */
         const doorConfig = {
-            connection: new Map([
-                [ 1, { direction: 'north', to: 2 } ],
-                [ 2, { direction: 'south', to: 1 } ],
-            ]),
+            connect: {
+                1: { direction: 'north', to: 2 },
+                2: { direction: 'south', to: 1 },
+            },
             locked: false,
             rectangle: { x: 10, y: 20, width: 1, height: 1 },
             type: 'passageway',
@@ -456,10 +456,10 @@ export default ({ assert, describe, it }) => {
         /** @type {Door} */
         const eastWestDoor = {
             ...doorConfig,
-            connection: new Map([
-                [ 1, { direction: 'east', to: 2 } ],
-                [ 2, { direction: 'west', to: 1 } ],
-            ]),
+            connect: {
+                1: { direction: 'east', to: 2 },
+                2: { direction: 'west', to: 1 },
+            },
             rectangle: { x: 10, y: 20, width: 1, height: 2 },
         };
 

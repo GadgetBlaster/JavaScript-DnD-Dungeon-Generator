@@ -125,8 +125,8 @@ export default ({ assert, describe, it }) => {
             const door = applyDoorToGrid(grid, room, prevRoom);
 
             assert(door).isObject();
-            assert(door.connection.get(1)).equalsObject({ direction: 'south', to: 2 });
-            assert(door.connection.get(2)).equalsObject({ direction: 'north', to: 1 });
+            assert(door.connect[1]).equalsObject({ direction: 'south', to: 2 });
+            assert(door.connect[2]).equalsObject({ direction: 'north', to: 1 });
             assert(door.locked).isBoolean();
             assert(door.rectangle).isObject();
             assert(door.type).isInArray(doorTypes);
@@ -161,7 +161,7 @@ export default ({ assert, describe, it }) => {
                 const firstDoor = result.doors.shift();
 
                 assert(Boolean(firstDoor)).isTrue();
-                firstDoor && assert(Boolean(firstDoor.connection.get(outside))).isTrue();
+                firstDoor && assert(Boolean(firstDoor.connect[outside])).isTrue();
             });
         });
 
@@ -248,12 +248,12 @@ export default ({ assert, describe, it }) => {
                     assert(door).isObject();
                     door && assert(door.type).isInArray(doorTypes);
 
-                    const connection1 = door && door.connection.get(1);
+                    const connection1 = door && door.connect[1];
                     assert(connection1).isObject();
                     connection1 && assert(connection1.direction).isInArray(directions);
                     connection1 && assert(connection1.to).equals(2);
 
-                    const connection2 = door && door.connection.get(2);
+                    const connection2 = door && door.connect[2];
                     assert(connection2).isObject();
                     connection2 && assert(connection2.direction).isInArray(directions);
                     connection2 && assert(connection2.to).equals(1);
@@ -328,12 +328,12 @@ export default ({ assert, describe, it }) => {
                     assert(door).isObject();
                     door && assert(door.type).isString();
 
-                    const connection1 = door && door.connection.get(1);
+                    const connection1 = door && door.connect[1];
                     assert(connection1).isObject();
                     connection1 && assert(connection1.direction).isString();
                     connection1 && assert(connection1.to).equals(2);
 
-                    const connection2 = door && door.connection.get(2);
+                    const connection2 = door && door.connect[2];
                     assert(connection2).isObject();
                     connection2 && assert(connection2.direction).isString();
                     connection2 && assert(connection2.to).equals(1);
@@ -476,8 +476,8 @@ export default ({ assert, describe, it }) => {
             assert(door.rectangle).isObject();
             assert(door.type).equals('stone');
             assert(door.locked).isBoolean();
-            assert(door.connection.get(1)).equalsObject({ direction: 'south', to: 2 });
-            assert(door.connection.get(2)).equalsObject({ direction: 'north', to: 1 });
+            assert(door.connect[1]).equalsObject({ direction: 'south', to: 2 });
+            assert(door.connect[2]).equalsObject({ direction: 'north', to: 1 });
         });
 
         describe('given a lockable door type and a 100% chance the door is locked', () => {
@@ -800,7 +800,7 @@ export default ({ assert, describe, it }) => {
                 });
             });
 
-            describe('given a 100% chance of connections', () => {
+            describe('given a 100% connection chance', () => {
                 const { grid, rooms } = getRoomsForTest([ rect1, rect2 ], { connectionChance: 100 });
                 const doors = getExtraDoors(grid, rooms, []);
 
@@ -814,8 +814,8 @@ export default ({ assert, describe, it }) => {
                     door && assert(door.rectangle).isObject();
                     door && assert(door.type).isInArray(doorTypes);
                     door && assert(door.locked).isBoolean();
-                    door && assert(door.connection.get(1)).equalsObject({ direction: 'south', to: 2 });
-                    door && assert(door.connection.get(2)).equalsObject({ direction: 'north', to: 1 });
+                    door && assert(door.connect[1]).equalsObject({ direction: 'south', to: 2 });
+                    door && assert(door.connect[2]).equalsObject({ direction: 'north', to: 1 });
                 });
 
                 it('updates the grid with a correctly placed door cell', () => {
@@ -887,8 +887,8 @@ export default ({ assert, describe, it }) => {
                     door && assert(door.rectangle).isObject();
                     door && assert(door.type).isInArray(doorTypes);
                     door && assert(door.locked).isBoolean();
-                    door && assert(door.connection.get(1)).equalsObject({ direction: 'east', to: 2 });
-                    door && assert(door.connection.get(2)).equalsObject({ direction: 'west', to: 1 });
+                    door && assert(door.connect[1]).equalsObject({ direction: 'east', to: 2 });
+                    door && assert(door.connect[2]).equalsObject({ direction: 'west', to: 1 });
                 });
 
                 it('updates the grid with a correctly placed door cell', () => {
