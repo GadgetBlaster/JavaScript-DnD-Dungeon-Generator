@@ -176,6 +176,13 @@ export {
 /**
  * Returns a dungeon.
  *
+ * TODO
+ * - Drop `walls` from rooms returned by `generateMap()`, they are only used in
+ *   procedural generation, not restoring maps.
+ * - Break up DungeonConfig, RoomConfig, & ItemConfig into separate objects,
+ *   probably keyed in a parent Config object, store only the necessary
+ *   properties with saved configs.
+ *
  * @param {Omit<DungeonConfig, "roomCount">} config
  *
  * @returns {Dungeon}
@@ -196,10 +203,11 @@ export function generateDungeon(config) {
 
     let gridDimensions  = generateMapDimensions(dungeonComplexity);
     let roomConfigs     = generateDungeonRooms(config);
+
     let {
         dimensions,
-        rooms, // TODO drop room config, walls? no longer needed?
-        doors, // Drop empty door connections?
+        rooms,
+        doors,
     } = generateMap(gridDimensions, roomConfigs);
 
     let keys = getDoorKeys(doors);
