@@ -8,6 +8,8 @@ import {
     testTrapCountMultiplier           as trapCountMultiplier,
 
     // Private Functions
+    testDistributeKeys        as distributeKeys,
+    testDistributeMaps        as distributeMaps,
     testGenerateMapDimensions as generateMapDimensions,
     testGenerateTraps         as generateTraps,
     testGetMaxRoomCount       as getMaxRoomCount,
@@ -18,9 +20,26 @@ import {
 
 import trapList from '../../room/trap.js';
 
-/**
- * @typedef {import('../../controller/knobs.js').DungeonConfig} DungeonConfig
- */
+/** @typedef {import('../../controller/knobs.js').DungeonConfig} DungeonConfig */
+/** @typedef {import('../../room/door.js').DoorKey} DoorKey */
+/** @typedef {import('../../room/generate.js').GeneratedRoomConfig} GeneratedRoomConfig */
+/** @typedef {import('../map.js').AppliedRoom} AppliedRoom */
+
+/** @type {GeneratedRoomConfig} */
+const generatedRoomConfig = {
+    itemCondition         : 'average',
+    itemQuantity          : 'zero',
+    itemRarity            : 'average',
+    itemType              : 'random',
+    roomCondition         : 'average',
+    roomCount             : 1,
+    roomFurnitureQuantity : 'average',
+    roomSize              : 'small',
+    roomType              : 'room',
+};
+
+const itemSet = { items: [], containers: [] };
+const room = { itemSet, roomNumber: 1, config: generatedRoomConfig, walls: [], rectangle: { x: 1, y: 1, width: 1, height: 1 } };
 
 /**
  * @param {import('../../unit/state.js').Utility} utility
@@ -28,6 +47,40 @@ import trapList from '../../room/trap.js';
 export default ({ assert, describe, it }) => {
 
     // -- Private Functions ----------------------------------------------------
+
+    describe('distributeKeys()', () => {
+        it('distributes all keys into rooms', () => {
+            /** @type {DoorKey[]} */
+            const keys = [
+                { type: 'secret', connect: { 1: { direction: 'north', to: 0 }} },
+                { type: 'iron', connect: { 1: { direction: 'east', to: 2 }, 2: { direction: 'west', to: 1 }} },
+            ];
+
+            /** @type {AppliedRoom[]} */
+            const rooms = [ room, { ...room, roomNumber: 2 }, { ...room, roomNumber: 3 } ];
+
+            distributeKeys(keys, rooms);
+
+            let distributedKeys = rooms.reduce((acc, roomConfig) => {
+                return [ ...acc, ...(roomConfig?.keys || []) ];
+            }, /** @type {DoorKey[]} */ ([]));
+
+            assert(distributedKeys.length).equals(2);
+            assert(distributedKeys.some(({ type }) => type === 'secret')).isTrue();
+            assert(distributedKeys.some(({ type }) => type === 'iron')).isTrue();
+        });
+    });
+
+    describe('distributeMaps()', () => {
+        it('distributes maps into rooms', () => {
+            /** @type {AppliedRoom[]} */
+            const rooms = [ room, { ...room, roomNumber: 2 }, { ...room, roomNumber: 3 } ];
+
+            distributeMaps(1, rooms);
+
+            assert(rooms.filter(({ map }) => map).length).equals(1);
+        });
+    });
 
     describe('generateMapDimensions()', () => {
         describe('given a complexity of 2', () => {

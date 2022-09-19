@@ -48,10 +48,31 @@ export {
 
 // -- Private Functions --------------------------------------------------------
 
+
 /**
  * Distributes maps throughout the dungeon.
  *
- * TODO tests
+ * @private
+ *
+ * @param {DoorKey[]} keys
+ * @param {AppliedRoom[]} rooms
+ */
+function distributeKeys(keys, rooms) {
+    keys.length && keys.forEach((key) => {
+        let room = rollArrayItem(rooms);
+
+        if (!room.keys) {
+            room.keys = [];
+        }
+
+        room.keys.push(key);
+    });
+}
+
+/**
+ * Distributes maps throughout the dungeon.
+ *
+ * @private
  *
  * @param {number} dungeonMaps
  * @param {AppliedRoom[]} rooms
@@ -68,7 +89,9 @@ function distributeMaps(dungeonMaps, rooms) {
 /**
  * Returns generate dungeon room configs.
  *
- * TODO move trap generate to room generation?
+ * TODO break out trap generation
+ *
+ * @private
  *
  * @param {Omit<DungeonConfig, "roomCount">} config
  *
@@ -166,6 +189,8 @@ function getMaxRoomCount(complexity) {
 }
 
 export {
+    distributeKeys        as testDistributeKeys,
+    distributeMaps        as testDistributeMaps,
     generateMapDimensions as testGenerateMapDimensions,
     generateTraps         as testGenerateTraps,
     getMaxRoomCount       as testGetMaxRoomCount,
@@ -210,19 +235,7 @@ export function generateDungeon(config) {
         doors,
     } = generateMap(gridDimensions, roomConfigs);
 
-    let keys = getDoorKeys(doors);
-
-    // TODO break out to `distributeKeys()`
-    keys.length && keys.forEach((key) => {
-        let room = rollArrayItem(rooms);
-
-        if (!room.keys) {
-            room.keys = [];
-        }
-
-        room.keys.push(key);
-    });
-
+    distributeKeys(getDoorKeys(doors), rooms);
     distributeMaps(dungeonMaps, rooms);
 
     return {
