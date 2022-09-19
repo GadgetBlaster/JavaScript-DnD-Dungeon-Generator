@@ -166,7 +166,10 @@ function getKnob(config, ids) {
                 toss('Select value must be a string in getKnob()');
             }
 
-            // TODO type error
+            if (typeof values === 'undefined' || !Array.isArray(values)) {
+                toss('Select values must be an array of strings in getKnob()');
+            }
+
             return select(name, values, value, { ...attrs });
 
         case 'text':

@@ -368,6 +368,21 @@ export default ({ assert, describe, it }) => {
                         .throws('Select value must be a string in getKnob()');
                 });
             });
+
+            describe('given no values', () => {
+                it('throws', () => {
+                    assert(() => getKnob({ ...fakeKnob, type: 'select' }, ids))
+                        .throws('Select values must be an array of strings in getKnob()');
+                });
+            });
+
+            describe('when values is not an array', () => {
+                it('throws', () => {
+                    // @ts-expect-error
+                    assert(() => getKnob({ ...fakeKnob, type: 'select', values: 'abc' }, ids))
+                        .throws('Select values must be an array of strings in getKnob()');
+                });
+            });
         });
 
         describe('given a type of "text"', () => {
