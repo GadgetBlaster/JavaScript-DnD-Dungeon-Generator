@@ -260,7 +260,7 @@ const getFields = (knobs, generator, config) => {
         fieldsArray.push(fieldConfig);
 
         return fieldsArray;
-    }, []);
+    }, /** @type {KnobFieldConfig[]} */ ([]));
 
     return {
         ...knobs,
@@ -290,5 +290,5 @@ export const getKnobConfig = (knobs, generator, config) => {
         knobSets.push(getFields(knobSet, generator, config));
 
         return knobSets;
-    }, []);
+    }, /** @type {KnobConfig[]} */ ([]));
 };
