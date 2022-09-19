@@ -148,9 +148,8 @@ function dungeonGenerator(state, config) {
     let dungeon = generateDungeon(config);
     state.set(dungeon);
 
-    let dungeonDoors = getDoorsByRoomNumber(dungeon.doors);
-
-    return formatDungeon(dungeon, getMapSvg(dungeon), dungeonDoors);
+    let format = getFormatter('maps');
+    return format(dungeon);
 }
 
 /**
@@ -262,7 +261,9 @@ function getActiveRoute(path) {
 function getFormatter(generator) {
     switch (generator) {
         case 'maps':
-            return formatDungeon;
+            return (dungeon) => {
+                return formatDungeon(dungeon, getMapSvg(dungeon), getDoorsByRoomNumber(dungeon.doors));
+            };
 
         case 'rooms':
             return formatRooms;
