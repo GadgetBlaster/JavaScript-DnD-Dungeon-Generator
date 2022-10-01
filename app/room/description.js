@@ -23,7 +23,7 @@ import { appendRoomTypes, customRoomLabels } from './room.js';
 /** @typedef {import('../item/furnishing.js').FurnitureQuantity} FurnitureQuantity */
 /** @typedef {import('./door.js').DoorKey} DoorKey */
 /** @typedef {import('./door.js').DoorType} DoorType */
-/** @typedef {import('./generate').GeneratedRoomConfig} GeneratedRoomConfig */
+/** @typedef {import('./generate').RandomizedRoomConfig} GeneratedRoomConfig */
 /** @typedef {import('./generate').Room} Room */
 /** @typedef {import('./room.js').RoomType} RoomType */
 

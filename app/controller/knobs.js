@@ -32,17 +32,17 @@ import { sizes } from '../attribute/size.js';
  */
 
 /**
- * @typedef {object} RoomConfigBase
+ * @typedef {object} RoomConfig
  *
  * @prop {Condition | "random"} roomCondition
- * @prop {number} roomCount
+ * @prop {number} [roomCount]
  * @prop {FurnitureQuantity | "random"} roomFurnitureQuantity
  * @prop {Size | "random"} roomSize
  * @prop {RoomType | "random"} roomType
  */
 
 /**
- * @typedef {object} DungeonConfigBase
+ * @typedef {object} DungeonConfig
  *
  * @prop {string} dungeonName
  * @prop {number} dungeonComplexity
@@ -55,19 +55,17 @@ import { sizes } from '../attribute/size.js';
  * @typedef {object} NameConfig
  */
 
-/** @typedef {ItemConfig & RoomConfigBase} RoomConfig */
-/** @typedef {ItemConfig & RoomConfigBase & DungeonConfigBase} DungeonConfig */
-
 /**
- * @typedef {Partial<ItemConfig
- *     & RoomConfigBase
- *     & DungeonConfigBase
- * >} Config
+ * @typedef {{
+ *     items?: ItemConfig;
+ *     rooms?: RoomConfig;
+ *     maps?: DungeonConfig;
+ * }} Config
  */
 
 /** @typedef {keyof ItemConfig} ItemConfigFields */
-/** @typedef {keyof RoomConfigBase} RoomConfigFields */
-/** @typedef {keyof DungeonConfigBase} DungeonConfigFields */
+/** @typedef {keyof RoomConfig} RoomConfigFields */
+/** @typedef {keyof DungeonConfig} DungeonConfigFields */
 
 /**
  * @typedef {ItemConfigFields
@@ -94,6 +92,7 @@ import { sizes } from '../attribute/size.js';
  * @typedef {object} KnobConfig
  *
  * @prop {string} label
+ * @prop {Generator} generator
  * @prop {Set<Generator>} generators
  * @prop {KnobFieldConfig[]} fields
  */
@@ -104,6 +103,7 @@ import { sizes } from '../attribute/size.js';
 export const knobConfig = [
     {
         label      : 'Dungeon Settings',
+        generator  : 'maps',
         generators : new Set([ 'maps' ]),
         fields     : [
             {
@@ -155,6 +155,7 @@ export const knobConfig = [
     },
     {
         label      : 'Room Settings',
+        generator  : 'rooms',
         generators : new Set([ 'maps', 'rooms' ]),
         fields     : [
             {
@@ -197,6 +198,7 @@ export const knobConfig = [
     },
     {
         label      : 'Item Settings',
+        generator  : 'items',
         generators : new Set([ 'maps', 'rooms', 'items' ]),
         fields     : [
             {

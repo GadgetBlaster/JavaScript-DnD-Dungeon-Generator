@@ -24,7 +24,7 @@ import { parseHtml } from '../../utility/element.js';
 /** @typedef {import('../../item/generate').Container} Container */
 /** @typedef {import('../../item/generate').Item} Item */
 /** @typedef {import('../../item/generate').ItemSet} ItemSet */
-/** @typedef {import('../../room/generate').GeneratedRoomConfig} GeneratedRoomConfig */
+/** @typedef {import('../../room/generate').RandomizedRoomConfig} GeneratedRoomConfig */
 /** @typedef {import('../../room/generate').Room} Room */
 
 /** @type {GeneratedRoomConfig} */

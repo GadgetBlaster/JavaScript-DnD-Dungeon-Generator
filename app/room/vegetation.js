@@ -5,7 +5,7 @@ import { roll, rollPercentile, rollArrayItem } from '../utility/roll.js';
 
 // -- Type Imports -------------------------------------------------------------
 
-/** @typedef {import('./generate.js').GeneratedRoomConfig} GeneratedRoomConfig */
+/** @typedef {import('./generate.js').RandomizedRoomConfig} GeneratedRoomConfig */
 
 // -- Type Imports -------------------------------------------------------------
 

@@ -35,7 +35,7 @@ import { quantities } from '../../attribute/quantity.js';
 /** @typedef {import('../../dungeon/map').Door} Door */
 /** @typedef {import('../door.js').DoorKey} DoorKey */
 /** @typedef {import('../door.js').DoorType} DoorType */
-/** @typedef {import('../generate').GeneratedRoomConfig} GeneratedRoomConfig */
+/** @typedef {import('../generate').RandomizedRoomConfig} GeneratedRoomConfig */
 
 /** @type {GeneratedRoomConfig} */
 const config = {

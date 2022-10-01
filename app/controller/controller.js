@@ -140,7 +140,7 @@ export {
  * @private
  *
  * @param {State} state
- * @param {DungeonConfig} config
+ * @param {Config} config
  *
  * @returns {string}
  */
@@ -158,12 +158,14 @@ function dungeonGenerator(state, config) {
  * @private
  *
  * @param {State} state
- * @param {ItemConfig} config
+ * @param {Config} config
  *
  * @returns {string}
  */
 function itemGenerator(state, config) {
-    let newState = generateItems(config);
+    if (!config.items) { toss('config.items is required in itemGenerator()'); }
+
+    let newState = generateItems(config.items);
     state.set(newState);
 
     return formatItems(newState);
@@ -177,7 +179,7 @@ function itemGenerator(state, config) {
  * @private
  *
  * @param {State} state
- * @param {NameConfig} config
+ * @param {Config} config
  *
  * @returns {string}
  */
@@ -194,7 +196,7 @@ function nameGenerator(state, config) {
  * @private
  *
  * @param {State} state
- * @param {RoomConfig} config
+ * @param {Config} config
  *
  * @returns {string}
  */
@@ -256,7 +258,7 @@ function getActiveRoute(path) {
  *
  * @param {Generator} generator
  *
- * @returns {(config: DungeonConfig | ItemConfig | NameConfig | RoomConfig) => string}
+ * @returns {(any) => string} // TODO
  */
 function getFormatter(generator) {
     switch (generator) {
@@ -287,7 +289,7 @@ function getFormatter(generator) {
  *
  * @param {Generator} generator
  *
- * @returns {(state: State, config: DungeonConfig | ItemConfig | NameConfig | RoomConfig) => string}
+ * @returns {(state: State, config: Config) => string}
  */
 function getGenerator(generator) {
     switch (generator) {

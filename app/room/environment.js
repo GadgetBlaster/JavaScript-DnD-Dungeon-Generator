@@ -8,7 +8,7 @@ import { toss } from '../utility/tools.js';
 
 // -- Types --------------------------------------------------------------------
 
-/** @typedef {import('./generate').GeneratedRoomConfig} GeneratedRoomConfig */
+/** @typedef {import('./generate').RandomizedRoomConfig} GeneratedRoomConfig */
 
 // -- Config -------------------------------------------------------------------
 

@@ -5,7 +5,7 @@ import { div, fieldset } from './block.js';
 import { knobConfig, getKnobConfig } from '../controller/knobs.js';
 import { paragraph, small, span, title } from './typography.js';
 import { select, input, slider, fieldLabel } from './field.js';
-import { toDash, toss, toWords } from '../utility/tools.js';
+import { isRequired, toDash, toss, toWords } from '../utility/tools.js';
 
 // -- Type Imports -------------------------------------------------------------
 
@@ -50,6 +50,7 @@ const formatKnobAccordions = (knobs) => knobs.map((knobSet, i) => {
     let {
         label,
         fields,
+        generator,
     } = knobSet;
 
     let fieldsetId = `fieldset-${toDash(label)}`;
@@ -60,7 +61,7 @@ const formatKnobAccordions = (knobs) => knobs.map((knobSet, i) => {
         'data-id': fieldsetId,
     };
 
-    return fieldset(handle + getFields(fields), attrs);
+    return fieldset(handle + getFields(fields, generator), attrs);
 }).join('');
 
 /**
@@ -75,11 +76,12 @@ const formatKnobAccordions = (knobs) => knobs.map((knobSet, i) => {
  */
 const formatKnobSections = (knobs) => knobs.map((knobSet) => {
     let {
-        label,
         fields,
+        label,
+        generator,
     } = knobSet;
 
-    return fieldset(title(label) + getFields(fields));
+    return fieldset(title(label) + getFields(fields, generator));
 }).join('');
 
 /**
@@ -89,10 +91,11 @@ const formatKnobSections = (knobs) => knobs.map((knobSet) => {
  * @throws
  *
  * @param {KnobFieldConfig[]} fields
+ * @param {Generator} generator // TODO tests
  *
  * @returns {string}
  */
-const getFields = (fields) => fields.map((settings) => {
+const getFields = (fields, generator) => fields.map((settings) => {
     let { desc, label, name } = settings;
 
     !name  && toss('Missing required knob name');
@@ -101,7 +104,7 @@ const getFields = (fields) => fields.map((settings) => {
 
     let { errorId, infoId, knobId}  = getKnobIds(name);
 
-    let knob       = getKnob(settings, { knobId, infoId, errorId });
+    let knob       = getKnob(settings, { knobId, generatorId: generator, infoId, errorId });
     let infoButton = button(infoLabel, 'toggle', { target: infoId, size: 'auto' });
     let infoText   = paragraph(small(desc), { hidden: 'true', id: infoId }); // TODO make into pop-up
     let knobLabel  = fieldLabel(label + infoButton, { for: knobId }); // TODO restructure
@@ -111,7 +114,7 @@ const getFields = (fields) => fields.map((settings) => {
 }).join('');
 
 /**
- * Returns an array of HTMLInputElement children for the knob container.
+ * Returns an array of `HTMLInputElement` children for the container.
  *
  * @private
  *
@@ -130,6 +133,7 @@ const getInputElements = (knobContainer) => [ ...knobContainer.querySelectorAll(
  * @param {KnobFieldConfig} config
  * @param {object} ids
  *     @param {string} ids.errorId
+ *     @param {string} ids.generatorId
  *     @param {string} ids.infoId
  *     @param {string} ids.knobId
  *
@@ -145,10 +149,11 @@ function getKnob(config, ids) {
         max,
     } = config;
 
-    let { errorId, infoId, knobId } = ids;
+    let { errorId, generatorId, infoId, knobId } = ids;
 
     // TODO tests
     let attrs = {
+        'data-generator': generatorId,
         'aria-describedby': `${infoId} ${errorId}`,
         'data-error-id': errorId,
         id: knobId,
@@ -218,12 +223,20 @@ export {
  * @returns {Config}
  */
 export function getFormData(knobContainer) {
-    return getInputElements(knobContainer).reduce((setting, knob) => {
-        let { name, value } = knob;
+    return getInputElements(knobContainer).reduce((settings, knob) => {
+        let { name, value, dataset } = knob;
 
-        setting[name] = value;
+        let generator = dataset.generator;
 
-        return setting;
+        isRequired(generator, `data-generator attribute is required on field "${name}" in getFormData()`);
+
+        if (!settings[generator]) {
+            settings[generator] = {};
+        }
+
+        settings[generator][name] = value;
+
+        return settings;
     }, {});
 }
 
@@ -231,7 +244,7 @@ export function getFormData(knobContainer) {
  * Update form knobs when changing generators.
  *
  * @param {Generator} generator
- * @param {object} [options]
+ * @param {object} options
  *     @param {Config} [options.config]
  *     @param {boolean} [options.isExpanded]
  *

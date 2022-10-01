@@ -40,7 +40,7 @@ import {
 } from '../../room/door.js';
 
 /** @typedef {import('../../attribute/size.js').Size} Size */
-/** @typedef {import('../../room/generate.js').GeneratedRoomConfig} GeneratedRoomConfig */
+/** @typedef {import('../../room/generate.js').RandomizedRoomConfig} GeneratedRoomConfig */
 /** @typedef {import('../../room/generate.js').Room} Room */
 /** @typedef {import('../../room/room.js').RoomType} RoomType */
 /** @typedef {import('../grid.js').Dimensions} Dimensions */

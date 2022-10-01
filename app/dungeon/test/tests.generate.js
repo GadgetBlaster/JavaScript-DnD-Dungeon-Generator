@@ -22,7 +22,7 @@ import trapList from '../../room/trap.js';
 
 /** @typedef {import('../../controller/knobs.js').DungeonConfig} DungeonConfig */
 /** @typedef {import('../../room/door.js').DoorKey} DoorKey */
-/** @typedef {import('../../room/generate.js').GeneratedRoomConfig} GeneratedRoomConfig */
+/** @typedef {import('../../room/generate.js').RandomizedRoomConfig} GeneratedRoomConfig */
 /** @typedef {import('../map.js').AppliedRoom} AppliedRoom */
 
 /** @type {GeneratedRoomConfig} */

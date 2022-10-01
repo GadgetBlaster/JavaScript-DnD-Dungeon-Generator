@@ -4,12 +4,12 @@ import { generateMap } from './map.js';
 import { generateRooms } from '../room/generate.js';
 import { getDoorKeys } from '../room/door.js';
 import { roll, rollArrayItem } from '../utility/roll.js';
-import { isRequired } from '../utility/tools.js';
+import { isRequired, toss } from '../utility/tools.js';
 import trapList from '../room/trap.js';
 
 // -- Types --------------------------------------------------------------------
 
-/** @typedef {import('../controller/knobs.js').DungeonConfig} DungeonConfig */
+/** @typedef {import('../controller/knobs.js').Config} Config */
 /** @typedef {import('../item/generate.js').Item} Item */
 /** @typedef {import('../room/door.js').Door} Door */
 /** @typedef {import('../room/door.js').DoorKey} DoorKey */
@@ -92,24 +92,37 @@ function distributeMaps(dungeonMaps, rooms) {
  * TODO break out trap generation
  *
  * @private
+ * @throws
  *
- * @param {Omit<DungeonConfig, "roomCount">} config
+ * @param {Config} config
  *
  * @returns {Room[]}
  */
 function generateDungeonRooms(config) {
+    if (!config.maps) {
+        toss('config.maps is required in generateDungeonRooms()');
+    }
+
+    if (!config.rooms) {
+        toss('config.rooms is required in generateDungeonRooms()');
+    }
+
     let {
         dungeonComplexity,
         dungeonTraps,
-    } = config;
+    } = config.maps;
 
     let rooms = generateRooms({
         ...config,
-        roomCount: getMaxRoomCount(dungeonComplexity),
+        rooms: {
+            ...config.rooms,
+            roomCount: getMaxRoomCount(dungeonComplexity),
+        },
     });
 
     let traps = generateTraps(dungeonTraps);
 
+    // TODO break out into distribute traps funciton
     traps.length && traps.forEach((trap) => {
         let room = rollArrayItem(rooms);
 
@@ -204,22 +217,23 @@ export {
  * TODO
  * - Drop `walls` from rooms returned by `generateMap()`, they are only used in
  *   procedural generation, not restoring maps.
- * - Break up DungeonConfig, RoomConfig, & ItemConfig into separate objects,
- *   probably keyed in a parent Config object, store only the necessary
- *   properties with saved configs.
  *
- * @param {Omit<DungeonConfig, "roomCount">} config
+ * @param {Config} config
  *
  * @returns {Dungeon}
  */
 export function generateDungeon(config) {
+    if (!config.maps) {
+        toss('config.maps is required in generateDungeon()');
+    }
+
     let {
         dungeonName,
         dungeonComplexity,
         dungeonConnections,
         dungeonMaps,
         dungeonTraps,
-    } = config;
+    } = config.maps;
 
     isRequired(dungeonComplexity,  'dungeonComplexity is required in generateDungeon()');
     isRequired(dungeonConnections, 'dungeonConnections is required in generateDungeon()');

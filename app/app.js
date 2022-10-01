@@ -68,7 +68,7 @@ const sections = (/** @type {() => Sections} */ () => {
  *
  * @type {boolean}
  */
-const skipTests = false;
+const skipTests = true;
 
 // -- Tests --------------------------------------------------------------------
 
