@@ -40,7 +40,7 @@ import {
 } from '../../room/door.js';
 
 /** @typedef {import('../../attribute/size.js').Size} Size */
-/** @typedef {import('../../room/generate.js').RandomizedRoomConfig} GeneratedRoomConfig */
+/** @typedef {import('../../room/generate.js').RandomizedRoomConfig} RandomizedRoomConfig */
 /** @typedef {import('../../room/generate.js').Room} Room */
 /** @typedef {import('../../room/room.js').RoomType} RoomType */
 /** @typedef {import('../grid.js').Dimensions} Dimensions */
@@ -49,8 +49,8 @@ import {
 /** @typedef {import('../map.js').AppliedRoom} AppliedRoom */
 /** @typedef {import('../map.js').Direction} Direction */
 
-/** @type {GeneratedRoomConfig} */
-const generatedRoomConfig = {
+/** @type {RandomizedRoomConfig} */
+const randomizedRoomConfig = {
     itemCondition         : 'average',
     itemQuantity          : 'zero',
     itemRarity            : 'average',
@@ -99,7 +99,7 @@ export default ({ assert, describe, it }) => {
             };
 
             const prevRoom = {
-                config: generatedRoomConfig,
+                config: randomizedRoomConfig,
                 itemSet: { items: [], containers: [] },
                 rectangle: prevRect,
                 roomNumber: 1,
@@ -114,7 +114,7 @@ export default ({ assert, describe, it }) => {
             };
 
             const room = {
-                config: generatedRoomConfig,
+                config: randomizedRoomConfig,
                 itemSet: { items: [], containers: [] },
                 rectangle: rect,
                 roomNumber: 2,
@@ -141,7 +141,7 @@ export default ({ assert, describe, it }) => {
 
         it('returns an AppliedRoomResults object', () => {
             const grid = createBlankGrid(gridDimensions);
-            const room = { config: generatedRoomConfig, itemSet, roomNumber: 1 };
+            const room = { config: randomizedRoomConfig, itemSet, roomNumber: 1 };
             const result = applyRooms([ room ], grid);
 
             assert(result).isObject();
@@ -156,7 +156,7 @@ export default ({ assert, describe, it }) => {
         describe('the first room', () => {
             it('is connected to an edge of the map', () => {
                 const grid = createBlankGrid(gridDimensions);
-                const room = { config: generatedRoomConfig, itemSet, roomNumber: 1 };
+                const room = { config: randomizedRoomConfig, itemSet, roomNumber: 1 };
                 const result = applyRooms([ room, room ], grid);
                 const firstDoor = result.doors.shift();
 
@@ -170,7 +170,7 @@ export default ({ assert, describe, it }) => {
                 const grid = createBlankGrid(gridDimensions);
                 const room = {
                     config: {
-                        ...generatedRoomConfig,
+                        ...randomizedRoomConfig,
                         roomSize: /** @type {Size} */ ('massive'),
                     },
                     itemSet,
@@ -189,7 +189,7 @@ export default ({ assert, describe, it }) => {
                     const grid = createBlankGrid(gridDimensions);
                     const room = {
                         config: {
-                            ...generatedRoomConfig,
+                            ...randomizedRoomConfig,
                             roomSize: /** @type {Size} */ ('tiny'),
                         },
                         itemSet,
@@ -197,7 +197,7 @@ export default ({ assert, describe, it }) => {
                     };
 
                     const prevRoom = {
-                        config: generatedRoomConfig,
+                        config: randomizedRoomConfig,
                         itemSet,
                         rectangle: { x: 1, y: 1, width: 1, height: 1 },
                         roomNumber: 1,
@@ -221,7 +221,7 @@ export default ({ assert, describe, it }) => {
                     };
 
                     const prevRoom = {
-                        config: generatedRoomConfig,
+                        config: randomizedRoomConfig,
                         itemSet,
                         rectangle: prevRect,
                         roomNumber: 1,
@@ -229,7 +229,7 @@ export default ({ assert, describe, it }) => {
                     };
 
                     const room = {
-                        config: generatedRoomConfig,
+                        config: randomizedRoomConfig,
                         itemSet,
                         roomNumber: 2,
                     };
@@ -304,7 +304,7 @@ export default ({ assert, describe, it }) => {
                     };
 
                     const prevRoom = {
-                        config: generatedRoomConfig,
+                        config: randomizedRoomConfig,
                         itemSet,
                         rectangle: prevRect,
                         roomNumber: 1,
@@ -313,7 +313,7 @@ export default ({ assert, describe, it }) => {
 
                     const hallway = {
                         config: {
-                            ...generatedRoomConfig,
+                            ...randomizedRoomConfig,
                             roomType: /** @type {RoomType} */ ('hallway'),
                         },
                         itemSet,
@@ -500,7 +500,7 @@ export default ({ assert, describe, it }) => {
             };
 
             const appliedRoom = {
-                config: generatedRoomConfig,
+                config: randomizedRoomConfig,
                 itemSet: { items: [], containers: [] },
                 rectangle,
                 roomNumber: 1,
@@ -624,7 +624,7 @@ export default ({ assert, describe, it }) => {
                 };
 
                 const room1 = {
-                    config: generatedRoomConfig,
+                    config: randomizedRoomConfig,
                     itemSet: { items: [], containers: [] },
                     rectangle: rect1,
                     roomNumber: 1,
@@ -639,7 +639,7 @@ export default ({ assert, describe, it }) => {
                 };
 
                 const room2 = {
-                    config: generatedRoomConfig,
+                    config: randomizedRoomConfig,
                     itemSet: { items: [], containers: [] },
                     rectangle: rect2,
                     roomNumber: 2,
@@ -742,7 +742,7 @@ export default ({ assert, describe, it }) => {
                 /** @type {AppliedRoom} */
                 const room = {
                     config: {
-                        ...generatedRoomConfig,
+                        ...randomizedRoomConfig,
                         dungeonConnections: connectionChance,
                     },
                     itemSet: { items: [], containers: [] },
@@ -947,7 +947,7 @@ export default ({ assert, describe, it }) => {
 
             const prevRoomRect = { x: 2, y: 2, width: 2, height: 1 };
             const prevRoom = {
-                config: generatedRoomConfig,
+                config: randomizedRoomConfig,
                 itemSet: {
                     items: [],
                     containers: [],
@@ -1014,7 +1014,7 @@ export default ({ assert, describe, it }) => {
 
         /** @type {AppliedRoom} */
         const room = {
-            config: generatedRoomConfig,
+            config: randomizedRoomConfig,
             itemSet: { items: [], containers: [] },
             rectangle,
             roomNumber: 7,
@@ -1112,7 +1112,7 @@ export default ({ assert, describe, it }) => {
             /** @type {Room} */
             const room = {
                 config: {
-                    ...generatedRoomConfig,
+                    ...randomizedRoomConfig,
                     roomSize: 'small',
                     roomType: 'room',
                 },
@@ -1175,7 +1175,7 @@ export default ({ assert, describe, it }) => {
             // TODO need to inject randomization for testing
             it('returns a room width and height ', () => {
                 const dimensions = rollRoomDimensions(gridDimensions, {
-                    ...generatedRoomConfig,
+                    ...randomizedRoomConfig,
                     roomType: 'hallway',
                 });
 
@@ -1189,7 +1189,7 @@ export default ({ assert, describe, it }) => {
                 const { min, max } = roomDimensionRanges.small;
 
                 const { width, height } = rollRoomDimensions(gridDimensions, {
-                    ...generatedRoomConfig,
+                    ...randomizedRoomConfig,
                     roomSize: 'small',
                 });
 
@@ -1206,7 +1206,7 @@ export default ({ assert, describe, it }) => {
                 const miniMapDimensions = { width: gridWidth, height: gridHeight };
 
                 const { width, height } = rollRoomDimensions(miniMapDimensions, {
-                    ...generatedRoomConfig,
+                    ...randomizedRoomConfig,
                     roomSize: 'massive',
                 });
 
@@ -1220,7 +1220,7 @@ export default ({ assert, describe, it }) => {
 
     describe('generateMap()', () => {
         it('generates dimensions, rooms, and doors', () => {
-            /** @type {GeneratedRoomConfig} */
+            /** @type {RandomizedRoomConfig} */
             const roomConfig = {
                 itemCondition        : 'average',
                 itemQuantity         : 'one',

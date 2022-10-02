@@ -35,9 +35,9 @@ import { quantities } from '../../attribute/quantity.js';
 /** @typedef {import('../../dungeon/map').Door} Door */
 /** @typedef {import('../door.js').DoorKey} DoorKey */
 /** @typedef {import('../door.js').DoorType} DoorType */
-/** @typedef {import('../generate').RandomizedRoomConfig} GeneratedRoomConfig */
+/** @typedef {import('../generate').RandomizedRoomConfig} RandomizedRoomConfig */
 
-/** @type {GeneratedRoomConfig} */
+/** @type {RandomizedRoomConfig} */
 const config = {
     itemCondition        : 'average',
     itemQuantity         : 'one',
@@ -161,7 +161,7 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getDescriptionIntro()', () => {
-        /** @type {GeneratedRoomConfig} */
+        /** @type {RandomizedRoomConfig} */
         const roomConfig = {
             itemQuantity: 'one',
             itemCondition: 'average',

@@ -38,7 +38,7 @@ import { isRequired, toWords } from '../utility/tools.js';
 /** @typedef {import('../room/door.js').DoorType} DoorType */
 /** @typedef {import('../room/door.js').RollDoorType} RollDoorType */
 /** @typedef {import('../room/door.js').RollSecretDoorType} RollSecretDoorType */
-/** @typedef {import('../room/generate.js').RandomizedRoomConfig} GeneratedRoomConfig */
+/** @typedef {import('../room/generate.js').RandomizedRoomConfig} RandomizedRoomConfig */
 /** @typedef {import('../room/generate.js').Room} Room */
 /** @typedef {import('../room/room.js').RoomType} RoomType */
 /** @typedef {import('./draw.js').RoomText} RoomText */
@@ -726,7 +726,7 @@ function procedurallyApplyRooms(rooms, grid) {
  * @throws
  *
  * @param {Dimensions} gridDimensions
- * @param {GeneratedRoomConfig} roomConfig
+ * @param {RandomizedRoomConfig} roomConfig
  *
  * @returns {Dimensions}
  */

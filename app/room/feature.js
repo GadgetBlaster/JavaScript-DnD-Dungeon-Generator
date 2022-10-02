@@ -5,7 +5,7 @@ import { toss } from '../utility/tools.js';
 
 // -- Types --------------------------------------------------------------------
 
-/** @typedef {import('./generate.js').RandomizedRoomConfig} GeneratedRoomConfig */
+/** @typedef {import('./generate.js').RandomizedRoomConfig} RandomizedRoomConfig */
 
 /** @typedef {typeof roomFeatures[number]} RoomFeature */
 
@@ -228,7 +228,7 @@ export {
  * TODO inject probability
  * TODO inject count
  *
- * @param {GeneratedRoomConfig} config
+ * @param {RandomizedRoomConfig} config
  *
  * @returns {string[]}
  */

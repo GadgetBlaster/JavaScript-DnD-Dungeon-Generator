@@ -22,11 +22,11 @@ import trapList from '../../room/trap.js';
 
 /** @typedef {import('../../controller/knobs.js').DungeonConfig} DungeonConfig */
 /** @typedef {import('../../room/door.js').DoorKey} DoorKey */
-/** @typedef {import('../../room/generate.js').RandomizedRoomConfig} GeneratedRoomConfig */
+/** @typedef {import('../../room/generate.js').RandomizedRoomConfig} RandomizedRoomConfig */
 /** @typedef {import('../map.js').AppliedRoom} AppliedRoom */
 
-/** @type {GeneratedRoomConfig} */
-const generatedRoomConfig = {
+/** @type {RandomizedRoomConfig} */
+const randomizedRoomConfig = {
     itemCondition         : 'average',
     itemQuantity          : 'zero',
     itemRarity            : 'average',
@@ -39,7 +39,7 @@ const generatedRoomConfig = {
 };
 
 const itemSet = { items: [], containers: [] };
-const room = { itemSet, roomNumber: 1, config: generatedRoomConfig, walls: [], rectangle: { x: 1, y: 1, width: 1, height: 1 } };
+const room = { itemSet, roomNumber: 1, config: randomizedRoomConfig, walls: [], rectangle: { x: 1, y: 1, width: 1, height: 1 } };
 
 /**
  * @param {import('../../unit/state.js').Utility} utility

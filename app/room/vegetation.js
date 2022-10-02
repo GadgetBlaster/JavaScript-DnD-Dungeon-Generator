@@ -5,7 +5,7 @@ import { roll, rollPercentile, rollArrayItem } from '../utility/roll.js';
 
 // -- Type Imports -------------------------------------------------------------
 
-/** @typedef {import('./generate.js').RandomizedRoomConfig} GeneratedRoomConfig */
+/** @typedef {import('./generate.js').RandomizedRoomConfig} RandomizedRoomConfig */
 
 // -- Type Imports -------------------------------------------------------------
 
@@ -94,7 +94,7 @@ export {
  * TODO extract noop to caller
  * TODO hook up room settings
  *
- * @param {GeneratedRoomConfig} config
+ * @param {RandomizedRoomConfig} config
  * @param {object} [options]
  *     @param {number} [options.count = number]
  *

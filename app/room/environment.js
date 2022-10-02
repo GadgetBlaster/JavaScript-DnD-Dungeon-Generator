@@ -8,7 +8,7 @@ import { toss } from '../utility/tools.js';
 
 // -- Types --------------------------------------------------------------------
 
-/** @typedef {import('./generate').RandomizedRoomConfig} GeneratedRoomConfig */
+/** @typedef {import('./generate').RandomizedRoomConfig} RandomizedRoomConfig */
 
 // -- Config -------------------------------------------------------------------
 
@@ -183,7 +183,7 @@ function getGroundDesc() {
  *
  * @throws
  *
- * @param {GeneratedRoomConfig} config
+ * @param {RandomizedRoomConfig} config
  * @param {string} roomStructure
  *
  * @returns {string}
@@ -276,7 +276,7 @@ export {
  *
  * TODO return sentences .filter(Boolean).join('. ')+'.');
  *
- * @param {GeneratedRoomConfig} config
+ * @param {RandomizedRoomConfig} config
  *
  * @returns {string[]}
  */

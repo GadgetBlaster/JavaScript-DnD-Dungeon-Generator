@@ -31,7 +31,7 @@ import { quantityRanges, probability as quantityProbability } from '../attribute
 /** @typedef {import('../attribute/size.js').Size} Size */
 /** @typedef {import('../controller/knobs.js').Config} Config */
 /** @typedef {import('../controller/knobs.js').ItemConfig} ItemConfig */
-/** @typedef {import('../room/generate.js').RandomizedRoomConfig} GeneratedRoomConfig */
+/** @typedef {import('../room/generate.js').RandomizedRoomConfig} RandomizedRoomConfig */
 /** @typedef {import('../room/room.js').RoomType} RoomType */
 /** @typedef {import('./furnishing.js').FurnitureQuantity} FurnitureQuantity */
 /** @typedef {import('./item.js').ItemBase} ItemBase */
@@ -292,7 +292,7 @@ export {
  * Generate items
  *
  * @param {ItemConfig} itemConfig
- * @param {GeneratedRoomConfig} [roomConfig]
+ * @param {RandomizedRoomConfig} [roomConfig]
  *
  * @returns {ItemSet}
  */

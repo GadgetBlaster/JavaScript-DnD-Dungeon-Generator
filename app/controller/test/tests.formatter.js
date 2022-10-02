@@ -24,11 +24,11 @@ import { parseHtml } from '../../utility/element.js';
 /** @typedef {import('../../item/generate').Container} Container */
 /** @typedef {import('../../item/generate').Item} Item */
 /** @typedef {import('../../item/generate').ItemSet} ItemSet */
-/** @typedef {import('../../room/generate').RandomizedRoomConfig} GeneratedRoomConfig */
+/** @typedef {import('../../room/generate').RandomizedRoomConfig} RandomizedRoomConfig */
 /** @typedef {import('../../room/generate').Room} Room */
 
-/** @type {GeneratedRoomConfig} */
-const generatedRoomConfig = {
+/** @type {RandomizedRoomConfig} */
+const randomizedRoomConfig = {
     itemCondition         : 'average',
     itemQuantity          : 'zero',
     itemRarity            : 'average',
@@ -196,7 +196,7 @@ export default ({ assert, describe, it }) => {
     describe('formatRoomGrid()', () => {
         /** @type {Room} */
         const room = {
-            config: generatedRoomConfig,
+            config: randomizedRoomConfig,
             itemSet: {
                 containers: [],
                 items     : [],

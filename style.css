@@ -392,11 +392,10 @@ button[data-ready] {
     min-width: 300px;
     min-height: 300px;
     margin-bottom: 100px;
-    /* background: var(--color-gray-35); */
     background:  var(--color-gray-35) radial-gradient(at 70% 40%, var(--color-gray-30) 10px, transparent);
     transition: background var(--transition-10);
     border: 1px solid var(--color-gray-20);
-    border-radius: 100%;
+    border-radius: var(--border-radius);
     text-shadow: 0 0 10px var(--color-gray-0);
     font-family: var(--font-title);
     font-size: var(--font-size-title);
