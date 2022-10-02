@@ -38,6 +38,8 @@ import { roomTypeSizes } from './dimensions.js';
  *     roomFurnitureQuantity: FurnitureQuantity;
  *     roomSize: Size;
  *     roomType: RoomType;
+ *     uniformItemCondition?: Condition;
+ *     uniformItemRarity?: Rarity;
  * }} RandomizedRoomConfig
  */
 
@@ -70,8 +72,8 @@ const uniformItemRarityChance = 10;
 // -- Private Functions --------------------------------------------------------
 
 /**
- * Applies randomization to the given `RoomConfig` or `DungeonConfig`, returning
- * a subset of config's fields.
+ * Applies randomization to the given `Config`, returning randomized
+ * `ItemConfig` and `RandomizedRoomConfig` objects.
  *
  * @private
  *
@@ -131,23 +133,16 @@ function applyRoomRandomization(config, {
 
     // Item config
 
-    let randomizedItemCondition = itemCondition === 'random' && isRandomItemConditionUniform
-        ? conditionProbability.roll()
-        : itemCondition;
-
     let randomizedItemQuantity = itemQuantity === 'random'
         ? quantityProbability.roll()
         : itemQuantity;
-
-    let randomizedItemRarity = itemRarity === 'random' && isRandomItemRarityUniform
-        ? rarityProbability.roll()
-        : itemRarity;
 
     // TODO replace with max item quantity per room type config?
     if (roomType === 'hallway' && randomizedItemQuantity === 'numerous') {
         randomizedItemQuantity = /** @type {Quantity} */ ('several');
     }
 
+    /** @type {RandomizedRoomConfig} */
     let randomizedRoomConfig = {
         itemQuantity: randomizedItemQuantity,
         roomCondition: randomizedRoomCondition,
@@ -156,11 +151,24 @@ function applyRoomRandomization(config, {
         roomType: randomizedRoomType,
     };
 
+    /** @type {Partial<ItemConfig>} */
     let randomizedItemConfig = {
-        itemCondition: randomizedItemCondition,
         itemQuantity: randomizedItemQuantity,
-        itemRarity: randomizedItemRarity,
     };
+
+    if (itemCondition === 'random' && isRandomItemConditionUniform) {
+        let condition = conditionProbability.roll();
+
+        randomizedRoomConfig.uniformItemCondition = condition;
+        randomizedItemConfig.itemCondition        = condition;
+    }
+
+    if (itemRarity === 'random' && isRandomItemRarityUniform) {
+        let rarity = rarityProbability.roll();
+
+        randomizedRoomConfig.uniformItemRarity = rarity;
+        randomizedItemConfig.itemRarity        = rarity;
+    }
 
     return {
         randomizedItemConfig: { ...config.items, ...randomizedItemConfig },

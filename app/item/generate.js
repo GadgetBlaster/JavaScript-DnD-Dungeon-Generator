@@ -297,7 +297,9 @@ export {
  * @returns {ItemSet}
  */
 export function generateItems(itemConfig, roomConfig) {
-    if (!itemConfig) { toss('itemConfig is required in generateItems()'); }
+    if (!itemConfig) {
+        toss('itemConfig is required in generateItems()');
+    }
 
     let {
         itemCondition,

@@ -122,7 +122,7 @@ function generateDungeonRooms(config) {
 
     let traps = generateTraps(dungeonTraps);
 
-    // TODO break out into distribute traps funciton
+    // TODO break out into distribute traps function
     traps.length && traps.forEach((trap) => {
         let room = rollArrayItem(rooms);
 

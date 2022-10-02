@@ -64,9 +64,9 @@ const mapDescriptions = [
 function getContentDescription(config) {
     let {
         itemQuantity,
-        itemRarity, // TODO item rarity is needed here and was accidentally dropped
         roomFurnitureQuantity,
         roomType,
+        uniformItemRarity,
     } = config;
 
     isRequired(roomType, 'roomType is required in getRoomContentDescription()');
@@ -76,7 +76,7 @@ function getContentDescription(config) {
     }
 
     let furniture = getFurnitureDetail(roomFurnitureQuantity);
-    let rarity    = getContentRarityDetail(itemRarity);
+    let rarity    = getContentRarityDetail(uniformItemRarity);
     let type      = getRoomLabel(roomType).toLowerCase();
 
     let furnitureText;
@@ -87,25 +87,25 @@ function getContentDescription(config) {
             return `The ${type} is entirely empty except for ${furnitureText} a single ${rarity} item`;
 
         case 'couple':
-            furnitureText = furniture ? (' amongst ' + furniture ) : '';
-            return `There are a couple of ${rarity} things in the ${type}${furnitureText}`;
+            furnitureText = furniture ? ('amongst ' + furniture ) : '';
+            return `There are a couple of ${rarity} things in the ${type} ${furnitureText}`;
 
         case 'few':
-            furnitureText = furniture ? (' amongst ' + furniture ) : '';
-            return `There are a few ${rarity} things in the ${type}${furnitureText}`;
+            furnitureText = furniture ? ('amongst ' + furniture ) : '';
+            return `There are a few ${rarity} things in the ${type} ${furnitureText}`;
 
         case 'some':
         case 'several':
-            furnitureText = furniture ? (furniture + ' and ' ) : '';
-            return `You can see ${furnitureText}${itemQuantity} ${rarity} items as you search around the ${type}`;
+            furnitureText = furniture ? (furniture + ' and' ) : '';
+            return `You can see ${furnitureText} ${itemQuantity} ${rarity} items as you search around the ${type}`;
 
         case 'many':
-            furnitureText = furniture ? (' and ' + furniture) : '';
-            return `The ${type} is cluttered with ${rarity} items${furnitureText}`;
+            furnitureText = furniture ? ('and ' + furniture) : '';
+            return `The ${type} is cluttered with ${rarity} items ${furnitureText}`;
 
         case 'numerous':
-            furnitureText = furniture ? (' amongst ' + furniture ) : '';
-            return `There are numerous ${rarity} objects littering the ${type}${furnitureText}`;
+            furnitureText = furniture ? ('amongst ' + furniture ) : '';
+            return `There are numerous ${rarity} objects littering the ${type} ${furnitureText}`;
 
         default:
             toss('Invalid itemQuantity in getRoomContentDescription()');
@@ -116,13 +116,19 @@ function getContentDescription(config) {
  * Get content rarity detail
  *
  * @private
+ * @throws
  *
- * @param {Rarity | "random"} rarity
+ * @param {Rarity} [rarity]
  *
  * @returns {string}
  */
 function getContentRarityDetail(rarity) {
+    // @ts-expect-error
     if (rarity === 'random') {
+        toss('rarity cannot be "random" in getContentRarityDetail()');
+    }
+
+    if (!rarity) {
         return '';
     }
 
@@ -237,33 +243,31 @@ function getFurnitureDetail(furnitureQuantity) {
  *
  * @param {RandomizedRoomConfig} config
  *
- * @returns {string|undefined}
+ * @returns {string | undefined}
  */
 function getItemConditionDescription(config) {
     let {
-        itemQuantity : itemQuantity,
-        itemCondition: itemCondition,
+        itemQuantity,
+        uniformItemCondition,
     } = config;
 
-    if (itemQuantity === 'zero') {
+    isRequired(itemQuantity, 'itemQuantity is required in getItemConditionDescription()');
+
+    if (itemQuantity === 'zero' || !uniformItemCondition) {
         return;
     }
 
-    switch (itemCondition) {
+    switch (uniformItemCondition) {
         case 'busted':
         case 'decaying':
-            return `Everything in the room is ${itemCondition}`;
+            return `Everything in the room is ${uniformItemCondition}`;
 
         case 'good':
         case 'poor':
-            return `All of the items in the room are in ${itemCondition} condition`;
+            return `All of the items in the room are in ${uniformItemCondition} condition`;
 
         case 'exquisite':
-            return 'The room’s contents are in exquisite condition';
-
-        case 'average':
-        default:
-            return;
+            return 'The room\'s contents are in exquisite condition';
     }
 }
 
