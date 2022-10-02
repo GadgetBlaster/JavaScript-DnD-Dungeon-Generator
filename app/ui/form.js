@@ -98,9 +98,10 @@ const formatKnobSections = (knobs) => knobs.map((knobSet) => {
 const getFields = (fields, generator) => fields.map((settings) => {
     let { desc, label, name } = settings;
 
-    !name  && toss('Missing required knob name');
-    !label && toss('Missing required knob label');
-    !desc  && toss('Missing required knob description');
+    !generator && toss('generator is required in getFields()');
+    !name      && toss('knob name is required in getFields()');
+    !label     && toss('knob label is required in getFields()');
+    !desc      && toss('knob description is required in getFields()');
 
     let { errorId, infoId, knobId}  = getKnobIds(name);
 

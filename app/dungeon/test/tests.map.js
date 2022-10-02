@@ -40,6 +40,7 @@ import {
 } from '../../room/door.js';
 
 /** @typedef {import('../../attribute/size.js').Size} Size */
+/** @typedef {import('../../controller/knobs.js').Config} Config */
 /** @typedef {import('../../room/generate.js').RandomizedRoomConfig} RandomizedRoomConfig */
 /** @typedef {import('../../room/generate.js').Room} Room */
 /** @typedef {import('../../room/room.js').RoomType} RoomType */
@@ -51,12 +52,12 @@ import {
 
 /** @type {RandomizedRoomConfig} */
 const randomizedRoomConfig = {
-    itemCondition         : 'average',
+    // itemCondition         : 'average',
     itemQuantity          : 'zero',
-    itemRarity            : 'average',
-    itemType              : 'random',
+    // itemRarity            : 'average',
+    // itemType              : 'random',
     roomCondition         : 'average',
-    roomCount             : 1,
+    // roomCount             : 1,
     roomFurnitureQuantity : 'average',
     roomSize              : 'small',
     roomType              : 'room',
@@ -724,7 +725,7 @@ export default ({ assert, describe, it }) => {
          * Returns a blank grid and an array of mocked rooms.
          *
          * @param {Rectangle[]} rects
-         * @param {object} [options]
+         * @param {object} options
          *     @param {number} [options.connectionChance = 0]
          *     @param {Dimensions} [options.gridDimensions = { width: 10, height: 10 }]
          *
@@ -743,7 +744,7 @@ export default ({ assert, describe, it }) => {
                 const room = {
                     config: {
                         ...randomizedRoomConfig,
-                        dungeonConnections: connectionChance,
+                        dungeonConnections: connectionChance, // TODO ?
                     },
                     itemSet: { items: [], containers: [] },
                     roomNumber,
@@ -1220,17 +1221,21 @@ export default ({ assert, describe, it }) => {
 
     describe('generateMap()', () => {
         it('generates dimensions, rooms, and doors', () => {
-            /** @type {RandomizedRoomConfig} */
-            const roomConfig = {
-                itemCondition        : 'average',
-                itemQuantity         : 'one',
-                itemRarity           : 'average',
-                itemType             : 'miscellaneous',
-                roomCondition        : 'average',
-                roomCount            : 2,
-                roomFurnitureQuantity: 'average',
-                roomSize             : 'medium',
-                roomType             : 'room',
+            /** @type {Config} */
+            const config = {
+                items: {
+                    itemCondition: 'average',
+                    itemQuantity : 'one',
+                    itemRarity   : 'average',
+                    itemType     : 'miscellaneous',
+                },
+                rooms: {
+                    roomCondition        : 'average',
+                    roomCount            : 2,
+                    roomFurnitureQuantity: 'average',
+                    roomSize             : 'medium',
+                    roomType             : 'room',
+                },
             };
 
             const gridDimensions = {
@@ -1238,7 +1243,7 @@ export default ({ assert, describe, it }) => {
                 height: 24,
             };
 
-            const { dimensions, rooms, doors } = generateMap(gridDimensions, generateRooms(roomConfig));
+            const { dimensions, rooms, doors } = generateMap(gridDimensions, generateRooms(config));
 
             assert(rooms).isArray();
             assert(dimensions).equalsObject(gridDimensions);

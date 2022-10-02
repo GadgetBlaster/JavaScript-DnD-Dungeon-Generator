@@ -27,6 +27,7 @@ import { rarities } from '../../attribute/rarity.js';
 import { sizes } from '../../attribute/size.js';
 
 /** @typedef {import('../generate.js').Item} Item */
+/** @typedef {import('../../room/generate').RandomizedRoomConfig} RandomizedRoomConfig */
 /** @typedef {import('../../controller/knobs').ItemConfig} ItemConfig */
 
 /**
@@ -373,15 +374,24 @@ export default ({ assert, describe, it }) => {
 
     describe('generateItems()', () => {
         /** @type {ItemConfig} */
-        const config = {
+        const itemConfig = {
             itemCondition: 'average',
             itemQuantity : 'one',
             itemRarity   : 'average',
             itemType     : 'clothing',
         };
 
+        /** @type {RandomizedRoomConfig} */
+        const randomizedRoomConfig = {
+            itemQuantity         : 'one',
+            roomCondition        : 'average',
+            roomFurnitureQuantity: 'none',
+            roomSize             : 'medium',
+            roomType             : 'room',
+        };
+
         it('should return a object', () => {
-            const results = generateItems(config);
+            const results = generateItems(itemConfig);
 
             assert(results).isObject();
             assert(results.items).isArray();
@@ -396,7 +406,7 @@ export default ({ assert, describe, it }) => {
                 'itemType',
             ].forEach((requiredConfig) => {
                 describe(`given no \`${requiredConfig}\``, () => {
-                    const incompleteConfig = { ...config };
+                    const incompleteConfig = { ...itemConfig };
                     delete incompleteConfig[requiredConfig];
 
                     it('should throw', () => {
@@ -407,18 +417,9 @@ export default ({ assert, describe, it }) => {
             });
         });
 
-        describe('given a `roomType` and no `roomCondition`', () => {
-            it('should throw', () => {
-                assert(() => generateItems({
-                    ...config,
-                    roomType: 'room',
-                })).throws('roomCondition is required for room items in generateItems()');
-            });
-        });
-
         describe('given a random `itemQuantity`', () => {
             it('should return an randomized item quantity', () => {
-                const results = generateItems({ ...config, itemQuantity: 'random' });
+                const results = generateItems({ ...itemConfig, itemQuantity: 'random' });
                 assert(results).isObject();
             });
         });
@@ -426,7 +427,7 @@ export default ({ assert, describe, it }) => {
         describe('given an `itemQuantity` of zero', () => {
             describe('when there is no room', () => {
                 it('returns empty results', () => {
-                    const results = generateItems({ ...config, itemQuantity: 'zero' });
+                    const results = generateItems({ ...itemConfig, itemQuantity: 'zero' });
 
                     assert(results.containers.length).equals(0);
                     assert(results.conditionUniformity).isUndefined();
@@ -437,12 +438,10 @@ export default ({ assert, describe, it }) => {
 
             describe('when there is a room', () => {
                 it('returns empty results', () => {
-                    const results = generateItems({
-                        ...config,
-                        itemQuantity : 'zero',
-                        roomType     : 'room',
-                        roomCondition: 'average',
-                    });
+                    const results = generateItems(
+                        { ...itemConfig, itemQuantity: 'zero' },
+                        randomizedRoomConfig
+                    );
 
                     assert(results.containers.length).equals(0);
                     assert(results.conditionUniformity).isUndefined();

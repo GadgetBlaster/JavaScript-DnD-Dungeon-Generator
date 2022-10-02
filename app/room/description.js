@@ -59,17 +59,17 @@ const mapDescriptions = [
  *
  * @param {RandomizedRoomConfig} config
  *
- * @returns {string}
+ * @returns {string | undefined}
  */
 function getContentDescription(config) {
     let {
         itemQuantity,
-        itemRarity,
+        itemRarity, // TODO item rarity is needed here and was accidentally dropped
         roomFurnitureQuantity,
         roomType,
     } = config;
 
-    isRequired(roomType, 'roomType is required in `getRoomContentDescription()`');
+    isRequired(roomType, 'roomType is required in getRoomContentDescription()');
 
     if (itemQuantity === 'zero') {
         return;
@@ -108,7 +108,7 @@ function getContentDescription(config) {
             return `There are numerous ${rarity} objects littering the ${type}${furnitureText}`;
 
         default:
-            toss('Invalid itemQuantity in `getRoomContentDescription()`');
+            toss('Invalid itemQuantity in getRoomContentDescription()');
     }
 }
 
@@ -503,16 +503,13 @@ export function getRoomDescription(room, roomDoors) {
     } = room;
 
     let {
-        roomCount: roomCount,
         roomType,
     } = config;
 
-    let number = roomCount > 1 ? ` ${roomNumber}` : '';
-    let title  = `Room${number}`;
+    let title = `Room ${roomNumber}`;
     let type;
 
     if (roomType !== 'room') {
-        // TODO can be random?
         type = capitalize(getRoomLabel(roomType));
     }
 
@@ -552,7 +549,7 @@ export function getRoomLabel(type) {
     let customLabel = customRoomLabels[type];
 
     if (customLabel) {
-        return customRoomLabels[type];
+        return customLabel;
     }
 
     return toWords(type) + (appendRoomTypes.has(type) ? ' room' : '');

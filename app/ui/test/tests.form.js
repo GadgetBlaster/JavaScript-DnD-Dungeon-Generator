@@ -39,11 +39,14 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a knob config', () => {
-            const result = formatKnobAccordions([ {
-                fields: [],
-                generators : new Set([ 'items' ]),
-                label : 'Shovels And Spades',
-            } ]);
+            const result = formatKnobAccordions([
+                {
+                    fields    : [],
+                    generator : 'items',
+                    generators: new Set([ 'items' ]),
+                    label     : 'Shovels And Spades',
+                }
+            ]);
 
             const fieldset = parseHtml(result).querySelector('fieldset');
 
@@ -78,11 +81,14 @@ export default ({ assert, describe, it }) => {
                 { name: 'dungeonTraps', label: 'Traps',         desc: 'test3', type: 'select', values: [ '1' ] },
             ];
 
-            const body = parseHtml(formatKnobAccordions([ {
-                fields,
-                generators : new Set([ 'items' ]),
-                label: 'Shovels',
-            } ]));
+            const body = parseHtml(formatKnobAccordions([
+                {
+                    fields,
+                    generator : 'items',
+                    generators: new Set([ 'items' ]),
+                    label     : 'Shovels',
+                },
+            ]));
 
             it('contains input and label elements for each knob', () => {
                 fields.forEach(({ name, label }) => {
@@ -98,9 +104,9 @@ export default ({ assert, describe, it }) => {
         describe('given multiple knob configs', () => {
             it('collapses all sections except the first', () => {
                 const body = parseHtml(formatKnobAccordions([
-                    { label: 'Shovels',         fields: [], generators: new Set() },
-                    { label: 'Gardening Tools', fields: [], generators: new Set() },
-                    { label: 'Weed Whackers',   fields: [], generators: new Set() },
+                    { label: 'Shovels',         fields: [], generator: 'items', generators: new Set() },
+                    { label: 'Gardening Tools', fields: [], generator: 'items', generators: new Set() },
+                    { label: 'Weed Whackers',   fields: [], generator: 'items', generators: new Set() },
                 ]));
 
                 const fieldsets = body.querySelectorAll('fieldset');
@@ -114,9 +120,17 @@ export default ({ assert, describe, it }) => {
     });
 
     describe('getFields()', () => {
+        describe('given no generator name', () => {
+            it('throws', () => {
+                // @ts-expect-error
+                assert(() => getFields([ fakeKnob ]))
+                    .throws('generator is required in getFields()');
+            });
+        });
+
         describe('given an empty array', () => {
             it('returns an empty string', () => {
-                assert(getFields([])).equals('');
+                assert(getFields([], 'maps')).equals('');
             });
         });
 
@@ -127,8 +141,8 @@ export default ({ assert, describe, it }) => {
                 // @ts-expect-error
                 delete knob.name;
 
-                assert(() => getFields([ knob ]))
-                    .throws('Missing required knob name');
+                assert(() => getFields([ knob ], 'maps'))
+                    .throws('knob name is required in getFields()');
             });
         });
 
@@ -139,8 +153,8 @@ export default ({ assert, describe, it }) => {
                 // @ts-expect-error
                 delete knob.label;
 
-                assert(() => getFields([ knob ]))
-                    .throws('Missing required knob label');
+                assert(() => getFields([ knob ], 'maps'))
+                    .throws('knob label is required in getFields()');
             });
         });
 
@@ -151,8 +165,8 @@ export default ({ assert, describe, it }) => {
                 // @ts-expect-error
                 delete knob.desc;
 
-                assert(() => getFields([ knob ]))
-                    .throws('Missing required knob description');
+                assert(() => getFields([ knob ], 'maps'))
+                    .throws('knob description is required in getFields()');
             });
         });
 
@@ -160,7 +174,7 @@ export default ({ assert, describe, it }) => {
             /** @type {KnobFieldConfig} */
             const knobConfig = { name: 'dungeonComplexity', label: 'Complexity', desc: 'Pi', type: 'range' };
 
-            const body   = parseHtml(getFields([ knobConfig ]));
+            const body   = parseHtml(getFields([ knobConfig ], 'maps'));
             const input  = body.querySelector('input');
 
             it('contains an input element with the correct name', () => {
@@ -218,7 +232,7 @@ export default ({ assert, describe, it }) => {
                 /** @type {KnobFieldConfig} */ ({ name: 'itemQuantity', label: 'Size',        desc: 'Size?',        type: 'number'                  }),
                 /** @type {KnobFieldConfig} */ ({ name: 'itemRarity',   label: 'Shape',       desc: 'Shape?',       type: 'range'                   }),
                 /** @type {KnobFieldConfig} */ ({ name: 'itemType',     label: 'Squishiness', desc: 'Squishiness?', type: 'select', values: [ '1' ] }),
-            ]));
+            ], 'items'));
 
             it('contains an input for each knob setting', () => {
                 assert(Boolean(body.querySelector(`input[name="itemQuantity"]`))).isTrue();
@@ -246,9 +260,10 @@ export default ({ assert, describe, it }) => {
         });
 
         const ids = {
-            errorId: 'error-dungeonBabble',
-            infoId : 'info-dungeonBabble',
-            knobId : 'knob-dungeon-babble',
+            errorId    : 'error-dungeonBabble',
+            generatorId: 'maps',
+            infoId     : 'info-dungeonBabble',
+            knobId     : 'knob-dungeon-babble',
         };
 
         describe('given a type of "number"', () => {
@@ -433,11 +448,13 @@ export default ({ assert, describe, it }) => {
         describe('given an element with knob child elements', () => {
             const container = document.createElement('div');
 
-            const addKnob = (tag, name, value) => {
+            const addKnob = ({ tag, name, value, generator }) => {
                 const knob = document.createElement(tag);
 
                 knob.name  = name;
                 knob.value = value;
+
+                knob.dataset.generator = generator;
 
                 if (tag === 'select') {
                     knob.innerHTML = `<option value="${value}">${value}</option>`;
@@ -446,9 +463,26 @@ export default ({ assert, describe, it }) => {
                 container.appendChild(knob);
             };
 
-            addKnob('input', 'dungeonComplexity', 'ralph');
-            addKnob('select', 'itemType', 'bob');
-            addKnob('input', 'roomCount', 12);
+            addKnob({
+                generator: 'maps',
+                name     : 'dungeonComplexity',
+                tag      : 'input',
+                value    : 'ralph',
+            });
+
+            addKnob({
+                generator: 'items',
+                name     :'itemType',
+                tag      : 'select',
+                value    : 'bob',
+            });
+
+            addKnob({
+                generator: 'rooms',
+                name     : 'roomCount',
+                tag      : 'input',
+                value    : 12,
+            });
 
             const results = getFormData(container);
 
@@ -457,9 +491,9 @@ export default ({ assert, describe, it }) => {
             });
 
             it('returns an object of knob values keyed by knob name', () => {
-                assert(results.dungeonComplexity).equals('ralph');
-                assert(results.itemType).equals('bob');
-                assert(results.roomCount).equals('12');
+                assert(results?.maps?.dungeonComplexity).equals('ralph');
+                assert(results?.items?.itemType).equals('bob');
+                assert(results?.rooms?.roomCount).equals('12');
             });
         });
     });

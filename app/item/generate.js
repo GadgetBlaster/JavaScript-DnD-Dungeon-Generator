@@ -306,6 +306,11 @@ export function generateItems(itemConfig, roomConfig) {
         itemType,
     } = itemConfig;
 
+    !itemCondition && toss('itemCondition is required in generateItems()');
+    !itemQuantity  && toss('itemQuantity is required in generateItems()');
+    !itemRarity    && toss('itemRarity is required in generateItems()');
+    !itemType      && toss('itemType is required in generateItems()');
+
     let {
         roomCondition,
         roomFurnitureQuantity,
@@ -340,6 +345,7 @@ export function generateItems(itemConfig, roomConfig) {
     /** @type {Item[]} */
     let remaining  = [];
 
+    // TODO break out into function
     if (roomType && roomFurnitureQuantity) {
         let furnishings = aggregateItems(generateFurnishingList(roomType, roomFurnitureQuantity, roomCondition));
 

@@ -20,26 +20,33 @@ import {
 
 import trapList from '../../room/trap.js';
 
+/** @typedef {import('../../controller/knobs.js').Config} Config */
 /** @typedef {import('../../controller/knobs.js').DungeonConfig} DungeonConfig */
 /** @typedef {import('../../room/door.js').DoorKey} DoorKey */
 /** @typedef {import('../../room/generate.js').RandomizedRoomConfig} RandomizedRoomConfig */
+/** @typedef {import('../../item/generate.js').ItemSet} ItemSet */
 /** @typedef {import('../map.js').AppliedRoom} AppliedRoom */
 
 /** @type {RandomizedRoomConfig} */
 const randomizedRoomConfig = {
-    itemCondition         : 'average',
-    itemQuantity          : 'zero',
-    itemRarity            : 'average',
-    itemType              : 'random',
-    roomCondition         : 'average',
-    roomCount             : 1,
-    roomFurnitureQuantity : 'average',
-    roomSize              : 'small',
-    roomType              : 'room',
+    itemQuantity         : 'zero',
+    roomCondition        : 'average',
+    roomFurnitureQuantity: 'average',
+    roomSize             : 'small',
+    roomType             : 'room',
 };
 
+/** @type {ItemSet} */
 const itemSet = { items: [], containers: [] };
-const room = { itemSet, roomNumber: 1, config: randomizedRoomConfig, walls: [], rectangle: { x: 1, y: 1, width: 1, height: 1 } };
+
+/** @type {AppliedRoom} */
+const room = {
+    itemSet,
+    roomNumber: 1,
+    config    : randomizedRoomConfig,
+    walls     : [],
+    rectangle : { x: 1, y: 1, width: 1, height: 1 },
+};
 
 /**
  * @param {import('../../unit/state.js').Utility} utility
@@ -158,21 +165,27 @@ export default ({ assert, describe, it }) => {
     describe('generateDungeon()', () => {
         const complexity = 3;
 
-        /** @type {Omit<DungeonConfig, "roomCount">} */
+        /** @type {Config} */
         const config = {
-            dungeonName          : 'Dungeon test!',
-            dungeonComplexity    : complexity,
-            dungeonConnections   : 0,
-            dungeonMaps          : 0,
-            dungeonTraps         : 0,
-            itemCondition        : 'average',
-            itemQuantity         : 'zero',
-            itemRarity           : 'average',
-            itemType             : 'miscellaneous',
-            roomCondition        : 'average',
-            roomFurnitureQuantity: 'none',
-            roomSize             : 'medium',
-            roomType             : 'room',
+            maps: {
+                dungeonName          : 'Dungeon test!',
+                dungeonComplexity    : complexity,
+                dungeonConnections   : 0,
+                dungeonMaps          : 0,
+                dungeonTraps         : 0,
+            },
+            items: {
+                itemCondition        : 'average',
+                itemQuantity         : 'zero',
+                itemRarity           : 'average',
+                itemType             : 'miscellaneous',
+            },
+            rooms: {
+                roomCondition        : 'average',
+                roomFurnitureQuantity: 'none',
+                roomSize             : 'medium',
+                roomType             : 'room',
+            },
         };
 
         const dungeon = generateDungeon(config);
@@ -191,16 +204,32 @@ export default ({ assert, describe, it }) => {
             assert(dungeon.rooms.length < getMaxRoomCount(complexity)).isTrue();
         });
 
+        describe('given a config with no `maps` property', () => {
+            const incompleteConfig = { ...config };
+            delete incompleteConfig?.maps;
+
+            it('throws', () => {
+                assert(() => generateDungeon(incompleteConfig))
+                    .throws(`config.maps is required in generateDungeon()`);
+            });
+        });
+
         describe('required configs', () => {
             [
+                'dungeonName',
                 'dungeonComplexity',
                 'dungeonConnections',
                 'dungeonMaps',
                 'dungeonTraps',
             ].forEach((requiredConfig) => {
                 describe(`given no \`${requiredConfig}\``, () => {
-                    const incompleteConfig = { ...config };
-                    delete incompleteConfig[requiredConfig];
+                    /** @type {Config} */
+                    const incompleteConfig = {
+                        ...config,
+                        maps: /** @type {DungeonConfig} */ ({ ...config.maps }),
+                    };
+
+                    delete incompleteConfig?.maps?.[requiredConfig];
 
                     it('throws', () => {
                         assert(() => generateDungeon(incompleteConfig))

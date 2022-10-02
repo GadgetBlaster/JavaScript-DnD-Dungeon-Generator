@@ -31,20 +31,17 @@ import { outside } from '../../dungeon/map.js';
 import { quantities } from '../../attribute/quantity.js';
 
 /** @typedef {import('../../controller/knobs.js').ItemConfig} ItemConfig */
-/** @typedef {import('../../dungeon/map').Direction} Direction */
-/** @typedef {import('../../dungeon/map').Door} Door */
+/** @typedef {import('../../dungeon/map.js').Direction} Direction */
+/** @typedef {import('../../attribute/rarity.js').Rarity} Rarity */
+/** @typedef {import('../../dungeon/map.js').Door} Door */
 /** @typedef {import('../door.js').DoorKey} DoorKey */
 /** @typedef {import('../door.js').DoorType} DoorType */
 /** @typedef {import('../generate').RandomizedRoomConfig} RandomizedRoomConfig */
 
 /** @type {RandomizedRoomConfig} */
-const config = {
-    itemCondition        : 'average',
+const randomizedRoomConfig = {
     itemQuantity         : 'one',
-    itemRarity           : 'average',
-    itemType             : 'armor',
     roomCondition        : 'average',
-    roomCount            : 1,
     roomFurnitureQuantity: 'none',
     roomSize             : 'medium',
     roomType             : 'room',
@@ -60,27 +57,31 @@ export default ({ assert, describe, it }) => {
     describe('getRoomContentDescription()', () => {
         describe('given no roomType', () => {
             it('throws', () => {
-                const missingRoomType = { ...config };
+                const missingRoomType = { ...randomizedRoomConfig };
+
+                // @ts-expect-error
                 delete missingRoomType.roomType;
 
                 assert(() => getContentDescription(missingRoomType))
-                    .throws('roomType is required in `getRoomContentDescription()`');
+                    .throws('roomType is required in getRoomContentDescription()');
             });
         });
 
         describe('given no itemQuantity', () => {
             it('throws', () => {
-                const missingItemQuantity = { ...config };
+                const missingItemQuantity = { ...randomizedRoomConfig };
+
+                // @ts-expect-error
                 delete missingItemQuantity.itemQuantity;
 
                 assert(() => getContentDescription(missingItemQuantity))
-                    .throws('Invalid itemQuantity in `getRoomContentDescription()`');
+                    .throws('Invalid itemQuantity in getRoomContentDescription()');
             });
         });
 
         describe('given an item quantity of "zero"', () => {
             it('returns undefined', () => {
-                assert(getContentDescription({ ...config, itemQuantity: 'zero' }))
+                assert(getContentDescription({ ...randomizedRoomConfig, itemQuantity: 'zero' }))
                     .isUndefined();
             });
         });
@@ -93,7 +94,7 @@ export default ({ assert, describe, it }) => {
                 describe(`given an item quantity of "${itemQuantity}"`, () => {
                     it('contains the given room type', () => {
                         assert(getContentDescription({
-                            ...config,
+                            ...randomizedRoomConfig,
                             roomType    : 'atrium',
                             itemQuantity: itemQuantity,
                         })).stringIncludes('atrium');
@@ -102,7 +103,7 @@ export default ({ assert, describe, it }) => {
                     describe('given an item rarity of "rare"', () => {
                         it('contains the word "rare"', () => {
                             assert(getContentDescription({
-                                ...config,
+                                ...randomizedRoomConfig,
                                 itemRarity  : 'rare',
                                 itemQuantity: itemQuantity,
                             })).stringIncludes('rare');
@@ -112,7 +113,7 @@ export default ({ assert, describe, it }) => {
                     describe('given a roomFurnitureQuantity of "none"', () => {
                         it('excludes the word "furniture" or "furnishings"', () => {
                             const noFurnishingConfig = {
-                                ...config,
+                                ...randomizedRoomConfig,
                                 itemQuantity: itemQuantity,
                             };
 
@@ -125,7 +126,7 @@ export default ({ assert, describe, it }) => {
                     describe('given a room furnishing of "furnished"', () => {
                         it('contains the word "furniture"', () => {
                             assert(getContentDescription({
-                                ...config,
+                                ...randomizedRoomConfig,
                                 roomFurnitureQuantity: 'furnished',
                                 itemQuantity  : itemQuantity,
                             })).stringIncludes('furniture');
@@ -144,15 +145,16 @@ export default ({ assert, describe, it }) => {
         });
 
         describe('given a rarity that should not be indicated', () => {
-            let rarityNotIndicated = rarities.find((contentRarity) => !indicateRarity.has(contentRarity));
+            let rarityNotIndicated = /** @type {Rarity} */ (rarities.find((contentRarity) => !indicateRarity.has(contentRarity)));
 
             it('returns "ordinary"', () => {
+                assert(rarityNotIndicated).isString();
                 assert(getContentRarityDetail(rarityNotIndicated)).equals('ordinary');
             });
         });
 
         describe('given a rarity that should be indicated', () => {
-            let rarityIndicated = [ ...indicateRarity ].pop();
+            let rarityIndicated = [ ...indicateRarity ][0];
 
             it('returns the rarity', () => {
                 assert(getContentRarityDetail(rarityIndicated)).equals(rarityIndicated);
@@ -178,28 +180,28 @@ export default ({ assert, describe, it }) => {
 
         describe('given a room type other than "room"', () => {
             it('returns a description including the room type', () => {
-                assert(getDescriptionIntro({ ...config, roomType: 'library' }))
+                assert(getDescriptionIntro({ ...randomizedRoomConfig, roomType: 'library' }))
                     .stringIncludes('library');
             });
         });
 
         describe('given a room size', () => {
             it('returns a description including the room size', () => {
-                assert(getDescriptionIntro({ ...config, roomSize: 'large' }))
+                assert(getDescriptionIntro({ ...randomizedRoomConfig, roomSize: 'large' }))
                     .stringIncludes('large room');
             });
         });
 
         describe('given a room size of "medium"', () => {
             it('returns a description including "medium sized room"', () => {
-                assert(getDescriptionIntro({ ...config, roomSize: 'medium' }))
+                assert(getDescriptionIntro({ ...randomizedRoomConfig, roomSize: 'medium' }))
                     .stringIncludes('medium sized room');
             });
 
             describe('given a room type other than "room"', () => {
                 it('returns a description including "medium sized" and the room type', () => {
                     assert(getDescriptionIntro({
-                        ...config,
+                        ...randomizedRoomConfig,
                         roomType: 'smithy',
                         roomSize: 'medium',
                     })).stringIncludes('medium sized smithy');
@@ -216,7 +218,7 @@ export default ({ assert, describe, it }) => {
             describe('given a room type other than "room"', () => {
                 it('returns a description including "empty" and the room type', () => {
                     assert(getDescriptionIntro({
-                        ...config,
+                        ...randomizedRoomConfig,
                         itemQuantity: 'zero',
                         roomType    : 'study',
                     })).stringIncludes('empty study');
@@ -226,7 +228,7 @@ export default ({ assert, describe, it }) => {
             describe('given a room size', () => {
                 it('returns a description including the size and "empty room"', () => {
                     assert(getDescriptionIntro({
-                        ...config,
+                        ...randomizedRoomConfig,
                         itemQuantity: 'zero',
                         roomSize    : 'massive',
                     })).stringIncludes('massive empty room');
@@ -236,7 +238,7 @@ export default ({ assert, describe, it }) => {
             describe('given a room type other than "room" and a room size', () => {
                 it('returns a description including the size, "empty", and the room type', () => {
                     assert(getDescriptionIntro({
-                        ...config,
+                        ...randomizedRoomConfig,
                         itemQuantity: 'zero',
                         roomSize    : 'large',
                         roomType    : 'treasury',
@@ -248,14 +250,14 @@ export default ({ assert, describe, it }) => {
         describe('given a room condition', () => {
             describe('given a room condition of "average"', () => {
                 it('excludes "condition" in the room description', () => {
-                    assert(getDescriptionIntro({ ...config, roomCondition: 'average' }))
+                    assert(getDescriptionIntro({ ...randomizedRoomConfig, roomCondition: 'average' }))
                         .stringExcludes('condition');
                 });
             });
 
             describe('given a room condition other than "average"', () => {
                 it(`returns a description including the condition`, () => {
-                    assert(getDescriptionIntro({ ...config, roomCondition: 'busted' })).stringIncludes('busted');
+                    assert(getDescriptionIntro({ ...randomizedRoomConfig, roomCondition: 'busted' })).stringIncludes('busted');
                 });
             });
         });
@@ -922,24 +924,31 @@ export default ({ assert, describe, it }) => {
     describe('getRoomDescription()', () => {
         it('returns an object with a title and description', () => {
             const room = getRoomDescription({
-                config,
+                config: randomizedRoomConfig,
                 itemSet: { items: [], containers: [] },
                 roomNumber: 1,
             });
 
             assert(room).isObject();
-            room && assert(room.title).equals('Room');
+            assert(room.title).equals('Room 1');
+            assert(room.description).isString();
         });
 
-        describe('given `roomCount` of `1` and a `roomType` of "room"', () => {
+        it('includes the room number in the title', () => {
             const room = getRoomDescription({
-                config,
+                config: randomizedRoomConfig,
                 itemSet: { items: [], containers: [] },
-                roomNumber: 1,
+                roomNumber: 12,
             });
 
-            it('excludes the room number in the title', () => {
-                assert(room.title).equals('Room');
+            assert(room.title).equals('Room 12');
+        });
+
+        describe('given a `roomType` of "room"', () => {
+            const room = getRoomDescription({
+                config: randomizedRoomConfig,
+                itemSet: { items: [], containers: [] },
+                roomNumber: 1,
             });
 
             it('excludes a room type', () => {
@@ -947,26 +956,11 @@ export default ({ assert, describe, it }) => {
             });
         });
 
-        describe('given roomCount greater than 1', () => {
-            it('includes the room number in the title', () => {
-                const room = getRoomDescription({
-                    config: {
-                        ...config,
-                        roomCount: 2,
-                    },
-                    itemSet: { items: [], containers: [] },
-                    roomNumber: 1,
-                });
-
-                assert(room.title).equals('Room 1');
-            });
-        });
-
-        describe('given a roomType other than "room"', () => {
+        describe('given a `roomType` other than "room"', () => {
             it('returns a capitalized room type', () => {
                 const room = getRoomDescription({
                     config: {
-                        ...config,
+                        ...randomizedRoomConfig,
                         roomType : 'atrium',
                     },
                     itemSet: { items: [], containers: [] },
@@ -980,7 +974,7 @@ export default ({ assert, describe, it }) => {
         describe('given room dimensions', () => {
             it('returns the room dimensions', () => {
                 const room = {
-                    config,
+                    config: randomizedRoomConfig,
                     itemSet: { items: [], containers: [] },
                     roomNumber: 1,
                     size: [ 12, 8 ],
@@ -1004,7 +998,7 @@ export default ({ assert, describe, it }) => {
                 it('includes a description of the room contents', () => {
                     const room = getRoomDescription({
                         config: {
-                            ...config,
+                            ...randomizedRoomConfig,
                             itemQuantity: 'one',
                         },
                         itemSet: { items: [], containers: [] },
@@ -1020,7 +1014,7 @@ export default ({ assert, describe, it }) => {
                 it('includes a description of the room content\'s condition', () => {
                     const room = getRoomDescription({
                         config: {
-                            ...config,
+                            ...randomizedRoomConfig,
                             itemQuantity : 'one',
                             itemCondition: 'busted',
                         },
@@ -1035,7 +1029,7 @@ export default ({ assert, describe, it }) => {
             describe('given room doors', () => {
                 it('includes a description of the room\'s doors', () => {
                     const room = {
-                        config,
+                        config: randomizedRoomConfig,
                         itemSet: { items: [], containers: [] },
                         roomNumber: 1,
                     };

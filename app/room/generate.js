@@ -82,7 +82,7 @@ const uniformItemRarityChance = 10;
  *     @param {boolean} [options.isRandomItemRarityUniform]
  *
  * @returns {{
- *   itemConfig: ItemConfig;
+ *   randomizedItemConfig: ItemConfig;
  *   randomizedRoomConfig: RandomizedRoomConfig
  * }}
  */
@@ -163,7 +163,7 @@ function applyRoomRandomization(config, {
     };
 
     return {
-        itemConfig: { ...config.items, ...randomizedItemConfig },
+        randomizedItemConfig: { ...config.items, ...randomizedItemConfig },
         randomizedRoomConfig,
     };
 }
@@ -233,7 +233,7 @@ export function generateRooms(config) {
 
     return [ ...Array(count).keys() ].map((roomNumber) => {
         let {
-            itemConfig,
+            randomizedItemConfig,
             randomizedRoomConfig,
         } = applyRoomRandomization(config, {
             isRandomItemConditionUniform: rollPercentile(uniformItemConditionChance),
@@ -242,7 +242,7 @@ export function generateRooms(config) {
 
         return {
             config: randomizedRoomConfig,
-            itemSet: generateItems(itemConfig, randomizedRoomConfig),
+            itemSet: generateItems(randomizedItemConfig, randomizedRoomConfig),
             roomNumber: roomNumber + 1,
         };
     });

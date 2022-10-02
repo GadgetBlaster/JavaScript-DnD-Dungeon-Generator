@@ -236,21 +236,20 @@ export default ({ assert, describe, it }) => {
 
     describe('getGenerator()', () => {
         /** @type {ItemConfig} itemSettings */
-        const itemSettings = {
-            itemCondition : 'average',
-            itemQuantity  : 'one',
-            itemRarity    : 'legendary',
-            itemType      : 'random',
+        const itemConfig = {
+            itemCondition: 'average',
+            itemQuantity : 'one',
+            itemRarity   : 'legendary',
+            itemType     : 'random',
         };
 
         /** @type {RoomConfig} */
-        const roomSettingsBase = {
-            ...itemSettings,
-            roomCondition         : 'average',
-            roomCount             : 1,
-            roomFurnitureQuantity : 'none',
-            roomSize              : 'small',
-            roomType              : 'room',
+        const roomConfig = {
+            roomCondition        : 'average',
+            roomCount            : 1,
+            roomFurnitureQuantity: 'none',
+            roomSize             : 'small',
+            roomType             : 'room',
         };
 
         it('returns a function for each generator', () => {
@@ -271,23 +270,29 @@ export default ({ assert, describe, it }) => {
             it('returns a generated dungeon', () => {
                 const dungeonGen = getGenerator('maps');
                 const body       = parseHtml(dungeonGen(getMockState(), {
-                    ...itemSettings,
-                    ...roomSettingsBase,
-                    dungeonComplexity : 2,
-                    dungeonConnections: 0,
-                    dungeonMaps       : 0,
-                    dungeonTraps      : 0,
+                    items: itemConfig,
+                    rooms: roomConfig,
+                    maps : {
+                        dungeonComplexity : 2,
+                        dungeonConnections: 0,
+                        dungeonMaps       : 0,
+                        dungeonName       : 'Spooky dungeon',
+                        dungeonTraps      : 0,
+                    },
                 }));
 
                 assert(Boolean(body.querySelector('svg'))).isTrue();
-                assert(body.querySelector('h1')).hasTextContent('Room 1');
+
+                const headers = body.querySelectorAll('h1');
+                assert(headers[0]).hasTextContent('Spooky dungeon');
+                assert(headers[1]).hasTextContent('Room 1'); // TODO should be an h2
             });
         });
 
         describe('item generator', () => {
             it('returns generated items', () => {
                 const itemGen = getGenerator('items');
-                const body    = parseHtml(itemGen(getMockState(), itemSettings));
+                const body    = parseHtml(itemGen(getMockState(), { items: itemConfig }));
 
                 const title = body.querySelector('h1');
                 const list  = body.querySelector('ul');
@@ -305,10 +310,14 @@ export default ({ assert, describe, it }) => {
             it('returns generated rooms', () => {
                 const roomGen = getGenerator('rooms');
                 const body    = parseHtml(roomGen(getMockState(), {
-                    ...itemSettings,
-                    ...roomSettingsBase,
-                    roomCount : 1,
+                    items: itemConfig,
+                    rooms: {
+                        ...roomConfig,
+                        roomCount : 1,
+                    },
                 }));
+
+                assert(body.querySelectorAll('article').length).equals(1);
 
                 const title     = body.querySelector('h1');
                 const subtitles = body.querySelectorAll('h2');
@@ -322,6 +331,21 @@ export default ({ assert, describe, it }) => {
 
                 assert(list).isElementTag('ul');
                 assert(list?.querySelectorAll('li').length).equals(1);
+            });
+
+            describe('given multiple rooms', () => {
+                it('returns generated rooms based on the `roomCount`', () => {
+                    const roomGen = getGenerator('rooms');
+                    const body    = parseHtml(roomGen(getMockState(), {
+                        items: itemConfig,
+                        rooms: {
+                            ...roomConfig,
+                            roomCount : 3,
+                        },
+                    }));
+
+                    assert(body.querySelectorAll('article').length).equals(3);
+                });
             });
         });
 

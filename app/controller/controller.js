@@ -294,7 +294,7 @@ function getFormatter(generator) {
 function getGenerator(generator) {
     switch (generator) {
         case 'maps':
-            return dungeonGenerator;
+            return dungeonGenerator; // TODO Simpler to call generator functions directly instead of return them?
 
         case 'rooms':
             return roomGenerator;

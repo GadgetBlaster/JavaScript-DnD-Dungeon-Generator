@@ -238,6 +238,7 @@ export function generateDungeon(config) {
     isRequired(dungeonComplexity,  'dungeonComplexity is required in generateDungeon()');
     isRequired(dungeonConnections, 'dungeonConnections is required in generateDungeon()');
     isRequired(dungeonMaps,        'dungeonMaps is required in generateDungeon()');
+    isRequired(dungeonName,        'dungeonName is required in generateDungeon()');
     isRequired(dungeonTraps,       'dungeonTraps is required in generateDungeon()');
 
     let gridDimensions  = generateMapDimensions(dungeonComplexity);
