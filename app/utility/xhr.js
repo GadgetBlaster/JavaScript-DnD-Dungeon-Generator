@@ -1,6 +1,6 @@
 // @ts-check
 
-import { isRequired } from './tools';
+import { isRequired } from './tools.js';
 
 /**
  * @typedef {{
