@@ -537,41 +537,45 @@ function renderApp(controller, path) {
         return;
     }
 
-    content.innerHTML = spinner();
+    // Loading creations from the API is disabled.
+    renderErrorPage(sections, 404);
+    return;
 
-    request('/api/fetch/creation', {
-        data: { key },
-        method: 'POST',
-        callback: (result) => {
-            if (result?.status !== 200) {
-                onError({ ...result, key });
-                renderErrorPage(sections, result?.status);
-                return;
-            }
+    // content.innerHTML = spinner();
 
-            let type = result.data?.type;
+    // request('/api/fetch/creation', {
+    //     data: { key },
+    //     method: 'POST',
+    //     callback: (result) => {
+    //         if (result?.status !== 200) {
+    //             onError({ ...result, key });
+    //             renderErrorPage(sections, result?.status);
+    //             return;
+    //         }
 
-            if (!generator || type !== generator) {
-                renderErrorPage(sections, 404);
-                return;
-            }
+    //         let type = result.data?.type;
 
-            let config;
+    //         if (!generator || type !== generator) {
+    //             renderErrorPage(sections, 404);
+    //             return;
+    //         }
 
-            try {
-                config = JSON.parse(result.data.config);
-            } catch (error) {
-                onError(error);
-                renderErrorPage(sections);
-                return;
-            }
+    //         let config;
 
-            state.set(config);
+    //         try {
+    //             config = JSON.parse(result.data.config);
+    //         } catch (error) {
+    //             onError(error);
+    //             renderErrorPage(sections);
+    //             return;
+    //         }
 
-            let formatConfig = getFormatter(generator);
-            renderGenerator(sections, generator, formatConfig(config));
-        },
-    });
+    //         state.set(config);
+
+    //         let formatConfig = getFormatter(generator);
+    //         renderGenerator(sections, generator, formatConfig(config));
+    //     },
+    // });
 }
 
 /**
