@@ -441,7 +441,8 @@ function onGenerate(controller) {
 
     content.innerHTML = generate(state, config);
 
-    enableSaveButton(sections.toolbar); // TODO test
+    // Disabled
+    // enableSaveButton(sections.toolbar); // TODO test
 
     if (isSidebarExpanded(body)) {
         toggleExpand(controller);
@@ -612,7 +613,8 @@ function renderGenerator(sections, generator, savedGeneration) {
 
     let isExpanded = isSidebarExpanded(body);
 
-    toolbar.innerHTML = getToolbar(generator);
+    // Incomplete toolbar UI. Disabled.
+    // toolbar.innerHTML = getToolbar(generator);
     knobs.innerHTML   = getKnobPanel(generator, { isExpanded });
 
     if (savedGeneration) {
