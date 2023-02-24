@@ -478,6 +478,8 @@ function onNavigate(controller, e) {
 /**
  * Initiates downloading a JSON file for the current generation.
  *
+ * Disabled.
+ *
  * @private
  *
  * @param {Controller} controller
@@ -904,7 +906,7 @@ export function getTriggers(controller) {
         expand   : ( ) => toggleExpand(controller),
         generate : ( ) => onGenerate(controller),
         navigate : (e) => onNavigate(controller, e),
-        save     : ( ) => onSave(controller),
+        save     : ( ) => {}, // onSave(controller), // Disabled
         toggle   : (e) => toggleVisibility(body, e),
     };
 }
