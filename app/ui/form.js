@@ -3,7 +3,7 @@
 import { button, infoLabel } from './button.js';
 import { div, fieldset } from './block.js';
 import { knobConfig, getKnobConfig } from '../controller/knobs.js';
-import { paragraph, small, span, title } from './typography.js';
+import { paragraph, small, span, subtitle } from './typography.js';
 import { select, input, slider, fieldLabel } from './field.js';
 import { isRequired, toDash, toss, toWords } from '../utility/tools.js';
 
@@ -81,7 +81,7 @@ const formatKnobSections = (knobs) => knobs.map((knobSet) => {
         generator,
     } = knobSet;
 
-    return fieldset(title(label) + getFields(fields, generator));
+    return fieldset(subtitle(label) + getFields(fields, generator));
 }).join('');
 
 /**
