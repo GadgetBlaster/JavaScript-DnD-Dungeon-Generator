@@ -132,7 +132,7 @@ body > main {
 
 body > menu {
     grid-area: toolbar;
-    display: flex;
+    display: none; /* Disabled, was `flex` */
     align-items: center;
     justify-content: end;
     list-style: none;
