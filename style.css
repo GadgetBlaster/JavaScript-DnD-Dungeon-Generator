@@ -793,7 +793,7 @@ ul[data-flex] li span {
     border-radius: 50%;
     border-top: 2px solid var(--color-secondary);
     border-right: 2px solid transparent;
-    /* animation: spin var(--transition-10) linear infinite; */
+    animation: spin var(--transition-10) linear infinite;
 }
 
 /* Overlay */
