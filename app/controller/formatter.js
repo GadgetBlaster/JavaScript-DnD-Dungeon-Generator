@@ -30,6 +30,7 @@ import {
 /** @typedef {import('../item/generate.js').Item} Item */
 /** @typedef {import('../item/generate.js').ItemSet} ItemSet */
 /** @typedef {import('../room/generate.js').Room} Room */
+/** @typedef {import('./controller.js').Generator} Generator */
 
 // -- Const --------------------------------------------------------------------
 
@@ -330,20 +331,33 @@ export function formatName(name) {
 /**
  * Formats the ready state UI.
  *
- * @private
- *
  * @param {string} message
  * @param {string} icon
+ * @param {Generator} generator
+ * @param {string[]} descriptions
  *
  * @returns {string}
  */
-export function formatReadyState(message, icon) {
-    let content = div(icon, { 'data-spacing': 'b' }) + message;
+export function formatReadyState(message, icon, generator, descriptions) {
+    let buttonContent = div(icon, { 'data-spacing': 'b' }) + message;
 
-    return element('button', content, {
-        'data-action': 'generate',
-        'data-ready': true,
-    });
+    return title(generator + ' Generator') +
+
+        descriptions.map((text, i) =>
+            paragraph(text, {
+                'data-text-block': '',
+                ...(i === (descriptions.length - 1) && {
+                    'data-spacing': 'b',
+                    'data-spacing-size': '10',
+                })
+            })
+        ).join('') +
+
+        element('button', buttonContent, {
+            'data-action': 'generate',
+            'data-ready': true,
+        }
+    );
 }
 
 /**
@@ -363,10 +377,16 @@ export function formatRooms(rooms) {
  * @returns {string}
  */
 export function getFormattedHomepage() {
-    return title('D&D Generator', {
+    return title('D&D Generator')
+
+    + paragraph("Welcome to Mystic Waffle's D&D dungeon map, room, and item generator!")
+
+    + paragraph('Choose a generator below then click the "Generate" button to instantly generate content for your RPG games. Maps, room descriptions, and loot generation can be used freely in personal and commercial content alike.', {
         'data-spacing': 'b',
-        'data-spacing-size': '40',
+        'data-spacing-size': '10',
+        'data-text-block': '',
     })
+
     + div(Object.entries(generators).map(([ route, generator ]) =>
         element('a', div(generatorConfigs[generator].icon, { 'data-spacing': 'b' }) + capitalize(generator), {
             'data-action': 'navigate',
@@ -376,5 +396,13 @@ export function getFormattedHomepage() {
         })).join(''),
     {
         'data-flex': true,
-    });
+    })
+
+    + paragraph('This generator is currently in <strong>Alpha</strong> development. I am actively developing on a completely new <strong>Beta</strong> generator from the ground up with improved setting configurations, better map visuals, and more content for looting. Stay tuned and drop a message in the comments if you have constructive feedback! Thanks, happy hunting.', {
+        'data-text-block': '',
+    })
+
+    + paragraph('– AJ at Mystic Waffle', {
+        'data-text-block': '',
+    })
 }

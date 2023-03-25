@@ -744,6 +744,13 @@ ul[data-flex] li span {
     --space: var(--spacing-large);
 }
 
+/* Text block */
+
+[data-text-block] {
+    max-width: 600px;
+    text-align: center;
+}
+
 /* Deprecated */
 
 [data-spacing="b-none"] {

@@ -629,7 +629,42 @@ function renderGenerator(sections, generator, savedGeneration) {
     }
 
     let { title, icon } = getReadyState(generator);
-    content.innerHTML = formatReadyState(title, icon);
+
+    switch (generator) {
+        case 'items':
+            content.innerHTML = formatReadyState(
+                title,
+                icon,
+                generator,
+                [ 'Configure the items generator on the left then click "Generate".' ]
+            );
+            break;
+
+        case 'maps':
+            content.innerHTML = formatReadyState(
+                title,
+                icon,
+                generator,
+                [
+                    "Mystic Waffle's random dungeon generator is a simple grid-based map generator which includes room descriptions and item contents. ",
+                    'Configure map, room, and item settings on the left then click "Generate".'
+                ]
+            );
+            break;
+
+        case 'rooms':
+            content.innerHTML = formatReadyState(
+                title,
+                icon,
+                generator,
+                [
+                    "Generate one or more spaces for your adventure's scene, such as a wizard's laboratory, a smithy, or an armory. ",
+                    'Set your desired configurations on the left then then click "Generate".'
+                ]
+            );
+            break;
+     }
+
 }
 
 /**
