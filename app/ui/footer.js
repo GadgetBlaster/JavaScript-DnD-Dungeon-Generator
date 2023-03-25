@@ -6,10 +6,10 @@ import { currentVersion } from '../pages/notes.js';
 
 // -- Config --------------------------------------------------------
 
-const creativeCommonsUrl = 'https://creativecommons.org/licenses/by-nc-sa/4.0/';
 const mysticWaffleUrl    = 'https://www.mysticwaffle.com';
+const commentsUrl        = mysticWaffleUrl + '/dnd-generator#comments';
+const creativeCommonsUrl = 'https://creativecommons.org/licenses/by-nc-sa/4.0/';
 const privacyUrl         = 'https://www.mysticwaffle.com/privacy-policy';
-const gitHubUrl          = 'https://github.com/GadgetBlaster/JavaScript-DnD-Dungeon-Generator';
 
 const copyright = `D&D Generator by ${link('Mystic Waffle', mysticWaffleUrl, { target: '_blank' })}`;
 
@@ -38,7 +38,7 @@ export const getFooter = (testSummary) =>
     + small(copyright)
     + small(spacedItems([
         link('Release Notes', '', { 'data-action': 'navigate', href: '/release-notes' }),
-        link('GitHub', gitHubUrl, { target: '_blank' }),
+        link('Comments', commentsUrl, { target: '_blank' }),
         link('License', creativeCommonsUrl, { target: '_blank' }),
         link('Privacy Policy', privacyUrl, { target: '_blank' }),
     ]));
