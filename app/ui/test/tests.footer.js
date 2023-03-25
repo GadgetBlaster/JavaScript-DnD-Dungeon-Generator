@@ -28,7 +28,6 @@ export default ({ assert, describe, it }) => {
         it('contains footer links', () => {
             const expectLinks = [
                 'Comments',
-                'License',
                 'Mystic Waffle',
                 'Privacy Policy',
                 'Release Notes',

@@ -8,7 +8,6 @@ import { currentVersion } from '../pages/notes.js';
 
 const mysticWaffleUrl    = 'https://www.mysticwaffle.com';
 const commentsUrl        = mysticWaffleUrl + '/dnd-generator#comments';
-const creativeCommonsUrl = 'https://creativecommons.org/licenses/by-nc-sa/4.0/';
 const privacyUrl         = 'https://www.mysticwaffle.com/privacy-policy';
 
 const copyright = `D&D Generator by ${link('Mystic Waffle', mysticWaffleUrl, { target: '_blank' })}`;
@@ -37,8 +36,7 @@ export const getFooter = (testSummary) =>
     small(spacedItems([ `Alpha ${currentVersion}`, testSummary ]))
     + small(copyright)
     + small(spacedItems([
-        link('Release Notes', '', { 'data-action': 'navigate', href: '/release-notes' }),
         link('Comments', commentsUrl, { target: '_blank' }),
-        link('License', creativeCommonsUrl, { target: '_blank' }),
+        link('Release Notes', '', { 'data-action': 'navigate', href: '/release-notes' }),
         link('Privacy Policy', privacyUrl, { target: '_blank' }),
     ]));
