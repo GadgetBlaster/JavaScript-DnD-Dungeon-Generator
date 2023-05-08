@@ -33,7 +33,7 @@ const spacedItems = (items) => items.join(span('&bull;', { 'data-spacing': 'x-sm
  * @returns {string}
  */
 export const getFooter = (testSummary) =>
-    small(spacedItems([ `Alpha ${currentVersion}`, testSummary ]))
+    small(spacedItems([ `Alpha ${currentVersion}` ]))
     + small(copyright)
     + small(spacedItems([
         link('Comments', commentsUrl, { target: '_blank' }),
