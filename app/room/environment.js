@@ -96,7 +96,7 @@ function getAirDesc() {
 
     switch (random) {
         case air.damp:
-            return 'The air is think and damp';
+            return 'The air is thick and damp';
 
         case air.misty:
             if (roll()) {
@@ -114,7 +114,7 @@ function getAirDesc() {
                 return 'The air smells fresh and crisp';
             }
 
-            return 'There is a strange sweet sent in the air';
+            return 'There is a strange sweet scent in the air';
 
         case air.smokey:
             return 'The room is filled with smoke from a hastily extinguished fire';
