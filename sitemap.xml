@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://dnd.mysticwaffle.com/</loc>
+    <loc>https://dnd-v1.mysticwaffle.com/</loc>
     <lastmod>2023-03-25</lastmod>
   </url>
   <url>
-    <loc>https://dnd.mysticwaffle.com/maps</loc>
+    <loc>https://dnd-v1.mysticwaffle.com/maps</loc>
     <lastmod>2023-03-25</lastmod>
   </url>
   <url>
-    <loc>https://dnd.mysticwaffle.com/rooms</loc>
+    <loc>https://dnd-v1.mysticwaffle.com/rooms</loc>
     <lastmod>2023-03-25</lastmod>
   </url>
   <url>
-    <loc>https://dnd.mysticwaffle.com/items</loc>
+    <loc>https://dnd-v1.mysticwaffle.com/items</loc>
     <lastmod>2023-03-25</lastmod>
   </url>
   <url>
-    <loc>https://dnd.mysticwaffle.com/release-notes</loc>
+    <loc>https://dnd-v1.mysticwaffle.com/release-notes</loc>
   </url>
 </urlset>
