@@ -3,6 +3,7 @@
 import { article, div, header, section } from '../ui/block.js';
 import { list } from '../ui/list.js';
 import { paragraph, span, subtitle, title } from '../ui/typography.js';
+import { link } from '../ui/link.js';
 
 import { capitalize, toss, pluralize } from '../utility/tools.js';
 import { element } from '../utility/element.js';
@@ -379,7 +380,9 @@ export function formatRooms(rooms) {
 export function getFormattedHomepage() {
     return title('D&D Generator')
 
-    + paragraph("Welcome to Mystic Waffle's D&D dungeon map, room, and item generator!")
+    + paragraph("Welcome to Mystic Waffle's v1 D&D dungeon map, room, and item generator!")
+
+    + subtitle(link('Version 2 of the generator is live! Checkout the new generator here!', 'https://dnd.mysticwaffle.com'))
 
     + paragraph('Choose a generator below then click the "Generate" button to instantly generate content for your RPG games. Maps, room descriptions, and loot generation can be used freely in personal and commercial content alike.', {
         'data-spacing': 'b',
