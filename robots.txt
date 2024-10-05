@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://dnd-v1.mysticwaffle.com/sitemap.xml
+Sitemap: https://v1.mysticwaffle.com/sitemap.xml
