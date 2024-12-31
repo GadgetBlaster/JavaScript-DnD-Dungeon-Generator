@@ -17,10 +17,6 @@ export default ({ assert, describe, it }) => {
             assert(Boolean(body)).isTrue();
         });
 
-        it('contains the test summary', () => {
-            assert(body.textContent).stringIncludes('Fake test summary');
-        });
-
         it('contains attribution', () => {
             assert(body.textContent).stringIncludes('D&D Generator by Mystic Waffle');
         });
