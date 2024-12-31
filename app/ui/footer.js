@@ -28,11 +28,9 @@ const spacedItems = (items) => items.join(span('&bull;', { 'data-spacing': 'x-sm
 /**
  * Content and format for the application footer.
  *
- * @param {string} testSummary
- *
  * @returns {string}
  */
-export const getFooter = (testSummary) =>
+export const getFooter = () =>
     small(spacedItems([ `Alpha ${currentVersion}` ]))
     + small(copyright)
     + small(spacedItems([

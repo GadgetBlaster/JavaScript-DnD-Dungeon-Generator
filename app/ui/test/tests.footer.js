@@ -11,7 +11,7 @@ export default ({ assert, describe, it }) => {
     // -- Public Functions -----------------------------------------------------
 
     describe('getFooter()', () => {
-        const body = parseHtml(getFooter('Fake test summary'));
+        const body = parseHtml(getFooter());
 
         it('returns valid HTML', () => {
             assert(Boolean(body)).isTrue();
