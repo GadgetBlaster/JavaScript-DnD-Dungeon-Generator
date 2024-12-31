@@ -8,7 +8,7 @@ import { currentVersion } from '../pages/notes.js';
 
 const mysticWaffleUrl    = 'https://www.mysticwaffle.com';
 const commentsUrl        = mysticWaffleUrl + '/dnd-generator#comments';
-const privacyUrl         = 'https://www.mysticwaffle.com/privacy-policy';
+const privacyUrl         = 'https://www.mysticwaffle.com/privacy';
 
 const copyright = `D&D Generator by ${link('Mystic Waffle', mysticWaffleUrl, { target: '_blank' })}`;
 
