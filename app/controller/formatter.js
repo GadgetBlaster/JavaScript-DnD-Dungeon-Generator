@@ -382,7 +382,7 @@ export function getFormattedHomepage() {
 
     + paragraph("Welcome to Mystic Waffle's v1 D&D dungeon map, room, and item generator!")
 
-    + subtitle(link('Version 2 of the generator is live! Checkout the new generator here!', 'https://dnd.mysticwaffle.com'))
+    + subtitle(link('Version 2 of the generator is live! Checkout the new generator here!', 'https://www.mysticwaffle.com/'))
 
     + paragraph('Choose a generator below then click the "Generate" button to instantly generate content for your RPG games. Maps, room descriptions, and loot generation can be used freely in personal and commercial content alike.', {
         'data-spacing': 'b',

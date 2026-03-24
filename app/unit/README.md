@@ -92,15 +92,15 @@ export default {
 ## Running tets
 
 All tests can be run by visiting
-[unit.html](https://apps.mysticwaffle.com/dnd-dungeon-generator/unit.html) in a
+[unit.html](https://v1.mysticwaffle.com/unit.html) in a
 web browser.
 
 Verbose output can be shown by adding a
-[unit.html?verbose=true](https://apps.mysticwaffle.com/dnd-dungeon-generator/unit.html?verbose=true)
+[unit.html?verbose=true](https://v1.mysticwaffle.com/unit.html?verbose=true)
 URL param.
 
 Individual test files can be run by adding a scope to the URL params, for example:
-[unit.html?scope=/app/utility/test/tests.roll.js](https://apps.mysticwaffle.com/dnd-dungeon-generator/unit.html?scope=/app/utility/test/tests.roll.js)
+[unit.html?scope=/app/utility/test/tests.roll.js](https://v1.mysticwaffle.com/unit.html?scope=/app/utility/test/tests.roll.js)
 
 To run scoped tests they must be included in the test suite object defined in
 `/unit/suite.js`.

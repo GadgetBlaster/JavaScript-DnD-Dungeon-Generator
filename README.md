@@ -1,13 +1,11 @@
 # JavaScript D&D Generator
 
 > [!WARNING]
-> This codebase is no longer being developed. A complete rebuild from the ground up using React & TypeScript has been developed with the goal of resolving deficiencies in the original architecture and building support for more customization options. Check it out at [mysticwaffle.com](https://www.mysticwaffle.com/)!
+> This codebase is no longer being developed. A complete rebuild from the ground up using React, TypeScript, and HTML5 Canvas (instead of SVG) has been developed with the goal of resolving critical deficiencies in the original architecture and building support for more customization options. Check out the v2 Beta app at [mysticwaffle.com](https://www.mysticwaffle.com/)!
 
 D&D Generator at [v1.mysticwaffle.com](https://v1.mysticwaffle.com/) is a web application, forged by AJ, a Human Sorcerer, written (mostly) in JavaScript. The app implements a procedural generation algorithm to draw Dungeons & Dragons game maps as SVG graphics using user input. The maps are accompanied by randomly generated room descriptions, doorway connections, and items.
 
-The application has zero 3rd party library dependencies. Functionally is validated on page load by a custom built unit testing framework. The API, which is not included in this repository, servers as a backend for storing user generated content.
-
-This project is a work in progress with numerous features and configuration options still to come.
+The application has zero 3rd party library dependencies. Functionally is validated on page load by a custom built unit testing framework.
 
 ## Screenshot
 
