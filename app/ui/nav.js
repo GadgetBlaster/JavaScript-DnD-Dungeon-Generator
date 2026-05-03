@@ -24,7 +24,12 @@ export const getNav = (activeGenerator) => Object.entries(generators)
         'data-action': 'navigate',
         'style'      : `animation-delay: ${2000 + (500 * i)}ms;`,
         ...(activeGenerator === generator ? { 'data-active':  '' } : null),
-    })).join('');
+    })).join('')
+    + link('☕&nbsp;&nbsp;Buy me a coffee', 'https://buymeacoffee.com/mysticwaffle?utm_source=generator-v1', {
+        'rel'   : 'noopener noreferrer',
+        'target': '_blank',
+        'style' : `animation-delay: 3500ms;`,
+    });
 
 /**
  * Sets the active navigation target.
